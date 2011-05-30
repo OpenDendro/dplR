@@ -18,8 +18,9 @@ function(rwl)
   }
 
   series.stats=data.frame(series=colnames(rwl))
-  series.stats$first=apply(rwl,2,yr.range)[1,]
-  series.stats$last=apply(rwl,2,yr.range)[2,]
+  the.range = apply(rwl,2,yr.range)
+  series.stats$first=the.range[1,]
+  series.stats$last=the.range[2,]
   series.stats$year=series.stats$last-series.stats$first+1
   series.stats$mean=colMeans(rwl,na.rm=TRUE)
   series.stats$median=apply(rwl,2,median,na.rm=TRUE)

@@ -27,7 +27,7 @@
   the Social Sciences.} Springer-Verlag. ISBN: 0387987789.
 
 }
-\author{ Andy Bunn }
+\author{ Mikko Korpela, based on original by Andy Bunn }
 \seealso{ \code{\link{rwl.stats}} }
 \examples{
 

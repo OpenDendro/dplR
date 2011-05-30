@@ -1,7 +1,17 @@
 qa.xdate <- function(rwl,seg.length,n,bin.floor){
-  is.int = function(x, tol = .Machine$double.eps) {
-    (x - floor(x)) < tol
+  # Function to check if x (a single number) is equivalent to
+  # its integer representation.
+  # Note: Returns FALSE for values that fall outside
+  # the range of the integer type.
+  is.int = function(x) {
+    x >= -.Machine$integer.max &&
+    x <= .Machine$integer.max &&
+    x == as.integer(x)
   }
+#  is.int = function(x, tol = .Machine$double.eps) {
+#    (x - floor(x)) < tol
+#  }
+
   # seg.length
   if(seg.length*2 > nrow(rwl)) {
     stop('seg.length has to be less than 1/2 number of years in rwl')

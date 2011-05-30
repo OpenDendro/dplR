@@ -32,7 +32,7 @@
   978-1930665392.
 
 }
-\author{ Andy Bunn }
+\author{ Mikko Korpela, based on original by Andy Bunn }
 \seealso{ \code{\link{sens1}},\code{\link{rwl.stats}} }
 \examples{
 

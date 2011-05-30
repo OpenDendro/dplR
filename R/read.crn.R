@@ -46,11 +46,21 @@ function(fname, header=NULL)
   dat=file(fname,"r")
   dat=read.fwf(fname,c(6,4,rep(c(4,3),10)),skip=skip.lines,strip.white=TRUE)
   # If columns 3 in chron.stats is an integer then there is no statistics line
-  is.int=function(x,tol=.Machine$double.eps) {
-    if(is.numeric(x)) ans=(x - floor(x)) < tol
-    else ans=FALSE
-    ans
+  # Function to check if x (a single number) is equivalent to
+  # its integer representation.
+  # Note: Returns FALSE for values that fall outside
+  # the range of the integer type.
+  is.int = function(x) {
+    x >= -.Machine$integer.max &&
+    x <= .Machine$integer.max &&
+    x == as.integer(x)
   }
+#  is.int=function(x,tol=.Machine$double.eps) {
+#    if(is.numeric(x)) ans=(x - floor(x)) < tol
+#    else ans=FALSE
+#    ans
+#  }
+
   if(is.numeric(chron.stats[,3]) & !is.int(chron.stats[,3])){
     names(chron.stats)=c("SiteID","nYears","AC[1]","StdDev","MeanSens","MeanRWI",
       "IndicesSum","IndicesSS","MaxSeries")

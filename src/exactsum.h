@@ -44,4 +44,7 @@ typedef struct liststruct listnode;
 */
 long double msum(double *array, int n, listnode *expansion);
 
+/* Add number a to the sum represented by expansion */
+void grow_exp(listnode *expansion, long double a);
+
 #endif

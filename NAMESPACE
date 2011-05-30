@@ -1,4 +1,4 @@
-useDynLib(dplR, rwl.readloop = readloop, dplR.tbrm = tbrm, dplR.mean = exactmean)
+useDynLib(dplR, rwl.readloop = readloop, dplR.tbrm = tbrm, dplR.mean = exactmean, dplR.gini = gini, dplR.sens1 = sens1, dplR.sens2 = sens2)
 
 import(lattice)
 
@@ -10,4 +10,4 @@ export(chron, hanning, read.ids, tbrm, crn.plot, i.detrend, read.rwl, wavelet,
   detrend, morlet, rwl.stats, write.crn, detrend.series, read.crn, 
   seg.plot, skel.plot, write.rwl, sens1, sens2, gini.coef, read.fh, qa.xdate, 
   normalize.xdate, corr.rwl.seg, series.rwl.plot, corr.series.seg, ccf.series.rwl,
-  ffcsaps, rcs, cms, spag.plot)
+  ffcsaps, rcs, cms, spag.plot, combine.rwl, bai.in, bai.out)

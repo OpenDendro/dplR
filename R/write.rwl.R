@@ -69,17 +69,21 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01)
   nseries <- ncol(rwl.df)
   yrs.all = as.numeric(rownames(rwl.df))
   rwl.out = character()
-  na.str = ifelse(prec == 0.01, "   999", " -9999")
+  na.str = ifelse(prec == 0.01, 9.99, -9.999)
   for(l in 1:nseries) {
     series = rwl.df[,l]
     yrs = yrs.all[!is.na(series)]
     series = series[!is.na(series)]
+
+    series = c(series,na.str)
+    yrs = c(yrs,max(yrs)+1)
+
     min.year = min(yrs)
     max.year = max(yrs)
-    span = max.year - min.year + 1
     decades.vec = yrs%/%10 * 10
     decades = unique(decades.vec)
     n.decades = length(decades)
+
     # 1-6
     rwl.df.name = colnames(rwl.df)[l]
     rwl.df.width = nchar(rwl.df.name)
@@ -108,8 +112,6 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01)
       dec.str[i] = paste(rwl.df.name,"  ",dec.yrs[1],paste(dec.rwl,sep = "",
         collapse = ""),sep="")
     }
-    # Finish last decade with na.str
-    dec.str[i] = paste(dec.str[i],na.str,sep="")
     rwl.out = c(rwl.out,dec.str)
   }
   if(length(header)>0) rwl.out = c(hdr,rwl.out)

@@ -17,9 +17,11 @@ Date: \tab 2007-07-27\cr
 License: \tab GPL\cr
 }
 \emph{Main Functions}
-  \item{\code{\link{read.rwl}}}{ reads rwl files }
-  \item{\code{\link{detrend}}}{ detrends raw ring widths }
-  \item{\code{\link{chron}}}{ builds chronologies }
+  \describe{
+    \item{\code{\link{read.rwl}}}{ reads rwl files }
+    \item{\code{\link{detrend}}}{ detrends raw ring widths }
+    \item{\code{\link{chron}}}{ builds chronologies }
+  }
 }
 \author{ Andy Bunn <andy.bunn@wwu.edu> }
 \references{

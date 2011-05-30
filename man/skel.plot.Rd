@@ -6,7 +6,7 @@
 }
 \usage{
 skel.plot(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = FALSE,
-  master=FALSE)
+  master=FALSE, plot=TRUE)
 }
 \arguments{
   \item{rw.vec}{ a vector of a tree-ring chronology or series }
@@ -20,6 +20,7 @@ skel.plot(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = FALSE,
     segments inverted to ease pattern matching. If \code{TRUE} the segments
     will be plotted from the top down and the labels on the x axes will be
     on the bottom. }
+  \item{plot}{ logical flag indicating whether to make a plot. }
 }
 \details{
   This makes a skeleton plot - a plot that gives the relative growth for year t

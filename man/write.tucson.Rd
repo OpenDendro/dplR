@@ -6,7 +6,7 @@
 }
 \usage{
   write.tucson(rwl.df, fname, header=NULL, append=FALSE, prec=0.01,
-  mapping.fname="", mapping.append=FALSE)
+  mapping.fname="", mapping.append=FALSE, long.names=FALSE)
 }
 \arguments{
   \item{rwl.df}{ a \code{data.frame} containing tree-ring ring widths with the
@@ -17,7 +17,7 @@
   \item{header}{ a list giving information for the header of the file.
   If NULL then no header information will be written. }
   \item{append}{ logical flag indicating whether to append this chronology to
-  an existing file. }
+  an existing file. The default is to create a new file. }
   \item{prec}{ \code{numeric} indicating the precision of the output file. -
   This must be equal to either 0.01 or 0.001 (units are in mm). }
   \item{mapping.fname}{ a \code{character} vector of length one giving
@@ -26,7 +26,11 @@
   that are transformed beyond simple truncation. An empty name (the
   default) disables output. }
   \item{mapping.append}{ \code{logical} flag indicating whether to
-  append the description of the altered series ids to an existing file. }
+  append the description of the altered series ids to an existing file.
+  The default is to create a new file. }
+  \item{long.names}{ \code{logical} flag indicating whether to
+  allow long series IDs (7 or 8 characters) to be written to the output.
+  The default is to only allow 6 characters. }
 }
 \details{
   This writes a standard rwl file as defined according to the standards of
@@ -53,7 +57,7 @@
   }
   See examples for a correctly formatted header list. If the width of
   the fields is less than the max width, then the fields will be padded
-  to the right length when written. Not that lat and long are really
+  to the right length when written. Note that lat and long are really
   lat*100 or long*100 and given as integers. E.g., 37 degrees 30 minutes
   would be given as 3750.
 
@@ -68,6 +72,13 @@
   automatically generated suffix) produce warnings. In that case, the
   user may wish to print a list of these more complex renamings (see
   Arguments).
+
+  Setting \code{long.names=TRUE} allows series IDs to be 8 characters
+  long, or 7 in case there are year numbers using 5 characters. Note
+  that in the latter case the limit of 7 characters applies to all
+  IDs, not just the one corresponding to the series with long year
+  numbers. The default (\code{long.names=FALSE}) is to allow 6
+  characters. Long IDs may cause incompatibility with other software.
 }
 \value{
   None. Invoked for side effect (file is written).

@@ -25,10 +25,12 @@ corr.series.seg <- function(rwl,series,series.yrs=as.numeric(names(series)),
   yrs = as.numeric(names(master))
   nyrs = length(series.yrs)
   if(is.null(bin.floor) || bin.floor == 0) min.bin = min(series.yrs)
-  else min.bin = min(series.yrs)%/%bin.floor*bin.floor+bin.floor
-  bins1 = seq(from=min.bin,to=max(series.yrs)-seg.length,by=seg.lag)
-  bins2 = bins1+seg.length
-  bins = cbind(bins1,bins2)
+  else min.bin = ceiling(min(series.yrs)/bin.floor)*bin.floor
+  to = max(series.yrs)-seg.length
+  if(min.bin > to)
+    stop("Cannot fit any segments (not enough years in the series)")
+  bins = seq(from=min.bin, to=to, by=seg.lag)
+  bins = cbind(bins, bins+seg.length)
   nbins = nrow(bins)
   bin.names = paste(bins[,1],".", bins[,2],sep="")
   # structures for results
@@ -54,7 +56,7 @@ corr.series.seg <- function(rwl,series,series.yrs=as.numeric(names(series)),
   yrs = as.numeric(names(master))
   #loop through bins
   for(j in 1:nbins){
-    mask = yrs%in%seq(bins[j,1],bins[j,2])
+    mask = yrs%in%seq(from=bins[j,1], to=bins[j,2])
     # cor is NA if there is not complete overlap
     if(any(is.na(series[mask])) |
        any(is.na(master[mask])) |
@@ -93,12 +95,12 @@ corr.series.seg <- function(rwl,series,series.yrs=as.numeric(names(series)),
       sub=paste('Segments: length=',seg.length,',lag=',seg.lag,sep=''),
       axes=FALSE,...)
     abline(v=bins,col='grey',lty='dotted')
-    axis(1,at=bins[seq(1,nrow(bins),by=2),])
-    axis(3,at=bins[seq(2,nrow(bins),by=2),])
+    axis(1,at=bins[seq(from=1, to=nrow(bins), by=2),])
+    axis(3,at=bins[seq(from=2, to=nrow(bins), by=2),])
     axis(2)
     box()
     # lines odd bins
-    for(i in seq(1,nbins)){
+    for(i in seq(from=1, to=nbins)){
       xx=c(bins[i,],recursive=TRUE)
       yy=c(res.cor[i],res.cor[i])
       lines(xx,yy,lwd=1.5)

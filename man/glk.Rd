@@ -32,7 +32,7 @@
   overlap, Gleichlaeufigkeit cannot be computed, and NA is returned.
    }
 
-\author{ Christian Zang }
+\author{ Christian Zang. A small patch by Mikko Korpela. }
 
 \references{ Eckstein, D., Bauch J. (1969) \emph{Beitrag zur
 Rationalisierung eines dendrochronologischen Verfahrens und zur Analyse

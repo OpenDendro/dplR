@@ -23,7 +23,8 @@ This converts ring-width series (mm) to ring-area series (mm squared) (aka basal
 Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring standardization: Defining the biological trend from expected basal area increment. Tree-Ring Research 64(2): 81-96.
 }
 \note{ DendroLab website: \url{http://dendrolab.org/} }
-\author{ Code by Andy Bunn based on work from DendroLab, University of Nevada Reno, USA }
+\author{ Code by Andy Bunn based on work from DendroLab, University of
+  Nevada Reno, USA. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{bai.out}} }
 \examples{
   # toy

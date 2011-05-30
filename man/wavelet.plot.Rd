@@ -56,7 +56,7 @@
   IDL code available at
   \url{http://atoc.colorado.edu/research/wavelets/software.html}
 }
-\author{ Andy Bunn }
+\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{chron}} }
 \examples{
 

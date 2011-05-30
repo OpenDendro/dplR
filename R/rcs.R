@@ -1,20 +1,5 @@
 rcs <- function(rwl,po,nyrs=NULL,f=0.5,biweight=TRUE,rc.out=FALSE,
   make.plot=TRUE,...) {
-  # support funcs
-  yr.range = function(x) {
-    yr.vec = as.numeric(names(x))
-    mask = !is.na(x)
-    range(yr.vec[mask])
-  }
-
-  sortByIndex<-function(x){
-    n<-length(x)
-    lowerBound<-which.min(is.na(x))
-    nonNACount<-sum(!is.na(x))
-    c(x[lowerBound:n], rep(NA, lowerBound-1))
-  }
-
- #main func
   if(ncol(rwl) != nrow(po)) { stop('dimension problem: ncol(rw) != nrow(po)') }
   if(!all(po[,1] %in% colnames(rwl))) { stop('Series ids in po and rwl do not match') }
   rownames(rwl) <-   rownames(rwl) # guard against NULL names funniness
@@ -31,7 +16,7 @@ rcs <- function(rwl,po,nyrs=NULL,f=0.5,biweight=TRUE,rc.out=FALSE,
   }
 
   if(biweight){ ca.m = apply(rwca, 1, tbrm, C = 9) }
-  else { ca.m = apply(rwca, 1, mean, na.rm = TRUE) }
+  else { ca.m = rowMeans(rwca, na.rm=TRUE) }
 
   ca.m = ca.m[!is.na(ca.m)]
   # spline follows B&Q 2008 as 10%of the RC length

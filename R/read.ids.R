@@ -34,7 +34,7 @@ function(rwl,stc=c(3,2,3))
   n.trees=length(tree.ids)
   for(i in 1:n.trees){
     n.cores=length(core.vec[tree.vec==i])
-    core.vec[tree.vec==i]=seq(1,n.cores)
+    core.vec[tree.vec==i]=seq(from=1, to=n.cores)
   }
   out=data.frame(tree=tree.vec,core=core.vec)
   rownames(out)=ids

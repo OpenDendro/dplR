@@ -1,3 +1,382 @@
+2010-04-22 Andy  Bunn <andy.bunn@wwu.edu>
+* CHANGES IN dplR VERSION 1.3.3 made by Mikko Korpela
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: NAMESPACE
+---------------
+Added rwi.stats.running to exports.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: bai.in.R
+--------------
+Removed one for-loop by transforming it to vector operations.
+Also some other optimizations (move some operations outside the
+remaining for-loop, streamline the writing of the results).
+
+NOTE: Why is (was) there a NaN check in calc.area? I removed it as
+pointless. Also note that NaN is different from NA (in my opinion, NA
+check would also be pointless).
+
+As calc.area became quite simple after my edits, I moved the remaining
+code to the main function.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: bai.in.Rd
+---------------
+Added my name to it.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: bai.out.R
+---------------
+Similar optimizations as to bai.in.R. One particular optimization was
+to replace max(cumsum(dat2)) with sum(dat2), which gives the same
+result (but faster) when there are no negative values, as in ring
+width series.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: bai.out.Rd
+----------------
+Added my name to it.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: chron.R
+-------------
+Now uses rowMeans (rowSums), which is faster than computing the means
+(sums) with apply.
+
+Now uses ar.func defined in helpers.R.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: chron.Rd
+--------------
+Added my name to it.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: cms.R
+-----------
+Changed the sequence notation i:i to just i.
+Removed the pointless variable err3.
+Removed the err1 and err2 arrays, using scalar variables instead (only
+need one value at a time).
+The computation of err2 is now more efficient, and err2 is of opposite
+sign than before (taken into account when the value is utilized).
+Compute err6 with vector operations instead of using a for loop.
+Use fewer multiplications in the computation of err6 by using the
+common factor, sqrt(med).
+Removed pointless call to the function c in c.curve <- c(index[,2]).
+Avoid searching for NA values multiple times, save the results of the
+search in the variable no.na.
+Edited the if/else structure in the end. Now it makes fewer tests than
+before.
+Removed yr.range and sortByIndex, now uses those defined in helpers.R.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: cms.Rd
+------------
+Added my name to it.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: corr.series.seg.R
+-----------------------
+
+Now produces a more useful error message if the data set is so small
+that no segments fit over the data. Example based on the example in
+the .Rd file:
+
+>        data(co021)
+>        dat=co021
+>        #create a missing ring by deleting a year of growth in a random series
+>        flagged=dat$'641143'
+>        flagged=c(NA,flagged[-325])
+>        names(flagged)=rownames(dat)
+>        dat$'641143'=NULL
+> dat=dat[(nrow(dat)-48):nrow(dat),]                    # clip
+> flagged=flagged[(length(flagged)-48):length(flagged)] # clip
+> seg.24=corr.series.seg(rwl=dat,series=flagged,seg.length=24,biweight=FALSE)
+
+produces this message in dplR 1.3.1 (.2 also, I think):
+
+Error in seq.default(from = min.bin, to = max(series.yrs) - seg.length,  : 
+  wrong sign in 'by' argument
+
+but after a change to the code of the function:
+
+Error in corr.series.seg(rwl = dat, series = flagged, seg.length = 24,  : 
+  Cannot fit any segments (not enough years in the series)
+
+I also made a mostly cosmetic change (got rid of bins1 and bins2), and
+made the following functional change:
+
+Previously:
+else min.bin = min(series.yrs)%/%bin.floor*bin.floor+bin.floor
+
+Now:
+else min.bin = ceiling(min(series.yrs)/bin.floor)*bin.floor
+
+The example below shows how the new code line produces a less wasteful
+result (min.bin1 below) than the previous one (min.bin2),
+which jumps to the next level "one year too early", and consequently
+misses a segment that would have been possible to include.
+
+> min.year<-1900:2000
+> min.bin1 <- ceiling(min.year/25)*25
+> min.bin1
+  [1] 1900 1925 1925 1925 1925 1925 1925 1925 1925 1925 1925 1925 1925 1925 1925
+ [16] 1925 1925 1925 1925 1925 1925 1925 1925 1925 1925 1925 1950 1950 1950 1950
+ [31] 1950 1950 1950 1950 1950 1950 1950 1950 1950 1950 1950 1950 1950 1950 1950
+ [46] 1950 1950 1950 1950 1950 1950 1975 1975 1975 1975 1975 1975 1975 1975 1975
+ [61] 1975 1975 1975 1975 1975 1975 1975 1975 1975 1975 1975 1975 1975 1975 1975
+ [76] 1975 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000
+ [91] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000
+> min.bin2 <- min.year%/%25*25+25
+> min.bin2
+  [1] 1925 1925 1925 1925 1925 1925 1925 1925 1925 1925 1925 1925 1925 1925 1925
+ [16] 1925 1925 1925 1925 1925 1925 1925 1925 1925 1925 1950 1950 1950 1950 1950
+ [31] 1950 1950 1950 1950 1950 1950 1950 1950 1950 1950 1950 1950 1950 1950 1950
+ [46] 1950 1950 1950 1950 1950 1975 1975 1975 1975 1975 1975 1975 1975 1975 1975
+ [61] 1975 1975 1975 1975 1975 1975 1975 1975 1975 1975 1975 1975 1975 1975 1975
+ [76] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000
+ [91] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 2025
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: corr.series.seg.Rd
+------------------------
+Added my name to it.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: helpers.R (new)
+---------------
+A couple of helper functions to work around a design stupidity of R:
+http://radfordneal.wordpress.com/2008/08/06/design-flaws-in-r-1-reversing-sequences/
+
+Also moved ar.func here. The function was previously defined in three
+different places, and always functionally the same. I also optimized
+the function a tiny bit. So, if any changes to the function are made
+in the future, they will show up in every "client" function without
+having to edit three+ different files.
+
+Moved yr.range here. It is a slightly optimized version of the
+function used in cms, rcs, rwl.stats, seg.plot, and spag.plot. There's
+still a local definition for yr.range in corr.rwl.seg, because the
+function there is a bit different.
+
+Moved sortByIndex here. It is a slightly optimized version of the
+function used in cms and rcs.
+
+Is this a good place for the helper functions? If you have a better
+suggestion, feel free to move the functions or rename the file.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: ffcsaps.R
+---------------
+Fixed the helper function spdiags. The previous version crashed
+ffcsaps in the marginal case where it was given a data set with just
+three points. The bug was kind of related to the design stupidity just
+mentioned above. Now the helper function is documented, and uses the
+function "inc" defined in helpers.R. The use of the inc function
+avoids the problematic case where the sequence
+max(1,1-d.k):min(n,n-d.k), which denotes row numbers in the sparse
+matrix, might include zero. The "inc" function ensures that we get an
+increasing (or empty) sequence (does not include zeros when we start
+above zero), as probably was originally intended.
+
+I also made the code a bit clearer by renaming variables.
+
+I wonder what the kludgy part at the end of ffcsaps actually does?
+Whose code is that? Could it be rewritten in a non-kludgy way and/or
+with some more comments? What purpose does the variable x2 serve, and
+why does it contain a fixed-interval sequence with a seemingly
+arbitrary length of 101?
+
+The kludgy part sometimes prints a warning.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: glk.R
+-----------
+Small patch. Avoids a crash in the unlikely scenario that the function
+is called with an x consisting of just one record. After the fix, the
+function returns (expectedly, but not too usefully) NA. Also removed
+the unused internal function strip.na(x).
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: glk.Rd
+------------
+Added my name to it.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: normalize.xdate.R
+-----------------------
+Changes comparable to normalize1.R.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: normalize1.R
+------------------
+Now uses colMeans instead of apply in one statement, and colSums
+instead of apply in another statement.
+
+Uses ar.func defined in helpers.R.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: plot.series.rwl.R
+-----------------------
+Save temporary results for reuse.
+One line / statement removed (the result was not used).
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: rcs.R
+-----------
+Use rowMeans.
+Removed yr.range and sortByIndex, now uses those defined in helpers.R.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: rcs.Rd
+------------
+Added my name to it.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: read.tucson.R
+-------------------
+Fixed a bug concerning the width of the decade field in the case
+long=FALSE. The correct choice is 4, and 8+4 makes 12, which is
+consistent with 7+5=12 in the case long=TRUE, and the Tucson format
+description (column 13 is already ring width data). The bug would have
+caused trouble in the presence of 6 digit ring widths.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: rwi.stats.R
+-----------------
+Fixed a typo (seies -> series), another typo (Correaltions ->
+Correlations). Reorganized the code a bit.
+
+Maybe this should be fixed to use number of trees instead of number of
+cores in the EPS calculation. Also, I think it's dangerous to divide a
+sum of correlations by the theoretical number of terms in the sum,
+because sum of the terms may end up being NA. Then the average of
+non-NA elements, computed by dividing with the theoretical number of
+terms, will be too small.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: rwi.stats.Rd
+------------------
+Added my name to it. Changed the "see also" (unintentional?)
+self-reference into a reference to rwi.stats.running. Should the
+reference have been to rwl.stats?
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: rwi.stats.running.R
+-------------------------
+Compute stats in a running window. New function. Computes the EPS a
+bit differently compared to rwi.stats (see comments to rwi.stats.R
+above).
+
+Quite slow. Optimizations or (partial?) rewrite in C would be
+welcome. Maybe some day.
+
+The terminology used in the function arguments and the documentation
+may need to be made consistent with other parts of dplR. I'm not the
+best expert on that topic.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: rwi.stats.running.Rd
+--------------------------
+Documentation for the new function. Based on a copy-paste from rwi.stats.Rd.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: rwl.stats.R
+-----------------
+Removed yr.range, now uses the version defined in helpers.R.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: seg.plot.R
+----------------
+Removed yr.range, now uses the version defined in helpers.R.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: skel.plot.R
+-----------------
+Save temporary results for reuse.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: skel.plot.Rd
+------------------
+Added my name to it.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: spag.plot.R
+-----------------
+Save temporary results for reuse.
+Removed yr.range, now uses the version defined in helpers.R.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: spag.plot.Rd
+------------------
+Added my name to it.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: wavelet.plot.R
+--------------------
+Use multiplication instead of exponentiation in the computation of the
+power spectrum. This reduces computation time.
+Fixed the messy indentation of the source code.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: wavelet.plot.Rd
+---------------------
+Added my name to it.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: write.crn.R
+-----------------
+Fixed two bugs: one affected lines with only one year, the other
+affected the last line in case it was already complete (10 years).
+
+Example of the effect of the first bug (last line in file):
+xxxstd1990 540 12NANA 540 129990  09990  09990  09990  09990  09990  09990  09990  09990  0
+
+After fix:
+xxxstd1990 540 129990  09990  09990  09990  09990  09990  09990  09990  09990  0
+
+Example of the effect of the second bug (last line in file):
+xxxstd1990 540 12 554 12 499 12 262 12 502 12 435 12 472 12 513 12 538 11 679 119990  09990  0
+
+After fix:
+xxxstd1990 540 12 554 12 499 12 262 12 502 12 435 12 472 12 513 12 538 11 679 11
+
+
+The fixes involved changing
+
+for(j in 2:n.yrs)
+to
+for(j in inc(2,n.yrs))
+
+and
+
+for(k in 1:yrs.left)
+to
+for(k in inc(1,yrs.left))
+
+where inc(from,to) is a function in helpers.R.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: write.tucson.R
+--------------------
+Added a new function parameter. Setting long.names=TRUE allows series
+IDs with 7 or 8 characters depending on whether there are long year
+numbers in the data.
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File: write.tucson.Rd
+---------------------
+Describe the new parameter.
+
+(Also) files not named here
+---------------------------
+Added argument names to every call of the seq function. Quote from ?seq:
+     The interpretation of the unnamed arguments of 'seq' and 'seq.int'
+     is _not_ standard, and it is recommended always to name the
+     arguments when programming.
+I didn't take credit just for these small changes (no changes to .Rd
+files).
+
 2010-04-12  Andy Bunn <andy.bunn@wwu.edu>
 * CHANGES IN dplR VERSION 1.3.2
 * typos in Rd files fixed

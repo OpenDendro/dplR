@@ -68,9 +68,9 @@
   978-1930665392.
 
 }
-\author{ Andy Bunn }
+\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{detrend}}, \code{\link[stats]{cor}},
-  \code{\link{read.ids}}, \code{\link{rwi.stats}} }
+  \code{\link{read.ids}}, \code{\link{rwi.stats.running}} }
 \examples{
 
   data(ca533)

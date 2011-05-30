@@ -140,7 +140,7 @@ fix.names <- function(x, limit,mapping.fname,mapping.append){
 
 # Exportable function
 `write.tucson` <-
-function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01, mapping.fname="", mapping.append=FALSE)
+function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01, mapping.fname="", mapping.append=FALSE, long.names=FALSE)
 {
   if(!(prec == 0.01 | prec == 0.001)) stop('prec must eq 0.01 or 0.001')
   if(append) {
@@ -210,7 +210,7 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01, mapping.fname="", 
   nseries <- ncol(rwl.df)
   yrs.all = as.numeric(rownames(rwl.df))
   col.names = colnames(rwl.df)
-  if(length(grep("^([a-z]|[0-9])+$", col.names,ignore.case = TRUE)) != nseries)
+  if(length(grep("^([a-z]|[0-9])+$", col.names, ignore.case = TRUE)) != nseries)
     stop("Series names must only contain alphanumeric characters")
 
   # Sort years using increasing order, reorder rwl.df accordingly
@@ -232,20 +232,29 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01, mapping.fname="", 
       stop("Hello, user from the future. Year > 99999 not possible.")
   }
 
-  # The basic name.width is 7.
+  ## The basic name.width is 7.
   name.width = 7
 
-  # NOTE: Allow the user to control the next two options?
-  # Setting exploit.short = FALSE, use.space = TRUE
-  # will produce the same behavior as in previous versions of the function.
-  
-  # In the absence of long year numbers, it is possible to use a name
-  # that is one character longer (set exploit.short to TRUE).
-  exploit.short = FALSE
+  ## If we set exploit.short to TRUE:
+  ## In the absence of long year numbers, it is possible to use a name
+  ## that is one character longer.
+  ## use.space adjusts the following:
+  ## Do we use an extra space between the name and the decade
+  ## (reduces maximum length of name by one)?
 
-  # Do we use an extra space between the name and the decade
-  # (reduces maximum length of name by one)?
-  use.space = TRUE
+  ## Different interpretations exist...
+  ## Setting long.names to FALSE will produce the same behavior
+  ## as in old versions of the function.
+  ## We offer the user only one bit of customization (i.e. two options),
+  ## at this time anyway. Maybe the original idea of two customization
+  ## options was too fine-grained.
+  if(long.names){ # http://www.cybis.se/wiki/index.php?title=.rwl on 2010-04-21
+    exploit.short = TRUE  # limit is
+    use.space = FALSE     # 7 or 8 characters
+  } else{ # http://www.ncdc.noaa.gov/paleo/treeinfo.html on 2010-04-21
+    exploit.short = FALSE # limit is
+    use.space = TRUE      # 6 characters
+  }
 
   if (exploit.short && !long.years)
     name.width = name.width + 1
@@ -285,7 +294,7 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01, mapping.fname="", 
     decades.vec = yrs%/%10 * 10
     # Output for completely missing decades can be disabled by using
     # the alternate definition of the "decades" list
-    decades = seq(min(decades.vec),max(decades.vec),10)
+    decades = seq(from=min(decades.vec), to=max(decades.vec), by=10)
 #    decades = unique(decades.vec)
     n.decades = length(decades)
 

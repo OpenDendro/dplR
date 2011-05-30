@@ -34,7 +34,7 @@ chron(x, prefix = NULL, biweight = TRUE, prewhiten = FALSE)
   Fritts, H.C. (2001) \emph{Tree Rings and Climate.} Blackburn. ISBN-13:
   978-1930665392.
 }
-\author{ Andy Bunn }
+\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{read.rwl}}, \code{\link{detrend}},
   \code{\link[stats]{ar}}, \code{\link{chron}}
 }

@@ -18,7 +18,7 @@ wavelet <- function(y1,Dt,s0=2.0*Dt,dj=0.25,pad=TRUE,mother="Morlet",
 	}
   # Construct SCALE array & empty PERIOD & WAVE arrays
 	na = J + 1            # Num of scales
-	Scale = (seq(1,na)-1)*dj    # Array of j-values
+	Scale = (seq(from=1,to=na)-1)*dj    # Array of j-values
 	Scale = 2^(Scale)*s0      # Array of scales  2^j   [Eqn(9)]
 	period = rep(0,na)        # Empty period array (filled in below)
 	wave = matrix(complex(),n,na)   # Empty wavelet array

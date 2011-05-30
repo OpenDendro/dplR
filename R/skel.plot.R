@@ -106,16 +106,19 @@ function(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = FALSE,
       seekViewport(LETTERS[i])
       # working code goes here - e.g., skelplot!
       # seq for 0 to plot width by 2mm
-      grid.segments(x0=unit(seq(0,rw,by=2),'mm'),y0=unit(0,'mm'),
-                    x1=unit(seq(0,rw,by=2),'mm'),y1=unit(rh,'mm'),
+      tmp.seq = seq(from=0, to=rw, by=2)
+      grid.segments(x0=unit(tmp.seq,'mm'),y0=unit(0,'mm'),
+                    x1=unit(tmp.seq,'mm'),y1=unit(rh,'mm'),
                     gp = gpar(col='green', lineend = 'square', linejoin = 'round'))
-      grid.segments(x0=unit(0,'mm'),y0=unit(seq(0,rh,by=2),'mm'),
-                    x1=unit(rw,'mm'),y1=unit(seq(0,rh,by=2),'mm'),
+      tmp.seq = seq(from=0, to=rh, by=2)
+      grid.segments(x0=unit(0,'mm'),y0=unit(tmp.seq,'mm'),
+                    x1=unit(rw,'mm'),y1=unit(tmp.seq,'mm'),
                     gp = gpar(col='green', lineend = 'square', linejoin = 'round'))
 
       # decadal lines
-      grid.segments(x0=unit(seq(0,rw,by=20),'mm'),y0=unit(0,'mm'),
-                    x1=unit(seq(0,rw,by=20),'mm'),y1=unit(rh,'mm'),
+      tmp.seq = seq(from=0, to=rw, by=20)
+      grid.segments(x0=unit(tmp.seq,'mm'),y0=unit(0,'mm'),
+                    x1=unit(tmp.seq,'mm'),y1=unit(rh,'mm'),
                     gp = gpar(col = 'black',lwd = 1.5, lty = 'dashed',
                     lineend = 'square', linejoin = 'round'))
 
@@ -130,9 +133,9 @@ function(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = FALSE,
       # get this row's data
       skel.sub = skel.df[skel.df$row.index == i,1:2]
       end.yr = length(skel.sub$yr)
-      ticks = seq(0,rw/2,by=10)
+      ticks = seq(from=0, to=rw/2, by=10)
       init.lab = min(skel.sub$yr)
-      x.labs = seq(init.lab, length.out = length(ticks), by=10)
+      x.labs = seq(from=init.lab, length.out = length(ticks), by=10)
       for(j in 1:length(ticks)){
         if(!master){
           grid.text(label = x.labs[j],

@@ -3,11 +3,6 @@ function(rwl,...)
 {
   yr <- as.numeric(rownames(rwl))
   segs <- rwl
-  yr.range=function(x){
-    yr.vec=as.numeric(names(x))
-    mask=!is.na(x)
-    range(yr.vec[mask])
-  }
   first.year = apply(segs,2,yr.range)[1,]
   neworder <- sort(first.year,decreasing=FALSE)
   segs=segs[,names(neworder)]

@@ -19,7 +19,7 @@ spag.plot(rwl,zfac=1,...)
 \value{
   None. This function is invoked for its side effect, which is to produce a plot.
 }
-\author{ Andy Bunn }
+\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{seg.plot}} }
 \examples{
 

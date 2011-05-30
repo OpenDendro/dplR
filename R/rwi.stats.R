@@ -23,7 +23,7 @@ function(rwi,ids=NULL,period="max")
   # If r.mat is all NA and period is common then it is likely that
   # there is no overlap bewixt the cores. Warn the user.
   if(all(is.na(r.mat)) & period=="complete.obs"){
-    warning("Correaltions are all NA. No overlap in seies?",call. = FALSE)
+    warning("Correlations are all NA. No overlap in series?",call. = FALSE)
   }
 
   # See p 138 in C&K
@@ -45,18 +45,7 @@ function(rwi,ids=NULL,period="max")
     r.vec
   }
 
-  r.wt=r.wt.func(rwi,ids$tree)
-  rbar.wt=1/n.wt * sum(r.wt,na.rm=TRUE)
-
-  n.bt=n.tot - n.wt
-  rbar.bt=1/n.bt * (rbar.tot*n.tot - rbar.wt*n.wt)
-
-  c.eff=(1/n.trees * sum(1/n.cores.tree))^-1
-
-  rbar.eff = rbar.bt / (rbar.wt + (1-rbar.wt) / c.eff)
-
   n=n.cores
-  eps=(n*rbar.eff) / ((n*rbar.eff) + (1-rbar.eff))
 
   # Modify output and eps if one core per tree (e.g.,ids were null)
   if(all(n.cores.tree == 1)){
@@ -64,6 +53,20 @@ function(rwi,ids=NULL,period="max")
     rbar.bt=rbar.tot
     rbar.eff=0
     eps=(n*rbar.bt) / ((n*rbar.bt) + (1-rbar.bt))
+    n.bt=n.tot
+    c.eff=1
+  } else{
+    r.wt=r.wt.func(rwi,ids$tree)
+    rbar.wt=1/n.wt * sum(r.wt,na.rm=TRUE)
+
+    n.bt=n.tot - n.wt
+    rbar.bt=1/n.bt * (rbar.tot*n.tot - rbar.wt*n.wt)
+
+    c.eff=(1/n.trees * sum(1/n.cores.tree))^-1
+
+    rbar.eff = rbar.bt / (rbar.wt + (1-rbar.wt) / c.eff)
+
+    eps=(n*rbar.eff) / ((n*rbar.eff) + (1-rbar.eff))
   }
 
   compos.stats=data.frame(n.tot,n.wt,n.bt,rbar.tot,rbar.wt,rbar.bt,c.eff,rbar.eff,eps)

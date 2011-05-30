@@ -1,12 +1,6 @@
 `rwl.stats` <-
 function(rwl)
 {
-
-  yr.range=function(x){
-    yr.vec=as.numeric(names(x))
-    mask=!is.na(x)
-    range(yr.vec[mask])
-  }
   acf1=function(x){
     x=x[!is.na(x)]
     ar1=acf(x,lag.max=1,plot=FALSE)

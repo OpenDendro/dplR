@@ -15,4 +15,4 @@ export(chron, hanning, read.ids, tbrm, crn.plot, i.detrend, read.rwl, wavelet,
   qa.xdate, normalize.xdate, corr.rwl.seg, series.rwl.plot, 
   corr.series.seg, ccf.series.rwl, ffcsaps, rcs, cms, spag.plot, 
   combine.rwl, bai.in, bai.out, read.compact, write.compact, read.tucson, 
-  write.tucson, glk, sea)
+  write.tucson, glk, sea, rwi.stats.running)

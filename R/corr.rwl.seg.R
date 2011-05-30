@@ -68,7 +68,7 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
     series = rwi[,i]
     #loop through bins
     for(j in 1:nbins){
-      mask = yrs%in%seq(bins[j,1],bins[j,2])
+      mask = yrs%in%seq(from=bins[j,1], to=bins[j,2])
       # cor is NA if there is not complete overlap
       if(any(is.na(series[mask])) |
          any(is.na(master[mask])) |
@@ -107,7 +107,7 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
     p.val = res.pval
     ## odd segs
     segs=rwi
-    this.seq=seq(1,nrow(bins),by=2)
+    this.seq=seq(from=1, to=nrow(bins), by=2)
     odd.bins=bins[this.seq,]
     odd.p.val=p.val[,this.seq]
     nodd.bins=nrow(odd.bins)
@@ -121,8 +121,9 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
     tmp=odd.p.val > pcrit
     for(i in 1:nseries){
       for(j in 1:nodd.bins){
-        mask=yrs%in%seq(odd.bins[j,1],odd.bins[j,2]-1) #minus 1 deals with edge
-        mask2=yrs%in%seq(odd.bins[j,1],odd.bins[j,2])
+        ## minus 1 deals with edge
+        mask = yrs%in%seq(from=odd.bins[j,1], to=odd.bins[j,2]-1)
+        mask2 = yrs%in%seq(from=odd.bins[j,1], to=odd.bins[j,2])
         # note lack of complete overlap
         if(any(is.na(segs[mask,i]))) com.segs[mask,i]=NA
         if(!is.na(tmp[i,j]) & tmp[i,j]) flag.segs[mask2,i]=1
@@ -166,7 +167,7 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
         sub=paste('Segments: length=',seg.length,',lag=',
           seg.lag,sep=''), ...)
     # bounding poly for even series
-    for(i in seq(1,nseries,by=2)){
+    for(i in seq(from=1, to=nseries, by=2)){
       xx=c(min.yr-100,max.yr+100)
       xx=c(xx,rev(xx))
       yy=c(i-0.5,i-0.5,i+0.5,i+0.5)
@@ -175,7 +176,7 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
     abline(v=bins,col='grey',lty='dotted')
     axis(1,at=odd.bins)
     # polygons for odd bins (go down from series line)
-    for(i in seq(1,nseries)){
+    for(i in seq(from=1, to=nseries)){
       y.deviation = i-0.25
       # whole segs
       xx=c(segs.df[i,],recursive=TRUE)
@@ -197,7 +198,7 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
 
 ################################################################################
 ## even segs
-    this.seq=seq(2,nrow(bins),by=2)
+    this.seq=seq(from=2, to=nrow(bins), by=2)
     even.bins=bins[this.seq,]
     even.p.val=p.val[neworder,this.seq]
     neven.bins=nrow(even.bins)
@@ -208,8 +209,9 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
     tmp=even.p.val > pcrit
     for(i in 1:nseries){
       for(j in 1:neven.bins){
-        mask=yrs%in%seq(even.bins[j,1],even.bins[j,2]-1) #minus 1 deals with edge
-        mask2=yrs%in%seq(even.bins[j,1],even.bins[j,2])
+        ## minus 1 deals with edge
+        mask = yrs%in%seq(from=even.bins[j,1], to=even.bins[j,2]-1)
+        mask2 = yrs%in%seq(from=even.bins[j,1], to=even.bins[j,2])
         # note lack of complete overlap
         if(any(is.na(segs[mask,i]))) com.segs[mask,i]=NA
         if(!is.na(tmp[i,j]) & tmp[i,j]) flag.segs[mask2,i]=1
@@ -230,7 +232,7 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
     # guidelines
     axis(3,at=even.bins)
     # polygons for even bins (go up from series line)
-    for(i in seq(1,nseries)){
+    for(i in seq(from=1, to=nseries)){
       y.deviation = i+0.25
       # whole segs
       xx=c(segs.df[i,],recursive=TRUE)
@@ -252,8 +254,8 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
 
 # finish up plotting
     nsegs=ncol(segs)
-    odd.seq=seq(1,nsegs,by=2)
-    even.seq=seq(2,nsegs,by=2)
+    odd.seq=seq(from=1, to=nsegs, by=2)
+    even.seq=seq(from=2, to=nsegs, by=2)
     cnames.segs=colnames(segs)
     axis(2,at=odd.seq,
       labels=cnames.segs[odd.seq],srt=45,

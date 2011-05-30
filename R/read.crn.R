@@ -111,9 +111,9 @@ function(fname, header=NULL)
     decade.yr=dat[series.index==i,2]
     first.yr=dat[series.index==i,2][1]
     ## RWI
-    x=dat[series.index==i,-c(1,2,seq(4,22,2))]
+    x=dat[series.index==i,-c(1,2,seq(from=4, to=22, by=2))]
     ## All sample depths
-    y=dat[series.index==i,-c(1,2,seq(3,21,2))]
+    y=dat[series.index==i,-c(1,2,seq(from=3, to=21, by=2))]
     for(j in 1:nrow(x)) {
       yr=decade.yr[j]
       if(j==1) yr=min.year

@@ -31,22 +31,35 @@ ffcsaps<-function(y, x=1:length(y), nyrs=length(y)/2, f=0.5) {
 
   ffsorted=function(meshsites, sites) {
     index = sort(c(meshsites,sites), method="sh", index=TRUE)$ix
-    pointer = seq(1,length(index))[index>length(meshsites)]-
-      seq(1,length(sites))
+    pointer = seq(from=1, to=length(index))[index>length(meshsites)]-
+      seq(from=1, to=length(sites))
     pointer
   }
 
+  ## Creates a sparse matrix A of size n x n.
+  ## The columns of B are set to the diagonals of A so that column
+  ## k becomes the diagonal in position d[k] relative to the main diagonal
+  ## (zero d[k] is the main diagonal, positive d[k] is above,
+  ## negative is below the main diagonal).
+  ## A value on column j in A comes from row j in B.
+  ## This is similar in function to spdiags(B,d,n,n) in MATLAB.
   spdiags=function(B,d,n){
     a = matrix(0,1,3)
     for(k in 1:length(d)){
-      d.k = d[k]
-      i = max(1,1-d.k):min(n,n-d.k)
-      i.dk = i+d.k
-      a = rbind(a,cbind(i,i.dk,B[i.dk,k]))
+      this.diag = d[k]
+      i = inc(max(1,1-this.diag),min(n,n-this.diag)) # row
+      if(length(i) > 0){
+        j = i+this.diag                              # column
+        a = rbind(a,cbind(i,j,B[j,k]))
+      }
     }
     test = subset(a, a[,3]!= 0)
-    mymatrix = test[order(test[,2],test[,1]),]
-    mymatrix
+    A = test[order(test[,2],test[,1]),]
+    if(is.vector(A)){
+      t(A) # gives a 1-row matrix
+    } else{
+      A
+    }
   }
   
 ### start main function
@@ -98,7 +111,7 @@ ffcsaps<-function(y, x=1:length(y), nyrs=length(y)/2, f=0.5) {
   yi = yi - mplier*diff(c(0,diff(c(0,u,0))/diff.xi,0))
   test0 = xi[-c(1,n)]
   c3 = c(0,u/p.inv,0)
-  x2 = c(test0,seq(xi[1],xi[n], length = 101))
+  x2 = c(test0, seq(from=xi[1], to=xi[n], length = 101))
   ccc = cbind(diff(c3)/diff.xi,
     3*c3[-n],
     diff(yi)/diff.xi-diff.xi*(2*c3[-n]+c3[-1]),

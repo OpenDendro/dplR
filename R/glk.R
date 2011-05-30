@@ -1,11 +1,4 @@
 glk <- function(x) {
-  strip.na <- function(x) {
-    if (any(is.na(x))) {
-      NULL
-    } else {
-      x
-    }
-  }
   count.common <- function(x) {
     if (any(is.na(x))) {
       0
@@ -16,7 +9,7 @@ glk <- function(x) {
   n <- dim(x)[2]
   G <- matrix(NA, nrow = n,  ncol = n)
   rownames(G) <- colnames(G) <- colnames(x)
-  for (i in 1:(n - 1)) {
+  for (i in inc(1,n - 1)) {
     col1 <- x[, i]
     col1.years.narm <- rownames(x)[which(!is.na(col1))]
     for (k in (i + 1):n) {

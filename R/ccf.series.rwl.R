@@ -24,7 +24,7 @@ ccf.series.rwl <- function(rwl,series, series.yrs=as.numeric(names(series)),
   nbins = nrow(bins)
   bin.names = paste(bins[,1],".", bins[,2],sep="")
   # structures for results
-  lag.vec = seq(-lag.max,lag.max,by=1)
+  lag.vec = seq(from=-lag.max, to=lag.max, by=1)
   res.cor = matrix(NA,length(lag.vec),nbins)
   rownames(res.cor)=paste('lag',lag.vec,sep='.')
   colnames(res.cor)=bin.names
@@ -34,7 +34,7 @@ ccf.series.rwl <- function(rwl,series, series.yrs=as.numeric(names(series)),
   yrs = as.numeric(names(master))
   #loop through bins
   for(j in 1:nbins){
-    mask = yrs%in%seq(bins[j,1],bins[j,2])
+    mask = yrs%in%seq(from=bins[j,1], to=bins[j,2])
     # cor is NA if there is not complete overlap
     if(any(is.na(series[mask])) |
        any(is.na(master[mask])) |
@@ -59,7 +59,7 @@ ccf.series.rwl <- function(rwl,series, series.yrs=as.numeric(names(series)),
       ylim=range(ccf.df$r,sig,na.rm=T)*1.1,
       xlab='Lag', ylab='Correlation',col.line = NA,
       panel = function(x, y, col, ...) {
-        panel.abline(h=seq(-1,1,by=0.1),lty='solid',col='gray')
+        panel.abline(h=seq(from=-1, to=1, by=0.1), lty='solid', col='gray')
         panel.abline(v=lag.vec,lty='solid',col='gray')
         panel.abline(h=0,v=0,lwd=2)
         panel.abline(h=sig,lwd=2,lty='dashed')

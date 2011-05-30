@@ -126,7 +126,7 @@ function(crn, fname, header=NULL, append=FALSE)
     else {
       dec.str[i] = paste(crn.name,dec.yrs[1],dec.rwi[1],dec.samp.depth[1],sep="")
     }
-    for(j in 2:n.yrs){
+    for(j in inc(2,n.yrs)){
       j.rwi = dec.rwi[j]
       j.samp.depth = dec.samp.depth[j]
       dec.str[i] = paste(dec.str[i],j.rwi,j.samp.depth,sep="")
@@ -134,7 +134,7 @@ function(crn, fname, header=NULL, append=FALSE)
   }
   # Finish last decade with 9990 as NA and 0 as samp depth.
   yrs.left <- 10-n.yrs
-  for(k in 1:yrs.left){
+  for(k in inc(1,yrs.left)){
     dec.str[i] = paste(dec.str[i],"9990","  0",sep="")
   }
   if(length(header)>0) dec.str = c(hdr,dec.str)

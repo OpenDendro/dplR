@@ -1,10 +1,5 @@
 spag.plot <- function(rwl,zfac=1,...){
   rwl = scale(rwl*zfac,center = TRUE, scale = FALSE)
-  yr.range=function(x){
-    yr.vec=as.numeric(names(x))
-    mask=!is.na(x)
-    range(yr.vec[mask])
-  }
   first.year = apply(rwl,2,yr.range)[1,]
   neworder = sort(first.year,decreasing=FALSE)
   rwl=rwl[,names(neworder)]
@@ -16,14 +11,16 @@ spag.plot <- function(rwl,zfac=1,...){
     axes=FALSE, ylab="",xlab="Year")
   abline(h=1:nseries,col='grey')
   grid(ny = NA)
-  for(i in seq(1,nseries)){
+  for(i in seq(from=1, to=nseries)){
     lines(yr,rwl[,i]+i,...)
   }
-  axis(2,at=seq(1,ncol(rwl),by=2),
-    labels=colnames(rwl)[seq(1,ncol(rwl),by=2)],srt=45,
+  tmp.seq = seq(from=1, to=ncol(rwl), by=2)
+  axis(2,at=tmp.seq,
+    labels=colnames(rwl)[tmp.seq],srt=45,
     tick=FALSE,las=2)
-  axis(4,at=seq(2,ncol(rwl),by=2),
-    labels=colnames(rwl)[seq(2,ncol(rwl),by=2)],srt=45,
+  tmp.seq = seq(from=2, to=ncol(rwl), by=2)
+  axis(4,at=tmp.seq,
+    labels=colnames(rwl)[tmp.seq],srt=45,
     tick=FALSE,las=2)
   axis(1)
   axis(3)

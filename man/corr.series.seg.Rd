@@ -61,7 +61,7 @@
   A \code{list} containing matrices \code{bins}, \code{moving.rho}, and vectors
   \code{spearman.rho}, \code{p.val}, and \code{overall}.
 }
-\author{ Andy Bunn }
+\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{corr.series.seg}} \code{\link{skel.plot}}  \code{\link{series.rwl.plot}} \code{\link{ccf.series.rwl}}}
 \examples{
   data(co021)

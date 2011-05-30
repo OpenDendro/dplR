@@ -1,6 +1,6 @@
 `cwt.filled.contour` <-
-function (x = seq(0, 1, len = nrow(z)),
-      y = seq(0, 1, len = ncol(z)),
+function (x = seq(from=0, to=1, len = nrow(z)),
+      y = seq(from=0, to=1, len = ncol(z)),
       z,
       xlim = range(x, finite=TRUE),
       ylim = range(y, finite=TRUE),
@@ -21,7 +21,7 @@ function (x = seq(0, 1, len = nrow(z)),
       }
       else {
         z <- x
-        x <- seq(0, 1, len = nrow(z))
+        x <- seq(from=0, to=1, len = nrow(z))
       }
     }
     else stop("no `z' matrix specified")

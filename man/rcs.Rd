@@ -37,7 +37,7 @@ This attempts to remove the low frequency variability that is due to biological 
 }
 \note{ DendroLab website: \url{http://dendrolab.org/} }
 \author{ Code provided by DendroLab based on programming by F. Qeadan and F. Biondi, University of Nevada Reno, USA and adapted for dplR
-  by Andy Bunn }
+  by Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{detrend}}, \code{\link{chron}}, \code{\link{cms}},
   \code{\link{ffcsaps}} }
 \examples{

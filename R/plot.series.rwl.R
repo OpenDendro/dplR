@@ -11,10 +11,10 @@ series.rwl.plot <- function(rwl,series,series.yrs=as.numeric(names(series)),
 
   seg.lag=seg.length/2
   # trim series in case it was submitted stright from the rwl
-  series.yrs = series.yrs[!is.na(series)]
-  series = series[!is.na(series)]
+  idx.good = !is.na(series)
+  series.yrs = series.yrs[idx.good]
+  series = series[idx.good]
   yrs = as.numeric(names(master))
-  nyrs = length(series.yrs)
   if(is.null(bin.floor) || bin.floor == 0) min.bin = min(series.yrs)
   else min.bin = min(series.yrs)%/%bin.floor*bin.floor+bin.floor
   bins1 = seq(from=min.bin,to=max(series.yrs)-seg.length,by=seg.lag)
@@ -34,8 +34,8 @@ series.rwl.plot <- function(rwl,series,series.yrs=as.numeric(names(series)),
     axes=FALSE,...)
   abline(v=bins,col='grey',lty='dotted')
   abline(h=1)
-  axis(1,at=bins[seq(1,nrow(bins),by=2),])
-  axis(3,at=bins[seq(2,nrow(bins),by=2),])
+  axis(1,at=bins[seq(from=1, to=nbins, by=2),])
+  axis(3,at=bins[seq(from=2, to=nbins, by=2),])
   axis(2)
   box()
   lines(yrs,series,lwd=1.5,col=col.pal[1])

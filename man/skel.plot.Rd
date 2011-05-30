@@ -60,7 +60,7 @@ skel.plot(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = FALSE,
   Meko, D. (2002) \emph{Tree-Ring MATLAB Toolbox.}
   \url{http://www.mathworks.com/matlabcentral/}
 }
-\author{ Andy Bunn }
+\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{  \code{\link[grDevices]{Devices}}, \code{\link{hanning}}  }
 
 \examples{

@@ -59,7 +59,7 @@ function(fname, header=NULL,long=FALSE)
       blank.lines.skip=TRUE)
   }
   else{
-    dat=read.fwf(fname,c(8,5,rep(6,10)),skip=skip.lines,strip.white=TRUE,
+    dat=read.fwf(fname,c(8,4,rep(6,10)),skip=skip.lines,strip.white=TRUE,
       blank.lines.skip=TRUE)
   }
   ## Remove any blank lines at the end of the file, for instance

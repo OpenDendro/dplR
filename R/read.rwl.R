@@ -15,7 +15,7 @@ function(fname, header=NULL)
       is.head=TRUE
     }
     else {
-     	is.head=FALSE # No header lines
+      is.head=FALSE # No header lines
       cat("There does not appear to be a header in the rwl file\n")
     }
     close(dat)
@@ -34,7 +34,7 @@ function(fname, header=NULL)
   close(dat)
 
   skip.lines=ifelse(is.head,3,0)
-  dat=read.fwf(fname,c(8,4,rep(6,10)),skip=skip.lines,strip.white=TRUE,
+  dat=read.fwf(fname,c(7,5,rep(6,10)),skip=skip.lines,strip.white=TRUE,
                   blank.lines.skip=TRUE)
   # Remove any blank lines at the end of the file, for instance
   dat=dat[!apply(is.na(dat),1,all),]
@@ -88,8 +88,18 @@ function(fname, header=NULL)
     x
   }
   rw.mat=apply(rw.mat,2,fix.internal.na)
-  # Remove any blank lines at the end of the file,for instance
-  rw.mat=rw.mat[!apply(is.na(rw.mat),1,all),]
+  # trim the front and back of the output file to remove blank rows. The
+  # ham-handed approach below avoids removing areas with internal gaps such as
+  # those with floating, but datting segments.
+  #rw.mat=rw.mat[!apply(is.na(rw.mat),1,all),]
+  foo <- rw.mat[1:10,]
+  foo.yrs <- as.numeric(rownames(foo))
+  min.year0 <- min(foo.yrs[!apply(is.na(foo),1,all)])
+  foo <- rw.mat[(nrow(rw.mat)-10):nrow(rw.mat),]
+  foo.yrs <- as.numeric(rownames(foo))
+  max.year0 <- max(foo.yrs[!apply(is.na(foo),1,all)])
+  yrs <- min.year0:max.year0
+  rw.mat=rw.mat[as.numeric(rownames(rw.mat)) %in% yrs,]
   rw.df=as.data.frame(rw.mat)
   rw.df
 }

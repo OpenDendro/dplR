@@ -1,3 +1,18 @@
+* CHANGES IN dplR VERSION 1.4.2 pre-release
+* All changes by Mikko Korpela
+
+File: rcompact.c
+----------------
+
+- Accepts comment lines in the beginning of the file
+- Cosmetic changes (formatting of comments)
+- UNPROTECT all PROTECTed structures at the same time
+
+File: read.compact.R
+--------------------
+
+- Prints comments found in the file (if any)
+
 2011-05-26 Andy  Bunn <andy.bunn@wwu.edu>
 * CHANGES IN dplR VERSION 1.4.1
 * All changes by Mikko Korpela

@@ -1,4 +1,4 @@
-cms <- function(rwl,po) {
+cms <- function(rwl,po,c.hat.t=FALSE,c.hat.i=FALSE) {
   # support funcs
   yr.range = function(x) {
     yr.vec = as.numeric(names(x))
@@ -15,7 +15,7 @@ cms <- function(rwl,po) {
 
   biologicalTrend<-function(theDat){
     tt<-theDat[,1]
-    n<-NROW(theDat[,1])
+    n<-nrow(theDat)
     err1<-array(0,n)
     err2<-array(0,n)
     err3<-array(0,n)
@@ -30,12 +30,13 @@ cms <- function(rwl,po) {
       err4[i]<-ans[2]
     }
     err5<-Re(err4)
-    med<-median(err5)
+    med<-median(err5) # export for each series?
     for (i in c(1:n)){
       err6[i]<-sqrt(med*(theDat[i:i,1]+1))-sqrt(med*theDat[i:i,1])
     }
     indicies<-cbind(tt,err6)
-    indicies
+    res = list(indicies=indicies,c.val=med)
+    res
   }
  #main func
   if(ncol(rwl) != nrow(po)) { stop('dimension problem: ncol(rw) != nrow(po)') }
@@ -54,14 +55,35 @@ cms <- function(rwl,po) {
 
   # divide each series by c curve and restore to cal years
   rwi = rwl
+  c.vec = rep(NA,ncol(rwi))
+  names(c.vec) <- colnames(rwca)
+  c.curve.df <- rwl.ord
+  c.curve.df[,1:ncol(c.curve.df)] <- NA
   yrs = as.numeric(rownames(rwi))
   for(i in 1:ncol(rwca)){
-   index = cbind(which(!is.na(rwca[,i])),na.omit(rwca[,i]))
-   index = biologicalTrend(index)
-    y = na.omit(rwca[,i])/index[,2]
+    index = cbind(which(!is.na(rwca[,i])),na.omit(rwca[,i]))
+    tmp = biologicalTrend(index)
+    c.vec[i] = tmp[[2]]
+    index = tmp[[1]]
+    c.curve <- c(index[,2])
+    c.curve.df[1:length(c.curve),i] <- c.curve
+    y = na.omit(rwca[,i])/c.curve
     first = series.yrs[1,i]
     last = series.yrs[2,i]
     rwi[yrs %in% first:last,i] = y
   }
-  rwi
+  # export options
+  if(c.hat.t & !c.hat.i) {
+    res = list(rwi=rwi,c.hat.t=c.curve.df)
+  }
+  if(!c.hat.t & c.hat.i) {
+    res = list(rwi=rwi,c.hat.i=c.vec)
+  }
+  if(c.hat.t & c.hat.i) {
+    res = list(rwi=rwi,c.hat.t=c.curve.df,c.hat.i=c.vec)
+  }
+  if(!c.hat.t & !c.hat.i) {
+    res = rwi
+  }
+  res
 }

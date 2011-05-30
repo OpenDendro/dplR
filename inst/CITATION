@@ -14,3 +14,21 @@ citEntry(entry="Article",
                "Dendrochronolgia, 26: 115-124.",
                sep="")
          )
+
+citEntry(entry="Article",
+         title        = "Crossdating in R using the dplR library",
+         author       = "Andy Bunn",
+         organization = "Western Washington University",
+         address      = "Bellingham, WA, USA",
+         year         = "In Press",
+         journal      = "Dendrochronolgia",
+         volume       = "xx",
+         pages        = "xxx-xxx",
+         
+         textVersion = 
+         paste("Bunn, A.G. (In Press). ", 
+               "Crossdating in R using the dplR library. ",
+               "Dendrochronolgia.",
+               sep="")
+         )
+

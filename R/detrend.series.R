@@ -34,9 +34,9 @@ function(y,y.name=NULL,make.plot=TRUE,method=c("Spline","ModNegExp","Mean"))
   # at a wavelength of 67%n years
   n=0.67*length(y2)
   f=0.5
-  p=1 - (1/(((1-f)/f)*((cos(2*pi*(1/n))+2) / (12*(cos(2*pi*(1/n))-1)^2))+1))
+  p=1/(((1-f)/f)*((cos(2*pi*(1/n))+2)/(12*(cos(2*pi*(1/n))-1)^2))+1)
+  p=1-(1.152768 + 0.0601 * log(p))
   Spline=smooth.spline(y2,spar=p)$y
-  # Spline=smooth.spline(y2,df=length(y2)*0.025)$y
 
   # Fit a horiz line
   Mean=rep(mean(y2),length(y2))

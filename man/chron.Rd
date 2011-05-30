@@ -36,7 +36,7 @@ chron(x, prefix = NULL, biweight = TRUE, prewhiten = FALSE)
 }
 \author{ Andy Bunn }
 \seealso{ \code{\link{read.rwl}}, \code{\link{detrend}},
-  \code{\link[stats]{ar}}
+  \code{\link[stats]{ar}}, \code{\link{chron}}
 }
 \examples{
 

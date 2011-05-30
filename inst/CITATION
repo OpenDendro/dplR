@@ -10,6 +10,6 @@ citEntry(entry="Article",
          textVersion = 
          paste("Bunn, A.G. (2008). ", 
                "A Dendrochronology Program Library in R (dplR). ",
-               "Dendrochronolgia. In Press.",
+               "Dendrochronolgia, 26: 115-124.",
                sep="")
          )

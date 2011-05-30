@@ -1,5 +1,5 @@
 `read.rwl` <-
-function(fname, header=NULL)
+function(fname, header=NULL,long=FALSE)
 {
   # Open the data file for reading
   dat=file(fname,"r")
@@ -8,7 +8,8 @@ function(fname, header=NULL)
     # 3 lines in file
     hdr1=readLines(dat,n=1)
     if(nchar(hdr1) < 12) stop("First line in .rwl file ends before col 12")
-    yrcheck=suppressWarnings(as.numeric(substr(hdr1,7,10)))
+    yrcheck=suppressWarnings(as.numeric(substr(hdr1,9,12)))
+    print(yrcheck)
     if(is.null(yrcheck) | length(yrcheck)!=1 | is.na(yrcheck) |
        yrcheck < -1e04 | yrcheck > 1e04) {
       cat("There appears to be a header in the rwl file\n")
@@ -34,8 +35,14 @@ function(fname, header=NULL)
   close(dat)
 
   skip.lines=ifelse(is.head,3,0)
-  dat=read.fwf(fname,c(7,5,rep(6,10)),skip=skip.lines,strip.white=TRUE,
-                  blank.lines.skip=TRUE)
+  if(long){
+    dat=read.fwf(fname,c(7,5,rep(6,10)),skip=skip.lines,strip.white=TRUE,
+      blank.lines.skip=TRUE)
+  }
+  else{
+    dat=read.fwf(fname,c(8,5,rep(6,10)),skip=skip.lines,strip.white=TRUE,
+      blank.lines.skip=TRUE)
+  }
   # Remove any blank lines at the end of the file, for instance
   dat=dat[!apply(is.na(dat),1,all),]
 

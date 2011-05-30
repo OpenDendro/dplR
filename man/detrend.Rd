@@ -44,7 +44,8 @@
   \dontrun{
   # Save a pdf of all series
     pdf("foo.pdf")
-      ca533.rwi <- detrend(rwl = ca533, method = c("Spline", "ModNegExp"))
+      ca533.rwi <- detrend(rwl = ca533, method = c("Spline", "ModNegExp"),
+        make.plot=T)
     dev.off() }
 
 }

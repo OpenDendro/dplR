@@ -1,0 +1,7 @@
+
+2010-03-26  Andy Bunn <andy.bunn@wwu.edu>
+* CHANGES IN dplR VERSION 1.3.1
+* ChangeLog introduced. I am going to compile a full changelog from the src files of all the previous dplR versions from 1.0 forward. I've been remiss in not keeping one!
+* glk - New function. Gleichlaeufigkeit by Zang is a classical agreement test
+* sea - New function. Superposed epoch analysis by Zang
+* combine.rwl - updated by Zang. Now takes lists as input.

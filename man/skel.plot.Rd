@@ -5,7 +5,8 @@
   Automatically generates a skeleton plot of tree-ring data.
 }
 \usage{
-skel.plot(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = F)
+skel.plot(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = FALSE,
+  master=FALSE)
 }
 \arguments{
   \item{rw.vec}{ a vector of a tree-ring chronology or series }
@@ -15,6 +16,10 @@ skel.plot(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = F)
   \item{filt.weight}{ filter length for the hanning filter, defaults to 9 }
   \item{dat.out}{ logical flag indicating whether to return a \code{data.frame}
     containing the data. }
+  \item{master}{ logical flag indicating whether to make the plot with the
+    segments inverted to ease pattern matching. If \code{TRUE} the segments
+    will be plotted from the top down and the labels on the x axes will be
+    on the bottom. }
 }
 \details{
   This makes a skeleton plot - a plot that gives the relative growth for year t
@@ -62,7 +67,7 @@ skel.plot(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = F)
   # On a raw ring width series - undated
   skel.plot(x)
   # On a raw ring width series - dated with names
-  skel.plot(x, yr.vec = x.yrs, sname= x.name)
+  skel.plot(x, yr.vec = x.yrs, sname= x.name, master=TRUE)
   \dontrun{
     # try crossdating
     y <- co021[,11]
@@ -71,7 +76,7 @@ skel.plot(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = F)
     # send to postscript - 3 pages total
     postscript('xdating.examp.ps')
       # 'Master series' with correct celendar dates
-      skel.plot(x, yr.vec = x.yrs, sname= x.name)
+      skel.plot(x, yr.vec = x.yrs, sname= x.name, master=TRUE)
       # Undated series, try to align with last plot
       skel.plot(y)
       # Here's the answer...
@@ -80,7 +85,7 @@ skel.plot(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = F)
 
     # alternatively send to pdf
     pdf('xdating.examp.pdf', width = 10, height = 7.5, paper = 'USr')
-      skel.plot(x, yr.vec = x.yrs, sname= x.name)
+      skel.plot(x, yr.vec = x.yrs, sname= x.name, master=TRUE)
       skel.plot(y)
       skel.plot(y, yr.vec = y.yrs, sname= y.name)
     dev.off()

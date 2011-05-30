@@ -5,7 +5,8 @@ citEntry(entry="Article",
          address      = "Bellingham, WA, USA",
          year         = "2008",
          journal      = "Dendrochronolgia",
-         note         = "In Press",
+         volume       = "26",
+         pages        = "115-124",
          
          textVersion = 
          paste("Bunn, A.G. (2008). ", 

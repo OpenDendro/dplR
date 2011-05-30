@@ -7,7 +7,7 @@
   window with adjustable length and overlap.
 }
 \usage{
-rwi.stats.running(rwi, ids=NULL, period="max",
+rwi.stats.running(rwi, ids=NULL, period=c("max", "common"),
                   running.window=TRUE,
                   window.length=min(50,nrow(rwi)),
                   window.overlap=floor(window.length/2),
@@ -106,6 +106,12 @@ at least one non-NA core in order to be counted).
   Fritts, H.C. (2001) \emph{Tree Rings and Climate.} Blackburn. ISBN-13:
   978-1930665392.
 
+}
+\note{
+  This function uses the \code{\link[foreach]{foreach}} looping
+  construct with the \code{\link[foreach]{\%dopar\%}} operator.  For
+  parallel computing and a potential speedup, a parallel backend must be
+  registered before running the function.
 }
 \author{ Mikko Korpela, based on \code{\link{rwi.stats}} by Andy Bunn }
 \seealso{ \code{\link{detrend}}, \code{\link[stats]{cor}},

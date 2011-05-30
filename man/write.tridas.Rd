@@ -10,22 +10,23 @@
 }
 \usage{
 write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
-titles = NULL, crn.types = NULL, crn.titles = NULL, crn.units = NULL,
-tridas.measuring.method = NA, other.measuring.method = "unknown",
-sample.type = "core", wood.completeness = NULL, taxon = "",
-tridas.variable = "ring width", other.variable = NA, project.info =
-list(type = c("unknown"), description = NULL, title = "", category = "",
-investigator = "", period = ""), lab.info = data.frame(name = "",
-acronym = NA, identifier = NA, domain = "", addressLine1 = NA,
-addressLine2 = NA, cityOrTown = NA, stateProvinceRegion = NA, postalCode
-= NA, country = NA), research.info = data.frame(identifier = NULL,
-domain = NULL, description = NULL), site.info = list(type = "unknown",
-description = NULL, title = ""),random.identifiers = FALSE,
-identifier.domain = lab.info[1, "name"])
+  titles = NULL, crn.types = NULL, crn.titles = NULL, crn.units = NULL,
+  tridas.measuring.method = NA, other.measuring.method = "unknown",
+  sample.type = "core", wood.completeness = NULL, taxon = "",
+  tridas.variable = "ring width", other.variable = NA,
+  project.info = list(type = c("unknown"), description = NULL,
+    title = "", category = "", investigator = "", period = ""),
+  lab.info = data.frame(name = "", acronym = NA, identifier = NA,
+    domain = "", addressLine1 = NA, addressLine2 = NA, cityOrTown = NA,
+    stateProvinceRegion = NA, postalCode = NA, country = NA),
+  research.info = data.frame(identifier = NULL, domain = NULL,
+    description = NULL),
+  site.info = list(type = "unknown", description = NULL, title = ""),
+  random.identifiers = FALSE, identifier.domain = lab.info[1, "name"])
 }
 \arguments{
   \item{rwl.df}{
-    \code{data.frame} containing tree-ring ring widths in millimeters
+    \code{data.frame} containing tree-ring ring widths in millimetres
     with the series in columns and the years as rows. The series ids are
     the column names and the years are the row names. This type of
     \code{data.frame} is produced by \code{\link{read.tucson}},
@@ -54,12 +55,12 @@ identifier.domain = lab.info[1, "name"])
     optional \code{numeric} indicating the rounding precision of the
     output file when writing the data contained in \code{rwl.df}.
     Defaults to \code{NULL} -- no rounding is done and the measurements
-    are written in (non-integer) millimeters.  Possible \code{numeric}
+    are written in (non-integer) millimetres.  Possible \code{numeric}
     values are 0.001, 0.01, 0.05, 0.1, 1, 10, 100 and 1000, which cause
-    the data to be transformed to micrometers, 1/100th millimeters,
-    1/20th millimeters, 1/10 millimeters, (millimeters), centimeters,
-    decimeters or meters, respectively, and then rounded to integer.
-    Data rounded to decimeters are written in centimeters (values always
+    the data to be transformed to micrometres, 1/100th millimetres,
+    1/20th millimetres, 1/10 millimetres, (millimetres), centimetres,
+    decimetres or metres, respectively, and then rounded to integer.
+    Data rounded to decimetres are written in centimetres (values always
     ending in zero).  Otherwise, the matching unit is used in the file.
   }
   \item{ids}{
@@ -291,6 +292,8 @@ identifier.domain = lab.info[1, "name"])
 }
 
 \seealso{
+  \code{\link{write.rwl}}, \code{\link{write.tucson}},
+  \code{\link{write.compact}}, \code{\link{write.crn}},
   \code{\link{read.tridas}}
 }
 \examples{

@@ -44,7 +44,7 @@
  }
 \author{ Mikko Korpela, based on write.tucson by Andy Bunn }
 \seealso{ \code{\link{write.rwl}}, \code{\link{write.tucson}},
-  \code{\link{read.compact}}
+  \code{\link{write.tridas}}, \code{\link{read.compact}}
 }
 \examples{
  data(co021)

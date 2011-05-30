@@ -7,7 +7,8 @@
 }
 \usage{
   detrend.series(y, y.name = NULL, make.plot = TRUE,
-  method = c("Spline", "ModNegExp", "Mean"),nyrs=NULL,f=NULL,pos.slope=FALSE)
+  method = c("Spline", "ModNegExp", "Mean"), nyrs = NULL,
+  f = NULL, pos.slope = FALSE)
 }
 \arguments{
   \item{y}{ a numeric vector. Usually a tree-ring series. }
@@ -18,7 +19,7 @@
   \item{method}{ a character vector to determine the detrending method. See
     details below. Possible values are \dQuote{Spline}, \dQuote{ModNegExp},
     \dQuote{Mean}, or subset of c(\dQuote{Spline}, \dQuote{ModNegExp},
-    \dQuote{Mean}). }
+    \dQuote{Mean}). Defaults to using all the available methods.}
   \item{nyrs}{ a number giving the rigidity of the smoothing spline, defaults to
     0.67 of series length if nyrs is NULL. }
   \item{f}{ a number between 0 and 1 giving the frequency response or

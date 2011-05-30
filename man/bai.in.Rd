@@ -5,7 +5,7 @@
   Convert multiple ring-width series to basal area increment (i.e., ring area) going from the pith to the bark.
 }
 \usage{
-  bai.in(rwl,d2pith=NULL)
+  bai.in(rwl, d2pith = NULL)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows such as that produced by \code{\link{read.rwl}} }

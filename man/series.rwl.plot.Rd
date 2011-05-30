@@ -51,7 +51,7 @@
 \value{
   A \code{list} containing the filtered vectors \code{series} and \code{master}.
 }
-\author{ Andy Bunn }
+\author{ Andy Bunn.  Patched by Mikko Korpela. }
 \seealso{ \code{\link{corr.rwl.seg}} \code{\link{corr.series.seg}} \code{\link{ccf.series.rwl}}}
 \examples{
   data(co021)

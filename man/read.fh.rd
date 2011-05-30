@@ -17,7 +17,7 @@
   A \code{data.frame} with the series in columns and the years as rows. The
   keycodes are the column names and the years are the row names.
  }
-\author{ Christian Zang }
+\author{ Christian Zang.  Patched by Mikko Korpela. }
 \seealso{ \code{\link{read.rwl}} }
 \references{ Rinn, F. (2003) \emph{TSAP-Win User Reference Manual.} Rinntech, Heidelberg \url{http://www.rinntech.com}
 }

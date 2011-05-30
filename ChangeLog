@@ -1,3 +1,527 @@
+2011-05-26 Andy  Bunn <andy.bunn@wwu.edu>
+* CHANGES IN dplR VERSION 1.4.1
+* All changes by Mikko Korpela
+
+File: DESCRIPTION
+-----------------
+
+- Minimum R version is now 2.11.0 (previously not specified). Reason
+  behind the requirement: The encoding support added to read.tucson
+  brought out a bug in read.fwf. The bug exists in 2.10.1 but is fixed
+  in 2.11.0.
+- Suggests foreach and iterators (used in some functions if installed)
+
+Files: bai.in.R, bai.in.Rd, bai.out.R, bai.out.Rd
+-------------------------------------------------
+
+- Cosmetic improvement
+- Also changed indentation of .R files to the recommended 4 spaces, as
+  in the other .R, .c and .h files edited in this patch set.
+
+File: ccf.series.rwl.R
+----------------------
+
+- || instead of |
+- Optimized the order of expressions in a chain of the form
+  x_1 || ... || x_n (order did not matter when | was used)
+- Removed an unused variable.
+- Cosmetic improvement
+
+File: ccf.series.rwl.Rd
+-----------------------
+
+- Cosmetic improvement
+
+File: chron.R
+-------------
+
+- Removed redundant c()
+- Default value of prefix is now "xxx". Previously the default value
+  was NULL, which was then converted to "xxx".	   
+- Cosmetic improvement
+
+File: chron.Rd
+--------------
+
+- Documents new (explicit) default value of prefix.
+- Cosmetic improvement
+
+File: cms.R 
+-----------
+
+- Some added robustness against weird input
+- Optimizations
+- Cosmetic improvement
+
+File: cms.Rd
+------------
+
+- Note about the requirement that the years be increasing and
+  continuous
+
+File: combine.rwl.R
+-------------------
+
+- Input handling was improved.
+- Loops were eliminated from combinator()
+
+File: combine.rwl.Rd
+--------------------
+
+- Note about requirements for input (also existed in previous
+  versions)
+- Author of the patch mentioned
+
+File: corr.rwl.seg.R
+--------------------
+
+- || instead of |
+- Optimized the order of expressions in a chain of the form
+  x_1 || ... || x_n (order did not matter when | was used)
+- Small optimizations
+- Cosmetic improvement
+
+File: corr.series.seg.R
+-----------------------
+
+- Cosmetic improvement
+
+File: crn.plot.R
+----------------
+
+- Cosmetic improvement
+
+File: detrend.R
+---------------
+
+- Under some circumstances, the function now uses the foreach /
+  %dopar% structure from the foreach package.  Conditions for this to
+  happen: foreach must be installed, and at least one of the more
+  time-consuming detrending methods must be used ("Mean" doesn't
+  qualify).  For a speed gain, the user must register a parallel backend
+  for foreach.
+- Cosmetic improvement
+
+File: detrend.Rd
+----------------
+
+- Added notes about foreach and the detrending methods used by default.
+
+File: detrend.series.R
+----------------------
+
+- && instead of &
+- Now uses match.arg.
+- Cosmetic improvement
+
+File: detrend.series.Rd
+-----------------------
+
+- Added a note about the detrending methods used by default.
+
+File: exactmean.c
+-----------------
+
+- Removed some explicit type casts.
+- Doesn't use (pointless) dynamic memory allocation anymore.
+
+File: exactmean.R
+-----------------
+
+- Converts the return value of length() to an integer: "programmers
+  should not rely on it" (i.e. the return value may not be an
+  integer).
+
+File: exactsum.c
+----------------
+
+- Makes use of dplr_double instead of long double.
+
+File: exactsum.h
+----------------
+
+- Defines and explains the new type dplr_double (for now, same as long
+  double).
+
+File: ffcsaps.R
+---------------
+
+- Tweaked error messages (should -> must)
+- Cosmetic improvement
+
+File: gini.c
+------------
+
+- Uses floating point constants instead of integer constants where
+  appropriate.
+- Some pointless dynamic memory allocations were removed (replaced by
+  statically allocated memory).
+
+File: gini.coef.R
+-----------------
+
+- Converts the return value of length() to an integer.
+
+File: glk.R
+-----------
+
+- Removed an unused variable.
+- Cosmetic improvement
+
+File: helpers.R
+---------------
+
+- Removed unused matching functions, added a function that is actually
+  used (moved from read.tridas.R)
+- Also moved some other functions here
+
+File: i.detrend.R
+-----------------
+
+- Fixed a bug where arguments nyrs, f, and pos.slope were not being
+  passed to i.detrend.series.
+- Cosmetic improvement
+
+File: i.detrend.series.R
+------------------------
+
+- Fixed a bug where arguments nyrs, f, and pos.slope were not being
+  passed to detrend.series.
+- Cosmetic improvement
+
+File: morlet.R
+--------------
+
+- Commented out the unused variables.
+- Cosmetic improvement
+
+File: normalize.xdate.R
+-----------------------
+
+- Cosmetic improvement
+
+File: normalize1.R
+------------------
+
+- Cosmetic improvement
+
+File: qa.xdate.R
+----------------
+
+- Cosmetic improvement
+
+File: rcompact.c
+----------------
+
+- Some pointless dynamic memory allocations were removed (replaced by
+  statically allocated memory).
+
+File: rcs.R
+-----------
+
+- Cosmetic improvement
+
+File: read.compact.Rd
+---------------------
+
+- New entries in "See Also"
+
+File: read.crn.R
+----------------
+
+- Streamlined file handling code.
+- Now has a parameter for the encoding used in the data file. This
+  makes it possible to read files with any character encoding
+  supported by R (may vary between R installations).
+- Removed an unused variable.
+- Improved "if" constructs (|| instead of |, evaluation only until first TRUE)
+- Cosmetic improvement
+
+File: read.crn.Rd
+-----------------
+
+- Documents the new encoding parameter.
+
+File: read.fh.R
+---------------
+
+- Fixed one if condition.
+- Now prints a summary of the data.frame, like the other read functions.
+- Streamlined code
+- Cosmetic improvement
+
+File: read.fh.rd
+----------------
+
+- Author of the patch mentioned
+
+File: read.ids.R
+----------------
+
+- Streamlined code
+- Cosmetic improvement
+
+File: read.ids.Rd
+-----------------
+
+- Author of the patch mentioned
+
+File: read.rwl.R
+----------------
+
+- Automatic detection of file type now includes TRiDaS and Heidelberg
+  formats.
+- Now uses match.arg and a switch expression to select the right branch.
+
+File: read.rwl.Rd
+-----------------
+
+- Shows the new default value of the format parameter (related to the
+  use of match.arg).
+- Lists TRiDaS and Heidelberg formats.
+- Removed some "See" links from "Details", because there is a separate
+  "See Also" section, and the "See" links did not serve a specific
+  purpose.
+- Describes the different return values when reading different types
+  of data files.
+- Literal quotes were replaced with \dQuote.
+
+File: read.tridas.R
+-------------------
+
+- Spelling change "meter" -> "metre"
+- Helper functions moved elsewhere to make the file shorter.
+- Changed the environment where some functions are defined.
+- All end tag handlers now call function end.element.  Makes the code
+  shorter but increases running time.  Now xgettext does not complain
+  about read.tridas being too long.  It might be good to pay attention
+  to the recommendations concerning diagnostic messages at
+http://cran.r-project.org/doc/manuals/R-exts.html#Diagnostic-messages
+
+File: read.tridas.Rd
+--------------------
+
+- New entries in "See Also"
+- Spelling change "meter" -> "metre"
+
+File: read.tucson.R
+-------------------
+
+- Now has a parameter for the encoding used in the data file. This
+  makes it possible to read files with any character encoding
+  supported by R (may vary between R installations).
+- New fix.internal.na copes with successive NAs and vectors with less
+  than 2 elements
+- Cosmetic improvement
+
+File: read.tucson.Rd
+--------------------
+
+- New entries in "See Also"
+- Documents the new encoding parameter.
+
+File: readloop.c
+----------------
+
+- Uses floating point constants instead of integer constants where
+  appropriate.
+
+File: rwi.stats.R
+-----------------
+
+- && instead of &
+- Now uses match.arg for 'period'.
+- An additional check is applied to the input.
+- Cosmetic improvement
+
+File: rwi.stats.Rd
+------------------
+
+- Shows the (technically) new default value of 'period'.
+
+File: rwi.stats.running.R
+-------------------------
+
+- An additional check is applied to the input.
+- If the foreach package is installed, the function now uses it and
+  %dopar% for executing the loop that iterates over the various
+  running windows. If a parallel backend for foreach has been
+  registered, this should give a nice speedup.
+- Removed some unnecessary calls to inc, where the conventional
+  from:to is guaranteed to succeed (to > from).
+- Fixed an off-by-one error in max.offset.
+- Now uses match.arg for 'period'.
+
+File: rwi.stats.running.Rd
+--------------------------
+
+- Note about using the foreach package.
+- Shows the (technically) new default value of 'period'.
+
+File: sea.R
+-----------
+
+- In warnings, we use multiple arguments instead of paste.
+- select.y() was removed (rows of data.frames can be indexed with
+  character strings).
+- Number of nested for loops was reduced.
+- Unnecessary computations were removed.
+- Added a check that the input x is a data.frame.
+- Check whether 'se' is NA.
+- Streamlined code.
+
+File: sea.Rd
+------------
+
+- Author of the patch mentioned
+
+File: sens.c
+------------
+
+- Uses floating point constants instead of integer constants where
+  appropriate.
+- Some pointless dynamic memory allocations were removed (replaced by
+  statically allocated memory).
+
+Files: sens1.R, sens2.R
+-----------------------
+
+- Converts the return value of length() to an integer.
+
+File: series.rwl.plot.R
+-----------------------
+
+- Removed unused variables.
+- Cosmetic improvement
+
+File: series.rwl.plot.Rd
+------------------------
+
+- Author of the patch mentioned
+
+File: skel.plot.R
+-----------------
+
+- && instead of &
+- Unnecessary third column of 'skel.df' removed
+- Cosmetic improvement
+
+File: skel.plot.Rd
+------------------
+
+- Cosmetic change
+
+File: spag.plot.R
+-----------------
+
+- on.exit() is used for resetting graphical parameters
+- Cosmetic improvement
+
+File: tbrm.R
+------------
+
+- Converts the return value of length() to an integer.
+
+File: tbrm.c
+------------
+
+- No longer uses long doubles in places where they are not really
+  needed. May slightly affect some computation results.
+- Removed some explicit type casts.
+- Removed two temporary variables. Now the expressions used for
+  computing them are used directly in the proper place.
+- Uses floating point constants instead of integer constants where
+  appropriate.
+- Uses right shift instead of division by two where appropriate.
+- A relatively pointless dynamic memory allocations was removed
+  (replaced by statically allocated memory).
+
+File: wavelet.plot.R
+--------------------
+
+- Removed and commented out unused variables
+- Default value of 'f' is now explicitly 0.5.
+- Some cosmetic / readability improvements
+
+File: wavelet.plot.Rd
+---------------------
+
+- Default value of 'f' reported differently.
+- Cosmetic improvements
+
+File: wc.to.po.R
+----------------
+
+- The function was moved from read.tridas.R to a new file.
+
+File: write.compact.R
+---------------------
+
+- || instead of |
+- Uses on.exit() for closing the file
+- Cosmetic improvements
+
+File: write.compact.Rd
+----------------------
+
+- New entry in "See Also"
+
+File: write.crn.R
+-----------------
+
+- Removed unused variables.
+- Streamlined code
+- Cosmetic improvement
+
+File: write.crn.Rd
+------------------
+
+- Max Width of Site ID is 6, not 5
+- Some typos fixed
+
+File: write.rwl.R
+-----------------
+
+- Added the option to write in the TRiDaS format.
+- Now uses match.arg and a switch expression to select the right
+  branch ('format').
+
+File: write.rwl.Rd
+------------------
+
+- Added notes related to the newly added support for the TRiDaS
+  format.
+- Removed some "See" links from "Details", because there is a separate
+  "See Also" section, and the "See" links did not serve a specific
+  purpose.
+- Shows the new default value of the format parameter.
+- Literal quotes were replaced with \dQuote.
+- New entry in "See Also"
+
+File: write.tridas.Rd
+---------------------
+
+- Spelling change "meter" -> "metre"
+- New entries in "See Also"
+- Cosmetic improvement
+
+File: write.tucson.R
+--------------------
+
+- Reduced the number of names in the dplR name space by wrapping the
+  creation of the format.tucson list inside an anonymous function.
+- Removed unused variables.
+- Streamlined code
+- Cosmetic improvement
+- Uses on.exit() for closing the file
+- Uses || instead of |
+
+File: write.tucson.Rd
+---------------------
+
+- New entry in "See Also"
+
+
 2011-05-18 Andy  Bunn <andy.bunn@wwu.edu>
 * CHANGES IN dplR VERSION 1.4.0
 * Incporporation of TRiDAS via Mikko Korpela, May 16, 2011

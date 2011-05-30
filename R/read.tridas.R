@@ -1,65 +1,149 @@
-### Helper function. Converts from "year and suffix" presentation
-### to dplR internal years, where year 0 (e.g. as a row name)
-### is actually year 1 BC
-dplr.year <- function(year, suffix) {
-    switch(toupper(suffix),
-           AD = ifelse(year > 0, year, as.numeric(NA)),
-           BC = ifelse(year > 0, 1-year, as.numeric(NA)),
-           BP = ifelse(year > 0, 1950-year, as.numeric(NA)),
-           as.numeric(NA))
-}
-
-### Utility function (exported) which, given a suitable wood
-### completeness data.frame wc, creates a pith offset data.frame in
-### the format required by rcs.
-wc.to.po <- function(wc){
-    n <- nrow(wc)
-    pith <- wc$pith.presence
-    if(is.null(pith))
-        pith <- rep(as.character(NA), n)
-    missing <- wc$n.missing.heartwood
-    if(is.null(missing))
-        missing <- rep(as.integer(NA), n)
-    unmeasured <- wc$n.unmeasured.inner
-    if(is.null(unmeasured))
-        unmeasured <- rep(as.integer(NA), n)
-    not.na <- which(pith %in% c("complete", "incomplete") |
-                    !is.na(missing))
-    pith.offset <- rep(as.integer(NA), n)
-    pith.offset[not.na] <-
-        as.integer(apply(cbind(missing[not.na], unmeasured[not.na]),
-                         1,
-                         sum,
-                         na.rm = TRUE) + 1)
-
-    data.frame(series = rownames(wc),
-               pith.offset)
-}
-
-### Helper function.
-### Returns indices of rows in matrix X that match with pattern.
-row.match <- function(X, pattern){
-    which(apply(X, 1,
-                function(x) {
-                    all(is.na(x) == is.na(pattern)) &&
-                    all(x == pattern, na.rm = TRUE)
-                }))
-}
-
-### Helper function.
-### Prints the contents of a matrix row together with column labels.
-### By default, doesn't print NA values.
-### If show.all.na is TRUE, reports all-NA rows as one NA.
-row.print <- function(x, drop.na=TRUE, show.all.na=TRUE, collapse=", "){
-    if(drop.na){
-        not.na <- !is.na(x)
-        if(any(not.na))
-            paste(colnames(x)[not.na], x[not.na], sep=": ", collapse=collapse)
-        else if(show.all.na)
-            as.character(NA)
-    } else{
-        paste(colnames(x), x, sep=": ", collapse=collapse)
+### Utility function. Creates unique composite titles by pasting
+### together titles in the four columns in 'titles'. Giving a matching
+### numeric table as the optional parameter 'ids' may speed up the
+### computation.  Uniqueness of titles is guaranteed by a call to
+### fix.names.
+create.composite.titles <- function(titles, ids=titles){
+    composite.titles <- character(length = dim(titles)[1])
+    titles.used <- logical(4)
+    rle.1 <- rle(ids[,1])
+    cs.1 <- cumsum(rle.1$lengths)
+    n.bins <- length(cs.1)
+    ## Use first level (tree) titles, if >1 unique exist
+    titles.used[1] <- n.bins > 1
+    if(titles.used[1])
+        composite.titles <- paste(composite.titles, titles[, 1], sep="")
+    for(i in inc(1,n.bins)){
+        n <- rle.1$lengths[i]
+        idx.end <- cs.1[i]
+        idx.start <- idx.end - n + 1
+        rle.2 <- rle(ids[idx.start:idx.end,2])
+        cs.2 <- cumsum(rle.2$lengths) + idx.start - 1
+        n.bins <- length(cs.2)
+        ## Use second level (core) titles, if >1 unique exist
+        titles.used[2] <- n.bins > 1
+        if(titles.used[2])
+            composite.titles[idx.start:idx.end] <-
+                paste(composite.titles[idx.start:idx.end],
+                      titles[idx.start:idx.end,2],
+                      sep="")
+        for(j in inc(1,n.bins)){
+            n <- rle.2$lengths[j]
+            idx.end <- cs.2[j]
+            idx.start <- idx.end - n + 1
+            rle.3 <- rle(ids[idx.start:idx.end,3])
+            cs.3 <- cumsum(rle.3$lengths) + idx.start - 1
+            n.bins <- length(cs.3)
+            ## Use third level (radius) titles, if >1 unique exist
+            titles.used[3] <- n.bins > 1
+            if(titles.used[3])
+                composite.titles[idx.start:idx.end] <-
+                    paste(composite.titles[idx.start:idx.end],
+                          titles[idx.start:idx.end,3],
+                          sep="")
+            previous.titles.not.used <- !any(titles.used[1:3])
+            for(k in inc(1,n.bins)){
+                n <- rle.3$lengths[k]
+                idx.end <- cs.3[k]
+                idx.start <- idx.end - n + 1
+                rle.4 <- rle(ids[idx.start:idx.end,4])
+                cs.4 <- cumsum(rle.4$lengths) + idx.start - 1
+                n.bins <- length(cs.4)
+                ## Use fourth level (measurement) titles, if >1
+                ## unique exist, or if 1st to 3rd level titles
+                ## have not been used
+                titles.used[4] <- n.bins > 1 || previous.titles.not.used
+                if(titles.used[4])
+                    composite.titles[idx.start:idx.end] <-
+                        paste(composite.titles[idx.start:idx.end],
+                              titles[idx.start:idx.end,4],
+                              sep="")
+            }
+        }
     }
+    composite.titles <- fix.names(composite.titles,
+                                  basic.charset=FALSE)
+}
+
+### Utility function. Converts .site.id and .site.title lists to a
+### data.frame with one column for each level of ids or titles.
+site.info.to.df <- function(x, name.prefix=NULL){
+    x.length <- length(x)
+    if(x.length > 0){
+        item.length <- sapply(x, length) # assumed that all are > 0
+        max.length <- max(item.length)
+        one.na <- NA
+        mode(one.na) <- mode(x[[1]]) # works for numeric and character
+        y <- array(rep(one.na, x.length*max.length),
+                   dim=c(x.length, max.length))
+        for(i in 1:x.length)
+            y[i, 1:item.length[i]] <- x[[i]]
+        y <- data.frame(y)
+        if(!is.null(name.prefix)){
+            if(max.length == 1)
+                colnames(y) <- name.prefix
+            else
+                colnames(y) <-
+                    paste(name.prefix, ".", 1:max.length, sep="")
+        }
+    } else{
+        y <- data.frame() # empty data.frame
+    }
+    y
+}
+
+### Utility function. Creates a hierarchy of [element, sample,
+### radius, measurementSeries] (in dplR: [tree, core, radius,
+### measurement]) IDs based on unique titles, disregarding the
+### nesting structure of the XML elements in the TRiDaS file.
+title.based.ids <- function(titles){
+    ## Assumes four columns in titles1 and titles2. The
+    ## function could be more generic, but it would make the
+    ## design more complicated.
+    titles <- as.matrix(titles)
+    ids <- array(as.numeric(NA), dim(titles))
+    colnames(ids) <- colnames(titles)
+    unique1 <- unique(titles[, 1])
+    ids[, 1] <- match(titles[, 1], unique1)
+    for(i1 in 1:length(unique1)){
+        idx.1 <- which(ids[, 1] == i1)
+        unique2 <- unique(titles[idx.1, 2])
+        ids[idx.1, 2] <- match(titles[idx.1, 2], unique2)
+        for(i2 in 1:length(unique2)){
+            idx.2 <- idx.1[which(ids[idx.1, 2] == i2)]
+            unique3 <- unique(titles[idx.2, 3])
+            ids[idx.2, 3] <- match(titles[idx.2, 3], unique3)
+            for(i3 in 1:length(unique3)){
+                idx.3 <- idx.2[which(ids[idx.2, 3] == i3)]
+                unique4 <- unique(titles[idx.3, 4])
+                ids[idx.3, 4] <- match(titles[idx.3, 4], unique4)
+            }
+        }
+    }
+    ids
+}
+
+### Utility function. Copies [tree, core, radius, measurement] IDs so
+### that they match in each set of series with the same [identifier,
+### domain] pair (copies IDs from the first member of the set to the
+### rest).
+identifier.based.ids <- function(ids, identifiers, domains){
+    unique.domains <- unique(domains)
+    for(ud in unique.domains){
+        if(is.na(ud))
+            mask <- which(is.na(domains))
+        else
+            mask <- which(domains == ud)
+        unique.identifiers <- unique(identifiers[mask])
+        unique.identifiers <-
+            unique.identifiers[!is.na(unique.identifiers)]
+        for(ui in unique.identifiers){
+            idx <- mask[identifiers[mask] == ui]
+            for(k in inc(2, length(idx)))
+                ids[idx[k], ] = ids[idx[1], ]
+        }
+    }
+    ids
 }
 
 ### Main function (exported)
@@ -67,159 +151,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                         ids.from.identifiers=TRUE, combine.series=TRUE,
                         trim.whitespace=TRUE, warn.units=TRUE){
 
-    ## Utility function. Creates unique composite titles by pasting
-    ## together titles in the four columns in 'titles'. Giving a
-    ## matching numeric table as the optional parameter 'ids' may speed
-    ## up the computation.  Uniqueness of titles is guaranteed by a call
-    ## to fix.names.
-    create.composite.titles <- function(titles, ids=titles){
-        composite.titles <- character(length = dim(titles)[1])
-        titles.used <- logical(4)
-        rle.1 <- rle(ids[,1])
-        cs.1 <- cumsum(rle.1$lengths)
-        n.bins <- length(cs.1)
-        ## Use first level (tree) titles, if >1 unique exist
-        titles.used[1] <- n.bins > 1
-        if(titles.used[1])
-            composite.titles <- paste(composite.titles, titles[, 1], sep="")
-        for(i in inc(1,n.bins)){
-            n <- rle.1$lengths[i]
-            idx.end <- cs.1[i]
-            idx.start <- idx.end - n + 1
-            rle.2 <- rle(ids[idx.start:idx.end,2])
-            cs.2 <- cumsum(rle.2$lengths) + idx.start - 1
-            n.bins <- length(cs.2)
-            ## Use second level (core) titles, if >1 unique exist
-            titles.used[2] <- n.bins > 1
-            if(titles.used[2])
-                composite.titles[idx.start:idx.end] <-
-                    paste(composite.titles[idx.start:idx.end],
-                          titles[idx.start:idx.end,2],
-                          sep="")
-            for(j in inc(1,n.bins)){
-                n <- rle.2$lengths[j]
-                idx.end <- cs.2[j]
-                idx.start <- idx.end - n + 1
-                rle.3 <- rle(ids[idx.start:idx.end,3])
-                cs.3 <- cumsum(rle.3$lengths) + idx.start - 1
-                n.bins <- length(cs.3)
-                ## Use third level (radius) titles, if >1 unique exist
-                titles.used[3] <- n.bins > 1
-                if(titles.used[3])
-                    composite.titles[idx.start:idx.end] <-
-                        paste(composite.titles[idx.start:idx.end],
-                              titles[idx.start:idx.end,3],
-                              sep="")
-                previous.titles.not.used <- !any(titles.used[1:3])
-                for(k in inc(1,n.bins)){
-                    n <- rle.3$lengths[k]
-                    idx.end <- cs.3[k]
-                    idx.start <- idx.end - n + 1
-                    rle.4 <- rle(ids[idx.start:idx.end,4])
-                    cs.4 <- cumsum(rle.4$lengths) + idx.start - 1
-                    n.bins <- length(cs.4)
-                    ## Use fourth level (measurement) titles, if >1
-                    ## unique exist, or if 1st to 3rd level titles
-                    ## have not been used
-                    titles.used[4] <- n.bins > 1 || previous.titles.not.used
-                    if(titles.used[4])
-                        composite.titles[idx.start:idx.end] <-
-                            paste(composite.titles[idx.start:idx.end],
-                                  titles[idx.start:idx.end,4],
-                                  sep="")
-                }
-            }
-        }
-        composite.titles <- fix.names(composite.titles,
-                                      basic.charset=FALSE)
-    }
-
-    ## Utility function. Converts .site.id and .site.title lists to a
-    ## data.frame with one column for each level of ids or titles.
-    site.info.to.df <- function(x, name.prefix=NULL){
-        x.length <- length(x)
-        if(x.length > 0){
-            item.length <- sapply(x, length) # assumed that all are > 0
-            max.length <- max(item.length)
-            one.na <- NA
-            mode(one.na) <- mode(x[[1]]) # works for numeric and character
-            y <- array(rep(one.na, x.length*max.length),
-                       dim=c(x.length, max.length))
-            for(i in 1:x.length)
-                y[i, 1:item.length[i]] <- x[[i]]
-            y <- data.frame(y)
-            if(!is.null(name.prefix)){
-                if(max.length == 1)
-                    colnames(y) <- name.prefix
-                else
-                    colnames(y) <-
-                        paste(name.prefix, ".", 1:max.length, sep="")
-            }
-        } else{
-            y <- data.frame() # empty data.frame
-        }
-        y
-    }
-
-    ## Utility function. Creates a hierarchy of [element, sample,
-    ## radius, measurementSeries] (in dplR: [tree, core, radius,
-    ## measurement]) IDs based on unique titles, disregarding the
-    ## nesting structure of the XML elements in the TRiDaS file.
-    if(ids.from.titles)
-        title.based.ids <- function(titles){
-            ## Assumes four columns in titles1 and titles2. The
-            ## function could be more generic, but it would make the
-            ## design more complicated.
-            titles <- as.matrix(titles)
-            ids <- array(as.numeric(NA), dim(titles))
-            colnames(ids) <- colnames(titles)
-            unique1 <- unique(titles[, 1])
-            ids[, 1] <- match(titles[, 1], unique1)
-            for(i1 in 1:length(unique1)){
-                idx.1 <- which(ids[, 1] == i1)
-                unique2 <- unique(titles[idx.1, 2])
-                ids[idx.1, 2] <- match(titles[idx.1, 2], unique2)
-                for(i2 in 1:length(unique2)){
-                    idx.2 <- idx.1[which(ids[idx.1, 2] == i2)]
-                    unique3 <- unique(titles[idx.2, 3])
-                    ids[idx.2, 3] <- match(titles[idx.2, 3], unique3)
-                    for(i3 in 1:length(unique3)){
-                        idx.3 <- idx.2[which(ids[idx.2, 3] == i3)]
-                        unique4 <- unique(titles[idx.3, 4])
-                        ids[idx.3, 4] <- match(titles[idx.3, 4], unique4)
-                    }
-                }
-            }
-            ids
-        }
-
-    ## Utility function. Copies [tree, core, radius, measurement] IDs so
-    ## that they match in each set of series with the same [identifier,
-    ## domain] pair (copies IDs from the first member of the set to the
-    ## rest).
-    if(ids.from.identifiers)
-        identifier.based.ids <- function(ids, identifiers, domains){
-            unique.domains <- unique(domains)
-            for(ud in unique.domains){
-                if(is.na(ud))
-                    mask <- which(is.na(domains))
-                else
-                    mask <- which(domains == ud)
-                unique.identifiers <- unique(identifiers[mask])
-                unique.identifiers <-
-                    unique.identifiers[!is.na(unique.identifiers)]
-                for(ui in unique.identifiers){
-                    idx <- mask[identifiers[mask] == ui]
-                    for(k in inc(2, length(idx)))
-                        ids[idx[k], ] = ids[idx[1], ]
-                }
-            }
-            ids
-        }
-
     ## Returns a list of handler functions usable by xmlEventParse
     handler.factory <- function(){
-        ## Multipliers and divisors for converting values to millimeters,
+        ## Multipliers and divisors for converting values to millimetres,
         ## which is the internal format of dplR
         MULTIPLIERS <- c("centimetres"=10, "metres"=1000)
         DIVISORS <- c("micrometres"=1000, "1/100th millimetres"=100,
@@ -311,7 +245,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
         remark.undated.series <- remark.undated.idx <- numeric(0)
         remark.derived.text <- character(0)
         remark.derived.series <- remark.derived.idx <- numeric(0)
-        altitude.meters <- numeric(0)
+        altitude.metres <- numeric(0)
         altitude.project.id <- altitude.tree.id <- numeric(0)
         altitude.project.title <- altitude.tree.title <- character(0)
         altitude.site.id <- altitude.site.title <- list()
@@ -404,6 +338,13 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
             text.function <- function(content, ...){
                 text.buffer <<- paste(text.buffer, content, sep="")
             }
+        ## A function called from all end tag handlers.  Makes the
+        ## code shorter but increases running time.
+        end.element <- function(name, ...){
+            text.buffer <<- ""
+            stack.pointer <<- stack.pointer - 1
+            last.closed <<- name
+        }
 
         ## Normally, measurement series are identified by their
         ## location in the document tree. We have user selectable
@@ -1150,24 +1091,16 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
 ### Handlers for end tags
              "/addressLine1" = function(...){
                  lab.addressLine1 <<- text.buffer
-                 ## The following two lines are common to every end tag
-                 ## handler. It's probably best to keep the duplicate rows,
-                 ## and not have the rows in a separate function, which would
-                 ## double the number of function calls related to end tags.
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "addressLine1"
+                 end.element("addressLine1")
              },
              "/addressLine2" = function(...){
                  lab.addressLine2 <<- text.buffer
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "addressLine2"
+                 end.element("addressLine2")
              },
              "/altitude" = function(...){
-                 new.length <- length(altitude.meters) + 1
-                 altitude.meters <<-
-                     c(altitude.meters, as.numeric(text.buffer))
+                 new.length <- length(altitude.metres) + 1
+                 altitude.metres <<-
+                     c(altitude.metres, as.numeric(text.buffer))
                  altitude.project.id <<- c(altitude.project.id, idx.project)
                  altitude.project.title <<-
                      c(altitude.project.title, project.title)
@@ -1176,15 +1109,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      object.title[1:object.level]
                  altitude.tree.id <<- c(altitude.tree.id, idx.element)
                  altitude.tree.title <<- c(altitude.tree.title, element.title)
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "altitude"
+                 end.element("altitude")
              },
              "/cityOrTown" = function(...){
                  lab.cityOrTown <<- text.buffer
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "cityOrTown"
+                 end.element("cityOrTown")
              },
              "/comments" = function(...){
                  comments.text <<- c(comments.text, text.buffer)
@@ -1257,15 +1186,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              c(comments.measurement.title, NA)
                      }
                  }
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "comments"
+                 end.element("comments")
              },
              "/country" = function(...){
                  lab.country <<- text.buffer
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "country"
+                 end.element("country")
              },
              "/derivedSeries" = function(...){
                  if(length(link.idRefs) > 0){
@@ -1285,22 +1210,16 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  } else{
                      res.derived$link[[length(res.derived$link)+1]] <<- NA
                  }
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "derivedSeries"
+                 end.element("derivedSeries")
              },
              "/description" = function(...){
                  research.description <<- text.buffer
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "description"
+                 end.element("description")
              },
              "/firstYear" = function(...){
                  first.dplr <<- dplr.year(as.numeric(text.buffer),
                                           firstYear.suffix)
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "firstYear"
+                 end.element("firstYear")
              },
              "/identifier" = function(...){
                  parent.element <- tag.stack[stack.pointer-1]
@@ -1394,9 +1313,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                          }
                      }
                  }
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "identifier"
+                 end.element("identifier")
              },
              "/laboratory" = function(...){
                  lab.domains <<- c(lab.domains, domain.text)
@@ -1410,9 +1327,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      c(lab.stateProvinceRegions, lab.stateProvinceRegion)
                  lab.postalCodes <<- c(lab.postalCodes, lab.postalCode)
                  lab.countries <<- c(lab.countries, lab.country)
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "laboratory"
+                 end.element("laboratory")
              },
              "/lastRingUnderBark" = function(...){
                  greatgrandparent.element <- tag.stack[stack.pointer-3]
@@ -1421,23 +1336,17 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  } else if(greatgrandparent.element == "radius"){
                      last.ring.details[1] <<- text.buffer
                  }
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "lastRingUnderBark"
+                 end.element("lastRingUnderBark")
              },
              "/lastYear" = function(...){
                  last.dplr <<- dplr.year(as.numeric(text.buffer),
                                          lastYear.suffix)
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "lastYear"
+                 end.element("lastYear")
              },
              "/measurementSeries" = function(...){
                  for(this.name in wc.names)
                      assign(this.name, get(this.name)[1], inherits = TRUE)
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "measurementSeries"
+                 end.element("measurementSeries")
              },
              "/missingHeartwoodRingsToPith" = function(...){
                  val <- as.integer(text.buffer)
@@ -1449,9 +1358,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  } else if(greatgrandparent.element == "radius"){
                      n.missing.heartwood[1] <<- val
                  }
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "missingHeartwoodRingsToPith"
+                 end.element("missingHeartwoodRingsToPith")
              },
              "/missingHeartwoodRingsToPithFoundation" = function(...){
                  greatgrandparent.element <- tag.stack[stack.pointer-3]
@@ -1460,9 +1367,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  } else if(greatgrandparent.element == "radius"){
                      missing.heartwood.foundation[1] <<- text.buffer
                  }
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "missingHeartwoodRingsToPithFoundation"
+                 end.element("missingHeartwoodRingsToPithFoundation")
              },
              "/missingSapwoodRingsToBark" = function(...){
                  val <- as.integer(text.buffer)
@@ -1474,9 +1379,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  } else if(greatgrandparent.element == "radius"){
                      n.missing.sapwood[1] <<- val
                  }
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "missingSapwoodRingsToBark"
+                 end.element("missingSapwoodRingsToBark")
              },
              "/missingSapwoodRingsToBarkFoundation" = function(...){
                  greatgrandparent.element <- tag.stack[stack.pointer-3]
@@ -1485,15 +1388,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  } else if(greatgrandparent.element == "radius"){
                      missing.sapwood.foundation[1] <<- text.buffer
                  }
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "missingSapwoodRingsToBarkFoundation"
+                 end.element("missingSapwoodRingsToBarkFoundation")
              },
              "/name" = function(...){
                  lab.name <<- text.buffer
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "name"
+                 end.element("name")
              },
              "/nrOfSapwoodRings" = function(...){
                  val <- as.integer(text.buffer)
@@ -1505,9 +1404,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  } else if(greatgrandparent.element == "radius"){
                      n.sapwood[1] <<- val
                  }
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "nrOfSapwoodRings"
+                 end.element("nrOfSapwoodRings")
              },
              "/nrOfUnmeasuredInnerRings" = function(...){
                  val <- as.integer(text.buffer)
@@ -1519,9 +1416,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  } else if(grandparent.element == "radius"){
                      n.unmeasured.inner[1] <<- val
                  }
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "nrOfUnmeasuredInnerRings"
+                 end.element("nrOfUnmeasuredInnerRings")
              },
              "/nrOfUnmeasuredOuterRings" = function(...){
                  val <- as.integer(text.buffer)
@@ -1533,9 +1428,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  } else if(grandparent.element == "radius"){
                      n.unmeasured.outer[1] <<- val
                  }
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "nrOfUnmeasuredOuterRings"
+                 end.element("nrOfUnmeasuredOuterRings")
              },
              "/object" = function(...){
                  ## Construct the data.frames belonging to the site
@@ -1712,20 +1605,15 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                            dimnames=list(NULL, SIX.COLS))
                  site.unit <<- character(0)
                  first.year <<- last.year <<- numeric(0)
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
                  ## Coming down the hierarchy of <object>s:
                  ## the case of a container <object> without <element>s
                  if(last.closed == "object")
                      object.level <<- object.level - 1
-                 else
-                     last.closed <<- "object"
+                 end.element("object")
              },
              "/postalCode" = function(...){
                  lab.postalCode <<- text.buffer
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "postalCode"
+                 end.element("postalCode")
              },
              "/preferredSeries" = function(...){
                  if(idx.element < 1){
@@ -1749,9 +1637,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      idx.object[1:object.level]
                  preferred.site.title[[length.res]] <<-
                      object.title[1:object.level]
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "preferredSeries"
+                 end.element("preferredSeries")
              },
              "/project" = function(...){
                  ## laboratory
@@ -1788,9 +1674,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  } else{
                      res.research[[idx.project]] <<- NA
                  }
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "project"
+                 end.element("project")
              },
              "/remark" = function(...){
                  if(idx.derived > 0){
@@ -1833,9 +1717,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      remark.data.row <<- c(remark.data.row, idx.value)
                  }
                  values.n.remarks <<- values.n.remarks + 1
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "remark"
+                 end.element("remark")
              },
              "/research" = function(...){
                  research.domains <<- c(research.domains, domain.text)
@@ -1843,37 +1725,27 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      c(research.identifiers, research.identifier)
                  research.descriptions <<-
                      c(research.descriptions, research.description)
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "research"
+                 end.element("research")
              },
              "/series" = function(...){
                  link.idRefs <<- c(link.idRefs, link.idRef)
                  link.xLinks <<- c(link.xLinks, link.xLink)
                  link.identifiers <<- c(link.identifiers, link.identifier)
                  link.domains <<- c(link.domains, domain.text)
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "series"
+                 end.element("series")
              },
              "/standardizingMethod" = function(...){
                  stdizing.method <<- text.buffer
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "standardizingMethod"
+                 end.element("standardizingMethod")
              },
              "/stateProvinceRegion" = function(...){
                  lab.stateProvinceRegion <<- text.buffer
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "stateProvinceRegion"
+                 end.element("stateProvinceRegion")
              },
              "/taxon" = function(...){
                  if(nchar(text.buffer) > 0)
                      taxon <<- text.buffer
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "taxon"
+                 end.element("taxon")
              },
              "/title" = function(...){
                  parent.element <- tag.stack[stack.pointer-1]
@@ -1896,9 +1768,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  } else if(parent.element == "derivedSeries"){
                      series.title <<- text.buffer
                  }
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "title"
+                 end.element("title")
              },
              "/type" = function(...){
                  type.text <<- c(type.text, text.buffer)
@@ -1941,9 +1811,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                          type.core.title <<- c(type.core.title, NA)
                      }
                  }
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "type"
+                 end.element("type")
              },
              "/unit" = function(...){
                  if(is.na(unit))
@@ -1956,9 +1824,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  } else{
                      unit.converted <<- TRUE
                  }
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "unit"
+                 end.element("unit")
              },
              "/values" = function(...){
                  if(idx.value > 0){
@@ -2245,23 +2111,15 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      }
                  }
                  in.derived.values <<- FALSE
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "values"
+                 end.element("values")
              },
              "/variable" = function(...){
                  if(nchar(text.buffer) > 0)
                      variable <<- text.buffer
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- "variable"
+                 end.element("variable")
              },
              ## Other end tag
-             .endElement = function(name, ...){
-                 text.buffer <<- ""
-                 stack.pointer <<- stack.pointer - 1
-                 last.closed <<- name
-             },
+             .endElement = end.element,
 ### Handlers for character data
              .text = text.function,
              .cdata = text.function,
@@ -2591,9 +2449,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              res.all$research <- res.research
                      }
                  }
-                 if(length(altitude.meters) > 0){
+                 if(length(altitude.metres) > 0){
                      res.all$altitude <-
-                         data.frame(meters = altitude.meters,
+                         data.frame(metres = altitude.metres,
                                     project.id = altitude.project.id,
                                     site.info.to.df(altitude.site.id,
                                                     "site.id"),

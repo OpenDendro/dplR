@@ -26,14 +26,14 @@
   standard dendrochronology programs. Header information for the chronology can
   be written according to the International Tree Ring Data Bank (ITRDB)
   standard. The header standard is not very reliable however and should
-  be though of as experimental here. Do not try to write headers using
+  be thought of as experimental here. Do not try to write headers using
   dplR to submit to the ITRDB. When submitting to the ITRDB, you can
   enter the metadata via their website. If you insist however, the
   header information is given as a \code{list} and must be
   formatted with the following:
   \tabular{lrrr}{
     \emph{Description} \tab \emph{Name} \tab \emph{Class} \tab \emph{Max Width} \cr
-    Site ID \tab site.id \tab character \tab 5 \cr
+    Site ID \tab site.id \tab character \tab 6 \cr
     Site Name \tab site.name \tab character \tab 52 \cr
     Species Code \tab spp.code \tab character \tab 4 \cr
     State or Country \tab state.country \tab character \tab 13 \cr
@@ -48,16 +48,16 @@
   }
   See examples for a correctly formatted header list. If the width of the fields
   is less than the max width, then the fields will be padded to the right length
-  when written. Not that lat and long are really lat*100 or long*100 and given
+  when written. Note that lat and long are really lat*100 or long*100 and given
   as integers. E.g., 37 degrees 30 minutes would be given as 3750.
 
   This function takes a single chronology with sample depth as input. This means
-  that is will fail if given output from \code{\link{chron}} where
+  that it will fail if given output from \code{\link{chron}} where
   \code{prewhiten = TRUE}. However, more than one chronology can be appended to
   the bottom of an existing file (e.g., standard and residual) with a second
   call to \code{write.crn}. However, the ITRDB recommends saving and publishing
   only one chronology per file. The examples section shows how to circumvent
-  this. The output from this file might be suitable for publication on
+  this. The output from this function might be suitable for publication on
   the ITRDB although the header writing is clunky (see above) and rwl
   files are much better than crn files in terms of usefulness on the ITRDB.
 }

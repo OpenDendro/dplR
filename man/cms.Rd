@@ -5,7 +5,7 @@
   Detrend multiple ring-width series simultaneously using the C-method.
 }
 \usage{
-  cms(rwl,po,c.hat.t=FALSE,c.hat.i=FALSE)
+  cms(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows such as

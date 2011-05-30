@@ -6,9 +6,10 @@
   chronology built from a rwl object at user-specified lags and segments.
 }
 \usage{
-  ccf.series.rwl(rwl,series, series.yrs=as.numeric(names(series)),
-  seg.length=50,bin.floor=100,n=NULL, prewhiten = TRUE, biweight=TRUE,
-  pcrit=0.05, lag.max=5, make.plot = TRUE,...)
+ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
+               seg.length = 50, bin.floor = 100, n = NULL,
+               prewhiten = TRUE, biweight = TRUE, pcrit = 0.05,
+               lag.max = 5, make.plot = TRUE, ...)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows

@@ -6,7 +6,7 @@
   (usually) ring-width indices.
 }
 \usage{
-  rwi.stats(rwi, ids = NULL, period = "max")
+  rwi.stats(rwi, ids = NULL, period = c("max", "common"))
 }
 \arguments{
   \item{rwi}{ a \code{data.frame} with detreneded and standardised ring width

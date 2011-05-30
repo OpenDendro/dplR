@@ -1,10 +1,9 @@
 write.rwl <-
-function(rwl.df, fname, format="tucson", ...)
+    function(rwl.df, fname, format=c("tucson", "compact", "tridas"), ...)
 {
-  if(format == "tucson")
-    write.tucson(rwl.df, fname, ...)
-  else if(format == "compact")
-    write.compact(rwl.df, fname, ...)
-  else
-    stop(paste("Unknown format", format))
+    format <- match.arg(format)
+    switch(format,
+           tucson = write.tucson(rwl.df, fname, ...),
+           compact = write.compact(rwl.df, fname, ...),
+           tridas = write.tridas(rwl.df, fname, ...))
 }

@@ -11,13 +11,19 @@
 
 \arguments{ \item{x}{ either a \code{data.frame} to be combined with \code{y}, or a
     \code{list} of \code{data.frames} to be combined. }
-  \item{y}{a \code{data.frame} to be combined with \code{data.frame} x.}}
+  \item{y}{a \code{data.frame} to be combined with \code{data.frame}
+x.}}
+
+\details{ The sequence of years in each \code{data.frame} must be
+  increasing and continuous.  The output produced by the function
+  also fulfills this condition.  If the input is differently formatted,
+  the result will be wrong.}
 
 \value{ A \code{data.frame} with the series in columns and the years as
-  rows. The keycodes are the column names and the years are the row
-  names.  }
+  rows.  The keycodes are the column names and the years are the row
+  names. }
 
-\author{ Christian Zang }
+\author{ Christian Zang. Patched by Mikko Korpela. }
 
 \examples{
 data(ca533)

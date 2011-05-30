@@ -7,13 +7,14 @@
 }
 \usage{
   wavelet.plot(wave.list,
-                wavelet.levels=quantile(wave.list$Power,probs=seq(from=0, to=1, by=0.1)),
-                add.coi=TRUE,add.sig=TRUE,x.lab="Time",period.lab="Period",crn.lab="RWI",
-                key.cols = rev(rainbow(length(wavelet.levels)-1)),
-                key.lab=expression(paste("Power"^2)),
-                add.spline=FALSE,f=NULL,nyrs=NULL,
-                crn.col='black',crn.lwd=1,crn.ylim=range(wave.list$y)*1.1,
-                side.by.side=FALSE)
+               wavelet.levels = quantile(wave.list$Power,probs=seq(from=0, to=1, by=0.1)),
+               add.coi = TRUE, add.sig = TRUE, x.lab = "Time",
+               period.lab = "Period", crn.lab = "RWI",
+               key.cols = rev(rainbow(length(wavelet.levels)-1)),
+               key.lab = expression(paste("Power"^2)),
+               add.spline = FALSE, f = 0.5, nyrs = NULL,
+               crn.col = "black", crn.lwd = 1,
+               crn.ylim = range(wave.list$y)*1.1, side.by.side = FALSE)
 
 }
 \arguments{
@@ -32,7 +33,7 @@
   \item{nyrs}{ A number giving the rigidity of the smoothing spline, defaults to
     0.33 of series length if nyrs is NULL. }
   \item{f}{ A number between 0 and 1 giving the frequency response or
-    wavelength cutoff for the smoothing spline. Defaults to 0.5 if f is NULL. }
+    wavelength cutoff for the smoothing spline. Defaults to 0.5. }
   \item{crn.col}{Line color for the time-series plot.}
   \item{crn.lwd}{Line width for the time-series plot.}
   \item{crn.ylim}{Axis limits for the time-series plot.}

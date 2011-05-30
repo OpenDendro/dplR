@@ -19,5 +19,7 @@
   series ids are the column names and the years are the row names.
  }
 \author{ Mikko Korpela }
-\seealso{ \code{\link{read.rwl}}, \code{\link{read.tucson}} }
+\seealso{ \code{\link{read.rwl}}, \code{\link{read.tucson}},
+  \code{\link{read.tridas}}, \code{\link{read.fh}},
+  \code{\link{write.compact}}}
 \keyword{ IO }

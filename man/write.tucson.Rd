@@ -86,7 +86,8 @@
  }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{write.crn}}, \code{\link{read.tucson}},
-  \code{\link{write.rwl}}, \code{\link{write.compact}}
+  \code{\link{write.rwl}}, \code{\link{write.compact}},
+  \code{\link{write.tridas}}
 }
 \examples{
  data(co021)

@@ -2,17 +2,19 @@
 \alias{chron}
 \title{Build Mean Value Chronology}
 \description{
-  This function builds a mean value chronology, typically from a \code{data.frame}
-  of detrended ring widths as produced by \code{\link{detrend}}.
+  This function builds a mean value chronology, typically from a
+  \code{data.frame} of detrended ring widths as produced by
+  \code{\link{detrend}}.
 }
 \usage{
-chron(x, prefix = NULL, biweight = TRUE, prewhiten = FALSE)
+chron(x, prefix = "xxx", biweight = TRUE, prewhiten = FALSE)
 }
 \arguments{
-  \item{x}{a \code{data.frame} of ring widths with rownames(x) containing years
-    and colnames(x) containing each series id such as produced by
-    \code{\link{read.rwl}}}
-  \item{prefix}{a character vector with a length of < 4. Defaults to xxx}
+  \item{x}{a \code{data.frame} of ring widths with \code{rownames(x)}
+    containing years and \code{colnames(x)} containing each series id
+    such as produced by \code{\link{read.rwl}}}
+  \item{prefix}{a character string with less than 4 characters. Defaults
+    to \dQuote{xxx}}
   \item{biweight}{logical flag. If TRUE then a robust mean is calculated
     using \code{\link{tbrm}.}}
   \item{prewhiten}{logical flag. If TRUE each series is whitened using

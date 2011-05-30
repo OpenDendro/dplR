@@ -49,7 +49,7 @@ read.tridas(fname, ids.from.titles = FALSE, ids.from.identifiers = TRUE, combine
   \item{warn.units}{
     logical flag indicating whether to warn about unitless measurements
     and \dQuote{strange} units.  The function expects measurements in
-    units that can be converted to millimeters.  Defaults to
+    units that can be converted to millimetres.  Defaults to
     \code{TRUE}: warnings will be given.  For example, density
     measurements will trigger warnings, which can be disabled by setting
     this option to \code{FALSE}.
@@ -104,7 +104,7 @@ read.tridas(fname, ids.from.titles = FALSE, ids.from.identifiers = TRUE, combine
     element), of the measurements in each data.frame in
     \code{measurements}.  Length equals the number of data.frames.}
   \item{project.title}{A \code{character} vector giving the title of the
-  project? of each data.frame in \code{measurements}.  Length equals the
+  project of each data.frame in \code{measurements}.  Length equals the
   number of data.frames.}
   \item{site.id}{A \code{data.frame} giving the site
     id (position of \verb{<object>} element(s) within a
@@ -335,7 +335,7 @@ read.tridas(fname, ids.from.titles = FALSE, ids.from.identifiers = TRUE, combine
   \item{altitude}{A \code{data.frame} containing the altitude of
     trees. Columns are the following:
     \describe{
-      \item{meters}{The altitude in meters}
+      \item{metres}{The altitude in metres}
       \item{project.id}{The id of the project}
       \item{site.id}{One or more columns with this prefix, depending on
 	the maximum depth of the \verb{<object>} hierarchy. Gives
@@ -383,6 +383,8 @@ read.tridas(fname, ids.from.titles = FALSE, ids.from.identifiers = TRUE, combine
 }
 
 \seealso{
+  \code{\link{read.rwl}}, \code{\link{read.tucson}},
+  \code{\link{read.compact}}, \code{\link{read.fh}},
   \code{\link{write.tridas}}
 }
 \keyword{ IO }

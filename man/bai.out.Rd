@@ -6,7 +6,7 @@
 
 }
 \usage{
-  bai.out(rwl,diam=NULL)
+  bai.out(rwl, diam = NULL)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows such as that produced by \code{\link{read.rwl}} }

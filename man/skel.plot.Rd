@@ -5,7 +5,7 @@
   Automatically generates a skeleton plot of tree-ring data.
 }
 \usage{
-skel.plot(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = FALSE,
+skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9, dat.out = FALSE,
   master=FALSE, plot=TRUE)
 }
 \arguments{

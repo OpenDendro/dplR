@@ -1,7 +1,6 @@
-`gini.coef` <-
-function(x)
+`gini.coef` <- function(x)
 {
-  x <- as.double(x[!is.na(x)])
-  .C(dplR.gini,
-     x, length(x), result=NaN, NAOK=TRUE, DUP=FALSE)$result
+    x <- as.double(x[!is.na(x)])
+    .C(dplR.gini,
+       x, as.integer(length(x)), result=NaN, NAOK=TRUE, DUP=FALSE)$result
 }

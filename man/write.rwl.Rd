@@ -6,7 +6,7 @@
   formats.
 }
 \usage{
-  write.rwl(rwl.df, fname, format="tucson", ...)
+  write.rwl(rwl.df, fname, format=c("tucson", "compact", "tridas"), ...)
 }
 \arguments{
   \item{rwl.df}{ a \code{data.frame} containing tree-ring ring widths with the
@@ -15,21 +15,22 @@
   produced by \code{\link{read.rwl}}. }
   \item{fname}{ a character vector giving the file name of the rwl file. }
   \item{format}{ a character vector giving the format. This must be
-    "tucson" or "compact". Tucson format is the default. }
+    \dQuote{tucson}, \dQuote{compact}, or \dQuote{tridas}. Tucson format
+    is the default. }
   \item{...}{ arguments specific to the function implementing the
     operation for the chosen format. }
 }
 \details{
   This is a simple wrapper to the functions actually implementing the
-  write operation.  See \code{\link{write.tucson}} and
-  \code{\link{write.compact}}.
+  write operation.
 }
 \value{
   None. Invoked for side effect (file is written).
 }
 \author{ Mikko Korpela }
 \seealso{ \code{\link{write.crn}}, \code{\link{write.tucson}},
-  \code{\link{write.compact}}, \code{\link{read.rwl}}
+  \code{\link{write.compact}}, \code{\link{write.tridas}},
+  \code{\link{read.rwl}}
 }
 \examples{
  data(co021)

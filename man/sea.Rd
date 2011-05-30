@@ -43,7 +43,7 @@
     \item{p}{significance of the departure from the chrono's mean RWI.}
  }
 
-\author{ Christian Zang }
+\author{ Christian Zang.  Patched and improved by Mikko Korpela. }
 
 \references{ Lough, J.M., Fritts, H.C. (1987) \emph{An assessment of the
 possible effects of volcanic eruptions on North American climate using

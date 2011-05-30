@@ -38,7 +38,7 @@ read.ids(rwl, stc = c(3, 2, 3))
   A \code{data.frame} with column one named \dQuote{tree} giving a numeric id
   for each tree and column two named \dQuote{core} giving a numeric id for
   each core. The original series ids are copied from rwl as rownames.}
-\author{ Andy Bunn }
+\author{ Andy Bunn.  Patched by Mikko Korpela. }
 \seealso{ \code{\link{rwi.stats}}, \code{\link{read.rwl}} }
 \examples{
 

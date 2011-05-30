@@ -28,7 +28,7 @@
 \references{ Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring standardization: Defining the biological trend from expected basal area increment. Tree-Ring Research 64(2): 81-96.
 }
 \note{ DendroLab website: \url{http://dendrolab.org/} }
-\author{ Code provided by DendroLab based on work by F. Qeadan, University of Nevada Reno, USA and adapted for dplR
+\author{ Code provided by DendroLab based on programming by F. Qeadan and F. Biondi, University of Nevada Reno, USA and adapted for dplR
   by Andy Bunn }
 \seealso{ \code{\link{detrend}}, \code{\link{chron}}, \code{\link{rcs}} }
 \examples{

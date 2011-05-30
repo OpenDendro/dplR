@@ -1,0 +1,15 @@
+citEntry(entry="Article",
+         title        = "The Dendrochronology Program Library in R (dplR)",
+         author       = "Andy Bunn",
+         organization = "Western Washington University",
+         address      = "Bellingham, WA, USA",
+         year         = "2007",
+         journal      = "Dendrochronolgia",
+         note         = "In Review",
+         
+         textVersion = 
+         paste("Bunn, A.G. (2007). ", 
+               "The Dendrochronology Program Library in R (dplR). ",
+               "Dendrochronolgia. In Review.",
+               sep="")
+         )

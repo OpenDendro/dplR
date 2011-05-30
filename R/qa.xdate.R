@@ -8,10 +8,6 @@ qa.xdate <- function(rwl,seg.length,n,bin.floor){
     x <= .Machine$integer.max &&
     x == as.integer(x)
   }
-#  is.int = function(x, tol = .Machine$double.eps) {
-#    (x - floor(x)) < tol
-#  }
-
   # seg.length
   if(seg.length*2 > nrow(rwl)) {
     stop('seg.length has to be less than 1/2 number of years in rwl')

@@ -16,20 +16,36 @@ corr.series.seg <- function(rwl,series,series.yrs=as.numeric(names(series)),
   # Normalize.
   tmp = normalize.xdate(rwl,series,n,prewhiten,biweight)
   master = tmp$master
-  series = tmp$series
+  # trim master so there are no NaN like dividing when
+  # only one series for instance.
+  idx.good = !is.nan(master)
+  master = master[idx.good]
+  yrs = as.numeric(names(master))
 
+  series = tmp$series
   # trim series in case it was submitted stright from the rwl
   idx.good = !is.na(series)
   series.yrs = series.yrs[idx.good]
   series = series[idx.good]
+
+  # clip series to master dimensions
+  series = series[series.yrs %in% yrs]
+  series.yrs = as.numeric(names(series))
+  # clip master to series dimensions
+  master = master[yrs %in% series.yrs]
   yrs = as.numeric(names(master))
   nyrs = length(series.yrs)
+
   if(is.null(bin.floor) || bin.floor == 0) min.bin = min(series.yrs)
   else min.bin = ceiling(min(series.yrs)/bin.floor)*bin.floor
-  to = max(series.yrs)-seg.length
-  if(min.bin > to)
-    stop("Cannot fit any segments (not enough years in the series)")
-  bins = seq(from=min.bin, to=to, by=seg.lag)
+  to = max(series.yrs)-seg.length-seg.length
+  if(min.bin > to){
+      cat("maximum year in (filtered) series:",max(series.yrs),"\n")
+      cat("first bin begins: ",min.bin,"\n")
+      cat("Cannot fit two segments (not enough years in the series).\n")
+      stop("Shorten segment length or adjust the bin floor.")
+  }
+  bins = seq(from=min.bin, to=to+seg.length, by=seg.lag)
   bins = cbind(bins, bins+seg.length)
   nbins = nrow(bins)
   bin.names = paste(bins[,1],".", bins[,2],sep="")
@@ -51,9 +67,6 @@ corr.series.seg <- function(rwl,series,series.yrs=as.numeric(names(series)),
   colnames(res.mcor) = c('rho','p.val')
   rownames(res.mcor) = series.yrs
 
-  # clip master to series dimensions
-  master = master[yrs %in% series.yrs]
-  yrs = as.numeric(names(master))
   #loop through bins
   for(j in 1:nbins){
     mask = yrs%in%seq(from=bins[j,1], to=bins[j,2])
@@ -88,24 +101,32 @@ corr.series.seg <- function(rwl,series,series.yrs=as.numeric(names(series)),
   }
   # plot
   if(make.plot){
+    mcor.tmp <- na.omit(res.mcor)
+    yrs.tmp <- as.numeric(row.names(mcor.tmp))
+    mcor.tmp <- mcor.tmp[,1]
+    # bins2 makes plotting nicer. Adds a bin to the top
+    # and bottom so that the mcor line isn't all alone.
+    bottom.bin2 = bins[1,]-seg.lag
+    top.bin2 = bins[nbins,]+seg.lag
+    bins2 = rbind(bottom.bin2,bins,top.bin2)
     par(mar=c(4,2,2,1) + 0.1,mgp=c(1.25,0.25,0),tcl=0.25)
     sig = qnorm((1 + 1 - pcrit)/2)/sqrt(seg.length)
-    plot(yrs,series,type="n",ylim=range(res.cor,res.mcor,sig,na.rm=T),
+    plot(yrs.tmp,mcor.tmp,type="l",ylim=range(res.cor,res.mcor,sig,na.rm=T),
       ylab="Correlation",xlab="Year",
       sub=paste('Segments: length=',seg.length,',lag=',seg.lag,sep=''),
       axes=FALSE,...)
-    abline(v=bins,col='grey',lty='dotted')
-    axis(1,at=bins[seq(from=1, to=nrow(bins), by=2),])
-    axis(3,at=bins[seq(from=2, to=nrow(bins), by=2),])
+    abline(v=bins2,col='grey',lty='dotted')
+    axis(1,at=bins2[seq(from=1, to=nrow(bins2), by=2),])
+    axis(3,at=bins2[seq(from=2, to=nrow(bins2), by=2),])
     axis(2)
     box()
-    # lines odd bins
+    # lines bins
     for(i in seq(from=1, to=nbins)){
       xx=c(bins[i,],recursive=TRUE)
       yy=c(res.cor[i],res.cor[i])
-      lines(xx,yy,lwd=1.5)
+      lines(xx,yy,lwd=2)
     }
-    lines(yrs,res.mcor[,1],lwd=1.5)
+    lines(yrs.tmp,mcor.tmp,lwd=1.5)
     abline(h=sig,lty='dashed')
   }
   res = list(res.cor,res.pval, overall.cor, bins,res.mcor)

@@ -14,7 +14,7 @@
   \item{seg.length}{ an even \code{integer} giving length of segments in years
      (e.g., 20, 50, 100 years). }
   \item{bin.floor}{ a positive \code{integer} giving  the base for locating
-    the first segment (e.g.,.1600, 1700, 1800 AD). Typically 0, 10, 50, 100,
+    the first segment (e.g.,1600, 1700, 1800 AD). Typically 0, 10, 50, 100,
     etc. }
   \item{n}{ \code{NULL} or an integer giving the filter length for the
     \code{\link{hanning}} filter used for removal of low frequency
@@ -34,9 +34,16 @@
   are done for each segment of the series where segments are lagged by
   half the segment length (e.g., 100-year segments would be overlapped by
   50-years). The first segment is placed according to \code{bin.floor}.
+  The minimum bin year is calculated as \code{min.yr\%/\%bin.floor*bin.floor+bin.floor}
+  where  \code{min.yr} is the first year in the \code{rwl} object. For
+  example if the first year is 626 and \code{bin.floor} is 100 then the
+  first bin would start in 700. If \code{bin.floor} is 10 then the
+  first bin would start in 630.
+
   Correlations are calculcated for the first segment, then the
   second segment and so on. Correlations are only calculated for segments with
-  complete overlap with the master chronology.
+  complete overlap with the master chronology. For now, correlations are
+  Spearman's rho calculated via \code{\link{cor.test}} using method="spearman."
 
   Each series (inlcuding those in the rwl object) is optionally detrended as the residuals
   from a \code{\link{hanning}} filter with weight \code{n}. The filter is not applied
@@ -46,8 +53,9 @@
   rwl object using \code{\link{tbrm}} if \code{biweight=TRUE} and \code{rowMeans}
   if not. Note that detrending can change the length of the series. E.g., a
   \code{\link{hanning}} filter will shorten the series on either end by
-  \code{floor(n/2)}. The effects of detrending can be seen with
-  \code{\link{series.rwl.plot}}.
+  \code{floor(n/2)}. The prewhitening default will change the series
+  length based on the  \code{\link[stats]{ar}} model fit. The effects of
+  detrending can be seen with \code{\link{series.rwl.plot}}.
 
   The function is typically invoked to produce a
   plot where each segment for each series is colored by its correlation to the

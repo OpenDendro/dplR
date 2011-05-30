@@ -1,13 +1,14 @@
 \name{series.rwl.plot}
 \alias{series.rwl.plot}
-\title{ Compute Correlation between a Series and a Master Chronology }
+\title{ Plot Series and a Master  }
 \description{
-  Compute correlation between a tree-ring series and a master chronology by
-  segment.
+  Plots a tree-ring series with a master chronology and displays
+  their fit, segments, and detrending options in support of the
+  cross-dating functions.
 }
 \usage{
   series.rwl.plot(rwl,series,series.yrs=as.numeric(names(series)),
-  seg.length=100,bin.floor=100,n=NULL, prewhiten = TRUE, biweight=TRUE, ...)
+  seg.length=100,bin.floor=100,n=NULL, prewhiten = TRUE, biweight=TRUE)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
@@ -18,7 +19,7 @@
   \item{seg.length}{ an even \code{integer} giving length of segments in years
      (e.g., 20, 50, 100 years). }
   \item{bin.floor}{ a positive \code{integer} giving  the base for locating
-    the first segment (e.g.,.1600, 1700, 1800 AD). Typically 0, 10, 50, 100,
+    the first segment (e.g.,1600, 1700, 1800 AD). Typically 0, 10, 50, 100,
     etc. }
   \item{n}{ \code{NULL} or an integer giving the filter length for the
     \code{\link{hanning}} filter used for removal of low frequency
@@ -27,30 +28,31 @@
       \code{\link[stats]{ar}}. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust mean is calculated
     using \code{\link{tbrm}}. }
-  \item{...}{ other arguments passed to plot. }
 }
 \details{
-  The function is typically invoked to produce a plot showing a time series
-  plot of the series and the master as well as a scatterplot of series vs.
-  master. The series and master are returned as well.
+  The function is typically invoked to produce a four plots showing the
+  the effect of the detrending options \code{n} and \code{prewhiten} and
+  the the binning options \code{seg.length} and \code{bin.floor}.
 
-  Each series (inlcuding those in the rwl object) is optionally detrended as the residuals
-  from a \code{\link{hanning}} filter with weight \code{n}. The filter is not applied
-  if \code{n} is \code{NULL}. Detrending can also be done via prewhitening where
-  the residuals of an \code{\link[stats]{ar}} model are added to each series
-  mean. This is the default. The master chronology is computed as the mean of
-  rwl object using \code{\link{tbrm}} if \code{biweight=TRUE} and \code{rowMeans}
-  if not. Note that detrending can change the length of the series. E.g., a
-  \code{\link{hanning}} filter will shorten the series on either end by
-  \code{floor(n/2)}. The effects of detrending can be seen with
-  \code{\link{series.rwl.plot}}.
+  Plot 1. Time series plot of the filtered series and the master.
+  Plot 2. Scatterplot of series vs. master.
+  Plot 3. Segments that would be used in the other cross-dating
+  functions (e.g., \code{\link{corr.series.seg}}).
+  Plot 4. Text giving the detrending options and the time span of the
+  raw and filtered series and master.
+
+  The series and master are returned as well.
+
+  See help pages for  \code{\link{corr.rwl.seg}},
+  \code{\link{corr.series.seg}}, and  \code{\link{ccf.series.rwl}} for
+  moreinformation on these arguments.
 
 }
 \value{
   A \code{list} containing the filtered vectors \code{series} and \code{master}.
 }
 \author{ Andy Bunn }
-\seealso{ \code{\link{corr.rwl.seg}} \code{\link{corr.series.seg}} \code{\link{skel.plot}} \code{\link{ccf.series.rwl}}}
+\seealso{ \code{\link{corr.rwl.seg}} \code{\link{corr.series.seg}} \code{\link{ccf.series.rwl}}}
 \examples{
   data(co021)
   dat=co021

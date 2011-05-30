@@ -19,7 +19,7 @@
   \item{seg.length}{ an even \code{integer} giving length of segments in years
      (e.g., 20, 50, 100 years). }
   \item{bin.floor}{ a positive \code{integer} giving  the base for locating
-    the first segment (e.g.,.1600, 1700, 1800 AD). Typically 0, 10, 50, 100,
+    the first segment (e.g.,1600, 1700, 1800 AD). Typically 0, 10, 50, 100,
     etc. }
   \item{n}{ \code{NULL} or an integer giving the filter length for the
     \code{\link{hanning}} filter used for removal of low frequency
@@ -28,38 +28,30 @@
       \code{\link[stats]{ar}}. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust mean is calculated
     using \code{\link{tbrm}}. }
-  \item{pcrit}{ a number between 0 and 1 giving the probability for confidence
-    interval for the \code{\link[stats]{ccf}}. }
+  \item{pcrit}{ a number between 0 and 1 giving the critucal value for the
+    correlation test. }
   \item{make.plot}{ \code{logical flag} indicating whether to make a plot. }
   \item{...}{ other arguments passed to plot. }
 }
 \details{
   This function calculates the correlation a tree-ring series and a master
-  chronology built from a rwl object. Correlations are done for each segment
-  of the series where segments are lagged by half the segment length
-  (e.g., 100-year segments would be overlapped by 50-years). The first
-  segment is placed according to \code{bin.floor}. Correlations are calculcated
-  for the first segment, then the second segment and so on. Correlations are
-  only calculated for segments with complete overlap with the master chronology.
-  A moving correlation with length equal to the segment length is also
-  calculated between the series and the master.
+  chronology built from a rwl object. Correlations are done by segment
+  (see below) and with a moving correlation with length equal to the
+  \code{seg.length}.  The function is typically invoked to produce a plot.
 
-  Each series (inlcuding those in the rwl object) is optionally detrended as the residuals
-  from a \code{\link{hanning}} filter with weight \code{n}. The filter is not applied
-  if \code{n} is \code{NULL}. Detrending can also be done via prewhitening where
-  the residuals of an \code{\link[stats]{ar}} model are added to each series
-  mean. This is the default. The master chronology is computed as the mean of
-  rwl object using \code{\link{tbrm}} if \code{biweight=TRUE} and \code{rowMeans}
-  if not. Note that detrending can change the length of the series. E.g., a
-  \code{\link{hanning}} filter will shorten the series on either end by
-  \code{floor(n/2)}. The effects of detrending can be seen with
-  \code{\link{series.rwl.plot}}. The function is typically invoked to produce a
-  plot.
+
 
 }
 \value{
   A \code{list} containing matrices \code{bins}, \code{moving.rho}, and vectors
   \code{spearman.rho}, \code{p.val}, and \code{overall}.
+
+  Matrix \code{bins} contains the years encapsulated by each bin
+  (segments). Matrix  \code{moving.rho} contains the moving correlation
+  and p-value for a moving average equal to \code{seg.length}.
+  Vector \code{spearman.rho} contains the correlations each series by
+  bin and \code{p.val} contains the p-values. Vector \code{overall}
+  contains the average correlation and p-value.
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{corr.series.seg}} \code{\link{skel.plot}}  \code{\link{series.rwl.plot}} \code{\link{ccf.series.rwl}}}

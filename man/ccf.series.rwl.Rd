@@ -19,29 +19,32 @@
   \item{seg.length}{ an even \code{integer} giving length of segments in years
      (e.g., 20, 50, 100 years). }
   \item{bin.floor}{ a positive \code{integer} giving  the base for locating
-    the first segment (e.g.,.1600, 1700, 1800 AD). Typically 0, 10, 50, 100,
+    the first segment (e.g.,1600, 1700, 1800 AD). Typically 0, 10, 50, 100,
     etc. }
   \item{n}{ \code{NULL} or an integer giving the filter length for the
     \code{\link{hanning}} filter used for removal of low frequency
     variation. }
-  \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust mean is calculated
-    using \code{\link{tbrm}}. }
   \item{prewhiten}{ \code{logical} flag. If \code{TRUE} each series is whitened using
       \code{\link[stats]{ar}}. }
-  \item{pcrit}{ a number between 0 and 1 giving the probability for confidence
-    interval for the \code{\link[stats]{ccf}}. }
+  \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust mean is calculated
+    using \code{\link{tbrm}}. }
+  \item{pcrit}{ a number between 0 and 1 giving the critucal value for the
+    correlation test. }
   \item{lag.max}{ an integer giving the maximum lag at which to calculate
     the \code{\link[stats]{ccf}}. }
   \item{make.plot}{ \code{logical flag} indicating whether to make a plot. }
-  \item{...}{ other arguments passed to \code{\link[lattice]{xyplot}}. }
+  \item{...}{ other arguments passed to plot. }
 }
 \details{
   This function calculates the cross-correlation function between a tree-ring
-  series and a master chronology built from a rwl object. The cross-correlation
-  function is done for each segment of the series where segments are lagged by
-  half the segment length (e.g., 100-year segments would be overlapped by
-  50-years). The first segment is placed according to \code{bin.floor}. Cross
-  correlations are calculcated for the first segment, then the
+  series and a master chronology built from a rwl object looking at
+  corrlations lagged postively and negatively using \code{link{ccf}} at
+  overlapping segments set by \code{seg.length}. For instance,
+  with  with \code{lag.max} set to 5, cross correlations would be
+  calculated at for each segment with the master lagged at \code{k=c(-5:5)} years.
+  The function is typically invoked to produce a plot.
+
+  Correlations are calculcated for the first segment, then the
   second segment and so on. Correlations are only calculated for segments with
   complete overlap with the master chronology.
 
@@ -51,17 +54,19 @@
   the residuals of an \code{\link[stats]{ar}} model are added to each series
   mean. This is the default. The master chronology is computed as the mean of
   rwl object using \code{\link{tbrm}} if \code{biweight=TRUE} and \code{rowMeans}
-  if not. Note that detrending can change the length of the series. E.g., a
+  if not. Note that detrending typically changes the length of the series. E.g., a
   \code{\link{hanning}} filter will shorten the series on either end by
-  \code{floor(n/2)}. The effects of detrending can be seen with
-  \code{\link{series.rwl.plot}}. The function is typically invoked to produce a
-  plot.
+  \code{floor(n/2)}. The prewhitening default will change the series
+  length based on the  \code{\link[stats]{ar}} model fit. The effects of
+  detrending can be seen with \code{\link{series.rwl.plot}}.
+
 }
 \value{
   A \code{list} containing matrices \code{ccf} and \code{bins}. Matrix \code{ccf}
   contains the correlations between the series and the master chronology at
   the lags window given by \code{lag.max}. Matrix \code{bins} contains the
   years encapsulated by each bin.
+
 }
 \author{ Andy Bunn }
 \seealso{ \code{\link{corr.rwl.seg}}, \code{\link{corr.series.seg}},

@@ -4,34 +4,52 @@ ccf.series.rwl <- function(rwl,series, series.yrs=as.numeric(names(series)),
 
   #run error checks
   qa.xdate(rwl,seg.length,n,bin.floor)
+  if(lag.max > seg.length) stop("lag.max > seg.length. bad idea.")
+  seg.lag=seg.length/2
 
   # Normalize.
   tmp = normalize.xdate(rwl,series,n,prewhiten,biweight)
   master = tmp$master
-  series = tmp$series
+   # trim master so there are no NaN like dividing when
+  # only one series for instance.
+  idx.good = !is.nan(master)
+  master = master[idx.good]
+  yrs = as.numeric(names(master))
 
-  seg.lag=seg.length/2
+  series = tmp$series
   # trim series in case it was submitted stright from the rwl
-  series.yrs = series.yrs[!is.na(series)]
-  series = series[!is.na(series)]
+  idx.good = !is.na(series)
+  series.yrs = series.yrs[idx.good]
+  series = series[idx.good]
+
+  # clip series to master dimensions
+  series = series[series.yrs %in% yrs]
+  series.yrs = as.numeric(names(series))
+  # clip master to series dimensions
+  master = master[yrs %in% series.yrs]
   yrs = as.numeric(names(master))
   nyrs = length(series.yrs)
+
   if(is.null(bin.floor) || bin.floor == 0) min.bin = min(series.yrs)
-  else min.bin = min(series.yrs)%/%bin.floor*bin.floor+bin.floor
-  bins1 = seq(from=min.bin,to=max(series.yrs)-seg.length,by=seg.lag)
-  bins2 = bins1+seg.length
-  bins = cbind(bins1,bins2)
+  else min.bin = ceiling(min(series.yrs)/bin.floor)*bin.floor
+  to = max(series.yrs)-seg.length-seg.length
+  if(min.bin > to){
+      cat("maximum year in (filtered) series:",max(series.yrs),"\n")
+      cat("first bin begins: ",min.bin,"\n")
+      cat("Cannot fit two segments (not enough years in the series).\n")
+      stop("Shorten segment length or adjust the bin floor.")
+  }
+  bins = seq(from=min.bin, to=to+seg.length, by=seg.lag)
+  bins = cbind(bins, bins+seg.length)
   nbins = nrow(bins)
   bin.names = paste(bins[,1],".", bins[,2],sep="")
+
   # structures for results
   lag.vec = seq(from=-lag.max, to=lag.max, by=1)
   res.cor = matrix(NA,length(lag.vec),nbins)
   rownames(res.cor)=paste('lag',lag.vec,sep='.')
   colnames(res.cor)=bin.names
 
-  # clip master to series dimensions
-  master = master[yrs %in% series.yrs]
-  yrs = as.numeric(names(master))
   #loop through bins
   for(j in 1:nbins){
     mask = yrs%in%seq(from=bins[j,1], to=bins[j,2])
@@ -53,6 +71,16 @@ ccf.series.rwl <- function(rwl,series, series.yrs=as.numeric(names(series)),
     ccf.df = data.frame(r=c(res.cor,recursive=T),
       bin=rep(colnames(res.cor),each=length(lag.vec)),
       lag=rep(lag.vec,nbins))
+    # reorder bins so that lattice definitely keeps them
+    # in ascending order (i.e., no factor order funnies with
+    # long series)
+    num.bins=bins[,1]
+    ord.num=order(num.bins)
+    char.bins=as.character(bins[,1])
+    ord.char=order(char.bins)
+    foo=data.frame(num.bins,ord.num,char.bins,ord.char)
+    ccf.df$bin=factor(ccf.df$bin,levels(ccf.df$bin)[order(foo$ord.char)])
+
     sig = qnorm((1 + 1 - pcrit)/2)/sqrt(seg.length)
     sig = c(-sig,sig)
     ccf.plot = xyplot(r ~ lag | bin, data = ccf.df,
@@ -68,7 +96,7 @@ ccf.series.rwl <- function(rwl,series, series.yrs=as.numeric(names(series)),
         panel.segments(x1=x, y1=0, x2=x, y2=y, col = col, lwd= 2)
         panel.dotplot(x, y, col = col, cex = 1.25, ...)
       },...)
-    trellis.par.set(strip.background = list(col = c('white','gray90')))
+    trellis.par.set(strip.background = list(col = c('transparent')))
     print(ccf.plot)
   }
   res = list(res.cor,bins)

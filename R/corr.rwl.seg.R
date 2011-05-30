@@ -1,6 +1,18 @@
 corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRUE,
   pcrit=0.05, biweight=TRUE, make.plot = TRUE,...){
 
+
+  # helper function
+  yr.range=function(x) {
+      yr.vec=as.numeric(names(x))
+      mask=!is.na(x)
+      if(length(yr.vec[mask]) > 0) res=range(yr.vec[mask])
+      else res=c(NA,NA)
+      res
+  }
+
+
+
   #run error checks
   qa.xdate(rwl,seg.length,n,bin.floor)
 
@@ -46,7 +58,7 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
   # rwi for segments altered by normalizing
   rwi = norm.one$master
   idx.good = norm.one$idx.good
-  
+
   # loop through series
   for(i in 1:nseries){
     idx.noti = rep(TRUE,nseries)
@@ -54,7 +66,7 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
     master.norm = rwi[,idx.good & idx.noti]
 
     # compute master series by normal mean or robust mean
-      master = vector(mode="numeric", length=nyrs)
+    master = vector(mode="numeric", length=nyrs)
     if (!biweight){
       for (j in 1:nyrs){
         master[j] = exactmean(master.norm[j,])
@@ -121,28 +133,28 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
     tmp=odd.p.val > pcrit
     for(i in 1:nseries){
       for(j in 1:nodd.bins){
-        ## minus 1 deals with edge
+        # minus 1 deals with edge in segment graphing
         mask = yrs%in%seq(from=odd.bins[j,1], to=odd.bins[j,2]-1)
         mask2 = yrs%in%seq(from=odd.bins[j,1], to=odd.bins[j,2])
         # note lack of complete overlap
         if(any(is.na(segs[mask,i]))) com.segs[mask,i]=NA
+        if(is.na(tmp[i,j])) com.segs[mask,i]=NA
         if(!is.na(tmp[i,j]) & tmp[i,j]) flag.segs[mask2,i]=1
       }
-    }
+        # make sure any segment past year range is NA for com.segs this
+        # is a fix because there was an errant 1 in floating series that
+        # was not getting tagged because of the mask indexing: odd.bins[j,2]-1
+        # that deals with the bin overlap issue. THis should fix it.
+        series.yrs=yr.range(segs[,i])
+        mask3 = yrs%in%seq(series.yrs[1],series.yrs[2])
+        com.segs[!mask3,i]=NA
+  }
     idx.small = yrs < min(odd.bins)
     idx.large = yrs > max(odd.bins)
     com.segs[idx.small,]=NA
     com.segs[idx.large,]=NA
     flag.segs[idx.small,]=NA
     flag.segs[idx.large,]=NA
-
-    yr.range=function(x) {
-      yr.vec=as.numeric(names(x))
-      mask=!is.na(x)
-      if(length(yr.vec[mask]) > 0) res=range(yr.vec[mask])
-      else res=c(NA,NA)
-      res
-    }
 
     extreme.year=apply(segs,2,yr.range)
     first.year=extreme.year[1,]
@@ -151,6 +163,9 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
     segs=segs[,neworder]
     com.segs=com.segs[,neworder]
     flag.segs=flag.segs[,neworder]
+
+
+
 
     segs.df=data.frame(t(extreme.year[,neworder]))
     names(segs.df)=c('first.yr','last.yr')
@@ -192,8 +207,12 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
       xx=c(xx,rev(xx))
       polygon(xx,yy,col=col.pal[1],border=NA)
       # guides
-      segments(odd.bins[,1],i,odd.bins[,1],y.deviation,col='white')
-      segments(odd.bins[,2],i,odd.bins[,2],y.deviation,col='white')
+      guides.x <- c(odd.bins,recursive=T)
+      guides.x <- guides.x[!duplicated(guides.x)]
+      guides.x <- sort(guides.x)
+      guides.x <- guides.x[guides.x >= segs.df[i,1]]
+      guides.x <- guides.x[guides.x <= segs.df[i,2]]
+      segments(guides.x,i,guides.x,y.deviation,col='white')
     }
 
 ################################################################################
@@ -202,21 +221,34 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
     even.bins=bins[this.seq,]
     even.p.val=p.val[neworder,this.seq]
     neven.bins=nrow(even.bins)
-    com.segs[,]=1
-    flag.segs[,]=NA
+#    com.segs[,]=1
+#    flag.segs[,]=NA
+    com.segs=as.data.frame(matrix(1,ncol=nseries,nrow=nyrs))
+    rownames(com.segs)=rnames
+    colnames(com.segs)=cnames
+    flag.segs=as.data.frame(matrix(NA,ncol=nseries,nrow=nyrs))
+    rownames(flag.segs)=rnames
+    colnames(flag.segs)=cnames
 
     #loop through even.bins
     tmp=even.p.val > pcrit
     for(i in 1:nseries){
       for(j in 1:neven.bins){
-        ## minus 1 deals with edge
         mask = yrs%in%seq(from=even.bins[j,1], to=even.bins[j,2]-1)
         mask2 = yrs%in%seq(from=even.bins[j,1], to=even.bins[j,2])
         # note lack of complete overlap
         if(any(is.na(segs[mask,i]))) com.segs[mask,i]=NA
+        if(is.na(tmp[i,j])) com.segs[mask,i]=NA
         if(!is.na(tmp[i,j]) & tmp[i,j]) flag.segs[mask2,i]=1
       }
-    }
+        # make sure any segment past year range is NA for com.segs this
+        # is a fix because there was an errant 1 in floating series that
+        # was not getting tagged because of the mask indexing: odd.bins[j,2]-1
+        # that deals with the bin overlap issue. THis should fix it.
+        series.yrs=yr.range(segs[,i])
+        mask3 = yrs%in%seq(series.yrs[1],series.yrs[2])
+        com.segs[!mask3,i]=NA
+  }
     idx.small = yrs < min(even.bins)
     idx.large = yrs > max(even.bins)
     com.segs[idx.small,]=NA
@@ -248,9 +280,14 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
       xx=c(xx,rev(xx))
       polygon(xx,yy,col=col.pal[1],border=NA)
       # guides
-      segments(even.bins[,1],i,even.bins[,1],y.deviation,col='white')
-      segments(even.bins[,2],i,even.bins[,2],y.deviation,col='white')
-    }
+      guides.x <- c(even.bins,recursive=T)
+      guides.x <- guides.x[!duplicated(guides.x)]
+      guides.x <- sort(guides.x)
+      guides.x <- guides.x[guides.x >= segs.df[i,1]]
+      guides.x <- guides.x[guides.x <= segs.df[i,2]]
+      segments(guides.x,i,guides.x,y.deviation,col='white')
+
+  }
 
 # finish up plotting
     nsegs=ncol(segs)

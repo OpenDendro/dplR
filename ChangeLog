@@ -1,3 +1,23 @@
+2010-07-17 Andy  Bunn <andy.bunn@wwu.edu>
+* CHANGES IN dplR VERSION 1.3.6
+* Modified rcs() to stop() if any of the pith offsets are <1 or not integers. The help file indicated that this should
+  be so but it's now explicit in the code.
+* Fixed a bug in corr.rwl.seg() where floating series were not being drawn properly - the plot had them displaying all the way to the 
+  max yr range b/c of an inexing problem. Also made some cosmetic changes to the guides in between segments for the graph. I do NOT
+  like the way the plot on this function is done with the odd bin and even bin looping. Very clunky and confusing to look at. The
+  correlation part is fine and the graph is nice but the logic of the plot is silly.
+* Clarified language the help page for corr.rwl.seg().
+* Fixed a bug in corr.series.seg() where short series coupled with long segment lengths caused the function to crash. I added to the fix Mikko made 
+  in 1.3.3 by requiring that the minimum series length must be twice the segment length. Otherwise the function is useless. Error message now
+  indicates this as does the help file. Made some graphical improvements with bin lines extending past the actual bins to better match the 
+  moving correlation line.
+* Clarified language the help page for corr.series.seg().
+* Fixed a bug in ccf.series.rwl() where panels were out of order on series with long time spans. This involved reordering the
+  ccf.df$bin factor to be the same order as bins[,1].
+* Clarified language the help page for ccf.series.rwl().
+* Improved series.rwl.plot() to give more diagnostic information in four plots.
+* Improved the help page for series.rwl.plot() to beter explain what it now does.
+
 2010-07-05 Andy  Bunn <andy.bunn@wwu.edu>
 * CHANGES IN dplR VERSION 1.3.5
 * Modified the help file for write.crn() so that the elev in the hdr will be written in a way that might

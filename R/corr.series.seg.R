@@ -19,8 +19,9 @@ corr.series.seg <- function(rwl,series,series.yrs=as.numeric(names(series)),
   series = tmp$series
 
   # trim series in case it was submitted stright from the rwl
-  series.yrs = series.yrs[!is.na(series)]
-  series = series[!is.na(series)]
+  idx.good = !is.na(series)
+  series.yrs = series.yrs[idx.good]
+  series = series[idx.good]
   yrs = as.numeric(names(master))
   nyrs = length(series.yrs)
   if(is.null(bin.floor) || bin.floor == 0) min.bin = min(series.yrs)

@@ -54,9 +54,7 @@
   master chronology. Green segments are those that do not overlap completely
   with the width of the bin. Blue segments are those that correlate above the
   user-specified critical value. Red segments are those that correlate below the
-  user-specified critical value and might indicate a dating problem. NOTE: this
-  function is slow for large rwl objects and will remain so until a C or
-  Fortran loop is coded to perform the correlations.
+  user-specified critical value and might indicate a dating problem.
 }
 \value{
   A \code{list} containing matrices \code{spearman.rho}, \code{p.val},
@@ -68,7 +66,7 @@
   each series. Matrix \code{bins} contains the years encapsulated by each bin.
   The vector \code{avg.seg.rho} contains the average correlation for each bin.
 }
-\author{ Andy Bunn }
+\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{corr.series.seg}} \code{\link{skel.plot}}  \code{\link{series.rwl.plot}} \code{\link{ccf.series.rwl}}}
 
 \examples{

@@ -1,4 +1,4 @@
-useDynLib(dplR, rwl.readloop = readloop)
+useDynLib(dplR, rwl.readloop = readloop, dplR.tbrm = tbrm, dplR.mean = exactmean)
 
 import(lattice)
 

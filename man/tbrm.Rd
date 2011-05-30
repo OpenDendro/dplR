@@ -20,11 +20,17 @@ tbrm(x, C = 9)
   C=9 sets values roughly +/-6 standard deviations to 0. C=6 is also used in
   tree-ring chronology development. Cook and Kairiukstis (1990) have further
   details.
+
+  An exact summation algorithm (Shewchuk 1997) is used. When some assumptions 
+  about the rounding of floating point numbers and conservative compiler 
+  optimizations hold, summation error is completely avoided. 
+  Whether the assumptions hold depends on the platform, i.e. compiler and CPU.
+  
 }
 \value{
   A numeric mean.
 }
-\references{ Statistical Algorithms Description Document, 2002, Affymetrix. p22.
+\references{
 
   Cook, E. R. and Kairiukstis, L.A. (1990) \emph{Methods of Dendrochronology:
   Applications in the Environmental Sciences.} Springer.
@@ -32,8 +38,13 @@ tbrm(x, C = 9)
 
   Mosteller, F. and Tukey, J. W. (1977) \emph{Data Analysis and Regression:
   a second course in statistics.} Addison-Wesley. ISBN-13: 978-0201048544.
+
+  Shewchuk, J. R. (1997) \emph{Adaptive Precision Floating-Point
+  Arithmetic and Fast Robust Geometric Predicates.} Discrete and
+  Computational Geometry, 18(3):305--363. Springer.
+  
 }
-\author{ Andy Bunn }
+\author{ Mikko Korpela }
 \seealso{ \code{\link{chron}} }
 \examples{
 

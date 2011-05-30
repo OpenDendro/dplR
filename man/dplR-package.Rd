@@ -21,9 +21,11 @@ License: \tab GPL\cr
     \item{\code{\link{read.rwl}}}{ reads rwl files }
     \item{\code{\link{detrend}}}{ detrends raw ring widths }
     \item{\code{\link{chron}}}{ builds chronologies }
+    \item{\code{\link{chron}}}{ builds chronologies }
+    \item{\code{\link{corr.rwl.seg}}}{ crossdating function }
   }
 }
-\author{ Andy Bunn <andy.bunn@wwu.edu> }
+\author{ Andy Bunn <andy.bunn@wwu.edu> with major contributions from Mikko Korpela and Franco Biondi }
 \references{
   Cook, E. R. and Kairiukstis, L.A. (1990) \emph{Methods of
   Dendrochronology: Applications in the Environmental Sciences.} Springer.

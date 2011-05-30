@@ -17,6 +17,7 @@ rcs <- function(rwl,po,nyrs=NULL,f=0.5,biweight=TRUE,rc.out=FALSE,
  #main func
   if(ncol(rwl) != nrow(po)) { stop('dimension problem: ncol(rw) != nrow(po)') }
   if(!all(po[,1] %in% colnames(rwl))) { stop('Series ids in po and rwl do not match') }
+  rownames(rwl) <-   rownames(rwl) # guard against NULL names funniness
   series.yrs = apply(rwl, 2, yr.range)
   rownames(series.yrs) <- c('first','last')
 

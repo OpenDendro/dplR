@@ -111,13 +111,38 @@ at least one non-NA core in order to be counted).
 \seealso{ \code{\link{detrend}}, \code{\link[stats]{cor}},
   \code{\link{read.ids}}, \code{\link{rwi.stats}} }
 \examples{
-
   data(ca533)
   ca533.rwi <- detrend(rwl = ca533, method = "Spline")
-  ca533.crn <- chron(ca533.rwi)
-  yrs <- as.numeric(rownames(ca533.crn))
   ca533.ids <- read.ids(ca533, stc=c(3,2,3))
-  # running stats on the rwi with 100 yr window
-  rwi.stats.running(ca533.rwi, ca533.ids, window.length=100)
+  rwi.stats.running(ca533.rwi, ca533.ids)
+
+  # plot the chronology showing a potential cutoff year based on eps
+  ca533.crn <- chron(ca533.rwi)
+  # running stats on the rwi with an 80-yr window
+  foo <-rwi.stats.running(ca533.rwi, ca533.ids, window.length=80)
+  yrs <- as.numeric(rownames(ca533.crn))
+  yrs <- as.numeric(rownames(ca533.crn))
+  bar <- data.frame(yrs=c(min(yrs),foo$mid.year,max(yrs)),eps=c(NA,foo$eps,NA))
+  par(mar = c(3, 3, 3, 3), mgp = c(1.25, 0.25, 0), tcl = 0.25, mfcol=c(2,1))
+  plot(yrs,ca533.crn[,1],type='n', xlab = "Years", ylab = "RWI")
+  xx=c(500,500,max(bar$yrs[bar$eps < 0.8],na.rm=TRUE),max(bar$yrs[bar$eps < 0.8],na.rm=TRUE))
+  yy=c(-1,3,3,-1)
+  polygon(xx,yy,col='grey80')
+  abline(h=1,lwd=1.5)
+  lines(yrs,ca533.crn[,1],col='grey50')
+  lines(yrs,ffcsaps(ca533.crn[,1],nyrs=32),col='red',lwd=2)
+  par(new = TRUE)
+  # second plot is the chronology after the cut off only
+  plot(bar$yrs,bar$eps, ,type='b',xlab = "", ylab = "", axes = FALSE,
+       pch=20,col='blue')
+  axis(4, at = pretty(foo$eps))
+  mtext("EPS", side = 4, line = 1.25)
+  box()
+  yr.mask <- yrs>max(bar$yrs[bar$eps<0.8],na.rm=TRUE)
+  plot(yrs[yr.mask],ca533.crn[yr.mask,1],type='n', xlab = "Years", ylab = "RWI")
+  abline(h=1,lwd=1.5)
+  lines(yrs[yr.mask],ca533.crn[yr.mask,1],col='grey50')
+  lines(yrs[yr.mask],ffcsaps(ca533.crn[yr.mask,1],nyrs=32),col='red',lwd=2)
+
 }
 \keyword{ misc }

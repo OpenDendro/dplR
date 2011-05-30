@@ -6,7 +6,7 @@ function(rwl,y.name=colnames(rwl),make.plot=FALSE,
   out=list()
   for(i in 1:ncol(rwl)){
     fits=detrend.series(rwl[,i],y.name=y.name[i],make.plot=make.plot,
-              method=method)
+              method=method,nyrs=nyrs,f=f,pos.slope=pos.slope)
     if(is.data.frame(fits)) rownames(fits)=rownames(rwl)
     else names(fits)=rownames(rwl)
 

@@ -1,3 +1,90 @@
+2011-05-18 Andy  Bunn <andy.bunn@wwu.edu>
+* CHANGES IN dplR VERSION 1.4.0
+* Incporporation of TRiDAS via Mikko Korpela, May 16, 2011
+
+File: NAMESPACE
+---------------
+
+New imports (digest, xmlEventParse from XML)
+and exports (read.tridas, write.tridas, uuid.gen, po.to.wc, wc.to.po,
+tridas.vocabulary).
+
+File: po.to.wc.Rd
+-----------------
+
+New documentation file.
+
+File: read.tridas.R
+-------------------
+
+New file. Function for reading TRiDaS format files.
+
+File: read.tridas.Rd
+--------------------
+
+New documentation file.
+
+File: simpleXML.R
+-----------------
+
+Fast function for writing XML files. Used in write.tridas, not
+exported to user.
+
+File: tridas.vocabulary.R
+-------------------------
+
+New file. Function for browsing TRiDaS vocabulary.
+
+File: tridas.vocabulary.Rd
+--------------------------
+
+New documentation file.
+
+File: uuid.gen.R
+----------------
+
+The new function uuid.gen creates a generator of Universally Unique
+IDentifiers (UUIDs). It uses the digest package, making it a new
+dependency of dplR. The code in uuid.gen itself is very simple.
+
+This is a very generally applicable function. It is used in
+write.tridas, but may also be useful to R users in general.
+
+The synchronicity package in CRAN provides similar functionality (and
+more), but is not available for Windows. Also, the UUID generator
+returned by uuid.gen seems to be faster than the uuid function in
+synchronicity. More specifically, the latter uses much more system
+time. The difference in user time is small (in favor of uuid of
+synchronicity).
+
+File: uuid.gen.Rd
+-----------------
+
+New documentation file.
+
+File: wc.to.po.Rd
+-----------------
+
+New documentation file.
+
+File: write.tridas.R
+--------------------
+
+New file. Function for writing TRiDaS format files.
+
+File: write.tridas.Rd
+---------------------
+
+New documentation file.
+
+
+2010-11-15 Andy  Bunn <andy.bunn@wwu.edu>
+* CHANGES IN dplR VERSION 1.3.9
+* Added an option to control the colors in plot.wavelet().
+* Added an option to plot wavelets side by side instead of stacked (plus a few owther beutifications).
+* Changes mostly in wavelet.plot.R and arg side.by.side and key.col added to the help.
+* Added an axis on side three for the wavelet plot.
+
 2010-10-27 Andy  Bunn <andy.bunn@wwu.edu>
 * CHANGES IN dplR VERSION 1.3.8 all from Mikko Korpela
 File: corr.rwl.seg.R

@@ -7,11 +7,14 @@
 }
 \usage{
   wavelet.plot(wave.list,
-               wavelet.levels=quantile(wave.list$Power,probs=seq(from=0, to=1, by=0.1)),
-               add.coi=TRUE,add.sig=TRUE,x.lab="Time",period.lab="Period",crn.lab="RWI",
-               key.lab=expression(paste("Power"^2)),
-               add.spline=FALSE,f=NULL,nyrs=NULL,
-               crn.col='black',crn.lwd=1,crn.ylim=range(wave.list$y)*1.1)
+                wavelet.levels=quantile(wave.list$Power,probs=seq(from=0, to=1, by=0.1)),
+                add.coi=TRUE,add.sig=TRUE,x.lab="Time",period.lab="Period",crn.lab="RWI",
+                key.cols = rev(rainbow(length(wavelet.levels)-1)),
+                key.lab=expression(paste("Power"^2)),
+                add.spline=FALSE,f=NULL,nyrs=NULL,
+                crn.col='black',crn.lwd=1,crn.ylim=range(wave.list$y)*1.1,
+                side.by.side=FALSE)
+
 }
 \arguments{
   \item{wave.list}{List. Output from \code{\link{morlet}}.}
@@ -22,6 +25,7 @@
   \item{x.lab}{X-axis label.}
   \item{period.lab}{Y-axis label for the wavelet plot.}
   \item{crn.lab}{Y-axis label for the time-series plot.}
+  \item{key.cols}{A vector of colors for the wavelets and the key.}
   \item{key.lab}{Label for key.}
   \item{add.spline}{Logical. Add a spline to the time-series plot using
     \code{\link{ffcsaps}} if TRUE. }
@@ -32,6 +36,7 @@
   \item{crn.col}{Line color for the time-series plot.}
   \item{crn.lwd}{Line width for the time-series plot.}
   \item{crn.ylim}{Axis limits for the time-series plot.}
+  \item{side.by.side}{Logical. Plots will be in one row if TRUE. }
 }
 \details{
   This produces a plot of a continuous wavelet transform and plots the
@@ -64,7 +69,7 @@
   out.wave <- morlet(y1=CAMstd,x1=Years,p2=9,dj=0.1,siglvl=0.99)
   wavelet.plot(out.wave)
   levs <- quantile(out.wave$Power,probs=c(0,0.5,0.75,0.9,0.99))
-  wavelet.plot(out.wave, wavelet.levels=levs,add.sig=FALSE)
+  wavelet.plot(out.wave, wavelet.levels=levs,add.sig=FALSE, key.cols = c("white","green","blue","red"))
 
 }
 \keyword{ hplot }

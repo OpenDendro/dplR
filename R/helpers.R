@@ -8,12 +8,38 @@ is.int = function(x) {
   y
 }
 
+### Returns a vector of the positions of all matches of the first
+### argument (a vector), in the rows of the second (a matrix).
+match.row <- function(vec, mat){
+  if(ncol(mat) == length(vec))
+    which(apply(mat, 1,
+                function(x){
+                  all(is.na(vec) == is.na(x)) &&
+                  all(x == vec, na.rm=TRUE)
+                }))
+  else
+    numeric(0)
+}
+
+### Returns a vector of the positions of all matches of the first
+### argument (a vector), in the columns of the second (a matrix).
+match.col <- function(vec, mat){
+  if(nrow(mat) == length(vec))
+    which(apply(mat, 2,
+                function(x){
+                  all(is.na(vec) == is.na(x)) &&
+                  all(x == vec, na.rm=TRUE)
+                }))
+  else
+    numeric(0)
+}
+
 ### Increasing sequence.
 ### The equivalent of the C loop 'for(i=from;i<=to;i++){}'
 ### can be achieved by writing 'for(i in inc(from,to)){}'.
 ### Note that for(i in from:to) fails to do the same if to < from.
 inc <- function(from, to){
-  if(to >= from)
+  if(is.numeric(to) && is.numeric(from) && to >= from)
     seq(from=from, to=to)
   else
     integer(length=0)
@@ -21,7 +47,7 @@ inc <- function(from, to){
 
 ### Decreasing sequence. See inc.
 dec <- function(from, to){
-  if(to <= from)
+  if(is.numeric(to) && is.numeric(from) && to <= from)
     seq(from=from, to=to)
   else
     integer(length=0)
@@ -64,8 +90,8 @@ count.base <- function(x, base){
       pos <- 2
       x <- temp
     }
-    x[pos-1] <- x[pos-1] + 1
     pos <- pos - 1
+    x[pos] <- x[pos] + 1
   }
   x
 }
@@ -102,7 +128,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
     bad.chars <- paste(c("[^",LETTERS,letters,0:9,"]"),collapse="")
     idx.bad <- grep(bad.chars, x.cut, perl=TRUE)
     if(length(idx.bad) > 0){
-      warning("Characters outside a-z, A-Z, 0-9 present. Renaming series.")
+      warning("characters outside a-z, A-Z, 0-9 present: renaming series")
       if(nchar(mapping.fname)>0)
         write.map <- TRUE
       rename.flag[idx.bad] <- TRUE
@@ -113,7 +139,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
   if(!is.null(limit)){
     over.limit <- nchar(x.cut) > limit
     if(any(over.limit)){
-      warning("Some names are too long. Renaming series.")
+      warning("some names are too long: renaming series")
       if(nchar(mapping.fname)>0)
         write.map <- TRUE
       rename.flag[over.limit] <- TRUE
@@ -128,7 +154,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
   if (n.unique == n.x){
     y <- x.cut
   } else {
-    warning("Duplicate names present. Renaming series.")
+    warning("duplicate names present: renaming series")
     if(nchar(mapping.fname)>0)
       write.map <- TRUE
     
@@ -165,7 +191,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
           proposed <-
             compose.name(unique.cut[i],alphanumeric,suffix.count,limit)
           if (nchar(proposed)==0){
-            warning("Could not remap a name. Some series will be missing.")
+            warning("could not remap a name: some series will be missing")
             still.looking <- FALSE
             proposed <- paste(unique.cut[i], "F", sep="") # F for Fail...
           } else if (!any(y %in% proposed)){

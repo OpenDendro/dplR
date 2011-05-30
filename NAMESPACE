@@ -2,17 +2,20 @@ useDynLib(dplR, rwl.readloop=readloop, dplR.tbrm=tbrm, dplR.mean=exactmean,
           dplR.gini=gini, dplR.sens1=sens1, dplR.sens2=sens2,
           dplR.rcompact=rcompact)
 
-import(lattice)
+import(digest, lattice)
 
 importFrom(grid, grid.newpage, pushViewport, viewport, grid.layout,
            seekViewport, unit, grid.segments, gpar, grid.lines, grid.polygon,
            grid.text, vpTree, vpList)
 
-export(chron, hanning, read.ids, tbrm, crn.plot, i.detrend, read.rwl, 
-  i.detrend.series, rwi.stats, wavelet.plot, 
-  detrend, morlet, rwl.stats, write.crn, detrend.series, read.crn, 
-  seg.plot, skel.plot, write.rwl, sens1, sens2, gini.coef, read.fh, 
-  qa.xdate, normalize.xdate, corr.rwl.seg, series.rwl.plot, 
-  corr.series.seg, ccf.series.rwl, ffcsaps, rcs, cms, spag.plot, 
-  combine.rwl, bai.in, bai.out, read.compact, write.compact, read.tucson, 
-  write.tucson, glk, sea, rwi.stats.running, normalize1)
+importFrom(XML, xmlEventParse)
+
+export(chron, hanning, read.ids, tbrm, crn.plot, i.detrend, read.rwl,
+  i.detrend.series, rwi.stats, wavelet.plot,
+  detrend, morlet, rwl.stats, write.crn, detrend.series, read.crn,
+  seg.plot, skel.plot, write.rwl, sens1, sens2, gini.coef, read.fh,
+  qa.xdate, normalize.xdate, corr.rwl.seg, series.rwl.plot,
+  corr.series.seg, ccf.series.rwl, ffcsaps, rcs, cms, spag.plot,
+  combine.rwl, bai.in, bai.out, read.compact, write.compact, read.tucson,
+  write.tucson, glk, sea, rwi.stats.running, normalize1, read.tridas,
+  write.tridas, uuid.gen, po.to.wc, wc.to.po, tridas.vocabulary)

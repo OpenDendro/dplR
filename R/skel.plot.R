@@ -1,99 +1,181 @@
 `skel.plot` <-
-function(y, sname = '')
+function(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = F)
 {
   if(nchar(sname) > 7) stop('sname must be a character vector less than 8 characters long')
 
+  # what about NA. Internal NA?
+  na.mask <- is.na(rw.vec)
+  rw.vec = rw.vec[!na.mask]
+  yr.vec = yr.vec[!na.mask]
+
+  if(length(rw.vec) > 840) {
+    cat('Input series has length of', length(rw.vec), '\n')
+    stop('Long series should be split into multiple plots')
+  }
+
+
   # should wrap this into a function called skel.calc that returns the
-  # dates and z_rel
-  y=y[!is.na(y)]
-  yr.vec=1:length(y)
+  # dates and skel
 
-  if(!is.null(names(y))) yr.vec=as.numeric(names(y))
-  y.dt=hanning(y,9)
-
-  z=rep(NA,length(y))
-  for(i in 2:(length(y)-1)) {
-    bck_ration=(y[i]-y[i-1])/y.dt[i]
-    fwd_ration=(y[i]-y[i+1])/y.dt[i]
-    z[i]=mean(c(bck_ration,fwd_ration))
+  # if no yr then....
+  if(is.null(yr.vec)) {
+    yr.vec=1:length(rw.vec) - 1
   }
-  z[z > 0]=NA
+  # pad down to the nearst 10 if not already there
+  pad0 = floor(min(yr.vec)/10)*10
+  if(pad0 != min(yr.vec)){
+    pad.length = min(yr.vec) - pad0
+    rw.df = data.frame(rw = rep(NA,pad.length), yr = pad0:(pad0+pad.length-1))
+    rw.df = rbind(rw.df,data.frame(rw = rw.vec, yr = yr.vec))
+  }
+  else {
+    pad.length = 0
+    rw.df = data.frame(rw = rw.vec, yr = yr.vec)
+  }
+
+  # detrend and pad
+  rw.dt=hanning(rw.df$rw,9)
+  skel.tmp=rep(NA,length(rw.df$rw))
+  # calc rel growth
+  for(i in 2:(length(rw.df$rw)-1)) {
+    bck=(rw.df$rw[i]-rw.df$rw[i-1])/rw.dt[i]
+    fwd=(rw.df$rw[i]-rw.df$rw[i+1])/rw.dt[i]
+    skel.tmp[i]=mean(c(bck,fwd))
+  }
+  skel.tmp[skel.tmp > 0]=NA
   # rescale from 0 to 10
-  zrange=range(z[!is.na(z)])
+  skel.range=range(skel.tmp[!is.na(skel.tmp)])
   newrange=c(10,1)
-  mfac=(newrange[2] - newrange[1])/(zrange[2] - zrange[1])
-  z_rel=newrange[1] + (z - zrange[1]) * mfac
-  z_rel[z_rel < 3]=NA
-  z_rel=ceiling(z_rel)
+  mult.scalar=(newrange[2] - newrange[1])/(skel.range[2] - skel.range[1])
+  skel=newrange[1] + (skel.tmp - skel.range[1]) * mult.scalar
+  skel[skel < 3]=NA
+  skel=ceiling(skel)
 
-  # plot width in mm
-  series.length <- length(yr.vec)*2
-  plot.width=series.length%/%10*10+10
-  plot.height=11*2
 
+  # Variables for plotting
+  # page width
+  pw = 254
+  # page height
+  ph = 178
+  # row height
+  rh = 22
+  # row width
+  rw = 240
+  # spacer for text and dashed cutting lines
+  spcr = 5
+
+  # break series into sections of 120 years with an index
+  yrs.col = rw/2 # n years per row
+  n = length(skel)
+  m = 1:ceiling(n/yrs.col)
+  row.index = rep(m,each = yrs.col)[1:n]
+  n.rows = max(m)
+  # bind row.index to data
+  skel.df = data.frame(yr=rw.df$yr, skel, row.index)
+  #master page
   grid.newpage()
-  pushViewport(viewport(layout=grid.layout(nrow=1,ncol=1,
-    widths=unit(plot.width,"mm"),heights=unit(plot.height,"mm"))))
-  pushViewport(viewport(layout.pos.col = 1, layout.pos.row = 1))
-  # green grid
+  tree = vpTree(viewport(width=unit(pw,"mm"), height=unit(ph,"mm"), name="page"),
+                 vpList(viewport(x=unit(3,"mm"), y=unit(ph-(rh*1)-(spcr*1),"mm"),
+                                         width=unit(246,"mm"), height=unit(rh,"mm"),
+                                         just=c("left", "bottom"), name="A"),
+                        viewport(x=unit(3,"mm"), y=unit(ph-(rh*2)-(spcr*2),"mm"),
+                                         width=unit(246,"mm"), height=unit(rh,"mm"),
+                                         just=c("left", "bottom"), name="B"),
+                        viewport(x=unit(3,"mm"), y=unit(ph-(rh*3)-(spcr*3),"mm"),
+                                         width=unit(246,"mm"), height=unit(rh,"mm"),
+                                         just=c("left", "bottom"), name="C"),
+                        viewport(x=unit(3,"mm"), y=unit(ph-(rh*4)-(spcr*4),"mm"),
+                                         width=unit(246,"mm"), height=unit(rh,"mm"),
+                                         just=c("left", "bottom"), name="D"),
+                        viewport(x=unit(3,"mm"), y=unit(ph-(rh*5)-(spcr*5),"mm"),
+                                         width=unit(246,"mm"), height=unit(rh,"mm"),
+                                         just=c("left", "bottom"), name="E"),
+                        viewport(x=unit(3,"mm"), y=unit(ph-(rh*6)-(spcr*6),"mm"),
+                                         width=unit(246,"mm"), height=unit(rh,"mm"),
+                                         just=c("left", "bottom"), name="F"),
+                        viewport(x=unit(3,"mm"), y=unit(ph-(rh*7)-(spcr*7),"mm"),
+                                         width=unit(246,"mm"), height=unit(rh,"mm"),
+                                         just=c("left", "bottom"), name="G")
+                                ))
 
-  # seq for 0 to plot width by 2mm
-  grid.segments(x0=unit(seq(0,plot.width,by=2),'mm'),y0=unit(0,'mm'),
-                x1=unit(seq(0,plot.width,by=2),'mm'),y1=unit(plot.height,'mm'),
-                gp = gpar(col='green', lineend = 'square', linejoin = 'round'))
-  grid.segments(x0=unit(0,'mm'),y0=unit(seq(0,plot.height,by=2),'mm'),
-                x1=unit(plot.width,'mm'),y1=unit(seq(0,plot.height,by=2),'mm'),
-                gp = gpar(col='green', lineend = 'square', linejoin = 'round'))
+  # set up page with the right number of rows
+  pushViewport(tree)
+  for (i in 1:n.rows) {
 
-  # decadal lines
-  grid.segments(x0=unit(seq(0,plot.width,by=20),'mm'),y0=unit(0,'mm'),
-                x1=unit(seq(0,plot.width,by=20),'mm'),y1=unit(plot.height,'mm'),
-                gp = gpar(col = 'black',lwd = 1.5, lty = 'dashed',
-                lineend = 'square', linejoin = 'round'))
+    seekViewport(LETTERS[i])
+    # working code goes here - e.g., skelplot!
+    # seq for 0 to plot width by 2mm
+    grid.segments(x0=unit(seq(0,rw,by=2),'mm'),y0=unit(0,'mm'),
+                  x1=unit(seq(0,rw,by=2),'mm'),y1=unit(rh,'mm'),
+                  gp = gpar(col='green', lineend = 'square', linejoin = 'round'))
+    grid.segments(x0=unit(0,'mm'),y0=unit(seq(0,rh,by=2),'mm'),
+                  x1=unit(rw,'mm'),y1=unit(seq(0,rh,by=2),'mm'),
+                  gp = gpar(col='green', lineend = 'square', linejoin = 'round'))
 
-  # start and finish arrows
-  grid.lines(x=unit(c(0,0),'mm'),y=unit(c(plot.height,0),'mm'),
-             gp = gpar(lwd = 2, lineend = 'square', linejoin = 'round'))
-  grid.polygon(x=unit(c(0, 0, -2), 'mm'),
-               y=unit(c(0, 6, 6), 'mm'),
-               gp=gpar(fill = 'black', lineend = 'square', linejoin = 'round'))
-  grid.lines(x=unit(c(series.length,series.length),'mm'),y=unit(c(plot.height,0),'mm'),
-             gp = gpar(lwd = 2, lineend = 'square', linejoin = 'round'))
-  grid.polygon(x=unit(c(series.length, series.length, series.length+2), 'mm'),
-               y=unit(c(0, 6, 6), 'mm'),
-               gp=gpar(fill = 'black', lineend = 'square', linejoin = 'round'))
+    # decadal lines
+    grid.segments(x0=unit(seq(0,rw,by=20),'mm'),y0=unit(0,'mm'),
+                  x1=unit(seq(0,rw,by=20),'mm'),y1=unit(rh,'mm'),
+                  gp = gpar(col = 'black',lwd = 1.5, lty = 'dashed',
+                  lineend = 'square', linejoin = 'round'))
 
-  # lines on top and bottom of plot
-  grid.lines(x=unit(c(0,plot.width),'mm'),
-             y=unit(c(plot.height,plot.height),'mm'),
-             gp=gpar(lwd = 2, lineend = 'square', linejoin = 'round'))
-  grid.lines(x=unit(c(0,plot.width),'mm'),
-             y=unit(c(0,0),'mm'),
-             gp=gpar(lwd = 2, lineend = 'square', linejoin = 'round'))
-  # plot x axis
-  ticks <- seq(0,plot.width/2,by=10)
-  for(i in 1:length(ticks)){
-    grid.text(label = as.character(ticks[i]),
-              x=unit(ticks[i]*2,'mm'),
-              y=unit(plot.height+1,'mm'),
-              just = c('center','bottom'),
-              gp = gpar(fontsize=10))
-  }
-  # plot sample id
-  grid.text(label = sname,
-            x=unit(-1,'mm'),
-            y=unit(plot.height,'mm'),
-            just = c('right','bottom'),
-            rot = 90,
-            gp = gpar(fontsize=10))
-
-  # plot data
-  for(i in 1:length(yr.vec)){
-    if(!is.na(z_rel[i])){
-      grid.lines(x=unit(c((i-1)*2,(i-1)*2),'mm'),y=unit(c(0,z_rel[i]*2),'mm'),
-        gp = gpar(col = 'black',lwd = 2, lineend = 'square',
-        linejoin = 'round'))
+    # lines on top and bottom of plot
+    grid.lines(x=unit(c(0,rw),'mm'),
+               y=unit(c(rh,rh),'mm'),
+               gp=gpar(lwd = 2, lineend = 'square', linejoin = 'round'))
+    grid.lines(x=unit(c(0,rw),'mm'),
+               y=unit(c(0,0),'mm'),
+               gp=gpar(lwd = 2, lineend = 'square', linejoin = 'round'))
+    # plot x axis
+    # get this row's data
+    skel.sub = skel.df[skel.df$row.index == i,1:2]
+    end.yr = length(skel.sub$yr)
+    ticks = seq(0,rw/2,by=10)
+    init.lab = min(skel.sub$yr)
+    x.labs = seq(init.lab, length.out = length(ticks), by=10)
+    for(j in 1:length(ticks)){
+      grid.text(label = x.labs[j],
+                x=unit(ticks[j]*2,'mm'),
+                y=unit(rh+1,'mm'),
+                just = c('center','bottom'),
+                gp = gpar(fontsize=10))
     }
+    # plot data
+    for(j in 1:length(skel.sub$yr)){
+      if(!is.na(skel.sub$skel[j])){
+        grid.lines(x=unit(c((j-1)*2,(j-1)*2),'mm'),
+          y=unit(c(0,skel.sub$skel[j]*2),'mm'),
+          gp = gpar(col = 'black',lwd = 2, lineend = 'square',
+          linejoin = 'round'))
+      }
+      # end arrow
+      if(i == max(n.rows) & j == end.yr){
+        end.mm = (j-1)*2
+        grid.lines(x=unit(c(end.mm,end.mm),'mm'),y=unit(c(rh,0),'mm'),
+                   gp = gpar(lwd = 2, lineend = 'square', linejoin = 'round'))
+        grid.polygon(x=unit(c(end.mm,end.mm,end.mm+2), 'mm'),
+                     y=unit(c(0, 6, 6), 'mm'),
+                     gp=gpar(fill = 'black', lineend = 'square', linejoin = 'round'))
+      }
+    }
+    # start arrow and sample id
+    if(i == 1){
+      start.mm = pad.length*2
+      grid.lines(x=unit(c(start.mm,start.mm),'mm'),y=unit(c(rh,0),'mm'),
+                 gp = gpar(lwd = 2, lineend = 'square', linejoin = 'round'))
+      grid.polygon(x=unit(c(start.mm, start.mm, start.mm-2), 'mm'),
+                   y=unit(c(0, 6, 6), 'mm'),
+                   gp=gpar(fill = 'black', lineend = 'square', linejoin = 'round'))
+      # sample id
+      grid.text(label = sname,
+                x=unit(start.mm-1,'mm'),
+                y=unit(rh-2,'mm'),
+                just = c('right','bottom'),
+                rot = 90,
+                gp = gpar(fontsize=10))
+
+    }
+
   }
+  if(dat.out) return(skel.df[,-3])
 }
 

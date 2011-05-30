@@ -1,5 +1,5 @@
-importFrom(grid, grid.newpage, pushViewport, viewport, grid.layout, 
-  unit, grid.segments, gpar, grid.lines, grid.polygon, grid.text)
+importFrom(grid, grid.newpage, pushViewport, viewport, grid.layout, seekViewport,
+  unit, grid.segments, gpar, grid.lines, grid.polygon, grid.text, vpTree, vpList)
 
 export(chron, hanning, read.ids, tbrm, crn.plot, i.detrend, read.rwl, wavelet, 
   cwt.filled.contour, i.detrend.series, rwi.stats, wavelet.plot, 

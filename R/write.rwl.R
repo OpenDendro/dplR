@@ -94,22 +94,21 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01)
     rwl.df.name = ifelse(rwl.df.width < 6,
       formatC(rwl.df.name, wid = 6, format = "f"),rwl.df.name)
 
-
     dec.str <- character(n.decades)
     for(i in 1:n.decades){
-      # 9-12 decade column
+      # 8-12 decade column (up to 4 numbers and a minus sign from long series)
       dec = decades[i]
       n.yrs = table(decades.vec%in%dec)[2]
       dec.yrs = yrs[decades.vec%in%dec]
-      # Pad to nchar 4 (no leading zero)
-      dec.yrs = formatC(dec.yrs, dig = 0, wid = 4, format = "f")
+      # Pad to nchar 5 (no leading zero)
+      dec.yrs = formatC(dec.yrs, dig = 0, wid = 5, format = "f")
 
       dec.rwl = series[decades.vec%in%dec]
       # Pad to nchar 6 (no leading zero)
       dec.rwl = round(dec.rwl,3) / prec
       dec.rwl = formatC(dec.rwl, dig = 0, wid = 6, format = "f")
 
-      dec.str[i] = paste(rwl.df.name,"  ",dec.yrs[1],paste(dec.rwl,sep = "",
+      dec.str[i] = paste(rwl.df.name," ",dec.yrs[1],paste(dec.rwl,sep = "",
         collapse = ""),sep="")
     }
     rwl.out = c(rwl.out,dec.str)

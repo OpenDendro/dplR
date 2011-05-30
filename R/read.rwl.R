@@ -53,6 +53,7 @@ function(fname, header=NULL)
   colnames(rw.mat)=as.character(series.ids)
   rownames(rw.mat)=min.year:max.year
 
+  cat(paste('Series','Id','First','Last\n',sep='\t'))
   for(i in 1:nseries){
     id=unique(dat[series.index==i,1])
     decade.yr=dat[series.index==i,2]
@@ -66,6 +67,7 @@ function(fname, header=NULL)
         yr=yr + 1
       }
     }
+  cat(paste(i,id,first.yr,yr-2,'\n',sep='\t'))
   }
   # Clean up NAs as either 999 or -9999
   if(any(rw.mat==-999,na.rm=TRUE) | any(rw.mat==999,na.rm=TRUE)) {
@@ -78,6 +80,7 @@ function(fname, header=NULL)
     rw.mat[rw.mat==-9999]=NA
     rw.mat[rw.mat==9999]=NA
   }
+  cat(paste('Prec is',prec,'\n',sep=' '))
   # Convert to mm
   rw.mat=rw.mat * prec
   # Fix internal NAs. These are coded as 0 in the DPL programs
@@ -90,17 +93,19 @@ function(fname, header=NULL)
   rw.mat=apply(rw.mat,2,fix.internal.na)
   # trim the front and back of the output file to remove blank rows. The
   # ham-handed approach below avoids removing areas with internal gaps such as
-  # those with floating, but datting segments.
+  # those with floating, but dated segments.
   #rw.mat=rw.mat[!apply(is.na(rw.mat),1,all),]
-  foo <- rw.mat[1:10,]
+  # subset first 11 years to trim out leading NAs
+  foo <- rw.mat[1:11,]
   foo.yrs <- as.numeric(rownames(foo))
   min.year0 <- min(foo.yrs[!apply(is.na(foo),1,all)])
-  foo <- rw.mat[(nrow(rw.mat)-10):nrow(rw.mat),]
+  # subset last 11 years to trim out ending NAs
+  foo <- rw.mat[(nrow(rw.mat)-11):nrow(rw.mat),]
   foo.yrs <- as.numeric(rownames(foo))
   max.year0 <- max(foo.yrs[!apply(is.na(foo),1,all)])
+  # trim
   yrs <- min.year0:max.year0
   rw.mat=rw.mat[as.numeric(rownames(rw.mat)) %in% yrs,]
   rw.df=as.data.frame(rw.mat)
   rw.df
 }
-

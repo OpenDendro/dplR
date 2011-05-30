@@ -2,7 +2,7 @@
 
 \alias{combine.rwl}
 
-\title{ Combine two sets of tree-ring data }
+\title{ Combine Two Sets of Tree-Ring Data }
 
 \description{ This function combines two \code{data.frame}s of tree-ring data
   into one \code{data.frame} maintaining the years as \code{rownames}.  }

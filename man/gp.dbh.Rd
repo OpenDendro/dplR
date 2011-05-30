@@ -1,7 +1,7 @@
 \name{gp.dbh}
 \docType{data}
 \alias{gp.dbh}
-\title{ Ponderosa pine stem diameters and bark thickness corresponding to gp.rwl }
+\title{ Ponderosa Pine Stem Diameters and Bark Thickness Corresponding to gp.rwl }
 \description{
 This dataset gives the diameter at breast height for each series that matches the series in \code{gp.rwl} - a dataset of ponderosa pine (\emph{Pinus ponderosa}) from the Gus Pearson Natural Area (GPNA) in northern Arizona, USA. Data are further described by Biondi and Qeadan (2008) and references therein.
 }

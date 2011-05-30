@@ -12,13 +12,12 @@ void readloop(int *series_index, int *decade,
   int min_year = *min_year_p;
   int rw_nrow = *rw_nrow_p;
   int rw_ncol = *rw_ncol_p;
-  int *yr_p;
 
   /* Convert between input and output formats */
   for(i=0; i<x_nrow; i++){
-    this_decade = *(decade++);
+    this_decade = decade[i];
     yr_idx = this_decade - min_year;
-    this_series = *(series_index++) - 1;
+    this_series = series_index[i] - 1;
     rw_idx = this_series*rw_nrow + yr_idx;
     x_idx = i;
     last_valid = this_decade - 1;
@@ -33,14 +32,12 @@ void readloop(int *series_index, int *decade,
 
     /* Keep track of the year span of each series */
     if(last_valid >= this_decade){
-      yr_p = first_yr + this_series;
-      if(this_decade < *yr_p)
-	*yr_p = this_decade;
-      yr_p = last_yr + this_series;
-      if(last_valid > *yr_p)
-	*yr_p = last_valid;
+      if(this_decade < first_yr[this_series])
+	first_yr[this_series] = this_decade;
+      if(last_valid > last_yr[this_series])
+	last_yr[this_series] = last_valid;
     }
   }
   for(i=0; i<rw_ncol; i++)
-    (*(last_yr++))--; /* (Assumed) end marker is not real data */
+    last_yr[i]--; /* (Assumed) end marker is not real data */
 }

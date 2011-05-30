@@ -1,7 +1,7 @@
 \name{gp.rwl}
 \docType{data}
 \alias{gp.rwl}
-\title{ Ponderosa pine ring widths from Gus Pearson Natural Area (GPNA)
+\title{ Ponderosa Pine Ring Widths from Gus Pearson Natural Area (GPNA)
   in northern Arizona, USA }
 \description{
 This dataset includes ring-width measurements for ponderosa pine (\emph{Pinus ponderosa}) increment cores collected at the Gus Pearson Natural Area (GPNA) in northern Arizona, USA. There are 58 series from 29 trees (2 cores per tree). Data are further described by Biondi and Qeadan (2008) and references therein.

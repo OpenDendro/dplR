@@ -1,7 +1,7 @@
 \name{gp.d2pith}
 \docType{data}
 \alias{gp.d2pith}
-\title{ Ponderosa pine distance to pith corresponding to gp.rwl }
+\title{ Ponderosa Pine Distance to Pith Corresponding to gp.rwl }
 \description{
 This dataset gives the distance to pith for each series (in mm) that matches the ring widths for \code{gp.rwl} - a dataset of ponderosa pine (\emph{Pinus ponderosa}) from the Gus Pearson Natural Area (GPNA) in northern Arizona, USA. Data are further described by Biondi and Qeadan (2008) and references therein.
 }

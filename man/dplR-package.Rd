@@ -6,14 +6,12 @@
   Dendrochronology Program Library in R
 }
 \description{
-  This package contains functions for performing some standard
-  tree-ring analyses.
+  This package contains functions for performing some standard tree-ring analyses.
 }
 \details{
 \tabular{ll}{
 Package: \tab dplR\cr
 Type: \tab Package\cr
-Date: \tab 2007-07-27\cr
 License: \tab GPL\cr
 }
 \emph{Main Functions}
@@ -21,11 +19,10 @@ License: \tab GPL\cr
     \item{\code{\link{read.rwl}}}{ reads rwl files }
     \item{\code{\link{detrend}}}{ detrends raw ring widths }
     \item{\code{\link{chron}}}{ builds chronologies }
-    \item{\code{\link{chron}}}{ builds chronologies }
     \item{\code{\link{corr.rwl.seg}}}{ crossdating function }
   }
 }
-\author{ Andy Bunn <andy.bunn@wwu.edu> with major contributions from Mikko Korpela and Franco Biondi }
+\author{ Andy Bunn <andy.bunn@wwu.edu> with major contributions from Mikko Korpela, Franco Biondi, and Christain Zang }
 \references{
   Cook, E. R. and Kairiukstis, L.A. (1990) \emph{Methods of
   Dendrochronology: Applications in the Environmental Sciences.} Springer.

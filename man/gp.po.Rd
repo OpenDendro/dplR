@@ -1,7 +1,7 @@
 \name{gp.po}
 \docType{data}
 \alias{gp.po}
-\title{ Ponderosa pine pith offsets corresponding to gp.rwl }
+\title{ Ponderosa Pine Pith Offsets Corresponding to gp.rwl }
 \description{
 This dataset gives the pith offsets that match the ring widths for \code{gp.rwl} - a dataset of ponderosa pine (\emph{Pinus ponderosa}) from the Gus Pearson Natural Area (GPNA) in northern Arizona, USA. Data are further described by Biondi and Qeadan (2008) and references therein.
 }

@@ -69,7 +69,7 @@
   Fritts, H.C. (2001) \emph{Tree Rings and Climate.} Blackburn. ISBN-13:
   978-1930665392.
 }
-\author{ Andy Bunn }
+\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{detrend}} }
 \examples{
   # Using a plausible representation of a tree-ring series

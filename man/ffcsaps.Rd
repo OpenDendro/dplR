@@ -2,8 +2,8 @@
 \alias{ffcsaps}
 \title{ Smoothing Spline with User-Specified Rigidity and Frequency Cutoff }
 \description{
-  Applies a smoothing spline to y with rigidity nyrs and a frequency response at
-  a wavelength of f.
+  Applies a smoothing spline to \code{y} with rigidity \code{nyrs} and a frequency response at
+  a wavelength of \code{f}.
 }
 \usage{
   ffcsaps(y,x=1:length(y),nyrs=length(y)/2,f=0.5)
@@ -28,8 +28,7 @@
 
 }
 \note{ DendroLab website: \url{http://dendrolab.org/} }
-\author{ Code provided by DendroLab based on programming by F. Qeadan and F. Biondi, University of Nevada Reno, USA and adapted for dplR
-  by Andy Bunn }
+\author{ Code provided by DendroLab based on programming by F. Qeadan and F. Biondi, University of Nevada Reno, USA and adapted for dplR by Andy Bunn. Patched and improved by Mikko Korpela. }
 
 \seealso{ \code{\link{hanning}} \code{\link{detrend}} }
 
@@ -46,7 +45,7 @@
 
   # Use first series from the Mesa Verde dataset
   data(co021)
-  series = co021[,1] #
+  series = co021[,1]
   series=series[!is.na(series)]
   plot(series,type='l',ylab='Ring Width (mm)',col='grey')
   lines(ffcsaps(series,nyrs=32),col='red',lwd=2)

@@ -68,8 +68,16 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01)
   # Loop through series and write each one
   nseries <- ncol(rwl.df)
   yrs.all = as.numeric(rownames(rwl.df))
+
+  # Sort years using increasing order, reorder rwl.df accordingly
+  yrs.order = sort.list(yrs.all)
+  yrs.all = yrs.all[yrs.order]
+  rwl.df = rwl.df[yrs.order,]
+
   rwl.out = character()
   na.str = ifelse(prec == 0.01, 9.99, -9.999)
+  missing.str = ifelse(prec == 0.01, -9.99, 0)
+  prec.rproc = ifelse(prec == 0.01, 100, 1000) # reciprocal of precision
   for(l in 1:nseries) {
     series = rwl.df[,l]
     yrs = yrs.all[!is.na(series)]
@@ -81,7 +89,10 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01)
     min.year = min(yrs)
     max.year = max(yrs)
     decades.vec = yrs%/%10 * 10
-    decades = unique(decades.vec)
+    # Output for completely missing decades can be disabled by using
+    # the alternate definition of the "decades" list
+    decades = seq(min(decades.vec),max(decades.vec),10)
+#    decades = unique(decades.vec)
     n.decades = length(decades)
 
     # 1-6
@@ -98,17 +109,53 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01)
     for(i in 1:n.decades){
       # 8-12 decade column (up to 4 numbers and a minus sign from long series)
       dec = decades[i]
-      n.yrs = table(decades.vec%in%dec)[2]
       dec.yrs = yrs[decades.vec%in%dec]
-      # Pad to nchar 5 (no leading zero)
-      dec.yrs = formatC(dec.yrs, dig = 0, wid = 5, format = "f")
-
       dec.rwl = series[decades.vec%in%dec]
+
+      # Find negative values and mark as missing data, but
+      # allow the negative "end of series" marker when prec == 0.001
+      neg.match = dec.rwl < 0
+      if (prec == 0.001 && i == n.decades)
+        neg.match[length(neg.match)] = FALSE 
+      dec.rwl[neg.match] = missing.str
+      
+      # Find missing data.
+      if (n.decades==1)
+        all.years = dec.yrs[1]:dec.yrs[length(dec.yrs)]
+      else if (i==1)
+        all.years = dec.yrs[1]:(dec+9)
+      else if (i==n.decades)
+        all.years = dec:dec.yrs[length(dec.yrs)]
+      else
+        all.years = dec:(dec+9)
+      missing.years = setdiff(all.years,dec.yrs)
+      # Mark missing data.
+      if (length(missing.years) > 0){
+        dec.yrs = c(dec.yrs,missing.years)
+        dec.rwl = c(dec.rwl,rep(missing.str,times=length(missing.years)))
+        dec.order = sort.list(dec.yrs)
+        dec.yrs = dec.yrs[dec.order]
+        dec.rwl = dec.rwl[dec.order]
+      }
+
+      # Pad to nchar 5 (no leading zero)
+      dec.year1 = formatC(dec.yrs[1], dig = 0, wid = 5, format = "f")
+
+      # Convert millimeters to the desired precision
+      dec.rwl = round(dec.rwl * prec.rproc, 3)
+
+      # Find and correct illegal uses of the stop marker
+      if (prec == 0.01){
+        end.match = dec.rwl == 999
+        if (i==n.decades)
+          end.match[length(end.match)] = FALSE
+        dec.rwl[end.match] = 1000
+      }
+
       # Pad to nchar 6 (no leading zero)
-      dec.rwl = round(dec.rwl,3) / prec
       dec.rwl = formatC(dec.rwl, dig = 0, wid = 6, format = "f")
 
-      dec.str[i] = paste(rwl.df.name," ",dec.yrs[1],paste(dec.rwl,sep = "",
+      dec.str[i] = paste(rwl.df.name," ",dec.year1,paste(dec.rwl,sep = "",
         collapse = ""),sep="")
     }
     rwl.out = c(rwl.out,dec.str)

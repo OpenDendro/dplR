@@ -57,7 +57,7 @@ cms <- function(rwl,po,c.hat.t=FALSE,c.hat.i=FALSE) {
   rwi = rwl
   c.vec = rep(NA,ncol(rwi))
   names(c.vec) <- colnames(rwca)
-  c.curve.df <- rwl.ord
+  c.curve.df <- rwca
   c.curve.df[,1:ncol(c.curve.df)] <- NA
   yrs = as.numeric(rownames(rwi))
   for(i in 1:ncol(rwca)){
@@ -66,7 +66,7 @@ cms <- function(rwl,po,c.hat.t=FALSE,c.hat.i=FALSE) {
     c.vec[i] = tmp[[2]]
     index = tmp[[1]]
     c.curve <- c(index[,2])
-    c.curve.df[1:length(c.curve),i] <- c.curve
+    c.curve.df[1:(po[i,2]+length(c.curve)),i] <- c(rep(NA,po[i,2]),c.curve)
     y = na.omit(rwca[,i])/c.curve
     first = series.yrs[1,i]
     last = series.yrs[2,i]

@@ -55,7 +55,7 @@
 \value{
   None. Invoked for side effect (file is written).
  }
-\author{ Andy Bunn }
+\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{write.crn}}, \code{\link{read.rwl}}
 }
 \examples{

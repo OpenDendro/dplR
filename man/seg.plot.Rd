@@ -13,14 +13,13 @@ seg.plot(rwl,...)
   \item{...}{ arguments to be passed to plot. }
 }
 \details{
-  This makes a simple plot of the length of each series in a tree-ring
-  chronology.
+  This makes a simple plot of the length of each series in a tree-ring dataset.
 }
 \value{
-  None. This function is invoked for its side effect, which is to produce a
-  plot.
+  None. This function is invoked for its side effect, which is to produce a plot.
 }
 \author{ Andy Bunn }
+\seealso{ \code{\link{spag.plot}} }
 \examples{
 
   data(ca533)

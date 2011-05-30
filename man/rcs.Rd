@@ -37,8 +37,8 @@ This attempts to remove the low frequency variability that is due to biological 
   Fritts, H.C. (2001) \emph{Tree Rings and Climate.} Blackburn. ISBN-13: 978-1930665392.
 }
 \note{ DendroLab website: \url{http://dendrolab.org/} }
-\author{ Andy Bunn based on code from Franco Biondi, DendroLab,
-  University of Nevada Reno, USA. }
+\author{ Code by DendroLab, University of Nevada Reno, USA and adapted for dplR
+  by Andy Bunn }
 \seealso{ \code{\link{detrend}}, \code{\link{chron}}, \code{\link{cms}},
   \code{\link{ffcsaps}} }
 \examples{

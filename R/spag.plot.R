@@ -13,11 +13,11 @@ spag.plot <- function(rwl,zfac=1,...){
   op=par(no.readonly=TRUE)
   par(mar=c(4,4,4,4) + 0.1,mgp=c(1.25,0.25,0),tcl=0.25)
   plot(yr,rwl[,1],type="n",ylim=c(0,nseries+max(rwl[nseries],na.rm=T)), 
-    axes=FALSE, ylab="",xlab="Year",...)
+    axes=FALSE, ylab="",xlab="Year")
   abline(h=1:nseries,col='grey')
   grid(ny = NA)
   for(i in seq(1,nseries)){
-    lines(yr,rwl[,i]+i,col='black')
+    lines(yr,rwl[,i]+i,...)
   }
   axis(2,at=seq(1,ncol(rwl),by=2),
     labels=colnames(rwl)[seq(1,ncol(rwl),by=2)],srt=45,

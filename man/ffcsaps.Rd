@@ -28,7 +28,7 @@
 
 }
 \note{ DendroLab website: \url{http://dendrolab.org/} }
-\author{ Code by DendroLab, University of Nevada Reno, USA and adapted for dplR
+\author{ Code provided by DendroLab based on work by F. Qeadan, University of Nevada Reno, USA and adapted for dplR
   by Andy Bunn }
 
 \seealso{ \code{\link{hanning}} \code{\link{detrend}} }

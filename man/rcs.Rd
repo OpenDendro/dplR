@@ -11,7 +11,13 @@
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows such as
     that produced by \code{\link{read.rwl}} }
-  \item{po}{ a \code{data.frame} containing two variables. Variable one (\code{series} in the example below) gives the series ID as either \code{characters} or \code{factors}. These must exactly match \code{colnames(rwl)}. Variable two (\code{pith.offset} in the example below) must be \code{integers} and give the years from the beginning of the core to the pith (or center) of the tree. }
+  \item{po}{ a \code{data.frame} containing two variables. Variable one
+    (\code{series} in the example below) gives the series ID as either
+    \code{characters} or \code{factors}. These must exactly match
+    \code{colnames(rwl)}. Variable two (\code{pith.offset} in the
+    example below) must be \code{integers} and give the years from the
+    beginning of the core to the pith (or center) of the tree. The
+    minimum value is 1. }
   \item{nyrs}{ a number giving the rigidity of the smoothing spline, defaults to 0.1 of length of the maximum cambial age (i.e., the length of the regional curve) if \code{nyrs} is \code{NULL}. }
   \item{f}{ a number between 0 and 1 giving the frequency response or wavelength cutoff. Defaults to 0.5. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust mean is calculated using \code{\link{tbrm}}. }

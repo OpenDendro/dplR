@@ -266,15 +266,18 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01, mapping.fname="", 
   }
   name.width = as.integer(name.width)
   year.width = as.integer(12-name.width-nchar(opt.space)) # year ends at col 12
-  
+
   col.names = fix.names(col.names, name.width, mapping.fname, mapping.append)
-  
+
   if(append)
     rwl.out = file(fname, "a")
   else
     rwl.out = file(fname, "w")
-  if(length(header)>0)
-    cat(hdr, "\n", file=rwl.out, sep="")
+  if(length(header)>0){
+    cat(hdr1, "\n", file=rwl.out, sep="")
+    cat(hdr2, "\n", file=rwl.out, sep="")
+    cat(hdr3, "\n", file=rwl.out, sep="")
+  }
   na.str = ifelse(prec == 0.01, 9.99, -9.999)
   missing.str = ifelse(prec == 0.01, -9.99, 0)
   prec.rproc = ifelse(prec == 0.01, 100, 1000) # reciprocal of precision
@@ -316,9 +319,9 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01, mapping.fname="", 
       # allow the negative "end of series" marker when prec == 0.001
       neg.match = dec.rwl < 0
       if (prec == 0.001 && i == n.decades)
-        neg.match[length(neg.match)] = FALSE 
+        neg.match[length(neg.match)] = FALSE
       dec.rwl[neg.match] = missing.str
-      
+
       # Find missing data.
       if (n.decades==1)
         all.years = dec.yrs[1]:dec.yrs[length(dec.yrs)]

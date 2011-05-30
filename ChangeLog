@@ -1,3 +1,12 @@
+2010-07-05 Andy  Bunn <andy.bunn@wwu.edu>
+* CHANGES IN dplR VERSION 1.3.5
+* Modified the help file for write.crn() so that the elev in the hdr will be written in a way that might
+  be more robust in terms of the ITRDB standard. But, it's very clunky and silly to depend on an unrelaible
+  standard. I also added some text to the help file for write.tucson() to indicate that the header should be thought
+  of as experimental. Thank goodness Mikko is working on getting tridas implemented.
+* Fixed a bug in rcs() where the rc was calculated wrong if none. The function implicitly assumed 
+  that at least one of the pith offsets would be 1. When all the pith offsets were >1 the function would crash
+   b/c of bad indexing.
 2010-05-13 Andy  Bunn <andy.bunn@wwu.edu>
 * CHANGES IN dplR VERSION 1.3.4
 * fixed a bug in detrend() where args nyrs and f were not being passed to detrend.series().

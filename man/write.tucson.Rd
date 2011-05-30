@@ -36,9 +36,13 @@
   This writes a standard rwl file as defined according to the standards of
   the ITRDB at \url{http://www.ncdc.noaa.gov/paleo/treeinfo.html}. This is the
   decadal or Tucson format. It is an ASCII file and machine readable by the
-  standard dendrochronology programs. Header information for the chronology can
+  standard dendrochronology programs. Header information for the rwl can
   be written according to the International Tree Ring Data Bank (ITRDB)
-  standard. The header information is given as a \code{list} and must be
+  standard. The header standard is not very reliable however and should
+  be though of as experimental here. Do not try to write headers using
+  dplR to submit to the ITRDB. When submitting to the ITRDB, you can
+  enter the metadata via their website. If you insist however, the
+  header information is given as a \code{list} and must be
   formatted with the following:
   \tabular{lrrr}{
     \emph{Description} \tab \emph{Name} \tab \emph{Class} \tab \emph{Max Width} \cr
@@ -47,7 +51,7 @@
     Species Code \tab spp.code \tab character \tab 4 \cr
     State or Country \tab state.country \tab character \tab 13 \cr
     Species \tab spp \tab character \tab 18 \cr
-    Elevation \tab elev \tab character or numeric \tab 5 \cr
+    Elevation \tab elev \tab character \tab 5 \cr
     Latitude \tab lat \tab character or numeric \tab 5 \cr
     Longitude \tab long \tab character or numeric \tab 5 \cr
     First Year \tab first.yr \tab character or numeric \tab 4 \cr
@@ -92,7 +96,7 @@
  co021.hdr <- list(site.id = "CO021",
     site.name = "SCHULMAN OLD TREE NO. 1, MESA VERDE",
     spp.code = "PSME", state.country = "COLORADO", spp = "DOUGLAS FIR",
-    elev = 2103, lat = 3712, long = -10830, first.yr = 1400,
+    elev = "2103M", lat = 3712, long = -10830, first.yr = 1400,
     last.yr = 1963, lead.invs = "E. SCHULMAN", comp.date = "")
  write.tucson(rwl.df = co021, fname = 'tmp.rwl', header = co021.hdr,
     append = FALSE, prec = 0.001)

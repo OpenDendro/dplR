@@ -18,19 +18,23 @@ rcs <- function(rwl,po,nyrs=NULL,f=0.5,biweight=TRUE,rc.out=FALSE,
   if(biweight){ ca.m = apply(rwca, 1, tbrm, C = 9) }
   else { ca.m = rowMeans(rwca, na.rm=TRUE) }
 
-  ca.m = ca.m[!is.na(ca.m)]
   # spline follows B&Q 2008 as 10%of the RC length
-  if(is.null(nyrs)) nyrs = floor(length(na.omit(ca.m)) * 0.1) 
-  rc = ffcsaps(y=ca.m,nyrs=nyrs,f=f)
-  # divide each series by curve and restore to cal years
+  if(is.null(nyrs)) nyrs = floor(length(na.omit(ca.m)) * 0.1)
+  tmp <- ffcsaps(y=na.omit(ca.m),nyrs=nyrs,f=f)
+  rc <- rep(NA,nrow(rwca))
+  rc[!is.na(ca.m)] <- tmp
+  # divide each series by curve
+  rwica <- rwca/rc
+  # and restore to cal years
   rwi = rwl
-  n.rc = length(rc)
   yrs = as.numeric(rownames(rwi))
   for(i in 1:ncol(rwca)){
-    y = rwca[1:n.rc,i]/rc
     first = series.yrs[1,i]
     last = series.yrs[2,i]
-    rwi[yrs %in% first:last,i] = na.omit(y)
+    # check
+    tmp <- na.omit(rwica[,i])
+    if(first+length(tmp) != last+1) { cat('indexing problem when restoring to cal years: first+length(tmp) == last+1 \n') }
+    rwi[yrs %in% first:last,i] = tmp
   }
   if(make.plot) {
     par(mar = c(4, 4, 4, 4) + 0.1, mgp = c(1.25, 0.25, 0),

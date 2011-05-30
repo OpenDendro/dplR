@@ -27,7 +27,8 @@ skel.plot(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = FALSE,
   relative to years t-1 and t+1. Note that this plots is a standard plot
   in dendrochronology and typically made by hand for visually crossdating
   series. This type of plot might be confusing to those not accustomed to
-  visual crossdating. See references for more information.
+  visual crossdating. See references for more information. The implementation
+  is based on Meko's (2002) skeleton ploting approach.
 
   The skeleton plot is made by calculating departures from high frequency
   growth for each year by comparing year t to the surrounding three years
@@ -55,6 +56,9 @@ skel.plot(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = FALSE,
   
   Sheppard, P.R. (2002) \emph{Crossdating Tree Rings Using Skeleton Plotting.}
   \url{http://www.ltrr.arizona.edu/skeletonplot/introcrossdate.htm}
+  
+  Meko, D. (2002) \emph{Tree-Ring MATLAB Toolbox.}
+  \url{http://www.mathworks.com/matlabcentral/}
 }
 \author{ Andy Bunn }
 \seealso{  \code{\link[grDevices]{Devices}}, \code{\link{hanning}}  }

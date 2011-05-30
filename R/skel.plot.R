@@ -14,7 +14,6 @@ function(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = FALSE,
     stop('Long series should be split into multiple plots')
   }
 
-
   # should wrap this into a function called skel.calc that returns the
   # dates and skel
 

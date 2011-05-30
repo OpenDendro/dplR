@@ -4,14 +4,14 @@
 
 \title{ Combine tree-ring data sets }
 
-\description{ This function combines any number of data.frames of tree-ring data
-  into one data.frame.  }
+\description{ This function combines any number of \code{data.frames} of tree-ring data
+  into one \code{data.frame}.  }
 
 \usage{ combine.rwl(x, y = NULL) }
 
-\arguments{ \item{x}{ either a data.frame to be combined with y, or a
-    list of data.frames to be combined. }
-  \item{y}{a data.frame to be combined with data.frame x.}}
+\arguments{ \item{x}{ either a \code{data.frame} to be combined with \code{y}, or a
+    \code{list} of \code{data.frames} to be combined. }
+  \item{y}{a \code{data.frame} to be combined with \code{data.frame} x.}}
 
 \value{ A \code{data.frame} with the series in columns and the years as
   rows. The keycodes are the column names and the years are the row

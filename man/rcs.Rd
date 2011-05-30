@@ -2,8 +2,7 @@
 \alias{rcs}
 \title{ Regional Curve Standardization }
 \description{
-  Detrend multiple ring-width series simultaneously using a regional
-  curve.
+  Detrend multiple ring-width series simultaneously using a regional curve.
 }
 \usage{
   rcs(rwl,po,nyrs=NULL,f=0.5,biweight=TRUE,rc.out=FALSE,

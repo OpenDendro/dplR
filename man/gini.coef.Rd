@@ -16,7 +16,7 @@
   all-lag measure of diversity in tree-ring records - typically detrended
   series. Lower values indicate lower diversity. The use of the Gini
   coefficient in dendrochronology is described by Biondi and Qeadan (2008).
-  See Handcock and Morris for more information.
+  See Handcock and Morris (1999) for more information.
 }
 \value{ the Gini coefficient.
 }

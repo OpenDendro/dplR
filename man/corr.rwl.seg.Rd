@@ -2,7 +2,7 @@
 \alias{corr.rwl.seg}
 \title{ Compute Correlations between Series }
 \description{
-  Computes the correlation between each tree-ring seriesin a rwl object.
+  Computes the correlation between each tree-ring series in a rwl object.
 }
 \usage{
   corr.rwl.seg(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRUE,

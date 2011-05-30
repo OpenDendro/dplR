@@ -210,7 +210,7 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01, mapping.fname="", 
   nseries <- ncol(rwl.df)
   yrs.all = as.numeric(rownames(rwl.df))
   col.names = colnames(rwl.df)
-  if(length(grep("^([a-z]|[0-9])+$", col.names)) != nseries)
+  if(length(grep("^([a-z]|[0-9])+$", col.names,ignore.case = TRUE)) != nseries)
     stop("Series names must only contain alphanumeric characters")
 
   # Sort years using increasing order, reorder rwl.df accordingly

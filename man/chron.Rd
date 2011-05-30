@@ -2,7 +2,7 @@
 \alias{chron}
 \title{Build Mean Value Chronology}
 \description{
-  This function builds a mean value chronology, typically from a data.frame
+  This function builds a mean value chronology, typically from a \code{data.frame}
   of detrended ring widths as produced by \code{\link{detrend}}.
 }
 \usage{

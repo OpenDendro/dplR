@@ -14,8 +14,8 @@
 }
 
 \arguments{
-  \item{x}{ a data.frame of tree-ring data with records in columns, and
-  years as rownames}
+  \item{x}{ a \code{data.frame} of tree-ring data with records in columns, and
+  years as rows. }
 }
 
 \details{ Gleichlaeufigkeit is a classical agreement test based on sign

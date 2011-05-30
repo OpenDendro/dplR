@@ -2,7 +2,7 @@
 \alias{spag.plot}
 \title{ Spaghetti Plot }
 \description{
-  Makes a spaghetti plot plot of tree-ring data.
+  Makes a spaghetti plot of tree-ring data.
 }
 \usage{
 spag.plot(rwl,zfac=1,...)

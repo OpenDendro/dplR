@@ -2,7 +2,7 @@
 \alias{hanning}
 \title{ Hanning Filter }
 \description{
-  Applies a Hanning filter of length n to x.
+  Applies a Hanning filter of length \code{n} to \code{x}.
 }
 \usage{
   hanning(x,n=7)

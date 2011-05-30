@@ -2,7 +2,7 @@
 \alias{read.ids}
 \title{ Read Site-Tree-Core Ids }
 \description{
-  This function tried to read site, tree and core ids from a rwl
+  This function tries to read site, tree, and core ids from a rwl
   \code{data.frame}.
 }
 \usage{

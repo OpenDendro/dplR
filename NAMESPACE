@@ -1,0 +1,7 @@
+importFrom(grid, grid.newpage, pushViewport, viewport, grid.layout, 
+  unit, grid.segments, gpar, grid.lines, grid.polygon, grid.text)
+
+export(chron, hanning, read.ids, tbrm, crn.plot, i.detrend, read.rwl, wavelet, 
+  cwt.filled.contour, i.detrend.series, rwi.stats, wavelet.plot, 
+  detrend, morlet, rwl.stats, write.crn, detrend.series, read.crn, 
+  seg.plot, skel.plot, write.rwl)

@@ -16,7 +16,7 @@ chron(x, prefix = NULL, biweight = TRUE, prewhiten = FALSE)
   \item{biweight}{Logical flag. If TRUE then a robust is calculated
     using \code{\link{tbrm}.}}
   \item{prewhiten}{Logical flag. If TRUE each series is whitened using
-      \code{\link[stats]{ar}} prior to averaging.}}
+      \code{\link[stats]{ar}} prior to averaging.}
 }
 \details{
   This either averages the rows of the \code{data.frame} using a mean or a

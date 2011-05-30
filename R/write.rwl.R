@@ -1,14 +1,7 @@
-`write.crn` <-
-function(crn, fname, header=NULL, append=FALSE)
+`write.rwl` <-
+function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01)
 {
-  if(ncol(crn) != 2) stop("input should only have 2 cols")
-
-  if(any(is.na(crn))) {
-    crn[is.na(crn[,1]),2] = 0
-    crn[is.na(crn[,1]),1] = 9.99
-    print(head(crn))
-  }
-
+  if(!(prec == 0.01 | prec == 0.001)) stop('prec must eq 0.01 or 0.001')
   if(append) {
     if(!file.exists(fname)) stop("fname does not exist, can\'t append")
     if(length(header)>0) stop("bad idea to append with header")
@@ -72,73 +65,53 @@ function(crn, fname, header=NULL, append=FALSE)
     hdr = c(hdr1,hdr2,hdr3)
   }
 
-  yrs = as.numeric(rownames(crn))
-  min.year = min(yrs)
-  max.year = max(yrs)
-  span = max.year - min.year + 1
-  decades.vec = yrs%/%10 * 10
-  decades = unique(decades.vec)
-  n.decades = length(decades)
-  # 1-6
-  crn.name = colnames(crn)[1]
-  crn.width = nchar(crn.name)
-  # Pad to six
-  # If crn.width > 6, truncate
-  crn.name = ifelse(crn.width > 6, substr(crn.name, 1, 6),crn.name)
-  # Pad to nchar 4 (no leading zero)
-  crn.name = ifelse(crn.width < 6,
-    formatC(crn.name, wid = 6, format = "f"),crn.name)
-    
-
-  dec.str <- character(n.decades)
-  for(i in 1:n.decades){
-    # 7-10 decade column
-    dec = decades[i]
-    n.yrs = table(decades.vec%in%dec)[2]
-    dec.yrs = yrs[decades.vec%in%dec]
+  # Loop through series and write each one
+  nseries <- ncol(rwl.df)
+  yrs.all = as.numeric(rownames(rwl.df))
+  rwl.out = character()
+  na.str = ifelse(prec == 0.01, "   999", " -9999")
+  for(l in 1:nseries) {
+    series = rwl.df[,l]
+    yrs = yrs.all[!is.na(series)]
+    series = series[!is.na(series)]
+    min.year = min(yrs)
+    max.year = max(yrs)
+    span = max.year - min.year + 1
+    decades.vec = yrs%/%10 * 10
+    decades = unique(decades.vec)
+    n.decades = length(decades)
+    # 1-6
+    rwl.df.name = colnames(rwl.df)[l]
+    rwl.df.width = nchar(rwl.df.name)
+    # Pad to six
+    # If rwl.df.width > 6, truncate
+    rwl.df.name = ifelse(rwl.df.width > 6, substr(rwl.df.name, 1, 6),rwl.df.name)
     # Pad to nchar 4 (no leading zero)
-    dec.yrs = formatC(dec.yrs, dig = 0, wid = 4, format = "f")
+    rwl.df.name = ifelse(rwl.df.width < 6,
+      formatC(rwl.df.name, wid = 6, format = "f"),rwl.df.name)
 
-    dec.rwi = crn[decades.vec%in%dec,1]
-    # Pad to nchar 4 (no leading zero)
-    dec.rwi = round(dec.rwi,3) * 1000
-    dec.rwi = formatC(dec.rwi, dig = 0, wid = 4, format = "f")
 
-    # Pad to nchar 3 (no leading zero)
-    dec.samp.depth = crn[decades.vec%in%dec,2]
-    dec.samp.depth = formatC(dec.samp.depth, dig = 0, wid = 3, format = "f")
-    # Pad front end
-    if(i == 1){
-      yrs2start <- 10-n.yrs
-      if(yrs2start !=0){
-        tmp <- paste("9990","  0",sep="")
-        if(yrs2start > 1){
-          for(k in 2:yrs2start){
-            tmp = paste(tmp,"9990","  0",sep="")
-          }
-        }
-        dec.str[i] = paste(crn.name,dec.yrs[1],tmp,dec.rwi[1],dec.samp.depth[1],sep="")
-      }
-      else {
-        dec.str[i] = paste(crn.name,dec.yrs[1],dec.rwi[1],dec.samp.depth[1],sep="")
-      }
+    dec.str <- character(n.decades)
+    for(i in 1:n.decades){
+      # 9-12 decade column
+      dec = decades[i]
+      n.yrs = table(decades.vec%in%dec)[2]
+      dec.yrs = yrs[decades.vec%in%dec]
+      # Pad to nchar 4 (no leading zero)
+      dec.yrs = formatC(dec.yrs, dig = 0, wid = 4, format = "f")
+
+      dec.rwl = series[decades.vec%in%dec]
+      # Pad to nchar 6 (no leading zero)
+      dec.rwl = round(dec.rwl,3) / prec
+      dec.rwl = formatC(dec.rwl, dig = 0, wid = 6, format = "f")
+
+      dec.str[i] = paste(rwl.df.name,"  ",dec.yrs[1],paste(dec.rwl,sep = "",
+        collapse = ""),sep="")
     }
-    else {
-      dec.str[i] = paste(crn.name,dec.yrs[1],dec.rwi[1],dec.samp.depth[1],sep="")
-    }
-    for(j in 2:n.yrs){
-      j.yr = dec.yrs[j]
-      j.rwi = dec.rwi[j]
-      j.samp.depth = dec.samp.depth[j]
-      dec.str[i] = paste(dec.str[i],j.rwi,j.samp.depth,sep="")
-    }
+    # Finish last decade with na.str
+    dec.str[i] = paste(dec.str[i],na.str,sep="")
+    rwl.out = c(rwl.out,dec.str)
   }
-  # Finish last decade with 9990 as NA and 0 as samp depth.
-  yrs.left <- 10-n.yrs
-  for(k in 1:yrs.left){
-    dec.str[i] = paste(dec.str[i],"9990","  0",sep="")
-  }
-  if(length(header)>0) dec.str = c(hdr,dec.str)
-  cat(dec.str , file = fname, sep = "\n", append=append)
+  if(length(header)>0) rwl.out = c(hdr,rwl.out)
+  cat(rwl.out , file = fname, sep = "\n", append=append)
 }
-

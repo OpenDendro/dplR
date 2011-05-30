@@ -5,24 +5,24 @@ function(fname, header=NULL)
   dat=file(fname,"r")
   if(is.null(header)){
     # Try to determine if the file has a header. This is failable.
-    # Find out if an ITRDB header  (3 lines) in file
+    # 3 lines in file
     hdr1=readLines(dat,n=1)
     if(nchar(hdr1) < 12) stop("First line in .rwl file ends before col 12")
     yrcheck=suppressWarnings(as.numeric(substr(hdr1,7,10)))
     if(is.null(yrcheck) | length(yrcheck)!=1 | is.na(yrcheck) |
        yrcheck < -1e04 | yrcheck > 1e04) {
       cat("There appears to be a header in the rwl file\n")
-      ihead=TRUE
+      is.head=TRUE
     }
     else {
-     	ihead=FALSE # No header lines
+     	is.head=FALSE # No header lines
       cat("There does not appear to be a header in the rwl file\n")
     }
     close(dat)
     dat=file(fname,"r")
   }
-  else ihead = header
-  if(ihead){
+  else is.head = header
+  if(is.head){
     # Read 4th line - should be first data line
     dat1=readLines(dat,n=4)[-c(1:3)]
   }
@@ -33,7 +33,7 @@ function(fname, header=NULL)
   }
   close(dat)
 
-  skip.lines=ifelse(ihead,3,0)
+  skip.lines=ifelse(is.head,3,0)
   dat=read.fwf(fname,c(8,4,rep(6,10)),skip=skip.lines,strip.white=TRUE,
                   blank.lines.skip=TRUE)
   # Remove any blank lines at the end of the file, for instance

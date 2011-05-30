@@ -1,26 +1,27 @@
-\name{write.crn}
-\alias{write.crn}
+\name{write.rwl}
+\alias{write.rwl}
 \title{ Write Tucson Format Chronology File }
 \description{
   This function writes a chronology to a Tucson (decadal) format file.
 }
 \usage{
-  write.crn(crn, fname, header=NULL, append=FALSE)
+  write.rwl(rwl.df, fname, header=NULL, append=FALSE, prec=0.01)
 }
 \arguments{
-  \item{crn}{ a \code{data.frame} containing a tree-ring chronology with two
-  columns of the type produced by \code{\link{chron}}. The first column
-  contains the mean value chronology, the second column gives the sample depth.
-  Years for the chronology are determined from the row names. The chronology
-  ID is determined from the first column name.}
-  \item{fname}{ a character vector giving the file name of the crn file. }
+  \item{rwl.df}{ a \code{data.frame} containing tree-ring ring widths with the
+  series in columns and the years as rows. The series ids are the column names
+  and the years are the row names. This type of \code{data.frame} is
+  produced by \code{\link{read.rwl}}. }
+  \item{fname}{ a character vector giving the file name of the rwl file. }
   \item{header}{ a list giving information for the header of the file.
   If NULL then no header information will be written. }
   \item{append}{ logical flag indicating whether to append this chronology to
   an existing file. }
+  \item{prec}{ \code{numeric} indicating the precision of the output file. -
+  This must be equal to either 0.01 or 0.001 (units are in mm). }
 }
 \details{
-  This writes a standard crn file as defined according to the standards of
+  This writes a standard rwl file as defined according to the standards of
   the ITRDB at \url{http://www.ncdc.noaa.gov/paleo/treeinfo.html}. This is the
   decadal or Tucson format. It is an ASCII file and machine readable by the
   standard dendrochronology programs. Header information for the chronology can
@@ -47,36 +48,26 @@
   when written. Not that lat and long are really lat*100 or long*100 and given
   as integers. E.g., 37 degrees 30 minutes would be given as 3750.
 
-  This function takes a single chronology with sample depth as input. This means
-  that is will fail if given output from \code{\link{chron}} where
-  \code{prewhiten = TRUE}. However, more than one chronology can be appended to
-  the bottom of an existing file (e.g., standard and residual) with a second
-  call to \code{write.crn}. However, the ITRDB recommends saving and publishing
-  only one chronology per file. The examples section shows how to circumvent
-  this. The output from this file is suitable for publication on the ITRDB.
+  Series can be appended to the bottom of an existing file with a second
+  call to \code{write.rwl}. The output from this file is suitable for
+  publication on the ITRDB.
 }
 \value{
   None. Invoked for side effect (file is written).
  }
 \author{ Andy Bunn }
-\seealso{ \code{\link{chron}}, \code{\link{read.crn}}
+\seealso{ \code{\link{write.crn}}, \code{\link{read.rwl}}
 }
 \examples{
-
-  data(ca533)
-  ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
-  ca533.crn <- chron(ca533.rwi, prefix = "CAM")
-  write.crn(ca533.crn,"tmp.crn")
-  # Put the standard and residual chronologies in a single file
-  # with ITRDB header info on top. Not reccomended.
-  ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)
-  ca533.hdr <- list(site.id = "CAM", site.name = "Campito Mountain",
-    spp.code = "PILO", state.country = "California", spp = "Bristlecone Pine",
-    elev = 3400, lat = 3730, long = -11813, first.yr = 626, last.yr = 1983,
-    lead.invs = "Donald A. Graybill, V.C. LaMarche, Jr.",
-    comp.date = "Nov1983")
-  write.crn(ca533.crn[,-2],"tmp.crn", header = ca533.hdr)
-  write.crn(ca533.crn[,-1],"tmp.crn", append = TRUE)
+ data(co021)
+ co021.hdr <- list(site.id = "CO021",
+    site.name = "SCHULMAN OLD TREE NO. 1, MESA VERDE",
+    spp.code = "PSME", state.country = "COLORADO", spp = "DOUGLAS FIR",
+    elev = 2103, lat = 3712, long = -10830, first.yr = 1400, last.yr = 1963,
+    lead.invs = "E. SCHULMAN",
+    comp.date = "")
+ write.rwl(rwl.df = co021, fname = 'tmp.rwl', header=co021.hdr,
+    append=FALSE,prec=0.001)
 
 }
 \keyword{ IO }

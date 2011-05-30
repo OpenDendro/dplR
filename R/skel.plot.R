@@ -5,13 +5,6 @@ function(y)
   y=y[!is.na(y)]
   yr.vec=1:length(y)
   if(!is.null(names(y))) yr.vec=as.numeric(names(y))
-  hanning=function (x,n){
-    j=0:(n-1)
-    win=0.5*(1-cos(2*pi*j/(n-1)))
-    win=win/sum(win)
-    y=filter(x,win)
-    as.vector(y)
-  }
   y.dt=hanning(y,9)
 
   z=rep(NA,length(y))

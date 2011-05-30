@@ -11,17 +11,17 @@ function(fname, header=NULL)
     if(is.null(yrcheck) | length(yrcheck)!=1 | is.na(yrcheck) |
        yrcheck < -1e04 | yrcheck > 1e04) {
       cat("There appears to be a header in the crn file\n")
-      ihead=TRUE
+      is.head=TRUE
     }
     else {
       cat("There does not appear to be a header in the crn file\n")
-     	ihead=FALSE # No header lines
+     	is.head=FALSE # No header lines
     }
     close(dat)
     dat=file(fname,"r")
   }
-  else ihead = header
-  if(ihead){
+  else is.head = header
+  if(is.head){
     # Read 4th line - should be first data line
     dat1=readLines(dat,n=4)[-c(1:3)]
   }
@@ -37,7 +37,7 @@ function(fname, header=NULL)
   nlines=length(lastline)
   lastline=lastline[nlines]
   # Read file
-  skip.lines=ifelse(ihead,3,0)
+  skip.lines=ifelse(is.head,3,0)
   # Get chon stats if needed
   chron.stats=read.fwf(fname,c(6,4,6,6,6,7,9,9,10),
     skip=nlines+skip.lines,strip.white=TRUE)

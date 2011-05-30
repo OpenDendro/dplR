@@ -3,13 +3,13 @@ citEntry(entry="Article",
          author       = "Andy Bunn",
          organization = "Western Washington University",
          address      = "Bellingham, WA, USA",
-         year         = "2007",
+         year         = "2008",
          journal      = "Dendrochronolgia",
-         note         = "In Review",
+         note         = "In Press",
          
          textVersion = 
-         paste("Bunn, A.G. (2007). ", 
-               "The Dendrochronology Program Library in R (dplR). ",
-               "Dendrochronolgia. In Review.",
+         paste("Bunn, A.G. (2008). ", 
+               "A Dendrochronology Program Library in R (dplR). ",
+               "Dendrochronolgia. In Press.",
                sep="")
          )

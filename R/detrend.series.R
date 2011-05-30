@@ -59,7 +59,8 @@ function(y,y.name=NULL,make.plot=TRUE,method=c("Spline","ModNegExp","Mean"))
     plot(resids$Spline,type="l",col="green",main="Spline",
          xlab="Age (Yrs)",ylab="RWI")
     abline(h=1)
-    plot(resids$ModNegExp,type="l",col="red",main="NEC or Straight Line",
+    plot(resids$ModNegExp,type="l",col="red",
+         main="Neg. Exp. Curve or Straight Line",
          xlab="Age (Yrs)",ylab="RWI")
     abline(h=1)
     plot(resids$Mean,type="l",col="blue",main="Horizontal Line (Mean)",

@@ -6,7 +6,7 @@
 This dataset gives the distance to pith for each series (in mm) that matches the ring widths for \code{gp.rwl} - a dataset of ponderosa pine (\emph{Pinus ponderosa}) from the Gus Pearson Natural Area (GPNA) in northern Arizona, USA. Data are further described by Biondi and Qeadan (2008) and references therein.
 }
 \usage{gp.d2pith}
-\format{A \code{data.frame} containing series ids in column 1 (\code{series}) and the distance to the center of the tree in (\code{d2pith}). This can be used together with the ring widths to calculate the area of each ring.
+\format{A \code{data.frame} containing series ids in column 1 (\code{series}) and the distance (in mm) from the innermost ring to the pith of the tree (\code{d2pith}). This can be used together with the ring widths to calculate the area of each ring.
 }
 \source{DendroLab, University of Nevada Reno, USA.
   \url{http://dendrolab.org/}

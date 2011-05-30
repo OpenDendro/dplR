@@ -1,0 +1,23 @@
+\name{read.compact}
+\alias{read.compact}
+\title{ Read DPL Compact Format Ring Width File }
+\description{
+  This function reads in a DPL compact format file of ring widths.
+}
+\usage{
+  read.compact(fname)
+}
+\arguments{
+  \item{fname}{ a character vector giving the file name of the rwl file. }
+}
+\details{
+  This function should be able to read files written by the Dendrochronology
+  Program Library (DPL) in its compact format.
+}
+\value{
+  A \code{data.frame} with the series in columns and the years as rows. The
+  series ids are the column names and the years are the row names.
+ }
+\author{ Mikko Korpela }
+\seealso{ \code{\link{read.rwl}}, \code{\link{read.tucson}} }
+\keyword{ IO }

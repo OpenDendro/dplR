@@ -1,30 +1,31 @@
 \name{read.rwl}
 \alias{read.rwl}
-\title{ Read Tucson Format Ring Width File }
+\title{ Read Ring Width File }
 \description{
-  This function reads in a Tucson (decadal) format file of ring widths (.rwl).
+  This function reads in a file of ring widths (.rwl) in one of the
+  available formats.
 }
 \usage{
-  read.rwl(fname, header=NULL, long=FALSE)
+  read.rwl(fname, format="auto", ...)
 }
 \arguments{
   \item{fname}{ a character vector giving the file name of the rwl file. }
-  \item{header}{ logical flag indicating whether the file has a header.
-  If NULL then the function will attempt to determine if a header exists }
-  \item{long}{ logical flag indicating whether dates in file span 0 CE and
-  therefore use negative numbers.If true only the first 7 characters can be
-  used for series ids. If \code{FALSE} then series ids can be up to 8
-  characters.}
+  \item{format}{ a character vector giving the format. This must be
+    "auto" (automatic detection), "tucson", or "compact". Automatic
+    format detection is the default. }
+  \item{...}{ arguments specific to the function implementing the
+    operation for the chosen format. }
 }
 \details{
-  This reads in a standard rwl file as defined according to the standards of
-  the ITRDB at \url{http://www.ncdc.noaa.gov/paleo/treeinfo.html}. Despite
-  the standards at the ITRDB, this occasionally fails due to formatting
-  problems.
+  This is a simple wrapper to the functions actually implementing the
+  read operation.  See \code{\link{read.tucson}} and
+  \code{\link{read.compact}}.
 }
 \value{
   A \code{data.frame} with the series in columns and the years as rows. The
   series ids are the column names and the years are the row names.
  }
-\author{ Andy Bunn. Patched and greatly improved by Mikko Korpela. }
+\author{ Mikko Korpela }
+\seealso{ \code{\link{read.tucson}}, \code{\link{read.compact}},
+  \code{\link{write.rwl}} }
 \keyword{ IO }

@@ -5,8 +5,9 @@
 void readloop(int *series_index, int *decade,
 	      int *x, int *x_nrow_p, int *x_ncol_p, int *min_year_p,
 	      double *rw_mat, int *rw_nrow_p, int *rw_ncol_p,
-	      int *first_yr, int *last_yr){
+	      int *first_yr, int *last_yr, int *prec_rproc){
   int i,j,yr_idx,rw_idx,x_idx,this_series,this_val,this_decade,last_valid;
+  double stop_marker;
   int x_nrow = *x_nrow_p;
   int x_ncol = *x_ncol_p;
   int min_year = *min_year_p;
@@ -38,6 +39,12 @@ void readloop(int *series_index, int *decade,
 	last_yr[this_series] = last_valid;
     }
   }
-  for(i=0; i<rw_ncol; i++)
-    last_yr[i]--; /* (Assumed) end marker is not real data */
+  for(i=0; i<rw_ncol; i++){
+    last_yr[i]--; /* (Assumed) stop marker is not real data */
+    stop_marker = rw_mat[i*rw_nrow+last_yr[i]-min_year+1];
+    if(stop_marker == 999)
+      prec_rproc[i] = 100;
+    else if(stop_marker == -9999)
+      prec_rproc[i] = 1000;
+  }
 }

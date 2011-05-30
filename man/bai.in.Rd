@@ -2,7 +2,7 @@
 \alias{bai.in}
 \title{ Basal Area Increment (Inside Out) }
 \description{
-  Convert multiple ring-width series to basal area increment (ring area) going from the pith to the bark.
+  Convert multiple ring-width series to basal area increment (i.e., ring area) going from the pith to the bark.
 }
 \usage{
   bai.in(rwl,d2pith=NULL)

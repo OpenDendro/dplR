@@ -58,7 +58,7 @@
 \value{
   None. Invoked for side effect (file is written).
  }
-\author{ Andy Bunn }
+\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{chron}}, \code{\link{read.crn}}
 }
 \examples{

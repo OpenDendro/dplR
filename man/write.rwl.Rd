@@ -5,7 +5,8 @@
   This function writes a chronology to a Tucson (decadal) format file.
 }
 \usage{
-  write.rwl(rwl.df, fname, header=NULL, append=FALSE, prec=0.01)
+  write.rwl(rwl.df, fname, header=NULL, append=FALSE, prec=0.01,
+  mapping.fname="", mapping.append=FALSE)
 }
 \arguments{
   \item{rwl.df}{ a \code{data.frame} containing tree-ring ring widths with the
@@ -19,6 +20,13 @@
   an existing file. }
   \item{prec}{ \code{numeric} indicating the precision of the output file. -
   This must be equal to either 0.01 or 0.001 (units are in mm). }
+  \item{mapping.fname}{ a \code{character} vector of length one giving
+  the file name of an optional output file showing the mapping between
+  input and output series ids. The mapping is only printed for those ids
+  that are transformed beyond simple truncation. An empty name (the
+  default) disables output. }
+  \item{mapping.append}{ \code{logical} flag indicating whether to
+  append the description of the altered series ids to an existing file. }
 }
 \details{
   This writes a standard rwl file as defined according to the standards of
@@ -51,6 +59,14 @@
   Series can be appended to the bottom of an existing file with a second
   call to \code{write.rwl}. The output from this file is suitable for
   publication on the ITRDB.
+
+  The function is capable of altering excessively long and/or duplicate
+  series ids to fit the Tucson specification. A simple truncation of
+  names is done without warning if necessary, but more complex
+  operations (i.e. name partially replaced or augmented with an
+  automatically generated suffix) produce warnings. In that case, the
+  user may wish to print a list of these more complex renamings (see
+  Arguments).
 }
 \value{
   None. Invoked for side effect (file is written).

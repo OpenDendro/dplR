@@ -9,7 +9,6 @@ function(fname, header=NULL,long=FALSE)
     hdr1=readLines(dat,n=1)
     if(nchar(hdr1) < 12) stop("First line in .rwl file ends before col 12")
     yrcheck=suppressWarnings(as.numeric(substr(hdr1,9,12)))
-    print(yrcheck)
     if(is.null(yrcheck) | length(yrcheck)!=1 | is.na(yrcheck) |
        yrcheck < -1e04 | yrcheck > 1e04) {
       cat("There appears to be a header in the rwl file\n")
@@ -19,8 +18,7 @@ function(fname, header=NULL,long=FALSE)
       is.head=FALSE # No header lines
       cat("There does not appear to be a header in the rwl file\n")
     }
-    close(dat)
-    dat=file(fname,"r")
+    seek(dat, where=0, origin="start")
   }
   else is.head = header
   if(is.head){
@@ -56,26 +54,31 @@ function(fname, header=NULL,long=FALSE)
   min.year=(min(dat[,2]) %/% 10) * 10
   max.year=((max(dat[,2])+10) %/% 10) * 10
   span=max.year - min.year + 1
-  rw.mat=matrix(NA,ncol=nseries,nrow=span)
-  colnames(rw.mat)=as.character(series.ids)
-  rownames(rw.mat)=min.year:max.year
 
-  cat(paste('Series','Id','First','Last\n',sep='\t'))
+  rw.vec=NA*vector(mode="numeric", length=nseries*span)
+  series.min=rep.int(as.integer(max.year+1), nseries)
+  series.max=rep.int(as.integer(min.year-1), nseries)
+  x=as.matrix(dat[,-c(1,2)])
+  decade.yr=dat[,2]
+  .C(rwl.readloop,
+     series.index,
+     decade.yr,
+     as.vector(x, mode="integer"),
+     nrow(x),
+     ncol(x),
+     as.integer(min.year),
+     rw.vec,
+     as.integer(span),
+     as.integer(nseries),
+     series.min,
+     series.max,
+     NAOK=TRUE, DUP=FALSE)
   for(i in 1:nseries){
-    id=unique(dat[series.index==i,1])
-    decade.yr=dat[series.index==i,2]
-    first.yr=dat[series.index==i,2][1]
-    x=dat[series.index==i,-c(1,2)]
-    for(j in 1:nrow(x)) {
-      yr=decade.yr[j]
-      for(k in 1:ncol(x)){
-        if(is.na(x[j,k])) break
-        rw.mat[as.character(yr),i]=x[j,k]
-        yr=yr + 1
-      }
-    }
-  cat(paste(i,id,first.yr,yr-2,'\n',sep='\t'))
+    cat(paste(i,series.ids[i],series.min[i],series.max[i],'\n',sep='\t'))
   }
+  rw.mat=matrix(rw.vec,ncol=nseries,nrow=span)
+  rownames(rw.mat)=min.year:max.year
+  
   # Clean up NAs as either 999 or -9999
   if(any(rw.mat==-999,na.rm=TRUE) | any(rw.mat==999,na.rm=TRUE)) {
     prec=0.01
@@ -90,29 +93,30 @@ function(fname, header=NULL,long=FALSE)
   cat(paste('Prec is',prec,'\n',sep=' '))
   # Convert to mm
   rw.mat=rw.mat * prec
-  # Fix internal NAs. These are coded as 0 in the DPL programs
-  fix.internal.na=function(x){
-    for(i in 2:length(x)){
-      if(!is.na(x[i-1])&is.na(x[i])&!is.na(x[i+1])) x[i]=0
-    }
-    x
-  }
-  rw.mat=apply(rw.mat,2,fix.internal.na)
   # trim the front and back of the output file to remove blank rows. The
   # ham-handed approach below avoids removing areas with internal gaps such as
   # those with floating, but dated segments.
   #rw.mat=rw.mat[!apply(is.na(rw.mat),1,all),]
   # subset first 11 years to trim out leading NAs
-  foo <- rw.mat[1:11,]
+  foo <- as.matrix(rw.mat[1:11,])
   foo.yrs <- as.numeric(rownames(foo))
   min.year0 <- min(foo.yrs[!apply(is.na(foo),1,all)])
   # subset last 11 years to trim out ending NAs
-  foo <- rw.mat[(nrow(rw.mat)-11):nrow(rw.mat),]
+  foo <- as.matrix(rw.mat[(nrow(rw.mat)-11):nrow(rw.mat),])
   foo.yrs <- as.numeric(rownames(foo))
   max.year0 <- max(foo.yrs[!apply(is.na(foo),1,all)])
   # trim
   yrs <- min.year0:max.year0
-  rw.mat=rw.mat[as.numeric(rownames(rw.mat)) %in% yrs,]
+  rw.mat=as.matrix(rw.mat[as.numeric(rownames(rw.mat)) %in% yrs,])
+  # Fix internal NAs. These are coded as 0 in the DPL programs
+  fix.internal.na=function(x){
+    for(i in 2:(length(x)-1)){
+      if(!is.na(x[i-1])&is.na(x[i])&!is.na(x[i+1])) x[i]=0
+    }
+    x
+  }
+  rw.mat=apply(rw.mat,2,fix.internal.na)
   rw.df=as.data.frame(rw.mat)
+  colnames(rw.df)=as.character(series.ids)
   rw.df
 }

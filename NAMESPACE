@@ -1,3 +1,5 @@
+useDynLib(dplR, rwl.readloop = readloop)
+
 import(lattice)
 
 importFrom(grid, grid.newpage, pushViewport, viewport, grid.layout, seekViewport,

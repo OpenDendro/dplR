@@ -1,5 +1,146 @@
+# Internal variable.
+# Create a list of R expressions. format.rwl[[i]], when evaluated
+# (later), returns a string of i concatenated ring widths (6
+# characters each).  By having the code here, some time is saved if
+# write.rwl.R is called multiple times. Downside: this slows down the
+# loading of the library a tiny bit. The list of expressions could
+# easily be written open. While these for loops are slower, they are
+# arguably a cleaner solution, because one sees the systematic
+# structure of the formatting expressions.
+format.rwl = list()
+for (i in 1:10){
+  format.str =
+    paste("sprintf(\"", paste(rep("%6.0f", i),collapse=""), "\"", sep="")
+  for (j in 1:i){
+    format.str = paste(format.str, ",dec.rwl[", j, "]", sep="")
+  }
+  format.rwl[[i]] = parse(text=paste(format.str, ")", sep=""))
+}
+
+# Internal function.
+# Increment the given number (vector) x by one in the given base.
+# Well, kind of: we count up to and including base (not base-1), and
+# the smallest digit is one. Basically, we have a shift of one because
+# of array indices starting from 1 instead of 0.  In case another
+# digit is needed in the front, vector x grows.
+count.base <- function(x, base){
+  n.x = length(x)
+  pos = n.x
+  x[pos] = x[pos] + 1
+  while (x[pos] == base + 1){
+    x[pos] = 1
+    if (pos == 1){
+      temp = vector(mode="integer", length=n.x+1)
+      temp[2:(n.x+1)] = x
+      pos = 2
+      x = temp
+    }
+    x[pos-1] = x[pos-1] + 1
+    pos = pos - 1
+  }
+  x
+}
+
+# Internal function.
+# Compose a new name by attaching a suffix, which may partially
+# replace the original name depending on the limit imposed on the
+# length of names.
+compose.name <- function(orig.name, alphabet, idx, limit){
+  idx.length = length(idx)
+  if (idx.length > limit){
+    new.name = ""
+  } else{
+    last.part = paste(alphabet[idx], collapse="")
+    first.part = substr(orig.name, 1, limit-idx.length)
+    new.name = paste(first.part, last.part, sep="")
+  }
+  new.name
+}
+
+# Internal function.
+# Fix names so that they are unique and no longer than the given
+# length.  A reasonable effort will be done in the search for a set of
+# unique names, although some stones will be left unturned. The
+# approach should be good enough for all but the most pathological
+# cases.
+fix.names <- function(x, limit,mapping.fname,mapping.append){
+  x.cut = substr(x, 1, limit)
+  unique.cut = unique(x.cut)
+  n.unique = length(unique.cut)
+  n.x = length(x)
+  # Check if there are duplicate names after truncation.
+  # No duplicates => nothing to do beyond this point, except return the result.
+  if (n.unique == n.x){
+    y = x.cut
+  } else {
+    warning("Duplicate names present. Renaming series.")
+    if(nchar(mapping.fname)>0){
+      write.map = TRUE
+      if(mapping.append) {
+        if(!file.exists(mapping.fname)){
+          stop("mapping.fname does not exist, can\'t append")
+        } else{
+          map.file = file(mapping.fname, "a")
+        }
+      } else{
+        map.file = file(mapping.fname, "w")
+      }
+    } else{
+      write.map = FALSE
+    }
+
+    y = character(length=n.x)
+    alphanumeric = c(0:9, LETTERS, letters)
+    n.an = length(alphanumeric)
+    # First pass: Keep already unique names
+    for (i in 1:n.unique){
+      idx.this = which(x.cut %in% unique.cut[i])
+      n.this = length(idx.this)
+      if (n.this == 1)
+        y[idx.this] = x.cut[idx.this]
+    }
+
+    x.cut2 = substr(x.cut, 1, limit-1)
+    x.cut2[y != ""] = NA
+    unique.cut2 = unique(x.cut2) # may contain NA
+    n.unique2 = length(unique.cut2)
+    # Second pass (exclude names that were set in the first pass):
+    # Make rest of the names unique
+    for (i in 1:n.unique2){
+      this.substr = unique.cut2[i]
+      if (is.na(this.substr)) # skip NA
+        next
+      idx.this = which(x.cut2 %in% this.substr)
+      n.this = length(idx.this)
+      suffix.count = 0
+      for (j in 1:n.this){
+        still.looking = TRUE
+        while (still.looking){
+          suffix.count = count.base(suffix.count, n.an)
+          proposed =
+            compose.name(unique.cut2[i],alphanumeric,suffix.count,limit)
+          if (nchar(proposed)==0){
+            warning("Could not remap a name. Some series will be missing.")
+            still.looking = FALSE
+            proposed = paste(unique.cut2[i], "F", sep="") # F for Fail...
+          } else if (!any(y %in% proposed)){
+            still.looking = FALSE
+          }
+        }
+        y[idx.this[j]] = proposed
+        if (write.map)
+          cat(x[idx.this[j]], "\t", proposed, "\n", file=map.file, sep = "")
+      }
+    }
+    if(write.map)
+      close(map.file)
+  }
+  y
+}
+
+# Exportable function
 `write.rwl` <-
-function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01)
+function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01, mapping.fname="", mapping.append=FALSE)
 {
   if(!(prec == 0.01 | prec == 0.001)) stop('prec must eq 0.01 or 0.001')
   if(append) {
@@ -68,16 +209,66 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01)
   # Loop through series and write each one
   nseries <- ncol(rwl.df)
   yrs.all = as.numeric(rownames(rwl.df))
+  col.names = colnames(rwl.df)
 
   # Sort years using increasing order, reorder rwl.df accordingly
   yrs.order = sort.list(yrs.all)
   yrs.all = yrs.all[yrs.order]
-  rwl.df = rwl.df[yrs.order,]
+  rwl.df = as.data.frame(rwl.df[yrs.order,])
 
-  rwl.out = character()
+  first.year = yrs.all[1]
+  last.year = yrs.all[length(yrs.all)]
+  long.years = FALSE
+  if (first.year < -999){
+    long.years = TRUE
+    if (first.year < -9999)
+      stop("Years earlier than -9999 not supported")
+  }
+  if (last.year > 9999){
+    long.years = TRUE
+    if (last.year > 99999)
+      stop("Hello, user from the future. Year > 99999 not possible.")
+  }
+
+  # The basic name.width is 7.
+  name.width = 7
+
+  # NOTE: Allow the user to control the next two options?
+  # Setting exploit.short = FALSE, use.space = TRUE
+  # will produce the same behavior as in previous versions of the function.
+  
+  # In the absence of long year numbers, it is possible to use a name
+  # that is one character longer (set exploit.short to TRUE).
+  exploit.short = FALSE
+
+  # Do we use an extra space between the name and the decade
+  # (reduces maximum length of name by one)?
+  use.space = TRUE
+
+  if (exploit.short && !long.years)
+    name.width = name.width + 1
+  if (use.space){
+    name.width = name.width - 1
+    opt.space = " "
+  } else{
+    opt.space = ""
+  }
+  name.width = as.integer(name.width)
+  year.width = as.integer(12-name.width-nchar(opt.space)) # year ends at col 12
+  
+  col.names = fix.names(col.names, name.width, mapping.fname, mapping.append)
+  
+  if(append)
+    rwl.out = file(fname, "a")
+  else
+    rwl.out = file(fname, "w")
+  if(length(header)>0)
+    cat(hdr, "\n", file=rwl.out, sep="")
   na.str = ifelse(prec == 0.01, 9.99, -9.999)
   missing.str = ifelse(prec == 0.01, -9.99, 0)
   prec.rproc = ifelse(prec == 0.01, 100, 1000) # reciprocal of precision
+  format.year = sprintf("%%%d.0f", year.width)
+
   for(l in 1:nseries) {
     series = rwl.df[,l]
     yrs = yrs.all[!is.na(series)]
@@ -95,19 +286,15 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01)
 #    decades = unique(decades.vec)
     n.decades = length(decades)
 
-    # 1-6
-    rwl.df.name = colnames(rwl.df)[l]
+    # 1--name.width
+    rwl.df.name = col.names[l]
     rwl.df.width = nchar(rwl.df.name)
-    # Pad to six
-    # If rwl.df.width > 6, truncate
-    rwl.df.name = ifelse(rwl.df.width > 6, substr(rwl.df.name, 1, 6),rwl.df.name)
-    # Pad to nchar 4 (no leading zero)
-    rwl.df.name = ifelse(rwl.df.width < 6,
-      formatC(rwl.df.name, wid = 6, format = "f"),rwl.df.name)
+    # Pad to name.width
+    rwl.df.name = ifelse(rwl.df.width < name.width,
+      format(rwl.df.name, width=name.width, justify="right"),rwl.df.name)
 
-    dec.str <- character(n.decades)
     for(i in 1:n.decades){
-      # 8-12 decade column (up to 4 numbers and a minus sign from long series)
+      # up to 4 numbers and a minus sign from long series
       dec = decades[i]
       dec.yrs = yrs[decades.vec%in%dec]
       dec.rwl = series[decades.vec%in%dec]
@@ -138,11 +325,11 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01)
         dec.rwl = dec.rwl[dec.order]
       }
 
-      # Pad to nchar 5 (no leading zero)
-      dec.year1 = formatC(dec.yrs[1], dig = 0, wid = 5, format = "f")
+      # Pad to year.width (no leading zero)
+      dec.year1 = sprintf(format.year, dec.yrs[1])
 
       # Convert millimeters to the desired precision
-      dec.rwl = round(dec.rwl * prec.rproc, 3)
+      dec.rwl = round(dec.rwl * prec.rproc)
 
       # Find and correct illegal uses of the stop marker
       if (prec == 0.01){
@@ -153,13 +340,11 @@ function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01)
       }
 
       # Pad to nchar 6 (no leading zero)
-      dec.rwl = formatC(dec.rwl, dig = 0, wid = 6, format = "f")
+      dec.rwl=eval(format.rwl[[length(dec.rwl)]])
 
-      dec.str[i] = paste(rwl.df.name," ",dec.year1,paste(dec.rwl,sep = "",
-        collapse = ""),sep="")
+      dec.str = paste(rwl.df.name,opt.space,dec.year1,dec.rwl,sep="")
+      cat(dec.str, "\n", file = rwl.out, sep="")
     }
-    rwl.out = c(rwl.out,dec.str)
   }
-  if(length(header)>0) rwl.out = c(hdr,rwl.out)
-  cat(rwl.out , file = fname, sep = "\n", append=append)
+  close(rwl.out)
 }

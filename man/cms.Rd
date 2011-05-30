@@ -11,8 +11,8 @@
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows such as
     that produced by \code{\link{read.rwl}} }
   \item{po}{ a \code{data.frame} containing two variables. Variable one (\code{series} in the example below) gives the series ID as either \code{characters} or \code{factors}. These must exactly match \code{colnames(rwl)}. Variable two (\code{pith.offset} in the example below) must be \code{integers} and give the years from the begining of the core to the pith (or center) of the tree. }
-  \item{c.hat.t}{ a \code{logical} indicating whether to export the estimated constant basal area for each tree by biological age. }
-  \item{c.hat.i}{ a \code{logical} indicating whether to export the estimated constant basal area for each series. }
+  \item{c.hat.t}{ a \code{logical} a logical indicating whether to export the C-curves for each tree by biological age. }
+  \item{c.hat.i}{ a \code{logical} indicating whether to export the expected ring widths for each series. }
 }
 \details{
   This method detrends and standardizes tree-ring series by calculating a growth curve based on constant annual basal area increment. The method is based on the \dQuote{assumption that constant growth is expressed by a constant basal area increment distributed over a growing surface} (Biondi and Qeadan 2008). The detrending is the estimation and removal of the tree's natural biological growth trend. The standardization is done by dividing each series by the growth trend to produce units in the dimensionless ring-width index (RWI).

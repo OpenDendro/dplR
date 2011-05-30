@@ -59,8 +59,9 @@
 
 }
 \value{
-  A \code{data.frame} containing the detrended series (y) according to the method(s)
-  used.
+  If several methods are used, returns a \code{data.frame} containing
+  the detrended series (y) according to the methods used. If only one
+  method is selected, returns a vector.
 }
 \references{ Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
   Dendrochronology: Applications in the Environmental Sciences.} Springer.

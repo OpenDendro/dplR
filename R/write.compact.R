@@ -16,31 +16,41 @@ create.format <- function(n.fields, field.width){
   format.compact
 }
 
-write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01){
+write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
+                          mapping.fname="", mapping.append=FALSE){
+  line.term <- "\x0D\x0A" # CR+LF, ASCII carriage return and line feed
   if(!(prec == 0.01 | prec == 0.001)) stop('prec must eq 0.01 or 0.001')
   if(append && !file.exists(fname))
     stop("fname does not exist, can\'t append")
 
-  line.width <- 80 # max line width
-  
   ## Loop through series and write each one
   nseries <- ncol(rwl.df)
-  yrs.all <- as.numeric(rownames(rwl.df))
-  col.names <- colnames(rwl.df)
-  if(length(grep("^([a-z]|[0-9])+$", col.names, ignore.case = TRUE)) != nseries)
-    stop("Series names must only contain alphanumeric characters")
+  yrs.all <- rownames(rwl.df)
+
+  line.width <- 80 # max line width
+  prec.rproc <- ifelse(prec == 0.01, 100, 1000) # reciprocal of precision
+  max.field.width.width <-
+    nchar(nchar(round(max(rwl.df,na.rm=TRUE) * prec.rproc)))
+  max.n.width <- nchar(nrow(rwl.df)) # conservative
+  max.i.width <- max(nchar(yrs.all)) # conservative
+  ## Conservative length limit for the name of each series
+  name.width <- line.width -max.field.width.width -max.n.width -max.i.width -17
+
+  col.names <- fix.names(x=colnames(rwl.df), limit=name.width,
+                         mapping.fname=mapping.fname,
+                         mapping.append=mapping.append, basic.charset=TRUE)
 
   ## Sort years using increasing order, reorder rwl.df accordingly
+  yrs.all <- as.numeric(yrs.all)
   yrs.order <- sort.list(yrs.all)
   yrs.all <- yrs.all[yrs.order]
-  rwl.df <- as.data.frame(rwl.df[yrs.order,])
+  rwl.df <- rwl.df[yrs.order, , drop=FALSE]
 
   if(append)
     rwl.out <- file(fname, "a")
   else
     rwl.out <- file(fname, "w")
   missing.str <- 0
-  prec.rproc <- ifelse(prec == 0.01, 100, 1000) # reciprocal of precision
 
   for(l in 1:nseries) {
     series <- rwl.df[,l]
@@ -83,12 +93,12 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01){
     head2 <- paste(ifelse(prec == 0.01, -2, -3), "(", n.fields, "F",
       field.width, ".0)~", sep="")
     n.space <- line.width-nchar(head1)-nchar(head2)-nchar(rwl.df.name)
-    if(n.space < 1){
+    if(n.space < 1){ # since names are cut to length, this should not happen
       close(rwl.out)
       stop(paste("Series ", rwl.df.name,
                  ": Header line would be too long", sep=""))
     }
-    cat(head1, rwl.df.name, rep(" ", n.space), head2, "\n",
+    cat(head1, rwl.df.name, rep(" ", n.space), head2, line.term,
         file=rwl.out, sep="")
 
     ## Write full lines
@@ -97,7 +107,7 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01){
       end.idx <- i*n.fields
       line.rwl <- series[end.idx-n.fields+1:end.idx]
       line.str <- eval(full.format)
-      cat(line.str, "\n", file=rwl.out, sep="")
+      cat(line.str, line.term, file=rwl.out, sep="")
     }
     ## Write possibly remaining shorter line
     if(remainder > 0){
@@ -105,7 +115,7 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01){
       end.idx <- length(series)
       line.rwl <- series[end.idx-remainder+1:end.idx]
       line.str <- eval(short.format)
-      cat(line.str, "\n", file=rwl.out, sep="")
+      cat(line.str, line.term, file=rwl.out, sep="")
     }
   }
   close(rwl.out)

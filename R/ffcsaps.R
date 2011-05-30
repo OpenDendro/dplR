@@ -54,12 +54,7 @@ ffcsaps<-function(y, x=1:length(y), nyrs=length(y)/2, f=0.5) {
       }
     }
     test = subset(a, a[,3]!= 0)
-    A = test[order(test[,2],test[,1]),]
-    if(is.vector(A)){
-      t(A) # gives a 1-row matrix
-    } else{
-      A
-    }
+    test[order(test[,2],test[,1]), , drop=FALSE]
   }
   
 ### start main function

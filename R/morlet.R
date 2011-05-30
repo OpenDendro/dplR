@@ -84,7 +84,9 @@ morlet <- function(y1,x1=1:length(y1),p2=NULL,dj=0.25,siglvl=0.95){
   time.scalar = c(1:(floor(n1+1)/2),rev(1:floor(n1/2)))*Dt
   coi = coi*time.scalar
   if(do_daughter) { # Shift so DAUGHTERs are in middle of array
-    daughter = rbind(daughter[(n-n1/2):nrow(daughter),],daughter[1:(n1/2-1),])
+    daughter =
+      rbind(daughter[(n-n1/2):nrow(daughter), , drop=FALSE],
+            daughter[1:(n1/2-1), , drop=FALSE])
   }
   # Significance levels [Sec.4]
   Var = var(y1) # Variance (T&C call this sdev in their code)
@@ -92,10 +94,11 @@ morlet <- function(y1,x1=1:length(y1),p2=NULL,dj=0.25,siglvl=0.95){
   dof = 2
   Signif = fft_theor*qchisq(siglvl,dof)/dof   # [Eqn(18)]
 
-  Power <- abs(wave[1:n1,])
+  Power <- abs(wave[1:n1, , drop=FALSE])
   Power <- Power*Power  # Compute wavelet power spectrum
 
   # Done
-  list(y=y1,x=x1,wave = wave[1:n1,], coi = coi, period = period, Scale = Scale,
-     Signif = Signif, Power = Power, siglvl = siglvl)
+  list(y=y1, x=x1, wave = wave[1:n1, , drop=FALSE], coi = coi,
+       period = period, Scale = Scale, Signif = Signif, Power = Power,
+       siglvl = siglvl)
 }

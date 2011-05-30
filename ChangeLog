@@ -1,3 +1,142 @@
+2010-10-27 Andy  Bunn <andy.bunn@wwu.edu>
+* CHANGES IN dplR VERSION 1.3.8 all from Mikko Korpela
+File: corr.rwl.seg.R
+--------------------
+
+* Changed the code that computes the first year of the first segment. Now it doesn't waste data in the case that the first year of the data is at a multiple of bin.floor. The same change was made to corr.series.seg.R in an earlier patch (dplR 1.3.3).
+Previously: else min.bin = min.yr%/%bin.floor*bin.floor+bin.floor
+Now: else min.bin = ceiling(min.yr/bin.floor)*bin.floor
+* The size of the bins is now seg.length, not seg.length+1.
+* Fixed some (potential) errors caused by R dropping dim() when subsetting an array. The fix was to add drop=FALSE.
+* Small optimizations in the style of an earlier patch to corr.series.seg.R.
+* Replaced & with && in some if conditions.
+* Adjusted the indentation of the source code.
+* Added a check requiring >= 2 series in rwl.
+
+File: corr.rwl.seg.Rd
+---------------------
+
+* Updated the min.yr, bin.floor code excerpt included in the document.
+
+File: corr.series.seg.R
+-----------------------
+
+* The size of the bins is now seg.length, not seg.length+1.
+* Similarly, what was previously
+  to = max(series.yrs)-seg.length-seg.length
+is now
+  to = max(series.yrs)-seg.length-seg.length+1
+
+File: crn.plot.R
+----------------
+
+* Moved resetting of graphical parameters to on.exit. As a result, resetting also works in case of an unexpected error that terminates the function.
+* Reworked the structure of the function so that lines of code that are common to different branches (sample depth or no sample depth) are not replicated. Also removed special treatment of the case of nCrn==1. These changes have no effect on the output (the plot).
+* Other tweaks also, mostly cosmetic.
+
+File: detrend.series.Rd
+-----------------------
+
+* Correction to documentation: If only one method is selected, the function returns a vector.
+
+File: ffcsaps.R
+---------------
+
+* An ugly work-around (test and transpose) for unwanted dimension dropping was replaced by drop=FALSE. Why didn't I discover this solution earlier...
+
+File: helpers.R
+---------------
+
+* Added a few new helper functions: fix.names is (or will be) used in a few functions, and some other functions are "helpers of the helper". Compared to the old fix.names (previously in write.tucson.R), the new one has the option of unlimited name length, and the option of limiting the set of allowed characters to the union of LETTERS, letters, and 0:9, where letters (LETTERS) are the lowercase (uppercase) letters of the English alphabet.
+* The new is.int tests if numbers have integer value.
+
+File: morlet.R
+--------------
+
+* Added drop=FALSE to a few matrix subset operation, just to be on the safe side (later it's assumed that wave is a matrix). I don't know if the danger of a dimension drop (conversion to vector) could have materialized with any (valid) inputs.
+
+File: normalize.xdate.R
+-----------------------
+
+* drop=FALSE
+
+File: qa_xdate.R
+----------------
+
+* There is now a check that catches negative seg.length.
+* The helper function is.int previously found in this file is now in helpers.R (completely rewritten).
+
+File: rcs.R
+-----------
+
+* Removed the internal is.int function. The main function now uses the new version of is.int, located in helpers.R, which works not only for single numbers, but for longer vectors and arrays also. This upgrade in functionality is necessitated by the way the function is used in rcs.R.
+* Fixed a bug, where the function only checked that the first pith offset is integer. Now checks all pith offsets.
+
+File: read.crn.R
+----------------
+
+* Like rcs.R, also this function now uses the is.int located in helpers.R.
+* drop=FALSE was applied to many expressions.
+
+File: read.tucson.R
+-------------------
+
+* drop=FALSE
+* no more as.matrix in many expressions
+
+File: rwi.stats.running.R
+-------------------------
+
+* rwi is transformed to matrix form at an early stage, which may result in faster operation.
+* drop=FALSE
+* no more as.matrix in many expressions
+
+File: seg.plot.R
+----------------
+
+* Does not crash in the case of ncol(rwl) == 1.
+* Resets graphical parameters on exit, even in error cases.
+
+File: spag.plot.R
+-----------------
+
+* Fixed plotting of a one-series data.frame.
+* Previously, the number of columns in rwl was computed with both dim(rwl)[2] and ncol(rwl). These are equivalent. Only one of them remains.
+* Checks that at least one series was given, otherwise stops.
+* Computes y axis limits more sensibly: due to overlap being allowed in the plot, the maximum value may occur in a series other than the one that is ordered to be drawn on the top of the spaghetti plot. Also, the previous upper limit setting computed the maximum over a set of one value (which is wrong) that was possibly NA (which would crash the function). A plausible explanation for the origin of this bug is the conversion from data.frame to matrix performed by the scale function. This was probably not taken into account when indexing rwl with rwl[nseries].
+
+File: write.compact.R
+---------------------
+
+* Now produces files with DOS / Windows / etc. line terminators, CR+LF, on all platforms. If this has any effects on compatibility with old software (not sure about that), I expect the positives to outweigh the negatives. Also, files with Unix (LF) line terminators (previously created by dplR on Linux and other systems using LF) may show as one long line with primitive text editors in Windows.
+* The function now enforces a maximum length for series names differently: does not stop and print an error, but truncates the name. Also, the function no longer stops when characters outside the ranges a-z, A-Z, 0-9 are found, but fix.names drops the offending characters. The previous regular expression used for testing series names may have accepted non-ASCII letters, but fix.names does not (with basic.charset == TRUE). The mapping from original names to names created by fix.names can be written to a file (two new parameters to the function).
+* Replaced one as.data.frame with a solution based on drop=FALSE.
+
+File: write.compact.Rd
+----------------------
+
+* Added descriptions of the new parameters of the function. The descriptions are the same as in write.tucson.Rd.
+* Added information about allowed series ids and automatic renaming.
+* Author info now correctly refers to write.tucson instead of write.rwl.
+
+File: write.tucson.R
+--------------------
+
+* The function no longer stops when characters outside the ranges a-z, A-Z, 0-9 are found, but fix.names drops the offending characters.
+* Any automatic changes to series ids result in a warning or several warnings. Also, if the option to write id changes to a file is used, all the changes are written to the file. Previously, the excess tail of ids could be silently cut off.
+* Now produces files with DOS / Windows / etc. line terminators, CR+LF, on all platforms. See write.compact.R.
+* Removed the unused variable hdr.
+* Moved some helper functions to helpers.R.
+* Replaced one as.data.frame with a drop=FALSE solution.
+
+File: write.tucson.Rd
+---------------------
+
+* Adjusted the description of parameter mapping.fname: Now all changed series ids are printed, also the ones that were only truncated.
+* Adjusted the part of the Details section that describes automatic editing of series ids.
+
+
+
 2010-09-21 Andy  Bunn <andy.bunn@wwu.edu>
 * CHANGES IN dplR VERSION 1.3.7
 * Modified wavelet.plot() to produce a better looking plot and put the wavelet code into a new function called morlet().

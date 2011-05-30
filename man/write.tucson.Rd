@@ -23,8 +23,7 @@
   \item{mapping.fname}{ a \code{character} vector of length one giving
   the file name of an optional output file showing the mapping between
   input and output series ids. The mapping is only printed for those ids
-  that are transformed beyond simple truncation. An empty name (the
-  default) disables output. }
+  that are transformed. An empty name (the default) disables output. }
   \item{mapping.append}{ \code{logical} flag indicating whether to
   append the description of the altered series ids to an existing file.
   The default is to create a new file. }
@@ -70,12 +69,10 @@
   publication on the ITRDB.
 
   The function is capable of altering excessively long and/or duplicate
-  series ids to fit the Tucson specification. A simple truncation of
-  names is done without warning if necessary, but more complex
-  operations (i.e. name partially replaced or augmented with an
-  automatically generated suffix) produce warnings. In that case, the
-  user may wish to print a list of these more complex renamings (see
-  Arguments).
+  series ids to fit the Tucson specification. Additionally, characters
+  other than numbers or English letters will be removed. If series ids
+  are changed, one or more warnings are shown. In that case, the user
+  may wish to print a list of the renamings (see Arguments).
 
   Setting \code{long.names=TRUE} allows series IDs to be 8 characters
   long, or 7 in case there are year numbers using 5 characters. Note

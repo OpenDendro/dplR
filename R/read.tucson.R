@@ -63,7 +63,7 @@ function(fname, header=NULL,long=FALSE)
       blank.lines.skip=TRUE)
   }
   ## Remove any blank lines at the end of the file, for instance
-  dat=dat[!apply(is.na(dat),1,all),]
+  dat=dat[!apply(is.na(dat),1,all), , drop=FALSE]
 
   series=dat[,1]
   series.ids=unique(series)
@@ -80,8 +80,8 @@ function(fname, header=NULL,long=FALSE)
   series.min=rep.int(as.integer(max.year+1), nseries)
   series.max=rep.int(as.integer(min.year-1), nseries)
   prec.rproc=rep.int(as.integer(1), nseries)
-  x=as.matrix(dat[,-c(1,2)])
-  decade.yr=dat[,2]
+  x=as.matrix(dat[, -c(1,2), drop=FALSE])
+  decade.yr=dat[, 2]
   .C(rwl.readloop,
      series.index,
      decade.yr,
@@ -113,12 +113,12 @@ function(fname, header=NULL,long=FALSE)
     this.prec.rproc = prec.rproc[i]
     if(this.prec.rproc == 100){
       ## Convert stop marker (and any other) 999 to NA (precision 0.01)
-      rw.mat[rw.mat[,i]==999,i]=NA
+      rw.mat[rw.mat[, i]==999, i]=NA
     } else if(this.prec.rproc != 1000){
       stop(paste("Precision unknown in series", series.ids[i]))
     }
     ## Convert to mm
-    rw.mat[,i] = rw.mat[,i] / this.prec.rproc
+    rw.mat[, i] = rw.mat[, i] / this.prec.rproc
   }
 
   ## trim the front and back of the output file to remove blank rows. The
@@ -126,16 +126,16 @@ function(fname, header=NULL,long=FALSE)
   ## those with floating, but dated segments.
   ##rw.mat=rw.mat[!apply(is.na(rw.mat),1,all),]
   ## subset first 11 years to trim out leading NAs
-  foo <- as.matrix(rw.mat[1:11,])
+  foo <- rw.mat[1:11, , drop=FALSE]
   foo.yrs <- as.numeric(rownames(foo))
   min.year0 <- min(foo.yrs[!apply(is.na(foo),1,all)])
   ## subset last 11 years to trim out ending NAs
-  foo <- as.matrix(rw.mat[(nrow(rw.mat)-11):nrow(rw.mat),])
+  foo <- rw.mat[(nrow(rw.mat)-11):nrow(rw.mat), , drop=FALSE]
   foo.yrs <- as.numeric(rownames(foo))
   max.year0 <- max(foo.yrs[!apply(is.na(foo),1,all)])
   ## trim
   yrs <- min.year0:max.year0
-  rw.mat=as.matrix(rw.mat[as.numeric(rownames(rw.mat)) %in% yrs,])
+  rw.mat=rw.mat[as.numeric(rownames(rw.mat)) %in% yrs, , drop=FALSE]
   ## Fix internal NAs. These are coded as 0 in the DPL programs
   fix.internal.na=function(x){
     for(i in 2:(length(x)-1)){

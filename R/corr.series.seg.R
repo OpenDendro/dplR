@@ -38,7 +38,7 @@ corr.series.seg <- function(rwl,series,series.yrs=as.numeric(names(series)),
 
   if(is.null(bin.floor) || bin.floor == 0) min.bin = min(series.yrs)
   else min.bin = ceiling(min(series.yrs)/bin.floor)*bin.floor
-  to = max(series.yrs)-seg.length-seg.length
+  to = max(series.yrs)-seg.length-seg.length+1
   if(min.bin > to){
       cat("maximum year in (filtered) series:",max(series.yrs),"\n")
       cat("first bin begins: ",min.bin,"\n")
@@ -46,7 +46,7 @@ corr.series.seg <- function(rwl,series,series.yrs=as.numeric(names(series)),
       stop("Shorten segment length or adjust the bin floor.")
   }
   bins = seq(from=min.bin, to=to+seg.length, by=seg.lag)
-  bins = cbind(bins, bins+seg.length)
+  bins = cbind(bins, bins+(seg.length-1))
   nbins = nrow(bins)
   bin.names = paste(bins[,1],".", bins[,2],sep="")
   # structures for results

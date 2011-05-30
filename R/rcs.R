@@ -3,13 +3,7 @@ rcs <- function(rwl,po,nyrs=NULL,f=0.5,biweight=TRUE,rc.out=FALSE,
   if(ncol(rwl) != nrow(po)) { stop('dimension problem: ncol(rw) != nrow(po)') }
   if(!all(po[,1] %in% colnames(rwl))) { stop('Series ids in po and rwl do not match') }
   if(any(po[,2] < 1)) { stop('pith.offset < 1. The minimum pith.offset is 1.') }
-  # is.int function borrowed from qa.xdate
-  is.int = function(x) {
-    x >= -.Machine$integer.max &&
-    x <= .Machine$integer.max &&
-    x == as.integer(x)
-  }
-  if(!is.int(po[,2])) { stop('pith.offsets should be integers.') }
+  if(!all(is.int(po[,2]))) { stop('pith.offsets must be integers.') }
   rownames(rwl) <-  rownames(rwl) # guard against NULL names funniness
   series.yrs <- apply(rwl, 2, yr.range)
   rownames(series.yrs) <- c('first','last')

@@ -27,7 +27,7 @@ crn.plot(crn,add.spline=FALSE,nyrs=NULL,f=NULL,...)
 \value{
   None. Invoked for side effect (plot).
 }
-\author{ Andy Bunn }
+\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{chron}}
 }
 \examples{

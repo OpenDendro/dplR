@@ -70,28 +70,13 @@ function(fname, header=NULL)
   ## Really read file
   dat=read.fwf(fname,c(6,4,rep(c(4,3),10)),skip=skip.lines,strip.white=TRUE)
   ## If columns 3 in chron.stats is an integer then there is no statistics line
-  ## Function to check if x (a single number) is equivalent to
-  ## its integer representation.
-  ## Note: Returns FALSE for values that fall outside
-  ## the range of the integer type.
-  is.int = function(x) {
-    x >= -.Machine$integer.max &&
-    x <= .Machine$integer.max &&
-    x == as.integer(x)
-  }
-###  is.int=function(x,tol=.Machine$double.eps) {
-###    if(is.numeric(x)) ans=(x - floor(x)) < tol
-###    else ans=FALSE
-###    ans
-###  }
-
   if(is.numeric(chron.stats[,3]) & !is.int(as.numeric(chron.stats[,3]))){
     names(chron.stats)=c("SiteID","nYears","AC[1]","StdDev","MeanSens","MeanRWI",
       "IndicesSum","IndicesSS","MaxSeries")
     cat("Embedded chronology statistics\n")
     print(chron.stats)
     ## Chop off last row of dat
-    dat=dat[-nrow(dat),]
+    dat=dat[-nrow(dat), , drop=FALSE]
   }
 
   series=dat[,1]
@@ -111,9 +96,9 @@ function(fname, header=NULL)
     decade.yr=dat[series.index==i,2]
     first.yr=dat[series.index==i,2][1]
     ## RWI
-    x=dat[series.index==i,-c(1,2,seq(from=4, to=22, by=2))]
+    x=dat[series.index==i, -c(1,2,seq(from=4, to=22, by=2)), drop=FALSE]
     ## All sample depths
-    y=dat[series.index==i,-c(1,2,seq(from=3, to=21, by=2))]
+    y=dat[series.index==i, -c(1,2,seq(from=3, to=21, by=2)), drop=FALSE]
     for(j in 1:nrow(x)) {
       yr=decade.yr[j]
       if(j==1) yr=min.year
@@ -130,12 +115,15 @@ function(fname, header=NULL)
   }
   ## Clean up NAs
   crn.mat[which(crn.mat[,-ncol.crn.mat]==9990)]=NA # rely on column-major order
-  crn.mat=crn.mat[!apply(as.matrix(is.na(crn.mat[,-ncol.crn.mat])),1,all),]
+  crn.mat=
+    crn.mat[!apply(is.na(crn.mat[, -ncol.crn.mat, drop=FALSE]), 1, all),
+            ,
+            drop=FALSE]
   ## If samp depth is all 1 then dump it
   sd.one=all(crn.mat[,ncol.crn.mat]==1)
   if(sd.one) {
     save.names=colnames(crn.mat)[-ncol.crn.mat]
-    crn.mat=crn.mat[,-ncol.crn.mat]
+    crn.mat=crn.mat[, -ncol.crn.mat, drop=FALSE]
     crn.mat=crn.mat/1000
     crn.df=as.data.frame(crn.mat)
     colnames(crn.df)=save.names

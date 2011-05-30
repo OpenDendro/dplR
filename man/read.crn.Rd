@@ -24,5 +24,5 @@
   chronology ids are the column names and the years are the row names. If the
   file includes sample depth that is included as the last column (samp.depth).
  }
-\author{ Andy Bunn }
+\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \keyword{ IO }

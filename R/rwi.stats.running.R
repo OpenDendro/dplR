@@ -58,6 +58,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period="max",
       stop("window.length is smaller than min.corr.overlap")
   }
 
+  rwi <- as.matrix(rwi)
   n.cores <- ncol(rwi)
   
   ## If tree.id is NULL then assume one core per tree
@@ -81,7 +82,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period="max",
   tree.any <- matrix(FALSE, n.years, n.trees)
   for(i in inc(1,n.trees))
     tree.any[,i] <-
-      apply(as.matrix(!is.na(rwi[,ids$tree==unique.ids[i]])), 1, any)
+      apply(!is.na(rwi[, ids$tree==unique.ids[i], drop=FALSE]), 1, any)
   ## n.trees.by.year is recorded before setting rows with missing data to NA
   ## (below, when period == "common")
   n.trees.by.year <- rowSums(tree.any)
@@ -120,7 +121,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period="max",
         n.windows.minusone <- (n.years-offset-window.length) %/% window.advance
         max.idx <- offset + window.length + n.windows.minusone*window.advance
         n.data[i] <- sum(!is.na(rwi[intersect(good.rows,
-                                              inc(1+offset,max.idx)),]))
+                                              inc(1+offset,max.idx)), ]))
       }
       ## In case of a tie, choose large offset.
       ## In practice, this prefers recent years.
@@ -169,9 +170,9 @@ rwi.stats.running <- function(rwi, ids=NULL, period="max",
     n.bt.this <- 0
     good.flag <- rep(FALSE, n.trees)
     for(i in inc(1,n.trees-1)){
-      i.data <- as.matrix(rwi[inc(start.idx,end.idx), cores.of.tree[[i]]])
+      i.data <- rwi[inc(start.idx,end.idx), cores.of.tree[[i]], drop=FALSE]
       for(j in inc(i+1,n.trees)){
-        j.data <- as.matrix(rwi[inc(start.idx,end.idx), cores.of.tree[[j]]])
+        j.data <- rwi[inc(start.idx,end.idx), cores.of.tree[[j]], drop=FALSE]
         bt.r.mat <-
           cor.with.limit(min.corr.overlap, i.data, j.data)
         bt.r.mat <- bt.r.mat[!is.na(bt.r.mat)]
@@ -194,7 +195,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period="max",
       if(length(these.cores)==1){ # make simple case fast
         n.cores.tree[i] <- 1
       } else {
-        these.data <- as.matrix(rwi[inc(start.idx,end.idx), these.cores])
+        these.data <- rwi[inc(start.idx,end.idx), these.cores, drop=FALSE]
         wt.r.vec <-
           cor.with.limit.upper(min.corr.overlap, these.data)
         wt.r.vec <- wt.r.vec[!is.na(wt.r.vec)]

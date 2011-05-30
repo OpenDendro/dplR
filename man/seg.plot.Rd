@@ -18,7 +18,7 @@ seg.plot(rwl,...)
 \value{
   None. This function is invoked for its side effect, which is to produce a plot.
 }
-\author{ Andy Bunn }
+\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{spag.plot}} }
 \examples{
 

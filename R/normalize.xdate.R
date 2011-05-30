@@ -13,7 +13,7 @@ normalize.xdate <- function(rwl,series,n,prewhiten,biweight){
   # Apply ar if prewhiten
   if(prewhiten){
     # drop any columns without at least four observations
-    master.df = master.df[,colSums(!is.na(master.df)) > 3]
+    master.df = master.df[, colSums(!is.na(master.df)) > 3, drop=FALSE]
     master.df =  apply(master.df,2,ar.func)
     series = ar.func(series)
   }

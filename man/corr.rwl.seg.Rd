@@ -30,17 +30,17 @@
     plot. Passed to \code{axis.cex} in \code{\link{axis}}. }
   \item{...}{ other arguments passed to plot. }
 }
-\details{
-  This function calculates correlation serially between each tree-ring series and
-  a master chronology built from all series in a rwl object Correlations
-  are done for each segment of the series where segments are lagged by
-  half the segment length (e.g., 100-year segments would be overlapped by
-  50-years). The first segment is placed according to \code{bin.floor}.
-  The minimum bin year is calculated as \code{min.yr\%/\%bin.floor*bin.floor+bin.floor}
-  where  \code{min.yr} is the first year in the \code{rwl} object. For
-  example if the first year is 626 and \code{bin.floor} is 100 then the
-  first bin would start in 700. If \code{bin.floor} is 10 then the
-  first bin would start in 630.
+\details{  
+  This function calculates correlation serially between each tree-ring
+  series and a master chronology built from all series in a rwl object
+  Correlations are done for each segment of the series where segments
+  are lagged by half the segment length (e.g., 100-year segments would
+  be overlapped by 50-years). The first segment is placed according to
+  \code{bin.floor}.  The minimum bin year is calculated as
+  \code{ceiling(min.yr/bin.floor)*bin.floor} where \code{min.yr} is the
+  first year in the \code{rwl} object. For example if the first year is
+  626 and \code{bin.floor} is 100 then the first bin would start in
+  700. If \code{bin.floor} is 10 then the first bin would start in 630.
 
   Correlations are calculcated for the first segment, then the
   second segment and so on. Correlations are only calculated for segments with

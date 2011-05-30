@@ -13,9 +13,9 @@ chron(x, prefix = NULL, biweight = TRUE, prewhiten = FALSE)
     and colnames(x) containing each series id such as produced by
     \code{\link{read.rwl}}}
   \item{prefix}{a character vector with a length of < 4. Defaults to xxx}
-  \item{biweight}{Logical flag. If TRUE then a robust is calculated
+  \item{biweight}{logical flag. If TRUE then a robust mean is calculated
     using \code{\link{tbrm}.}}
-  \item{prewhiten}{Logical flag. If TRUE each series is whitened using
+  \item{prewhiten}{logical flag. If TRUE each series is whitened using
       \code{\link[stats]{ar}} prior to averaging.}
 }
 \details{

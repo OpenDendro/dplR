@@ -57,7 +57,7 @@ skel.plot(rw.vec, yr.vec = NULL, sname = '', filt.weight = 9, dat.out = FALSE,
   \url{http://www.ltrr.arizona.edu/skeletonplot/introcrossdate.htm}
 }
 \author{ Andy Bunn }
-\seealso{  \code{\link[grDevices]{device}}, \code{\link{hanning}}  }
+\seealso{  \code{\link[grDevices]{Devices}}, \code{\link{hanning}}  }
 
 \examples{
 

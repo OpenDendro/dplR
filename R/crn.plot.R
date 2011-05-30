@@ -1,5 +1,5 @@
 `crn.plot` <-
-function(crn,add.spline=FALSE,nyrs=NULL,f=NULL)
+function(crn,add.spline=FALSE,nyrs=NULL,f=NULL,...)
 {
   if(!is.data.frame(crn)) stop("crn must be a data.frame")
   op=par(no.readonly=TRUE) # save par to reset
@@ -17,7 +17,7 @@ function(crn,add.spline=FALSE,nyrs=NULL,f=NULL)
       par(mar=c(3,3,3,3),mgp=c(1.25,0.25,0),tcl=0.25)
       for(i in 1:nCrn){
         plot(yr.vec,crn2[,i],type="l",xlab="Years",ylab="RWI",
-             main=crn.names[i])
+             main=crn.names[i],...)
         spl=crn2[,i]
         tmp=na.omit(spl)
         if(is.null(nyrs)) nyrs=length(tmp)*0.33
@@ -35,7 +35,7 @@ function(crn,add.spline=FALSE,nyrs=NULL,f=NULL)
     par(mar=c(3,3,3,3),mgp=c(1.25,0.25,0),tcl=0.25)
     if(nCrn==1){
       plot(yr.vec,crn2,type="l",xlab="Years",ylab="RWI",
-           main=crn.names[1])
+           main=crn.names[1],...)
       spl=crn2
       tmp=na.omit(spl)
       if(is.null(nyrs)) nyrs=length(tmp)*0.33
@@ -60,7 +60,7 @@ function(crn,add.spline=FALSE,nyrs=NULL,f=NULL)
       par(mar=c(3,3,3,3),mgp=c(1.25,0.25,0),tcl=0.25)
       for(i in 1:nCrn){
         plot(yr.vec,crn[,i],type="l",xlab="Years",ylab="RWI",
-             main=crn.names[i])
+             main=crn.names[i],...)
         spl=crn[,i]
         tmp=na.omit(spl)
         if(is.null(nyrs)) nyrs=length(tmp)*0.33
@@ -75,7 +75,7 @@ function(crn,add.spline=FALSE,nyrs=NULL,f=NULL)
     if(nCrn==1) {
       crn=crn[,1]
       plot(yr.vec,crn,type="l",xlab="Years",ylab="RWI",
-           main=crn.names[1])
+           main=crn.names[1],...)
       spl=crn
       tmp=na.omit(spl)
       if(is.null(nyrs)) nyrs=length(tmp)*0.33

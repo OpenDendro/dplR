@@ -214,7 +214,8 @@ ffcsaps<-function(y,x=1:length(y),nyrs=length(y)/2,f=0.5) {
   x77=data.frame(x77)
   v4=data.frame(v4)
   finalindixies=cbind(x77,v4)
-  Spline1 = unique(finalindixies)
-  Spline1 = Spline1[Spline1[,1] %in% x,2]
-  Spline1
+  res = unique(finalindixies)
+  res[,1] = round(res[,1],5) # deal with identical() issues could approx also
+  res = res[res[,1] %in% x,2]
+  res
 }

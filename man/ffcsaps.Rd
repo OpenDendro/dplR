@@ -2,7 +2,7 @@
 \alias{ffcsaps}
 \title{ Smoothing Spline with User-Specified Rigidity and Frequency Cutoff }
 \description{
-  Applies a smoothing spline to y with rigidty nyrs and a frequency response at
+  Applies a smoothing spline to y with rigidity nyrs and a frequency response at
   a wavelength of f.
 }
 \usage{
@@ -11,7 +11,7 @@
 \arguments{
   \item{y}{ a vector, typically a tree-ring series. }
   \item{x}{ a vector with \code{length(y)}, typically giving the years of y. }
-  \item{nyrs}{ a number giving the rigidty of the spline, defaults to \code{length(y)/2}. }
+  \item{nyrs}{ a number giving the rigidity of the spline, defaults to \code{length(y)/2}. }
   \item{f}{ a number between 0 and 1 giving the frequency response or
     wavelength cutoff. }
 }
@@ -27,7 +27,10 @@
   ISBN-13: 978-0792305866.
 
 }
-\author{ Code by Franco Biondi adapted for dplR by Andy Bunn }
+\note{ DendroLab website: \url{http://dendrolab.org/} }
+\author{ Code by DendroLab, University of Nevada Reno, USA and adapted for dplR
+  by Andy Bunn }
+
 \seealso{ \code{\link{hanning}} \code{\link{detrend}} }
 
 \examples{

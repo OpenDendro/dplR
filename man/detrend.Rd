@@ -21,7 +21,7 @@
   \item{method}{ a character vector to determine the detrending method. See
     details below. Possible values are \dQuote{Spline}, \dQuote{ModNegExp},
     \dQuote{Mean}, or subset of c(\dQuote{Spline}, \dQuote{ModNegExp}, \dQuote{Mean}). }
-  \item{nyrs}{ a number giving the rigidty of the smoothing spline, defaults to
+  \item{nyrs}{ a number giving the rigidity of the smoothing spline, defaults to
     0.67 of series length if nyrs is NULL. }
   \item{f}{ a number between 0 and 1 giving the frequency response or
     wavelength cutoff. Defaults to 0.5 if f is NULL. }

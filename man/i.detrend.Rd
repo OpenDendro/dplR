@@ -14,7 +14,7 @@ i.detrend(rwl, y.name = colnames(rwl),nyrs = NULL, f = NULL, pos.slope = FALSE)
     such as that produced by \code{\link{read.rwl}} or \code{\link{ca533}} }
   \item{y.name}{ a character vector of length(ncol(rwl)) that gives the id of
     each series. Defaults to the column names of rwl. }
-  \item{nyrs}{ a number giving the rigidty of the smoothing spline, defaults to
+  \item{nyrs}{ a number giving the rigidity of the smoothing spline, defaults to
     0.67 of series length if nyrs is NULL. }
   \item{f}{ a number between 0 and 1 giving the frequency response or
     wavelength cutoff. Defaults to 0.5 if f is NULL. }

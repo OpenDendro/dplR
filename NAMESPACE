@@ -8,4 +8,4 @@ export(chron, hanning, read.ids, tbrm, crn.plot, i.detrend, read.rwl, wavelet,
   detrend, morlet, rwl.stats, write.crn, detrend.series, read.crn, 
   seg.plot, skel.plot, write.rwl, sens1, sens2, gini.coef, read.fh, qa.xdate, 
   normalize.xdate, corr.rwl.seg, series.rwl.plot, corr.series.seg, ccf.series.rwl,
-  ffcsaps)
+  ffcsaps, rcs, cms)

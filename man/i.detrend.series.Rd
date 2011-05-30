@@ -7,12 +7,18 @@
   \code{\link{detrend.series}}.
 }
 \usage{
-i.detrend.series(y, y.name = NULL)
+i.detrend.series(y, y.name = NULL,nyrs = NULL, f = NULL, pos.slope = FALSE)
 }
 \arguments{
   \item{y}{ a numeric vector. Usually a tree-ring series. }
   \item{y.name}{ an optional character vector to name the series for plotting
     purposes. }
+  \item{nyrs}{ a number giving the rigidty of the smoothing spline, defaults to
+    0.67 of series length if nyrs is NULL. }
+  \item{f}{ a number between 0 and 1 giving the frequency response or
+    wavelength cutoff. Defaults to 0.5 if f is NULL. }
+  \item{pos.slope}{ a logical flag. Will allow for a positive slope to be used
+    in method \dQuote{ModNegExp}. If FALSE the line will be horizontal. }
 }
 \details{
   This function allows a user to choose a detrending method based on a plot

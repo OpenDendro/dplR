@@ -1,5 +1,5 @@
 `crn.plot` <-
-function(crn)
+function(crn,add.spline=FALSE,nyrs=NULL,f=NULL)
 {
   if(!is.data.frame(crn)) stop("crn must be a data.frame")
   op=par(no.readonly=TRUE) # save par to reset
@@ -20,9 +20,11 @@ function(crn)
              main=crn.names[i])
         spl=crn2[,i]
         tmp=na.omit(spl)
-        tmp=smooth.spline(tmp,df=length(tmp)*0.025)$y
+        if(is.null(nyrs)) nyrs=length(tmp)*0.33
+        if(is.null(f)) f=0.5
+        tmp=ffcsaps(y=tmp,x=1:length(tmp),nyrs=nyrs,f=f)
         spl[!is.na(spl)]=tmp
-        lines(yr.vec,spl,col="red",lwd=2)
+        if(add.spline) lines(yr.vec,spl,col="red",lwd=2)
         abline(h=1)
         par(new=TRUE)
         plot(yr.vec,samp.depth,type="l",lty="dashed",xlab="",ylab="",axes=FALSE)
@@ -36,9 +38,11 @@ function(crn)
            main=crn.names[1])
       spl=crn2
       tmp=na.omit(spl)
-      tmp=smooth.spline(tmp,df=length(tmp)*0.025)$y
+      if(is.null(nyrs)) nyrs=length(tmp)*0.33
+      if(is.null(f)) f=0.5
+      tmp=ffcsaps(y=tmp,x=1:length(tmp),nyrs=nyrs,f=f)
       spl[!is.na(spl)]=tmp
-      lines(yr.vec,spl,col="red",lwd=2)
+      if(add.spline) lines(yr.vec,spl,col="red",lwd=2)
       abline(h=1)
       par(new=TRUE)
       plot(yr.vec,samp.depth,type="l",lty="dashed",xlab="",ylab="",axes=FALSE)
@@ -59,9 +63,11 @@ function(crn)
              main=crn.names[i])
         spl=crn[,i]
         tmp=na.omit(spl)
-        tmp=smooth.spline(tmp,df=length(tmp)*0.025)$y
+        if(is.null(nyrs)) nyrs=length(tmp)*0.33
+        if(is.null(f)) f=0.5
+        tmp=ffcsaps(y=tmp,x=1:length(tmp),nyrs=nyrs,f=f)
         spl[!is.na(spl)]=tmp
-        lines(yr.vec,spl,col="red",lwd=2)
+        if(add.spline) lines(yr.vec,spl,col="red",lwd=2)
         abline(h=1)
       }
     }
@@ -72,9 +78,11 @@ function(crn)
            main=crn.names[1])
       spl=crn
       tmp=na.omit(spl)
-      tmp=smooth.spline(tmp,df=length(tmp)*0.025)$y
+      if(is.null(nyrs)) nyrs=length(tmp)*0.33
+      if(is.null(f)) f=0.5
+      tmp=ffcsaps(y=tmp,x=1:length(tmp),nyrs=nyrs,f=f)
       spl[!is.na(spl)]=tmp
-      lines(yr.vec,spl,col="red",lwd=2)
+      if(add.spline) lines(yr.vec,spl,col="red",lwd=2)
       abline(h=1)
     }
   } # end plots with no sample depth

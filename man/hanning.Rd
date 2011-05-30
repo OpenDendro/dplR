@@ -32,7 +32,7 @@
   y=ca533[,1]
   yrs=yrs[!is.na(y)]
   y=y[!is.na(y)]
-  plot(yrs,y,xlab='Years',ylab='Series1 (mm)')
+  plot(yrs,y,xlab='Years',ylab='Series1 (mm)',type='l',col='grey')
   lines(yrs,hanning(y,n=9),col='red',lwd=2)
   lines(yrs,hanning(y,n=21),col='blue',lwd=2)
 

@@ -1,7 +1,8 @@
 `i.detrend.series` <-
-function(y,y.name=NULL)
+function(y,y.name=NULL,nyrs = NULL, f = NULL, pos.slope = FALSE)
 {
-  fits=detrend.series(y,y.name,make.plot=TRUE)
+  fits=detrend.series(y,y.name,make.plot=TRUE,nyrs = NULL, f = NULL,
+    pos.slope = FALSE)
   # Remove the nec resids if all na
   fits=fits[,!apply(is.na(fits),2,all)]
   cat(paste("\nChoose a detrending method for this series ",y.name,"\n",sep=""))

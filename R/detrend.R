@@ -1,6 +1,7 @@
 `detrend` <-
 function(rwl,y.name=colnames(rwl),make.plot=FALSE,
-  method=c("Spline","ModNegExp","Mean"))
+  method=c("Spline","ModNegExp","Mean"), nyrs = NULL, f = NULL,
+  pos.slope = FALSE)
 {
   out=list()
   for(i in 1:ncol(rwl)){

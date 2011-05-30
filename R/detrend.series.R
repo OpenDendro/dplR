@@ -1,5 +1,6 @@
 `detrend.series` <-
-function(y,y.name=NULL,make.plot=TRUE,method=c("Spline","ModNegExp","Mean"))
+function(y,y.name=NULL,make.plot=TRUE,method=c("Spline","ModNegExp","Mean"),
+  nyrs = NULL, f = NULL, pos.slope = FALSE)
 {
   # Remove NA from the data (they will be reinserted later)
   y2=y[!is.na(y)]
@@ -22,21 +23,23 @@ function(y,y.name=NULL,make.plot=TRUE,method=c("Spline","ModNegExp","Mean"))
   }
   ModNegExp=try(nec.func(y2),silent=TRUE)
   if(class(ModNegExp)=="try-error") {
-    # Straight line via linear regression, pos slope ok
+    # Straight line via linear regression
     tm=1:length(y2)
     lm1=lm(y2~tm)
     ModNegExp=predict(lm1)
+    if(coef(lm1)[2] > 0 & !pos.slope){
+      ModNegExp=rep(mean(y2),length(y2))
+    }
     nec.ok=FALSE
+
   }
   else nec.ok=TRUE
   # Smoothing spline
   # "n-year spline" as the spline whose frequency response is 50%,or 0.50,
   # at a wavelength of 67%n years
-  n=0.67*length(y2)
-  f=0.5
-  p=1/(((1-f)/f)*((cos(2*pi*(1/n))+2)/(12*(cos(2*pi*(1/n))-1)^2))+1)
-  p=1-(1.152768 + 0.0601 * log(p))
-  Spline=smooth.spline(y2,spar=p)$y
+  if(is.null(nyrs)) nyrs=length(y2)*0.67
+  if(is.null(f)) f=0.5
+  Spline=ffcsaps(y=y2,x=1:length(y2),nyrs=nyrs,f=f)
 
   # Fit a horiz line
   Mean=rep(mean(y2),length(y2))

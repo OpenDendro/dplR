@@ -7,7 +7,7 @@
 }
 \usage{
   detrend.series(y, y.name = NULL, make.plot = TRUE,
-  method = c("Spline", "ModNegExp", "Mean"))
+  method = c("Spline", "ModNegExp", "Mean"),nyrs=NULL,f=NULL,pos.slope=FALSE)
 }
 \arguments{
   \item{y}{ a numeric vector. Usually a tree-ring series. }
@@ -19,6 +19,12 @@
     details below. Possible values are \dQuote{Spline}, \dQuote{ModNegExp},
     \dQuote{Mean}, or subset of c(\dQuote{Spline}, \dQuote{ModNegExp},
     \dQuote{Mean}). }
+  \item{nyrs}{ a number giving the rigidty of the smoothing spline, defaults to
+    0.67 of series length if nyrs is NULL. }
+  \item{f}{ a number between 0 and 1 giving the frequency response or
+    wavelength cutoff. Defaults to 0.5 if f is NULL. }
+  \item{pos.slope}{ a logical flag. Will allow for a positive slope to be used
+    in method \dQuote{ModNegExp}. If FALSE the line will be horizontal. }
 }
 \details{
   This detrends and standardises a tree-ring series. The detrending is
@@ -26,18 +32,23 @@
   The standardisation is done by dividing each series by the growth trend to
   produce units in the dimensionless ring-width index (RWI). There are
   currently three methods available for detrending although more are
-  certainly possible. The two methods implemented are a smoothing spline via
-  \code{\link[stats]{smooth.spline}} (method = \dQuote{Spline}) or a
-  modified negative exponential curve (method = \dQuote{ModNegExp}).
+  certainly possible. The methods implemented are a smoothing spline via
+  \code{\link{ffcsaps}} (method = \dQuote{Spline}), a
+  modified negative exponential curve (method = \dQuote{ModNegExp}), or
+  a simple horizontal line (method = \dQuote{Mean}).
 
   The \dQuote{Spline} approach uses an n-year spline where the frequency
-  response is 0.50 at a wavelength of 0.67*n years. This attempts to remove
-  the low frequency variability that is due to biological or stand effects.
+  response is 0.50 at a wavelength of 0.67*n years unless specified differently
+  using \code{nyrs} and \code{f} in the function \code{\link{ffcsaps}}.
+  This attempts to remove the low frequency variability that is due to
+  biological or stand effects.
 
   The \dQuote{ModNegExp}approach attempts to fit a classic nonlinear
   model of biological growth of the form Y ~ a * exp(b*1:length(Y)) + k using
   \code{\link[stats]{nls}}. See Fritts (2001) for details about the
   parameters. If a nonlinear model cannot be fit then a linear model is fit.
+  That linear model can have a positive slope unless pos.slope is \code{FALSE} in which
+  case method \dQuote{Mean} is used.
 
   The \dQuote{Mean}approach fits a horizontal line using the mean of the
   series.

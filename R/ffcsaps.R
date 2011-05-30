@@ -214,8 +214,14 @@ ffcsaps<-function(y,x=1:length(y),nyrs=length(y)/2,f=0.5) {
   x77=data.frame(x77)
   v4=data.frame(v4)
   finalindixies=cbind(x77,v4)
-  res = unique(finalindixies)
-  res[,1] = round(res[,1],5) # deal with identical() issues could approx also
-  res = res[res[,1] %in% x,2]
+  tmp = unique(finalindixies)
+  # get spline on the right timescale - kludgy
+  tmp2 = tmp
+  tmp2[,1] = round(tmp2[,1],5) # tries to deal with identical() issues
+  res = tmp2[tmp2[,1] %in% x,2]
+  # deals with identical() issues via linear approx
+  if(length(res) != length(x)) {
+    res = approx(x=tmp[,1],y=tmp[,2],xout=x)$y
+  }
   res
 }

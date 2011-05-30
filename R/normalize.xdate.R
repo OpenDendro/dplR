@@ -28,7 +28,6 @@ normalize.xdate <- function(rwl,series,n,prewhiten,biweight){
     series = ar.func(series)
   }
 
-  master = rowMeans(master.df, na.rm=TRUE)
   if (!biweight) master = apply(master.df, 1, mean, na.rm = TRUE)
   else master = apply(master.df, 1, tbrm, C = 9)
   master.df[is.nan(master.df)] = NA

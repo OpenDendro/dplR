@@ -36,6 +36,8 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
   segavg.cor = rep(NA,nbins)
   names(segavg.cor) = bin.names
 
+  # rwi for segments altered by normalizing
+  rwi = rwl
   # loop through series to normalize, filter, and prewhiten
   for(i in 1:nseries){
     master.raw = rwl[,-i]
@@ -44,11 +46,11 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
     series.mask = !is.na(series.raw)
     series.yrs = as.numeric(names(series.raw))
 
-  # Normalize.
+  # normalize
   tmp = normalize.xdate(master.raw,series.raw,n,prewhiten,biweight)
   master = tmp$master
   series = tmp$series
-
+  rwi[,i] = tmp$series
     #loop through bins
     for(j in 1:nbins){
       mask = yrs%in%seq(bins[j,1],bins[j,2])
@@ -90,7 +92,7 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
     yr=as.numeric(rownames(rwl))
     p.val = res.pval
     ## odd segs
-    segs=rwl
+    segs=rwi
     odd.bins=bins[seq(1,nrow(bins),by=2),]
     odd.p.val=p.val[,seq(1,nrow(bins),by=2)]
     nodd.bins=nrow(odd.bins)
@@ -177,7 +179,7 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
 
 ################################################################################
 ## even segs
-    segs=rwl
+    segs=rwi
     even.bins=bins[seq(2,nrow(bins),by=2),]
     even.p.val=p.val[,seq(2,nrow(bins),by=2)]
     neven.bins=nrow(even.bins)

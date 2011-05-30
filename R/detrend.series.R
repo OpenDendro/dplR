@@ -36,11 +36,10 @@ function(y,y.name=NULL,make.plot=TRUE,method=c("Spline","ModNegExp","Mean"),
   else nec.ok=TRUE
   # Smoothing spline
   # "n-year spline" as the spline whose frequency response is 50%,or 0.50,
-  # at a wavelength of 67%n years
+  # at a wavelength of 67%n years if nyrs and f are NULL
   if(is.null(nyrs)) nyrs=floor(length(y2)*0.67)
   if(is.null(f)) f=0.5
   Spline=ffcsaps(y=y2,x=1:length(y2),nyrs=nyrs,f=f)
-  if(length(Spline) != length(y2)) stop('booga')
   # Fit a horiz line
   Mean=rep(mean(y2),length(y2))
 

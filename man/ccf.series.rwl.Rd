@@ -28,7 +28,7 @@
       \code{\link[stats]{ar}}. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust mean is calculated
     using \code{\link{tbrm}}. }
-  \item{pcrit}{ a number between 0 and 1 giving the critucal value for the
+  \item{pcrit}{ a number between 0 and 1 giving the critical value for the
     correlation test. }
   \item{lag.max}{ an integer giving the maximum lag at which to calculate
     the \code{\link[stats]{ccf}}. }

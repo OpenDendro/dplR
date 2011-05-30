@@ -1,3 +1,11 @@
+2010-09-21 Andy  Bunn <andy.bunn@wwu.edu>
+* CHANGES IN dplR VERSION 1.3.7
+* Modified wavelet.plot() to produce a better looking plot and put the wavelet code into a new function called morlet().
+* Deprecated cwt.filled.contour
+* Added normalize1 to NAMESPACE
+* Added arguiment label.cex to pass to axis to increase the size of the labels on the plot in corr.rwl.seg() and modified 
+  the help file accordingly. This change was requested by a user and seems like a good idea.
+* Corrected some spelling in help for corr.rwl.seg(), ccf.series.seg(), and corr.series.seg(). I'm sure there is more.
 2010-07-17 Andy  Bunn <andy.bunn@wwu.edu>
 * CHANGES IN dplR VERSION 1.3.6
 * Modified rcs() to stop() if any of the pith offsets are <1 or not integers. The help file indicated that this should

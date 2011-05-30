@@ -1,5 +1,4 @@
 \name{Undocumented}
-\alias{cwt.filled.contour}
 \alias{normalize.xdate}
 \alias{qa.xdate}
 \alias{exact.mean}

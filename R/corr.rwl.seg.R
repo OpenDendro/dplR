@@ -1,5 +1,5 @@
 corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRUE,
-  pcrit=0.05, biweight=TRUE, make.plot = TRUE,...){
+  pcrit=0.05, biweight=TRUE, make.plot = TRUE,label.cex=1,...){
 
 
   # helper function
@@ -176,7 +176,7 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
 
     op=par(no.readonly=TRUE)
     col.pal = c('#E41A1C','#377EB8','#4DAF4A')
-    par(mar=c(4,4,4,4) + 0.1,mgp=c(1.25,0.25,0),tcl=0.25)
+    par(mar=c(4,5,4,5) + 0.1,mgp=c(1.25,0.25,0),tcl=0.25)
     plot(yrs,segs[,1],type="n",ylim=c(0,ncol(segs)),
         axes=FALSE,ylab="",xlab="Year",
         sub=paste('Segments: length=',seg.length,',lag=',
@@ -296,10 +296,10 @@ corr.rwl.seg <- function(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRU
     cnames.segs=colnames(segs)
     axis(2,at=odd.seq,
       labels=cnames.segs[odd.seq],srt=45,
-      tick=FALSE,las=2)
+      tick=FALSE,las=2,cex.axis=label.cex)
     axis(4,at=even.seq,
       labels=cnames.segs[even.seq],srt=45,
-      tick=FALSE,las=2)
+      tick=FALSE,las=2,cex.axis=label.cex)
     abline(h=1:nseries,col='white')
     box()
     par(op)

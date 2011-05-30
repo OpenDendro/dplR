@@ -6,7 +6,7 @@
 }
 \usage{
   corr.rwl.seg(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRUE,
-  pcrit=0.05, biweight=TRUE, make.plot = TRUE,...)
+  pcrit=0.05, biweight=TRUE, make.plot = TRUE, label.cex=1, ...)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
@@ -21,11 +21,13 @@
     variation. }
   \item{prewhiten}{ \code{logical} flag. If \code{TRUE} each series is whitened using
       \code{\link[stats]{ar}}. }
-  \item{pcrit}{ a number between 0 and 1 giving the critucal value for the
+  \item{pcrit}{ a number between 0 and 1 giving the critical value for the
     correlation test. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust mean is calculated
     using \code{\link{tbrm}}. }
   \item{make.plot}{ \code{logical flag} indicating whether to make a plot. }
+  \item{label.cex}{ \code{numeric} scalar for the series labels on the
+    plot. Passed to \code{axis.cex} in \code{\link{axis}}. }
   \item{...}{ other arguments passed to plot. }
 }
 \details{
@@ -79,7 +81,7 @@
 
 \examples{
   data(co021)
-  corr.rwl.seg(co021,seg.length=100)
+  corr.rwl.seg(co021,seg.length=100,label.cex=1.25)
 }
 \keyword{ manip }
 

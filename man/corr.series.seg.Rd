@@ -28,7 +28,7 @@
       \code{\link[stats]{ar}}. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust mean is calculated
     using \code{\link{tbrm}}. }
-  \item{pcrit}{ a number between 0 and 1 giving the critucal value for the
+  \item{pcrit}{ a number between 0 and 1 giving the critical value for the
     correlation test. }
   \item{make.plot}{ \code{logical flag} indicating whether to make a plot. }
   \item{...}{ other arguments passed to plot. }

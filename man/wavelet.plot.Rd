@@ -1,49 +1,45 @@
 \name{wavelet.plot}
 \alias{wavelet.plot}
-\alias{morlet}
-\alias{wavelet}
 \title{ Plot a Continuous Wavelet Transform }
 \description{
   This function creates a \code{filled.contour} plot of a continuous wavelet
-  transform using the Morlet wavelet.
+  transform as output from \code{\link{morlet}}.
 }
 \usage{
-  wavelet.plot(crn.vec,yr.vec,p2,dj=0.25,siglvl=0.99,...)
+  wavelet.plot(wave.list,
+               wavelet.levels=quantile(wave.list$Power,probs=seq(from=0, to=1, by=0.1)),
+               add.coi=TRUE,add.sig=TRUE,x.lab="Time",period.lab="Period",crn.lab="RWI",
+               key.lab=expression(paste("Power"^2)),
+               add.spline=FALSE,f=NULL,nyrs=NULL,
+               crn.col='black',crn.lwd=1,crn.ylim=range(wave.list$y)*1.1)
 }
 \arguments{
-  \item{crn.vec}{a vector of values for the wavelet transform. }
-  \item{yr.vec}{a vector of values giving the years for the plot. Must be the
-  same length as \code{length(crn.vec)}.}
-  \item{p2}{the numbers of power of two to be computed for the wavelet
-  transform.}
-  \item{dj}{sub-octaves per octave calculated.}
-  \item{siglvl}{level for the significance test. Defaults to 0.99.}
-  \item{...}{other arguments to pass to filled.contour.}
+  \item{wave.list}{List. Output from \code{\link{morlet}}.}
+  \item{wavelet.levels}{Numeric. Values for levels of the filled
+    countours for the wavelet plot.}
+  \item{add.coi}{Logical. Add cone of influence?}
+  \item{add.sig}{Logical. Add countour lines for significance?}
+  \item{x.lab}{X-axis label.}
+  \item{period.lab}{Y-axis label for the wavelet plot.}
+  \item{crn.lab}{Y-axis label for the time-series plot.}
+  \item{key.lab}{Label for key.}
+  \item{add.spline}{Logical. Add a spline to the time-series plot using
+    \code{\link{ffcsaps}} if TRUE. }
+  \item{nyrs}{ A number giving the rigidity of the smoothing spline, defaults to
+    0.33 of series length if nyrs is NULL. }
+  \item{f}{ A number between 0 and 1 giving the frequency response or
+    wavelength cutoff for the smoothing spline. Defaults to 0.5 if f is NULL. }
+  \item{crn.col}{Line color for the time-series plot.}
+  \item{crn.lwd}{Line width for the time-series plot.}
+  \item{crn.ylim}{Axis limits for the time-series plot.}
 }
 \details{
-  This produces a plot of a continuous wavelet transform. Its implementation
-  very closely follows Torrence and Compo (1998). The user provides a tree-ring
-  chronology (although detrended series are conceivably useful as well),
-  the years for the plot, the powers of two (for the scale parameter), and the
-  confidence level for the significance test. The function assumes that the data
-  are yearly and defaults to calculating four sub-octaves per octave (four
-  voices per power of two). The input \code{crn.vec} is padded up to the next
-  power of two before the transform and the padding is removed before plotting.
-
-  Currently the Morlet wavelet is the only wavelet implemented; the wavenumber
-  (\code{k0}) is fixed at six. In future releases, other wavelets will be
-  available (Dog, Paul, etc.). Similarly, a chi-square distribution is
-  used to assess significance at the level indicated. In future versions,
-  significance will be calculated against the global wavelet spectrum, or a
-  red-noise background.
-
-  The filled.contour levels are determined using
-  \code{quantile(Power,probs=seq(0,1,0.1))}. A contour for significance is
-  displayed as is the cone of influence. Anything within the cone of influence
+  This produces a plot of a continuous wavelet transform and plots the
+  original time series. Countors are added for significance and a cone
+  of influence polygon can be added as well. Anything within the cone of influence
   should not be interpreted.
 
-  Refer to Torrence and Compo (1998) for details on the transform, significance,
-  etc.
+  The time series can be plotted with a smoothing spline as well.
 }
 \value{
   None. This function is invoked for its side effect, which is to produce a
@@ -52,12 +48,12 @@
 \references{ Torrence, C. and Compo, G.P. (1998) A practical guide to wavelet
   analysis. \emph{Bulletin of the American Meteorological Society}, 79: 61--78.
 }
-\note{ The functions \code{wavelet} and \code{morlet} are ports of Torrence's
+\note{ The function \code{morlet} is a port of Torrence's
   IDL code available at
   \url{http://atoc.colorado.edu/research/wavelets/software.html}
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
-\seealso{ \code{\link{chron}} }
+\seealso{ \code{\link{morlet}} \code{\link{ffcsaps}}}
 \examples{
 
   data(ca533)
@@ -65,7 +61,10 @@
   ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = FALSE)
   Years <- as.numeric(rownames(ca533.crn))
   CAMstd <- ca533.crn[,1]
-  wavelet.plot(CAMstd,Years,p2=9,siglvl=0.99,main="CAMstd")
+  out.wave <- morlet(y1=CAMstd,x1=Years,p2=9,dj=0.1,siglvl=0.99)
+  wavelet.plot(out.wave)
+  levs <- quantile(out.wave$Power,probs=c(0,0.5,0.75,0.9,0.99))
+  wavelet.plot(out.wave, wavelet.levels=levs,add.sig=FALSE)
 
 }
 \keyword{ hplot }

@@ -10,11 +10,11 @@
 #define LINE_LENGTH 83 /* 80 + 2 (newline characters) + 1 (null)*/
 #define MPLIER_LENGTH 5 /* "1eX", "1eXY" + null (mplier or divisor) */
 
-/*
-  Data structure for temporary storage. This is needed because the
-  size of the final data structures is only known after the whole
-  input file has been read.
-*/
+
+/* Data structure for temporary storage. This is needed because the
+ * size of the final data structures is only known after the whole
+ * input file has been read.
+ */
 struct rwlstruct{
     int first_yr;
     int n;
@@ -25,24 +25,30 @@ struct rwlstruct{
 };
 typedef struct rwlstruct rwlnode;
 
-/*
-  A function similar to the standard C library function fgets. This
-  function (intentionally) differs from fgets only in the handling of
-  end-of-line characters. Whereas fgets presumably only stops after
-  seeing a platform-specific end-of-line (or EOF), this function will
-  interpret any sequence of LF ('\n') and CR ('\r') as the line
-  ending, including the most common LF (Unix) and CR LF (Windows), and
-  the rare CR (classic Mac OS). The function stops reading the stream
-  after the whole sequence of LF and/or CR, or after reading size-1
-  characters. All the newline characters will be written to buffer s
-  as such. As a side effect of this design, the function skips most
-  empty lines. They are hidden between the successive newline
-  characters written to buffer s at one call of the function, buffer
-  size permitting.
+/* Data structure for temporary storage of comment lines. */
+struct commentstruct{
+    char *text;
+    struct commentstruct *next;
+};
+typedef struct commentstruct commentnode;
 
-  New: The function writes the number of written characters
-  other than \n and \r to *n_noteol.
-*/
+/* A function similar to the standard C library function fgets. This
+ * function (intentionally) differs from fgets only in the handling of
+ * end-of-line characters. Whereas fgets presumably only stops after
+ * seeing a platform-specific end-of-line (or EOF), this function will
+ * interpret any sequence of LF ('\n') and CR ('\r') as the line
+ * ending, including the most common LF (Unix) and CR LF (Windows),
+ * and the rare CR (classic Mac OS). The function stops reading the
+ * stream after the whole sequence of LF and/or CR, or after reading
+ * size-1 characters. All the newline characters will be written to
+ * buffer s as such. As a side effect of this design, the function
+ * skips most empty lines. They are hidden between the successive
+ * newline characters written to buffer s at one call of the function,
+ * buffer size permitting.
+ *
+ * New: The function writes the number of written characters other
+ * than \n and \r to *n_noteol.
+ */
 char *fgets_eol(char *s, int *n_noteol, int size, FILE *stream){
     int i, this_char;
     i = -1; /* number of characters read - 1 */
@@ -51,8 +57,9 @@ char *fgets_eol(char *s, int *n_noteol, int size, FILE *stream){
 	++i;
 	if(this_char == EOF){
 	    /* In case of EOF, we write a null character to the buffer.
-	       Return value depends on whether any actual characters
-	       have been read. */
+	     * Return value depends on whether any actual characters
+	     * have been read.
+	     */
 	    s[i] = '\0';
 	    if(i == 0){
 		*n_noteol = 0;
@@ -64,7 +71,8 @@ char *fgets_eol(char *s, int *n_noteol, int size, FILE *stream){
 	    }
 	} else if(this_char == '\n' || this_char == '\r'){
 	    /* We enter a mode that eats all remaining '\n':s and '\r':s,
-	       up to the limit of size-1 characters read */
+	     * up to the limit of size-1 characters read
+	     */
 	    s[i] = this_char; /* Use '\n' as end-of-line indicator */
 	    *n_noteol = i;
 	    while(i < size-2){
@@ -82,7 +90,8 @@ char *fgets_eol(char *s, int *n_noteol, int size, FILE *stream){
 		}
 	    }
 	    /* If we get here, there may still be some '\n':s or
-	     * '\r':s coming up */
+	     * '\r':s coming up
+	     */
 	    return s;
 	} else { /* a normal character */
 	    s[i] = this_char;
@@ -94,15 +103,15 @@ char *fgets_eol(char *s, int *n_noteol, int size, FILE *stream){
     return s;
 }
 
-/*
-  A function for reading compact format files.
-  Use with the .Call interface function.
-  Written by Mikko Korpela
-*/
+
+/* A function for reading compact format files.
+ * Use with the .Call interface function.
+ * Written by Mikko Korpela
+ */
 SEXP rcompact(SEXP filename){
     char field_id, line[LINE_LENGTH], mplier_str[MPLIER_LENGTH], *found1,
 	*found2, *found_leftpar, *found_dot, *found_rightpar, *id_start,
-	*old_point, *point, *endp, *tmp_name;
+	*old_point, *point, *endp, *tmp_name, *tmp_comment;
     int i, j, n, first_yr, last_yr, n_found, id_length, exponent,
 	n_repeats, field_width, precision, n_x_w, n_lines, remainder, idx,
 	this_last, divide, *i_first, *i_last;
@@ -110,10 +119,13 @@ SEXP rcompact(SEXP filename){
     double read_double, mplier, *r_mplier, *r_data;
     FILE *f;
     SEXP result, series_id, series_first, series_last, series_mplier,
-	series_data;
+	series_data, project_comments;
     rwlnode first, *this;
+    commentnode comment_first, *comment_this;
     double divisor = 1; /* assign a value to avoid compiler nag */
     int n_content = 0;
+    int n_comments = 0;
+    Rboolean early_eof = FALSE;
 
     /* Open the file for reading */
     const char *fname = CHAR(STRING_ELT(filename, 0));
@@ -122,21 +134,46 @@ SEXP rcompact(SEXP filename){
 	error("Could not open file %s for reading", fname);
 
     this = &first;      /* current rwlnode */
+    comment_this = &comment_first; /* current commentnode */
     n = 0;              /* number of series */
     first_yr = INT_MAX; /* the first year in all data */
     last_yr = INT_MIN;  /* the last year in all data */
 
     /* Each round of the loop reads a header line,
-       then the data lines of the corresponding series */
+     * then the data lines of the corresponding series
+     */
     while(fgets_eol(line, &n_content, LINE_LENGTH, f)){
-	/* A simple check to point out too long header lines.
-	   Generally, if one line is too long, this function will
-	   probably be unable to parse the next line. In that case,
-	   finding the faulty line may be of some value. Of course, if
-	   the input is generated by some program, lines are expected
-	   to be short enough. Data edited by hand may be a different
-	   case.
-	*/
+	/* In the beginning of the file, if no ~ is found, we assume
+	 * the line is a comment. This is the same approach as in the
+	 * TRiCYCLE program.
+	 */
+	while(!strchr(line, '~')){
+	    if(n_content > 0){ /* Skip empty lines */
+		++n_comments;
+		tmp_comment = (char *) R_alloc(n_content+1, sizeof(char));
+		strncpy(tmp_comment, line, n_content);
+		tmp_comment[n_content] = '\0'; /* Null termination */
+		comment_this->text = tmp_comment;
+		comment_this->next =
+		    (commentnode *) R_alloc(1, sizeof(commentnode));
+		comment_this = comment_this->next;
+	    }
+	    if(!fgets_eol(line, &n_content, LINE_LENGTH, f)){
+		early_eof = TRUE;
+		break;
+	    }
+	}
+	if(early_eof)
+	    break;
+
+	/* A simple check to point out too long header
+	 * lines. Generally, if one line is too long, this function
+	 * will probably be unable to parse the next line. In that
+	 * case, finding the faulty line may be of some value. Of
+	 * course, if the input is generated by some program, lines
+	 * are expected to be short enough. Data edited by hand may be
+	 * a different case.
+	 */
 	if(n_content > CONTENT_LENGTH){
 	    fclose(f);
 	    error("Series %d: Header line is too long (max length %d)",
@@ -420,14 +457,13 @@ SEXP rcompact(SEXP filename){
 		    error("Series %d (%s): Could not read number (data row %d, field %d).\nMalformed number or previous line too long.",
 			  n+1, this->id, i+1, n_repeats-j);
 		}
-		/*
-		  Division by a precise number (integer value) is more
-		  accurate than multiplication with an approximate
-		  number. Example from R:
-		  > foo=seq(0,1,length.out=100)
-		  > length(which(foo/100!=foo*0.01))
-		  [1] 10
-		*/
+		/* Division by a precise number (integer value) is
+		 * more accurate than multiplication with an
+		 * approximate number. Example from R:
+		 * > foo=seq(0,1,length.out=100)
+		 * > length(which(foo/100!=foo*0.01))
+		 * [1] 10
+		 */
 		if(divide)
 		    this->data[--idx] = read_double / divisor;
 		else
@@ -484,7 +520,7 @@ SEXP rcompact(SEXP filename){
 	error("No data found in file %s", fname);
 
     /* Transform the results to a list with 7 elements */
-    PROTECT(result = allocVector(VECSXP, 7));
+    PROTECT(result = allocVector(VECSXP, 8));
 
     /* [[1]] First year of all data */
     SET_VECTOR_ELT(result, 0, ScalarInteger(first_yr));
@@ -500,20 +536,23 @@ SEXP rcompact(SEXP filename){
     PROTECT(series_mplier = allocVector(REALSXP, n));
     /* [[7]] Numeric data (ring widths) */
     PROTECT(series_data = allocMatrix(REALSXP, last_yr - first_yr + 1, n));
+    /* [[8]] Project comments */
+    PROTECT(project_comments = allocVector(STRSXP, n_comments));
 
     /* C access to the last four R data structures.
-       - first two (scalars, i.e. vector of length one) already done
-       - SET_STRING_ELT is used for accessing the character vector
-    */
+     * - first two (scalars, i.e. vector of length one) already done
+     * - SET_STRING_ELT is used for accessing the character vector
+     */
     i_first = INTEGER(series_first);
     i_last = INTEGER(series_last);
     r_mplier = REAL(series_mplier);
     r_data = REAL(series_data);
 
     /* idx is for indexing r_data.
-       The matrix series_data is stored in column-major order:
-       We proceed one series at a time, simply incrementing idx
-       on each (carefully planned) write to the array. */
+     * The matrix series_data is stored in column-major order: We
+     * proceed one series at a time, simply incrementing idx on each
+     * (carefully planned) write to the array.
+     */
     idx = -1;
     this = &first;
     for(i=0; i<n; i++){
@@ -534,17 +573,19 @@ SEXP rcompact(SEXP filename){
 	this = this->next;
     }
 
-    UNPROTECT(1);
+    comment_this = &comment_first;
+    for(i=0; i<n_comments; i++){
+	SET_STRING_ELT(project_comments, i, mkChar(comment_this->text));
+	comment_this = comment_this->next;
+    }
+
+    SET_VECTOR_ELT(result, 7, project_comments);
     SET_VECTOR_ELT(result, 6, series_data);
-    UNPROTECT(1);
     SET_VECTOR_ELT(result, 5, series_mplier);
-    UNPROTECT(1);
     SET_VECTOR_ELT(result, 4, series_last);
-    UNPROTECT(1);
     SET_VECTOR_ELT(result, 3, series_first);
-    UNPROTECT(1);
     SET_VECTOR_ELT(result, 2, series_id);
 
-    UNPROTECT(1);
+    UNPROTECT(7);
     return(result);
 }

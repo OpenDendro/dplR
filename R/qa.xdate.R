@@ -1,8 +1,7 @@
 qa.xdate <- function(rwl, seg.length, n, bin.floor){
     ## seg.length
-    if(seg.length*2 > nrow(rwl)) {
+    if(seg.length*2 > nrow(rwl))
         stop("'seg.length' can be at most 1/2 the number of years in 'rwl'")
-    }
     if(as.logical(seg.length %% 2)) stop("'seg.length' must be even")
     if(!is.int(seg.length)) stop("'seg.length' and 'seg.lag' must be integers")
     if(seg.length <= 0) stop("'seg.length' must be positive")
@@ -13,7 +12,6 @@ qa.xdate <- function(rwl, seg.length, n, bin.floor){
         if(n <= 3) stop("'n' must be larger than 3")
     }
     ## bin.floor
-    if(!is.null(bin.floor)){
-        if(!is.int(bin.floor)) stop("'bin.floor' must be a positive integer")
-    }
+    if(!is.null(bin.floor) && (!is.int(bin.floor) || bin.floor < 0))
+        stop("'bin.floor' must be a non-negative integer")
 }

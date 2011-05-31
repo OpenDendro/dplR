@@ -29,9 +29,8 @@ ffcsaps <- function(y, x=1:length(y), nyrs=length(y)/2, f=0.5) {
 
     ffsorted <- function(meshsites, sites) {
         index <- sort(c(meshsites, sites), method="sh", index=TRUE)$ix
-        pointer <- seq(from=1, to=length(index))[index>length(meshsites)]-
+        seq(from=1, to=length(index))[index>length(meshsites)] -
             seq(from=1, to=length(sites))
-        pointer
     }
 
     ## Creates a sparse matrix A of size n x n.
@@ -65,7 +64,7 @@ ffcsaps <- function(y, x=1:length(y), nyrs=length(y)/2, f=0.5) {
 
     n <- length(x)
     ## quick error check
-    if (n<3) stop("There must be at least 3 data points.")
+    if (n < 3) stop("There must be at least 3 data points.")
 
     thesort <- sort(x, method="sh", index=TRUE)
     zz1 <- n-1

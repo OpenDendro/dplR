@@ -14,6 +14,5 @@
     if(ans < 1 || ans > i || is.na(ans))
         stop("Number out of range or not an integer")
     method <- col.names[ans]
-    fits <- detrend.series(y, y.name, make.plot=FALSE, method=method)
-    fits
+    detrend.series(y, y.name, make.plot=FALSE, method=method)
 }

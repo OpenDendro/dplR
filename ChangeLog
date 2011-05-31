@@ -1,11 +1,59 @@
 * CHANGES IN dplR VERSION 1.4.2 pre-release
 * All changes by Mikko Korpela
 
+File: ccf.series.rwl.R
+----------------------
+
+- as.vector() is more intuitive than c() with one argument
+- Cosmetic improvement
+
+File: ccf.series.rwl.Rd
+-----------------------
+
+- bin.floor must be non-negative, not necessarily positive
+
 File: cms.R
 -----------
 
 - Removed redundant c()
 - Some values are stored for reuse
+
+File: corr.rwl.seg.Rd
+---------------------
+
+- bin.floor must be non-negative, not necessarily positive
+
+File: corr.series.seg.Rd
+------------------------
+
+- bin.floor must be non-negative, not necessarily positive
+
+File: crn.plot.R
+----------------
+
+- Default value of f is explicitly 0.5
+
+File: crn.plot.Rd
+-----------------
+
+- Clarified the default values of f and nyrs
+
+File: ffcsaps.R
+---------------
+
+- Cosmetic improvement
+
+File: i.detrend.series.R
+------------------------
+
+- A value is stored for reuse
+- Cosmetic change
+
+File: qa.xdate.R
+----------------
+
+- bin.floor must be non-negative, not necessarily positive
+- Checks that bin.floor is non-negative.
 
 File: rcompact.c
 ----------------
@@ -13,6 +61,11 @@ File: rcompact.c
 - Accepts comment lines in the beginning of the file
 - Cosmetic changes (formatting of comments)
 - UNPROTECT all PROTECTed structures at the same time
+
+File: rcs.R
+-----------
+
+- Some values are stored for reuse
 
 File: read.compact.R
 --------------------
@@ -24,6 +77,11 @@ File: rwl.stats.R
 
 - Removed redundant instances of c()
 - Cosmetic improvement
+
+File: series.rwl.plot.Rd
+------------------------
+
+- bin.floor must be non-negative, not necessarily positive
 
 2011-05-26 Andy  Bunn <andy.bunn@wwu.edu>
 * CHANGES IN dplR VERSION 1.4.1

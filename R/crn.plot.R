@@ -1,4 +1,4 @@
-`crn.plot` <- function(crn, add.spline=FALSE, nyrs=NULL, f=NULL, ...){
+`crn.plot` <- function(crn, add.spline=FALSE, nyrs=NULL, f=0.5, ...){
     if(!is.data.frame(crn)) stop("'crn' must be a data.frame")
 
     op <- par(no.readonly=TRUE) # Save par
@@ -20,8 +20,8 @@
              main=crn.names[i], ...)
         spl <- crn[, i]
         tmp <- na.omit(spl)
+        ## Only possibly NULL in the first round of the for loop
         if(is.null(nyrs)) nyrs <- length(tmp)*0.33
-        if(is.null(f)) f <- 0.5
         spl[!is.na(spl)] <- ffcsaps(y=tmp, x=1:length(tmp), nyrs=nyrs, f=f)
         if(add.spline) lines(yr.vec, spl, col="red", lwd=2)
         abline(h=1)

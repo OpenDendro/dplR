@@ -12,10 +12,10 @@
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
     such as that produced by \code{\link{read.rwl}}. }
   \item{seg.length}{ an even \code{integer} giving length of segments in years
-     (e.g., 20, 50, 100 years). }
-  \item{bin.floor}{ a positive \code{integer} giving  the base for locating
-    the first segment (e.g.,1600, 1700, 1800 AD). Typically 0, 10, 50, 100,
-    etc. }
+    (e.g., 20, 50, 100 years). }
+  \item{bin.floor}{ a non-negative \code{integer} giving the base for
+    locating the first segment (e.g.,1600, 1700, 1800 AD). Typically 0,
+    10, 50, 100, etc. }
   \item{n}{ \code{NULL} or an integer giving the filter length for the
     \code{\link{hanning}} filter used for removal of low frequency
     variation. }

@@ -34,8 +34,8 @@ ccf.series.rwl <- function(rwl, series,
     yrs <- as.numeric(names(master))
 
     if(is.null(bin.floor) || bin.floor == 0) min.bin <- min(series.yrs)
-    else min.bin <- ceiling(min(series.yrs)/bin.floor)*bin.floor
-    to <- max(series.yrs)-seg.length-seg.length
+    else min.bin <- ceiling(min(series.yrs)/bin.floor) * bin.floor
+    to <- max(series.yrs) - seg.length - seg.length
     if(min.bin > to){
         cat("maximum year in (filtered) series:", max(series.yrs), "\n")
         cat("first bin begins: ", min.bin, "\n")
@@ -65,7 +65,7 @@ ccf.series.rwl <- function(rwl, series,
         }
         else {
             tmp <- ccf(master[mask], series[mask], lag.max=lag.max, plot=FALSE)
-            bin.ccf <- c(tmp$acf)
+            bin.ccf <- as.vector(tmp$acf)
         }
         res.cor[, j] <- bin.ccf
     }
@@ -74,7 +74,7 @@ ccf.series.rwl <- function(rwl, series,
         ccf.df <- data.frame(r = c(res.cor, recursive=T),
                              bin = rep(colnames(res.cor),
                              each=length(lag.vec)),
-                             lag = rep(lag.vec,nbins))
+                             lag = rep(lag.vec, nbins))
         ## reorder bins so that lattice definitely keeps them in
         ## ascending order (i.e., no factor order funnies with long
         ## series)
@@ -86,11 +86,11 @@ ccf.series.rwl <- function(rwl, series,
         ccf.df$bin <- factor(ccf.df$bin,
                              levels(ccf.df$bin)[order(foo$ord.char)])
 
-        sig <- qnorm((1 + 1 - pcrit)/2)/sqrt(seg.length)
+        sig <- qnorm((1 + 1 - pcrit)/2) / sqrt(seg.length)
         sig <- c(-sig, sig)
         ccf.plot <-
             xyplot(r ~ lag | bin, data = ccf.df,
-                   ylim=range(ccf.df$r,sig,na.rm=T)*1.1,
+                   ylim=range(ccf.df$r, sig, na.rm=T) * 1.1,
                    xlab="Lag", ylab="Correlation", col.line = NA,
                    panel = function(x, y, col, ...) {
                        panel.abline(h=seq(from=-1, to=1, by=0.1),
@@ -98,9 +98,9 @@ ccf.series.rwl <- function(rwl, series,
                        panel.abline(v=lag.vec, lty="solid", col="gray")
                        panel.abline(h=0, v=0, lwd=2)
                        panel.abline(h=sig, lwd=2, lty="dashed")
-                       col = ifelse(y > 0, "#E41A1C","#377EB8")
+                       col = ifelse(y > 0, "#E41A1C", "#377EB8")
                        ## segments, dots for all r
-                       panel.segments(x1=x, y1=0, x2=x, y2=y, col = col, lwd= 2)
+                       panel.segments(x1=x, y1=0, x2=x, y2=y, col=col, lwd=2)
                        panel.dotplot(x, y, col = col, cex = 1.25, ...)
                    }, ...)
         trellis.par.set(strip.background = list(col = "transparent"))

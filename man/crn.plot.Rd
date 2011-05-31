@@ -6,20 +6,22 @@
   \code{data.frame} of the type produced by \code{\link{chron}}.
 }
 \usage{
-crn.plot(crn,add.spline=FALSE,nyrs=NULL,f=NULL,...)
+crn.plot(crn, add.spline=FALSE, nyrs=NULL, f=0.5,...)
 }
 \arguments{
-  \item{crn}{ a \code{data.frame} as produced by \code{\link{chron}}. The data.frame
-  should have the years in rownames(crn), the chronologies in the columns.
-  Optionally, the last column can contain the sample depth named
-  \dQuote{samp.depth}. }
-  \item{add.spline}{ a logical flag. Will add a line with a smoothing spline. }
-  \item{nyrs}{ a number giving the rigidity of the smoothing spline, defaults to
-    0.33 of series length if nyrs is NULL. }
+  \item{crn}{ a \code{data.frame} as produced by
+    \code{\link{chron}}. The data.frame should have the years in
+    rownames(crn), the chronologies in the columns.  Optionally, the
+    last column can contain the sample depth named
+    \dQuote{samp.depth}. }
+  \item{add.spline}{ a logical flag. Will add a line with a smoothing
+    spline. }
+  \item{nyrs}{ a number giving the rigidity of the smoothing spline.
+    Defaults to 0.33 times the length of the first chronology if nyrs is
+    NULL. }
   \item{f}{ a number between 0 and 1 giving the frequency response or
-    wavelength cutoff. Defaults to 0.5 if f is NULL. }
+    wavelength cutoff. Defaults to 0.5. }
   \item{...}{ other arguments passed to \code{plot}. }
-
 }
 \details{
   This makes a simple plot of one or more tree-ring chronologies.

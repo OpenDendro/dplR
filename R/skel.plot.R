@@ -10,9 +10,15 @@
     rw.vec <- rw.vec[!na.mask]
     yr.vec <- yr.vec[!na.mask]
 
-    if(length(rw.vec) > 840) {
-        cat("Input series has length of", length(rw.vec), "\n")
+    n.val <- length(rw.vec)
+    if(n.val > 840) {
+        cat("Input series has length of", n.val, "\n")
         stop("long series (> 840) must be split into multiple plots")
+    }
+    if(n.val < filt.weight) {
+        cat("Input series has length of ", n.val,
+            ", 'filt.weight' is ", filt.weight, "\n", sep="")
+        stop("'filt.weight' must not be larger than length of input series")
     }
 
     ## should wrap this into a function called skel.calc that returns the
@@ -20,7 +26,7 @@
 
     ## if no yr then....
     if(is.null(yr.vec))
-        yr.vec <- 1:length(rw.vec) - 1
+        yr.vec <- 0:(n.val-1)
     ## pad down to the nearst 10 if not already there
     pad0 <- floor(min(yr.vec)/10)*10
     if(pad0 != min(yr.vec)){
@@ -36,22 +42,25 @@
 
     ## detrend and pad
     rw.dt <- hanning(rw.df$rw, filt.weight)
-    skel.tmp <- rep(NA, length(rw.df$rw))
+    skel <- rep(NA, length(rw.df$rw))
     ## calc rel growth
     for(i in 2:(length(rw.df$rw)-1)) {
         bck <- (rw.df$rw[i]-rw.df$rw[i-1])/rw.dt[i]
         fwd <- (rw.df$rw[i]-rw.df$rw[i+1])/rw.dt[i]
-        skel.tmp[i] <- mean(c(bck, fwd))
+        skel[i] <- mean(c(bck, fwd))
     }
-    skel.tmp[skel.tmp > 0] <- NA
+    skel[skel > 0] <- NA
     ## rescale from 0 to 10
-    skel.range <- range(skel.tmp[!is.na(skel.tmp)])
+    na.flag <- is.na(skel)
+    if(all(na.flag))
+        skel.range <- c(NA, NA)
+    else
+        skel.range <- range(skel[!na.flag])
     newrange <- c(10, 1)
     mult.scalar <- (newrange[2] - newrange[1])/(skel.range[2] - skel.range[1])
-    skel <- newrange[1] + (skel.tmp - skel.range[1]) * mult.scalar
+    skel <- newrange[1] + (skel - skel.range[1]) * mult.scalar
     skel[skel < 3] <- NA
     skel <- ceiling(skel)
-
 
     ## Variables for plotting
     ## page width
@@ -66,68 +75,50 @@
     spcr <- 5
 
     ## break series into sections of 120 years with an index
-    yrs.col <- rw/2 # n years per row
+    yrs.col <- rw / 2 # n years per row
     n <- length(skel)
-    m <- 1:ceiling(n/yrs.col)
+    n.rows <- ceiling(n/yrs.col)
+    m <- 1:n.rows
     row.index <- rep(m, each = yrs.col)[1:n]
-    n.rows <- max(m)
     skel.df <- data.frame(yr=rw.df$yr, skel)
     if(plot){
         ## master page
         grid.newpage()
+        vps <- list()
+        y <- ph
+        for (i in 1:min(n.rows,7)) {
+            y <- y - (rh + spcr)
+            vps[[i]] <-
+                viewport(x=unit(3, "mm"),
+                         y=unit(y, "mm"),
+                         width=unit(246, "mm"), height=unit(rh, "mm"),
+                         just=c("left", "bottom"), name=LETTERS[i])
+        }
         tree <-
             vpTree(viewport(width=unit(pw, "mm"), height=unit(ph, "mm"),
                             name="page"),
-                   vpList(viewport(x=unit(3, "mm"),
-                                   y=unit(ph-(rh*1)-(spcr*1), "mm"),
-                                   width=unit(246, "mm"), height=unit(rh, "mm"),
-                                   just=c("left", "bottom"), name="A"),
-                          viewport(x=unit(3, "mm"),
-                                   y=unit(ph-(rh*2)-(spcr*2), "mm"),
-                                   width=unit(246, "mm"), height=unit(rh, "mm"),
-                                   just=c("left", "bottom"), name="B"),
-                          viewport(x=unit(3, "mm"),
-                                   y=unit(ph-(rh*3)-(spcr*3), "mm"),
-                                   width=unit(246, "mm"), height=unit(rh, "mm"),
-                                   just=c("left", "bottom"), name="C"),
-                          viewport(x=unit(3, "mm"),
-                                   y=unit(ph-(rh*4)-(spcr*4), "mm"),
-                                   width=unit(246, "mm"), height=unit(rh, "mm"),
-                                   just=c("left", "bottom"), name="D"),
-                          viewport(x=unit(3, "mm"),
-                                   y=unit(ph-(rh*5)-(spcr*5), "mm"),
-                                   width=unit(246, "mm"), height=unit(rh, "mm"),
-                                   just=c("left", "bottom"), name="E"),
-                          viewport(x=unit(3, "mm"),
-                                   y=unit(ph-(rh*6)-(spcr*6), "mm"),
-                                   width=unit(246, "mm"), height=unit(rh, "mm"),
-                                   just=c("left", "bottom"), name="F"),
-                          viewport(x=unit(3, "mm"),
-                                   y=unit(ph-(rh*7)-(spcr*7), "mm"),
-                                   width=unit(246, "mm"), height=unit(rh, "mm"),
-                                   just=c("left", "bottom"), name="G")
-                          ))
+                   do.call(vpList, vps))
 
         ## set up page with the right number of rows
         pushViewport(tree)
+        ## seq for 0 to plot width by 2mm
+        tmp.1 <- seq(from=0, to=rw, by=2)
+        tmp.2 <- seq(from=0, to=rh, by=2)
+        tmp.3 <- seq(from=0, to=rw, by=20)
         for (i in 1:n.rows) {
 
             seekViewport(LETTERS[i])
             ## working code goes here - e.g., skelplot!
-            ## seq for 0 to plot width by 2mm
-            tmp.seq <- seq(from=0, to=rw, by=2)
-            grid.segments(x0=unit(tmp.seq, "mm"), y0=unit(0, "mm"),
-                          x1=unit(tmp.seq, "mm"), y1=unit(rh, "mm"),
+            grid.segments(x0=unit(tmp.1, "mm"), y0=unit(0, "mm"),
+                          x1=unit(tmp.1, "mm"), y1=unit(rh, "mm"),
                           gp = gpar(col="green", lineend = "square", linejoin = "round"))
-            tmp.seq <- seq(from=0, to=rh, by=2)
-            grid.segments(x0=unit(0, "mm"), y0=unit(tmp.seq, "mm"),
-                          x1=unit(rw, "mm"), y1=unit(tmp.seq, "mm"),
+            grid.segments(x0=unit(0, "mm"), y0=unit(tmp.2, "mm"),
+                          x1=unit(rw, "mm"), y1=unit(tmp.2, "mm"),
                           gp = gpar(col="green", lineend = "square", linejoin = "round"))
 
             ## decadal lines
-            tmp.seq <- seq(from=0, to=rw, by=20)
-            grid.segments(x0=unit(tmp.seq, "mm"), y0=unit(0, "mm"),
-                          x1=unit(tmp.seq, "mm"), y1=unit(rh, "mm"),
+            grid.segments(x0=unit(tmp.3, "mm"), y0=unit(0, "mm"),
+                          x1=unit(tmp.3, "mm"), y1=unit(rh, "mm"),
                           gp = gpar(col = "black", lwd = 1.5, lty = "dashed",
                           lineend = "square", linejoin = "round"))
 
@@ -173,7 +164,7 @@
                                    linejoin = "round"))
                 }
                 ## end arrow
-                if(i == max(n.rows) && j == end.yr){
+                if(i == n.rows && j == end.yr){
                     end.mm <- (j-1)*2
                     grid.lines(x=unit(c(end.mm, end.mm), "mm"),
                                y=unit(c(rh, 0), "mm"),
@@ -194,12 +185,11 @@
                 grid.lines(x=unit(c(start.mm, start.mm), "mm"),
                            y=unit(c(rh, 0), "mm"),
                            gp = gpar(lwd = 2, lineend = "square", linejoin = "round"))
+                fontsize.sname <- ifelse(nchar(sname) > 6, 9, 10)
                 if(!master){
                     grid.polygon(x=unit(c(start.mm, start.mm, start.mm-2), "mm"),
                                  y=unit(c(0, 6, 6), "mm"),
                                  gp=gpar(fill = "black", lineend = "square", linejoin = "round"))
-                    ## sample id
-                    fontsize.sname <- ifelse(nchar(sname) > 6, 9, 10)
                     grid.text(label = sname,
                               x=unit(start.mm-1, "mm"),
                               y=unit(rh-1, "mm"),
@@ -211,8 +201,6 @@
                     grid.polygon(x=unit(c(start.mm, start.mm, start.mm-2), "mm"),
                                  y=unit(c(rh, 16, 16), "mm"),
                                  gp=gpar(fill = "black", lineend = "square", linejoin = "round"))
-                    ## sample id
-                    fontsize.sname <- ifelse(nchar(sname) > 6, 9, 10)
                     grid.text(label = sname,
                               x=unit(start.mm-1, "mm"),
                               y=unit(1, "mm"),

@@ -100,6 +100,12 @@ File: skel.plot.R
 - Checks that length of input exceeds a minimum value
 - Avoids warning from giving an empty vector to range()
 
+File: wavelet.plot.R
+--------------------
+
+- Some lines previously in both branches of if-else now appear only once
+- Avoids a duplicate call to unique()
+
 2011-05-26 Andy  Bunn <andy.bunn@wwu.edu>
 * CHANGES IN dplR VERSION 1.4.1
 * All changes by Mikko Korpela

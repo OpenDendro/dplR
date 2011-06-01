@@ -27,10 +27,9 @@ wavelet.plot <-
     Signif <- Power/Signif
 
     ## Period is in years, period2 is in powers of 2
-    period2 <- log(period)/log(2)  # Integer powers of 2 in period
-    period3 <- trunc(period2)  # Integer powers of 2 in period
-    ytickv <- 2^(unique(period3))  # Unique powers of 2
-    ytick <- unique(period3)  # Unique powers of 2
+    period2 <- log(period)/log(2)
+    ytick <- unique(trunc(period2)) # Unique integer powers of 2
+    ytickv <- 2^(ytick) # Labels are in years
 
     ## coi is in years, coi2 in powers of 2
     coi2 <- log(coi)/log(2)
@@ -39,18 +38,27 @@ wavelet.plot <-
     coi2.yy[is.na(coi2.yy)] <- coi[2]
     yr.vec.xx <- c(x, rev(x))
 
+    par.orig <- par(c("mar", "las", "mfrow"))
+    on.exit(par(par.orig))
+    nlevels <- length(wavelet.levels)
+    key.labs <- formatC(wavelet.levels, digits = 4, format = "f")
+    asp <- NA
+    xaxs <- "i"
+    yaxs <- "i"
+    las <- 1
+    xlim <- range(x, finite=TRUE)
+    ylim <- range(period2, finite=TRUE)
+    z <- Power
+    ## invert to match std figs? Not sure how to do tht coi
+    ## parabola be easier to just fool the filled.countor internal
+    ## to change the plot order?
+    ##z <- z[,ncol(z):1]
+    ##Signif <-Signif[,ncol(Signif):1]
+    ##ytick <- rev(ytick)
 
     if(side.by.side) {
         ## plot set up
-        par.orig <- par(c("mar", "las", "mfrow"))
-        on.exit(par(par.orig))
         layout(matrix(c(3, 2, 1), nr=1, byrow=TRUE), widths=c(1, 1, 0.2))
-        nlevels <- length(wavelet.levels)
-        key.labs <- formatC(wavelet.levels, digits = 4, format = "f")
-        asp <- NA
-        xaxs <- "i"
-        yaxs <- "i"
-        las <- 1
         ## plot 1: scale
         mar <- c(3, 1, 3, 3)
         par(mar=mar, tcl=0.5, mgp=c(1.5, 0.25, 0), las=las)
@@ -65,15 +73,6 @@ wavelet.plot <-
         mar <- c(3, 3, 3, 3)
         par(mar=mar, tcl=0.5, mgp=c(1.5, 0.25, 0))
         plot.new()
-        xlim <- range(x, finite=TRUE)
-        ylim <- range(period2, finite=TRUE)
-        z <- Power
-        ## invert to match std figs? Not sure how to do tht coi
-        ## parabola be easier to just fool the filled.countor internal
-        ## to change the plot order?
-        ##z <- z[,ncol(z):1]
-        ##Signif <-Signif[,ncol(Signif):1]
-        ##ytick <- rev(ytick)
 
         plot.window(xlim, ylim, "", xaxs=xaxs, yaxs=yaxs, asp=asp, las=las)
         .Internal(filledcontour(as.double(x),
@@ -119,15 +118,7 @@ wavelet.plot <-
     }
     else {
         ## plot set up
-        par.orig <- par(c("mar", "las", "mfrow"))
-        on.exit(par(par.orig))
         layout(matrix(c(3, 2, 1), nc=1, byrow=TRUE), heights=c(1, 1, 0.3))
-        nlevels <- length(wavelet.levels)
-        key.labs <- formatC(wavelet.levels, digits = 4, format = "f")
-        asp <- NA
-        xaxs <- "i"
-        yaxs <- "i"
-        las <- 1
         ## plot 1: scale
         mar <- c(3, 3, 0.1, 3)
         par(mar=mar, tcl=0.5, mgp=c(1.5, 0.25, 0), las=las)
@@ -141,15 +132,6 @@ wavelet.plot <-
         ## plot 2: contour-image
         par(mar=mar, tcl=0.5, mgp=c(1.5, 0.25, 0))
         plot.new()
-        xlim <- range(x, finite=TRUE)
-        ylim <- range(period2, finite=TRUE)
-        z <- Power
-        ## invert to match std figs? Not sure how to do tht coi
-        ## parabola be easier to just fool the filled.countor internal
-        ## to change the plot order?
-        ##z <- z[,ncol(z):1]
-        ##Signif <-Signif[,ncol(Signif):1]
-        ##ytick <- rev(ytick)
 
         plot.window(xlim, ylim, "", xaxs=xaxs, yaxs=yaxs, asp=asp, las=las)
         .Internal(filledcontour(as.double(x),

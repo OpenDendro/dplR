@@ -18,6 +18,15 @@ File: cms.R
 - Removed redundant c()
 - Some values are stored for reuse
 
+File: corr.rwl.seg.R
+--------------------
+
+- par(op) moved to on.exit()
+- Odd and even segs are plotted with the same code, avoiding copy-paste
+- Some values are stored for reuse
+- Some unnecessary colnames are not set
+- Cosmetic improvement
+
 File: corr.rwl.seg.Rd
 ---------------------
 

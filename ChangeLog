@@ -81,6 +81,11 @@ File: read.compact.R
 
 - Prints comments found in the file (if any)
 
+File: rwi.stats.R
+-----------------
+
+- Within-tree signal is now computed correctly (thanks to Pierre Mérian)
+
 File: rwl.stats.R
 -----------------
 

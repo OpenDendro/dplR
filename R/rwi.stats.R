@@ -46,7 +46,7 @@
             x.part <- x[, x.id == i]
             if(!is.null(ncol(x.part))){
                 r <- cor(x.part, use=period)
-                r.vec[i] <- mean(r[upper.tri(r)])
+                r.vec[i] <- sum(r[upper.tri(r)])
             }
         }
         r.vec

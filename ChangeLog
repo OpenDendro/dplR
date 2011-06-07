@@ -1,6 +1,15 @@
-* CHANGES IN dplR VERSION 1.4.2 pre-release
+* CHANGES IN dplR VERSION 1.4.2
 * Ran through Mikko's changes. June 2, 2011. AGB
 * Changes below by Mikko Korpela
+
+All .rda data files (change reported June 7, after release in CRAN)
+-------------------
+
+- Data files were repackaged by R-Forge using a tight compression
+  level. This is done every time R-Forge builds the dplR package, but the
+  files are expected to stay identical if no changes are made to the
+  compression system. The new data files supposedly require R 2.10.0, but
+  this does not affect dplR which requires R >= 2.11.0 anyway.
 
 File: ccf.series.rwl.R
 ----------------------

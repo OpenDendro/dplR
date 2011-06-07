@@ -12,7 +12,7 @@ glk <- function(x) {
             col2 <- x[, k]
             set <- cbind(col1, col2)
             ## check if common interval is longer than 3 years
-            sum.common <- sum(apply(set, MAR = 1, count.common))
+            sum.common <- sum(apply(set, MARGIN = 1, count.common))
             if (sum.common < 3) {
                 G[i, k] <- NA
             } else {

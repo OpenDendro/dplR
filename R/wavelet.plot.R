@@ -58,7 +58,8 @@ wavelet.plot <-
 
     if(side.by.side) {
         ## plot set up
-        layout(matrix(c(3, 2, 1), nr=1, byrow=TRUE), widths=c(1, 1, 0.2))
+        layout(matrix(c(3, 2, 1), nrow=1, byrow=TRUE),
+               widths=c(1, 1, 0.2))
         ## plot 1: scale
         mar <- c(3, 1, 3, 3)
         par(mar=mar, tcl=0.5, mgp=c(1.5, 0.25, 0), las=las)
@@ -118,7 +119,8 @@ wavelet.plot <-
     }
     else {
         ## plot set up
-        layout(matrix(c(3, 2, 1), nc=1, byrow=TRUE), heights=c(1, 1, 0.3))
+        layout(matrix(c(3, 2, 1), ncol=1, byrow=TRUE),
+               heights=c(1, 1, 0.3))
         ## plot 1: scale
         mar <- c(3, 3, 0.1, 3)
         par(mar=mar, tcl=0.5, mgp=c(1.5, 0.25, 0), las=las)

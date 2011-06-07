@@ -79,7 +79,7 @@
     if(crn.width > 6)
         crn.name <- substr(crn.name, 1, 6)
     else if(crn.width < 6) # Pad to nchar 6 (no leading zero)
-        crn.name <- formatC(crn.name, wid = 6, format = "f")
+        crn.name <- formatC(crn.name, width = 6, format = "f")
 
     dec.str <- character(n.decades)
     for(i in 1:n.decades){
@@ -89,17 +89,17 @@
         n.yrs <- length(dec.idx)
         dec.yrs <- yrs[dec.idx]
         ## Pad to nchar 4 (no leading zero)
-        dec.yrs <- formatC(dec.yrs, dig = 0, wid = 4, format = "f")
+        dec.yrs <- formatC(dec.yrs, digits = 0, width = 4, format = "f")
 
         dec.rwi <- crn[dec.idx, 1]
         ## Pad to nchar 4 (no leading zero)
         dec.rwi <- round(dec.rwi, 3) * 1000
-        dec.rwi <- formatC(dec.rwi, dig = 0, wid = 4, format = "f")
+        dec.rwi <- formatC(dec.rwi, digits = 0, width = 4, format = "f")
 
         ## Pad to nchar 3 (no leading zero)
         dec.samp.depth <- crn[dec.idx, 2]
         dec.samp.depth <- formatC(dec.samp.depth,
-                                  dig = 0, wid = 3, format = "f")
+                                  digits = 0, width = 3, format = "f")
         ## Pad front end
         if(i == 1) tmp <- paste(rep("9990  0", 10-n.yrs), collapse="")
         else tmp <- ""

@@ -1,3 +1,25 @@
+* CHANGES IN dplR VERSION 1.4.3 pre-release
+
+File: glk.R
+-----------
+
+- Uses the complete argument name MARGIN instead of MAR
+
+File: series.rwl.plot.R
+-----------------------
+
+- Uses complete argument names
+
+File: wavelet.plot.R
+--------------------
+
+- Uses complete argument names
+
+File: write.crn.R
+-----------------
+
+- Uses complete argument names
+
 * CHANGES IN dplR VERSION 1.4.2
 * Ran through Mikko's changes. June 2, 2011. AGB
 * Changes below by Mikko Korpela

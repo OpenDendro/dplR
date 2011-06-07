@@ -53,7 +53,8 @@ series.rwl.plot <-
     nbins <- nrow(bins)
 
     op <- par(no.readonly=TRUE)
-    layout(matrix(c(1, 3, 2, 4), 2, 2), width = c(1, 0.5), height=c(1, 0.5))
+    layout(matrix(c(1, 3, 2, 4), 2, 2), widths = c(1, 0.5),
+           heights = c(1, 0.5))
     par(mar=c(4, 2, 2, 1) + 0.1, mgp=c(1.25, 0.25, 0), tcl=0.25)
     col.pal <- c("#E41A1C", "#377EB8", "#4DAF4A")
     ## plot 1

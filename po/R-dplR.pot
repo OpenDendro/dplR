@@ -1,0 +1,433 @@
+# Translation template for messages in dplR R code
+# Copyright (C) dplR copyright holders
+# This file is distributed under the same license as the dplR package.
+# Mikko Korpela <mvkorpel@iki.fi>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: dplR 1.4.3\n"
+"Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
+"POT-Creation-Date: 2011-06-08 17:35+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+msgid "dimension problem: ncol(rw) != nrow(d2pith)"
+msgstr ""
+
+msgid "series ids in 'd2pith' and 'rwl' do not match"
+msgstr ""
+
+msgid "dimension problem: ncol(rw) != nrow(diam)"
+msgstr ""
+
+msgid "series ids in 'diam' and 'rwl' do not match"
+msgstr ""
+
+msgid "'lag.max' > 'seg.length'"
+msgstr ""
+
+msgid "Shorten 'seg.length' or adjust 'bin.floor'."
+msgstr ""
+
+msgid "'prefix' must be a character string with less than 4 characters"
+msgstr ""
+
+msgid "dimension problem: ncol(rw) != nrow(po)"
+msgstr ""
+
+msgid "Series ids in 'po' and 'rwl' do not match"
+msgstr ""
+
+msgid "At least 2 series are needed in rwl"
+msgstr ""
+
+msgid "'crn' must be a data.frame"
+msgstr ""
+
+msgid "'x' must be a vector"
+msgstr ""
+
+msgid "'y' must be a vector"
+msgstr ""
+
+msgid "There must be at least 3 data points."
+msgstr ""
+
+msgid "The data abscissae must be distinct."
+msgstr ""
+
+msgid "Abscissa and ordinate vector must be of the same length."
+msgstr ""
+
+msgid "characters outside a-z, A-Z, 0-9 present: renaming series"
+msgstr ""
+
+msgid "some names are too long: renaming series"
+msgstr ""
+
+msgid "duplicate names present: renaming series"
+msgstr ""
+
+msgid "could not remap a name: some series will be missing"
+msgstr ""
+
+msgid "Number out of range or not an integer"
+msgstr ""
+
+msgid "'x1' and 'y1' lengths differ"
+msgstr ""
+
+msgid "'seg.length' can be at most 1/2 the number of years in 'rwl'"
+msgstr ""
+
+msgid "'seg.length' must be even"
+msgstr ""
+
+msgid "'seg.length' and 'seg.lag' must be integers"
+msgstr ""
+
+msgid "'seg.length' must be positive"
+msgstr ""
+
+msgid "'n' must be an integer"
+msgstr ""
+
+msgid "'n' must be odd"
+msgstr ""
+
+msgid "'n' must be larger than 3"
+msgstr ""
+
+msgid "'bin.floor' must be a non-negative integer"
+msgstr ""
+
+msgid "series ids in 'po' and 'rwl' do not match"
+msgstr ""
+
+msgid "minimum 'po' is 1"
+msgstr ""
+
+msgid "each value in 'po' must be an integer"
+msgstr ""
+
+msgid "File is empty"
+msgstr ""
+
+msgid "First line in the crn file ends before col 10"
+msgstr ""
+
+msgid "Header must be NULL or logical"
+msgstr ""
+
+msgid "File has under 4 lines"
+msgstr ""
+
+msgid "First data line ends before col 10"
+msgstr ""
+
+msgid "Cols 7-10 of first data line not a year"
+msgstr ""
+
+msgid "A 'DateBegin' and 'DateEnd' entry has to be present for each series!"
+msgstr ""
+
+msgid "Site-Tree-Core mask does not sum to 8"
+msgstr ""
+
+msgid "unable to create tree ids"
+msgstr ""
+
+msgid "there appears to be more than one site"
+msgstr ""
+
+msgid "file is empty"
+msgstr ""
+
+msgid "lastYear < firstYear in project"
+msgstr ""
+
+msgid ", object"
+msgstr ""
+
+msgid "."
+msgstr ""
+
+msgid ", element"
+msgstr ""
+
+msgid ", sample"
+msgstr ""
+
+msgid ", radius"
+msgstr ""
+
+msgid ", series"
+msgstr ""
+
+msgid "external entities are not supported:"
+msgstr ""
+
+msgid "unknown entity:"
+msgstr ""
+
+msgid "Negative missingHeartwoodRingsToPith"
+msgstr ""
+
+msgid "Negative missingSapwoodRingsToPith"
+msgstr ""
+
+msgid "Negative nrOfSapwoodRings"
+msgstr ""
+
+msgid "Negative nrOfUnmeasuredInnerRings"
+msgstr ""
+
+msgid "Negative values interpreted"
+msgstr ""
+
+msgid "as missing in project"
+msgstr ""
+
+msgid ", derived series"
+msgstr ""
+
+msgid "Too many values (expected"
+msgstr ""
+
+msgid ", got"
+msgstr ""
+
+msgid ") in project"
+msgstr ""
+
+msgid "Too few values (expected"
+msgstr ""
+
+msgid "In undated series"
+msgstr ""
+
+msgid ": Unitless measurements present"
+msgstr ""
+
+msgid ": Strange unit"
+msgstr ""
+
+msgid "Negative counts interpreted"
+msgstr ""
+
+msgid "In derived series"
+msgstr ""
+
+msgid ": Data from the future"
+msgstr ""
+
+msgid "In data.frame"
+msgstr ""
+
+msgid "First line in rwl file ends before col 12"
+msgstr ""
+
+msgid "'header' must be NULL or logical"
+msgstr ""
+
+msgid "Cols 9-12 of first data line not a year"
+msgstr ""
+
+msgid "Precision unknown in series"
+msgstr ""
+
+msgid "dimension problem: 'ncol(rwi)' and 'nrow(ids)' are unequal"
+msgstr ""
+
+msgid "'ids' must have numeric columns"
+msgstr ""
+
+msgid "Correlations are all NA. No overlap in series?"
+msgstr ""
+
+msgid "minimum 'window.length' is 3"
+msgstr ""
+
+msgid "'window.overlap' is too large, max value is 'window.length'-1 ("
+msgstr ""
+
+msgid ")"
+msgstr ""
+
+msgid "'window.length' is smaller than 'min.corr.overlap'"
+msgstr ""
+
+msgid "'window.length' is larger than the number of years in 'rwi'"
+msgstr ""
+
+msgid "at least 2 trees are needed"
+msgstr ""
+
+msgid "too few years with enough trees for correlation calculations"
+msgstr ""
+
+msgid "'first.start' too small, must be >= 1"
+msgstr ""
+
+msgid "'first.start' too large"
+msgstr ""
+
+msgid "'x' must be a data.frame"
+msgstr ""
+
+msgid "NA result at position"
+msgstr ""
+
+msgid ". You could check whether 'key' years are in range."
+msgstr ""
+
+msgid "Exact p-value (<"
+msgstr ""
+
+msgid ") could not be estimated for superposed epoch at position"
+msgstr ""
+
+msgid ". You could try a higher value for 'resample',"
+msgstr ""
+
+msgid "shorten 'seg.length' or adjust 'bin.floor'"
+msgstr ""
+
+msgid "'sname' must be a character string less than 8 characters long"
+msgstr ""
+
+msgid "long series (> 840) must be split into multiple plots"
+msgstr ""
+
+msgid "'filt.weight' must not be larger than length of input series"
+msgstr ""
+
+msgid "empty 'rwl' given, nothing to draw"
+msgstr ""
+
+msgid "a user-coded (pseudo) random number generator is in use"
+msgstr ""
+
+msgid "'prec' must equal 0.01 or 0.001"
+msgstr ""
+
+msgid "file 'fname' does not exist, cannot append"
+msgstr ""
+
+msgid "series"
+msgstr ""
+
+msgid ": header line would be too long"
+msgstr ""
+
+msgid "input should only have 2 cols"
+msgstr ""
+
+msgid "bad idea to append with header"
+msgstr ""
+
+msgid "header must be a list"
+msgstr ""
+
+msgid "header must be a list with names"
+msgstr ""
+
+msgid ","
+msgstr ""
+
+msgid "lab.info must be a data.frame with at least one row"
+msgstr ""
+
+msgid "name is a compulsory variable in lab.info"
+msgstr ""
+
+msgid "domain is a required attribute of identifier in lab.info"
+msgstr ""
+
+msgid "identifier is a required attribute of research.info"
+msgstr ""
+
+msgid "domain is a required attribute of research.info"
+msgstr ""
+
+msgid "description is a required attribute of research.info"
+msgstr ""
+
+msgid "must be of type character - inserting"
+msgstr ""
+
+msgid "must be a list. Creating one."
+msgstr ""
+
+msgid "$"
+msgstr ""
+
+msgid "2-col 'ids' needs \"tree\" and \"core\" columns"
+msgstr ""
+
+msgid "3-col 'ids' needs \"tree\", \"core\","
+msgstr ""
+
+msgid "and \"radius\" columns"
+msgstr ""
+
+msgid "4-col 'ids' needs \"tree\", \"core\","
+msgstr ""
+
+msgid "\"radius\", and \"measurement\" columns"
+msgstr ""
+
+msgid "argument 'ids' is in wrong format"
+msgstr ""
+
+msgid "(2, 3, or 4 columns required)"
+msgstr ""
+
+msgid "argument 'ids' is not data.frame or"
+msgstr ""
+
+msgid "has wrong number of rows"
+msgstr ""
+
+msgid "cols needed in 'titles': \"tree\", \"core\","
+msgstr ""
+
+msgid "\"radius\", and \"measurement\""
+msgstr ""
+
+msgid "argument 'titles' is not data.frame or"
+msgstr ""
+
+msgid "'ids' and 'titles' not consistent or duplicates present"
+msgstr ""
+
+msgid "Unknown prec specified: no unit conversion or"
+msgstr ""
+
+msgid "rounding done"
+msgstr ""
+
+msgid "nrow(wood.completeness) must be equal to ncol(rwl.df)"
+msgstr ""
+
+msgid "row names of wood.completeness must match"
+msgstr ""
+
+msgid "col names of rwl.df"
+msgstr ""
+
+msgid "Some values in wood.completeness$"
+msgstr ""
+
+msgid "are invalid, i.e. not integer or < 0"
+msgstr ""
+
+msgid "years earlier than -9999 not supported"
+msgstr ""
+
+msgid "year > 99999 not possible"
+msgstr ""

@@ -1,4 +1,4 @@
-#include <R.h>
+#include "dplR.h"
 #include <Rinternals.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -131,7 +131,7 @@ SEXP rcompact(SEXP filename){
     const char *fname = CHAR(STRING_ELT(filename, 0));
     f = fopen(fname, "r");
     if(!f)
-	error("Could not open file %s for reading", fname);
+	error(_("Could not open file %s for reading"), fname);
 
     this = &first;      /* current rwlnode */
     comment_this = &comment_first; /* current commentnode */
@@ -176,7 +176,7 @@ SEXP rcompact(SEXP filename){
 	 */
 	if(n_content > CONTENT_LENGTH){
 	    fclose(f);
-	    error("Series %d: Header line is too long (max length %d)",
+	    error(_("Series %d: Header line is too long (max length %d)"),
 		  n+1, CONTENT_LENGTH);
 	}
 	n_found = 0;
@@ -186,24 +186,24 @@ SEXP rcompact(SEXP filename){
 	/* Not a header line, not a valid file */
 	if(!found1){
 	    fclose(f);
-	    error("Series %d: No '=' found when header line was expected",
+	    error(_("Series %d: No '=' found when header line was expected"),
 		  n+1);
 	}
 	if(found1 == line){
 	    fclose(f);
-	    error("Series %d: No room for number before first '='", n+1);
+	    error(_("Series %d: No room for number before first '='"), n+1);
 	}
 
 	/* Convert the part left of the first '=' to an integer */
 	read_int = strtoll(line, &endp, 10);
 	if(endp != found1){
 	    fclose(f);
-	    error("Series %d: Only a number must be found right before 1st '='",
+	    error(_("Series %d: Only a number must be found right before 1st '='"),
 		  n+1);
 	}
 	if(read_int > INT_MAX){
 	    fclose(f);
-	    error("Series %d: Number %lld exceeds integer range",
+	    error(_("Series %d: Number %lld exceeds integer range"),
 		  n+1, read_int);
 	}
 	/* We assume the field id is right after the '=' */
@@ -213,7 +213,7 @@ SEXP rcompact(SEXP filename){
 	    n_found = 1;
 	    if(read_int <= 0){
 		fclose(f);
-		error("Series %d: Length of series must be at least one (%ld seen)",
+		error(_("Series %d: Length of series must be at least one (%ld seen)"),
 		      n+1, read_int);
 	    }
 	    this->n = (int) read_int;
@@ -221,34 +221,34 @@ SEXP rcompact(SEXP filename){
 	    this->first_yr = (int) read_int;
 	} else{
 	    fclose(f);
-	    error("Series %d: Unknown field id: %c", n+1, *(found1+1));
+	    error(_("Series %d: Unknown field id: %c"), n+1, *(found1+1));
 	}
 
 	/* Require space */
 	if(*(found1+2) != ' '){
 	    fclose(f);
-	    error("Series %d: Space required between N and I fields", n+1);
+	    error(_("Series %d: Space required between N and I fields"), n+1);
 	}
 
 	/* Find the second '=' character (I or N field) */
 	found2 = strchr(found1+3, '=');
 	if(!found2){
 	    fclose(f);
-	    error("Series %d: Second '=' missing", n+1);
+	    error(_("Series %d: Second '=' missing"), n+1);
 	}
 	if(found2 == found1+3){
 	    fclose(f);
-	    error("Series %d: No room for number before second '='", n+1);
+	    error(_("Series %d: No room for number before second '='"), n+1);
 	}
 	read_int = strtoll(found1+3, &endp, 10);
 	if(endp != found2){
 	    fclose(f);
-	    error("Series %d: Only a number must be found after first field, right before 2nd '='",
+	    error(_("Series %d: Only a number must be found after first field, right before 2nd '='"),
 		  n+1);
 	}
 	if(read_int > INT_MAX){
 	    fclose(f);
-	    error("Series %d: Number %lld exceeds integer range",
+	    error(_("Series %d: Number %lld exceeds integer range"),
 		  n+1, read_int);
 	}
 	field_id = toupper((unsigned char)(*(found2+1)));
@@ -257,13 +257,13 @@ SEXP rcompact(SEXP filename){
 	} else if(field_id == 'N'){
 	    if(read_int <= 0){
 		fclose(f);
-		error("Series %d: Length of series must be at least one (%ld seen)",
+		error(_("Series %d: Length of series must be at least one (%ld seen)"),
 		      n+1, read_int);
 	    }
 	    this->n = (int) read_int;
 	} else{
 	    fclose(f);
-	    error("Series %d: Unknown or doubled field id: %c",
+	    error(_("Series %d: Unknown or doubled field id: %c"),
 		  n+1, *(found2+1));
 	}
 
@@ -278,7 +278,7 @@ SEXP rcompact(SEXP filename){
 	/* Require one space */
 	if(*point != ' '){
 	    fclose(f);
-	    error("Series %d (%s): Space required before ID",
+	    error(_("Series %d (%s): Space required before ID"),
 		  n+1, this->id);
 	} else {
 	    ++point;
@@ -300,13 +300,13 @@ SEXP rcompact(SEXP filename){
 	    this->id = tmp_name;
 	} else {
 	    fclose(f);
-	    error("Series %d: Alphanumeric series ID not found", n+1);
+	    error(_("Series %d: Alphanumeric series ID not found"), n+1);
 	}
 
 	/* Require space */
 	if(*point != ' '){
 	    fclose(f);
-	    error("Series %d (%s): Space required after alphanumerid ID",
+	    error(_("Series %d (%s): Space required after alphanumerid ID"),
 		  n+1, this->id);
 	}
 
@@ -315,7 +315,7 @@ SEXP rcompact(SEXP filename){
 	exponent = (int) strtol(point, &endp, 10);
 	if(endp == point){
 	    fclose(f);
-	    error("Series %d (%s): Exponent not found",
+	    error(_("Series %d (%s): Exponent not found"),
 		  n+1, this->id);
 	}
 	if(exponent < 0){
@@ -327,30 +327,30 @@ SEXP rcompact(SEXP filename){
 	if(snprintf(mplier_str, MPLIER_LENGTH, "1e%d", exponent) >=
 	   MPLIER_LENGTH){
 	    fclose(f);
-	    error("Series %d (%s): Exponent has too many characters",
+	    error(_("Series %d (%s): Exponent has too many characters"),
 		  n+1, this->id);
 	}
 	if(*endp != '('){
 	    fclose(f);
-	    error("Series %d (%s): Opening parenthesis required after exponent",
+	    error(_("Series %d (%s): Opening parenthesis required after exponent"),
 		  n+1, this->id);
 	}
 	found_leftpar = endp;
 	found_dot = strchr(found_leftpar+1, '.');
 	if(!found_dot){
 	    fclose(f);
-	    error("Series %d (%s): No dot found in number format description",
+	    error(_("Series %d (%s): No dot found in number format description"),
 		  n+1, this->id);
 	}
 	found_rightpar = strchr(found_dot+1, ')');
 	if(!found_rightpar){
 	    fclose(f);
-	    error("Series %d (%s): No closing parenthesis found",
+	    error(_("Series %d (%s): No closing parenthesis found"),
 		  n+1, this->id);
 	}
 	if(*(found_rightpar+1) != '~'){
 	    fclose(f);
-	    error("Series %d (%s): '~' not found in expected location",
+	    error(_("Series %d (%s): '~' not found in expected location"),
 		  n+1, this->id);
 	}
 	if(divide){
@@ -364,62 +364,62 @@ SEXP rcompact(SEXP filename){
 	n_repeats = (int) strtol(point, &endp, 10);
 	if(endp == point){
 	    fclose(f);
-	    error("Series %d (%s): Number of values per line not found",
+	    error(_("Series %d (%s): Number of values per line not found"),
 		  n+1, this->id);
 	}
 	if(n_repeats < 1){
 	    fclose(f);
-	    error("Series %d (%s): At least one value per line is needed",
+	    error(_("Series %d (%s): At least one value per line is needed"),
 		  n+1, this->id);
 	}
 	if(n_repeats > CONTENT_LENGTH){
 	    fclose(f);
-	    error("Series %d (%s): Number of values per line (%d) > max line length (%d)",
+	    error(_("Series %d (%s): Number of values per line (%d) > max line length (%d)"),
 		  n+1, this->id, n_repeats, CONTENT_LENGTH);
 	}
 	if(*endp != 'F'){
 	    fclose(f);
-	    error("Series %d (%s): Only 'F' number format is supported",
+	    error(_("Series %d (%s): Only 'F' number format is supported"),
 		  n+1, this->id);
 	}
 	point = endp+1;
 	field_width = (int) strtol(point, &endp, 10);
 	if(endp == point){
 	    fclose(f);
-	    error("Series %d (%s): Field width not found",
+	    error(_("Series %d (%s): Field width not found"),
 		  n+1, this->id);
 	}
 	if(endp != found_dot){
 	    fclose(f);
-	    error("Series %d (%s): Field width and '.' must be adjacent",
+	    error(_("Series %d (%s): Field width and '.' must be adjacent"),
 		  n+1, this->id);
 	}
 	if(field_width < 1){
 	    fclose(f);
-	    error("Series %d (%s): Field width must be at least one (%d seen)",
+	    error(_("Series %d (%s): Field width must be at least one (%d seen)"),
 		  n+1, this->id, field_width);
 	}
 	point = found_dot+1;
 	precision = (int) strtol(point, &endp, 10);
 	if(endp == point){
 	    fclose(f);
-	    error("Series %d (%s): Number of decimals not found",
+	    error(_("Series %d (%s): Number of decimals not found"),
 		  n+1, this->id);
 	}
 	if(endp != found_rightpar){
 	    fclose(f);
-	    error("Series %d (%s): Number of decimals and ')' must be adjacent",
+	    error(_("Series %d (%s): Number of decimals and ')' must be adjacent"),
 		  n+1, this->id);
 	}
 	if(precision != 0){
 	    fclose(f);
-	    error("Series %d (%s): No (implied) decimal places allowed in format",
+	    error(_("Series %d (%s): No (implied) decimal places allowed in format"),
 		  n+1, this->id);
 	}
 	n_x_w = n_repeats * field_width;
 	if(n_x_w > CONTENT_LENGTH){
 	    fclose(f);
-	    error("Series %d (%s): Required line length %d exceeds the maximum %d",
+	    error(_("Series %d (%s): Required line length %d exceeds the maximum %d"),
 		  n+1, this->id, n_x_w, CONTENT_LENGTH);
 	}
 
@@ -435,13 +435,13 @@ SEXP rcompact(SEXP filename){
 	for(i=0; i<n_lines; i++){
 	    if(!fgets_eol(line, &n_content, LINE_LENGTH, f)){
 		fclose(f);
-		error("Series %d (%s): Unexpected end of file (%d data lines read)",
+		error(_("Series %d (%s): Unexpected end of file (%d data lines read)"),
 		      n+1, this->id, i);
 	    }
 	    if((remainder > 0 || !feof(f)) &&
 	       n_content > CONTENT_LENGTH){
 		fclose(f);
-		error("Series %d (%s): Data line %d is too long (max length %d)",
+		error(_("Series %d (%s): Data line %d is too long (max length %d)"),
 		      n+1, this->id, i+1, CONTENT_LENGTH);
 	    }
 	    point = line + n_x_w;
@@ -454,7 +454,7 @@ SEXP rcompact(SEXP filename){
 		read_double = strtod(point, &endp);
 		if(endp!=old_point){ /* numbers must be right aligned */
 		    fclose(f);
-		    error("Series %d (%s): Could not read number (data row %d, field %d).\nMalformed number or previous line too long.",
+		    error(_("Series %d (%s): Could not read number (data row %d, field %d).\nMalformed number or previous line too long."),
 			  n+1, this->id, i+1, n_repeats-j);
 		}
 		/* Division by a precise number (integer value) is
@@ -475,12 +475,12 @@ SEXP rcompact(SEXP filename){
 	if(remainder > 0){
 	    if(!fgets_eol(line, &n_content, LINE_LENGTH, f)){
 		fclose(f);
-		error("Series %d (%s): Unexpected end of file (%d data lines read)",
+		error(_("Series %d (%s): Unexpected end of file (%d data lines read)"),
 		      n+1, this->id, n_lines);
 	    }
 	    if(!feof(f) && n_content > CONTENT_LENGTH){
 		fclose(f);
-		error("Series %d (%s): Data line %d is too long (max length %d)",
+		error(_("Series %d (%s): Data line %d is too long (max length %d)"),
 		      n+1, this->id, n_lines+1, CONTENT_LENGTH);
 	    }
 	    point = line + remainder * field_width;
@@ -492,7 +492,7 @@ SEXP rcompact(SEXP filename){
 		read_double = strtod(point, &endp);
 		if(endp!=old_point){
 		    fclose(f);
-		    error("Series %d (%s): Could not read number (data row %d, field %d).\nMalformed number or previous line too long.",
+		    error(_("Series %d (%s): Could not read number (data row %d, field %d).\nMalformed number or previous line too long."),
 			  n+1, this->id, n_lines+1, remainder-j);
 		}
 		if(divide)
@@ -510,14 +510,14 @@ SEXP rcompact(SEXP filename){
 
     if(ferror(f)){
 	fclose(f);
-	error("Error reading file %s", fname);
+	error(_("Error reading file %s"), fname);
     }
 
     /* Close the file (ignore return value) */
     fclose(f);
 
     if(n == 0)
-	error("No data found in file %s", fname);
+	error(_("No data found in file %s"), fname);
 
     /* Transform the results to a list with 7 elements */
     PROTECT(result = allocVector(VECSXP, 8));

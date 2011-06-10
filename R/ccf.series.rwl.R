@@ -37,10 +37,11 @@ ccf.series.rwl <- function(rwl, series,
     else min.bin <- ceiling(min(series.yrs)/bin.floor) * bin.floor
     to <- max(series.yrs) - seg.length - seg.length
     if(min.bin > to){
-        cat("maximum year in (filtered) series:", max(series.yrs), "\n")
-        cat("first bin begins: ", min.bin, "\n")
-        cat("Cannot fit two segments (not enough years in the series).\n")
-        stop("Shorten 'seg.length' or adjust 'bin.floor'.")
+        cat(gettextf("maximum year in (filtered) series: %d\n",
+                     max(series.yrs)))
+        cat(gettextf("first bin begins: %d\n", min.bin))
+        cat(gettext("cannot fit two segments (not enough years in the series)\n"))
+        stop("shorten 'seg.length' or adjust 'bin.floor'")
     }
     bins <- seq(from=min.bin, to=to+seg.length, by=seg.lag)
     bins <- cbind(bins, bins+seg.length)
@@ -91,7 +92,8 @@ ccf.series.rwl <- function(rwl, series,
         ccf.plot <-
             xyplot(r ~ lag | bin, data = ccf.df,
                    ylim=range(ccf.df$r, sig, na.rm=T) * 1.1,
-                   xlab="Lag", ylab="Correlation", col.line = NA,
+                   xlab=gettext("Lag"), ylab=gettext("Correlation"),
+                   col.line = NA,
                    panel = function(x, y, col, ...) {
                        panel.abline(h=seq(from=-1, to=1, by=0.1),
                                     lty="solid", col="gray")

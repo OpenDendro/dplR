@@ -129,9 +129,9 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         col.pal <- c("#E41A1C", "#377EB8", "#4DAF4A")
         par(mar=c(4, 5, 4, 5) + 0.1, mgp=c(1.25, 0.25, 0), tcl=0.25)
         plot(yrs, segs[, 1], type="n", ylim=c(0, nsegs),
-             axes=FALSE, ylab="", xlab="Year",
-             sub=paste("Segments: length=", seg.length, ",lag=",
-             seg.lag, sep=""), ...)
+             axes=FALSE, ylab="", xlab=gettext("Year"),
+             sub=gettextf("Segments: length=%d,lag=%d", seg.length, seg.lag),
+             ...)
         ## bounding poly for even series
         xx <- c(min.yr-100, max.yr+100)
         xx <- c(xx, rev(xx))

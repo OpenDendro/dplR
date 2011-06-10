@@ -8,21 +8,21 @@
         ## Find out if an ITRDB header (3 lines) in file
         hdr1 <- readLines(con, n=1)
         if(length(hdr1) == 0)
-            stop("File is empty")
+            stop("file is empty")
         if(nchar(hdr1) < 10)
-            stop("First line in the crn file ends before col 10")
+            stop("first line in the crn file ends before col 10")
         yrcheck <- suppressWarnings(as.numeric(substr(hdr1, 7, 10)))
         if(is.null(yrcheck) || length(yrcheck)!=1 || is.na(yrcheck) |
            yrcheck < -1e04 || yrcheck > 1e04) {
-            cat("There appears to be a header in the crn file\n")
+            cat(gettext("There appears to be a header in the crn file\n"))
             is.head <- TRUE
         }
         else {
-            cat("There does not appear to be a header in the crn file\n")
+            cat(gettext("There does not appear to be a header in the crn file\n"))
             is.head <- FALSE # No header lines
         }
     } else if(!is.logical(header)){
-        stop("Header must be NULL or logical")
+        stop("'header' must be NULL or logical")
     } else{
         is.head <- header
     }
@@ -30,19 +30,19 @@
         ## Read 4th line - should be first data line
         dat1 <- readLines(con, n=4)
         if(length(dat1) < 4)
-            stop("File has under 4 lines")
+            stop("file has under 4 lines")
         dat1 <- dat1[4]
     } else{
         dat1 <- readLines(con, n=1)
         if(length(dat1) == 0)
-            stop("File is empty")
+            stop("file is empty")
     }
     if(nchar(dat1) < 10)
-        stop("First data line ends before col 10")
+        stop("first data line ends before col 10")
     yrcheck <- as.numeric(substr(dat1, 7, 10))
     if(is.null(yrcheck) || length(yrcheck)!=1 || is.na(yrcheck) ||
        yrcheck < -1e04 || yrcheck > 1e04)
-        stop("Cols 7-10 of first data line not a year")
+        stop("cols 7-10 of first data line not a year")
     ## Look at last line to determine if Chronology Statistics are present
     ## if nchar <=63 then there is a stats line
     nlines <- length(readLines(con, n=-1))
@@ -66,7 +66,7 @@
         names(chron.stats) <-
             c("SiteID", "nYears", "AC[1]", "StdDev", "MeanSens",
               "MeanRWI", "IndicesSum", "IndicesSS", "MaxSeries")
-        cat("Embedded chronology statistics\n")
+        cat(gettext("Embedded chronology statistics\n"))
         print(chron.stats)
         ## Chop off last row of dat
         dat <- dat[-nrow(dat), , drop=FALSE]
@@ -75,7 +75,7 @@
     series <- dat[, 1]
     series.ids <- unique(series)
     nseries <- length(series.ids)
-    cat("There are ", nseries, " series\n", sep="")
+    cat(gettextf("There are %d series\n", nseries))
     series.index <- match(series, series.ids)
     min.year <- (min(dat[, 2]) %/% 10) * 10
     max.year <- ((max(dat[, 2])+10) %/% 10) * 10
@@ -119,7 +119,7 @@
         crn.mat <- crn.mat/1000
         crn.df <- as.data.frame(crn.mat)
         colnames(crn.df) <- save.names
-        cat("All embedded sample depths are one...Dumping from matrix\n")
+        cat(gettext("All embedded sample depths are one...Dumping from matrix\n"))
     }
     else {
         crn.mat[, 1:nseries] <- crn.mat[, 1:nseries]/1000

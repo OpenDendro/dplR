@@ -29,18 +29,18 @@ format.tucson <- (function(){
         stop("'prec' must equal 0.01 or 0.001")
     if(append) {
         if(!file.exists(fname))
-            stop("file 'fname' does not exist, cannot append")
+            stop(gettextf("file %s does not exist, cannot append", fname))
         if(length(header) > 0)
-            stop("bad idea to append with header")
+            stop("bad idea to append with 'header'")
     }
     if(length(header) > 0){
-        if(!is.list(header)) stop("header must be a list")
+        if(!is.list(header)) stop("'header' must be a list")
         header.names <-
             c("site.id", "site.name", "spp.code", "state.country",
               "spp", "elev", "lat", "long", "first.yr", "last.yr",
               "lead.invs", "comp.date")
         if(!all(header.names %in% names(header)))
-            stop("header must be a list with names ",
+            stop("'header' must be a list with the following names: ",
                  paste(dQuote(header.names), collapse = ", "))
         ## Record #1: 1-6 Site ID, 10-61 Site Name, 62-65 Species
         ## Code, optional ID#s
@@ -101,12 +101,12 @@ format.tucson <- (function(){
     if (first.year < -999){
         long.years <- TRUE
         if (first.year < -9999)
-            stop("years earlier than -9999 not supported")
+            stop("years earlier than -9999 (10000 BC) are not supported")
     }
     if (last.year > 9999){
         long.years <- TRUE
         if (last.year > 99999)
-            stop("year > 99999 not possible")
+            stop("years later than 99999 are not possible")
     }
 
     ## The basic name.width is 7.

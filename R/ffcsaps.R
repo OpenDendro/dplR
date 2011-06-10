@@ -64,7 +64,7 @@ ffcsaps <- function(y, x=1:length(y), nyrs=length(y)/2, f=0.5) {
 
     n <- length(x)
     ## quick error check
-    if (n < 3) stop("There must be at least 3 data points.")
+    if (n < 3) stop("there must be at least 3 data points")
 
     thesort <- sort(x, method="sh", index=TRUE)
     zz1 <- n-1
@@ -73,13 +73,13 @@ ffcsaps <- function(y, x=1:length(y), nyrs=length(y)/2, f=0.5) {
     diff.xi <- diff(xi)
 
     ## quick error check
-    if (any(diff.xi == 0)) stop("The data abscissae must be distinct.")
+    if (any(diff.xi == 0)) stop("the data abscissae must be distinct")
 
     yn <- length(y)
 
     ## quick error check
     if (n != yn)
-        stop("Abscissa and ordinate vector must be of the same length.")
+        stop("abscissa and ordinate vector must be of the same length")
 
     arg2 <- -1:1
     odx <- 1/diff.xi

@@ -12,12 +12,12 @@
 
     n.val <- length(rw.vec)
     if(n.val > 840) {
-        cat("Input series has length of", n.val, "\n")
+        cat(gettextf("input series has length of %d\n", n.val))
         stop("long series (> 840) must be split into multiple plots")
     }
     if(n.val < filt.weight) {
-        cat("Input series has length of ", n.val,
-            ", 'filt.weight' is ", filt.weight, "\n", sep="")
+        cat(gettextf("input series has length of %d", n.val),
+            gettextf("'filt.weight' is %f\n", filt.weight), sep=", ")
         stop("'filt.weight' must not be larger than length of input series")
     }
 

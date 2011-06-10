@@ -78,28 +78,29 @@
                widths=rep(0.5, ncol(mat)),
                heights=rep(1, nrow(mat)))
 
-        plot(y2, type="l", ylab="mm", xlab="Age (Yrs)",
-             main=paste("Raw Series ", y.name))
+        plot(y2, type="l", ylab="mm", xlab=gettext("Age (Yrs)"),
+             main=gettextf("Raw Series %s", y.name))
         if(do.spline) lines(Spline, col="green", lwd=2)
         if(do.mne) lines(ModNegExp, col="red", lwd=2)
         if(do.mean) lines(Mean, col="blue", lwd=2)
 
         if(do.spline){
-            plot(resids$Spline, type="l", col="green", main="Spline",
-                 xlab="Age (Yrs)", ylab="RWI")
+            plot(resids$Spline, type="l", col="green", main=gettext("Spline"),
+                 xlab=gettext("Age (Yrs)"), ylab=gettext("RWI"))
             abline(h=1)
         }
 
         if(do.mne){
             plot(resids$ModNegExp, type="l", col="red",
-                 main="Neg. Exp. Curve or Straight Line",
-                 xlab="Age (Yrs)", ylab="RWI")
+                 main=gettext("Neg. Exp. Curve or Straight Line"),
+                 xlab=gettext("Age (Yrs)"), ylab=gettext("RWI"))
             abline(h=1)
         }
 
         if(do.mean){
             plot(resids$Mean, type="l", col="blue",
-                 main="Horizontal Line (Mean)", xlab="Age (Yrs)", ylab="RWI")
+                 main=gettext("Horizontal Line (Mean)"),
+                 xlab=gettext("Age (Yrs)"), ylab=gettext("RWI"))
             abline(h=1)
         }
 

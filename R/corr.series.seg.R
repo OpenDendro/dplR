@@ -41,10 +41,11 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     else min.bin <- ceiling(min(series.yrs)/bin.floor)*bin.floor
     to <- max(series.yrs)-seg.length-seg.length+1
     if(min.bin > to){
-        cat("maximum year in (filtered) series:", max(series.yrs), "\n")
-        cat("first bin begins: ", min.bin, "\n")
-        cat("Cannot fit two segments (not enough years in the series).\n")
-        stop("Shorten 'seg.length' or adjust 'bin.floor'.")
+        cat(gettextf("maximum year in (filtered) series: %d\n",
+                     max(series.yrs)))
+        cat(gettextf("first bin begins: %d\n", min.bin))
+        cat(gettext("cannot fit two segments (not enough years in the series)\n"))
+        stop("shorten 'seg.length' or adjust 'bin.floor'")
     }
     bins <- seq(from=min.bin, to=to+seg.length, by=seg.lag)
     bins <- cbind(bins, bins+(seg.length-1))
@@ -114,8 +115,8 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
         sig <- qnorm((1 + 1 - pcrit)/2)/sqrt(seg.length)
         plot(yrs.tmp, mcor.tmp, type="l",
              ylim=range(res.cor, res.mcor, sig, na.rm=T),
-             ylab="Correlation", xlab="Year",
-             sub=paste("Segments: length=", seg.length, ",lag=", seg.lag, sep=""),
+             ylab=gettext("Correlation"), xlab=gettext("Year"),
+             sub=gettextf("Segments: length=%d,lag=%d", seg.length, seg.lag),
              axes=FALSE, ...)
         abline(v=bins2, col="grey", lty="dotted")
         axis(1, at=bins2[seq(from=1, to=nrow(bins2), by=2), ])

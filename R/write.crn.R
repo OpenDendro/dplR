@@ -1,6 +1,6 @@
 `write.crn` <- function(crn, fname, header=NULL, append=FALSE)
 {
-    if(ncol(crn) != 2) stop("input should only have 2 cols")
+    if(ncol(crn) != 2) stop("'crn' must have 2 columns")
 
     if(any(is.na(crn))) {
         na.flag <- is.na(crn[, 1])
@@ -11,9 +11,9 @@
 
     if(append) {
         if(!file.exists(fname))
-            stop("file 'fname' does not exist, cannot append")
+            stop(gettextf("file %s does not exist, cannot append", fname))
         if(length(header) > 0)
-            stop("bad idea to append with header")
+            stop("bad idea to append with 'header'")
     }
     if(length(header) > 0){
         if(!is.list(header)) stop("header must be a list")
@@ -22,7 +22,7 @@
               "spp", "elev", "lat", "long", "first.yr", "last.yr",
               "lead.invs", "comp.date")
         if(!all(header.names %in% names(header)))
-            stop("header must be a list with names ",
+            stop("'header' must be a list with the following names: ",
                  paste(dQuote(header.names), collapse = ", "))
         ## Record #1: 1-6 Site ID, 10-61 Site Name, 62-65 Species Code,
         ## optional ID#s

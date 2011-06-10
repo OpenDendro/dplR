@@ -2,8 +2,9 @@
                         pos.slope = FALSE)
 {
     out <- rwl
-    for(i in 1:ncol(rwl)){
-        cat("Detrend series ", i, "of ", ncol(rwl), "\n")
+    n.col <- ncol(rwl)
+    for(i in 1:n.col){
+        cat(gettextf("Detrend series %d of %d\n", i, n.col))
         fits <- i.detrend.series(rwl[, i], y.name=y.name[i], nyrs = nyrs,
                                  f = f, pos.slope = pos.slope)
         out[, i] <- fits

@@ -14,7 +14,7 @@ read.fh <- function(fname) {
     end.years.pos <- grep("DateEnd=",  inp)
     end.years <- as.numeric(gsub("(DateEnd=)(.*)", "\\2", inp[end.years.pos]))
     if (length(start.years) != n || length(end.years) != n)
-        stop("A 'DateBegin' and 'DateEnd' entry has to be present for each series!")
+        stop("a 'DateBegin' and 'DateEnd' entry has to be present for each series")
     ## calculate time span for data.frame
     span <- min(start.years):max(end.years)
     dendro.matrix <- matrix(NA, ncol = n, nrow = length(span))
@@ -45,7 +45,7 @@ read.fh <- function(fname) {
         ## write data into matrix
         dendro.matrix[positions(start.years[i], end.years[i], span), i] <- data
     }
-    cat("There are ", n, " series\n", sep="")
+    cat(gettextf("There are %d series\n", n))
     cat(paste(1:n, "\t",
               keycodes, "\t",
               start.years, "\t",

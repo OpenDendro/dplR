@@ -30,26 +30,26 @@ sea <- function(x, key, lag = 5, resample = 1000) {
     w <- resample
     for (i in 1:m) {
         if (is.na(se[i])) {
-            warning("NA result at position ", i,
-                    ". You could check whether 'key' years are in range.")
+            warning(gettextf("NA result at position %d. ", i),
+                    "You could check whether 'key' years are in range.")
         } else if (se[i] < 0) {         # superposed value < 0, it is
                                         # tested whether is
                                         # significantly LOWER than
                                         # random values
             if (!any(re.table[, i] < se[i])) {
                 p[i] <- 0
-                warning("Exact p-value (<", 1/resample
-                        , ") could not be estimated for superposed epoch at position ",
-                        i, ". You could try a higher value for 'resample',")
+                warning(gettextf("Exact p-value (< %f) could not be estimated for superposed epoch at position %d. ",
+                                 1/resample, i),
+                        "You could try a higher value for 'resample'.")
             } else {
                 p[i] <- (tail(which(sort(re.table[, i]) < se[i]), 1)*2)/w
             }
         } else {                        # ditto, but v.v.
             if (!any(re.table[, i] > se[i])) {
                 p[i] <- 0
-                warning("Exact p-value (<", 1/resample
-                        , ") could not be estimated for superposed epoch at position ",
-                        i, ". You could try a higher value for 'resample',")
+                warning(gettextf("Exact p-value (< %f) could not be estimated for superposed epoch at position %d. ",
+                                 1/resample, i),
+                        "You could try a higher value for 'resample'.")
             } else {
                 p[i] <- ((w - which(sort(re.table[, i]) > se[i])[1])*2)/w
             }

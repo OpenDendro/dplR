@@ -8,8 +8,8 @@
 \usage{
   wavelet.plot(wave.list,
                wavelet.levels = quantile(wave.list$Power,probs=seq(from=0, to=1, by=0.1)),
-               add.coi = TRUE, add.sig = TRUE, x.lab = "Time",
-               period.lab = "Period", crn.lab = "RWI",
+               add.coi = TRUE, add.sig = TRUE, x.lab = gettext("Time"),
+               period.lab = gettext("Period"), crn.lab = gettext("RWI"),
                key.cols = rev(rainbow(length(wavelet.levels)-1)),
                key.lab = expression(paste("Power"^2)),
                add.spline = FALSE, f = 0.5, nyrs = NULL,

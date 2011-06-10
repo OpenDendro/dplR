@@ -16,7 +16,8 @@
     }
     if(nCrn > 1) layout(matrix(1:nCrn, nrow=nCrn, ncol=1))
     for(i in inc(1, nCrn)){
-        plot(yr.vec, crn[, i], type="l", xlab="Years", ylab="RWI",
+        plot(yr.vec, crn[, i], type="l",
+             xlab=gettext("Years"), ylab=gettext("RWI"),
              main=crn.names[i], ...)
         spl <- crn[, i]
         tmp <- na.omit(spl)
@@ -30,7 +31,7 @@
             plot(yr.vec, samp.depth, type="l", lty="dashed",
                  xlab="", ylab="", axes=FALSE)
             axis(4, at=pretty(samp.depth))
-            mtext("Sample Depth", side=4, line=1.25)
+            mtext(gettext("Sample Depth"), side=4, line=1.25)
         }
     }
 }

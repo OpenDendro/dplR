@@ -257,24 +257,24 @@ write.tridas <-
              identifier.domain = lab.info[1, "name"]){
 
     if(!is.data.frame(lab.info) || nrow(lab.info) < 1)
-        stop("lab.info must be a data.frame with at least one row")
+        stop("'lab.info' must be a data.frame with at least one row")
     lab.names <- names(lab.info)
     if(!("name" %in% lab.names))
-        stop("name is a compulsory variable in lab.info")
+        stop("\"name\" is a required variable in 'lab.info'")
     identifier.present <- "identifier" %in% lab.names
     if(identifier.present && !("domain" %in% lab.names))
-        stop("domain is a required attribute of identifier in lab.info")
+        stop("\"domain\" is required together with \"identifier\" in 'lab.info'")
 
     if(!is.data.frame(research.info) || nrow(research.info) < 1){
         research.present <- FALSE
     } else{
         research.names <- names(research.info)
         if(!("identifier" %in% research.names))
-            stop("identifier is a required attribute of research.info")
+            stop("\"identifier\" is a required variable in 'research.info'")
         if(!("domain" %in% research.names))
-            stop("domain is a required attribute of research.info")
+            stop("\"domain\" is a required variable in 'research.info'")
         if(!("description" %in% research.names))
-            stop("description is a required attribute of research.info")
+            stop("\"description\" is a required variable in 'research.info'")
         research.present <- TRUE
     }
 
@@ -302,22 +302,22 @@ write.tridas <-
                         default.value <- ""
                     else
                         default.value <- var.specs[2]
-                    warning(base.name,
-                            " must be of type character - inserting ",
-                            dQuote(default.value))
+                    warning(gettextf("'%s' must be of type character - inserting \"%s\"",
+                                     base.name, default.value))
                     assign(base.name, default.value, inherits = TRUE)
                 }
             } else{
                 default.value <- var.specs[2]
                 if(!is.list(this.var)){
-                    warning(base.name, " must be a list. Creating one.")
+                    warning(gettextf("'%s' must be a list. Creating one.",
+                                     base.name))
                     this.var <- list()
                 }
                 for(component.name in var.specs[3:specs.length]){
                     if(!is.character(this.var[[component.name]])){
-                        warning(base.name, "$", component.name,
-                                " must be of type character - inserting ",
-                                dQuote(default.value))
+                        warning(gettextf("'%s$%s' must be of type character - inserting \"%s\"",
+                                         base.name, component.name,
+                                         default.value))
                         this.var[[component.name]] <- default.value
                     }
                 }
@@ -453,22 +453,18 @@ write.tridas <-
                                   measurement = rep(1,n.col))
             } else if(ncol.ids == 3){
                 if(!all(c("tree","core","radius") %in% names(ids)))
-                    stop("3-col 'ids' needs \"tree\", \"core\", ",
-                         "and \"radius\" columns")
+                    stop("3-col 'ids' needs \"tree\", \"core\", and \"radius\" columns")
                 ids <- data.frame(ids,
                                   measurement = rep(1,n.col))
             } else if(ncol.ids == 4){
                 if(!all(c("tree","core","radius","measurement") %in%
                         names(ids)))
-                    stop("4-col 'ids' needs \"tree\", \"core\", ",
-                         "\"radius\", and \"measurement\" columns")
+                    stop("4-col 'ids' needs \"tree\", \"core\", \"radius\", and \"measurement\" columns")
             } else{
-                stop("argument 'ids' is in wrong format ",
-                     "(2, 3, or 4 columns required)")
+                stop("argument 'ids' is in wrong format (2, 3, or 4 columns required)")
             }
         } else{
-            stop("argument 'ids' is not data.frame or ",
-                 "has wrong number of rows")
+            stop("argument 'ids' is not data.frame or has wrong number of rows")
         }
         if(!all(sapply(ids, is.numeric)))
             stop("'ids' must have numeric columns")
@@ -478,11 +474,9 @@ write.tridas <-
         } else if(is.data.frame(titles) && nrow(titles) == n.col){
             if(ncol(titles) != 4 ||
                !all(c("tree","core","radius","measurement") %in% names(ids)))
-                stop("cols needed in 'titles': \"tree\", \"core\", ",
-                     "\"radius\", and \"measurement\"")
+                stop("columns needed in 'titles': \"tree\", \"core\", \"radius\", and \"measurement\"")
         } else{
-            stop("argument 'titles' is not data.frame or ",
-                 "has wrong number of rows")
+            stop("argument 'titles' is not data.frame or has wrong number of rows")
         }
         if(!consistent.ids.titles(ids, titles))
             stop("'ids' and 'titles' not consistent or duplicates present")
@@ -513,8 +507,7 @@ write.tridas <-
                 data.unit <- "metres"
                 rwl.df <- round(rwl.df / 1000)
             } else{
-                warning("Unknown prec specified: no unit conversion or ",
-                        "rounding done")
+                warning("unknown 'prec' specified: no unit conversion or rounding done")
                 data.unit <- "millimetres"
             }
         } else{
@@ -541,10 +534,9 @@ write.tridas <-
         ## Check (and fix) wood.completeness
         if(!is.null(wood.completeness)){
             if(nrow(wood.completeness) != n.col)
-                stop("nrow(wood.completeness) must be equal to ncol(rwl.df)")
+                stop("'nrow(wood.completeness)' must be equal to 'ncol(rwl.df)'")
             if(any(rownames(wood.completeness) != cnames))
-                stop("row names of wood.completeness must match ",
-                     "col names of rwl.df")
+                stop("row names of 'wood.completeness' must match column names of 'rwl.df'")
             names.wc <- names(wood.completeness)
             wc <- TRUE
             names.complex <- c("pith.presence", "heartwood.presence",
@@ -559,8 +551,7 @@ write.tridas <-
             for(nam in names.nonnegative[names.nonnegative %in% names.wc]){
                 temp <- wood.completeness[!is.na(wood.completeness[[nam]]), nam]
                 if(any(!is.int(temp) | temp < 0))
-                    stop("Some values in wood.completeness$", nam,
-                         " are invalid, i.e. not integer or < 0")
+                    stop(gettextf("some values in 'wood.completeness$%s' are invalid, i.e. not integer or < 0", nam))
             }
             ## Replace NAs and consistence with complex vocabulary
             for(nam in names.complex){

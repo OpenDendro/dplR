@@ -13,7 +13,7 @@ spag.plot <- function(rwl, zfac=1, ...){
     for(i in 1:nseries)
         rwl[, i] <- rwl[, i] + i
     plot(yr, rwl[, 1], type="n", ylim=c(0, max(rwl, na.rm=T)),
-         axes=FALSE, ylab="", xlab="Year")
+         axes=FALSE, ylab="", xlab=gettext("Year"))
     abline(h=1:nseries, col="grey")
     grid(ny = NA)
     for(i in 1:nseries)

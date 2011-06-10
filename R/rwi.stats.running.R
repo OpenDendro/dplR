@@ -54,8 +54,8 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
             stop("minimum 'window.length' is 3")
         window.advance <- window.length - window.overlap
         if(window.advance < 1)
-            stop("'window.overlap' is too large, max value is 'window.length'-1 (",
-                 window.length-1, ")")
+            stop(gettextf("'window.overlap' is too large, max value is 'window.length'-1 (%d)",
+                          window.length - 1))
         if(window.length < min.corr.overlap)
             stop("'window.length' is smaller than 'min.corr.overlap'")
     }

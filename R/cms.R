@@ -20,10 +20,10 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
 ### main func
     n.col <- ncol(rwl)
     if(n.col != nrow(po))
-        stop("dimension problem: ncol(rw) != nrow(po)")
+        stop("dimension problem: ", "'ncol(rw)' != 'nrow(po)'")
     col.names <- colnames(rwl)
     if(!all(po[, 1] %in% col.names))
-        stop("Series ids in 'po' and 'rwl' do not match")
+        stop("series ids in 'po' and 'rwl' do not match")
     rownames(rwl) <- rownames(rwl) # guard against NULL names funniness
     series.yrs <- apply(rwl, 2, yr.range)
 

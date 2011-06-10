@@ -22,7 +22,7 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
     if(!(prec == 0.01 || prec == 0.001))
         stop("'prec' must equal 0.01 or 0.001")
     if(append && !file.exists(fname))
-        stop("file 'fname' does not exist, cannot append")
+        stop(gettextf("file %s does not exist, cannot append", fname))
 
     ## Loop through series and write each one
     nseries <- ncol(rwl.df)
@@ -96,7 +96,8 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
                        field.width, ".0)~", sep="")
         n.space <- line.width-nchar(head1)-nchar(head2)-nchar(rwl.df.name)
         if(n.space < 1) # since names are cut to length, this should not happen
-            stop("series ", rwl.df.name, ": header line would be too long")
+            stop(gettextf("series %s: header line would be too long",
+                          rwl.df.name))
         cat(head1, rwl.df.name, rep(" ", n.space), head2, line.term,
             file=rwl.out, sep="")
 

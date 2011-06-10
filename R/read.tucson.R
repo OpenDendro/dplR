@@ -9,20 +9,20 @@
         ## 3 lines in file
         hdr1 <- readLines(con, n=1)
         if(length(hdr1) == 0){
-            stop("File is empty")
+            stop("file is empty")
         }
         if(nchar(hdr1) < 12){
-            stop("First line in rwl file ends before col 12")
+            stop("first line in rwl file ends before col 12")
         }
         yrcheck <- suppressWarnings(as.numeric(substr(hdr1, 9, 12)))
         if(is.null(yrcheck) || length(yrcheck) != 1 || is.na(yrcheck) ||
            yrcheck < -1e04 || yrcheck > 1e04) {
-            cat("There appears to be a header in the rwl file\n")
+            cat(gettext("There appears to be a header in the rwl file\n"))
             is.head <- TRUE
         }
         else {
             is.head <- FALSE # No header lines
-            cat("There does not appear to be a header in the rwl file\n")
+            cat(gettext("There does not appear to be a header in the rwl file\n"))
         }
     } else if(!is.logical(header)){
         stop("'header' must be NULL or logical")
@@ -33,18 +33,18 @@
         ## Read 4th line - should be first data line
         dat1 <- readLines(con, n=4)
         if(length(dat1)<4){
-            stop("File has under 4 lines")
+            stop("file has under 4 lines")
         }
         dat1 <- dat1[4]
     } else{
         dat1 <- readLines(con, n=1)
         if(length(dat1) == 0){
-            stop("File is empty")
+            stop("file is empty")
         }
     }
     yrcheck <- as.numeric(substr(dat1, 9, 12))
     if(is.null(yrcheck) || length(yrcheck) != 1) {
-        stop("Cols 9-12 of first data line not a year")
+        stop("cols 9-12 of first data line not a year")
     }
 
     skip.lines <- ifelse(is.head, 3, 0)
@@ -65,7 +65,7 @@
     series.ids <- unique(series)
     nseries <- length(series.ids)
 
-    cat("There are ", nseries, " series\n", sep="")
+    cat(gettextf("There are %d series\n", nseries))
 
     series.index <- match(series, series.ids)
     decade.yr <- dat[, 2]
@@ -111,7 +111,7 @@
             ## Convert stop marker (and any other) 999 to NA (precision 0.01)
             rw.mat[rw.mat[, i] == 999, i] <- NA
         } else if(this.prec.rproc != 1000){
-            stop("Precision unknown in series ", series.ids[i])
+            stop(gettextf("precision unknown in series %s", series.ids[i]))
         }
         ## Convert to mm
         rw.mat[, i] <- rw.mat[, i] / this.prec.rproc

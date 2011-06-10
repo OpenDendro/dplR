@@ -2,7 +2,7 @@ bai.in <- function(rwl, d2pith = NULL) {
 
     if(!is.null(d2pith)) {
         if(ncol(rwl) != nrow(d2pith))
-            stop("dimension problem: ncol(rw) != nrow(d2pith)")
+            stop("dimension problem: ", "'ncol(rw)' != 'nrow(d2pith)'")
         if(!all(d2pith[, 1] %in% colnames(rwl)))
             stop("series ids in 'd2pith' and 'rwl' do not match")
         d2pith <- d2pith[, 2]

@@ -1,4 +1,4 @@
-# Translation template for messages in dplR R code
+# Translation template for messages in dplR C code
 # Copyright (C) dplR copyright holders
 # This file is distributed under the same license as the dplR package.
 # Mikko Korpela <mvkorpel@iki.fi>, 2011.
@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.4.3\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-06-08 17:35+0300\n"
+"POT-Creation-Date: 2011-06-10 15:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,13 +15,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 
-msgid "dimension problem: ncol(rw) != nrow(d2pith)"
+msgid "dimension problem:"
+msgstr ""
+
+msgid "'ncol(rw)' != 'nrow(d2pith)'"
 msgstr ""
 
 msgid "series ids in 'd2pith' and 'rwl' do not match"
 msgstr ""
 
-msgid "dimension problem: ncol(rw) != nrow(diam)"
+msgid "'ncol(rw)' != 'nrow(diam)'"
 msgstr ""
 
 msgid "series ids in 'diam' and 'rwl' do not match"
@@ -30,22 +33,67 @@ msgstr ""
 msgid "'lag.max' > 'seg.length'"
 msgstr ""
 
-msgid "Shorten 'seg.length' or adjust 'bin.floor'."
+msgid "maximum year in (filtered) series: %d"
+msgstr ""
+
+msgid "first bin begins: %d"
+msgstr ""
+
+msgid "cannot fit two segments (not enough years in the series)"
+msgstr ""
+
+msgid "shorten 'seg.length' or adjust 'bin.floor'"
+msgstr ""
+
+msgid "Lag"
+msgstr ""
+
+msgid "Correlation"
 msgstr ""
 
 msgid "'prefix' must be a character string with less than 4 characters"
 msgstr ""
 
-msgid "dimension problem: ncol(rw) != nrow(po)"
+msgid "'ncol(rw)' != 'nrow(po)'"
 msgstr ""
 
-msgid "Series ids in 'po' and 'rwl' do not match"
+msgid "series ids in 'po' and 'rwl' do not match"
 msgstr ""
 
 msgid "At least 2 series are needed in rwl"
 msgstr ""
 
+msgid "Year"
+msgstr ""
+
+msgid "Segments: length=%d,lag=%d"
+msgstr ""
+
 msgid "'crn' must be a data.frame"
+msgstr ""
+
+msgid "Years"
+msgstr ""
+
+msgid "RWI"
+msgstr ""
+
+msgid "Sample Depth"
+msgstr ""
+
+msgid "Age (Yrs)"
+msgstr ""
+
+msgid "Raw Series %s"
+msgstr ""
+
+msgid "Spline"
+msgstr ""
+
+msgid "Neg. Exp. Curve or Straight Line"
+msgstr ""
+
+msgid "Horizontal Line (Mean)"
 msgstr ""
 
 msgid "'x' must be a vector"
@@ -54,13 +102,13 @@ msgstr ""
 msgid "'y' must be a vector"
 msgstr ""
 
-msgid "There must be at least 3 data points."
+msgid "there must be at least 3 data points"
 msgstr ""
 
-msgid "The data abscissae must be distinct."
+msgid "the data abscissae must be distinct"
 msgstr ""
 
-msgid "Abscissa and ordinate vector must be of the same length."
+msgid "abscissa and ordinate vector must be of the same length"
 msgstr ""
 
 msgid "characters outside a-z, A-Z, 0-9 present: renaming series"
@@ -75,7 +123,19 @@ msgstr ""
 msgid "could not remap a name: some series will be missing"
 msgstr ""
 
-msgid "Number out of range or not an integer"
+msgid "Detrend series %d of %d"
+msgstr ""
+
+msgid "Choose a detrending method for this series %s."
+msgstr ""
+
+msgid "Methods are:"
+msgstr ""
+
+msgid "Enter a number"
+msgstr ""
+
+msgid "number out of range or not an integer"
 msgstr ""
 
 msgid "'x1' and 'y1' lengths differ"
@@ -105,7 +165,7 @@ msgstr ""
 msgid "'bin.floor' must be a non-negative integer"
 msgstr ""
 
-msgid "series ids in 'po' and 'rwl' do not match"
+msgid "dimension problem: 'ncol(rw)' != 'nrow(po)'"
 msgstr ""
 
 msgid "minimum 'po' is 1"
@@ -114,25 +174,49 @@ msgstr ""
 msgid "each value in 'po' must be an integer"
 msgstr ""
 
-msgid "File is empty"
+msgid "indexing problem when restoring to cal years: first+length(tmp) != last+1"
 msgstr ""
 
-msgid "First line in the crn file ends before col 10"
+msgid "Cambial Age (Years)"
 msgstr ""
 
-msgid "Header must be NULL or logical"
+msgid "There are %d series"
 msgstr ""
 
-msgid "File has under 4 lines"
+msgid "Comments:"
 msgstr ""
 
-msgid "First data line ends before col 10"
+msgid "file is empty"
 msgstr ""
 
-msgid "Cols 7-10 of first data line not a year"
+msgid "first line in the crn file ends before col 10"
 msgstr ""
 
-msgid "A 'DateBegin' and 'DateEnd' entry has to be present for each series!"
+msgid "There appears to be a header in the crn file"
+msgstr ""
+
+msgid "There does not appear to be a header in the crn file"
+msgstr ""
+
+msgid "'header' must be NULL or logical"
+msgstr ""
+
+msgid "file has under 4 lines"
+msgstr ""
+
+msgid "first data line ends before col 10"
+msgstr ""
+
+msgid "cols 7-10 of first data line not a year"
+msgstr ""
+
+msgid "Embedded chronology statistics"
+msgstr ""
+
+msgid "All embedded sample depths are one...Dumping from matrix"
+msgstr ""
+
+msgid "a 'DateBegin' and 'DateEnd' entry has to be present for each series"
 msgstr ""
 
 msgid "Site-Tree-Core mask does not sum to 8"
@@ -144,100 +228,106 @@ msgstr ""
 msgid "there appears to be more than one site"
 msgstr ""
 
-msgid "file is empty"
+msgid "Detected a DPL compact format file."
 msgstr ""
 
-msgid "lastYear < firstYear in project"
+msgid "Detected a Heidelberg format file."
 msgstr ""
 
-msgid ", object"
+msgid "Detected a TRiDaS file."
 msgstr ""
 
-msgid "."
+msgid "Assuming a Tucson format file."
 msgstr ""
 
-msgid ", element"
+msgid "in project %d, object %s, element %d, sample %d, radius %d, series %d:"
 msgstr ""
 
-msgid ", sample"
+msgid "lastYear < firstYear"
 msgstr ""
 
-msgid ", radius"
+msgid "external entities are not supported: %s"
 msgstr ""
 
-msgid ", series"
+msgid "unknown entity: %s"
 msgstr ""
 
-msgid "external entities are not supported:"
+msgid "negative missingHeartwoodRingsToPith"
 msgstr ""
 
-msgid "unknown entity:"
+msgid "negative missingSapwoodRingsToPith"
 msgstr ""
 
-msgid "Negative missingHeartwoodRingsToPith"
+msgid "negative nrOfSapwoodRings"
 msgstr ""
 
-msgid "Negative missingSapwoodRingsToPith"
+msgid "negative nrOfUnmeasuredInnerRings"
 msgstr ""
 
-msgid "Negative nrOfSapwoodRings"
+msgid "in project %d, derived series %d:"
 msgstr ""
 
-msgid "Negative nrOfUnmeasuredInnerRings"
+msgid "negative values interpreted as missing"
 msgstr ""
 
-msgid "Negative values interpreted"
+msgid "too many values (expected %d, got %d)"
 msgstr ""
 
-msgid "as missing in project"
+msgid "too few values (expected %d, got %d)"
 msgstr ""
 
-msgid ", derived series"
+msgid "in undated series %d:"
 msgstr ""
 
-msgid "Too many values (expected"
+msgid "unitless measurements present"
 msgstr ""
 
-msgid ", got"
+msgid "strange unit \"%s\""
 msgstr ""
 
-msgid ") in project"
+msgid "negative counts interpreted as missing"
 msgstr ""
 
-msgid "Too few values (expected"
+msgid "in derived series %d:"
 msgstr ""
 
-msgid "In undated series"
+msgid "data from the future"
 msgstr ""
 
-msgid ": Unitless measurements present"
+msgid "'$measurements' is a data.frame"
 msgstr ""
 
-msgid ": Strange unit"
+msgid "there are %d data.frames in the '$measurements' list"
 msgstr ""
 
-msgid "Negative counts interpreted"
+msgid "in data.frame %d:"
 msgstr ""
 
-msgid "In derived series"
+msgid "data.frame #%d"
 msgstr ""
 
-msgid ": Data from the future"
+msgid "* site:"
 msgstr ""
 
-msgid "In data.frame"
+msgid "* taxon:"
 msgstr ""
 
-msgid "First line in rwl file ends before col 12"
+msgid "* variable:"
 msgstr ""
 
-msgid "'header' must be NULL or logical"
+msgid "first line in rwl file ends before col 12"
 msgstr ""
 
-msgid "Cols 9-12 of first data line not a year"
+msgid "There appears to be a header in the rwl file"
 msgstr ""
 
-msgid "Precision unknown in series"
+msgid "There does not appear to be a header in the rwl file"
+msgstr ""
+
+msgid "cols 9-12 of first data line not a year"
+msgstr ""
+
+msgid "precision unknown in series %s"
 msgstr ""
 
 msgid "dimension problem: 'ncol(rwi)' and 'nrow(ids)' are unequal"
@@ -252,10 +342,7 @@ msgstr ""
 msgid "minimum 'window.length' is 3"
 msgstr ""
 
-msgid "'window.overlap' is too large, max value is 'window.length'-1 ("
-msgstr ""
-
-msgid ")"
+msgid "'window.overlap' is too large, max value is 'window.length'-1 (%d)"
 msgstr ""
 
 msgid "'window.length' is smaller than 'min.corr.overlap'"
@@ -279,28 +366,58 @@ msgstr ""
 msgid "'x' must be a data.frame"
 msgstr ""
 
-msgid "NA result at position"
+msgid "NA result at position %d."
 msgstr ""
 
-msgid ". You could check whether 'key' years are in range."
+msgid "You could check whether 'key' years are in range."
 msgstr ""
 
-msgid "Exact p-value (<"
+msgid "Exact p-value (< %f) could not be estimated for superposed epoch at position %d."
 msgstr ""
 
-msgid ") could not be estimated for superposed epoch at position"
+msgid "You could try a higher value for 'resample'."
 msgstr ""
 
-msgid ". You could try a higher value for 'resample',"
+msgid "Detrended Series"
 msgstr ""
 
-msgid "shorten 'seg.length' or adjust 'bin.floor'"
+msgid "Detrended Master"
+msgstr ""
+
+msgid "Master"
+msgstr ""
+
+msgid "Series"
+msgstr ""
+
+msgid "Segments: length=%d,lag=%d,bin.floor=%d"
+msgstr ""
+
+msgid "Series:%d-%d"
+msgstr ""
+
+msgid "Master:%d-%d"
+msgstr ""
+
+msgid "Detrended and Trimmed:"
+msgstr ""
+
+msgid "%d-%d"
+msgstr ""
+
+msgid "Detrending Options:"
 msgstr ""
 
 msgid "'sname' must be a character string less than 8 characters long"
 msgstr ""
 
+msgid "input series has length of %d"
+msgstr ""
+
 msgid "long series (> 840) must be split into multiple plots"
+msgstr ""
+
+msgid "'filt.weight' is %f"
 msgstr ""
 
 msgid "'filt.weight' must not be larger than length of input series"
@@ -312,122 +429,119 @@ msgstr ""
 msgid "a user-coded (pseudo) random number generator is in use"
 msgstr ""
 
+msgid "Time"
+msgstr ""
+
+msgid "Period"
+msgstr ""
+
 msgid "'prec' must equal 0.01 or 0.001"
 msgstr ""
 
-msgid "file 'fname' does not exist, cannot append"
+msgid "file %s does not exist, cannot append"
 msgstr ""
 
-msgid "series"
+msgid "series %s: header line would be too long"
 msgstr ""
 
-msgid ": header line would be too long"
+msgid "'crn' must have 2 columns"
 msgstr ""
 
-msgid "input should only have 2 cols"
-msgstr ""
-
-msgid "bad idea to append with header"
+msgid "bad idea to append with 'header'"
 msgstr ""
 
 msgid "header must be a list"
 msgstr ""
 
-msgid "header must be a list with names"
+msgid "'header' must be a list with the following names:"
 msgstr ""
 
 msgid ","
 msgstr ""
 
-msgid "lab.info must be a data.frame with at least one row"
+msgid "'lab.info' must be a data.frame with at least one row"
 msgstr ""
 
-msgid "name is a compulsory variable in lab.info"
+msgid "\"name\" is a required variable in 'lab.info'"
 msgstr ""
 
-msgid "domain is a required attribute of identifier in lab.info"
+msgid "\"domain\" is required together with \"identifier\" in 'lab.info'"
 msgstr ""
 
-msgid "identifier is a required attribute of research.info"
+msgid "\"identifier\" is a required variable in 'research.info'"
 msgstr ""
 
-msgid "domain is a required attribute of research.info"
+msgid "\"domain\" is a required variable in 'research.info'"
 msgstr ""
 
-msgid "description is a required attribute of research.info"
+msgid "\"description\" is a required variable in 'research.info'"
 msgstr ""
 
-msgid "must be of type character - inserting"
+msgid "'%s' must be of type character - inserting \"%s\""
 msgstr ""
 
-msgid "must be a list. Creating one."
+msgid "'%s' must be a list. Creating one."
 msgstr ""
 
-msgid "$"
+msgid "'%s$%s' must be of type character - inserting \"%s\""
 msgstr ""
 
 msgid "2-col 'ids' needs \"tree\" and \"core\" columns"
 msgstr ""
 
-msgid "3-col 'ids' needs \"tree\", \"core\","
+msgid "3-col 'ids' needs \"tree\", \"core\", and \"radius\" columns"
 msgstr ""
 
-msgid "and \"radius\" columns"
+msgid "4-col 'ids' needs \"tree\", \"core\", \"radius\", and \"measurement\" columns"
 msgstr ""
 
-msgid "4-col 'ids' needs \"tree\", \"core\","
+msgid "argument 'ids' is in wrong format (2, 3, or 4 columns required)"
 msgstr ""
 
-msgid "\"radius\", and \"measurement\" columns"
+msgid "argument 'ids' is not data.frame or has wrong number of rows"
 msgstr ""
 
-msgid "argument 'ids' is in wrong format"
+msgid "columns needed in 'titles': \"tree\", \"core\", \"radius\", and \"measurement\""
 msgstr ""
 
-msgid "(2, 3, or 4 columns required)"
-msgstr ""
-
-msgid "argument 'ids' is not data.frame or"
-msgstr ""
-
-msgid "has wrong number of rows"
-msgstr ""
-
-msgid "cols needed in 'titles': \"tree\", \"core\","
-msgstr ""
-
-msgid "\"radius\", and \"measurement\""
-msgstr ""
-
-msgid "argument 'titles' is not data.frame or"
+msgid "argument 'titles' is not data.frame or has wrong number of rows"
 msgstr ""
 
 msgid "'ids' and 'titles' not consistent or duplicates present"
 msgstr ""
 
-msgid "Unknown prec specified: no unit conversion or"
+msgid "unknown 'prec' specified: no unit conversion or rounding done"
 msgstr ""
 
-msgid "rounding done"
+msgid "'nrow(wood.completeness)' must be equal to 'ncol(rwl.df)'"
 msgstr ""
 
-msgid "nrow(wood.completeness) must be equal to ncol(rwl.df)"
+msgid "row names of 'wood.completeness' must match column names of 'rwl.df'"
 msgstr ""
 
-msgid "row names of wood.completeness must match"
+msgid "some values in 'wood.completeness$%s' are invalid, i.e. not integer or < 0"
 msgstr ""
 
-msgid "col names of rwl.df"
+msgid "'header' must be a list"
 msgstr ""
 
-msgid "Some values in wood.completeness$"
+msgid "years earlier than -9999 (10000 BC) are not supported"
 msgstr ""
 
-msgid "are invalid, i.e. not integer or < 0"
+msgid "years later than 99999 are not possible"
 msgstr ""
 
-msgid "years earlier than -9999 not supported"
-msgstr ""
+msgid        "there is %d series\n"
+msgid_plural "there are %d series\n"
+msgstr[0]    ""
+msgstr[1]    ""
 
-msgid "year > 99999 not possible"
-msgstr ""
+msgid        "there is %d undated series, returned in '$undated'\n"
+msgid_plural "there are %d undated series, returned in '$undated'\n"
+msgstr[0]    ""
+msgstr[1]    ""
+
+msgid        "there is %d derived series, returned in '$derived'\n"
+msgid_plural "there are %d derived series, returned in '$derived'\n"
+msgstr[0]    ""
+msgstr[1]    ""

@@ -43,9 +43,10 @@ series.rwl.plot <-
     else min.bin <- ceiling(min(series.yrs)/bin.floor)*bin.floor
     to <- max(series.yrs)-seg.length-seg.length
     if(min.bin > to){
-        cat("maximum year in (filtered) series:", max(series.yrs), "\n")
-        cat("first bin begins: ", min.bin, "\n")
-        cat("Cannot fit two segments (not enough years in the series).\n")
+        cat(gettextf("maximum year in (filtered) series: %d\n",
+                     max(series.yrs)))
+        cat(gettextf("first bin begins: %d\n", min.bin))
+        cat(gettext("cannot fit two segments (not enough years in the series)\n"))
         stop("shorten 'seg.length' or adjust 'bin.floor'")
     }
     bins <- seq(from=min.bin, to=to+seg.length, by=seg.lag)
@@ -59,7 +60,7 @@ series.rwl.plot <-
     col.pal <- c("#E41A1C", "#377EB8", "#4DAF4A")
     ## plot 1
     plot(yrs, series, type="n", ylim=c(0, max(series, master, na.rm=T)),
-         ylab="RWI", xlab="Year", axes=FALSE)
+         ylab=gettext("RWI"), xlab=gettext("Year"), axes=FALSE)
     abline(v=bins, col="grey", lty="dotted")
     abline(h=1)
     axis(1, at=bins[seq(from=1, to=nbins, by=2), ])
@@ -68,20 +69,21 @@ series.rwl.plot <-
     box()
     lines(yrs, series, lwd=1.5, col=col.pal[1])
     lines(yrs, master, lwd=1.5, col=col.pal[2])
-    legend(min(yrs, na.rm=T), y = max(series, master, na.rm=T),
-           legend = c("Detrended Series","Detrended Master"),
+    legend(x = min(yrs, na.rm=T), y = max(series, master, na.rm=T),
+           legend = gettext(c("Detrended Series", "Detrended Master")),
            col = c(col.pal[1], col.pal[2]), lty = "solid", lwd=1.5, bg="white")
     ## plot 2
     lm1 <- lm(master~series)
     tmp <- round(summary(lm1)$r.squared, 2)
-    plot(series, master, type="p", ylab="Master", xlab="Series", pch=20,
+    plot(series, master, type="p",
+         ylab=gettext("Master"), xlab=gettext("Series"), pch=20,
          sub=bquote(R^2==.(tmp)))
     abline(lm1, lwd=2)
 
     ## plot 3
-    plot(yrs, series, type="n", ylim=c(-1, 1), ylab="", xlab="Year",
-         sub=paste("Segments: length=", seg.length, ",lag=", seg.lag,
-         ",bin.floor=", bin.floor, sep=""), axes=FALSE)
+    plot(yrs, series, type="n", ylim=c(-1, 1), ylab="", xlab=gettext("Year"),
+         sub=gettextf("Segments: length=%d,lag=%d,bin.floor=%d",
+         seg.length, seg.lag, bin.floor), axes=FALSE)
     abline(v=bins, col="grey", lty="dotted")
     abline(h=0)
     axis(1, at=bins[seq(from=1, to=nbins, by=2), ])
@@ -101,17 +103,17 @@ series.rwl.plot <-
     }
     ## plot 4
     plot(c(-1, 1), c(-2, 1), type="n", ylab="", xlab="", axes=FALSE)
-    txt1 <- paste("Series:", min(na.omit(series.yrs0)), "-",
-                  max(na.omit(series.yrs0)), sep="")
+    txt1 <- gettextf("Series:%d-%d", min(na.omit(series.yrs0)),
+                     max(na.omit(series.yrs0)))
     text(-1, 1, txt1, pos=4)
-    txt2 <- paste("Master:", min(yrs0, na.rm=TRUE), "-",
-                  max(yrs0, na.rm=TRUE), sep="")
+    txt2 <- gettextf("Master:%d-%d", min(yrs0, na.rm=TRUE),
+                     max(yrs0, na.rm=TRUE))
     text(-1, 0.5, txt2, pos=4)
-    txt3 <- "Detrended and Trimmed:"
+    txt3 <- gettext("Detrended and Trimmed:")
     text(-1, 0, txt3, pos=4)
-    txt4 <- paste(min(yrs), "-", max(yrs), sep="")
+    txt4 <- gettextf("%d-%d", min(yrs), max(yrs))
     text(-1, -0.5, txt4, pos=4)
-    txt5 <- "Detrending Options:"
+    txt5 <- gettext("Detrending Options:")
     text(-1, -1, txt5, pos=4)
     if(is.null(n)) txt6 <- paste("Hanning=NULL,ar=", prewhiten, sep="")
     else txt6 <- paste("Hanning=", n, ",ar=", prewhiten, sep="")

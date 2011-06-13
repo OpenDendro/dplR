@@ -1,8 +1,8 @@
 \name{ccf.series.rwl}
 \alias{ccf.series.rwl}
-\title{ Compute Cross Correlation between a Series and a Master Chronology }
+\title{ Compute Cross-Correlation between a Series and a Master Chronology }
 \description{
-  Computes cross correlations between a tree-ring series and a master
+  Computes cross-correlations between a tree-ring series and a master
   chronology built from a rwl object at user-specified lags and segments.
 }
 \usage{
@@ -39,17 +39,17 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
 \details{
   This function calculates the cross-correlation function between a tree-ring
   series and a master chronology built from a rwl object looking at
-  corrlations lagged postively and negatively using \code{link{ccf}} at
+  correlations lagged positively and negatively using \code{link{ccf}} at
   overlapping segments set by \code{seg.length}. For instance,
-  with  with \code{lag.max} set to 5, cross correlations would be
+  with \code{lag.max} set to 5, cross-correlations would be
   calculated at for each segment with the master lagged at \code{k=c(-5:5)} years.
   The function is typically invoked to produce a plot.
 
-  Correlations are calculcated for the first segment, then the
+  Correlations are calculated for the first segment, then the
   second segment and so on. Correlations are only calculated for segments with
   complete overlap with the master chronology.
 
-  Each series (inlcuding those in the rwl object) is optionally detrended as the residuals
+  Each series (including those in the rwl object) is optionally detrended as the residuals
   from a \code{\link{hanning}} filter with weight \code{n}. The filter is not applied
   if \code{n} is \code{NULL}. Detrending can also be done via prewhitening where
   the residuals of an \code{\link[stats]{ar}} model are added to each series

@@ -18,9 +18,10 @@ sea <- function(x, key, lag = 5, resample = 1000) {
     se <- colMeans(se.table, na.rm = T)
     se.unscaled <- colMeans(se.unscaled.table, na.rm = T)
     re.table <- matrix(NA, ncol = m, nrow = resample)
+    row.names <- as.numeric(rownames(x))
     for (k in 1:resample) {
         re.subtable <- matrix(NA, ncol = m, nrow = n)
-        rand.key <- sample(as.numeric(rownames(x)), n, replace = T)
+        rand.key <- sample(row.names, n, replace = T)
         for (i in 1:n)
             re.subtable[i, ] <- x[as.character(rand.key[i] + yrs.base), ]
         re.table[k, ] <- colMeans(re.subtable, na.rm = T)

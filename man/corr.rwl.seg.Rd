@@ -32,7 +32,7 @@
 }
 \details{  
   This function calculates correlation serially between each tree-ring
-  series and a master chronology built from all series in a rwl object
+  series and a master chronology built from all series in a rwl object.
   Correlations are done for each segment of the series where segments
   are lagged by half the segment length (e.g., 100-year segments would
   be overlapped by 50-years). The first segment is placed according to
@@ -42,12 +42,12 @@
   626 and \code{bin.floor} is 100 then the first bin would start in
   700. If \code{bin.floor} is 10 then the first bin would start in 630.
 
-  Correlations are calculcated for the first segment, then the
+  Correlations are calculated for the first segment, then the
   second segment and so on. Correlations are only calculated for segments with
   complete overlap with the master chronology. For now, correlations are
   Spearman's rho calculated via \code{\link{cor.test}} using method="spearman."
 
-  Each series (inlcuding those in the rwl object) is optionally detrended as the residuals
+  Each series (including those in the rwl object) is optionally detrended as the residuals
   from a \code{\link{hanning}} filter with weight \code{n}. The filter is not applied
   if \code{n} is \code{NULL}. Detrending can also be done via prewhitening where
   the residuals of an \code{\link[stats]{ar}} model are added to each series

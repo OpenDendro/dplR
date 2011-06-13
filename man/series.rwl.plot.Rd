@@ -45,7 +45,7 @@
 
   See help pages for  \code{\link{corr.rwl.seg}},
   \code{\link{corr.series.seg}}, and  \code{\link{ccf.series.rwl}} for
-  moreinformation on these arguments.
+  more information on these arguments.
 
 }
 \value{

@@ -23,27 +23,29 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9, dat.out = FALSE,
   \item{plot}{ logical flag indicating whether to make a plot. }
 }
 \details{
-  This makes a skeleton plot - a plot that gives the relative growth for year t
-  relative to years t-1 and t+1. Note that this plots is a standard plot
-  in dendrochronology and typically made by hand for visually crossdating
-  series. This type of plot might be confusing to those not accustomed to
-  visual crossdating. See references for more information. The implementation
-  is based on Meko's (2002) skeleton ploting approach.
+  This makes a skeleton plot - a plot that gives the relative growth for
+  year t relative to years t-1 and t+1. Note that this plot is a
+  standard plot in dendrochronology and typically made by hand for
+  visually cross-dating series. This type of plot might be confusing to
+  those not accustomed to visual cross-dating. See references for more
+  information. The implementation is based on Meko's (2002) skeleton
+  plotting approach.
 
-  The skeleton plot is made by calculating departures from high frequency
-  growth for each year by comparing year t to the surrounding three years
-  (t-1,t,t+1). Low frequency variation is removed using a \code{\link{hanning}}
-  filter. Relative growth is scaled from one to ten but only values
-  greater than three are plotted. This function's primary effect is to
-  create plot with absolute units that can be printed and compared to other
-  plots. Here, anomalous growth is plotted on a 2mm grid and up to 120 years
-  are plotted on a single row with a maximum of 7 rows (840 years). These
-  plots are designed to be plotted on standard paper using an appropriate
-  \code{device}, e.g., \code{postscript} with defaults or to \code{pdf} with
-  plot width and height to accommodate a landscape plot, e.g.,
-  \code{width = 10, height = 7.5, paper = 'USr'}. These plots are designed to
-  be printable and cut into strips to align long series. Statistical crossdating
-  is possible if the data are output.
+  The skeleton plot is made by calculating departures from high
+  frequency growth for each year by comparing year t to the surrounding
+  three years (t-1,t,t+1). Low frequency variation is removed using a
+  \code{\link{hanning}} filter. Relative growth is scaled from one to
+  ten but only values greater than three are plotted. This function's
+  primary effect is to create plot with absolute units that can be
+  printed and compared to other plots. Here, anomalous growth is plotted
+  on a 2mm grid and up to 120 years are plotted on a single row with a
+  maximum of 7 rows (840 years). These plots are designed to be plotted
+  on standard paper using an appropriate \code{device}, e.g.,
+  \code{postscript} with defaults or to \code{pdf} with plot width and
+  height to accommodate a landscape plot, e.g., \code{width = 10, height
+  = 7.5, paper = 'USr'}. These plots are designed to be printable and
+  cut into strips to align long series. Statistical cross-dating is
+  possible if the data are output.
 }
 \value{
   This function is invoked primarily for its side effect, which is to produce a
@@ -74,13 +76,13 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9, dat.out = FALSE,
   # On a raw ring width series - dated with names
   skel.plot(x, yr.vec = x.yrs, sname= x.name, master=TRUE)
   \dontrun{
-    # try crossdating
+    # try cross-dating
     y <- co021[,11]
     y.yrs <- as.numeric(rownames(co021))
     y.name <- colnames(co021)[11]
     # send to postscript - 3 pages total
     postscript('xdating.examp.ps')
-      # 'Master series' with correct celendar dates
+      # 'Master series' with correct calendar dates
       skel.plot(x, yr.vec = x.yrs, sname= x.name, master=TRUE)
       # Undated series, try to align with last plot
       skel.plot(y)

@@ -21,7 +21,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     cnames <- colnames(rwl)
     seg.lag <- seg.length / 2
     nseries <- ncol(rwl)
-    if(nseries < 2) stop("At least 2 series are needed in rwl")
+    if(nseries < 2) stop("At least 2 series are needed in 'rwl'")
     yrs <- as.numeric(rnames)
     nyrs <- length(yrs)
     min.yr <- min(yrs)

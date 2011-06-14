@@ -45,7 +45,11 @@ read.fh <- function(fname) {
         ## write data into matrix
         dendro.matrix[positions(start.years[i], end.years[i], span), i] <- data
     }
-    cat(gettextf("There are %d series\n", n))
+    cat(sprintf(ngettext(n,
+                         "There is %d series\n",
+                         "There are %d series\n",
+                         "R-dplR"),
+                n))
     cat(paste(1:n, "\t",
               keycodes, "\t",
               start.years, "\t",

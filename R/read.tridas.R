@@ -2214,8 +2214,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              row.print(res.all$variable[i, , drop=FALSE],
                                        collapse="\n\t"), "\n", sep="")
                          cat(sprintf(ngettext(nseries,
-                                              "there is %d series\n",
-                                              "there are %d series\n"),
+                                              "There is %d series\n",
+                                              "There are %d series\n",
+                                              "R-dplR"),
                                      nseries))
                          cat(paste(1:nseries, "\t",
                                    series.ids, "\t",
@@ -2230,8 +2231,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      if(undated.size == 1)
                          res.undated$data <<- res.undated$data[[1]]
                      cat(sprintf(ngettext(undated.size,
-                                          "there is %d undated series, returned in '$undated'\n",
-                                          "there are %d undated series, returned in '$undated'\n"),
+                                          "There is %d undated series, returned in '$undated'\n",
+                                          "There are %d undated series, returned in '$undated'\n",
+                                          "R-dplR"),
                                  undated.size))
                      res.undated$ids <<- data.frame(res.undated$ids)
                      res.undated$titles <<- data.frame(res.undated$titles)
@@ -2295,8 +2297,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      if(derived.nvalues == 1)
                          res.derived$data <<- res.derived$data[[1]]
                      cat(sprintf(ngettext(derived.nvalues,
-                                          "there is %d derived series, returned in '$derived'\n",
-                                          "there are %d derived series, returned in '$derived'\n"),
+                                          "There is %d derived series, returned in '$derived'\n",
+                                          "There are %d derived series, returned in '$derived'\n",
+                                          "R-dplR"),
                                  derived.nvalues))
                      if(all(sapply(res.derived$link, is.na))){
                          ## If there was no content in any of the linkSeries,

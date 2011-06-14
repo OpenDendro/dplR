@@ -12,7 +12,11 @@ read.compact <- function(fname)
     rownames(rw.mat) <- min.year:max.year
     nseries <- ncol(rw.mat)
 
-    cat(gettextf("There are %d series\n", nseries))
+    cat(sprintf(ngettext(nseries,
+                         "There is %d series\n",
+                         "There are %d series\n",
+                         "R-dplR"),
+                nseries))
     cat(paste(1:nseries, "\t",
               series.ids, "\t",
               series.min, "\t",

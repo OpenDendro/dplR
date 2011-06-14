@@ -64,7 +64,11 @@
     series.ids <- unique(series)
     nseries <- length(series.ids)
 
-    cat(gettextf("There are %d series\n", nseries))
+    cat(sprintf(ngettext(nseries,
+                         "There is %d series\n",
+                         "There are %d series\n",
+                         "R-dplR"),
+                nseries))
 
     series.index <- match(series, series.ids)
     decade.yr <- dat[, 2]

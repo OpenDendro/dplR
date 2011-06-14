@@ -2,7 +2,7 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.4.3
-Date: 2011-06-10
+Date: 2011-06-14
 Author: Andy Bunn with major additions from Mikko Korpela and other
         significant contributions from Franco Biondi and Christian Zang
 Maintainer: Andy Bunn <andy.bunn@wwu.edu>

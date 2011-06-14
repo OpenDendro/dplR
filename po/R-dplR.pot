@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.4.3\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-06-14 12:08+0300\n"
+"POT-Creation-Date: 2011-06-14 14:33+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -204,7 +204,7 @@ msgstr ""
 msgid "first data line ends before col 10"
 msgstr ""
 
-msgid "cols 7-10 of first data line not a year"
+msgid "cols %d-%d of first data line not a year"
 msgstr ""
 
 msgid "Embedded chronology statistics"
@@ -319,9 +319,6 @@ msgid "There appears to be a header in the rwl file"
 msgstr ""
 
 msgid "There does not appear to be a header in the rwl file"
-msgstr ""
-
-msgid "cols 9-12 of first data line not a year"
 msgstr ""
 
 msgid "precision unknown in series %s"

@@ -43,9 +43,8 @@
         }
     }
     yrcheck <- as.numeric(substr(dat1, 9, 12))
-    if(is.null(yrcheck) || length(yrcheck) != 1) {
-        stop("cols 9-12 of first data line not a year")
-    }
+    if(is.null(yrcheck) || length(yrcheck) != 1)
+        stop(gettextf("cols %d-%d of first data line not a year", 9, 12))
 
     skip.lines <- ifelse(is.head, 3, 0)
     ## Do nothing. read.fwf closes (and destroys ?!?) the file connection

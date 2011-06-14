@@ -42,7 +42,7 @@
     yrcheck <- as.numeric(substr(dat1, 7, 10))
     if(is.null(yrcheck) || length(yrcheck)!=1 || is.na(yrcheck) ||
        yrcheck < -1e04 || yrcheck > 1e04)
-        stop("cols 7-10 of first data line not a year")
+        stop(gettextf("cols %d-%d of first data line not a year", 7, 10))
     ## Look at last line to determine if Chronology Statistics are present
     ## if nchar <=63 then there is a stats line
     nlines <- length(readLines(con, n=-1))

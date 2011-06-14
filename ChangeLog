@@ -6,6 +6,16 @@ Directory: po
 - A new directory used for language translations
 http://cran.r-project.org/doc/manuals/R-exts.html#Internationalization
 
+Directory: inst/po
+------------------
+
+- Location for compiled translations
+
+Directory: inst/po/fi and contents
+---------------------
+
+- Compiled Finnish translations
+
 Various .R files:
 -----------------
 
@@ -18,12 +28,22 @@ Various .R files:
 File: po/R-dplR.pot
 -------------------
 
-- A translation template for messages in R code.
+- A translation template for messages in R code
 
 File: po/dplR.pot
 -------------------
 
 - A translation template for messages in C code
+
+File: po/R-fi.po
+----------------
+
+- Finnish translations of messages in R code
+
+File: po/fi.po
+--------------
+
+- Finnish translations of messages in C code
 
 File: src/dplR.h
 ----------------

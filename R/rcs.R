@@ -2,7 +2,7 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
                 make.plot=TRUE, ...) {
     n.col <- ncol(rwl)
     if(n.col != nrow(po))
-        stop("dimension problem: 'ncol(rw)' != 'nrow(po)'")
+        stop("dimension problem: ", "'ncol(rw)' != 'nrow(po)'")
     col.names <- colnames(rwl)
     if(!all(po[, 1] %in% col.names))
         stop("series ids in 'po' and 'rwl' do not match")

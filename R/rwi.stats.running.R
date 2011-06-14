@@ -69,7 +69,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
     } else{
         ## Make error checks here
         if(nrow(ids) != n.cores)
-            stop("dimension problem: 'ncol(rwi)' and 'nrow(ids)' are unequal")
+            stop("dimension problem: ", "'ncol(rwi)' != 'nrow(ids)'")
         if(!all(sapply(ids, is.numeric)))
             stop("'ids' must have numeric columns")
     }

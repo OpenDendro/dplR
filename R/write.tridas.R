@@ -72,7 +72,7 @@ consistent.ids.titles <- function(ids, titles){
     return(TRUE)
 }
 
-### Helper function. Creates title hierarchies (tree, core, sample,
+### Helper function. Creates title hierarchies (tree, core, radius,
 ### measurement) out of data.frame column names.
 ### TODO: Some options to this function?
 create.title.hierarchy <- function(cnames, ids){

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.4.3\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-06-13 14:58+0300\n"
+"POT-Creation-Date: 2011-06-14 12:08+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -163,9 +163,6 @@ msgid "'n' must be larger than 3"
 msgstr ""
 
 msgid "'bin.floor' must be a non-negative integer"
-msgstr ""
-
-msgid "dimension problem: 'ncol(rw)' != 'nrow(po)'"
 msgstr ""
 
 msgid "minimum 'po' is 1"
@@ -330,7 +327,7 @@ msgstr ""
 msgid "precision unknown in series %s"
 msgstr ""
 
-msgid "dimension problem: 'ncol(rwi)' and 'nrow(ids)' are unequal"
+msgid "'ncol(rwi)' != 'nrow(ids)'"
 msgstr ""
 
 msgid "'ids' must have numeric columns"

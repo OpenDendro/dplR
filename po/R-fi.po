@@ -1,0 +1,573 @@
+# Translation template for messages in dplR C code
+# Copyright (C) dplR copyright holders
+# This file is distributed under the same license as the dplR package.
+# Mikko Korpela <mvkorpel@iki.fi>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: dplR 1.4.3\n"
+"Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
+"POT-Creation-Date: 2011-06-14 14:33+0300\n"
+"PO-Revision-Date: 2011-06-14 17:43+0300\n"
+"Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
+"Language-Team: Finnish <mvkorpel@iki.fi>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+
+msgid "dimension problem:"
+msgstr "dimensio-ongelma:"
+
+msgid "'ncol(rw)' != 'nrow(d2pith)'"
+msgstr "’ncol(rw)’ ≠ ’nrow(d2pith)’"
+
+msgid "series ids in 'd2pith' and 'rwl' do not match"
+msgstr "sarjojen tunnisteet muuttujissa ’d2pith’ ja ’rwl’ eivät täsmää"
+
+msgid "'ncol(rw)' != 'nrow(diam)'"
+msgstr "’ncol(rw)’ ≠ ’nrow(diam)’"
+
+msgid "series ids in 'diam' and 'rwl' do not match"
+msgstr "sarjojen tunnisteet muuttujissa ’diam’ ja ’rwl’ eivät täsmää"
+
+msgid "'lag.max' > 'seg.length'"
+msgstr "’lag.max’ > ’seg.length’"
+
+msgid "maximum year in (filtered) series: %d"
+msgstr "suurin vuosiluku (suodatetussa) sarjassa: %d"
+
+msgid "first bin begins: %d"
+msgstr "ensimmäinen kori alkaa: %d"
+
+msgid "cannot fit two segments (not enough years in the series)"
+msgstr "ei voi sovittaa kahta segmenttiä (ei tarpeeksi vuosia sarjassa))"
+
+msgid "shorten 'seg.length' or adjust 'bin.floor'"
+msgstr "lyhennä segmentin pituutta (’seg.length’) tai säädä ’bin.floor’ia"
+
+msgid "Lag"
+msgstr "Viive"
+
+msgid "Correlation"
+msgstr "Korrelaatio"
+
+msgid "'prefix' must be a character string with less than 4 characters"
+msgstr "’prefix’in täytyy olla alle 4-merkkinen merkkijono"
+
+msgid "'ncol(rw)' != 'nrow(po)'"
+msgstr "’ncol(rw)’ ≠ ’nrow(po)’"
+
+msgid "series ids in 'po' and 'rwl' do not match"
+msgstr "sarjojen tunnisteet ’po’:ssa ja ’rwl’:ssä eivät täsmää"
+
+msgid "At least 2 series are needed in 'rwl'"
+msgstr "Vähintään 2 sarjaa tarvitaan ’rwl’:ssä"
+
+msgid "Year"
+msgstr "Vuosi"
+
+msgid "Segments: length=%d,lag=%d"
+msgstr "Segmentit: pituus=%d,viive=%d"
+
+msgid "'crn' must be a data.frame"
+msgstr "’crn’:n täytyy olla data.frame"
+
+msgid "Years"
+msgstr "Vuodet"
+
+msgid "RWI"
+msgstr "Indeksi"
+
+msgid "Sample Depth"
+msgstr "Näytteiden määrä"
+
+msgid "Age (Yrs)"
+msgstr "Ikä (v)"
+
+msgid "Raw Series %s"
+msgstr "Raakasarja %s"
+
+msgid "Spline"
+msgstr "Splini"
+
+msgid "Neg. Exp. Curve or Straight Line"
+msgstr "Neg. eksp. käyrä tai Suora"
+
+msgid "Horizontal Line (Mean)"
+msgstr "Vakiosuora (Keskiarvo)"
+
+msgid "'x' must be a vector"
+msgstr "’x’:n täytyy olla vektori"
+
+msgid "'y' must be a vector"
+msgstr "’y’:n täytyy olla vektori"
+
+msgid "there must be at least 3 data points"
+msgstr "täytyy olla vähintään 3 datapistettä"
+
+msgid "the data abscissae must be distinct"
+msgstr "datan abskissojen täytyy olla erilliset"
+
+msgid "abscissa and ordinate vector must be of the same length"
+msgstr "abskissa- ja ordinaattavektorien täytyy olla samanpituiset"
+
+msgid "characters outside a-z, A-Z, 0-9 present: renaming series"
+msgstr ""
+"mukana merkkejä alueiden a–z, A–Z, 0–9 ulkopuolelta: "
+"uudelleennimetään sarjoja"
+
+msgid "some names are too long: renaming series"
+msgstr "jotkin nimet ovat liian pitkiä: uudelleennimetään sarjoja"
+
+msgid "duplicate names present: renaming series"
+msgstr "duplikaattinimiä läsnä: uudelleennimetään sarjoja"
+
+msgid "could not remap a name: some series will be missing"
+msgstr "ei voitu kehittää uutta nimeä: joitain sarjoja puuttuu tuloksesta"
+
+msgid "Detrend series %d of %d"
+msgstr "Trendipuhdistetaan sarja %d / %d"
+
+msgid "Choose a detrending method for this series %s."
+msgstr "Valitse trendinpuhdistusmenetelmä tälle sarjalle %s."
+
+msgid "Methods are:"
+msgstr "Menetelmät ovat:"
+
+msgid "Enter a number"
+msgstr "Syötä numero"
+
+msgid "number out of range or not an integer"
+msgstr "luku alueen ulkopuolella tai ei kokonaisluku"
+
+msgid "'x1' and 'y1' lengths differ"
+msgstr "’x1’:n ja ’y1’:n pituudet eroavat"
+
+msgid "'seg.length' can be at most 1/2 the number of years in 'rwl'"
+msgstr "’seg.length’ voi olla enintään puolet ’rwl’:n vuosien määrästä"
+
+msgid "'seg.length' must be even"
+msgstr "’seg.length’in täytyy olla parillinen"
+
+msgid "'seg.length' and 'seg.lag' must be integers"
+msgstr "’seg.length’in ja ’seg.lag’in täytyy olla kokonaislukuja"
+
+msgid "'seg.length' must be positive"
+msgstr "’seg.length’in täytyy olla positiivinen"
+
+msgid "'n' must be an integer"
+msgstr "’n’:n täytyy olla kokonaisluku"
+
+msgid "'n' must be odd"
+msgstr "’n’:n täytyy olla pariton"
+
+msgid "'n' must be larger than 3"
+msgstr "’n’:n täytyy olla suurempi kuin 3"
+
+msgid "'bin.floor' must be a non-negative integer"
+msgstr "’bin.floor’in täytyy olla epänegatiivinen kokonaisluku"
+
+msgid "minimum 'po' is 1"
+msgstr "pienin mahdollinen ’po’ on 1"
+
+msgid "each value in 'po' must be an integer"
+msgstr "jokaisen ’po’:n arvon täytyy olla kokonaisluku"
+
+msgid ""
+"indexing problem when restoring to cal years: first+length(tmp) != last+1"
+msgstr ""
+"indeksointiongelma vuosilukuja palautettaessa: first+length(tmp) ≠ last+1"
+
+msgid "Cambial Age (Years)"
+msgstr "Jälsisolukon ikä (vuotta)"
+
+msgid "There are %d series"
+msgstr "On %d sarjaa"
+
+msgid "Comments:"
+msgstr "Kommentit:"
+
+msgid "file is empty"
+msgstr "tiedosto on tyhjä"
+
+msgid "first line in the crn file ends before col 10"
+msgstr "tiedoston ensimmäinen rivi päättyy ennen saraketta 10"
+
+msgid "There appears to be a header in the crn file"
+msgstr "Tiedostossa näyttää olevan otsake"
+
+msgid "There does not appear to be a header in the crn file"
+msgstr "Tiedostossa ei näytä olevan otsaketta"
+
+msgid "'header' must be NULL or logical"
+msgstr "’header’in täytyy olla NULL tai logical-tyyppiä"
+
+msgid "file has under 4 lines"
+msgstr "tiedostossa on alle 4 riviä"
+
+msgid "first data line ends before col 10"
+msgstr "ensimmäinen datarivi päättyy ennen saraketta 10"
+
+msgid "cols %d-%d of first data line not a year"
+msgstr "ensimmäisen datarivin sarakkeet %d–%d eivät ole vuosiluku"
+
+msgid "Embedded chronology statistics"
+msgstr "Sisäänrakennetut kronologian tilastotiedot"
+
+msgid "All embedded sample depths are one...Dumping from matrix"
+msgstr ""
+"Kaikki sisäänrakennetut näytemäärät ovat yksi...Jätetään pois matriisista"
+
+msgid "a 'DateBegin' and 'DateEnd' entry has to be present for each series"
+msgstr "jokaisella sarjalla täytyy olla ’DateBegin’- ja ’DateEnd’-merkinnät"
+
+msgid "Site-Tree-Core mask does not sum to 8"
+msgstr "Paikka-Puu-Näyte-maski ei ole yhteensä 8"
+
+msgid "unable to create tree ids"
+msgstr "ei voida luoda puiden tunnisteita"
+
+msgid "there appears to be more than one site"
+msgstr "näyttää olevan useampi kuin yksi "
+
+msgid "Detected a DPL compact format file."
+msgstr "Tunnistettiin DPL compact -tyyppinen tiedosto."
+
+msgid "Detected a Heidelberg format file."
+msgstr "Tunnistettiin Heidelberg-tyyppinen tiedosto."
+
+msgid "Detected a TRiDaS file."
+msgstr "Tunnistettiin TRiDaS-tiedosto."
+
+msgid "Assuming a Tucson format file."
+msgstr "Oletetaan Tucson-tyyppinen tiedosto."
+
+msgid "in project %d, object %s, element %d, sample %d, radius %d, series %d:"
+msgstr ""
+"projektissa %d, objektissa %s, elementissä %d, näytteessä %d, säteessä %d, "
+"sarjassa %d:"
+
+msgid "lastYear < firstYear"
+msgstr "ilmoitettu viimeinen vuosi on aiempi kuin ilmoitettu ensimmäinen vuosi"
+
+msgid "external entities are not supported: %s"
+msgstr "ulkoiset entiteetit eivät ole tuettuja: %s"
+
+msgid "unknown entity: %s"
+msgstr "tuntematon entiteetti: %s"
+
+msgid "negative missingHeartwoodRingsToPith"
+msgstr "negatiivinen missingHeartwoodRingsToPith"
+
+msgid "negative missingSapwoodRingsToPith"
+msgstr "negatiivinen missingSapwoodRingsToPith"
+
+msgid "negative nrOfSapwoodRings"
+msgstr "negatiivinen nrOfSapwoodRings"
+
+msgid "negative nrOfUnmeasuredInnerRings"
+msgstr "negatiivinen nrOfUnmeasuredInnerRings"
+
+msgid "in project %d, derived series %d:"
+msgstr "projektissa %d, johdannaissarjassa %d:"
+
+msgid "negative values interpreted as missing"
+msgstr "negatiiviset arvot tulkittu puuttuviksi"
+
+msgid "too many values (expected %d, got %d)"
+msgstr "liian monta arvoa (odotettiin %d, saatiin %d)"
+
+msgid "too few values (expected %d, got %d)"
+msgstr "liian vähän arvoja (odotettiin %d, saatiin %d)"
+
+msgid "in undated series %d:"
+msgstr "ajoittamattomassa sarjassa %d:"
+
+msgid "unitless measurements present"
+msgstr "yksiköttömiä mittauksia läsnä"
+
+msgid "strange unit \"%s\""
+msgstr "outo yksikkö ”%s”"
+
+msgid "negative counts interpreted as missing"
+msgstr "negatiiviset lukumäärät tulkittu puuttuviksi"
+
+msgid "in derived series %d:"
+msgstr "johdannaissarjassa %d:"
+
+msgid "data from the future"
+msgstr "dataa tulevaisuudesta"
+
+msgid "'$measurements' is a data.frame"
+msgstr "’$measurements’ on data.frame"
+
+msgid "there are %d data.frames in the '$measurements' list"
+msgstr "’$measurements’-listassa on %d data.framea"
+
+msgid "in data.frame %d:"
+msgstr "data.framessa %d:"
+
+msgid "data.frame #%d"
+msgstr "data.frame nro %d"
+
+msgid "* site:"
+msgstr "* paikka:"
+
+msgid "* taxon:"
+msgstr "* laji:"
+
+msgid "* variable:"
+msgstr "* muuttuja:"
+
+msgid "first line in rwl file ends before col 12"
+msgstr "tiedoston ensimmäinen rivi päättyy ennen saraketta 12"
+
+msgid "There appears to be a header in the rwl file"
+msgstr "Tiedostossa näyttää olevan otsake"
+
+msgid "There does not appear to be a header in the rwl file"
+msgstr "Tiedostossa ei näytä olevan otsaketta"
+
+msgid "precision unknown in series %s"
+msgstr "tuntematon tarkkuus sarjassa %s"
+
+msgid "'ncol(rwi)' != 'nrow(ids)'"
+msgstr "’ncol(rwi)’ ≠ ’nrow(ids)’"
+
+msgid "'ids' must have numeric columns"
+msgstr "’ids’:llä täytyy olla numeric-tyyppiset sarakkeet"
+
+msgid "Correlations are all NA. No overlap in series?"
+msgstr "Kaikki korrelaatiot ovat NA. Sarjoissa ei päällekkäisyyttä?"
+
+msgid "minimum 'window.length' is 3"
+msgstr "pienin mahdollinen ’window.length’ on 3"
+
+msgid "'window.overlap' is too large, max value is 'window.length'-1 (%d)"
+msgstr ""
+"’window.overlap’ on liian suuri, maksimiarvo on ’window.length’-1 (%d)"
+
+msgid "'window.length' is smaller than 'min.corr.overlap'"
+msgstr "’window.length’ on pienempi kuin ’min.corr.overlap’"
+
+msgid "'window.length' is larger than the number of years in 'rwi'"
+msgstr "’window.length’ on suurempi kuin vuosien määrä ’rwi’:ssä"
+
+msgid "at least 2 trees are needed"
+msgstr "ainakin 2 puuta tarvitaan"
+
+msgid "too few years with enough trees for correlation calculations"
+msgstr ""
+"liian vähän vuosia joissa olisi riittävästi puita korrelaation laskemiseen"
+
+msgid "'first.start' too small, must be >= 1"
+msgstr "’first.start’ liian pieni, täytyy olla ≥ 1"
+
+msgid "'first.start' too large"
+msgstr "’first.start’ liian suuri"
+
+msgid "'x' must be a data.frame"
+msgstr "’x’:n täytyy olla data.frame"
+
+msgid "NA result at position %d."
+msgstr "NA-tulos paikassa %d."
+
+msgid "You could check whether 'key' years are in range."
+msgstr "Voisit tarkastaa ovatko ’key’-vuodet alueen sisällä."
+
+msgid ""
+"Exact p-value (< %f) could not be estimated for superposed epoch "
+"at position %d."
+msgstr ""
+"Tarkkaa p-arvoa (< %f) ei voitu estimoida päällekkäiselle aikakaudelle "
+"paikassa %d."
+
+msgid "You could try a higher value for 'resample'."
+msgstr "Voisit kokeilla korkeampaa arvoa muuttujalle ’resample’."
+
+msgid "Detrended Series"
+msgstr "Trendipuhdistettu sarja"
+
+msgid "Detrended Master"
+msgstr "Trendipuhdistettu pääsarja"
+
+msgid "Master"
+msgstr "Pääsarja"
+
+msgid "Series"
+msgstr "Sarja"
+
+msgid "Segments: length=%d,lag=%d,bin.floor=%d"
+msgstr "Segmentit: pituus=%d,viive=%d,lattia=%d"
+
+msgid "Series:%d-%d"
+msgstr "Sarja:%d–%d"
+
+msgid "Master:%d-%d"
+msgstr "Pääsarja:%d–%d"
+
+msgid "Detrended and Trimmed:"
+msgstr "Trendipuhdistettu ja siistitty:"
+
+msgid "%d-%d"
+msgstr "%d–%d"
+
+msgid "Detrending Options:"
+msgstr "Trendinpuhdistusvaihtoehdot:"
+
+msgid "'sname' must be a character string less than 8 characters long"
+msgstr "’sname’n pitää olla alle 8-merkkinen merkkijono"
+
+msgid "input series has length of %d"
+msgstr "syötesarjan pituus on %d"
+
+msgid "long series (> 840) must be split into multiple plots"
+msgstr "pitkät sarjat (> 840) täytyy jakaa moneen kuvaan"
+
+msgid "'filt.weight' is %f"
+msgstr "’filt.weight’ on %f"
+
+msgid "'filt.weight' must not be larger than length of input series"
+msgstr "’filt.weight’ ei saa olla suurempi kuin syötesarjan pituus"
+
+msgid "empty 'rwl' given, nothing to draw"
+msgstr "tyhjä ’rwl’ annettu, ei mitään piirrettävää"
+
+msgid "a user-coded (pseudo) random number generator is in use"
+msgstr "käyttäjän tekemä (pseudo)satunnaislukugeneraattori on käytössä"
+
+msgid "Time"
+msgstr "Aika"
+
+msgid "Period"
+msgstr "Jakso"
+
+msgid "'prec' must equal 0.01 or 0.001"
+msgstr "’prec’in täytyy olla 0.01 tai 0.002"
+
+msgid "file %s does not exist, cannot append"
+msgstr "tiedostoa %s ei ole olemassa, ei voi lisätä loppuun"
+
+msgid "series %s: header line would be too long"
+msgstr "sarja %s: otsikkorivi olisi liian pitkä"
+
+msgid "'crn' must have 2 columns"
+msgstr "’crn’:ssä täytyy olla 2 saraketta"
+
+msgid "bad idea to append with 'header'"
+msgstr "huono ajatus lisätä loppuun kun on annettu ’header’"
+
+msgid "header must be a list"
+msgstr "’header’in täytyy olla list-tyyppinen muuttuja"
+
+msgid "'header' must be a list with the following names:"
+msgstr ""
+"’header’in täytyy olla list-tyyppinen muuttuja jossa on seuraavat nimet:"
+
+msgid ","
+msgstr ","
+
+msgid "'lab.info' must be a data.frame with at least one row"
+msgstr "’lab.info’n täytyy olla vähintään yksirivinen data.frame"
+
+msgid "\"name\" is a required variable in 'lab.info'"
+msgstr "”name” on pakollinen muuttuja ’lab.info’ssa"
+
+msgid "\"domain\" is required together with \"identifier\" in 'lab.info'"
+msgstr "”domain” vaaditaan yhdessä ”identifier”in kanssa ’lab.info’ssa"
+
+msgid "\"identifier\" is a required variable in 'research.info'"
+msgstr "”identifier” on pakollinen muuttuja ’research.info’ssa"
+
+msgid "\"domain\" is a required variable in 'research.info'"
+msgstr "”domain” on pakollinen muuttuja ’research.info’ssa"
+
+msgid "\"description\" is a required variable in 'research.info'"
+msgstr "”description” on pakollinen muuttuja ’research.info’ssa"
+
+msgid "'%s' must be of type character - inserting \"%s\""
+msgstr "’%s’:n täytyy olla character-tyyppinen – asetetaan arvo ”%s”"
+
+msgid "'%s' must be a list. Creating one."
+msgstr "’%s’:n täytyy olla list-tyyppinen muuttuja. Luodaan sellainen."
+
+msgid "'%s$%s' must be of type character - inserting \"%s\""
+msgstr "’%s$%s’:n täytyy olla character-tyyppinen – asetetaan arvo ”%s”"
+
+msgid "2-col 'ids' needs \"tree\" and \"core\" columns"
+msgstr ""
+"2-sarakkeisessa ’ids’-muuttujassa pitää olla ”tree”- ja ”core”-sarakkeet"
+
+msgid "3-col 'ids' needs \"tree\", \"core\", and \"radius\" columns"
+msgstr ""
+"3-sarakkeisessa ’ids’-muuttujassa pitää olla ”tree”-, ”core”- ja "
+"”radius”-sarakkeet"
+
+msgid ""
+"4-col 'ids' needs \"tree\", \"core\", \"radius\", and \"measurement\" columns"
+msgstr ""
+"4-sarakkeisessa ’ids’-muuttujassa pitää olla ”tree”-, ”core”-, "
+"”radius”- ja ”measurement”-sarakkeet"
+
+msgid "argument 'ids' is in wrong format (2, 3, or 4 columns required)"
+msgstr "argumentti ’ids’ on vääränmuotoinen (vaaditaan 2, 3 tai 4 saraketta)"
+
+msgid "argument 'ids' is not data.frame or has wrong number of rows"
+msgstr "argumentti ’ids’ ei ole data.frame tai sillä on väärä rivimäärä"
+
+msgid ""
+"columns needed in 'titles': \"tree\", \"core\", \"radius\", "
+"and \"measurement\""
+msgstr ""
+"sarakkeet jotka tarvitaan ’titles’issa: ”tree”, ”core”, ”radius” "
+"ja ”measurement”"
+
+msgid "argument 'titles' is not data.frame or has wrong number of rows"
+msgstr "argumentti ’titles’ ei ole data.frame tai sillä on väärä rivimäärä"
+
+msgid "'ids' and 'titles' not consistent or duplicates present"
+msgstr "’ids’ ja ’titles’ eivät ole yhtäpitävät tai on olemassa duplikaatteja"
+
+msgid "unknown 'prec' specified: no unit conversion or rounding done"
+msgstr "tuntematon ’prec’ annettu: yksikköjen muunnosta tai "
+
+msgid "'nrow(wood.completeness)' must be equal to 'ncol(rwl.df)'"
+msgstr "’nrow(wood.completeness)’in täytyy olla sama kuin ’ncol(rwl.df)’"
+
+msgid "row names of 'wood.completeness' must match column names of 'rwl.df'"
+msgstr ""
+"’wood.completeness’in rivien ja ’rwl.df’:n sarakkeiden nimien "
+"täytyy täsmätä"
+
+msgid ""
+"some values in 'wood.completeness$%s' are invalid, i.e. not integer or < 0"
+msgstr ""
+"jotkin arvot muuttujassa ’wood.completeness$%s’ ovat epäkelpoja, eli eivät "
+"kokonaislukuja tai < 0"
+
+msgid "'header' must be a list"
+msgstr "’header’in täytyy olla list-tyyppiä"
+
+msgid "years earlier than -9999 (10000 BC) are not supported"
+msgstr "vuosia ennen -9999 (10000 eaa.) ei tueta"
+
+msgid "years later than 99999 are not possible"
+msgstr "99999:n jälkeiset vuodet eivät ole mahdollisia"
+
+msgid        "there is %d series\n"
+msgid_plural "there are %d series\n"
+msgstr[0] "on %d sarja\n"
+msgstr[1] "on %d sarjaa\n"
+
+msgid        "there is %d undated series, returned in '$undated'\n"
+msgid_plural "there are %d undated series, returned in '$undated'\n"
+msgstr[0] ""
+"on %d ajoittamaton sarja, joka palautetaan muuttujassa ’$undated’\n"
+msgstr[1] ""
+"on %d ajoittamatonta sarjaa, jotka palautetaan muuttujassa ’$undated’\n"
+
+msgid        "there is %d derived series, returned in '$derived'\n"
+msgid_plural "there are %d derived series, returned in '$derived'\n"
+msgstr[0] "on %d johdannaissarja, joka palautetaan muuttujassa ’$derived’\n"
+msgstr[1] "on %d johdannaissarjaa, jotka palautetaan muuttujassa ’$derived’\n"

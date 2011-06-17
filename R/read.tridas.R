@@ -365,16 +365,15 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                 ids.old <- rbind(ids.in.site,
                                  res.undated$ids[undated.in.site, ,
                                                  drop=FALSE])
-                converted.ids <- ids.old
                 n.dated.in.site <- nrow(titles.in.site)
                 n.all <- n.dated.in.site + nrow(titles.in.undated)
                 if(ids.from.titles)
                     converted.ids <-
                         title.based.ids(rbind(titles.in.site,
                                               titles.in.undated))
+                else
+                    converted.ids <- ids.old
                 if(ids.from.identifiers){
-                    temp.identifiers <- rep(as.character(NA), n.all)
-                    temp.domains <- rep(as.character(NA), n.all)
                     md.in.site <- which(identifier.project.id == idx.project)
                     if(length(md.in.site) > 0)
                         md.in.site <-
@@ -395,114 +394,126 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                                   all(x ==
                                                       idx.object[1:object.level])
                                               })]
-                    for(md.idx in md.in.site){
-                        this.idvec <- c(identifier.tree.id[md.idx],
-                                        identifier.core.id[md.idx],
-                                        identifier.radius.id[md.idx],
-                                        identifier.measurement.id[md.idx])
-                        if(all(!is.na(this.idvec))){
-                            this.match <-
-                                row.match(ids.old[, ID.ORDER, drop=FALSE],
-                                          this.idvec)
-                            temp.identifiers[this.match] <-
-                                identifier.text[md.idx]
-                            temp.domains[this.match] <-
-                                identifier.domain[md.idx]
-                        }
-                    }
-                    converted.ids <-
-                        identifier.based.ids(converted.ids,
-                                             temp.identifiers,
-                                             temp.domains)
-                }
-                ids.in.site <<-
-                    converted.ids[inc(1, n.dated.in.site), , drop=FALSE]
-                res.undated$ids[undated.in.site, ] <<-
-                    converted.ids[inc(n.dated.in.site + 1, n.all), ,
-                                  drop=FALSE]
-                metadata.names <- c("comments", "identifier", "preferred",
-                                    "altitude", "type")
-                metadata.levels <- c(4, 4, 1, 1, 2)
-                for(k in 1:length(metadata.names)){
-                    md.name <- metadata.names[k]
-                    md.level <- metadata.levels[k]
-                    md.project.id <- get(paste(md.name, ".project.id", sep=""))
-                    md.site.id <- get(paste(md.name, ".site.id", sep=""))
-                    md.tree.id <- get(paste(md.name, ".tree.id", sep=""))
-                    if(md.level >= 2){
-                        md.core.id <- get(paste(md.name, ".core.id", sep=""))
-                        if(md.level >= 3){
-                            md.radius.id <-
-                                get(paste(md.name, ".radius.id", sep=""))
-                            if(md.level >= 4){
-                                md.measurement.id <-
-                                    get(paste(md.name,
-                                              ".measurement.id", sep=""))
+                    if(length(md.in.site) > 0){
+                        temp.identifiers <- rep(as.character(NA), n.all)
+                        temp.domains <- rep(as.character(NA), n.all)
+                        for(md.idx in md.in.site){
+                            this.idvec <- c(identifier.tree.id[md.idx],
+                                            identifier.core.id[md.idx],
+                                            identifier.radius.id[md.idx],
+                                            identifier.measurement.id[md.idx])
+                            if(all(!is.na(this.idvec))){
+                                this.match <-
+                                    row.match(ids.old[, ID.ORDER, drop=FALSE],
+                                              this.idvec)
+                                temp.identifiers[this.match] <-
+                                    identifier.text[md.idx]
+                                temp.domains[this.match] <-
+                                    identifier.domain[md.idx]
                             }
                         }
+                        converted.ids <-
+                            identifier.based.ids(converted.ids,
+                                                 temp.identifiers,
+                                                 temp.domains)
                     }
-                    md.in.site <- which(md.project.id == idx.project)
-                    if(length(md.in.site) > 0)
-                        md.in.site <-
-                            md.in.site[!is.na(md.tree.id[md.in.site])]
-                    if(length(md.in.site) > 0)
-                        md.in.site <-
-                            md.in.site[sapply(md.site.id[md.in.site],
-                                              function(x){
-                                                  if(is.na(x[1])){
-                                                      -1
-                                                  } else{
-                                                      length(x)
-                                                  }
-                                              }) == object.level]
-                    if(length(md.in.site) > 0)
-                        md.in.site <-
-                            md.in.site[sapply(md.site.id[md.in.site],
-                                              function(x){
-                                                  all(x == idx.object[1:object.level])
-                                              })]
-
-                    for(md.idx in md.in.site){
-                        this.idvec <- md.tree.id[md.idx]
+                }
+                ## Only need to remap ids in metadata if ids in data change
+                if(ids.from.titles || length(md.in.site) > 0){
+                    ids.in.site <<-
+                        converted.ids[inc(1, n.dated.in.site), , drop=FALSE]
+                    res.undated$ids[undated.in.site, ] <<-
+                        converted.ids[inc(n.dated.in.site + 1, n.all), ,
+                                      drop=FALSE]
+                    metadata.names <- c("comments", "identifier", "preferred",
+                                        "altitude", "type")
+                    metadata.levels <- c(4, 4, 1, 1, 2)
+                    for(k in 1:length(metadata.names)){
+                        md.name <- metadata.names[k]
+                        md.level <- metadata.levels[k]
+                        md.project.id <-
+                            get(paste(md.name, ".project.id", sep=""))
+                        md.site.id <- get(paste(md.name, ".site.id", sep=""))
+                        md.tree.id <- get(paste(md.name, ".tree.id", sep=""))
                         if(md.level >= 2){
-                            this.idvec <- c(this.idvec, md.core.id[md.idx])
+                            md.core.id <-
+                                get(paste(md.name, ".core.id", sep=""))
                             if(md.level >= 3){
-                                this.idvec <-
-                                    c(this.idvec, md.radius.id[md.idx])
+                                md.radius.id <-
+                                    get(paste(md.name, ".radius.id", sep=""))
                                 if(md.level >= 4){
-                                    this.idvec <- c(this.idvec,
-                                                    md.measurement.id[md.idx])
+                                    md.measurement.id <-
+                                        get(paste(md.name,
+                                                  ".measurement.id", sep=""))
                                 }
                             }
                         }
-                        idx.notna <- which(!is.na(this.idvec))
-                        this.idvec <- this.idvec[idx.notna]
-                        this.match <-
-                            row.match(ids.old[, ID.ORDER[idx.notna],
-                                              drop=FALSE],
-                                      this.idvec)
-                        match.vec <- converted.ids[this.match[1], ]
-                        md.tree.id[md.idx] <- match.vec["tree"]
-                        assign(paste(md.name, ".tree.id", sep=""),
-                               md.tree.id,
-                               inherits=TRUE)
-                        if(md.level >= 2){
-                            md.core.id[md.idx] <- match.vec["core"]
-                            assign(paste(md.name, ".core.id", sep=""),
-                                   md.core.id,
+                        md.in.site <- which(md.project.id == idx.project)
+                        if(length(md.in.site) > 0)
+                            md.in.site <-
+                                md.in.site[!is.na(md.tree.id[md.in.site])]
+                        if(length(md.in.site) > 0)
+                            md.in.site <-
+                                md.in.site[sapply(md.site.id[md.in.site],
+                                                  function(x){
+                                                      if(is.na(x[1])){
+                                                          -1
+                                                      } else{
+                                                          length(x)
+                                                      }
+                                                  }) == object.level]
+                        if(length(md.in.site) > 0)
+                            md.in.site <-
+                                md.in.site[sapply(md.site.id[md.in.site],
+                                                  function(x){
+                                                      all(x == idx.object[1:object.level])
+                                                  })]
+
+                        for(md.idx in md.in.site){
+                            this.idvec <- md.tree.id[md.idx]
+                            if(md.level >= 2){
+                                this.idvec <- c(this.idvec, md.core.id[md.idx])
+                                if(md.level >= 3){
+                                    this.idvec <-
+                                        c(this.idvec, md.radius.id[md.idx])
+                                    if(md.level >= 4){
+                                        this.idvec <-
+                                            c(this.idvec,
+                                              md.measurement.id[md.idx])
+                                    }
+                                }
+                            }
+                            idx.notna <- which(!is.na(this.idvec))
+                            this.idvec <- this.idvec[idx.notna]
+                            this.match <-
+                                row.match(ids.old[, ID.ORDER[idx.notna],
+                                                  drop=FALSE],
+                                          this.idvec)
+                            match.vec <- converted.ids[this.match[1], ]
+                            md.tree.id[md.idx] <- match.vec["tree"]
+                            assign(paste(md.name, ".tree.id", sep=""),
+                                   md.tree.id,
                                    inherits=TRUE)
-                            if(md.level >= 3){
-                                md.radius.id[md.idx] <- match.vec["radius"]
-                                assign(paste(md.name, ".radius.id", sep=""),
-                                       md.radius.id,
+                            if(md.level >= 2){
+                                md.core.id[md.idx] <- match.vec["core"]
+                                assign(paste(md.name, ".core.id", sep=""),
+                                       md.core.id,
                                        inherits=TRUE)
-                                if(md.level >= 4){
-                                    md.measurement.id[md.idx] <-
-                                        match.vec["measurement"]
-                                    assign(paste(md.name, ".measurement.id",
+                                if(md.level >= 3){
+                                    md.radius.id[md.idx] <- match.vec["radius"]
+                                    assign(paste(md.name, ".radius.id",
                                                  sep=""),
-                                           md.measurement.id,
+                                           md.radius.id,
                                            inherits=TRUE)
+                                    if(md.level >= 4){
+                                        md.measurement.id[md.idx] <-
+                                            match.vec["measurement"]
+                                        assign(paste(md.name,
+                                                     ".measurement.id",
+                                                     sep=""),
+                                               md.measurement.id,
+                                               inherits=TRUE)
+                                    }
                                 }
                             }
                         }

@@ -73,6 +73,8 @@ File: read.tridas.R
 
 - Fixed a bug where a wrong number of derived series was reported in
   summary output
+- A performance optimization for the case where ids.from.title is FALSE,
+  ids.from.identifiers is TRUE (the defaults), and there are no identifiers.
 
 File: series.rwl.plot.R
 -----------------------

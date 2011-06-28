@@ -63,7 +63,8 @@ File: cms.R
 - Better checking of pith offset names
 - Big performance improvement, mostly due to using vector operations instead of a for loop
 - Results slightly different (on the order of 1e-15) due to polyroot having been replaced with quadratic formula, order of arithmetic operations etc.
-
+- Helper function now has 2 parameters: no need for cbind() in caller
+	
 File: corr.rwl.seg.R
 --------------------
 

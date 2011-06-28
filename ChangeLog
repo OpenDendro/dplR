@@ -61,8 +61,11 @@ File: cms.R
 -----------
 
 - Better checking of pith offset names
-- Big performance improvement, mostly due to using vector operations instead of a for loop
-- Results slightly different (on the order of 1e-15) due to polyroot having been replaced with quadratic formula, order of arithmetic operations etc.
+- Big performance improvement, mostly due to using vector operations
+  instead of a for loop
+- Results slightly different (on the order of 1e-15) due to polyroot
+  having been replaced with quadratic formula, order of arithmetic
+  operations etc.
 - Helper function now has 2 parameters: no need for cbind() in caller
 
 File: corr.rwl.seg.R
@@ -283,7 +286,7 @@ File: chron.R
 
 - Removed redundant c()
 - Default value of prefix is now "xxx". Previously the default value
-  was NULL, which was then converted to "xxx".	   
+  was NULL, which was then converted to "xxx".
 - Cosmetic improvement
 
 File: chron.Rd
@@ -292,7 +295,7 @@ File: chron.Rd
 - Documents new (explicit) default value of prefix.
 - Cosmetic improvement
 
-File: cms.R 
+File: cms.R
 -----------
 
 - Some added robustness against weird input

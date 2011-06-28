@@ -45,9 +45,6 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     rownames(overall.cor) <- cnames
     colnames(overall.cor) <- c("rho", "p-val")
 
-    segavg.cor <- rep(NA, nbins)
-    names(segavg.cor) <- bin.names
-
     ## normalize all series
     norm.one <- normalize1(rwl, n, prewhiten)
     ## rwi for segments altered by normalizing
@@ -119,7 +116,6 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         neworder <- rsult$ix
         segs <- segs[, neworder, drop=FALSE]
         segs.df <- data.frame(t(extreme.year[, neworder]))
-        names(segs.df) <- c("first.yr", "last.yr")
         first.year <- first.year[neworder]
         last.year <- extreme.year[2, neworder]
 

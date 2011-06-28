@@ -4,15 +4,13 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
     if(n.col != nrow(po))
         stop("dimension problem: ", "'ncol(rw)' != 'nrow(po)'")
     col.names <- colnames(rwl)
-    if(!all(po[, 1] %in% col.names))
+    if(!all(sort(po[, 1]) == sort(col.names)))
         stop("series ids in 'po' and 'rwl' do not match")
     if(any(po[, 2] < 1))
         stop("minimum 'po' is 1")
     if(!all(is.int(po[, 2])))
         stop("each value in 'po' must be an integer")
     rownames(rwl) <-  rownames(rwl) # guard against NULL names funniness
-    series.yrs <- apply(rwl, 2, yr.range)
-    rownames(series.yrs) <- c("first", "last")
 
     rwl.ord <- apply(rwl, 2, sortByIndex)
     rwca <- data.frame(matrix(NA,
@@ -39,8 +37,9 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
     rwi <- rwl
     yrs <- as.numeric(rownames(rwi))
     for(i in 1:n.col){
-        first <- series.yrs[1, i]
-        last <- series.yrs[2, i]
+        series.yrs <- yr.range(rwl[, i], yr.vec=yrs)
+        first <- series.yrs[1]
+        last <- series.yrs[2]
         ## check
         tmp <- na.omit(rwica[, i])
         if(first+length(tmp) != last+1)

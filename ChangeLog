@@ -57,16 +57,35 @@ File: src/rcompact.c
 - Supports translation of messages via _(...), where ... is the string to
   translate
 
+File: cms.R
+-----------
+
+- Better checking of pith offset names
+- Big performance improvement, mostly due to using vector operations instead of a for loop
+- Results slightly different (on the order of 1e-15) due to polyroot having been replaced with quadratic formula, order of arithmetic operations etc.
+
+File: corr.rwl.seg.R
+--------------------
+
+- Additional parameter in yr.range()
+
 File: glk.R
 -----------
 
 - Uses the complete argument name MARGIN instead of MAR
+
+File: helpers.R
+---------------
+
+- Additional parameter in yr.range(). Used by all callers.
 
 File: rcs.R
 -----------
 
 - Uses warning() instead of cat() in one (unlikely?, impossible?) error
   situation
+- Better checking of pith offset names
+- yr.range() called in "the big for loop" instead of apply. The loop exists anyway, and there's no need to keep yr.range() of all series at the same time.
 
 File: read.tridas.R
 -------------------
@@ -74,7 +93,7 @@ File: read.tridas.R
 - Fixed a bug where a wrong number of derived series was reported in
   summary output
 - A performance optimization for the case where ids.from.title is FALSE,
-  ids.from.identifiers is TRUE (the defaults), and there are no identifiers.
+  ids.from.identifiers is TRUE (the defaults), and there are no identifiers
 
 File: series.rwl.plot.R
 -----------------------

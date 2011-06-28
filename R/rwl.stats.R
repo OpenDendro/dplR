@@ -11,8 +11,9 @@
         sum((x-mean(x))^3) / (length(x)*sd(x)^3)
     }
 
+    yr <- as.numeric(rownames(rwl))
     series.stats <- data.frame(series=colnames(rwl))
-    the.range <- apply(rwl, 2, yr.range)
+    the.range <- apply(rwl, 2, yr.range, yr.vec=yr)
     series.stats$first <- the.range[1, ]
     series.stats$last <- the.range[2, ]
     series.stats$year <- series.stats$last - series.stats$first + 1

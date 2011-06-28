@@ -3,8 +3,8 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                          make.plot = TRUE, label.cex=1, ...){
 
     ## helper function
-    yr.range <- function(x) {
-        if(any(mask <- !is.na(x))) range(as.numeric(names(x))[mask])
+    yr.range <- function(x, yr.vec=as.numeric(names(x))) {
+        if(any(mask <- !is.na(x))) range(yr.vec[mask])
         else c(NA, NA)
     }
 
@@ -113,7 +113,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     if(make.plot){
         p.val <- res.pval
         segs <- rwi
-        extreme.year <- apply(segs, 2, yr.range)
+        extreme.year <- apply(segs, 2, yr.range, yr.vec=yrs)
         first.year <- extreme.year[1, ]
         rsult <- sort.int(first.year, decreasing=FALSE, index.return=TRUE)
         neworder <- rsult$ix
@@ -183,8 +183,10 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             com.segs[idx.small.large, ] <- NA
             flag.segs[idx.small.large, ] <- NA
 
-            com.segs.df <- data.frame(t(apply(com.segs, 2, yr.range)))
-            flag.segs.df <- data.frame(t(apply(flag.segs, 2, yr.range)))
+            com.segs.df <-
+                data.frame(t(apply(com.segs, 2, yr.range, yr.vec=yrs)))
+            flag.segs.df <-
+                data.frame(t(apply(flag.segs, 2, yr.range, yr.vec=yrs)))
 
             axis(ax[odd.even], at=these.bins)
             ## polygons for these bins (go down or up from series line)

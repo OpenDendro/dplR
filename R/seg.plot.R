@@ -3,7 +3,7 @@ function(rwl, ...)
 {
   yr <- as.numeric(rownames(rwl))
   segs <- rwl
-  first.year <- apply(segs, 2, yr.range)[1, ]
+  first.year <- apply(segs, 2, yr.range, yr.vec=yr)[1, ]
   neworder <- sort(first.year, decreasing=FALSE)
   segs <- segs[, names(neworder), drop=FALSE]
   for(i in 1:ncol(segs)){

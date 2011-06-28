@@ -2,10 +2,10 @@ spag.plot <- function(rwl, zfac=1, ...){
     nseries <- ncol(rwl)
     if(nseries == 0) stop("empty 'rwl' given, nothing to draw")
     rwl <- scale(rwl*zfac, center = TRUE, scale = FALSE) # result is a matrix
-    first.year <- apply(rwl, 2, yr.range)[1, ]
+    yr <- as.numeric(rownames(rwl))
+    first.year <- apply(rwl, 2, yr.range, yr.vec=yr)[1, ]
     neworder <- sort(first.year, decreasing=FALSE)
     rwl <- rwl[, names(neworder), drop=FALSE]
-    yr <- as.numeric(rownames(rwl))
     op <- par(no.readonly=TRUE)
     on.exit(par(op))
     par(mar=c(4, 4, 4, 4) + 0.1, mgp=c(1.25, 0.25, 0), tcl=0.25)

@@ -13,10 +13,9 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
     rownames(rwl) <-  rownames(rwl) # guard against NULL names funniness
 
     rwl.ord <- apply(rwl, 2, sortByIndex)
-    rwca <- data.frame(matrix(NA,
-                              ncol=n.col,
-                              nrow=sum(nrow(rwl.ord) + max(po[, 2]))))
-    colnames(rwca) <- col.names
+    rwca <- matrix(NA,
+                   ncol=n.col,
+                   nrow=sum(nrow(rwl.ord) + max(po[, 2])))
     nrow.m1 <- nrow(rwl.ord) - 1
     for (i in 1:n.col){
         yrs2pith <- po[po[, 1] %in% col.names[i], 2]

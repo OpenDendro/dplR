@@ -64,7 +64,7 @@ File: cms.R
 - Big performance improvement, mostly due to using vector operations instead of a for loop
 - Results slightly different (on the order of 1e-15) due to polyroot having been replaced with quadratic formula, order of arithmetic operations etc.
 - Helper function now has 2 parameters: no need for cbind() in caller
-	
+
 File: corr.rwl.seg.R
 --------------------
 
@@ -86,7 +86,10 @@ File: rcs.R
 - Uses warning() instead of cat() in one (unlikely?, impossible?) error
   situation
 - Better checking of pith offset names
-- yr.range() called in "the big for loop" instead of apply. The loop exists anyway, and there's no need to keep yr.range() of all series at the same time.
+- yr.range() called in "the big for loop" instead of apply. The loop
+  exists anyway, and there's no need to keep yr.range() of all
+  series at the same time.
+- rwca is no longer a data.frame, and doesn't have unnecessary colnames
 
 File: read.tridas.R
 -------------------

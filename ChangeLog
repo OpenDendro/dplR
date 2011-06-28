@@ -73,6 +73,7 @@ File: corr.rwl.seg.R
 
 - Additional parameter in yr.range()
 - First definition of segavg.cor was not used. Now removed.
+- Some unnecessary name assignments and conversions to data.frame removed
 
 File: glk.R
 -----------

@@ -1,8 +1,6 @@
 cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
     ## support func
-    biologicalTrend <- function(theDat){
-        tt <- theDat[, 1]
-        theDat.2 <- theDat[, 2]
+    biologicalTrend <- function(tt, theDat.2){
         tt.p1 <- tt + 1
         sqrt.tt <- sqrt(tt)
         sqrt.tt.p1 <- sqrt(tt.p1)
@@ -38,7 +36,7 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
         no.na <- which(!is.na(this.series))
         if(length(no.na) > 0){
             series.no.na <- this.series[no.na]
-            tmp <- biologicalTrend(cbind(no.na+(the.po-1), series.no.na))
+            tmp <- biologicalTrend(no.na+(the.po-1), series.no.na)
             c.vec[i] <- tmp[[2]]
             c.curve <- tmp[[1]]
             if(c.hat.t)

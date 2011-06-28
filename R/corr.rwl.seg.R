@@ -115,7 +115,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         rsult <- sort.int(first.year, decreasing=FALSE, index.return=TRUE)
         neworder <- rsult$ix
         segs <- segs[, neworder, drop=FALSE]
-        segs.df <- data.frame(t(extreme.year[, neworder]))
+        segs.mat <- t(extreme.year[, neworder])
         first.year <- first.year[neworder]
         last.year <- extreme.year[2, neworder]
 
@@ -143,10 +143,8 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         for(odd.even in 1:2){
             this.seq <- seq(from=odd.even, to=nbins, by=2)
             these.bins <- bins[this.seq, , drop=FALSE]
-            com.segs <- as.data.frame(matrix(1, ncol=nseries, nrow=nyrs))
-            rownames(com.segs) <- rnames
-            flag.segs <- as.data.frame(matrix(NA, ncol=nseries, nrow=nyrs))
-            rownames(flag.segs) <- rnames
+            com.segs <- matrix(1, ncol=nseries, nrow=nyrs)
+            flag.segs <- matrix(NA, ncol=nseries, nrow=nyrs)
             ## loop through these.bins
             tmp <- p.val[neworder, this.seq, drop=FALSE] > pcrit
             for(i in 1:nseries){
@@ -179,10 +177,10 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             com.segs[idx.small.large, ] <- NA
             flag.segs[idx.small.large, ] <- NA
 
-            com.segs.df <-
-                data.frame(t(apply(com.segs, 2, yr.range, yr.vec=yrs)))
-            flag.segs.df <-
-                data.frame(t(apply(flag.segs, 2, yr.range, yr.vec=yrs)))
+            com.segs.mat <-
+                t(apply(com.segs, 2, yr.range, yr.vec=yrs))
+            flag.segs.mat <-
+                t(apply(flag.segs, 2, yr.range, yr.vec=yrs))
 
             axis(ax[odd.even], at=these.bins)
             ## polygons for these bins (go down or up from series line)
@@ -192,21 +190,21 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             for(i in seq(from=1, to=nseries)){
                 y.deviation <- y.deviation + 1
                 ## whole segs
-                xx <- c(segs.df[i, ], recursive=TRUE)
+                xx <- segs.mat[i, ]
                 xx <- c(xx, rev(xx))
                 yy <- c(i, i, y.deviation, y.deviation)
                 polygon(xx, yy, col=col.pal[3], border=NA)
                 ## complete segs
-                xx <- c(com.segs.df[i, ], recursive=TRUE)
+                xx <- com.segs.mat[i, ]
                 xx <- c(xx, rev(xx))
                 polygon(xx, yy, col=col.pal[2], border=NA)
                 ## flags
-                xx <- c(flag.segs.df[i, ], recursive=TRUE)
+                xx <- flag.segs.mat[i, ]
                 xx <- c(xx, rev(xx))
                 polygon(xx, yy, col=col.pal[1], border=NA)
                 ## guides
-                guides.x <- guides.x.base[guides.x.base >= segs.df[i, 1]]
-                guides.x <- guides.x[guides.x <= segs.df[i, 2]]
+                guides.x <- guides.x.base[guides.x.base >= segs.mat[i, 1]]
+                guides.x <- guides.x[guides.x <= segs.mat[i, 2]]
                 segments(guides.x, i, guides.x, y.deviation, col="white")
             }
         }

@@ -2,19 +2,13 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
     ## support func
     biologicalTrend <- function(theDat){
         tt <- theDat[, 1]
-        n <- nrow(theDat)
-        err4 <- array(0, n)
-        for (i in 1:n){
-            theDat.2 <- theDat[i, 2]
-            err1 <- theDat.2^4
-            tt.i <- tt[i]
-            err2 <- theDat.2*theDat.2 * (tt.i+tt.i+1)
-            err2 <- err2 + err2
-            err4[i] <- polyroot(c(err1, -err2, 1))[2]
-        }
-        err5 <- Re(err4)
-        med <- median(err5) # export for each series?
-        err6 <- sqrt(med) * ( sqrt(tt+1)-sqrt(tt) )
+        theDat.2 <- theDat[, 2]
+        tt.p1 <- tt + 1
+        sqrt.tt <- sqrt(tt)
+        sqrt.tt.p1 <- sqrt(tt.p1)
+        err4 <- theDat.2 * theDat.2 * ( tt + tt.p1 + 2 * sqrt.tt * sqrt.tt.p1 )
+        med <- median(err4) # export for each series?
+        err6 <- sqrt(med) * ( sqrt.tt.p1 - sqrt.tt )
         list(indices=err6, c.val=med)
     }
 ### main func
@@ -22,46 +16,45 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
     if(n.col != nrow(po))
         stop("dimension problem: ", "'ncol(rw)' != 'nrow(po)'")
     col.names <- colnames(rwl)
-    if(!all(po[, 1] %in% col.names))
+    if(!all(sort(po[, 1]) == sort(col.names)))
         stop("series ids in 'po' and 'rwl' do not match")
     rownames(rwl) <- rownames(rwl) # guard against NULL names funniness
-    series.yrs <- apply(rwl, 2, yr.range)
-
-    rwl.ord <- apply(rwl, 2, sortByIndex)
-    rwca <- data.frame(matrix(NA, ncol=n.col,
-                              nrow=sum(nrow(rwl.ord) + max(po[, 2]))))
-    colnames(rwca) <- col.names
-    nrow.m1 <- nrow(rwl.ord) - 1
-    for (i in 1:n.col){
-        yrs2pith <- po[po[, 1] %in% col.names[i], 2]
-        rwca[yrs2pith:(yrs2pith + nrow.m1), i] <- rwl.ord[, i]
-    }
+    n.row <- nrow(rwl)
 
     ## divide each series by c curve and restore to cal years
     rwi <- rwl
-    c.vec <- rep(NA, n.col)
-    names(c.vec) <- col.names
-    c.curve.df <- rwca
-    c.curve.df[, ] <- NA
     yrs <- as.numeric(rownames(rwi))
+    c.vec <- rep(as.numeric(NA), n.col)
+    names(c.vec) <- col.names
+    if(c.hat.t){
+        c.curve.mat <- matrix(NA, ncol=n.col, nrow=n.row + max(po[, 2]))
+        colnames(c.curve.mat) <- col.names
+    }
     for(i in 1:n.col){
-        no.na <- which(!is.na(rwca[, i]))
-        index <- cbind(no.na, rwca[no.na, i])
-        tmp <- biologicalTrend(index)
-        c.vec[i] <- tmp[[2]]
-        c.curve <- tmp[[1]]
-        c.curve.df[1:(po[i, 2]+length(c.curve)), i] <-
-            c(rep(NA, po[i, 2]), c.curve)
-        first <- series.yrs[1, i]
-        last <- series.yrs[2, i]
-        rwi[yrs %in% first:last, i] <- rwca[no.na, i] / c.curve
+        the.po <- po[po[, 1] %in% col.names[i], 2]
+        this.series <- rwl[, i]
+        series.yrs <- yr.range(this.series, yr.vec=yrs)
+        this.series <- sortByIndex(this.series)
+        no.na <- which(!is.na(this.series))
+        if(length(no.na) > 0){
+            series.no.na <- this.series[no.na]
+            tmp <- biologicalTrend(cbind(no.na+(the.po-1), series.no.na))
+            c.vec[i] <- tmp[[2]]
+            c.curve <- tmp[[1]]
+            if(c.hat.t)
+                c.curve.mat[(the.po + 1):(the.po + length(c.curve)), i] <-
+                    c.curve
+            first <- series.yrs[1]
+            last <- series.yrs[2]
+            rwi[yrs %in% first:last, i] <- series.no.na / c.curve
+        }
     }
     ## export options
     if(c.hat.t) {
         if(c.hat.i)
-            list(rwi=rwi, c.hat.t=c.curve.df, c.hat.i=c.vec)
+            list(rwi=rwi, c.hat.t=data.frame(c.curve.mat), c.hat.i=c.vec)
         else
-            list(rwi=rwi, c.hat.t=c.curve.df)
+            list(rwi=rwi, c.hat.t=data.frame(c.curve.mat))
     } else {
         if(c.hat.i)
             list(rwi=rwi, c.hat.i=c.vec)

@@ -80,6 +80,11 @@ File: corr.rwl.seg.R
 - First definition of segavg.cor was not used. Now removed.
 - Some unnecessary name assignments and conversions to data.frame removed
 
+File: detrend.series.R
+----------------------
+
+- Unused variable 'start' removed from nec.func()
+
 File: glk.R
 -----------
 

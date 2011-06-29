@@ -1,6 +1,4 @@
 combine.rwl <- function(x, y = NULL) {
-    err.msg <-
-        "Nothing to combine here. Please supply data.frames formatted according to the data standards in dplR."
     combinator <- function(x, y) {
         dim.x2 <- ncol(x)
         dim.y2 <- ncol(y)
@@ -41,10 +39,10 @@ combine.rwl <- function(x, y = NULL) {
         } else if (is.data.frame(x) && is.data.frame(y)) {
             new.frame <- combinator(x, y)
         } else {
-            stop(err.msg)
+            stop("Nothing to combine here. Please supply data.frames formatted according to the data standards in dplR.")
         }
     } else {
-        stop(err.msg)
+        stop("Nothing to combine here. Please supply data.frames formatted according to the data standards in dplR.")
     }
     new.frame
 }

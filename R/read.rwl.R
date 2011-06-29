@@ -15,17 +15,20 @@ read.rwl <-
                ## A rough test for a compact format file
                if(grepl("[1-9][0-9]*\\([1-9][0-9]*F[1-9][0-9]*\\.0\\)~ *$",
                         l1)){
-                   cat(gettext("Detected a DPL compact format file.\n"))
+                   cat(gettext("Detected a DPL compact format file.\n",
+                               domain="R-dplR"))
                    close(f)
                    read.compact(fname, ...)
                } else if(grepl("^HEADER:$", l1)){ # Heidelberg test
-                   cat(gettext("Detected a Heidelberg format file.\n"))
+                   cat(gettext("Detected a Heidelberg format file.\n",
+                               domain="R-dplR"))
                    close(f)
                    read.fh(fname, ...)
                } else {
                    ## A rough test for a TRiDaS file
                    if(grepl("<tridas>", l1)){
-                       cat(gettext("Detected a TRiDaS file.\n"))
+                       cat(gettext("Detected a TRiDaS file.\n",
+                                   domain="R-dplR"))
                        close(f)
                        read.tridas(fname, ...)
                    } else {
@@ -37,10 +40,12 @@ read.rwl <-
                        more.lines <- readLines(f, n=20)
                        close(f)
                        if(any(grepl("<tridas>", more.lines))){
-                           cat(gettext("Detected a TRiDaS file.\n"))
+                           cat(gettext("Detected a TRiDaS file.\n",
+                                       domain="R-dplR"))
                            read.tridas(fname, ...)
                        } else {
-                           cat(gettext("Assuming a Tucson format file.\n"))
+                           cat(gettext("Assuming a Tucson format file.\n",
+                                       domain="R-dplR"))
                            read.tucson(fname, ...)
                        }
                    }

@@ -1,4 +1,4 @@
-# Translation template for messages in dplR C code
+# Finnish translations for messages in dplR R code
 # Copyright (C) dplR copyright holders
 # This file is distributed under the same license as the dplR package.
 # Mikko Korpela <mvkorpel@iki.fi>, 2011.
@@ -6,15 +6,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.4.3\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-06-14 18:34+0300\n"
-"PO-Revision-Date: 2011-06-14 18:35+0300\n"
+"POT-Creation-Date: 2011-06-29 15:34+0300\n"
+"PO-Revision-Date: 2011-06-29 15:35+0300\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
 
 msgid "dimension problem:"
 msgstr "dimensio-ongelma:"
@@ -60,6 +59,13 @@ msgstr "’ncol(rw)’ ≠ ’nrow(po)’"
 
 msgid "series ids in 'po' and 'rwl' do not match"
 msgstr "sarjojen tunnisteet ’po’:ssa ja ’rwl’:ssä eivät täsmää"
+
+msgid ""
+"Nothing to combine here. Please supply data.frames formatted according to "
+"the data standards in dplR."
+msgstr ""
+"Ei mitään yhdistettävää. "
+"Ole hyvä ja syötä dplR-datastandardien mukaisia data.frameja."
 
 msgid "At least 2 series are needed in 'rwl'"
 msgstr "Vähintään 2 sarjaa tarvitaan ’rwl’:ssä"
@@ -114,8 +120,8 @@ msgstr "abskissa- ja ordinaattavektorien täytyy olla samanpituiset"
 
 msgid "characters outside a-z, A-Z, 0-9 present: renaming series"
 msgstr ""
-"mukana merkkejä alueiden a–z, A–Z, 0–9 ulkopuolelta: "
-"uudelleennimetään sarjoja"
+"mukana merkkejä alueiden a–z, A–Z, 0–9 ulkopuolelta: uudelleennimetään "
+"sarjoja"
 
 msgid "some names are too long: renaming series"
 msgstr "jotkin nimet ovat liian pitkiä: uudelleennimetään sarjoja"
@@ -342,8 +348,7 @@ msgid "minimum 'window.length' is 3"
 msgstr "pienin mahdollinen ’window.length’ on 3"
 
 msgid "'window.overlap' is too large, max value is 'window.length'-1 (%d)"
-msgstr ""
-"’window.overlap’ on liian suuri, maksimiarvo on ’window.length’-1 (%d)"
+msgstr "’window.overlap’ on liian suuri, maksimiarvo on ’window.length’-1 (%d)"
 
 msgid "'window.length' is smaller than 'min.corr.overlap'"
 msgstr "’window.length’ on pienempi kuin ’min.corr.overlap’"
@@ -374,8 +379,8 @@ msgid "You could check whether 'key' years are in range."
 msgstr "Voisit tarkastaa ovatko ’key’-vuodet alueen sisällä."
 
 msgid ""
-"Exact p-value (< %f) could not be estimated for superposed epoch "
-"at position %d."
+"Exact p-value (< %f) could not be estimated for superposed epoch at position "
+"%d."
 msgstr ""
 "Tarkkaa p-arvoa (< %f) ei voitu estimoida päällekkäiselle aikakaudelle "
 "paikassa %d."
@@ -498,14 +503,14 @@ msgstr ""
 
 msgid "3-col 'ids' needs \"tree\", \"core\", and \"radius\" columns"
 msgstr ""
-"3-sarakkeisessa ’ids’-muuttujassa pitää olla ”tree”-, ”core”- ja "
-"”radius”-sarakkeet"
+"3-sarakkeisessa ’ids’-muuttujassa pitää olla ”tree”-, ”core”- ja ”radius”-"
+"sarakkeet"
 
 msgid ""
 "4-col 'ids' needs \"tree\", \"core\", \"radius\", and \"measurement\" columns"
 msgstr ""
-"4-sarakkeisessa ’ids’-muuttujassa pitää olla ”tree”-, ”core”-, "
-"”radius”- ja ”measurement”-sarakkeet"
+"4-sarakkeisessa ’ids’-muuttujassa pitää olla ”tree”-, ”core”-, ”radius”- ja "
+"”measurement”-sarakkeet"
 
 msgid "argument 'ids' is in wrong format (2, 3, or 4 columns required)"
 msgstr "argumentti ’ids’ on vääränmuotoinen (vaaditaan 2, 3 tai 4 saraketta)"
@@ -514,11 +519,11 @@ msgid "argument 'ids' is not data.frame or has wrong number of rows"
 msgstr "argumentti ’ids’ ei ole data.frame tai sillä on väärä rivimäärä"
 
 msgid ""
-"columns needed in 'titles': \"tree\", \"core\", \"radius\", "
-"and \"measurement\""
+"columns needed in 'titles': \"tree\", \"core\", \"radius\", and \"measurement"
+"\""
 msgstr ""
-"sarakkeet jotka tarvitaan ’titles’issa: ”tree”, ”core”, ”radius” "
-"ja ”measurement”"
+"sarakkeet jotka tarvitaan ’titles’issa: ”tree”, ”core”, ”radius” ja "
+"”measurement”"
 
 msgid "argument 'titles' is not data.frame or has wrong number of rows"
 msgstr "argumentti ’titles’ ei ole data.frame tai sillä on väärä rivimäärä"
@@ -534,8 +539,7 @@ msgstr "’nrow(wood.completeness)’in täytyy olla sama kuin ’ncol(rwl.df)�
 
 msgid "row names of 'wood.completeness' must match column names of 'rwl.df'"
 msgstr ""
-"’wood.completeness’in rivien ja ’rwl.df’:n sarakkeiden nimien "
-"täytyy täsmätä"
+"’wood.completeness’in rivien ja ’rwl.df’:n sarakkeiden nimien täytyy täsmätä"
 
 msgid ""
 "some values in 'wood.completeness$%s' are invalid, i.e. not integer or < 0"
@@ -552,19 +556,18 @@ msgstr "vuosia ennen -9999 (10000 eaa.) ei tueta"
 msgid "years later than 99999 are not possible"
 msgstr "99999:n jälkeiset vuodet eivät ole mahdollisia"
 
-msgid        "There is %d series\n"
+msgid "There is %d series\n"
 msgid_plural "There are %d series\n"
 msgstr[0] "On %d sarja\n"
 msgstr[1] "On %d sarjaa\n"
 
-msgid        "There is %d undated series, returned in '$undated'\n"
+msgid "There is %d undated series, returned in '$undated'\n"
 msgid_plural "There are %d undated series, returned in '$undated'\n"
-msgstr[0] ""
-"On %d ajoittamaton sarja, joka palautetaan muuttujassa ’$undated’\n"
+msgstr[0] "On %d ajoittamaton sarja, joka palautetaan muuttujassa ’$undated’\n"
 msgstr[1] ""
 "On %d ajoittamatonta sarjaa, jotka palautetaan muuttujassa ’$undated’\n"
 
-msgid        "There is %d derived series, returned in '$derived'\n"
+msgid "There is %d derived series, returned in '$derived'\n"
 msgid_plural "There are %d derived series, returned in '$derived'\n"
 msgstr[0] "On %d johdannaissarja, joka palautetaan muuttujassa ’$derived’\n"
 msgstr[1] "On %d johdannaissarjaa, jotka palautetaan muuttujassa ’$derived’\n"

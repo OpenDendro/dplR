@@ -6,7 +6,6 @@ bai.out <- function(rwl, diam = NULL) {
         if(!all(diam[, 1] %in% colnames(rwl)))
             stop("series ids in 'diam' and 'rwl' do not match")
         diam <- diam[, 2]
-
     }
 
     out <- rwl

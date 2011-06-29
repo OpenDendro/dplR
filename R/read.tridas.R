@@ -2180,10 +2180,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
 
                      ## Print a summary of each data frame
                      if(df.size == 1)
-                         cat(gettext("'$measurements' is a data.frame\n"))
+                         cat(gettext("'$measurements' is a data.frame\n",
+                                     domain="R-dplR"))
                      else
                          cat(gettextf("there are %d data.frames in the '$measurements' list\n",
-                                      df.size))
+                                      df.size, domain="R-dplR"))
                      for(i in 1:df.size){
                          this.df <- res.df[[i]]
                          nseries <- ncol(this.df)
@@ -2200,7 +2201,8 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                          not.na.title <- which(!is.na(res.all$site.title[i, ]))
                          title.level <-
                              max(not.na.title[length(not.na.title)], 1)
-                         cat(gettextf("\ndata.frame #%d\n", i))
+                         cat(gettextf("\ndata.frame #%d\n", i,
+                                      domain="R-dplR"))
                          ## Note: all known units are converted to millimetres
                          this.unit <- res.all$unit[i]
                          if(warn.units && this.unit != "millimetres"){
@@ -2212,22 +2214,22 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                          gettextf("strange unit \"%s\"",
                                                   this.unit))
                          }
-                         cat(gettext("* site: "),
+                         cat(gettext("* site: ", domain="R-dplR"),
                              paste(as.matrix(res.all$site.title[i,
                                                                 1:title.level]),
                                    collapse=" / "),
                              "\n", sep="")
-                         cat(gettext("* taxon: "))
+                         cat(gettext("* taxon: ", domain="R-dplR"))
                          cat("\n\t", row.print(res.all$taxon[i, , drop=FALSE],
                                                collapse="\n\t"), "\n", sep="")
-                         cat(gettext("* variable: "))
+                         cat(gettext("* variable: ", domain="R-dplR"))
                          cat("\n\t",
                              row.print(res.all$variable[i, , drop=FALSE],
                                        collapse="\n\t"), "\n", sep="")
                          cat(sprintf(ngettext(nseries,
                                               "There is %d series\n",
                                               "There are %d series\n",
-                                              "R-dplR"),
+                                              domain="R-dplR"),
                                      nseries))
                          cat(paste(1:nseries, "\t",
                                    series.ids, "\t",
@@ -2244,7 +2246,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      cat(sprintf(ngettext(undated.size,
                                           "There is %d undated series, returned in '$undated'\n",
                                           "There are %d undated series, returned in '$undated'\n",
-                                          "R-dplR"),
+                                          domain="R-dplR"),
                                  undated.size))
                      res.undated$ids <<- data.frame(res.undated$ids)
                      res.undated$titles <<- data.frame(res.undated$titles)
@@ -2310,7 +2312,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      cat(sprintf(ngettext(derived.nvalues,
                                           "There is %d derived series, returned in '$derived'\n",
                                           "There are %d derived series, returned in '$derived'\n",
-                                          "R-dplR"),
+                                          domain="R-dplR"),
                                  derived.nvalues))
                      if(all(sapply(res.derived$link, is.na))){
                          ## If there was no content in any of the linkSeries,

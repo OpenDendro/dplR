@@ -1,4 +1,4 @@
-# Translation template for messages in dplR C code
+# Finnish translations for messages in dplR C code
 # Copyright (C) dplR copyright holders
 # This file is distributed under the same license as the dplR package.
 # Mikko Korpela <mvkorpel@iki.fi>, 2011.
@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: dplR 1.4.3\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
 "POT-Creation-Date: 2011-06-08 17:33+0300\n"
-"PO-Revision-Date: 2011-06-14 17:38+0300\n"
+"PO-Revision-Date: 2011-06-29 15:39+0300\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "MIME-Version: 1.0\n"
@@ -77,8 +77,8 @@ msgid ""
 "Series %d: Only a number must be found after first field, right before 2nd "
 "'='"
 msgstr ""
-"Sarja %d: Ensimmäisen kentän jälkeen, juuri ennen toista, "
-"täytyy olla luku, ei muuta"
+"Sarja %d: Ensimmäisen kentän jälkeen, juuri ennen toista, täytyy olla luku, "
+"ei muuta"
 
 #: rcompact.c:266
 #, c-format
@@ -144,8 +144,8 @@ msgstr "Sarja %d (%s): Tarvitaan vähintään yksi arvo riviä kohti"
 #, c-format
 msgid "Series %d (%s): Number of values per line (%d) > max line length (%d)"
 msgstr ""
-"Sarja %d (%s): Rivillä olevien arvojen lukumäärä (%d) > "
-"rivin maksimipituus (%d)"
+"Sarja %d (%s): Rivillä olevien arvojen lukumäärä (%d) > rivin maksimipituus "
+"(%d)"
 
 #: rcompact.c:382
 #, c-format

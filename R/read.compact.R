@@ -15,7 +15,7 @@ read.compact <- function(fname)
     cat(sprintf(ngettext(nseries,
                          "There is %d series\n",
                          "There are %d series\n",
-                         "R-dplR"),
+                         domain="R-dplR"),
                 nseries))
     cat(paste(1:nseries, "\t",
               series.ids, "\t",
@@ -23,7 +23,7 @@ read.compact <- function(fname)
               series.max, "\t",
               series.mplier, "\n", sep=""), sep="")
     if(length(project.comments) > 0)
-        cat(gettext("Comments:"),
+        cat(gettext("Comments:", domain="R-dplR"),
             paste(project.comments, collapse="\n"), sep="\n")
 
     rw.df <- as.data.frame(rw.mat)

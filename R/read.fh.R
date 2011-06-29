@@ -48,7 +48,7 @@ read.fh <- function(fname) {
     cat(sprintf(ngettext(n,
                          "There is %d series\n",
                          "There are %d series\n",
-                         "R-dplR"),
+                         domain="R-dplR"),
                 n))
     cat(paste(1:n, "\t",
               keycodes, "\t",

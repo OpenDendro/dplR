@@ -1,4 +1,4 @@
-# Translation template for messages in dplR C code
+# Translation template for messages in dplR R code
 # Copyright (C) dplR copyright holders
 # This file is distributed under the same license as the dplR package.
 # Mikko Korpela <mvkorpel@iki.fi>, 2011.
@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.4.3\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-06-14 18:34+0300\n"
+"POT-Creation-Date: 2011-06-29 15:34+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,6 +58,9 @@ msgid "'ncol(rw)' != 'nrow(po)'"
 msgstr ""
 
 msgid "series ids in 'po' and 'rwl' do not match"
+msgstr ""
+
+msgid "Nothing to combine here. Please supply data.frames formatted according to the data standards in dplR."
 msgstr ""
 
 msgid "At least 2 series are needed in 'rwl'"

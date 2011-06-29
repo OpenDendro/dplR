@@ -14,11 +14,13 @@
         yrcheck <- suppressWarnings(as.numeric(substr(hdr1, 7, 10)))
         if(is.null(yrcheck) || length(yrcheck)!=1 || is.na(yrcheck) |
            yrcheck < -1e04 || yrcheck > 1e04) {
-            cat(gettext("There appears to be a header in the crn file\n"))
+            cat(gettext("There appears to be a header in the crn file\n",
+                        domain="R-dplR"))
             is.head <- TRUE
         }
         else {
-            cat(gettext("There does not appear to be a header in the crn file\n"))
+            cat(gettext("There does not appear to be a header in the crn file\n",
+                        domain="R-dplR"))
             is.head <- FALSE # No header lines
         }
     } else if(!is.logical(header)){
@@ -42,7 +44,8 @@
     yrcheck <- as.numeric(substr(dat1, 7, 10))
     if(is.null(yrcheck) || length(yrcheck)!=1 || is.na(yrcheck) ||
        yrcheck < -1e04 || yrcheck > 1e04)
-        stop(gettextf("cols %d-%d of first data line not a year", 7, 10))
+        stop(gettextf("cols %d-%d of first data line not a year", 7, 10,
+                      domain="R-dplR"))
     ## Look at last line to determine if Chronology Statistics are present
     ## if nchar <=63 then there is a stats line
     nlines <- length(readLines(con, n=-1))
@@ -66,7 +69,7 @@
         names(chron.stats) <-
             c("SiteID", "nYears", "AC[1]", "StdDev", "MeanSens",
               "MeanRWI", "IndicesSum", "IndicesSS", "MaxSeries")
-        cat(gettext("Embedded chronology statistics\n"))
+        cat(gettext("Embedded chronology statistics\n", domain="R-dplR"))
         print(chron.stats)
         ## Chop off last row of dat
         dat <- dat[-nrow(dat), , drop=FALSE]
@@ -78,7 +81,7 @@
     cat(sprintf(ngettext(nseries,
                          "There is %d series\n",
                          "There are %d series\n",
-                         "R-dplR"),
+                         domain="R-dplR"),
                 nseries))
     series.index <- match(series, series.ids)
     min.year <- (min(dat[, 2]) %/% 10) * 10
@@ -123,7 +126,8 @@
         crn.mat <- crn.mat/1000
         crn.df <- as.data.frame(crn.mat)
         colnames(crn.df) <- save.names
-        cat(gettext("All embedded sample depths are one...Dumping from matrix\n"))
+        cat(gettext("All embedded sample depths are one...Dumping from matrix\n",
+                    domain="R-dplR"))
     }
     else {
         crn.mat[, 1:nseries] <- crn.mat[, 1:nseries]/1000

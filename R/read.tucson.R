@@ -17,12 +17,14 @@
         yrcheck <- suppressWarnings(as.numeric(substr(hdr1, 9, 12)))
         if(is.null(yrcheck) || length(yrcheck) != 1 || is.na(yrcheck) ||
            yrcheck < -1e04 || yrcheck > 1e04) {
-            cat(gettext("There appears to be a header in the rwl file\n"))
+            cat(gettext("There appears to be a header in the rwl file\n",
+                        domain="R-dplR"))
             is.head <- TRUE
         }
         else {
             is.head <- FALSE # No header lines
-            cat(gettext("There does not appear to be a header in the rwl file\n"))
+            cat(gettext("There does not appear to be a header in the rwl file\n",
+                        domain="R-dplR"))
         }
     } else if(!is.logical(header)){
         stop("'header' must be NULL or logical")
@@ -67,7 +69,7 @@
     cat(sprintf(ngettext(nseries,
                          "There is %d series\n",
                          "There are %d series\n",
-                         "R-dplR"),
+                         domain="R-dplR"),
                 nseries))
 
     series.index <- match(series, series.ids)

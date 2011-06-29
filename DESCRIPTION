@@ -2,7 +2,7 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.4.3
-Date: 2011-06-28
+Date: 2011-06-29
 Author: Andy Bunn with major additions from Mikko Korpela and other
         significant contributions from Franco Biondi and Christian Zang
 Maintainer: Andy Bunn <andy.bunn@wwu.edu>
@@ -13,3 +13,4 @@ Description: This package contains functions for performing tree-ring
         analyses, IO, and graphics.
 License: GPL
 URL: http://www.wwu.edu/huxley/treering/dplR.shtml
+        http://dplr.r-forge.r-project.org/

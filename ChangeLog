@@ -57,6 +57,11 @@ File: src/rcompact.c
 - Supports translation of messages via _(...), where ... is the string to
   translate
 
+File: DESCRIPTION
+-----------------
+
+- Added a link to the R-Forge dplR development page
+
 File: cms.R
 -----------
 

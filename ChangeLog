@@ -83,7 +83,9 @@ File: corr.rwl.seg.R
 File: detrend.series.R
 ----------------------
 
-- Fixed a bug caused by incorrect syntax in named argument (was <- in 1.4.1 and 1.4.2, correct form is =). ModNegExp detrending works again.
+- Fixed a bug caused by incorrect syntax in named argument (was <- in
+  1.4.1 and 1.4.2, correct form is =). ModNegExp detrending works
+  again.
 
 File: glk.R
 -----------

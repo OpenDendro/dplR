@@ -20,7 +20,8 @@
             a <- mean(Y[1:floor(length(Y)*0.1)])
             b <- -0.01
             k <- mean(Y[floor(length(Y)*0.9):length(Y)])
-            nec <- nls(Y ~ a * exp(b*1:length(Y)) + k,
+            nec <- nls(formula = Y ~ a * exp(b*1:length(Y)) + k,
+                       start = list(a=a, b=b, k=k))
             if(coef(nec)[2] >= 0) stop()
             fits <- predict(nec)
             if(fits[1] < fits[length(fits)]) stop()

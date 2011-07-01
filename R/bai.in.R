@@ -5,10 +5,11 @@ bai.in <- function(rwl, d2pith = NULL) {
             stop("dimension problem: ", "'ncol(rw)' != 'nrow(d2pith)'")
         if(!all(d2pith[, 1] %in% colnames(rwl)))
             stop("series ids in 'd2pith' and 'rwl' do not match")
-        d2pith <- d2pith[, 2]
+        d2pith.vec <- d2pith[, 2]
+    } else {
+        ## distance offset if not given
+        d2pith.vec <- rep(0, ncol(rwl))
     }
-    ## distance offset if not given
-    if(is.null(d2pith)) d2pith <- rep(0, ncol(rwl))
 
     out <- rwl
     ## vector of years
@@ -19,7 +20,7 @@ bai.in <- function(rwl, d2pith = NULL) {
         ## strip out data from NA
         dat2 <- na.omit(dat)
         ## get ring area
-        bai <- pi*dat2*(dat2+2*(cumsum(dat2) + d2pith[i] - dat2))
+        bai <- pi*dat2*(dat2+2*(cumsum(dat2) + d2pith.vec[i] - dat2))
         ## find NA / not NA locations
         na <- attributes(dat2)$na.action
         no.na <- n.vec[!n.vec %in% na]

@@ -5,7 +5,7 @@ bai.out <- function(rwl, diam = NULL) {
             stop("dimension problem: ", "'ncol(rw)' != 'nrow(diam)'")
         if(!all(diam[, 1] %in% colnames(rwl)))
             stop("series ids in 'diam' and 'rwl' do not match")
-        diam <- diam[, 2]
+        diam.vec <- diam[, 2]
     }
 
     out <- rwl
@@ -18,7 +18,7 @@ bai.out <- function(rwl, diam = NULL) {
         dat2 <- na.omit(dat)
         ## get diameter if not given
         if(is.null(diam)) d <- sum(dat2)*2
-        else d <- diam[i]
+        else d <- diam.vec[i]
         ## get ring area
         r0 <- d/2 - c(0, cumsum(rev(dat2)))
         bai <- -pi*rev(diff(r0*r0))

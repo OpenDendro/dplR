@@ -62,7 +62,8 @@ dec <- function(from, to){
 }
 
 ### AR function for chron, normalize1, normalize.xdate, ...
-ar.func <- function(y){
+ar.func <- function(x){
+    y <- x
     idx.goody <- !is.na(y)
     ar1 <- ar(y[idx.goody])
     y[idx.goody] <- ar1$resid+ar1$x.mean

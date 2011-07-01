@@ -1,6 +1,11 @@
 * CHANGES IN dplR VERSION 1.4.4 pre-release
 * Changes in documentation will not be reported anymore
 
+File: ccf.series.rwl.R
+----------------------
+
+- Cosmetic changes (white spaces, assignment operator)
+
 File: glk.R
 -----------
 

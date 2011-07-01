@@ -1,6 +1,11 @@
 * CHANGES IN dplR VERSION 1.4.4 pre-release
 * Changes in documentation will not be reported anymore
 
+Various .R files:
+-----------------
+
+- Parameters not changed by assignment anymore (complaint by codetools)
+
 File: ccf.series.rwl.R
 ----------------------
 

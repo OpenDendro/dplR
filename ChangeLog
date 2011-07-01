@@ -1,3 +1,13 @@
+* CHANGES IN dplR VERSION 1.4.4 pre-release
+* Changes in documentation will not be reported anymore
+
+File: glk.R
+-----------
+
+- Large parts rewritten
+- 'glk(ca533)' example in glk.Rd runs about 100 times faster
+
+2011-07-01 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.3
 * Changes below by Mikko Korpela
 

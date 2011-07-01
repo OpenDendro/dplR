@@ -8,10 +8,12 @@ ccf.series.rwl <- function(rwl, series,
     qa.xdate(rwl, seg.length, n, bin.floor)
     if(lag.max > seg.length)
         stop("'lag.max' > 'seg.length'")
-    seg.lag <- seg.length/2
+    seg.lag <- seg.length / 2
 
     ## Normalize.
-    tmp <- normalize.xdate(rwl, series, n, prewhiten, biweight)
+    series2 <- series
+    names(series2) <- series.yrs
+    tmp <- normalize.xdate(rwl, series2, n, prewhiten, biweight)
     master <- tmp$master
 
     ## trim master so there are no NaN like dividing when only one
@@ -20,32 +22,33 @@ ccf.series.rwl <- function(rwl, series,
     master <- master[idx.good]
     yrs <- as.numeric(names(master))
 
-    series <- tmp$series
+    series2 <- tmp$series
+    series.yrs2 <- as.numeric(names(series2))
     ## trim series in case it was submitted stright from the rwl
-    idx.good <- !is.na(series)
-    series.yrs <- series.yrs[idx.good]
-    series <- series[idx.good]
+    idx.good <- !is.na(series2)
+    series.yrs2 <- series.yrs2[idx.good]
+    series2 <- series2[idx.good]
 
     ## clip series to master dimensions
-    series <- series[series.yrs %in% yrs]
-    series.yrs <- as.numeric(names(series))
+    series2 <- series2[series.yrs2 %in% yrs]
+    series.yrs2 <- as.numeric(names(series2))
     ## clip master to series dimensions
-    master <- master[yrs %in% series.yrs]
+    master <- master[yrs %in% series.yrs2]
     yrs <- as.numeric(names(master))
 
-    if(is.null(bin.floor) || bin.floor == 0) min.bin <- min(series.yrs)
-    else min.bin <- ceiling(min(series.yrs)/bin.floor) * bin.floor
-    to <- max(series.yrs) - seg.length - seg.length
+    if(is.null(bin.floor) || bin.floor == 0) min.bin <- min(series.yrs2)
+    else min.bin <- ceiling(min(series.yrs2) / bin.floor) * bin.floor
+    to <- max(series.yrs2) - seg.length - seg.length
     if(min.bin > to){
         cat(gettextf("maximum year in (filtered) series: %d\n",
-                     max(series.yrs), domain="R-dplR"))
+                     max(series.yrs2), domain="R-dplR"))
         cat(gettextf("first bin begins: %d\n", min.bin, domain="R-dplR"))
         cat(gettext("cannot fit two segments (not enough years in the series)\n",
                     domain="R-dplR"))
         stop("shorten 'seg.length' or adjust 'bin.floor'")
     }
-    bins <- seq(from=min.bin, to=to+seg.length, by=seg.lag)
-    bins <- cbind(bins, bins+seg.length)
+    bins <- seq(from=min.bin, to=to + seg.length, by=seg.lag)
+    bins <- cbind(bins, bins + seg.length)
     nbins <- nrow(bins)
     bin.names <- paste(bins[, 1], ".", bins[, 2], sep="")
 
@@ -60,13 +63,13 @@ ccf.series.rwl <- function(rwl, series,
         mask <- yrs%in%seq(from=bins[j, 1], to=bins[j, 2])
         ## cor is NA if there is not complete overlap
         if(!any(mask) ||
-           any(is.na(series[mask])) ||
+           any(is.na(series2[mask])) ||
            any(is.na(master[mask])) ||
            table(mask)[2] < seg.length){
             bin.ccf <- NA
         }
         else {
-            tmp <- ccf(master[mask], series[mask], lag.max=lag.max, plot=FALSE)
+            tmp <- ccf(master[mask], series2[mask], lag.max=lag.max, plot=FALSE)
             bin.ccf <- as.vector(tmp$acf)
         }
         res.cor[, j] <- bin.ccf
@@ -88,7 +91,7 @@ ccf.series.rwl <- function(rwl, series,
         ccf.df$bin <- factor(ccf.df$bin,
                              levels(ccf.df$bin)[order(foo$ord.char)])
 
-        sig <- qnorm((1 + 1 - pcrit)/2) / sqrt(seg.length)
+        sig <- qnorm((1 + 1 - pcrit) / 2) / sqrt(seg.length)
         sig <- c(-sig, sig)
         ccf.plot <-
             xyplot(r ~ lag | bin, data = ccf.df,
@@ -96,7 +99,8 @@ ccf.series.rwl <- function(rwl, series,
                    xlab = gettext("Lag", domain="R-dplR"),
                    ylab = gettext("Correlation", domain="R-dplR"),
                    col.line = NA,
-                   panel = function(x, y, col, ...) {
+                   cex = 1.25,
+                   panel = function(x, y, ...) {
                        panel.abline(h=seq(from=-1, to=1, by=0.1),
                                     lty="solid", col="gray")
                        panel.abline(v=lag.vec, lty="solid", col="gray")
@@ -105,9 +109,10 @@ ccf.series.rwl <- function(rwl, series,
                        col <- ifelse(y > 0, "#E41A1C", "#377EB8")
                        ## segments, dots for all r
                        panel.segments(x1=x, y1=0, x2=x, y2=y, col=col, lwd=2)
-                       panel.dotplot(x, y, col = col, cex = 1.25, ...)
+                       panel.dotplot(x, y, col = col, ...)
                    }, ...)
-        trellis.par.set(strip.background = list(col = "transparent"))
+        trellis.par.set(strip.background = list(col = "transparent"),
+                        warn = FALSE)
         print(ccf.plot)
     }
     res <- list(res.cor,bins)

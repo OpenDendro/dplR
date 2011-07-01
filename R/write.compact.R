@@ -46,7 +46,7 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
     yrs.all <- as.numeric(yrs.all)
     yrs.order <- sort.list(yrs.all)
     yrs.all <- yrs.all[yrs.order]
-    rwl.df <- rwl.df[yrs.order, , drop=FALSE]
+    rwl.df2 <- rwl.df[yrs.order, , drop=FALSE]
 
     if(append)
         rwl.out <- file(fname, "a")
@@ -56,7 +56,7 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
     missing.str <- 0
 
     for(l in 1:nseries) {
-        series <- rwl.df[, l]
+        series <- rwl.df2[, l]
         idx <- !is.na(series)
         yrs <- yrs.all[idx]
         series <- round(prec.rproc*series[idx])

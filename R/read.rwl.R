@@ -3,8 +3,7 @@ read.rwl <-
              format=c("auto", "tucson", "compact", "tridas", "heidelberg"),
              ...)
 {
-    format <- match.arg(format)
-    switch(format,
+    switch(match.arg(format),
            auto = {
                f <- file(fname,"r")
                l1 <- readLines(f, n=1)

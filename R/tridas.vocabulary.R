@@ -5,9 +5,8 @@ tridas.vocabulary <-
              "dating suffix", "presence / absence",
              "complex presence / absence", "certainty"),
              idx = NA, term = NA, match.exact = FALSE){
-        category <- match.arg(category)
         res <-
-            switch(category,
+            switch(match.arg(category),
                    "dating type" = c("absolute", "dated with uncertainty",
                    "relative", "radiocarbon"),
                    "measuring method" = c("measuring platform",

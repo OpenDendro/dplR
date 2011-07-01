@@ -140,15 +140,16 @@
     fix.internal.na <- function(x){
         na.flag <- is.na(x)
         good.idx <- which(!na.flag)
+        y <- x
         if(length(good.idx) >= 2){
             min.good <- min(good.idx)
             max.good <- max(good.idx)
             fix.flag <- na.flag & c(rep(FALSE, min.good),
                                     rep(TRUE, max.good-min.good-1),
                                     rep(FALSE, length(x)-max.good+1))
-            x[fix.flag] <- 0
+            y[fix.flag] <- 0
         }
-        x
+        y
     }
     rw.df <- as.data.frame(apply(rw.mat, 2, fix.internal.na))
     colnames(rw.df) <- as.character(series.ids)

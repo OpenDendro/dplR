@@ -100,23 +100,23 @@ title.based.ids <- function(titles){
     ## Assumes four columns in titles1 and titles2. The
     ## function could be more generic, but it would make the
     ## design more complicated.
-    titles <- as.matrix(titles)
-    ids <- array(as.numeric(NA), dim(titles))
-    colnames(ids) <- colnames(titles)
-    unique1 <- unique(titles[, 1])
-    ids[, 1] <- match(titles[, 1], unique1)
+    titles2 <- as.matrix(titles)
+    ids <- array(as.numeric(NA), dim(titles2))
+    colnames(ids) <- colnames(titles2)
+    unique1 <- unique(titles2[, 1])
+    ids[, 1] <- match(titles2[, 1], unique1)
     for(i1 in 1:length(unique1)){
         idx.1 <- which(ids[, 1] == i1)
-        unique2 <- unique(titles[idx.1, 2])
-        ids[idx.1, 2] <- match(titles[idx.1, 2], unique2)
+        unique2 <- unique(titles2[idx.1, 2])
+        ids[idx.1, 2] <- match(titles2[idx.1, 2], unique2)
         for(i2 in 1:length(unique2)){
             idx.2 <- idx.1[which(ids[idx.1, 2] == i2)]
-            unique3 <- unique(titles[idx.2, 3])
-            ids[idx.2, 3] <- match(titles[idx.2, 3], unique3)
+            unique3 <- unique(titles2[idx.2, 3])
+            ids[idx.2, 3] <- match(titles2[idx.2, 3], unique3)
             for(i3 in 1:length(unique3)){
                 idx.3 <- idx.2[which(ids[idx.2, 3] == i3)]
-                unique4 <- unique(titles[idx.3, 4])
-                ids[idx.3, 4] <- match(titles[idx.3, 4], unique4)
+                unique4 <- unique(titles2[idx.3, 4])
+                ids[idx.3, 4] <- match(titles2[idx.3, 4], unique4)
             }
         }
     }
@@ -128,6 +128,7 @@ title.based.ids <- function(titles){
 ### domain] pair (copies IDs from the first member of the set to the
 ### rest).
 identifier.based.ids <- function(ids, identifiers, domains){
+    ids.out <- ids
     unique.domains <- unique(domains)
     for(ud in unique.domains){
         if(is.na(ud))
@@ -140,10 +141,10 @@ identifier.based.ids <- function(ids, identifiers, domains){
         for(ui in unique.identifiers){
             idx <- mask[identifiers[mask] == ui]
             for(k in inc(2, length(idx)))
-                ids[idx[k], ] = ids[idx[1], ]
+                ids.out[idx[k], ] <- ids.out[idx[1], ]
         }
     }
-    ids
+    ids.out
 }
 
 ### Main function (exported)
@@ -359,7 +360,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
         if(ids.from.titles || ids.from.identifiers)
             alternative.ids <- function(){
                 n.undated <- length(res.undated$site.id)
-                undated.in.site <- inc(undated.handled+1, n.undated)
+                undated.in.site <- inc(undated.handled + 1, n.undated)
                 titles.in.undated <-
                     res.undated$titles[undated.in.site, , drop=FALSE]
                 ids.old <- rbind(ids.in.site,
@@ -531,15 +532,18 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                 unique.ids <- unique(i.i.s)
                 n.unique <- nrow(unique.ids)
                 if(n.unique < df.ncol){
-                    df.ncol <- n.unique
+                    f.y2 <- f.y
+                    l.y2 <- l.y
+                    df.ncol2 <- n.unique
                     del.cols <- integer(0)
+                    remark.series2 <- remark.series
                     for(k in inc(1, n.unique)){
                         id <- unique.ids[k, , drop=FALSE]
                         idx.id <- row.match(i.i.s, id)
                         n.id <- length(idx.id)
                         if(n.id > 1){
-                            new.f.y <- f.y[idx.id[1]]
-                            new.l.y <- l.y[idx.id[1]]
+                            new.f.y <- f.y2[idx.id[1]]
+                            new.l.y <- l.y2[idx.id[1]]
                             new.data <- site.data[[idx.unittaxvar[idx.id[1]]]]
                             del.cols <- c(del.cols, idx.id[2:n.id])
                             for(varname in names.simple){
@@ -596,20 +600,20 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                 }
                             }
                             for(l in 2:n.id){
-                                this.f.y <- f.y[idx.id[l]]
-                                this.l.y <- l.y[idx.id[l]]
+                                this.f.y <- f.y2[idx.id[l]]
+                                this.l.y <- l.y2[idx.id[l]]
                                 this.data <-
                                     site.data[[idx.unittaxvar[idx.id[l]]]]
                                 n.this.data <- length(this.data)
                                 n.new.data <- length(new.data)
-                                no.l <- c(inc(1,l-1), inc(l+1,n.id))
+                                no.l <- c(inc(1, l - 1), inc(l + 1,n.id))
                                 if(this.l.y < new.f.y){
                                     stretch <- new.f.y - this.l.y - 1
                                     new.data <- c(this.data,
                                                   rep(MISSING.VALUE, stretch),
                                                   new.data)
                                     idx.adjust <-
-                                        remark.series %in% idx.unittaxvar[idx.id[no.l]]
+                                        remark.series2 %in% idx.unittaxvar[idx.id[no.l]]
                                     remark.data.row[idx.adjust] <-
                                         remark.data.row[idx.adjust] +
                                             n.this.data + stretch
@@ -619,7 +623,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                                   rep(MISSING.VALUE, stretch),
                                                   this.data)
                                     idx.adjust <-
-                                        remark.series == idx.unittaxvar[idx.id[l]]
+                                        remark.series2 == idx.unittaxvar[idx.id[l]]
                                     remark.data.row[idx.adjust] <-
                                         remark.data.row[idx.adjust] +
                                             n.new.data + stretch
@@ -635,7 +639,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                     new.data[idx.missing[do.replace]] <-
                                         this.data[idx.replacement[do.replace]]
                                     idx.adjust <-
-                                        remark.series == idx.unittaxvar[idx.id[l]]
+                                        remark.series2 == idx.unittaxvar[idx.id[l]]
                                     remark.data.row[idx.adjust] <-
                                         remark.data.row[idx.adjust] + n.slack
                                 } else if(this.f.y >= new.f.y){
@@ -653,7 +657,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                         c(new.data,
                                           this.data[first.exceeding:n.this.data])
                                     idx.adjust <-
-                                        remark.series == idx.unittaxvar[idx.id[l]]
+                                        remark.series2 == idx.unittaxvar[idx.id[l]]
                                     remark.data.row[idx.adjust] <-
                                         remark.data.row[idx.adjust] + n.slack
                                 } else if(this.l.y <= new.l.y){
@@ -668,7 +672,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                     new.data <- c(this.data[1:n.exceeding],
                                                   new.data)
                                     idx.adjust <-
-                                        remark.series %in% idx.unittaxvar[idx.id[no.l]]
+                                        remark.series2 %in% idx.unittaxvar[idx.id[no.l]]
                                     remark.data.row[idx.adjust] <-
                                         remark.data.row[idx.adjust] +
                                             n.exceeding
@@ -687,7 +691,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                           new.data,
                                           this.data[first.exceeding.2:n.this.data])
                                     idx.adjust <-
-                                        remark.series %in% idx.unittaxvar[idx.id[no.l]]
+                                        remark.series2 %in% idx.unittaxvar[idx.id[no.l]]
                                     remark.data.row[idx.adjust] <-
                                         remark.data.row[idx.adjust] +
                                             n.exceeding.1
@@ -696,26 +700,29 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                 new.l.y <- max(new.l.y, this.l.y)
                             }
                             idx.adjust <-
-                                remark.series %in% idx.unittaxvar[idx.id[2:n.id]]
-                            remark.series[idx.adjust] <-
+                                remark.series2 %in% idx.unittaxvar[idx.id[2:n.id]]
+                            remark.series2[idx.adjust] <-
                                 idx.unittaxvar[idx.id[1]]
                             site.data[[idx.unittaxvar[idx.id[1]]]] <<- new.data
-                            f.y[idx.id[1]] <- new.f.y
-                            l.y[idx.id[1]] <- new.l.y
+                            f.y2[idx.id[1]] <- new.f.y
+                            l.y2[idx.id[1]] <- new.l.y
                         }
                     }
                     site.data <<- site.data[-del.cols]
-                    f.y <- f.y[-del.cols]
-                    l.y <- l.y[-del.cols]
-                    t.i.s <- t.i.s[-del.cols, , drop=FALSE]
-                    i.i.s <- i.i.s[-del.cols, , drop=FALSE]
-                    idx.unittaxvar <- idx.unittaxvar[-del.cols]
+                    f.y2 <- f.y2[-del.cols]
+                    l.y2 <- l.y2[-del.cols]
+                    t.i.s2 <- t.i.s[-del.cols, , drop=FALSE]
+                    i.i.s2 <- i.i.s[-del.cols, , drop=FALSE]
+                    idx.unittaxvar2 <- idx.unittaxvar[-del.cols]
                     for(varname in c(names.simple, names.complex,
                                      names.sum, names.paste.unique))
                         assign(varname, get(varname)[-del.cols], inherits=TRUE)
+                    list(i.i.s2, t.i.s2, df.ncol2, f.y2, l.y2,
+                         remark.series2, idx.unittaxvar2)
+                } else{
+                    list(i.i.s, t.i.s, df.ncol, f.y, l.y,
+                         remark.series, idx.unittaxvar)
                 }
-                list(i.i.s, t.i.s, df.ncol, f.y, l.y,
-                     remark.series, idx.unittaxvar)
             }
 
         wc.names <-
@@ -728,8 +735,8 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
 ### The list of handler functions
         list(# Handlers for start tags
              bark = function(x, atts, ...){
-                 grandparent.element <- tag.stack[stack.pointer-1]
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "bark"
+                 grandparent.element <- tag.stack[stack.pointer - 1]
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "bark"
                  if(!is.null(atts)){
                      if(grandparent.element == "measurementSeries"){
                          bark.presence[2] <<- atts["presence"]
@@ -739,7 +746,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  }
              },
              derivedSeries = function(...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<-
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<-
                      "derivedSeries"
                  firstYear.suffix <<- lastYear.suffix <<- as.character(NA)
                  series.title <<- stdizing.method <<- as.character(NA)
@@ -751,7 +758,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  link.identifiers <<- character(0)
              },
              element = function(...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "element"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "element"
                  element.title <<- as.character(NA)
                  taxon <<- taxon.lang <<- taxon.normal <<- as.character(NA)
                  taxon.normalId <<- taxon.normalStd <<- as.character(NA)
@@ -763,14 +770,14 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      object.level <<- object.level - 1
              },
              firstYear = function(x, atts, ...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "firstYear"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "firstYear"
                  firstYear.suffix <<- ifelse(is.null(atts),
                                              as.character(NA),
                                              atts["suffix"])
              },
              heartwood = function(x, atts, ...){
-                 grandparent.element <- tag.stack[stack.pointer-1]
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "heartwood"
+                 grandparent.element <- tag.stack[stack.pointer - 1]
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "heartwood"
                  if(!is.null(atts)){
                      if(grandparent.element == "measurementSeries"){
                          heartwood.presence[2] <<- atts["presence"]
@@ -780,20 +787,20 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  }
              },
              identifier = function(x, atts, ...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "identifier"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "identifier"
                  domain.text <<- ifelse(is.null(atts),
                                         as.character(NA),
                                         atts["domain"])
              },
              ## A reference to an identifier in the same document
              idRef = function(x, atts, ...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "idRef"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "idRef"
                  link.idRef <<- ifelse(is.null(atts),
                                        as.character(NA),
                                        atts["ref"])
              },
              laboratory = function(...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "laboratory"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "laboratory"
                  domain.text <<- lab.identifier <<- as.character(NA)
                  lab.name <<- lab.acronym <<- as.character(NA)
                  lab.addressLine1 <<- lab.addressLine2 <<- as.character(NA)
@@ -801,8 +808,8 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  lab.postalCode <<- lab.country <<- as.character(NA)
              },
              lastRingUnderBark = function(x, atts, ...){
-                 grandparent.element <- tag.stack[stack.pointer-1]
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<-
+                 grandparent.element <- tag.stack[stack.pointer - 1]
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<-
                      "lastRingUnderBark"
                  if(!is.null(atts)){
                      if(grandparent.element == "measurementSeries"){
@@ -813,13 +820,13 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  }
              },
              lastYear = function(x, atts, ...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "lastYear"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "lastYear"
                  lastYear.suffix <<- ifelse(is.null(atts),
                                             as.character(NA),
                                             atts["suffix"])
              },
              measurementSeries = function(...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<-
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<-
                      "measurementSeries"
                  firstYear.suffix <<- lastYear.suffix <<- as.character(NA)
                  series.title <<- as.character(NA)
@@ -831,17 +838,17 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  first.dplr <<- last.dplr <<- as.numeric(NA)
              },
              name = function(x, atts, ...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "name"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "name"
                  lab.acronym <<- ifelse(is.null(atts),
                                         as.character(NA),
                                         atts["acronym"])
              },
              object = function(...){
                  parent.element <- tag.stack[stack.pointer]
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "object"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "object"
                  ## Deeper in the hierarchy of <object> elements
                  if(parent.element == "object" && last.closed != "object"){
-                     object.level <<- object.level+1
+                     object.level <<- object.level + 1
                      idx.object[object.level] <<- 1
                  } else{
                      idx.object[object.level] <<- idx.object[object.level] + 1
@@ -878,8 +885,8 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  first.year <<- last.year <<- numeric(0)
              },
              pith = function(x, atts, ...){
-                 grandparent.element <- tag.stack[stack.pointer-1]
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "pith"
+                 grandparent.element <- tag.stack[stack.pointer - 1]
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "pith"
                  if(!is.null(atts)){
                      if(grandparent.element == "measurementSeries"){
                          pith.presence[2] <<- atts["presence"]
@@ -889,13 +896,13 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  }
              },
              preferredSeries = function(x, ...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<-
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<-
                      "preferredSeries"
                  link.idRef <<- link.xLink <<- as.character(NA)
                  domain.text <<- link.identifier <<- as.character(NA)
              },
              project = function(...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "project"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "project"
                  project.title <<- as.character(NA)
                  idx.project <<- idx.project + 1
                  idx.object <<- idx.element <<- idx.sample <<- 0
@@ -910,7 +917,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  object.level <<- 1
              },
              radius = function(...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "radius"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "radius"
                  radius.title <<- as.character(NA)
                  idx.radius <<- idx.radius + 1
                  idx.series <<- 0
@@ -925,19 +932,19 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  missing.sapwood.foundation <<- as.character(NA)
              },
              research = function(...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "research"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "research"
                  domain.text <<- research.identifier <<- as.character(NA)
                  research.description <<- as.character(NA)
              },
              sample = function(...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "sample"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "sample"
                  sample.title <<- as.character(NA)
                  idx.sample <<- idx.sample + 1
                  idx.radius <<- idx.series <<- 0
              },
              sapwood = function(x, atts, ...){
-                 grandparent.element <- tag.stack[stack.pointer-1]
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "sapwood"
+                 grandparent.element <- tag.stack[stack.pointer - 1]
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "sapwood"
                  if(!is.null(atts)){
                      if(grandparent.element == "measurementSeries"){
                          sapwood.presence[2] <<- atts["presence"]
@@ -947,12 +954,12 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  }
              },
              series = function(...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "series"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "series"
                  link.idRef <<- link.xLink <<- as.character(NA)
                  domain.text <<- link.identifier <<- as.character(NA)
              },
              taxon = function(x, atts, ...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "taxon"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "taxon"
                  if(!is.null(atts)){
                      for(attr in c("lang", "normal", "normalId", "normalStd")){
                          attr.val <- atts[attr]
@@ -963,7 +970,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  }
              },
              type = function(x, atts, ...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "type"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "type"
                  if(!is.null(atts)){
                      for(attr in c("lang", "normal", "normalId", "normalStd")){
                          attr.val <- atts[attr]
@@ -982,7 +989,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  }
              },
              unit = function(x, atts, ...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "unit"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "unit"
                  if(!is.null(atts)){
                      normal.unit <- atts["normalTridas"]
                      if(!is.na(normal.unit)){
@@ -993,11 +1000,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  }
              },
              unitless = function(...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "unitless"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "unitless"
                  unitless <<- TRUE
              },
              value = function(x, atts, ...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "value"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "value"
                  idx.value <<- idx.value + 1
                  no.atts <- is.null(atts)
                  if(no.atts){
@@ -1021,7 +1028,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
              },
              values = function(...){
                  parent.element <- tag.stack[stack.pointer]
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "values"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "values"
                  if(is.na(first.dplr) || is.na(last.dplr)){
                      ## An initial allocation of value.vector (and
                      ## count.vector).  If necessary, they will grow
@@ -1044,11 +1051,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                           "lastYear < firstYear")
                  } else{
                      value.vector <<-
-                         rep(as.numeric(NA),times=last.dplr-first.dplr+1)
+                         rep(as.numeric(NA),times=last.dplr - first.dplr + 1)
                      if(parent.element == "derivedSeries"){
                          in.derived.values <<- TRUE
                          count.vector <<- rep(as.numeric(NA),
-                                              times=last.dplr-first.dplr+1)
+                                              times=last.dplr - first.dplr + 1)
                      }
                  }
                  idx.value <<- 0
@@ -1063,7 +1070,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  unit.converted <<- FALSE
              },
              variable = function(x, atts, ...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "variable"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "variable"
                  if(!is.null(atts)){
                      for(attr in c("lang", "normal", "normalId", "normalStd",
                                    "normalTridas")){
@@ -1076,14 +1083,14 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
              },
              ## A reference URI
              xLink = function(x, atts, ...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- "xLink"
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- "xLink"
                  link.xLink <<- ifelse(is.null(atts),
                                        as.character(NA),
                                        atts["href"])
              },
              ## Other start tag
              .startElement = function(name, ...){
-                 tag.stack[stack.pointer <<- stack.pointer+1] <<- name
+                 tag.stack[stack.pointer <<- stack.pointer + 1] <<- name
              },
              ## (Internal general) entities declared ...
              .entityDeclaration = function(name, type, content, ...){
@@ -1152,7 +1159,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      comments.derived.id <<- c(comments.derived.id, NA)
                      comments.derived.title <<- c(comments.derived.title, NA)
                      if(idx.object[1] > 0){
-                         new.length <- length(comments.site.id)+1
+                         new.length <- length(comments.site.id) + 1
                          comments.site.id[[new.length]] <<-
                              idx.object[1:object.level]
                          comments.site.title[[new.length]] <<-
@@ -1218,10 +1225,10 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                                function(x) all(is.na(x))))
                      this.frame[delete.idx] <-
                          rep(list(NULL), length(delete.idx))
-                     res.derived$link[[length(res.derived$link)+1]] <<-
+                     res.derived$link[[length(res.derived$link) + 1]] <<-
                          this.frame
                  } else{
-                     res.derived$link[[length(res.derived$link)+1]] <<- NA
+                     res.derived$link[[length(res.derived$link) + 1]] <<- NA
                  }
                  end.element("derivedSeries")
              },
@@ -1235,7 +1242,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  end.element("firstYear")
              },
              "/identifier" = function(...){
-                 parent.element <- tag.stack[stack.pointer-1]
+                 parent.element <- tag.stack[stack.pointer - 1]
                  if(parent.element %in% c("series", "preferredSeries")){
                      link.identifier <<- text.buffer
                  } else if(parent.element == "laboratory"){
@@ -1272,7 +1279,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                          identifier.derived.title <<-
                              c(identifier.derived.title, NA)
                          if(idx.object[1] > 0){
-                             new.length <- length(identifier.site.id)+1
+                             new.length <- length(identifier.site.id) + 1
                              identifier.site.id[[new.length]] <<-
                                  idx.object[1:object.level]
                              identifier.site.title[[new.length]] <<-
@@ -1343,7 +1350,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  end.element("laboratory")
              },
              "/lastRingUnderBark" = function(...){
-                 greatgrandparent.element <- tag.stack[stack.pointer-3]
+                 greatgrandparent.element <- tag.stack[stack.pointer - 3]
                  if(greatgrandparent.element == "measurementSeries"){
                      last.ring.details[2] <<- text.buffer
                  } else if(greatgrandparent.element == "radius"){
@@ -1365,7 +1372,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  val <- as.integer(text.buffer)
                  if(val < 0)
                      stop("negative missingHeartwoodRingsToPith")
-                 greatgrandparent.element <- tag.stack[stack.pointer-3]
+                 greatgrandparent.element <- tag.stack[stack.pointer - 3]
                  if(greatgrandparent.element == "measurementSeries"){
                      n.missing.heartwood[2] <<- val
                  } else if(greatgrandparent.element == "radius"){
@@ -1374,7 +1381,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  end.element("missingHeartwoodRingsToPith")
              },
              "/missingHeartwoodRingsToPithFoundation" = function(...){
-                 greatgrandparent.element <- tag.stack[stack.pointer-3]
+                 greatgrandparent.element <- tag.stack[stack.pointer - 3]
                  if(greatgrandparent.element == "measurementSeries"){
                      missing.heartwood.foundation[2] <<- text.buffer
                  } else if(greatgrandparent.element == "radius"){
@@ -1386,7 +1393,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  val <- as.integer(text.buffer)
                  if(val < 0)
                      stop("negative missingSapwoodRingsToPith")
-                 greatgrandparent.element <- tag.stack[stack.pointer-3]
+                 greatgrandparent.element <- tag.stack[stack.pointer - 3]
                  if(greatgrandparent.element == "measurementSeries"){
                      n.missing.sapwood[2] <<- val
                  } else if(greatgrandparent.element == "radius"){
@@ -1395,7 +1402,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  end.element("missingSapwoodRingsToBark")
              },
              "/missingSapwoodRingsToBarkFoundation" = function(...){
-                 greatgrandparent.element <- tag.stack[stack.pointer-3]
+                 greatgrandparent.element <- tag.stack[stack.pointer - 3]
                  if(greatgrandparent.element == "measurementSeries"){
                      missing.sapwood.foundation[2] <<- text.buffer
                  } else if(greatgrandparent.element == "radius"){
@@ -1411,7 +1418,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  val <- as.integer(text.buffer)
                  if(val < 0)
                      stop("negative nrOfSapwoodRings")
-                 greatgrandparent.element <- tag.stack[stack.pointer-3]
+                 greatgrandparent.element <- tag.stack[stack.pointer - 3]
                  if(greatgrandparent.element == "measurementSeries"){
                      n.sapwood[2] <<- val
                  } else if(greatgrandparent.element == "radius"){
@@ -1423,7 +1430,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  val <- as.integer(text.buffer)
                  if(val < 0)
                      stop("negative nrOfUnmeasuredInnerRings")
-                 grandparent.element <- tag.stack[stack.pointer-2]
+                 grandparent.element <- tag.stack[stack.pointer - 2]
                  if(grandparent.element == "measurementSeries"){
                      n.unmeasured.inner[2] <<- val
                  } else if(grandparent.element == "radius"){
@@ -1435,7 +1442,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  val <- as.integer(text.buffer)
                  if(val < 0)
                      stop("negative nrOfUnmeasuredInnerRings")
-                 grandparent.element <- tag.stack[stack.pointer-2]
+                 grandparent.element <- tag.stack[stack.pointer - 2]
                  if(grandparent.element == "measurementSeries"){
                      n.unmeasured.outer[2] <<- val
                  } else if(grandparent.element == "radius"){
@@ -1459,7 +1466,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      idx.u <- which(site.unit %in% un)
                      ## Which remarks have this site and unit?
                      rematch.siteunit <-
-                         which(remark.data.unit[inc(remarks.handled+1,
+                         which(remark.data.unit[inc(remarks.handled + 1,
                                                     n.remark)] %in% un) +
                                                         remarks.handled
                      ## ... taxon, and ...
@@ -1524,7 +1531,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              }
                              df.first <- min(f.y)
                              df.last <- max(l.y)
-                             df.nrow <- df.last-df.first+1
+                             df.nrow <- df.last - df.first + 1
                              this.df <-
                                  data.frame(array(as.numeric(NA),
                                                   dim=c(df.nrow, df.ncol)))
@@ -1534,7 +1541,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              rownames(t.i.s) <- rownames(i.i.s) <-
                                  composite.titles
                              colnames(this.df) <- composite.titles
-                             for(l in inc(1,df.ncol)){
+                             for(l in inc(1, df.ncol)){
                                  first.idx <- f.y[l] - df.first + 1
                                  last.idx <- l.y[l] - df.first + 1
                                  this.df[first.idx:last.idx,l] <-
@@ -1545,7 +1552,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                                             idx.utv[l]]
                                  ## ... fixing the row numbers
                                  remark.data.row[idx.adjust] <<-
-                                     remark.data.row[idx.adjust]+(first.idx-1)
+                                     remark.data.row[idx.adjust] + (first.idx - 1)
                                  ## ... fixing the col numbers
                                  remark.data.col[idx.adjust] <<- l
                              }
@@ -1672,8 +1679,8 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                                           drop=FALSE],
                                                2,
                                                function(x) all(is.na(x))))
-                     this.frame[delete.idx+1] <- rep(list(NULL),
-                                                     length(delete.idx))
+                     this.frame[delete.idx + 1] <- rep(list(NULL),
+                                                       length(delete.idx))
                      res.lab[[idx.project]] <<- this.frame
                  } else{
                      res.lab[[idx.project]] <<- NA
@@ -1693,12 +1700,12 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  if(idx.derived > 0){
                      remark.derived.text <<- c(remark.derived.text, text.buffer)
                      remark.derived.series <<- c(remark.derived.series,
-                                                 length(res.derived$data)+1)
+                                                 length(res.derived$data) + 1)
                      remark.derived.idx <<- c(remark.derived.idx, idx.value)
                  } else if(is.na(first.dplr) && is.na(last.dplr)){
                      remark.undated.text <<- c(remark.undated.text, text.buffer)
                      remark.undated.series <<- c(remark.undated.series,
-                                                 length(res.undated$data)+1)
+                                                 length(res.undated$data) + 1)
                      remark.undated.idx <<- c(remark.undated.idx, idx.value)
                  } else{
                      remark.data.text <<- c(remark.data.text, text.buffer)
@@ -1722,7 +1729,8 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      ## Column information is not final at this point,
                      ## but is adjusted after the division of the site into
                      ## separate data.frames is clear.
-                     remark.data.col <<- c(remark.data.col, length(site.data)+1)
+                     remark.data.col <<-
+                         c(remark.data.col, length(site.data) + 1)
                      ## Row information is not final at this point,
                      ## but is adjusted after the starting year
                      ## of the data frame is known.
@@ -1761,7 +1769,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  end.element("taxon")
              },
              "/title" = function(...){
-                 parent.element <- tag.stack[stack.pointer-1]
+                 parent.element <- tag.stack[stack.pointer - 1]
                  if(parent.element == "project"){
                      project.title <<- text.buffer
                  } else if(parent.element == "object"){
@@ -1800,7 +1808,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      type.derived.id <<- c(type.derived.id, NA)
                      type.derived.title <<- c(type.derived.title, NA)
                      if(idx.object[1] > 0){
-                         new.length <- length(type.site.id)+1
+                         new.length <- length(type.site.id) + 1
                          type.site.id[[new.length]] <<-
                              idx.object[1:object.level]
                          type.site.title[[new.length]] <<-
@@ -1841,11 +1849,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
              },
              "/values" = function(...){
                  if(idx.value > 0){
-                     parent.element <- tag.stack[stack.pointer-1]
+                     parent.element <- tag.stack[stack.pointer - 1]
                      vector.size <- length(value.vector)
                      if(vector.size > idx.value)
                          value.vector <<-
-                             value.vector[-((idx.value+1):vector.size)]
+                             value.vector[-((idx.value + 1):vector.size)]
                      if(!unitless){
                          ## We know some units that cannot get negative values
                          check.negative <- FALSE
@@ -1900,7 +1908,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                                       idx.radius,
                                                       idx.series),
                                              gettextf("too many values (expected %d, got %d)",
-                                                      idx.value + (last.dplr-last.computed),
+                                                      idx.value + (last.dplr - last.computed),
                                                       idx.value))
                                  } else if(last.computed < last.dplr){
                                      if(is.na(this.sapwood) ||
@@ -1915,7 +1923,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                                           idx.radius,
                                                           idx.series),
                                                  gettextf("too few values (expected %d, got %d)",
-                                                          idx.value + (last.dplr-last.computed),
+                                                          idx.value + (last.dplr - last.computed),
                                                           idx.value))
                                      } else{
                                          ## We quietly assume that
@@ -1923,19 +1931,19 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                          ## border of heartwood and
                                          ## sapwood and add symbols of
                                          ## missing value there.
-                                         n.heartwood <- idx.value-this.sapwood
+                                         n.heartwood <- idx.value - this.sapwood
                                          n.missing <- last.dplr - last.computed
                                          value.vector <<-
                                              c(value.vector[1:n.heartwood],
                                                rep(MISSING.VALUE, n.missing),
-                                               value.vector[(n.heartwood+1):idx.value])
+                                               value.vector[(n.heartwood + 1):idx.value])
                                          last.year[length(last.year)] <<-
                                              last.dplr
                                          if(values.n.remarks > 0){
                                              n.remarks <-
                                                  length(remark.data.text)
                                              idx.these <-
-                                                 (n.remarks-values.n.remarks+1):n.remarks
+                                                 (n.remarks - values.n.remarks + 1):n.remarks
                                              idx.adjust <-
                                                  idx.these[remark.data.row[idx.these] > n.heartwood]
                                              remark.data.row[idx.adjust] <-
@@ -1955,7 +1963,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                          }
                          wc.minus.n.sapwood <- setdiff(wc.names, "n.sapwood")
                          if(is.dated){
-                             new.length <- length(site.data)+1
+                             new.length <- length(site.data) + 1
                              site.taxon <<-
                                  rbind(site.taxon,
                                        c(taxon, taxon.lang, taxon.normal,
@@ -1990,7 +1998,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              ## site or variable, are stored in a
                              ## single list ($data). Also metadata are
                              ## stored in res.undated.
-                             new.length <- length(res.undated$data)+1
+                             new.length <- length(res.undated$data) + 1
                              res.undated$data[[new.length]] <<- value.vector
                              res.undated$ids <<-
                                  rbind(res.undated$ids, these.ids)
@@ -2064,14 +2072,14 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                                       idx.project,
                                                       idx.derived),
                                              gettextf("too many values (expected %d, got %d)",
-                                                      idx.value + (last.dplr-this.last.year),
+                                                      idx.value + (last.dplr - this.last.year),
                                                       idx.value))
                                  } else if(this.last.year < last.dplr){
                                      warning(gettextf("in project %d, derived series %d: ",
                                                       idx.project,
                                                       idx.derived),
                                              gettextf("too few values (expected %d, got %d)",
-                                                      idx.value + (last.dplr-this.last.year),
+                                                      idx.value + (last.dplr - this.last.year),
                                                       idx.value))
                                  }
                              }
@@ -2094,7 +2102,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                                   idx.derived),
                                          "data from the future")
                          }
-                         res.derived$data[[length(res.derived$data)+1]] <<-
+                         res.derived$data[[length(res.derived$data) + 1]] <<-
                              series.frame
                          res.derived$project.id <<-
                              c(res.derived$project.id, idx.project)

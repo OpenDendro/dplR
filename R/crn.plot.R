@@ -18,14 +18,15 @@
     text.years <- gettext("Years", domain="R-dplR")
     text.rwi <- gettext("RWI", domain="R-dplR")
     text.samp <- gettext("Sample Depth", domain="R-dplR")
+    nyrs2 <- nyrs
     for(i in inc(1, nCrn)){
         plot(yr.vec, crn[, i], type="l",
              xlab=text.years, ylab=text.rwi, main=crn.names[i], ...)
         spl <- crn[, i]
         tmp <- na.omit(spl)
         ## Only possibly NULL in the first round of the for loop
-        if(is.null(nyrs)) nyrs <- length(tmp)*0.33
-        spl[!is.na(spl)] <- ffcsaps(y=tmp, x=1:length(tmp), nyrs=nyrs, f=f)
+        if(is.null(nyrs2)) nyrs2 <- length(tmp)*0.33
+        spl[!is.na(spl)] <- ffcsaps(y=tmp, x=1:length(tmp), nyrs=nyrs2, f=f)
         if(add.spline) lines(yr.vec, spl, col="red", lwd=2)
         abline(h=1)
         if(sd.exist) {

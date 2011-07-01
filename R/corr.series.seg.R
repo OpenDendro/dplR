@@ -12,43 +12,47 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     on.exit(options(w))
     options(warn = -1)
 
-    seg.lag <- seg.length/2
+    seg.lag <- seg.length / 2
 
     ## Normalize.
-    tmp <- normalize.xdate(rwl, series, n, prewhiten, biweight)
+    series2 <- series
+    names(series2) <- series.yrs
+    tmp <- normalize.xdate(rwl, series2, n, prewhiten, biweight)
     master <- tmp$master
+
     ## trim master so there are no NaN like dividing when
     ## only one series for instance.
     idx.good <- !is.nan(master)
     master <- master[idx.good]
     yrs <- as.numeric(names(master))
 
-    series <- tmp$series
+    series2 <- tmp$series
+    series.yrs2 <- as.numeric(names(series2))
     ## trim series in case it was submitted stright from the rwl
-    idx.good <- !is.na(series)
-    series.yrs <- series.yrs[idx.good]
-    series <- series[idx.good]
+    idx.good <- !is.na(series2)
+    series.yrs2 <- series.yrs2[idx.good]
+    series2 <- series2[idx.good]
 
     ## clip series to master dimensions
-    series <- series[series.yrs %in% yrs]
-    series.yrs <- as.numeric(names(series))
+    series2 <- series2[series.yrs2 %in% yrs]
+    series.yrs2 <- as.numeric(names(series2))
     ## clip master to series dimensions
-    master <- master[yrs %in% series.yrs]
+    master <- master[yrs %in% series.yrs2]
     yrs <- as.numeric(names(master))
-    nyrs <- length(series.yrs)
+    nyrs <- length(series.yrs2)
 
-    if(is.null(bin.floor) || bin.floor == 0) min.bin <- min(series.yrs)
-    else min.bin <- ceiling(min(series.yrs)/bin.floor)*bin.floor
-    to <- max(series.yrs)-seg.length-seg.length+1
+    if(is.null(bin.floor) || bin.floor == 0) min.bin <- min(series.yrs2)
+    else min.bin <- ceiling(min(series.yrs2) / bin.floor) * bin.floor
+    to <- max(series.yrs2) - seg.length - seg.length + 1
     if(min.bin > to){
         cat(gettextf("maximum year in (filtered) series: %d\n",
-                     max(series.yrs)))
+                     max(series.yrs2)))
         cat(gettextf("first bin begins: %d\n", min.bin))
         cat(gettext("cannot fit two segments (not enough years in the series)\n"))
         stop("shorten 'seg.length' or adjust 'bin.floor'")
     }
-    bins <- seq(from=min.bin, to=to+seg.length, by=seg.lag)
-    bins <- cbind(bins, bins+(seg.length-1))
+    bins <- seq(from=min.bin, to=to + seg.length, by=seg.lag)
+    bins <- cbind(bins, bins + (seg.length - 1))
     nbins <- nrow(bins)
     bin.names <- paste(bins[, 1], ".", bins[, 2], sep="")
     ## structures for results
@@ -67,20 +71,20 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     ## moving correlation
     res.mcor <- matrix(NA, nyrs, 2)
     colnames(res.mcor) <- c("rho", "p.val")
-    rownames(res.mcor) <- series.yrs
+    rownames(res.mcor) <- series.yrs2
 
     ## loop through bins
     for(j in 1:nbins){
         mask <- yrs%in%seq(from=bins[j, 1], to=bins[j, 2])
         ## cor is NA if there is not complete overlap
         if(!any(mask) ||
-           any(is.na(series[mask])) ||
+           any(is.na(series2[mask])) ||
            any(is.na(master[mask]))){
             bin.cor <- NA
             bin.pval <- NA
         }
         else {
-            tmp <- cor.test(series[mask], master[mask], method = "spearman",
+            tmp <- cor.test(series2[mask], master[mask], method = "spearman",
                             alternative = "g")
             bin.cor <- tmp$estimate
             bin.pval <- tmp$p.val
@@ -89,17 +93,17 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
         res.pval[j] <- bin.pval
     }
     ## overall correlation
-    tmp <- cor.test(series, master, method = "spearman", alternative = "g")
+    tmp <- cor.test(series2, master, method = "spearman", alternative = "g")
     overall.cor[1] <- tmp$estimate
     overall.cor[2] <- tmp$p.val
 
     ## moving correlation
-    for(i in 1:(nyrs-seg.length)){
-        mask <- i:(i+seg.length)
-        tmp <- cor.test(series[mask], master[mask],
+    for(i in 1:(nyrs - seg.length)){
+        mask <- i:(i + seg.length)
+        tmp <- cor.test(series2[mask], master[mask],
                         method = "spearman", alternative = "g")
-        res.mcor[i+seg.lag, 1] <- tmp$estimate
-        res.mcor[i+seg.lag, 2] <- tmp$p.val
+        res.mcor[i + seg.lag, 1] <- tmp$estimate
+        res.mcor[i + seg.lag, 2] <- tmp$p.val
     }
     ## plot
     if(make.plot){
@@ -108,11 +112,11 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
         mcor.tmp <- mcor.tmp[, 1]
         ## bins2 makes plotting nicer. Adds a bin to the top
         ## and bottom so that the mcor line isn't all alone.
-        bottom.bin2 <- bins[1, ]-seg.lag
-        top.bin2 <- bins[nbins, ]+seg.lag
+        bottom.bin2 <- bins[1, ] - seg.lag
+        top.bin2 <- bins[nbins, ] + seg.lag
         bins2 <- rbind(bottom.bin2, bins, top.bin2)
         par(mar=c(4, 2, 2, 1) + 0.1, mgp=c(1.25, 0.25, 0), tcl=0.25)
-        sig <- qnorm((1 + 1 - pcrit)/2)/sqrt(seg.length)
+        sig <- qnorm(1 - pcrit / 2) / sqrt(seg.length)
         plot(yrs.tmp, mcor.tmp, type="l",
              ylim=range(res.cor, res.mcor, sig, na.rm=T),
              ylab=gettext("Correlation", domain="R-dplR"),

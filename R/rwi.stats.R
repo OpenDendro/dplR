@@ -4,31 +4,32 @@
     ## Run correlations over period common to all cores is "common"
     ## over maximum individual pair overlaps is "max"
 
-    period <- match.arg(period)
-    if(period == "max")
-        period <- "pairwise.complete.obs"
-    else if(period == "common")
-        period <- "complete.obs"
+    period2 <- match.arg(period)
+    if(period2 == "max")
+        period2 <- "pairwise.complete.obs"
+    else if(period2 == "common")
+        period2 <- "complete.obs"
     n.cores <- ncol(rwi)
 
     ## If tree.id is NULL then assume one core per tree
     if(is.null(ids)){
-        ids <- data.frame(tree=1:n.cores, core=rep(1, n.cores))
+        ids2 <- data.frame(tree=1:n.cores, core=rep(1, n.cores))
     } else{
         ## Make error checks here
         if(nrow(ids) != n.cores)
             stop("dimension problem: ", "'ncol(rwi)' != 'nrow(ids)'")
         if(!all(sapply(ids, is.numeric)))
             stop("'ids' must have numeric columns")
+        ids2 <- ids
     }
 
-    n.trees <- length(unique(ids$tree))
-    n.cores.tree <- data.frame(table(ids$tree))$Freq
+    n.trees <- length(unique(ids2$tree))
+    n.cores.tree <- data.frame(table(ids2$tree))$Freq
 
-    r.mat <- cor(rwi, use=period)
+    r.mat <- cor(rwi, use=period2)
     ## If r.mat is all NA and period is common then it is likely that
     ## there is no overlap bewixt the cores. Warn the user.
-    if(all(is.na(r.mat)) && period == "complete.obs"){
+    if(all(is.na(r.mat)) && period2 == "complete.obs"){
         warning("Correlations are all NA. No overlap in series?", call. = FALSE)
     }
 
@@ -45,7 +46,7 @@
         for(i in samps){
             x.part <- x[, x.id == i]
             if(!is.null(ncol(x.part))){
-                r <- cor(x.part, use=period)
+                r <- cor(x.part, use=period2)
                 r.vec[i] <- sum(r[upper.tri(r)])
             }
         }
@@ -63,7 +64,7 @@
         n.bt <- n.tot
         c.eff <- 1
     } else{
-        r.wt <- r.wt.func(rwi, ids$tree)
+        r.wt <- r.wt.func(rwi, ids2$tree)
         rbar.wt <- 1/n.wt * sum(r.wt, na.rm=TRUE)
 
         n.bt <- n.tot - n.wt

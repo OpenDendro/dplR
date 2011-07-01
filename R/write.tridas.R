@@ -199,62 +199,61 @@ expand.metadata <- function(md.in, crn, default.value=""){
         if(length(md.in) == 0){
             md.out <- lapply(crn, function(x) rep(default.value, length(x)))
         } else{
-            md.in <- rep(md.in, length.out=length(crn))
+            md.in2 <- rep(md.in, length.out=length(crn))
             md.out <- list()
             for(k in inc(1, length(crn)))
-                md.out[[k]] <- rep(md.in[k], length(crn[[k]]))
+                md.out[[k]] <- rep(md.in2[k], length(crn[[k]]))
         }
     }
     md.out
 }
 
 ### Main function
-write.tridas <-
-    function(rwl.df = NULL, fname, crn = NULL,
-             prec = NULL, # no rounding
-             ids = NULL, titles = NULL,
-             crn.types = NULL,
-             crn.titles = NULL,
-             crn.units = NULL,
-             tridas.measuring.method = NA,
-             other.measuring.method = "unknown",
-             sample.type = "core",
-             wood.completeness = NULL,
-             taxon = "",
-             tridas.variable = "ring width",
-             other.variable = NA,
-             project.info = list(
-             type = c("unknown"), # multiple types possible
-             description = NULL,
-             title = "",
-             category = "",
-             investigator = "",
-             period = ""
-             ),
-             lab.info = data.frame(
-             name = "",
-             acronym = NA,
-             identifier = NA,
-             domain = "",
-             addressLine1 = NA,
-             addressLine2 = NA,
-             cityOrTown = NA,
-             stateProvinceRegion = NA,
-             postalCode = NA,
-             country = NA
-             ),
-             research.info = data.frame(
-             identifier = NULL,
-             domain = NULL,
-             description = NULL
-             ),
-             site.info = list(
-             type = "unknown",
-             description = NULL,
-             title = ""
-             ),
-             random.identifiers = FALSE,
-             identifier.domain = lab.info[1, "name"]){
+write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
+                         prec = NULL, # no rounding
+                         ids = NULL, titles = NULL,
+                         crn.types = NULL,
+                         crn.titles = NULL,
+                         crn.units = NULL,
+                         tridas.measuring.method = NA,
+                         other.measuring.method = "unknown",
+                         sample.type = "core",
+                         wood.completeness = NULL,
+                         taxon = "",
+                         tridas.variable = "ring width",
+                         other.variable = NA,
+                         project.info = list(
+                         type = c("unknown"), # multiple types possible
+                         description = NULL,
+                         title = "",
+                         category = "",
+                         investigator = "",
+                         period = ""
+                         ),
+                         lab.info = data.frame(
+                         name = "",
+                         acronym = NA,
+                         identifier = NA,
+                         domain = "",
+                         addressLine1 = NA,
+                         addressLine2 = NA,
+                         cityOrTown = NA,
+                         stateProvinceRegion = NA,
+                         postalCode = NA,
+                         country = NA
+                         ),
+                         research.info = data.frame(
+                         identifier = NULL,
+                         domain = NULL,
+                         description = NULL
+                         ),
+                         site.info = list(
+                         type = "unknown",
+                         description = NULL,
+                         title = ""
+                         ),
+                         random.identifiers = FALSE,
+                         identifier.domain = lab.info[1, "name"]){
 
     if(!is.data.frame(lab.info) || nrow(lab.info) < 1)
         stop("'lab.info' must be a data.frame with at least one row")
@@ -334,8 +333,10 @@ write.tridas <-
         check.char.vars(list("identifier.domain"))
 
     if(!is.na(tridas.variable))
-        tridas.variable <-
+        tridas.variable2 <-
             tridas.vocabulary("variable", term=tridas.variable)
+    else
+        tridas.variable2 <- NA
 
     address.order <- c("addressLine1",
                        "addressLine2",
@@ -364,11 +365,11 @@ write.tridas <-
     on.exit(doc$close()) # emits </tridas>, closes file
     ## Shortcuts to functions (speedup?)
     doc.addTag <- doc$addTag
-    doc.addTag.noCheck <- doc$addTag.noCheck
+    doc.addTag.nc <- doc$addTag.noCheck
     doc.closeTag <- doc$closeTag
 
     ## <project> (using only one project here)
-    doc.addTag.noCheck("project", close = FALSE)
+    doc.addTag.nc("project", close = FALSE)
     doc.addTag("title", project.info$title[1])
     if(random.identifiers)
         doc.addTag("identifier",
@@ -381,7 +382,7 @@ write.tridas <-
     address.order <- address.order[address.order %in% lab.names]
     for(i in 1:nrow(lab.info)){
         ## <laboratory>
-        doc.addTag.noCheck("laboratory", close = FALSE)
+        doc.addTag.nc("laboratory", close = FALSE)
         if(identifier.present){
             this.identifier <- lab.info[i, "identifier"]
             if(!is.na(this.identifier) && nchar(this.identifier) > 0)
@@ -401,7 +402,7 @@ write.tridas <-
             doc.addTag("name", lab.info[i, "name"])
         }
         ## <address>
-        doc.addTag.noCheck("address", close = FALSE)
+        doc.addTag.nc("address", close = FALSE)
         for(address.line in address.order){
             address.text <- lab.info[i, address.line]
             if(!is.na(address.text) && nchar(address.text) > 0)
@@ -417,7 +418,7 @@ write.tridas <-
     if(research.present){
         for(i in 1:nrow(research.info)){
             ## <research>
-            doc.addTag.noCheck("research", close = FALSE)
+            doc.addTag.nc("research", close = FALSE)
             doc.addTag("identifier",
                        research.info[i, "identifier"],
                        attrs = c(domain = research.info[i, "domain"]))
@@ -438,27 +439,29 @@ write.tridas <-
         ## than 4), make similar assumptions.  Only basic checks about
         ## the validity of the 'ids' argument are performed;
         ## undetected problems may lead to errors or malformed output.
-        if(is.null(ids)){
-            ids <- data.frame(tree = 1:n.col,
-                              core = rep(1,n.col),
-                              radius = rep(1,n.col),
-                              measurement = rep(1,n.col))
-        } else if(is.data.frame(ids) && nrow(ids) == n.col){
-            ncol.ids <- ncol(ids)
+        ids2 <- ids
+        titles2 <- titles
+        if(is.null(ids2)){
+            ids2 <- data.frame(tree = 1:n.col,
+                               core = rep(1,n.col),
+                               radius = rep(1,n.col),
+                               measurement = rep(1,n.col))
+        } else if(is.data.frame(ids2) && nrow(ids2) == n.col){
+            ncol.ids <- ncol(ids2)
             if(ncol.ids == 2){
-                if(!all(c("tree","core") %in% names(ids)))
+                if(!all(c("tree","core") %in% names(ids2)))
                     stop("2-col 'ids' needs \"tree\" and \"core\" columns")
-                ids <- data.frame(ids,
-                                  radius = rep(1,n.col),
-                                  measurement = rep(1,n.col))
+                ids2 <- data.frame(ids2,
+                                   radius = rep(1,n.col),
+                                   measurement = rep(1,n.col))
             } else if(ncol.ids == 3){
-                if(!all(c("tree","core","radius") %in% names(ids)))
+                if(!all(c("tree","core","radius") %in% names(ids2)))
                     stop("3-col 'ids' needs \"tree\", \"core\", and \"radius\" columns")
-                ids <- data.frame(ids,
-                                  measurement = rep(1,n.col))
+                ids2 <- data.frame(ids2,
+                                   measurement = rep(1,n.col))
             } else if(ncol.ids == 4){
                 if(!all(c("tree","core","radius","measurement") %in%
-                        names(ids)))
+                        names(ids2)))
                     stop("4-col 'ids' needs \"tree\", \"core\", \"radius\", and \"measurement\" columns")
             } else{
                 stop("argument 'ids' is in wrong format (2, 3, or 4 columns required)")
@@ -466,78 +469,84 @@ write.tridas <-
         } else{
             stop("argument 'ids' is not data.frame or has wrong number of rows")
         }
-        if(!all(sapply(ids, is.numeric)))
+        if(!all(sapply(ids2, is.numeric)))
             stop("'ids' must have numeric columns")
 
-        if(is.null(titles)){
-            titles <- create.title.hierarchy(cnames, ids)
-        } else if(is.data.frame(titles) && nrow(titles) == n.col){
-            if(ncol(titles) != 4 ||
-               !all(c("tree","core","radius","measurement") %in% names(ids)))
+        if(is.null(titles2)){
+            titles2 <- create.title.hierarchy(cnames, ids2)
+        } else if(is.data.frame(titles2) && nrow(titles2) == n.col){
+            if(ncol(titles2) != 4 ||
+               !all(c("tree","core","radius","measurement") %in% names(ids2)))
                 stop("columns needed in 'titles': \"tree\", \"core\", \"radius\", and \"measurement\"")
         } else{
             stop("argument 'titles' is not data.frame or has wrong number of rows")
         }
-        if(!consistent.ids.titles(ids, titles))
+        if(!consistent.ids.titles(ids2, titles2))
             stop("'ids' and 'titles' not consistent or duplicates present")
 
         if(!is.null(prec)){
             if(prec == 0.001){
                 data.unit <- "micrometres"
-                rwl.df <- round(rwl.df * 1000)
+                rwl.df2 <- round(rwl.df * 1000)
             } else if(prec == 0.01){
                 data.unit <- "1/100th millimetres"
-                rwl.df <- round(rwl.df * 100)
+                rwl.df2 <- round(rwl.df * 100)
             } else if(prec == 0.05){
                 data.unit <- "1/20th millimetres"
-                rwl.df <- round(rwl.df * 20)
+                rwl.df2 <- round(rwl.df * 20)
             } else if(prec == 0.1){
                 data.unit <- "1/10th millimetres"
-                rwl.df <- round(rwl.df * 10)
+                rwl.df2 <- round(rwl.df * 10)
             } else if(prec == 1){
                 data.unit <- "millimetres"
-                rwl.df <- round(rwl.df)
+                rwl.df2 <- round(rwl.df)
             } else if(prec == 10){
                 data.unit <- "centimetres"
-                rwl.df <- round(rwl.df / 10)
+                rwl.df2 <- round(rwl.df / 10)
             } else if(prec == 100){
                 data.unit <- "centimetres" # decimetres not in TRiDaS units
-                rwl.df <- round(rwl.df / 100) * 10
+                rwl.df2 <- round(rwl.df / 100) * 10
             } else if(prec == 1000){
                 data.unit <- "metres"
-                rwl.df <- round(rwl.df / 1000)
+                rwl.df2 <- round(rwl.df / 1000)
             } else{
                 warning("unknown 'prec' specified: no unit conversion or rounding done")
                 data.unit <- "millimetres"
+                rwl.df2 <- rwl.df
             }
         } else{
             data.unit <- "millimetres"
         }
-        if(!all(is.na(tridas.measuring.method))){
-            for(k in inc(1, length(tridas.measuring.method))){
-                if(!is.na(this.mm <- tridas.measuring.method[k]))
-                    tridas.measuring.method[k] <-
+        tridas.measuring.method2 <- tridas.measuring.method
+        if(!all(is.na(tridas.measuring.method2))){
+            for(k in inc(1, length(tridas.measuring.method2))){
+                if(!is.na(this.mm <- tridas.measuring.method2[k]))
+                    tridas.measuring.method2[k] <-
                         tridas.vocabulary("measuring method", term=this.mm)
             }
         }
-        if(length(tridas.measuring.method) != n.col)
-            tridas.measuring.method <-
-                rep(tridas.measuring.method, length.out = n.col)
+        if(length(tridas.measuring.method2) != n.col)
+            tridas.measuring.method2 <-
+                rep(tridas.measuring.method2, length.out = n.col)
         check.char.vars(list(c("other.measuring.method", "unknown")))
-        if(length(other.measuring.method) != n.col)
-            other.measuring.method <-
-                rep(other.measuring.method, length.out = n.col)
+        other.measuring.method2 <- other.measuring.method
+        if(length(other.measuring.method2) != n.col)
+            other.measuring.method2 <-
+                rep(other.measuring.method2, length.out = n.col)
         check.char.vars(list(c("sample.type", "core")))
         if(length(sample.type) != n.col)
-            sample.type <- rep(sample.type, length.out = n.col)
+            sample.type2 <- rep(sample.type, length.out = n.col)
+        else
+            sample.type2 <- sample.type
 
         ## Check (and fix) wood.completeness
-        if(!is.null(wood.completeness)){
-            if(nrow(wood.completeness) != n.col)
+        wood.completeness2 <- wood.completeness
+        if(!is.null(wood.completeness2)){
+            if(nrow(wood.completeness2) != n.col)
                 stop("'nrow(wood.completeness)' must be equal to 'ncol(rwl.df)'")
-            if(any(rownames(wood.completeness) != cnames))
+            if(any(rownames(wood.completeness2) != cnames))
                 stop("row names of 'wood.completeness' must match column names of 'rwl.df'")
-            names.wc <- names(wood.completeness)
+            names.wc <- names(wood.completeness2)
             wc <- TRUE
             names.complex <- c("pith.presence", "heartwood.presence",
                                "sapwood.presence")
@@ -546,38 +555,38 @@ write.tridas <-
                   "n.missing.heartwood", "n.unmeasured.outer")
             ## Create missing columns
             for(nam in names.complex[!(names.complex %in% names.wc)])
-                wood.completeness[[nam]] <- rep("unknown", n.col)
+                wood.completeness2[[nam]] <- rep("unknown", n.col)
             ## Find invalid < 0 numbers
             for(nam in names.nonnegative[names.nonnegative %in% names.wc]){
-                temp <- wood.completeness[!is.na(wood.completeness[[nam]]), nam]
+                temp <- wood.completeness2[!is.na(wood.completeness2[[nam]]), nam]
                 if(any(!is.int(temp) | temp < 0))
                     stop(gettextf("some values in 'wood.completeness$%s' are invalid, i.e. not integer or < 0", nam))
             }
             ## Replace NAs and consistence with complex vocabulary
             for(nam in names.complex){
-                wood.completeness[is.na(wood.completeness[[nam]]), nam] <-
+                wood.completeness2[is.na(wood.completeness2[[nam]]), nam] <-
                     "unknown"
-                wood.completeness[[nam]] <-
+                wood.completeness2[[nam]] <-
                     tridas.vocabulary("complex presence / absence",
-                                       term = wood.completeness[[nam]])
+                                      term = wood.completeness2[[nam]])
             }
             ## Check bark.presence
             if(!("bark.presence" %in% names.wc))
-                wood.completeness$bark.presence <- rep("unknown", n.col)
-            idx.bark.na <- which(is.na(wood.completeness$bark.presence))
+                wood.completeness2$bark.presence <- rep("unknown", n.col)
+            idx.bark.na <- which(is.na(wood.completeness2$bark.presence))
             if(length(idx.bark.na) > 0)
-                wood.completeness[idx.bark.na, "bark.presence"] <- "unknown"
-            wood.completeness$bark.presence <-
+                wood.completeness2[idx.bark.na, "bark.presence"] <- "unknown"
+            wood.completeness2$bark.presence <-
                 tridas.vocabulary("presence / absence",
-                                   term = wood.completeness$bark.presence)
+                                  term = wood.completeness2$bark.presence)
             ## Check last.ring.presence
             if("last.ring.presence" %in% names.wc){
                 idx.notna <-
-                    which(!is.na(wood.completeness$last.ring.presence))
-                wood.completeness[idx.notna, "last.ring.presence"] <-
+                    which(!is.na(wood.completeness2$last.ring.presence))
+                wood.completeness2[idx.notna, "last.ring.presence"] <-
                     tridas.vocabulary("presence / absence",
-                                       term = wood.completeness[idx.notna,
-                                       "last.ring.presence"])
+                                      term = wood.completeness2[idx.notna,
+                                      "last.ring.presence"])
                 wc.lrp <- TRUE
                 if("last.ring.details" %in% names.wc)
                     wc.lrd <- TRUE
@@ -625,33 +634,37 @@ write.tridas <-
     }
 
     ## Preprocessing -- things related to crn / <derivedSeries>
-    if(!is.null(crn)){
-        if(is.data.frame(crn))
-            crn <- list(crn)
-        if(!is.list(crn.types))
-            crn.types <- expand.metadata(crn.types, crn, "")
+    crn2 <- crn
+    crn.types2 <- crn.types
+    crn.units2 <- crn.units
+    crn.titles2 <- crn.titles
+    if(!is.null(crn2)){
+        if(is.data.frame(crn2))
+            crn2 <- list(crn2)
+        if(!is.list(crn.types2))
+            crn.types2 <- expand.metadata(crn.types2, crn2, "")
         else
-            crn.types <- rep(crn.types, length.out=length(crn))
-        if(!is.list(crn.units))
-            crn.units <- expand.metadata(crn.types, crn, NA)
+            crn.types2 <- rep(crn.types2, length.out=length(crn2))
+        if(!is.list(crn.units2))
+            crn.units2 <- expand.metadata(crn.units2, crn2, NA)
         else
-            crn.units <- rep(crn.units, length.out=length(crn))
-        if(!is.null(crn.titles)){
+            crn.units2 <- rep(crn.units2, length.out=length(crn2))
+        if(!is.null(crn.titles2)){
             titles.present <- TRUE
-            if(!is.list(crn.titles))
-                crn.titles <- list(crn.titles)
-            crn.titles <- rep(crn.titles, length.out=length(crn))
+            if(!is.list(crn.titles2))
+                crn.titles2 <- list(crn.titles2)
+            crn.titles2 <- rep(crn.titles2, length.out=length(crn2))
         } else{
             titles.present <- FALSE
         }
-        if(titles.present && length(crn) != length(crn.titles))
+        if(titles.present && length(crn2) != length(crn.titles2))
             titles.present <- FALSE
     }
 
     ## Write to file -- things related to rwl.df / <object>
     if(!is.null(rwl.df)){
         ## <object> (site)
-        doc.addTag.noCheck("object", close = FALSE)
+        doc.addTag.nc("object", close = FALSE)
         doc.addTag("title", site.info$title[1])
         if(random.identifiers)
             doc.addTag("identifier",
@@ -661,44 +674,44 @@ write.tridas <-
         if(is.character(site.info$description))
             doc.addTag("description", site.info$description)
 
-        unique.trees <- unique(ids$tree)
-        yrs.all <- as.numeric(rownames(rwl.df))
+        unique.trees <- unique(ids2$tree)
+        yrs.all <- as.numeric(rownames(rwl.df2))
 
         for(tree in unique.trees){
-            idx.t <- which(ids$tree %in% tree)
+            idx.t <- which(ids2$tree %in% tree)
             ## <element> (trees)
-            doc.addTag.noCheck("element", close = FALSE)
-            doc.addTag("title", titles$tree[idx.t[1]])
+            doc.addTag.nc("element", close = FALSE)
+            doc.addTag("title", titles2$tree[idx.t[1]])
             if(random.identifiers)
                 doc.addTag("identifier",
                            ugen(),
                            attrs = c(domain = identifier.domain))
             doc.addTag("taxon", taxon);
-            unique.cores <- unique(ids$core[idx.t])
+            unique.cores <- unique(ids2$core[idx.t])
             for(core in unique.cores){
-                idx.c <- idx.t[ids$core[idx.t] %in% core]
+                idx.c <- idx.t[ids2$core[idx.t] %in% core]
                 ## <sample> (core)
-                doc.addTag.noCheck("sample", close = FALSE)
-                doc.addTag("title", titles$core[idx.c[1]])
+                doc.addTag.nc("sample", close = FALSE)
+                doc.addTag("title", titles2$core[idx.c[1]])
                 if(random.identifiers)
                     doc.addTag("identifier",
                                ugen(),
                                attrs = c(domain = identifier.domain))
-                doc.addTag("type", sample.type[idx.c[1]])
-                unique.radii <- unique(ids$radius[idx.c])
+                doc.addTag("type", sample.type2[idx.c[1]])
+                unique.radii <- unique(ids2$radius[idx.c])
                 for(radius in unique.radii){
-                    idx.r <- idx.c[ids$radius[idx.c] %in% radius]
+                    idx.r <- idx.c[ids2$radius[idx.c] %in% radius]
                     ## <radius>
-                    doc.addTag.noCheck("radius", close = FALSE)
-                    doc.addTag("title", titles$radius[idx.r[1]])
+                    doc.addTag.nc("radius", close = FALSE)
+                    doc.addTag("title", titles2$radius[idx.r[1]])
                     if(random.identifiers)
                         doc.addTag("identifier",
                                    ugen(),
                                    attrs = c(domain = identifier.domain))
                     for(idx.m in idx.r){
                         ## <measurementSeries>
-                        doc.addTag.noCheck("measurementSeries", close = FALSE)
-                        doc.addTag("title", titles$measurement[idx.r])
+                        doc.addTag.nc("measurementSeries", close = FALSE)
+                        doc.addTag("title", titles2$measurement[idx.r])
                         if(random.identifiers)
                             doc.addTag("identifier",
                                        ugen(),
@@ -706,67 +719,67 @@ write.tridas <-
                         doc.addTag("comments", cnames[idx.m])
                         ## <woodCompleteness>
                         if(wc){
-                            doc.addTag.noCheck("woodCompleteness",
-                                               close = FALSE)
+                            doc.addTag.nc("woodCompleteness",
+                                          close = FALSE)
                             ## <nrOfUnmeasuredInnerRings>
                             if(wc.nui &&
                                !is.na(this.val <-
-                                      wood.completeness[idx.m,
-                                                        "n.unmeasured.inner"])){
-                                doc.addTag.noCheck("nrOfUnmeasuredInnerRings",
-                                                   this.val)
+                                      wood.completeness2[idx.m,
+                                                         "n.unmeasured.inner"])){
+                                doc.addTag.nc("nrOfUnmeasuredInnerRings",
+                                              this.val)
                             }
                             ## <nrOfUnmeasuredOuterRings>
                             if(wc.nuo &&
                                !is.na(this.val <-
-                                      wood.completeness[idx.m,
-                                                        "n.unmeasured.outer"])){
-                                    doc.addTag.noCheck("nrOfUnmeasuredOuterRings",
-                                                       this.val)
+                                      wood.completeness2[idx.m,
+                                                         "n.unmeasured.outer"])){
+                                doc.addTag.nc("nrOfUnmeasuredOuterRings",
+                                              this.val)
                             }
                             ## <pith/>
-                            doc.addTag.noCheck("pith",
-                                               attrs = c(presence = wood.completeness[idx.m,
-                                                         "pith.presence"]))
+                            doc.addTag.nc("pith",
+                                          attrs = c(presence = wood.completeness2[idx.m,
+                                                    "pith.presence"]))
                             ## <heartwood>
-                            doc.addTag.noCheck("heartwood",
-                                               attrs = c(presence = wood.completeness[idx.m,
-                                                         "heartwood.presence"]),
-                                               close = FALSE)
+                            doc.addTag.nc("heartwood",
+                                          attrs = c(presence = wood.completeness2[idx.m,
+                                                    "heartwood.presence"]),
+                                          close = FALSE)
                             if(wc.nmh &&
                                !is.na(this.val <-
-                                      wood.completeness[idx.m,
-                                                        "n.missing.heartwood"])){
-                                doc.addTag.noCheck("missingHeartwoodRingsToPith",
-                                                   this.val)
+                                      wood.completeness2[idx.m,
+                                                         "n.missing.heartwood"])){
+                                doc.addTag.nc("missingHeartwoodRingsToPith",
+                                              this.val)
                                 if(wc.mhf &&
                                    !is.na(this.val <-
-                                          wood.completeness[idx.m,
-                                                            "missing.heartwood.foundation"])){
+                                          wood.completeness2[idx.m,
+                                                             "missing.heartwood.foundation"])){
                                     doc.addTag("missingHeartwoodRingsToPithFoundation",
                                                this.val)
                                 }
                             }
                             doc.closeTag() # </heartwood>
                             ## <sapwood>
-                            doc.addTag.noCheck("sapwood",
-                                               attrs = c(presence = wood.completeness[idx.m,
-                                                         "sapwood.presence"]),
-                                               close = FALSE)
+                            doc.addTag.nc("sapwood",
+                                          attrs = c(presence = wood.completeness2[idx.m,
+                                                    "sapwood.presence"]),
+                                          close = FALSE)
                             if(wc.ns &&
                                !is.na(this.val <-
-                                      wood.completeness[idx.m, "n.sapwood"])){
-                                doc.addTag.noCheck("nrOfSapwoodRings",
-                                                   this.val)
+                                      wood.completeness2[idx.m, "n.sapwood"])){
+                                doc.addTag.nc("nrOfSapwoodRings",
+                                              this.val)
                             }
                             if(wc.lrp &&
                                !is.na(this.val <-
-                                      wood.completeness[idx.m,
-                                                        "last.ring.presence"])){
+                                      wood.completeness2[idx.m,
+                                                         "last.ring.presence"])){
                                 if(wc.lrd &&
                                    !is.na(this.detail <-
-                                          wood.completeness[idx.m,
-                                                            "last.ring.details"])){
+                                          wood.completeness2[idx.m,
+                                                             "last.ring.details"])){
                                     doc.addTag("lastRingUnderBark",
                                                this.detail,
                                                attrs = c(presence = this.val))
@@ -777,68 +790,68 @@ write.tridas <-
                             }
                             if(wc.nms &&
                                !is.na(this.val <-
-                                      wood.completeness[idx.m,
-                                                        "n.missing.sapwood"])){
-                                doc.addTag.noCheck("missingSapwoodRingsToBark",
-                                                   this.val)
+                                      wood.completeness2[idx.m,
+                                                         "n.missing.sapwood"])){
+                                doc.addTag.nc("missingSapwoodRingsToBark",
+                                              this.val)
                                 if(wc.msf &&
                                    !is.na(this.val <-
-                                          wood.completeness[idx.m,
-                                                            "missing.sapwood.foundation"])){
+                                          wood.completeness2[idx.m,
+                                                             "missing.sapwood.foundation"])){
                                     doc.addTag("missingSapwoodRingsToBarkFoundation",
                                                this.val)
                                 }
                             }
                             doc.closeTag() # </sapwood>
                             ## <bark>
-                            doc.addTag.noCheck("bark",
-                                               attrs = c(presence = wood.completeness[idx.m,
-                                                         "bark.presence"]))
+                            doc.addTag.nc("bark",
+                                          attrs = c(presence = wood.completeness2[idx.m,
+                                                    "bark.presence"]))
                             doc.closeTag() # </woodCompleteness>
                         }
-                        if(!is.na(this.mm <- tridas.measuring.method[idx.m]))
-                            doc.addTag.noCheck("measuringMethod", NULL,
-                                               attrs = c(normalTridas=this.mm))
+                        if(!is.na(this.mm <- tridas.measuring.method2[idx.m]))
+                            doc.addTag.nc("measuringMethod", NULL,
+                                          attrs = c(normalTridas=this.mm))
                         else
                             doc.addTag("measuringMethod",
-                                       other.measuring.method[idx.m])
+                                       other.measuring.method2[idx.m])
                         ## <interpretation>
-                        doc.addTag.noCheck("interpretation", close = FALSE)
-                        series <- as.numeric(rwl.df[, idx.m])
+                        doc.addTag.nc("interpretation", close = FALSE)
+                        series <- as.numeric(rwl.df2[, idx.m])
                         idx <- !is.na(series)
                         series <- series[idx]
                         yrs <- yrs.all[idx]
                         min.year <- min(yrs)
                         max.year <- max(yrs)
                         if(min.year < 1)
-                            doc.addTag.noCheck("firstYear",
-                                               1 - min.year,
-                                               attrs = c(suffix = "BC"))
+                            doc.addTag.nc("firstYear",
+                                          1 - min.year,
+                                          attrs = c(suffix = "BC"))
                         else
-                            doc.addTag.noCheck("firstYear",
-                                               min.year,
-                                               attrs = c(suffix = "AD"))
+                            doc.addTag.nc("firstYear",
+                                          min.year,
+                                          attrs = c(suffix = "AD"))
                         if(max.year < 1)
-                            doc.addTag.noCheck("lastYear",
-                                               1 - max.year,
-                                               attrs = c(suffix = "BC"))
+                            doc.addTag.nc("lastYear",
+                                          1 - max.year,
+                                          attrs = c(suffix = "BC"))
                         else
-                            doc.addTag.noCheck("lastYear",
-                                               max.year,
-                                               attrs = c(suffix = "AD"))
+                            doc.addTag.nc("lastYear",
+                                          max.year,
+                                          attrs = c(suffix = "AD"))
                         doc.closeTag() # </interpretation>
                         ## <values>
-                        doc.addTag.noCheck("values", close = FALSE)
-                        if(!is.na(tridas.variable))
-                            doc.addTag.noCheck("variable", NULL,
-                                               attrs = c(normalTridas = tridas.variable))
+                        doc.addTag.nc("values", close = FALSE)
+                        if(!is.na(tridas.variable2))
+                            doc.addTag.nc("variable", NULL,
+                                          attrs = c(normalTridas = tridas.variable2))
                         else
                             doc.addTag("variable", other.variable)
-                        doc.addTag.noCheck("unit", NULL,
-                                           attrs = c(normalTridas = data.unit))
+                        doc.addTag.nc("unit", NULL,
+                                      attrs = c(normalTridas = data.unit))
                         for(i in inc(1, length(series)))
-                            doc.addTag.noCheck("value", NULL,
-                                               attrs = c(value = series[i]))
+                            doc.addTag.nc("value", NULL,
+                                          attrs = c(value = series[i]))
                         doc.closeTag() # </values>
                         doc.closeTag() # </measurementSeries>
                     }
@@ -852,9 +865,9 @@ write.tridas <-
     }
 
     ## Write to file -- things related to crn / <derivedSeries>
-    if(!is.null(crn)){
-        for(i in inc(1, length(crn))){
-            this.frame <- crn[[i]]
+    if(!is.null(crn2)){
+        for(i in inc(1, length(crn2))){
+            this.frame <- crn2[[i]]
             yrs.all <- as.numeric(rownames(this.frame))
             crn.names <- names(this.frame)
             depth.idx <- grep("^samp[.]depth", crn.names)
@@ -869,20 +882,20 @@ write.tridas <-
                 n.series <- length(crn.names)
                 series.idx <- inc(1,n.series)
             }
-            this.typevec <- as.character(crn.types[[i]])
+            this.typevec <- as.character(crn.types2[[i]])
             n.type <- length(this.typevec)
             if(n.type == 0)
                 this.typevec <- rep("", n.series)
             else
                 this.typevec <- rep(this.typevec, length.out = n.series)
-            this.unitvec <- as.character(crn.units[[i]])
+            this.unitvec <- as.character(crn.units2[[i]])
             n.unit <- length(this.unitvec)
             if(n.unit == 0)
                 this.unitvec <- rep(NA, n.series)
             else
                 this.unitvec <- rep(this.unitvec, length.out = n.series)
             if(titles.present){
-                this.titlevec <- as.character(crn.titles[[i]])
+                this.titlevec <- as.character(crn.titles2[[i]])
                 n.title <- length(this.titlevec)
                 if(n.title == 0)
                     this.titlevec <- rep(NA, n.series)
@@ -898,7 +911,7 @@ write.tridas <-
                 series <- as.numeric(this.frame[, this.idx])
                 if(depth.present)
                     samp.depth <- as.numeric(this.frame[[depth.idx[j]]])
-                doc.addTag.noCheck("derivedSeries", close = FALSE)
+                doc.addTag.nc("derivedSeries", close = FALSE)
                 this.crn.name <- crn.names[this.idx]
                 if(titles.present){
                     this.title <- this.titlevec[j]
@@ -922,54 +935,54 @@ write.tridas <-
                 doc.addTag("type", this.typevec[j])
                 ## <linkSeries/>
                 ## TODO: Add actual links, now just an empty element
-                doc.addTag.noCheck("linkSeries")
+                doc.addTag.nc("linkSeries")
 
                 ## <interpretation>
-                doc.addTag.noCheck("interpretation", close = FALSE)
+                doc.addTag.nc("interpretation", close = FALSE)
                 idx <- !is.na(series)
                 series <- series[idx]
                 yrs <- yrs.all[idx]
                 min.year <- min(yrs)
                 max.year <- max(yrs)
                 if(min.year < 1)
-                    doc.addTag.noCheck("firstYear",
-                                       1 - min.year,
-                                       attrs = c(suffix = "BC"))
+                    doc.addTag.nc("firstYear",
+                                  1 - min.year,
+                                  attrs = c(suffix = "BC"))
                 else
-                    doc.addTag.noCheck("firstYear",
-                                       min.year,
-                                       attrs = c(suffix = "AD"))
+                    doc.addTag.nc("firstYear",
+                                  min.year,
+                                  attrs = c(suffix = "AD"))
                 if(max.year < 1)
-                    doc.addTag.noCheck("lastYear",
-                                       1 - max.year,
-                                       attrs = c(suffix = "BC"))
+                    doc.addTag.nc("lastYear",
+                                  1 - max.year,
+                                  attrs = c(suffix = "BC"))
                 else
-                    doc.addTag.noCheck("lastYear",
-                                       max.year,
-                                       attrs = c(suffix = "AD"))
+                    doc.addTag.nc("lastYear",
+                                  max.year,
+                                  attrs = c(suffix = "AD"))
                 doc.closeTag() # </interpretation>
 
                 ## <values>
-                doc.addTag.noCheck("values", close = FALSE)
-                if(!is.na(tridas.variable))
-                    doc.addTag.noCheck("variable", NULL,
-                                       attrs = c(normalTridas=tridas.variable))
+                doc.addTag.nc("values", close = FALSE)
+                if(!is.na(tridas.variable2))
+                    doc.addTag.nc("variable", NULL,
+                                  attrs = c(normalTridas=tridas.variable2))
                 else
                     doc.addTag("variable", other.variable)
                 this.unit <- this.unitvec[j]
                 if(is.na(this.unit))
-                    doc.addTag.noCheck("unitless", NULL)
+                    doc.addTag.nc("unitless", NULL)
                 else
                     doc.addTag("unit", this.unit)
                 if(depth.present){
                     for(i in inc(1, length(series)))
-                        doc.addTag.noCheck("value", NULL,
-                                           attrs = c(count = samp.depth[i],
-                                           value = series[i]))
+                        doc.addTag.nc("value", NULL,
+                                      attrs = c(count = samp.depth[i],
+                                      value = series[i]))
                 } else{
                     for(i in inc(1, length(series)))
-                        doc.addTag.noCheck("value", NULL,
-                                           attrs = c(value = series[i]))
+                        doc.addTag.nc("value", NULL,
+                                      attrs = c(value = series[i]))
                 }
                 doc.closeTag() # </values>
                 doc.closeTag() # </derivedSeries>

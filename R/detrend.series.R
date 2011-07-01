@@ -1,12 +1,12 @@
 `detrend.series` <-
-    function(y, y.name = NULL, make.plot = TRUE,
+    function(y, y.name = "", make.plot = TRUE,
              method = c("Spline", "ModNegExp", "Mean"),
-             nyrs = NULL, f = NULL, pos.slope = FALSE)
+             nyrs = NULL, f = 0.5, pos.slope = FALSE)
 {
     known.methods <- c("Spline", "ModNegExp", "Mean")
-    method <- match.arg(arg = method,
-                        choices = known.methods,
-                        several.ok = TRUE)
+    method2 <- match.arg(arg = method,
+                         choices = known.methods,
+                         several.ok = TRUE)
     ## Remove NA from the data (they will be reinserted later)
     y2 <- y[!is.na(y)]
     ## Recode any zero values to 0.001
@@ -14,53 +14,55 @@
 
     resids <- list()
 
-    if("ModNegExp" %in% method){
+    if("ModNegExp" %in% method2){
         ## Nec or lm
         nec.func <- function(Y) {
-            a <- mean(Y[1:floor(length(Y)*0.1)])
+            a <- mean(Y[1:floor(length(Y) * 0.1)])
             b <- -0.01
-            k <- mean(Y[floor(length(Y)*0.9):length(Y)])
-            nec <- nls(formula = Y ~ a * exp(b*1:length(Y)) + k,
+            k <- mean(Y[floor(length(Y) * 0.9):length(Y)])
+            nec <- nls(formula = Y ~ a * exp(b * 1:length(Y)) + k,
                        start = list(a=a, b=b, k=k))
             if(coef(nec)[2] >= 0) stop()
             fits <- predict(nec)
             if(fits[1] < fits[length(fits)]) stop()
-            if(fits[length(fits)]<0) stop()
+            if(fits[length(fits)] < 0) stop()
             fits
         }
         ModNegExp <- try(nec.func(y2), silent=TRUE)
         if(class(ModNegExp)=="try-error") {
             ## Straight line via linear regression
             tm <- 1:length(y2)
-            lm1 <- lm(y2~tm)
+            lm1 <- lm(y2 ~ tm)
             ModNegExp <- predict(lm1)
             if(coef(lm1)[2] > 0 && !pos.slope)
                 ModNegExp <- rep(mean(y2), length(y2))
         }
-        resids$ModNegExp <- y2/ModNegExp
+        resids$ModNegExp <- y2 / ModNegExp
         do.mne <- TRUE
     } else {
         do.mne <- FALSE
     }
 
-    if("Spline" %in% method){
+    if("Spline" %in% method2){
         ## Smoothing spline
         ## "n-year spline" as the spline whose frequency response is
         ## 50%, or 0.50, at a wavelength of 67%n years if nyrs and f
         ## are NULL
-        if(is.null(nyrs)) nyrs <- floor(length(y2)*0.67)
-        if(is.null(f)) f <- 0.5
-        Spline <- ffcsaps(y=y2, x=1:length(y2), nyrs=nyrs, f=f)
-        resids$Spline <- y2/Spline
+        if(is.null(nyrs))
+            nyrs2 <- floor(length(y2) * 0.67)
+        else
+            nyrs2 <- nyrs
+        Spline <- ffcsaps(y=y2, x=1:length(y2), nyrs=nyrs2, f=f)
+        resids$Spline <- y2 / Spline
         do.spline <- TRUE
     } else {
         do.spline <- FALSE
     }
 
-    if("Mean" %in% method){
+    if("Mean" %in% method2){
         ## Fit a horiz line
         Mean <- rep(mean(y2), length(y2))
-        resids$Mean <- y2/Mean
+        resids$Mean <- y2 / Mean
         do.mean <- TRUE
     } else {
         do.mean <- FALSE
@@ -69,7 +71,6 @@
     resids <- data.frame(resids)
 
     if(make.plot){
-        if(is.null(y.name)) y.name <- ""
         op <- par(no.readonly=TRUE)
         par(mar=c(2.5, 2.5, 2.5, 0.5) + 0.1, mgp=c(1.5, 0.5, 0))
         n.rows <- 1 + ncol(resids)
@@ -121,8 +122,8 @@
     resids2[!is.na(y), ] <- resids
 
     ## Reorder columns of output to match the order of the argument
-    ## "method".  This quietly ignores any unknown methods.
-    resids2 <- resids2[, method[method %in% known.methods]]
+    ## "method".
+    resids2 <- resids2[, method2]
     ## Make sure names (years) are included if there is only one method
     if(!is.data.frame(resids2)) names(resids2) <- names(y)
 

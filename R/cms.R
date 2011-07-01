@@ -10,17 +10,18 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
         list(indices=err6, c.val=med)
     }
 ### main func
-    n.col <- ncol(rwl)
+    rwl2 <- rwl
+    n.col <- ncol(rwl2)
     if(n.col != nrow(po))
         stop("dimension problem: ", "'ncol(rw)' != 'nrow(po)'")
-    col.names <- colnames(rwl)
+    col.names <- colnames(rwl2)
     if(!all(sort(po[, 1]) == sort(col.names)))
         stop("series ids in 'po' and 'rwl' do not match")
-    rownames(rwl) <- rownames(rwl) # guard against NULL names funniness
-    n.row <- nrow(rwl)
+    rownames(rwl2) <- rownames(rwl2) # guard against NULL names funniness
+    n.row <- nrow(rwl2)
 
     ## divide each series by c curve and restore to cal years
-    rwi <- rwl
+    rwi <- rwl2
     yrs <- as.numeric(rownames(rwi))
     c.vec <- rep(as.numeric(NA), n.col)
     names(c.vec) <- col.names
@@ -30,7 +31,7 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
     }
     for(i in 1:n.col){
         the.po <- po[po[, 1] %in% col.names[i], 2]
-        this.series <- rwl[, i]
+        this.series <- rwl2[, i]
         series.yrs <- yr.range(this.series, yr.vec=yrs)
         this.series <- sortByIndex(this.series)
         no.na <- which(!is.na(this.series))

@@ -4,18 +4,61 @@
 Various .R files:
 -----------------
 
-- Parameters not changed by assignment anymore (complaint by codetools)
+- Parameters not changed by assignment anymore (complaint by
+  codetools). Applies to direct assignment; assign() etc go unnoticed by
+  codetools.
 
 File: ccf.series.rwl.R
 ----------------------
 
 - Cosmetic changes (white spaces, assignment operator)
+- Parameter 'cex' is given in the call to xyplot, like 'col.line'. Both go
+  to 'panel' in '...'.
+- Parameter 'col' removed from function 'panel'
+- Some extra steps are taken because we want to ensure correct operation
+  now when formal parameters are not changed by assignment
+
+File: chron.R
+-------------
+
+- Argument checking updated
+
+File: corr.series.rwl.R
+-----------------------
+
+- Some extra steps are taken like in ccf.series.rwl.R
+- (1 + 1 - pcrit) / 2 == 1 - pcrit / 2 (at least within floating point
+  precision)
+
+File: detrend.series.R
+----------------------
+
+- Unnecessary double checking of 'method' argument removed
+- Parameters 'f' and 'y.name' now have explicit default values
 
 File: glk.R
 -----------
 
 - Large parts rewritten
 - 'glk(ca533)' example in glk.Rd runs about 100 times faster
+
+File: morlet.R
+--------------
+
+- Removed 'param' and made 'k0=6' an explicit default in morlet.func()
+- seq(from=1, to=n) - 1 == seq(from=0, to=n-1)
+- Cosmetic changes
+
+File: series.rwl.plot.R
+-----------------------
+
+- Some extra steps are taken like in ccf.series.rwl.R
+- Graphical parameters are reset on.exit()
+
+File: write.tridas.R
+--------------------
+
+- Fixed a bug in the handling of parameter 'crn.units'
 
 2011-07-01 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.3

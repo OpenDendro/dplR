@@ -27,19 +27,20 @@ format.tucson <- (function(){
     line.term <- "\x0D\x0A" # CR+LF, ASCII carriage return and line feed
     if(!(prec == 0.01 || prec == 0.001))
         stop("'prec' must equal 0.01 or 0.001")
+    header2 <- header
     if(append) {
         if(!file.exists(fname))
             stop(gettextf("file %s does not exist, cannot append", fname))
-        if(length(header) > 0)
+        if(length(header2) > 0)
             stop("bad idea to append with 'header'")
     }
-    if(length(header) > 0){
-        if(!is.list(header)) stop("'header' must be a list")
+    if(length(header2) > 0){
+        if(!is.list(header2)) stop("'header' must be a list")
         header.names <-
             c("site.id", "site.name", "spp.code", "state.country",
               "spp", "elev", "lat", "long", "first.yr", "last.yr",
               "lead.invs", "comp.date")
-        if(!all(header.names %in% names(header)))
+        if(!all(header.names %in% names(header2)))
             stop("'header' must be a list with the following names: ",
                  paste(dQuote(header.names), collapse = ", "))
         ## Record #1: 1-6 Site ID, 10-61 Site Name, 62-65 Species
@@ -49,20 +50,20 @@ format.tucson <- (function(){
         ## Note: lat-lons are in degrees and minutes, ddmm or dddmm
         ## Record #3: 1-6 Site ID, 10-72 Lead Investigator, 73-80
         ## comp. date
-        header <- lapply(header,as.character)
-        site.id <- header$site.id[1]
-        site.name <- header$site.name[1]
-        spp.code <- header$spp.code[1]
-        state.country <- header$state.country[1]
-        spp <- header$spp[1]
-        elev <- header$elev[1]
-        lat <- header$lat[1]
-        long <- header$long[1]
-        lead.invs <- header$lead.invs[1]
-        comp.date <- header$comp.date[1]
+        header2 <- lapply(header2, as.character)
+        site.id <- header2$site.id[1]
+        site.name <- header2$site.name[1]
+        spp.code <- header2$spp.code[1]
+        state.country <- header2$state.country[1]
+        spp <- header2$spp[1]
+        elev <- header2$elev[1]
+        lat <- header2$lat[1]
+        long <- header2$long[1]
+        lead.invs <- header2$lead.invs[1]
+        comp.date <- header2$comp.date[1]
         lat.long <- ifelse(nchar(long) > 5, paste(lat, long, sep=""),
                            paste(lat, long, sep=" "))
-        yrs <- paste(header$first.yr[1], header$last.yr[1], sep=" ")
+        yrs <- paste(header2$first.yr[1], header2$last.yr[1], sep=" ")
 
         field.name <-
             c("site.id", "site.name", "spp.code", "state.country", "spp",
@@ -93,7 +94,7 @@ format.tucson <- (function(){
     ## Sort years using increasing order, reorder rwl.df accordingly
     yrs.order <- sort.list(yrs.all)
     yrs.all <- yrs.all[yrs.order]
-    rwl.df <- rwl.df[yrs.order, , drop=FALSE]
+    rwl.df2 <- rwl.df[yrs.order, , drop=FALSE]
 
     first.year <- yrs.all[1]
     last.year <- yrs.all[length(yrs.all)]
@@ -143,7 +144,7 @@ format.tucson <- (function(){
     }
     name.width <- as.integer(name.width)
     year.width <-
-        as.integer(12-name.width-nchar(opt.space)) # year ends at col 12
+        as.integer(12 - name.width - nchar(opt.space)) # year ends at col 12
 
     col.names <-
         fix.names(col.names, name.width, mapping.fname, mapping.append)
@@ -153,7 +154,7 @@ format.tucson <- (function(){
     else
         rwl.out <- file(fname, "w")
     on.exit(close(rwl.out))
-    if(length(header) > 0){
+    if(length(header2) > 0){
         cat(hdr1, line.term, file=rwl.out, sep="")
         cat(hdr2, line.term, file=rwl.out, sep="")
         cat(hdr3, line.term, file=rwl.out, sep="")
@@ -164,15 +165,15 @@ format.tucson <- (function(){
     format.year <- sprintf("%%%d.0f", year.width)
 
     for(l in 1:nseries) {
-        series <- rwl.df[, l]
+        series <- rwl.df2[, l]
         idx <- !is.na(series)
         yrs <- yrs.all[idx]
         series <- series[idx]
 
         series <- c(series, na.str)
-        yrs <- c(yrs, max(yrs)+1)
+        yrs <- c(yrs, max(yrs) + 1)
 
-        decades.vec <- yrs%/%10 * 10
+        decades.vec <- yrs %/% 10 * 10
         ## Output for completely missing decades can be disabled by using
         ## the alternate definition of the "decades" list
         decades <- seq(from=min(decades.vec), to=max(decades.vec), by=10)
@@ -204,11 +205,11 @@ format.tucson <- (function(){
             if (n.decades == 1)
                 all.years <- dec.yrs[1]:dec.yrs[length(dec.yrs)]
             else if (i == 1)
-                all.years <- dec.yrs[1]:(dec+9)
+                all.years <- dec.yrs[1]:(dec + 9)
             else if (i == n.decades)
                 all.years <- dec:dec.yrs[length(dec.yrs)]
             else
-                all.years <- dec:(dec+9)
+                all.years <- dec:(dec + 9)
             ## Mark missing data.
             if (length(all.years) > length(dec.yrs)){
                 missing.years <- setdiff(all.years, dec.yrs)

@@ -4,13 +4,13 @@
              nyrs = NULL, f = NULL, pos.slope = FALSE)
 {
     known.methods <- c("Spline", "ModNegExp", "Mean")
-    method <- match.arg(arg = method,
-                        choices = known.methods,
-                        several.ok = TRUE)
+    method2 <- match.arg(arg = method,
+                         choices = known.methods,
+                         several.ok = TRUE)
     rn <- rownames(rwl)
 
     if(!make.plot &&
-       ("Spline" %in% method || "ModNegExp" %in% method) &&
+       ("Spline" %in% method2 || "ModNegExp" %in% method2) &&
        !inherits(try(suppressWarnings(req.it <-
                                       require(iterators, quietly=TRUE)),
                      silent = TRUE),
@@ -24,7 +24,7 @@
         rwl.i <- NULL
         out <- foreach(rwl.i=it.rwl, .packages="dplR") %dopar% {
             fits <- detrend.series(rwl.i, make.plot=FALSE,
-                                   method=method, nyrs=nyrs, f=f,
+                                   method=method2, nyrs=nyrs, f=f,
                                    pos.slope=pos.slope)
             if(is.data.frame(fits))
                 rownames(fits) <- rn
@@ -35,7 +35,7 @@
         for(i in 1:ncol(rwl)){
             fits <- detrend.series(rwl[, i], y.name=y.name[i],
                                    make.plot=make.plot,
-                                   method=method, nyrs=nyrs, f=f,
+                                   method=method2, nyrs=nyrs, f=f,
                                    pos.slope=pos.slope)
             if(is.data.frame(fits))
                 rownames(fits) <- rn
@@ -43,7 +43,7 @@
         }
     }
     names(out) <- colnames(rwl)
-    if(length(method) == 1){
+    if(length(method2) == 1){
         out <- data.frame(out, row.names = rn)
         colnames(out) <- y.name
     }

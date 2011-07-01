@@ -47,15 +47,13 @@ tbrm(x, C = 9)
 \author{ Mikko Korpela }
 \seealso{ \code{\link{chron}} }
 \examples{
+tbrm(rnorm(100))
 
-  tbrm(rnorm(100))
-
-  # Compare
-  data(co021)
-  co021.rwi <- detrend(co021,method = "Spline")
-  crn1 <- apply(co021.rwi,1,tbrm)
-  crn2 <- chron(co021.rwi)
-  cor(crn1,crn2[,1])
-
+## Compare
+data(co021)
+co021.rwi <- detrend(co021, method = "Spline")
+crn1 <- apply(co021.rwi, 1, tbrm)
+crn2 <- chron(co021.rwi)
+cor(crn1, crn2[, 1])
 }
 \keyword{ misc }

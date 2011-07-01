@@ -92,9 +92,9 @@ ccf.series.rwl <- function(rwl, series,
         sig <- c(-sig, sig)
         ccf.plot <-
             xyplot(r ~ lag | bin, data = ccf.df,
-                   ylim=range(ccf.df$r, sig, na.rm=T) * 1.1,
-                   xlab=gettext("Lag", domain="R-dplR"),
-                   ylab=gettext("Correlation", domain="R-dplR"),
+                   ylim = range(ccf.df$r, sig, na.rm=T) * 1.1,
+                   xlab = gettext("Lag", domain="R-dplR"),
+                   ylab = gettext("Correlation", domain="R-dplR"),
                    col.line = NA,
                    panel = function(x, y, col, ...) {
                        panel.abline(h=seq(from=-1, to=1, by=0.1),
@@ -102,7 +102,7 @@ ccf.series.rwl <- function(rwl, series,
                        panel.abline(v=lag.vec, lty="solid", col="gray")
                        panel.abline(h=0, v=0, lwd=2)
                        panel.abline(h=sig, lwd=2, lty="dashed")
-                       col = ifelse(y > 0, "#E41A1C", "#377EB8")
+                       col <- ifelse(y > 0, "#E41A1C", "#377EB8")
                        ## segments, dots for all r
                        panel.segments(x1=x, y1=0, x2=x, y2=y, col=col, lwd=2)
                        panel.dotplot(x, y, col = col, cex = 1.25, ...)

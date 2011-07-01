@@ -44,9 +44,10 @@ dendrochronology} Kluwer Academic Publishers, Dordrecht,Netherlands, 276
 p.}
 
 \examples{
-data(ca533)
+\dontrun{data(ca533)
 ca533.glk <- glk(ca533)
 mean(ca533.glk, na.rm = TRUE)
+}
 }
 
 \keyword{ ts }

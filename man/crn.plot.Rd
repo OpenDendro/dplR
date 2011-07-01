@@ -33,20 +33,20 @@ crn.plot(crn, add.spline=FALSE, nyrs=NULL, f=0.5,...)
 \seealso{ \code{\link{chron}}
 }
 \examples{
+data(cana157)
+crn.plot(cana157)
 
-  data(cana157)
-  crn.plot(cana157)
+## Without sample depth
+cana157.mod <- data.frame(TTRSTD=cana157[, 1])
+rownames(cana157.mod) <- rownames(cana157)
+crn.plot(cana157.mod, add.spline=TRUE)
 
-  # Without sample depth
-  cana157.mod <- data.frame(TTRSTD=cana157[,1])
-  rownames(cana157.mod) <- rownames(cana157)
-  crn.plot(cana157.mod,add.spline=TRUE)
-
-  # With multiple chronologies
-  data(ca533)
-  ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
-  ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)
-  crn.plot(ca533.crn,add.spline=TRUE,nyrs=64)
+\dontrun{## With multiple chronologies
+data(ca533)
+ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
+ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)
+crn.plot(ca533.crn, add.spline=TRUE, nyrs=64)
+}
 }
 \keyword{ hplot }
 

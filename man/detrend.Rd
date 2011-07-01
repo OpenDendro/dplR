@@ -50,18 +50,17 @@
 \author{ Andy Bunn. Improved by Mikko Korpela. }
 \seealso{ \code{\link{detrend.series}} }
 \examples{
-  data(ca533)
-  # Detrend using modified expontential decay. Returns a data.frame
-  ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
-  # Detrend using all methods. Returns a list
-  ca533.rwi <- detrend(rwl = ca533)
+data(ca533)
+## Detrend using modified expontential decay. Returns a data.frame
+ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 
-  \dontrun{
-  # Save a pdf of all series
-    pdf("foo.pdf")
-      ca533.rwi <- detrend(rwl = ca533, method = c("Spline", "ModNegExp"),
-        make.plot=T)
-    dev.off() }
-
+\dontrun{## Detrend using all methods. Returns a list
+ca533.rwi <- detrend(rwl = ca533)
+## Save a pdf of all series
+pdf("foo.pdf")
+ca533.rwi <- detrend(rwl = ca533, method = c("Spline", "ModNegExp"),
+                     make.plot = TRUE)
+dev.off()
+}
 }
 \keyword{ misc }

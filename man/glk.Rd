@@ -30,9 +30,9 @@
   A \code{matrix} with the Gleichlaeufigkeit for all possible
   combinations of records. If two curves have less than 3 years of
   overlap, Gleichlaeufigkeit cannot be computed, and NA is returned.
-   }
+}
 
-\author{ Christian Zang. A small patch by Mikko Korpela. }
+\author{ Christian Zang.  Patched and improved by Mikko Korpela. }
 
 \references{ Eckstein, D., Bauch J. (1969) \emph{Beitrag zur
 Rationalisierung eines dendrochronologischen Verfahrens und zur Analyse
@@ -40,14 +40,13 @@ seiner Aussagesicherheit} Forstwissenschaftliches Centralblatt
 88:230-250.
 
 Schweingruber, F.H. (1988) \emph{Tree rings: basics and applications of
-dendrochronology} Kluwer Academic Publishers, Dordrecht,Netherlands, 276
+dendrochronology} Kluwer Academic Publishers, Dordrecht, Netherlands, 276
 p.}
 
 \examples{
-\dontrun{data(ca533)
+data(ca533)
 ca533.glk <- glk(ca533)
 mean(ca533.glk, na.rm = TRUE)
-}
 }
 
 \keyword{ ts }

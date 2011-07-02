@@ -69,18 +69,18 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
   years encapsulated by each bin.
 
 }
-\author{ Andy Bunn }
+\author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{corr.rwl.seg}}, \code{\link{corr.series.seg}},
   \code{\link{skel.plot}}, \code{\link{series.rwl.plot}}
 }
 \examples{
-  data(co021)
-  dat=co021
-  #create a missing ring by deleting a year of growth in a random series
-  flagged=dat$'641143'
-  flagged=c(NA,flagged[-325])
-  names(flagged)=rownames(dat)
-  dat$'641143'=NULL
-  ccf.100=ccf.series.rwl(rwl=dat,series=flagged,seg.length=100)
+data(co021)
+dat <- co021
+## Create a missing ring by deleting a year of growth in a random series
+flagged <- dat$"641143"
+flagged <- c(NA, flagged[-325])
+names(flagged) <- rownames(dat)
+dat$"641143" <- NULL
+ccf.100 <- ccf.series.rwl(rwl=dat, series=flagged, seg.length=100)
 }
 \keyword{ manip }

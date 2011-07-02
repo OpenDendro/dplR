@@ -32,7 +32,7 @@ i.detrend.series(y, y.name = NULL, nyrs = NULL, f = 0.5, pos.slope = FALSE)
   used with names set to colnames(y). These are typically years. A plot is
   also produced and the user chooses a method through keyboard input.
 }
-\author{ Andy Bunn }
+\author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{detrend.series}} }
 \keyword{ iplot }
 

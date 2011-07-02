@@ -91,7 +91,7 @@ ccf.series.rwl <- function(rwl, series,
         ccf.df$bin <- factor(ccf.df$bin,
                              levels(ccf.df$bin)[order(foo$ord.char)])
 
-        sig <- qnorm((1 + 1 - pcrit) / 2) / sqrt(seg.length)
+        sig <- qnorm(1 - pcrit / 2) / sqrt(seg.length)
         sig <- c(-sig, sig)
         ccf.plot <-
             xyplot(r ~ lag | bin, data = ccf.df,

@@ -23,7 +23,7 @@ File: chron.R
 
 - Argument checking updated
 
-File: corr.series.rwl.R
+File: corr.series.seg.R
 -----------------------
 
 - Some extra steps are taken like in ccf.series.rwl.R

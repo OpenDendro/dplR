@@ -43,6 +43,11 @@ File: detrend.series.R
 - Parameters 'f' and 'y.name' now have explicit default values
 - Graphical parameters are reset on.exit()
 
+File: ffcsaps.R
+---------------
+
+- Uses complete parameter names in calls to sort
+
 File: glk.R
 -----------
 

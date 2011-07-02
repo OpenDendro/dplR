@@ -3,7 +3,7 @@ ffcsaps <- function(y, x=1:length(y), nyrs=length(y)/2, f=0.5) {
     ffppual <- function(breaks, c, k, x, left){
         if (any(diff(x) < 0)){
             tosort <- TRUE
-            tsort <- sort(x, method="sh", index=TRUE)
+            tsort <- sort(x, method="shell", index.return=TRUE)
             x2 <- tsort$x
             ix <- tsort$ix
         } else{
@@ -30,7 +30,8 @@ ffcsaps <- function(y, x=1:length(y), nyrs=length(y)/2, f=0.5) {
     }
 
     ffsorted <- function(meshsites, sites) {
-        index <- sort(c(meshsites, sites), method="sh", index=TRUE)$ix
+        index <- sort(c(meshsites, sites),
+                      method="shell", index.return=TRUE)$ix
         seq(from=1, to=length(index))[index>length(meshsites)] -
             seq(from=1, to=length(sites))
     }
@@ -117,7 +118,7 @@ ffcsaps <- function(y, x=1:length(y), nyrs=length(y)/2, f=0.5) {
                  3 * c3[-n],
                  diff(yi) / diff.xi - diff.xi * (2 * c3[-n] + c3[-1]),
                  yi[-n])
-    finalsort <- sort(c(test0, x3), method="sh", index=TRUE)
+    finalsort <- sort(c(test0, x3), method="shell", index.return=TRUE)
     tmp <-
         unique(data.frame(cbind(finalsort$x,
                                 c(ffppual(xi, ccc, 4, test0, 3),

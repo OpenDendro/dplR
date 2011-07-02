@@ -4,9 +4,9 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.4.3\n"
+"Project-Id-Version: dplR 1.4.4\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-06-29 15:34+0300\n"
+"POT-Creation-Date: 2011-07-02 22:45+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -112,6 +112,9 @@ msgid "the data abscissae must be distinct"
 msgstr ""
 
 msgid "abscissa and ordinate vector must be of the same length"
+msgstr ""
+
+msgid "Intersection of series %d and %d is not contiguous. NA returned."
 msgstr ""
 
 msgid "characters outside a-z, A-Z, 0-9 present: renaming series"

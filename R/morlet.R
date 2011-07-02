@@ -37,8 +37,8 @@ morlet <- function(y1, x1=1:length(y1), p2=NULL, dj=0.25, siglvl=0.95){
     if(length(x1) != length(y1)) stop("'x1' and 'y1' lengths differ")
     n <- length(y1)
     n1 <- n
-    base2 <- trunc(log(n) / log(2) + 0.4999)   # power of 2 nearest to N
-    if(is.null(p2)) J <- trunc((log(n * Dt / s0) / log(2)) / dj) # [Eqn(10)]
+    base2 <- trunc(log2(n) + 0.4999)   # power of 2 nearest to N
+    if(is.null(p2)) J <- trunc(log2(n * Dt / s0) / dj) # [Eqn(10)]
     else J <- p2 / dj
 
     if(is.null(lag1)){

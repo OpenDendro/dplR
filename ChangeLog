@@ -73,6 +73,7 @@ File: morlet.R
 
 - Removed 'param' and made 'k0=6' an explicit default in morlet.func()
 - seq(from=1, to=n) - 1 == seq(from=0, to=n-1)
+- log2(x) instead of log(x) / log(2)
 - Cosmetic changes
 
 File: series.rwl.plot.R
@@ -80,6 +81,11 @@ File: series.rwl.plot.R
 
 - Some extra steps are taken like in ccf.series.rwl.R
 - Graphical parameters are reset on.exit()
+
+File: wavelet.plot.R
+--------------------
+
+- log2(x) instead of log(x) / log(2)
 
 File: write.tridas.R
 --------------------

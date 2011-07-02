@@ -1,10 +1,10 @@
-`i.detrend` <- function(rwl, y.name=colnames(rwl), nyrs = NULL, f = NULL,
+`i.detrend` <- function(rwl, y.name=colnames(rwl), nyrs = NULL, f = 0.5,
                         pos.slope = FALSE)
 {
     out <- rwl
     n.col <- ncol(rwl)
     fmt <- gettext("Detrend series %d of %d\n", domain="R-dplR")
-    for(i in 1:n.col){
+    for(i in inc(1, n.col)){
         cat(sprintf(fmt, i, n.col))
         fits <- i.detrend.series(rwl[, i], y.name=y.name[i], nyrs = nyrs,
                                  f = f, pos.slope = pos.slope)

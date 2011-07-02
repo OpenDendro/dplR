@@ -1,4 +1,4 @@
-`i.detrend.series` <- function(y, y.name=NULL, nyrs = NULL, f = NULL,
+`i.detrend.series` <- function(y, y.name=NULL, nyrs = NULL, f = 0.5,
                                pos.slope = FALSE)
 {
     fits <- detrend.series(y, y.name, make.plot=TRUE, nyrs = nyrs, f = f,

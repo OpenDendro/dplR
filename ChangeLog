@@ -48,6 +48,16 @@ File: glk.R
 - Large parts rewritten
 - 'glk(ca533)' example in glk.Rd runs about 100 times faster
 
+File: i.detrend.R
+-----------------
+
+- Parameter 'f' now has an explicit default value
+
+File: i.detrend.series.R
+------------------------
+
+- Parameter 'f' now has an explicit default value
+
 File: morlet.R
 --------------
 

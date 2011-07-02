@@ -1,7 +1,7 @@
 `detrend` <-
     function(rwl, y.name = colnames(rwl), make.plot = FALSE,
              method=c("Spline", "ModNegExp", "Mean"),
-             nyrs = NULL, f = NULL, pos.slope = FALSE)
+             nyrs = NULL, f = 0.5, pos.slope = FALSE)
 {
     known.methods <- c("Spline", "ModNegExp", "Mean")
     method2 <- match.arg(arg = method,

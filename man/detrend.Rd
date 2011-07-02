@@ -7,7 +7,7 @@
 }
 \usage{
   detrend(rwl, y.name = colnames(rwl), make.plot = FALSE,
-  method=c("Spline", "ModNegExp", "Mean"), nyrs = NULL, f = NULL,
+  method=c("Spline", "ModNegExp", "Mean"), nyrs = NULL, f = 0.5,
   pos.slope = FALSE)
 
 }
@@ -25,7 +25,7 @@
   \item{nyrs}{ a number giving the rigidity of the smoothing spline, defaults to
     0.67 of series length if nyrs is NULL. }
   \item{f}{ a number between 0 and 1 giving the frequency response or
-    wavelength cutoff. Defaults to 0.5 if f is NULL. }
+    wavelength cutoff. Defaults to 0.5. }
   \item{pos.slope}{ a logical flag. Will allow for a positive slope to be used
     in method \dQuote{ModNegExp}. If FALSE the line will be horizontal. }
 }

@@ -30,11 +30,17 @@ File: corr.series.rwl.R
 - (1 + 1 - pcrit) / 2 == 1 - pcrit / 2 (at least within floating point
   precision)
 
+File: detrend.R
+---------------
+
+- Parameter 'f' now has an explicit default value
+
 File: detrend.series.R
 ----------------------
 
 - Unnecessary double checking of 'method' argument removed
 - Parameters 'f' and 'y.name' now have explicit default values
+- Graphical parameters are reset on.exit()
 
 File: glk.R
 -----------

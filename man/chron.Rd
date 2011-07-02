@@ -41,12 +41,10 @@ chron(x, prefix = "xxx", biweight = TRUE, prewhiten = FALSE)
   \code{\link[stats]{ar}}, \code{\link{chron}}
 }
 \examples{
-
-  data(ca533)
-  ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
-  ca533.crn <- chron(ca533.rwi, prefix = "CAM")
-  # With residual chron
-  ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)
-
+data(ca533)
+ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
+ca533.crn <- chron(ca533.rwi, prefix = "CAM")
+## With residual chron
+ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)
 }
 \keyword{ manip }

@@ -17,6 +17,8 @@ File: ccf.series.rwl.R
 - Parameter 'col' removed from function 'panel'
 - Some extra steps are taken because we want to ensure correct operation
   now when formal parameters are not changed by assignment
+- (1 + 1 - pcrit) / 2 == 1 - pcrit / 2 (at least within floating point
+  precision), so we use the latter which is a simpler form
 
 File: chron.R
 -------------
@@ -27,8 +29,7 @@ File: corr.series.seg.R
 -----------------------
 
 - Some extra steps are taken like in ccf.series.rwl.R
-- (1 + 1 - pcrit) / 2 == 1 - pcrit / 2 (at least within floating point
-  precision)
+- (1 + 1 - pcrit) / 2 == 1 - pcrit / 2
 
 File: detrend.R
 ---------------
@@ -47,6 +48,11 @@ File: glk.R
 
 - Large parts rewritten
 - 'glk(ca533)' example in glk.Rd runs about 100 times faster
+
+File: hanning.R
+---------------
+
+- Slightly more efficient computation
 
 File: i.detrend.R
 -----------------

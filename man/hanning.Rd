@@ -22,19 +22,17 @@
   \emph{ Discrete-Time Signal Processing (2nd Edition). } Prentice-Hall.
   ISBN-13: 978-0137549207.
 }
-\author{ Andy Bunn }
+\author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link[stats]{filter} } }
 
 \examples{
-
-  data(ca533)
-  yrs=as.numeric(rownames(ca533))
-  y=ca533[,1]
-  yrs=yrs[!is.na(y)]
-  y=y[!is.na(y)]
-  plot(yrs,y,xlab='Years',ylab='Series1 (mm)',type='l',col='grey')
-  lines(yrs,hanning(y,n=9),col='red',lwd=2)
-  lines(yrs,hanning(y,n=21),col='blue',lwd=2)
-
+data(ca533)
+yrs <- as.numeric(rownames(ca533))
+y <- ca533[, 1]
+yrs <- yrs[!is.na(y)]
+y <- y[!is.na(y)]
+plot(yrs, y, xlab='Years', ylab='Series1 (mm)', type='l', col='grey')
+lines(yrs, hanning(y, n=9), col='red', lwd=2)
+lines(yrs, hanning(y, n=21), col='blue', lwd=2)
 }
 \keyword{ misc }

@@ -72,6 +72,7 @@
 
     if(make.plot){
         op <- par(no.readonly=TRUE)
+        on.exit(par(op))
         par(mar=c(2.5, 2.5, 2.5, 0.5) + 0.1, mgp=c(1.5, 0.5, 0))
         n.rows <- 1 + ncol(resids)
         mat <- matrix(1:n.rows, n.rows, 1)
@@ -110,9 +111,6 @@
                  ylab=gettext("RWI", domain="R-dplR"))
             abline(h=1)
         }
-
-        ## Reset to previous settings:
-        par(op)
     }
 
     resids2 <- matrix(NA, ncol=ncol(resids), nrow=length(y))

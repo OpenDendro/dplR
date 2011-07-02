@@ -57,6 +57,10 @@ File: i.detrend.series.R
 ------------------------
 
 - Parameter 'f' now has an explicit default value
+- Fixed a bug where some the values of some parameters were not reflected
+  in the result
+- Saved result is used instead of detrending twice (once with all methods,
+  then with selected method)
 
 File: morlet.R
 --------------

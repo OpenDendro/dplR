@@ -12,8 +12,12 @@
     for(i in 1:length(col.names))
         cat(i, ": ", col.names[i], "\n", sep="")
     ans <- as.integer(readline(gettext("Enter a number ", domain="R-dplR")))
-    if(ans < 1 || ans > i || is.na(ans))
-        stop("number out of range or not an integer")
+    while(ans < 1 || ans > i || is.na(ans)){
+        message("number out of range or not an integer\n")
+        ans <- as.integer(readline(gettext("Enter a number ", domain="R-dplR")))
+    }
     method <- col.names[ans]
-    detrend.series(y, y.name, make.plot=FALSE, method=method)
+    res <- fits[, method]
+    names(res) <- names(y)
+    res
 }

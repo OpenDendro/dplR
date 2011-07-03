@@ -68,10 +68,13 @@ File: i.detrend.series.R
 ------------------------
 
 - Parameter 'f' now has an explicit default value
-- Fixed a bug where some the values of some parameters were not reflected
-  in the result
+- Fixed a bug where the values of the parameters 'f', 'nyrs' and
+  'pos.slope' were not reflected in the returned result, only in the
+  picture.
 - Saved result is used instead of detrending twice (once with all methods,
   then with selected method)
+- "Enter a number" is asked until a valid number is received. Normal
+  interrupt sequences work.
 
 File: morlet.R
 --------------

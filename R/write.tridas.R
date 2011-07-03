@@ -516,6 +516,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
             }
         } else{
             data.unit <- "millimetres"
+            rwl.df2 <- rwl.df
         }
         tridas.measuring.method2 <- tridas.measuring.method
         if(!all(is.na(tridas.measuring.method2))){

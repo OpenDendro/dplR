@@ -1,4 +1,5 @@
-* CHANGES IN dplR VERSION 1.4.4 pre-release
+2011-07-03 Mikko Korpela
+* CHANGES IN dplR VERSION 1.4.4
 * Changes in documentation will not be reported anymore
 
 Various .R files:
@@ -53,6 +54,9 @@ File: glk.R
 
 - Large parts rewritten
 - 'glk(ca533)' example in glk.Rd runs about 100 times faster
+- Now explicitly requires that the non-NA overlap between series be
+  contiguous, which should be true in dplR. This was not checked in
+  previous versions.
 
 File: hanning.R
 ---------------

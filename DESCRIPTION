@@ -7,7 +7,7 @@ Author: Andy Bunn with major additions from Mikko Korpela and other
         significant contributions from Franco Biondi and Christian Zang
 Maintainer: Andy Bunn <andy.bunn@wwu.edu>
 Depends: R (>= 2.11.0)
-Imports: digest (>= 0.2.3), grid, lattice (>= 0.13-6), XML (>= 1.98-0)
+Imports: digest (>= 0.2.3), grid, lattice (>= 0.13-6), XML (>= 2.1-0)
 Suggests: foreach, iterators
 Description: This package contains functions for performing tree-ring
         analyses, IO, and graphics.

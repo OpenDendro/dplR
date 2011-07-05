@@ -13,6 +13,12 @@ File: tbrm.c
   from median, returns NaN instead of NA.  Finally, this is consistent
   with tbrm() coded in R, prior to dplR 1.2.7.
 
+File: write.compact.R
+---------------------
+
+- Fixed two precedence issues that luckily didn't result in erroneous
+  behaviour of the function
+
 2011-07-03 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.4
 * Changes in documentation will not be reported anymore

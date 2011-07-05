@@ -108,9 +108,7 @@ void tbrm(double *x_const, int *n_ptr, double *C_ptr, double *result){
 	/* Not the usual 'sum of data divided by sum of ones' */
 	*result = msum(wtx, my_count, &tmp) / msum(wt, my_count, &tmp);
     } else{ /* Nothing to sum */
-	/* For the sake of consistency with the R implementation of
-	   tbrm (replaced by the C implementation in dplR >= 1.2.7) */
-	*result = NA_REAL;
+	*result = R_NaN;
     }
     return;
 }

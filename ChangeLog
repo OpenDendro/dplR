@@ -1,3 +1,12 @@
+* CHANGES IN dplR VERSION 1.4.5
+
+File: tbrm.c
+------------
+
+- "Nothing to sum" case, when there are some numbers but all are too far
+  from median, returns NaN instead of NA.  Finally, this is consistent
+  with tbrm() coded in R, prior to dplR 1.2.7.
+
 2011-07-03 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.4
 * Changes in documentation will not be reported anymore

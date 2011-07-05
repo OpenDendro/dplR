@@ -13,7 +13,7 @@ combine.rwl <- function(x, y = NULL) {
             min.year <- min(min.x, min.y)
             years <- min.year:max(max.x, max.y)
             new <- matrix(NA, nrow = length(years), ncol = dim2)
-            new[(min.x-min.year+1):(max.x-min.year+1), 1:dim.x2] <-
+            new[(min.x-min.year+1):(max.x-min.year+1), seq_len(dim.x2)] <-
                 as.matrix(x)
             new[(min.y-min.year+1):(max.y-min.year+1), (dim.x2+1):dim2] <-
                 as.matrix(y)

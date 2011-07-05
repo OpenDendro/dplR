@@ -74,7 +74,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     rownames(res.mcor) <- series.yrs2
 
     ## loop through bins
-    for(j in 1:nbins){
+    for(j in seq_len(nbins)){
         mask <- yrs%in%seq(from=bins[j, 1], to=bins[j, 2])
         ## cor is NA if there is not complete overlap
         if(!any(mask) ||
@@ -98,7 +98,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     overall.cor[2] <- tmp$p.val
 
     ## moving correlation
-    for(i in 1:(nyrs - seg.length)){
+    for(i in seq_len(nyrs - seg.length)){
         mask <- i:(i + seg.length)
         tmp <- cor.test(series2[mask], master[mask],
                         method = "spearman", alternative = "g")
@@ -130,7 +130,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
         axis(2)
         box()
         ## lines bins
-        for(i in seq(from=1, to=nbins)){
+        for(i in seq_len(nbins)){
             xx <- c(bins[i, ], recursive=TRUE)
             yy <- c(res.cor[i], res.cor[i])
             lines(xx, yy, lwd=2)

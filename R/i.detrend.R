@@ -4,7 +4,7 @@
     out <- rwl
     n.col <- ncol(rwl)
     fmt <- gettext("Detrend series %d of %d\n", domain="R-dplR")
-    for(i in inc(1, n.col)){
+    for(i in seq_len(n.col)){
         cat(sprintf(fmt, i, n.col))
         fits <- i.detrend.series(rwl[, i], y.name=y.name[i], nyrs = nyrs,
                                  f = f, pos.slope = pos.slope)

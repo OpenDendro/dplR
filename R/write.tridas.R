@@ -6,7 +6,7 @@ common.prefix <- function(cnames){
     for(i in dec(min(n.char), 1)){
         first.prefix <- substr(cnames[1], 1, i)
         prefix.match <- TRUE
-        for(j in inc(2,n))
+        for(j in inc(2, n))
             if(first.prefix != substr(cnames[j], 1, i)){
                 prefix.match <- FALSE
                 break
@@ -201,7 +201,7 @@ expand.metadata <- function(md.in, crn, default.value=""){
         } else{
             md.in2 <- rep(md.in, length.out=length(crn))
             md.out <- list()
-            for(k in inc(1, length(crn)))
+            for(k in seq_along(crn))
                 md.out[[k]] <- rep(md.in2[k], length(crn[[k]]))
         }
     }
@@ -380,7 +380,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
     doc.addTag("description", project.info$description[1])
     acronym.present <- "acronym" %in% lab.names
     address.order <- address.order[address.order %in% lab.names]
-    for(i in 1:nrow(lab.info)){
+    for(i in seq_len(nrow(lab.info))){
         ## <laboratory>
         doc.addTag.nc("laboratory", close = FALSE)
         if(identifier.present){
@@ -416,7 +416,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
     doc.addTag("period", project.info$period[1])
 
     if(research.present){
-        for(i in 1:nrow(research.info)){
+        for(i in seq_len(nrow(research.info))){
             ## <research>
             doc.addTag.nc("research", close = FALSE)
             doc.addTag("identifier",
@@ -442,23 +442,25 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
         ids2 <- ids
         titles2 <- titles
         if(is.null(ids2)){
-            ids2 <- data.frame(tree = 1:n.col,
-                               core = rep(1,n.col),
-                               radius = rep(1,n.col),
-                               measurement = rep(1,n.col))
+            ones <- rep(1, n.col)
+            ids2 <- data.frame(tree = seq_len(n.col),
+                               core = ones,
+                               radius = ones,
+                               measurement = ones)
         } else if(is.data.frame(ids2) && nrow(ids2) == n.col){
             ncol.ids <- ncol(ids2)
             if(ncol.ids == 2){
+                ones <- rep(1, n.col)
                 if(!all(c("tree","core") %in% names(ids2)))
                     stop("2-col 'ids' needs \"tree\" and \"core\" columns")
                 ids2 <- data.frame(ids2,
-                                   radius = rep(1,n.col),
-                                   measurement = rep(1,n.col))
+                                   radius = ones,
+                                   measurement = ones)
             } else if(ncol.ids == 3){
                 if(!all(c("tree","core","radius") %in% names(ids2)))
                     stop("3-col 'ids' needs \"tree\", \"core\", and \"radius\" columns")
                 ids2 <- data.frame(ids2,
-                                   measurement = rep(1,n.col))
+                                   measurement = rep(1, n.col))
             } else if(ncol.ids == 4){
                 if(!all(c("tree","core","radius","measurement") %in%
                         names(ids2)))
@@ -520,7 +522,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
         }
         tridas.measuring.method2 <- tridas.measuring.method
         if(!all(is.na(tridas.measuring.method2))){
-            for(k in inc(1, length(tridas.measuring.method2))){
+            for(k in seq_along(tridas.measuring.method2)){
                 if(!is.na(this.mm <- tridas.measuring.method2[k]))
                     tridas.measuring.method2[k] <-
                         tridas.vocabulary("measuring method", term=this.mm)
@@ -850,7 +852,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
                             doc.addTag("variable", other.variable)
                         doc.addTag.nc("unit", NULL,
                                       attrs = c(normalTridas = data.unit))
-                        for(i in inc(1, length(series)))
+                        for(i in seq_along(series))
                             doc.addTag.nc("value", NULL,
                                           attrs = c(value = series[i]))
                         doc.closeTag() # </values>
@@ -867,7 +869,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
 
     ## Write to file -- things related to crn / <derivedSeries>
     if(!is.null(crn2)){
-        for(i in inc(1, length(crn2))){
+        for(i in seq_along(crn2)){
             this.frame <- crn2[[i]]
             yrs.all <- as.numeric(rownames(this.frame))
             crn.names <- names(this.frame)
@@ -875,13 +877,13 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
             n.depth <- length(depth.idx)
             if(n.depth > 0){
                 depth.present <- TRUE
-                series.idx <- setdiff(inc(1,length(crn.names)), depth.idx)
+                series.idx <- setdiff(seq_along(crn.names), depth.idx)
                 n.series <- length(series.idx)
                 depth.idx <- rep(depth.idx, length.out = n.series)
             } else{
                 depth.present <- FALSE
                 n.series <- length(crn.names)
-                series.idx <- inc(1,n.series)
+                series.idx <- seq_len(n.series)
             }
             this.typevec <- as.character(crn.types2[[i]])
             n.type <- length(this.typevec)
@@ -906,7 +908,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
             if(depth.present){
                 n.depth <- length(depth.idx)
             }
-            for(j in inc(1, n.series)){
+            for(j in seq_len(n.series)){
                 ## <derivedSeries>
                 this.idx <- series.idx[j]
                 series <- as.numeric(this.frame[, this.idx])
@@ -976,12 +978,12 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
                 else
                     doc.addTag("unit", this.unit)
                 if(depth.present){
-                    for(i in inc(1, length(series)))
+                    for(i in seq_along(series))
                         doc.addTag.nc("value", NULL,
                                       attrs = c(count = samp.depth[i],
                                       value = series[i]))
                 } else{
-                    for(i in inc(1, length(series)))
+                    for(i in seq_along(series))
                         doc.addTag.nc("value", NULL,
                                       attrs = c(value = series[i]))
                 }

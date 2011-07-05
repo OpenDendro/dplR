@@ -80,15 +80,15 @@
     yrs.col <- rw / 2 # n years per row
     n <- length(skel)
     n.rows <- ceiling(n / yrs.col)
-    m <- 1:n.rows
-    row.index <- rep(m, each = yrs.col)[1:n]
+    m <- seq_len(n.rows)
+    row.index <- rep(m, each = yrs.col)[seq_len(n)]
     skel.df <- data.frame(yr=rw.df$yr, skel)
     if(plot){
         ## master page
         grid.newpage()
         vps <- list()
         y <- ph
-        for (i in 1:min(n.rows,7)) {
+        for (i in seq_len(min(n.rows, 7))) {
             y <- y - (rh + spcr)
             vps[[i]] <-
                 viewport(x=unit(3, "mm"),
@@ -107,7 +107,7 @@
         tmp.1 <- seq(from=0, to=rw, by=2)
         tmp.2 <- seq(from=0, to=rh, by=2)
         tmp.3 <- seq(from=0, to=rw, by=20)
-        for (i in 1:n.rows) {
+        for (i in m) {
 
             seekViewport(LETTERS[i])
             ## working code goes here - e.g., skelplot!
@@ -138,7 +138,7 @@
             ticks <- seq(from=0, to=rw / 2, by=10)
             init.lab <- min(skel.sub$yr)
             x.labs <- seq(from=init.lab, length.out = length(ticks), by=10)
-            for(j in 1:length(ticks))
+            for(j in seq_along(ticks))
                 if(!master)
                     grid.text(label = x.labs[j],
                               x=unit(ticks[j] * 2, "mm"),
@@ -152,7 +152,7 @@
                               just = c("center", "top"),
                               gp = gpar(fontsize=10))
             ## plot data
-            for(j in 1:length(skel.sub$yr)){
+            for(j in seq_along(skel.sub$yr)){
                 if(!is.na(skel.sub$skel[j])){
                     if(!master)
                         grid.lines(x=unit(c((j - 1) * 2, (j - 1) * 2), "mm"),

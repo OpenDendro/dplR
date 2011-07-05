@@ -11,7 +11,8 @@ sea <- function(x, key, lag = 5, resample = 1000) {
     se.table <- matrix(NA, ncol = m, nrow = n)
     se.unscaled.table <- se.table
     yrs.base <- (-lag):(m - lag - 1)
-    for (i in 1:n) {
+    seq.n <- seq_len(n)
+    for (i in seq.n) {
         yrs <- as.character(key[i] + yrs.base)
         se.table[i, ] <- x.scaled[yrs, ]
         se.unscaled.table[i, ] <- x.unscaled[yrs, ]
@@ -20,10 +21,10 @@ sea <- function(x, key, lag = 5, resample = 1000) {
     se.unscaled <- colMeans(se.unscaled.table, na.rm = T)
     re.table <- matrix(NA, ncol = m, nrow = resample)
     row.names <- as.numeric(rownames(x.scaled))
-    for (k in 1:resample) {
+    for (k in seq_len(resample)) {
         re.subtable <- matrix(NA, ncol = m, nrow = n)
         rand.key <- sample(row.names, n, replace = T)
-        for (i in 1:n)
+        for (i in seq.n)
             re.subtable[i, ] <-
                 x.scaled[as.character(rand.key[i] + yrs.base), ]
         re.table[k, ] <- colMeans(re.subtable, na.rm = T)
@@ -31,7 +32,7 @@ sea <- function(x, key, lag = 5, resample = 1000) {
     ## calculate significance for each (lagged) year
     p <- rep(as.numeric(NA), m)
     w <- resample
-    for (i in 1:m) {
+    for (i in seq_len(m)) {
         if (is.na(se[i])) {
             warning(gettextf("NA result at position %d. ", i),
                     "You could check whether 'key' years are in range.")

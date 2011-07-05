@@ -24,7 +24,7 @@ wavelet.plot <-
     ## Expand signif --> (length(wave.list$Scale))x(N) array
     Signif <- t(matrix(Signif, dim(wave)[2], dim(wave)[1]))
     ## Where ratio > 1, power is significant
-    Signif <- Power/Signif
+    Signif <- Power / Signif
 
     ## Period is in years, period2 is in powers of 2
     period2 <- log2(period)
@@ -41,6 +41,7 @@ wavelet.plot <-
     par.orig <- par(c("mar", "las", "mfrow"))
     on.exit(par(par.orig))
     nlevels <- length(wavelet.levels)
+    seq.level <- seq_len(nlevels - 1)
     key.labs <- formatC(wavelet.levels, digits = 4, format = "f")
     asp <- NA
     xaxs <- "i"
@@ -66,8 +67,8 @@ wavelet.plot <-
         plot.new()
         plot.window(ylim=c(1, nlevels), xlim=c(0, 1),
                     xaxs=xaxs, yaxs=yaxs, asp=asp)
-        rect(0, 1:(nlevels-1), 1, 2:nlevels, col = key.cols)
-        axis(4, at=1:length(wavelet.levels), labels=key.labs)
+        rect(0, seq.level, 1, 2:nlevels, col = key.cols)
+        axis(4, at=seq_along(wavelet.levels), labels=key.labs)
         ## add units
         title(key.lab, cex.main=1)
         ## plot 2: contour-image
@@ -111,7 +112,7 @@ wavelet.plot <-
                 nyrs2 <- length(tmp) * 0.33
             else
                 nyrs2 <- nyrs
-            tmp <- ffcsaps(y = tmp, x = 1:length(tmp), nyrs = nyrs2, f = f)
+            tmp <- ffcsaps(y = tmp, x = seq_along(tmp), nyrs = nyrs2, f = f)
             spl[!is.na(spl)] <- tmp
             lines(x, spl, col = "red", lwd = 2)
         }
@@ -130,8 +131,8 @@ wavelet.plot <-
         plot.new()
         plot.window(xlim=c(1, nlevels), ylim=c(0, 1),
                     xaxs=xaxs, yaxs=yaxs, asp=asp)
-        rect(1:(nlevels-1), 0, 2:nlevels, 1, col = key.cols)
-        axis(1, at=1:length(wavelet.levels), labels=key.labs)
+        rect(seq.level, 0, 2:nlevels, 1, col = key.cols)
+        axis(1, at=seq_along(wavelet.levels), labels=key.labs)
         ## add units
         title(sub=key.lab, cex.sub=1, line=1.5)
         ## plot 2: contour-image
@@ -175,7 +176,7 @@ wavelet.plot <-
                 nyrs2 <- length(tmp) * 0.33
             else
                 nyrs2 <- nyrs
-            tmp <- ffcsaps(y = tmp, x = 1:length(tmp), nyrs = nyrs2, f = f)
+            tmp <- ffcsaps(y = tmp, x = seq_along(tmp), nyrs = nyrs2, f = f)
             spl[!is.na(spl)] <- tmp
             lines(x, spl, col = "red", lwd = 2)
         }

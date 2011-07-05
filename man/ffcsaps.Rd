@@ -6,7 +6,7 @@
   a wavelength of \code{f}.
 }
 \usage{
-  ffcsaps(y,x=1:length(y),nyrs=length(y)/2,f=0.5)
+  ffcsaps(y,x=seq_along(y),nyrs=length(y)/2,f=0.5)
 }
 \arguments{
   \item{y}{ a vector, typically a tree-ring series. }

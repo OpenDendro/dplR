@@ -24,7 +24,8 @@
     series.stats$sens2 <- apply(rwl, 2, sens2)
     series.stats$gini <- apply(rwl, 2, gini.coef)
     series.stats$ar1 <- apply(rwl, 2, acf1)
-    series.stats[, -(1:4)] <- round(series.stats[, -(1:4)], 3)
+    seq.temp <- -seq_len(4)
+    series.stats[, seq.temp] <- round(series.stats[, seq.temp], 3)
 
     series.stats
 }

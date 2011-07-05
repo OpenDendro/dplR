@@ -10,8 +10,8 @@ bai.out <- function(rwl, diam = NULL) {
 
     out <- rwl
     ## vector of years
-    n.vec <- inc(1, nrow(rwl))
-    for(i in inc(1, ncol(rwl))){
+    n.vec <- seq_len(nrow(rwl))
+    for(i in seq_len(ncol(rwl))){
         ## series to work with
         dat <- rwl[, i]
         ## strip out data from NA

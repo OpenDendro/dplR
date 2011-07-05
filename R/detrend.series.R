@@ -17,10 +17,10 @@
     if("ModNegExp" %in% method2){
         ## Nec or lm
         nec.func <- function(Y) {
-            a <- mean(Y[1:floor(length(Y) * 0.1)])
+            a <- mean(Y[seq_len(floor(length(Y) * 0.1))])
             b <- -0.01
             k <- mean(Y[floor(length(Y) * 0.9):length(Y)])
-            nec <- nls(formula = Y ~ a * exp(b * 1:length(Y)) + k,
+            nec <- nls(formula = Y ~ a * exp(b * seq_along(Y)) + k,
                        start = list(a=a, b=b, k=k))
             if(coef(nec)[2] >= 0) stop()
             fits <- predict(nec)
@@ -31,7 +31,7 @@
         ModNegExp <- try(nec.func(y2), silent=TRUE)
         if(class(ModNegExp)=="try-error") {
             ## Straight line via linear regression
-            tm <- 1:length(y2)
+            tm <- seq_along(y2)
             lm1 <- lm(y2 ~ tm)
             ModNegExp <- predict(lm1)
             if(coef(lm1)[2] > 0 && !pos.slope)
@@ -52,7 +52,7 @@
             nyrs2 <- floor(length(y2) * 0.67)
         else
             nyrs2 <- nyrs
-        Spline <- ffcsaps(y=y2, x=1:length(y2), nyrs=nyrs2, f=f)
+        Spline <- ffcsaps(y=y2, x=seq_along(y2), nyrs=nyrs2, f=f)
         resids$Spline <- y2 / Spline
         do.spline <- TRUE
     } else {
@@ -75,7 +75,7 @@
         on.exit(par(op))
         par(mar=c(2.5, 2.5, 2.5, 0.5) + 0.1, mgp=c(1.5, 0.5, 0))
         n.rows <- 1 + ncol(resids)
-        mat <- matrix(1:n.rows, n.rows, 1)
+        mat <- matrix(seq_len(n.rows), n.rows, 1)
         layout(mat,
                widths=rep(0.5, ncol(mat)),
                heights=rep(1, nrow(mat)))

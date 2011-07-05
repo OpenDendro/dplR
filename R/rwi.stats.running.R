@@ -6,10 +6,10 @@ cor.with.limit <- function(limit, x, y) {
     n.x <- ncol(x) # caller makes sure that n.x
     n.y <- ncol(y) # and n.y >= 1
     r.mat <- matrix(NA_real_, n.x, n.y)
-    for(i in 1:n.x){
+    for(i in seq_len(n.x)){
         this.x <- x[, i]
         good.x <- !is.na(this.x)
-        for(j in 1:n.y){
+        for(j in seq_len(n.y)){
             this.y <- y[, j]
             good.y <- !is.na(this.y)
             good.both <- which(good.x & good.y)
@@ -27,7 +27,7 @@ cor.with.limit.upper <- function(limit, x) {
     r.vec <- rep(NA_real_, n.x * (n.x - 1) / 2)
     good.x <- !is.na(x)
     k <- 0
-    for(i in 1:(n.x - 1)){
+    for(i in seq_len(n.x - 1)){
         good.i <- good.x[, i]
         for(j in (i + 1):n.x){
             k <- k + 1
@@ -65,7 +65,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
 
     ## If tree.id is NULL then assume one core per tree
     if(is.null(ids)){
-        ids2 <- data.frame(tree=1:n.cores, core=rep(1, n.cores))
+        ids2 <- data.frame(tree=seq_len(n.cores), core=rep(1, n.cores))
     } else{
         ## Make error checks here
         if(nrow(ids) != n.cores)
@@ -83,13 +83,14 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
     n.trees <- length(unique.ids)
     if(n.trees < 2) stop("at least 2 trees are needed")
     cores.of.tree <- list()
-    for(i in 1:n.trees)
+    seq.tree <- seq_len(n.trees)
+    for(i in seq.tree)
         cores.of.tree[[i]] <- which(ids2$tree==unique.ids[i])
 
     ## n.trees.by.year is recorded before setting rows with missing
     ## data to NA
     tree.any <- matrix(FALSE, n.years, n.trees)
-    for(i in 1:n.trees)
+    for(i in seq.tree)
         tree.any[, i] <-
             apply(!is.na(rwi2[, ids2$tree == unique.ids[i], drop=FALSE]),
                   1, any)
@@ -125,7 +126,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
             offsets <- min.offset:max.offset
             n.offsets <- length(offsets)
             n.data <- rep(NA_real_, n.offsets)
-            for(i in 1:n.offsets){
+            for(i in seq_len(n.offsets)){
                 offset <- offsets[i]
                 n.windows.minusone <-
                     (n.years - offset - window.length) %/% window.advance
@@ -167,7 +168,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
         rsum.bt <- 0
         n.bt <- 0
         good.flag <- rep(FALSE, n.trees)
-        for(i in 1:(n.trees - 1)){
+        for(i in seq_len(n.trees - 1)){
             i.data <- rwi2[year.idx, cores.of.tree[[i]], drop=FALSE]
             for(j in (i + 1):n.trees){
                 j.data <- rwi2[year.idx, cores.of.tree[[j]], drop=FALSE]

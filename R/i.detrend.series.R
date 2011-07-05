@@ -9,7 +9,7 @@
     cat(gettextf("\nChoose a detrending method for this series %s.\n",
                  y.name, domain="R-dplR"))
     cat(gettext("Methods are: \n", domain="R-dplR"))
-    for(i in 1:length(col.names))
+    for(i in seq_along(col.names))
         cat(i, ": ", col.names[i], "\n", sep="")
     ans <- as.integer(readline(gettext("Enter a number ", domain="R-dplR")))
     while(ans < 1 || ans > i || is.na(ans)){

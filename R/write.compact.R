@@ -2,14 +2,14 @@
 ### (later), returns a string of n.fields[i] concatenated ring widths.
 create.format <- function(n.fields, field.width){
     format.compact <- list()
-    for (k in 1:length(n.fields)){
+    for (k in seq_along(n.fields)){
         i <- n.fields[k]
         format.str <-
             paste("sprintf(\"",
                   paste(rep(paste("%", field.width, "s", sep=""), i),
                         collapse=""),
                   "\"",
-                  paste(",line.rwl[", 1:i, "]", sep="", collapse=""),
+                  paste(",line.rwl[", seq_len(i), "]", sep="", collapse=""),
                   ")", sep="")
         format.compact[[k]] <- parse(text = format.str)
     }
@@ -36,7 +36,7 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
     max.i.width <- max(nchar(yrs.all)) # conservative
     ## Conservative length limit for the name of each series
     name.width <-
-        line.width -max.field.width.width -max.n.width -max.i.width -17
+        line.width - max.field.width.width - max.n.width - max.i.width - 17
 
     col.names <- fix.names(x=colnames(rwl.df), limit=name.width,
                            mapping.fname=mapping.fname,
@@ -55,15 +55,15 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
     on.exit(close(rwl.out))
     missing.str <- 0
 
-    for(l in 1:nseries) {
+    for(l in seq_len(nseries)) {
         series <- rwl.df2[, l]
         idx <- !is.na(series)
         yrs <- yrs.all[idx]
-        series <- round(prec.rproc*series[idx])
+        series <- round(prec.rproc * series[idx])
 
         min.year <- min(yrs)
         max.year <- max(yrs)
-        nyrs <- max.year-min.year+1
+        nyrs <- max.year - min.year + 1
 
         rwl.df.name <- col.names[l]
 
@@ -94,7 +94,7 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
         head1 <- paste(nyrs, "=N", " ", min.year, "=I", " ", sep="")
         head2 <- paste(ifelse(prec == 0.01, -2, -3), "(", n.fields, "F",
                        field.width, ".0)~", sep="")
-        n.space <- line.width-nchar(head1)-nchar(head2)-nchar(rwl.df.name)
+        n.space <- line.width - nchar(head1) - nchar(head2) - nchar(rwl.df.name)
         if(n.space < 1) # since names are cut to length, this should not happen
             stop(gettextf("series %s: header line would be too long",
                           rwl.df.name))
@@ -103,10 +103,10 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
 
         ## Write full lines
         full.format <- format.compact[[1]]
-        for(i in 1:n.lines){
-            end.idx <- i*n.fields
+        for(i in seq_len(n.lines)){
+            end.idx <- i * n.fields
             ## The following eval uses line.rwl
-            line.rwl <- series[end.idx-n.fields+1:end.idx]
+            line.rwl <- series[(end.idx - n.fields + 1) : end.idx]
             line.str <- eval(full.format)
             cat(line.str, line.term, file=rwl.out, sep="")
         }
@@ -114,7 +114,7 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
         if(remainder > 0){
             end.idx <- length(series)
             ## The following eval uses line.rwl
-            line.rwl <- series[end.idx-remainder+1:end.idx]
+            line.rwl <- series[(end.idx - remainder + 1) : end.idx]
             line.str <- eval(format.compact[[2]])
             cat(line.str, line.term, file=rwl.out, sep="")
         }

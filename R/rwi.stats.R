@@ -13,7 +13,7 @@
 
     ## If tree.id is NULL then assume one core per tree
     if(is.null(ids)){
-        ids2 <- data.frame(tree=1:n.cores, core=rep(1, n.cores))
+        ids2 <- data.frame(tree=seq_len(n.cores), core=rep(1, n.cores))
     } else{
         ## Make error checks here
         if(nrow(ids) != n.cores)

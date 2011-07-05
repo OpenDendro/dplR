@@ -32,7 +32,7 @@
         }
     } else{
         out <- list()
-        for(i in 1:ncol(rwl)){
+        for(i in seq_len(ncol(rwl))){
             fits <- detrend.series(rwl[, i], y.name=y.name[i],
                                    make.plot=make.plot,
                                    method=method2, nyrs=nyrs, f=f,

@@ -17,7 +17,7 @@ read.compact <- function(fname)
                          "There are %d series\n",
                          domain="R-dplR"),
                 nseries))
-    cat(paste(1:nseries, "\t",
+    cat(paste(seq_len(nseries), "\t",
               series.ids, "\t",
               series.min, "\t",
               series.max, "\t",

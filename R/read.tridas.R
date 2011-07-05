@@ -6,18 +6,18 @@
 create.composite.titles <- function(titles, ids=titles){
     composite.titles <- character(length = dim(titles)[1])
     titles.used <- logical(4)
-    rle.1 <- rle(ids[,1])
+    rle.1 <- rle(ids[, 1])
     cs.1 <- cumsum(rle.1$lengths)
     n.bins <- length(cs.1)
     ## Use first level (tree) titles, if >1 unique exist
     titles.used[1] <- n.bins > 1
     if(titles.used[1])
         composite.titles <- paste(composite.titles, titles[, 1], sep="")
-    for(i in inc(1,n.bins)){
+    for(i in seq_len(n.bins)){
         n <- rle.1$lengths[i]
         idx.end <- cs.1[i]
         idx.start <- idx.end - n + 1
-        rle.2 <- rle(ids[idx.start:idx.end,2])
+        rle.2 <- rle(ids[idx.start:idx.end, 2])
         cs.2 <- cumsum(rle.2$lengths) + idx.start - 1
         n.bins <- length(cs.2)
         ## Use second level (core) titles, if >1 unique exist
@@ -25,13 +25,13 @@ create.composite.titles <- function(titles, ids=titles){
         if(titles.used[2])
             composite.titles[idx.start:idx.end] <-
                 paste(composite.titles[idx.start:idx.end],
-                      titles[idx.start:idx.end,2],
+                      titles[idx.start:idx.end, 2],
                       sep="")
-        for(j in inc(1,n.bins)){
+        for(j in seq_len(n.bins)){
             n <- rle.2$lengths[j]
             idx.end <- cs.2[j]
             idx.start <- idx.end - n + 1
-            rle.3 <- rle(ids[idx.start:idx.end,3])
+            rle.3 <- rle(ids[idx.start:idx.end, 3])
             cs.3 <- cumsum(rle.3$lengths) + idx.start - 1
             n.bins <- length(cs.3)
             ## Use third level (radius) titles, if >1 unique exist
@@ -39,14 +39,14 @@ create.composite.titles <- function(titles, ids=titles){
             if(titles.used[3])
                 composite.titles[idx.start:idx.end] <-
                     paste(composite.titles[idx.start:idx.end],
-                          titles[idx.start:idx.end,3],
+                          titles[idx.start:idx.end, 3],
                           sep="")
-            previous.titles.not.used <- !any(titles.used[1:3])
-            for(k in inc(1,n.bins)){
+            previous.titles.not.used <- !any(titles.used[c(1, 2, 3)])
+            for(k in seq_len(n.bins)){
                 n <- rle.3$lengths[k]
                 idx.end <- cs.3[k]
                 idx.start <- idx.end - n + 1
-                rle.4 <- rle(ids[idx.start:idx.end,4])
+                rle.4 <- rle(ids[idx.start:idx.end, 4])
                 cs.4 <- cumsum(rle.4$lengths) + idx.start - 1
                 n.bins <- length(cs.4)
                 ## Use fourth level (measurement) titles, if >1
@@ -56,7 +56,7 @@ create.composite.titles <- function(titles, ids=titles){
                 if(titles.used[4])
                     composite.titles[idx.start:idx.end] <-
                         paste(composite.titles[idx.start:idx.end],
-                              titles[idx.start:idx.end,4],
+                              titles[idx.start:idx.end, 4],
                               sep="")
             }
         }
@@ -76,15 +76,15 @@ site.info.to.df <- function(x, name.prefix=NULL){
         mode(one.na) <- mode(x[[1]]) # works for numeric and character
         y <- array(rep(one.na, x.length*max.length),
                    dim=c(x.length, max.length))
-        for(i in 1:x.length)
-            y[i, 1:item.length[i]] <- x[[i]]
+        for(i in seq_len(x.length))
+            y[i, seq_len(item.length[i])] <- x[[i]]
         y <- data.frame(y)
         if(!is.null(name.prefix)){
             if(max.length == 1)
                 colnames(y) <- name.prefix
             else
                 colnames(y) <-
-                    paste(name.prefix, ".", 1:max.length, sep="")
+                    paste(name.prefix, ".", seq_len(max.length), sep="")
         }
     } else{
         y <- data.frame() # empty data.frame
@@ -105,15 +105,15 @@ title.based.ids <- function(titles){
     colnames(ids) <- colnames(titles2)
     unique1 <- unique(titles2[, 1])
     ids[, 1] <- match(titles2[, 1], unique1)
-    for(i1 in 1:length(unique1)){
+    for(i1 in seq_along(unique1)){
         idx.1 <- which(ids[, 1] == i1)
         unique2 <- unique(titles2[idx.1, 2])
         ids[idx.1, 2] <- match(titles2[idx.1, 2], unique2)
-        for(i2 in 1:length(unique2)){
+        for(i2 in seq_along(unique2)){
             idx.2 <- idx.1[which(ids[idx.1, 2] == i2)]
             unique3 <- unique(titles2[idx.2, 3])
             ids[idx.2, 3] <- match(titles2[idx.2, 3], unique3)
-            for(i3 in 1:length(unique3)){
+            for(i3 in seq_along(unique3)){
                 idx.3 <- idx.2[which(ids[idx.2, 3] == i3)]
                 unique4 <- unique(titles2[idx.3, 4])
                 ids[idx.3, 4] <- match(titles2[idx.3, 4], unique4)
@@ -171,24 +171,24 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
         res.df <- res.ids <- res.titles <- res.wc <- list()
         res.unit <- character(0)
         res.project.title <- character(0)
-        res.var <- array(character(0), dim=c(0,6),
+        res.var <- array(character(0), dim=c(0, 6),
                          dimnames=list(NULL, SIX.COLS))
         res.undated.var <-
-            array(character(0), dim=c(0,6), dimnames=list(NULL, SIX.COLS))
+            array(character(0), dim=c(0, 6), dimnames=list(NULL, SIX.COLS))
         res.taxon <-
-            array(character(0), dim=c(0,5), dimnames=list(NULL, FIVE.COLS))
+            array(character(0), dim=c(0, 5), dimnames=list(NULL, FIVE.COLS))
         res.undated.taxon <-
-            array(character(0), dim=c(0,5), dimnames=list(NULL, FIVE.COLS))
+            array(character(0), dim=c(0, 5), dimnames=list(NULL, FIVE.COLS))
         res.derived.var <-
-            array(character(0), dim=c(0,6), dimnames=list(NULL, SIX.COLS))
+            array(character(0), dim=c(0, 6), dimnames=list(NULL, SIX.COLS))
         res.project.id <- numeric(0)
         res.site.id <- res.site.title <- list()
         res.undated$data <- res.undated <- list()
         res.undated$unit <- character(0)
         res.undated$ids <-
-            array(numeric(0), dim=c(0,4), dimnames=list(NULL, ID.ORDER))
+            array(numeric(0), dim=c(0, 4), dimnames=list(NULL, ID.ORDER))
         res.undated$titles <-
-            array(character(0), dim=c(0,4), dimnames=list(NULL, ID.ORDER))
+            array(character(0), dim=c(0, 4), dimnames=list(NULL, ID.ORDER))
         res.undated$project.id <- numeric(0)
         res.undated$project.title <- character(0)
         res.undated$site.id <- res.undated$site.title <- list()
@@ -324,9 +324,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
         missing.heartwood.foundation <- missing.sapwood.foundation <- NULL
         values.multiplier <- values.divisor <- values.n.remarks <- NULL
         remark.data.taxon <-
-            array(character(0), dim=c(0,5), dimnames=list(NULL, FIVE.COLS))
+            array(character(0), dim=c(0, 5), dimnames=list(NULL, FIVE.COLS))
         remark.data.var <-
-            array(character(0), dim=c(0,6), dimnames=list(NULL, SIX.COLS))
+            array(character(0), dim=c(0, 6), dimnames=list(NULL, SIX.COLS))
         remark.data.unit <- character(0)
 
         ## Putting the function here enables references to it in the list
@@ -393,7 +393,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                             md.in.site[sapply(identifier.site.id[md.in.site],
                                               function(x){
                                                   all(x ==
-                                                      idx.object[1:object.level])
+                                                      idx.object[seq_len(object.level)])
                                               })]
                     if(length(md.in.site) > 0){
                         temp.identifiers <- rep(as.character(NA), n.all)
@@ -422,14 +422,14 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                 ## Only need to remap ids in metadata if ids in data change
                 if(ids.from.titles || length(md.in.site) > 0){
                     ids.in.site <<-
-                        converted.ids[inc(1, n.dated.in.site), , drop=FALSE]
+                        converted.ids[seq_len(n.dated.in.site), , drop=FALSE]
                     res.undated$ids[undated.in.site, ] <<-
                         converted.ids[inc(n.dated.in.site + 1, n.all), ,
                                       drop=FALSE]
                     metadata.names <- c("comments", "identifier", "preferred",
                                         "altitude", "type")
                     metadata.levels <- c(4, 4, 1, 1, 2)
-                    for(k in 1:length(metadata.names)){
+                    for(k in seq_along(metadata.names)){
                         md.name <- metadata.names[k]
                         md.level <- metadata.levels[k]
                         md.project.id <-
@@ -467,7 +467,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                             md.in.site <-
                                 md.in.site[sapply(md.site.id[md.in.site],
                                                   function(x){
-                                                      all(x == idx.object[1:object.level])
+                                                      all(x == idx.object[seq_len(object.level)])
                                                   })]
 
                         for(md.idx in md.in.site){
@@ -537,7 +537,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                     df.ncol2 <- n.unique
                     del.cols <- integer(0)
                     remark.series2 <- remark.series
-                    for(k in inc(1, n.unique)){
+                    for(k in seq_len(n.unique)){
                         id <- unique.ids[k, , drop=FALSE]
                         idx.id <- row.match(i.i.s, id)
                         n.id <- length(idx.id)
@@ -606,7 +606,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                     site.data[[idx.unittaxvar[idx.id[l]]]]
                                 n.this.data <- length(this.data)
                                 n.new.data <- length(new.data)
-                                no.l <- c(inc(1, l - 1), inc(l + 1,n.id))
+                                no.l <- c(seq_len(l - 1), inc(l + 1, n.id))
                                 if(this.l.y < new.f.y){
                                     stretch <- new.f.y - this.l.y - 1
                                     new.data <- c(this.data,
@@ -669,8 +669,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                         which(idx.replacement <= n.this.data)
                                     new.data[idx.missing[do.replace]] <-
                                         this.data[idx.replacement[do.replace]]
-                                    new.data <- c(this.data[1:n.exceeding],
-                                                  new.data)
+                                    new.data <-
+                                        c(this.data[seq_len(n.exceeding)],
+                                          new.data)
                                     idx.adjust <-
                                         remark.series2 %in% idx.unittaxvar[idx.id[no.l]]
                                     remark.data.row[idx.adjust] <-
@@ -687,7 +688,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                     new.data[idx.missing] <-
                                         this.data[idx.replacement]
                                     new.data <-
-                                        c(this.data[1:n.exceeding.1],
+                                        c(this.data[seq_len(n.exceeding.1)],
                                           new.data,
                                           this.data[first.exceeding.2:n.this.data])
                                     idx.adjust <-
@@ -1042,7 +1043,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  } else if(last.dplr < first.dplr){
                      stop(gettextf("in project %d, object %s, element %d, sample %d, radius %d, series %d: ",
                                    idx.project,
-                                   paste(idx.object[1:object.level],
+                                   paste(idx.object[seq_len(object.level)],
                                          collapse="."),
                                    idx.element,
                                    idx.sample,
@@ -1124,9 +1125,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  altitude.project.id <<- c(altitude.project.id, idx.project)
                  altitude.project.title <<-
                      c(altitude.project.title, project.title)
-                 altitude.site.id[[new.length]] <<- idx.object[1:object.level]
-                 altitude.site.title[[new.length]] <<-
-                     object.title[1:object.level]
+                 seq.object <- seq_len(object.level)
+                 altitude.site.id[[new.length]] <<- idx.object[seq.object]
+                 altitude.site.title[[new.length]] <<- object.title[seq.object]
                  altitude.tree.id <<- c(altitude.tree.id, idx.element)
                  altitude.tree.title <<- c(altitude.tree.title, element.title)
                  end.element("altitude")
@@ -1160,10 +1161,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      comments.derived.title <<- c(comments.derived.title, NA)
                      if(idx.object[1] > 0){
                          new.length <- length(comments.site.id) + 1
+                         seq.object <- seq_len(object.level)
                          comments.site.id[[new.length]] <<-
-                             idx.object[1:object.level]
+                             idx.object[seq.object]
                          comments.site.title[[new.length]] <<-
-                             object.title[1:object.level]
+                             object.title[seq.object]
                      } else{
                          comments.site.id <<- c(comments.site.id, NA)
                          comments.site.title <<- c(comments.site.title, NA)
@@ -1280,10 +1282,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              c(identifier.derived.title, NA)
                          if(idx.object[1] > 0){
                              new.length <- length(identifier.site.id) + 1
+                             seq.object <- seq_len(object.level)
                              identifier.site.id[[new.length]] <<-
-                                 idx.object[1:object.level]
+                                 idx.object[seq.object]
                              identifier.site.title[[new.length]] <<-
-                                 object.title[1:object.level]
+                                 object.title[seq.object]
                          } else{
                              identifier.site.id <<- c(identifier.site.id, NA)
                              identifier.site.title <<-
@@ -1471,7 +1474,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                                         remarks.handled
                      ## ... taxon, and ...
                      unique.taxon <- unique(site.taxon[idx.u, , drop=FALSE])
-                     for(i in inc(1, nrow(unique.taxon))){
+                     for(i in seq_len(nrow(unique.taxon))){
                          tax <- unique.taxon[i, , drop=FALSE]
                          ## Which series in site.data have this unit
                          ## and taxon?
@@ -1486,7 +1489,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                          ## ...variable gets a separate data.frame
                          unique.var <-
                              unique(site.var[idx.ut, , drop=FALSE])
-                         for(j in inc(1, nrow(unique.var))){
+                         for(j in seq_len(nrow(unique.var))){
                              length.res <- length(res.df) + 1
                              var <- unique.var[j, , drop=FALSE]
                              ## Which series in site.data have this
@@ -1541,7 +1544,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              rownames(t.i.s) <- rownames(i.i.s) <-
                                  composite.titles
                              colnames(this.df) <- composite.titles
-                             for(l in inc(1, df.ncol)){
+                             for(l in seq_len(df.ncol)){
                                  first.idx <- f.y[l] - df.first + 1
                                  last.idx <- l.y[l] - df.first + 1
                                  this.df[first.idx:last.idx,l] <-
@@ -1563,10 +1566,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              res.project.title <<-
                                  c(res.project.title, project.title)
                              res.project.id <<- c(res.project.id, idx.project)
+                             seq.object <- seq_len(object.level)
                              res.site.title[[length.res]] <<-
-                                 object.title[1:object.level]
+                                 object.title[seq.object]
                              res.site.id[[length.res]] <<-
-                                 idx.object[1:object.level]
+                                 idx.object[seq.object]
                              res.var <<- rbind(res.var, var)
                              res.taxon <<- rbind(res.taxon, tax)
                              this.wc <-
@@ -1653,10 +1657,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                  preferred.project.title <<-
                      c(preferred.project.title, project.title)
                  length.res <- length(preferred.site.id) + 1
-                 preferred.site.id[[length.res]] <<-
-                     idx.object[1:object.level]
-                 preferred.site.title[[length.res]] <<-
-                     object.title[1:object.level]
+                 seq.object <- seq_len(object.level)
+                 preferred.site.id[[length.res]] <<- idx.object[seq.object]
+                 preferred.site.title[[length.res]] <<- object.title[seq.object]
                  end.element("preferredSeries")
              },
              "/project" = function(...){
@@ -1809,10 +1812,10 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      type.derived.title <<- c(type.derived.title, NA)
                      if(idx.object[1] > 0){
                          new.length <- length(type.site.id) + 1
-                         type.site.id[[new.length]] <<-
-                             idx.object[1:object.level]
+                         seq.object <- seq_len(object.level)
+                         type.site.id[[new.length]] <<- idx.object[seq.object]
                          type.site.title[[new.length]] <<-
-                             object.title[1:object.level]
+                             object.title[seq.object]
                      } else{
                          type.site.id <<- c(type.site.id, NA)
                          type.site.title <<- c(type.site.title, NA)
@@ -1877,7 +1880,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                  else
                                      warning(gettextf("in project %d, object %s, element %d, sample %d, radius %d, series %d: ",
                                                       idx.project,
-                                                      paste(idx.object[1:object.level],
+                                                      paste(idx.object[seq_len(object.level)],
                                                             collapse="."),
                                                       idx.element,
                                                       idx.sample,
@@ -1901,7 +1904,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                  if(last.computed > last.dplr){
                                      warning(gettextf("in project %d, object %s, element %d, sample %d, radius %d, series %d: ",
                                                       idx.project,
-                                                      paste(idx.object[1:object.level],
+                                                      paste(idx.object[seq_len(object.level)],
                                                             collapse="."),
                                                       idx.element,
                                                       idx.sample,
@@ -1916,7 +1919,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                         this.sapwood == 0){
                                          warning(gettextf("in project %d, object %s, element %d, sample %d, radius %d, series %d: ",
                                                           idx.project,
-                                                          paste(idx.object[1:object.level],
+                                                          paste(idx.object[seq_len(object.level)],
                                                                 collapse="."),
                                                           idx.element,
                                                           idx.sample,
@@ -1934,7 +1937,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                          n.heartwood <- idx.value - this.sapwood
                                          n.missing <- last.dplr - last.computed
                                          value.vector <<-
-                                             c(value.vector[1:n.heartwood],
+                                             c(value.vector[seq_len(n.heartwood)],
                                                rep(MISSING.VALUE, n.missing),
                                                value.vector[(n.heartwood + 1):idx.value])
                                          last.year[length(last.year)] <<-
@@ -2008,10 +2011,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                  c(res.undated$project.title, project.title)
                              res.undated$project.id <<-
                                  c(res.undated$project.id, idx.project)
+                             seq.object <- seq_len(object.level)
                              res.undated$site.title[[new.length]] <<-
-                                 object.title[1:object.level]
+                                 object.title[seq.object]
                              res.undated$site.id[[new.length]] <<-
-                                 idx.object[1:object.level]
+                                 idx.object[seq.object]
                              if(unitless)
                                  this.unit <- "unitless"
                              else if(unit.converted)
@@ -2056,7 +2060,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                          }
                      } else if(in.derived.values){
                          idx.negative <-
-                             which(count.vector[1:length(value.vector)] < 0)
+                             which(count.vector[seq_along(value.vector)] < 0)
                          if(length(idx.negative) > 0){
                              count.vector[idx.negative] <<- NA
                              warning(gettextf("in project %d, derived series %d: ",
@@ -2093,7 +2097,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                          }
                          series.frame <-
                              data.frame(series = value.vector,
-                                        samp.depth = count.vector[1:length(value.vector)])
+                                        samp.depth = count.vector[seq_along(value.vector)])
                          if(is.dated){
                              rownames(series.frame) <-
                                  as.character(this.first.year:this.last.year)
@@ -2193,7 +2197,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      else
                          cat(gettextf("there are %d data.frames in the '$measurements' list\n",
                                       df.size, domain="R-dplR"))
-                     for(i in 1:df.size){
+                     for(i in seq_len(df.size)){
                          this.df <- res.df[[i]]
                          nseries <- ncol(this.df)
                          series.ids <- colnames(this.df)
@@ -2224,7 +2228,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                          }
                          cat(gettext("* site: ", domain="R-dplR"),
                              paste(as.matrix(res.all$site.title[i,
-                                                                1:title.level]),
+                                                                seq_len(title.level)]),
                                    collapse=" / "),
                              "\n", sep="")
                          cat(gettext("* taxon: ", domain="R-dplR"))
@@ -2239,7 +2243,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                               "There are %d series\n",
                                               domain="R-dplR"),
                                      nseries))
-                         cat(paste(1:nseries, "\t",
+                         cat(paste(seq_len(nseries), "\t",
                                    series.ids, "\t",
                                    series.min, "\t",
                                    series.max, "\n", sep=""), sep="")

@@ -65,7 +65,7 @@ tridas.vocabulary <-
                 any(res == term)
             else{
                 res2 <- character(n.term)
-                for(k in 1:n.term)
+                for(k in seq_len(n.term))
                     res2[k] <- match.arg(term[k], res)
                 res2
             }

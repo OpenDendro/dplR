@@ -5,7 +5,7 @@
   This function performs a continuous wavelet transform on a time series.
 }
 \usage{
-  morlet(y1,x1=1:length(y1),p2=NULL,dj=0.25,siglvl=0.95)
+  morlet(y1,x1=seq_along(y1),p2=NULL,dj=0.25,siglvl=0.95)
 }
 \arguments{
   \item{y1}{Numeric. Series to be transformed.}

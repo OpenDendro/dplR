@@ -29,7 +29,7 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
         c.curve.mat <- matrix(NA, ncol=n.col, nrow=n.row + max(po[, 2]))
         colnames(c.curve.mat) <- col.names
     }
-    for(i in 1:n.col){
+    for(i in seq_len(n.col)){
         the.po <- po[po[, 1] %in% col.names[i], 2]
         this.series <- rwl2[, i]
         series.yrs <- yr.range(this.series, yr.vec=yrs)

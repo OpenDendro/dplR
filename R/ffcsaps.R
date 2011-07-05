@@ -1,4 +1,4 @@
-ffcsaps <- function(y, x=1:length(y), nyrs=length(y)/2, f=0.5) {
+ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
 ### support functions
     ffppual <- function(breaks, c, k, x, left){
         if (any(diff(x) < 0)){
@@ -32,8 +32,7 @@ ffcsaps <- function(y, x=1:length(y), nyrs=length(y)/2, f=0.5) {
     ffsorted <- function(meshsites, sites) {
         index <- sort(c(meshsites, sites),
                       method="shell", index.return=TRUE)$ix
-        seq(from=1, to=length(index))[index>length(meshsites)] -
-            seq(from=1, to=length(sites))
+        seq_along(index)[index > length(meshsites)] - seq_along(sites)
     }
 
     ## Creates a sparse matrix A of size n x n.
@@ -45,7 +44,7 @@ ffcsaps <- function(y, x=1:length(y), nyrs=length(y)/2, f=0.5) {
     ## This is similar in function to spdiags(B, d, n, n) in MATLAB.
     spdiags <- function(B, d, n){
         a <- matrix(0, 1, 3)
-        for(k in 1:length(d)){
+        for(k in seq_along(d)){
             this.diag <- d[k]
             i <- inc(max(1, 1 - this.diag), min(n, n - this.diag)) # row
             if(length(i) > 0){

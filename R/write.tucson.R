@@ -9,10 +9,10 @@
 ### systematic structure of the formatting expressions.
 format.tucson <- (function(){
     ft <- list()
-    for (i in 1:10){
+    for (i in seq_len(10)){
         format.str <-
-            paste("sprintf(\"", paste(rep("%6.0f", i),collapse=""), "\"",
-                  paste(",dec.rwl[", 1:i, "]", sep="", collapse=""),
+            paste("sprintf(\"", paste(rep("%6.0f", i), collapse=""), "\"",
+                  paste(",dec.rwl[", seq_len(i), "]", sep="", collapse=""),
                   ")", sep="")
         ft[[i]] <- parse(text = format.str)
     }
@@ -69,7 +69,7 @@ format.tucson <- (function(){
             c("site.id", "site.name", "spp.code", "state.country", "spp",
               "elev", "lat.long", "yrs", "lead.invs", "comp.date")
         field.width <- c(6, 52, 4, 13, 18, 5, 10, 9, 63, 8)
-        for(i in 1:length(field.name)){
+        for(i in seq_along(field.name)){
             this.name <- field.name[i]
             this.width <- field.width[i]
             this.var <- get(this.name)
@@ -164,7 +164,7 @@ format.tucson <- (function(){
     prec.rproc <- ifelse(prec == 0.01, 100, 1000) # reciprocal of precision
     format.year <- sprintf("%%%d.0f", year.width)
 
-    for(l in 1:nseries) {
+    for(l in seq_len(nseries)) {
         series <- rwl.df2[, l]
         idx <- !is.na(series)
         yrs <- yrs.all[idx]
@@ -187,7 +187,7 @@ format.tucson <- (function(){
         rwl.df.name <- ifelse(rwl.df.width < name.width,
         format(rwl.df.name, width=name.width, justify="right"), rwl.df.name)
 
-        for(i in 1:n.decades){
+        for(i in seq_len(n.decades)){
             ## up to 4 numbers and a minus sign from long series
             dec <- decades[i]
             dec.idx <- decades.vec %in% dec

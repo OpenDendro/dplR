@@ -91,7 +91,7 @@
     crn.mat <- matrix(NA, ncol=ncol.crn.mat, nrow=span)
     colnames(crn.mat) <- c(as.character(series.ids), "samp.depth")
     rownames(crn.mat) <- min.year:max.year
-    for(i in 1:nseries){
+    for(i in seq_len(nseries)){
         decade.yr <- dat[series.index==i, 2]
         ## RWI
         x <- dat[series.index == i, -c(1, 2, seq(from=4, to=22, by=2)),
@@ -99,10 +99,10 @@
         ## All sample depths
         y <- dat[series.index == i, -c(1, 2, seq(from=3, to=21, by=2)),
                  drop=FALSE]
-        for(j in 1:nrow(x)) {
+        for(j in seq_len(nrow(x))) {
             yr <- decade.yr[j]
             if(j == 1) yr <- min.year
-            for(k in 1:ncol(x)){
+            for(k in seq_len(ncol(x))){
                 if(is.na(x[j, k])) break
                 crn.mat[as.character(yr), i] <- x[j, k]
                 ## If i is one then make samp depth
@@ -123,14 +123,15 @@
     if(sd.one) {
         save.names <- colnames(crn.mat)[-ncol.crn.mat]
         crn.mat <- crn.mat[, -ncol.crn.mat, drop=FALSE]
-        crn.mat <- crn.mat/1000
+        crn.mat <- crn.mat / 1000
         crn.df <- as.data.frame(crn.mat)
         colnames(crn.df) <- save.names
         cat(gettext("All embedded sample depths are one...Dumping from matrix\n",
                     domain="R-dplR"))
     }
     else {
-        crn.mat[, 1:nseries] <- crn.mat[, 1:nseries]/1000
+        seq.series <- seq_len(nseries)
+        crn.mat[, seq.series] <- crn.mat[, seq.series] / 1000
         crn.df <- as.data.frame(crn.mat)
     }
     crn.df

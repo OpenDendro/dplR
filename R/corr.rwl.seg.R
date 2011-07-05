@@ -52,7 +52,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     idx.good <- norm.one$idx.good
 
     ## loop through series
-    for(i in 1:nseries){
+    for(i in seq_len(nseries)){
         idx.noti <- rep(TRUE, nseries)
         idx.noti[i] <- FALSE
         master.norm <- rwi[, idx.good & idx.noti, drop=FALSE]
@@ -60,16 +60,16 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         ## compute master series by normal mean or robust mean
         master <- vector(mode="numeric", length=nyrs)
         if (!biweight){
-            for (j in 1:nyrs)
+            for (j in seq_len(nyrs))
                 master[j] <- exactmean(master.norm[j, ])
         } else {
             ## surprisingly, for loop is faster than apply
-            for (j in 1:nyrs)
+            for (j in seq_len(nyrs))
                 master[j] <- tbrm(master.norm[j, ], C=9)
         }
         series <- rwi[, i]
         ## loop through bins
-        for(j in 1:nbins){
+        for(j in seq_len(nbins)){
             mask <- yrs%in%seq(from=bins[j, 1], to=bins[j, 2])
             ## cor is NA if there is not complete overlap
             if(!any(mask) ||
@@ -101,7 +101,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     names(seg.flags) <- cnames
     flag.logical <- res.pval >= pcrit
     flag.logical[is.na(flag.logical)] <- FALSE
-    for(i in 1:length(seg.flags))
+    for(i in seq_along(seg.flags))
         seg.flags[i] <- paste(names(flag.logical[i, flag.logical[i, ]]),
                               collapse = ", ")
     seg.flags <- seg.flags[seg.flags != ""]
@@ -141,15 +141,15 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         ## First odd segs, then even segs
         y.offset <- c(-0.25, 0.25)
         ax <- c(1, 3)
-        for(odd.even in 1:2){
+        for(odd.even in c(1, 2)){
             this.seq <- seq(from=odd.even, to=nbins, by=2)
             these.bins <- bins[this.seq, , drop=FALSE]
             com.segs <- matrix(1, ncol=nseries, nrow=nyrs)
             flag.segs <- matrix(NA, ncol=nseries, nrow=nyrs)
             ## loop through these.bins
             tmp <- p.val[neworder, this.seq, drop=FALSE] > pcrit
-            for(i in 1:nseries){
-                for(j in 1:nrow(these.bins)){
+            for(i in seq_len(nseries)){
+                for(j in seq_len(nrow(these.bins))){
                     ## minus 1 deals with edge in segment graphing
                     mask <- yrs%in%seq(from = these.bins[j, 1],
                                        to = these.bins[j, 2]-1)
@@ -188,7 +188,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             y.deviation <- y.offset[odd.even]
             guides.x.base <- c(these.bins, recursive=T)
             guides.x.base <- sort(guides.x.base[!duplicated(guides.x.base)])
-            for(i in seq(from=1, to=nseries)){
+            for(i in seq_len(nseries)){
                 y.deviation <- y.deviation + 1
                 ## whole segs
                 xx <- segs.mat[i, ]
@@ -220,7 +220,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         axis(4, at=even.seq,
              labels=cnames.segs[even.seq], srt=45,
              tick=FALSE, las=2, cex.axis=label.cex)
-        abline(h=1:nseries, col="white")
+        abline(h=seq_len(nseries), col="white")
         box()
     }
 

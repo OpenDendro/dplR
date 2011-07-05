@@ -52,7 +52,7 @@
             c("site.id", "site.name", "spp.code", "state.country", "spp",
               "elev", "lat.long", "yrs", "lead.invs", "comp.date")
         field.width <- c(6, 52, 4, 13, 18, 5, 10, 9, 63, 8)
-        for(i in 1:length(field.name)){
+        for(i in seq_along(field.name)){
             this.name <- field.name[i]
             this.width <- field.width[i]
             this.var <- get(this.name)
@@ -84,7 +84,7 @@
         crn.name <- formatC(crn.name, width = 6, format = "f")
 
     dec.str <- character(n.decades)
-    for(i in 1:n.decades){
+    for(i in seq_len(n.decades)){
         ## 7-10 decade column
         dec <- decades[i]
         dec.idx <- which(decades.vec%in%dec)

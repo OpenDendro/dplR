@@ -10,6 +10,7 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
         stop("minimum 'po' is 1")
     if(!all(is.int(po[, 2])))
         stop("each value in 'po' must be an integer")
+    seq.cols <- seq_len(n.col)
     rwl2 <- rwl
     rownames(rwl2) <- rownames(rwl2) # guard against NULL names funniness
 
@@ -18,7 +19,7 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
                    ncol=n.col,
                    nrow=sum(nrow(rwl.ord) + max(po[, 2])))
     nrow.m1 <- nrow(rwl.ord) - 1
-    for (i in 1:n.col){
+    for (i in seq.cols){
         yrs2pith <- po[po[, 1] %in% col.names[i], 2]
         rwca[yrs2pith:(yrs2pith + nrow.m1), i] <- rwl.ord[, i]
     }
@@ -39,7 +40,7 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
     ## and restore to cal years
     rwi <- rwl2
     yrs <- as.numeric(rownames(rwi))
-    for(i in 1:n.col){
+    for(i in seq.cols){
         series.yrs <- yr.range(rwl2[, i], yr.vec=yrs)
         first <- series.yrs[1]
         last <- series.yrs[2]
@@ -53,7 +54,7 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
         par(mar = c(4, 4, 4, 4) + 0.1, mgp = c(1.25, 0.25, 0), tcl = 0.25)
         plot(rwca[, 1], ylim=range(rwca, na.rm=T), type="n", ylab="mm",
              xlab=gettext("Cambial Age (Years)", domain="R-dplR"), ...)
-        for(i in 1:n.col) lines(rwca[, i], col="grey")
+        for(i in seq.cols) lines(rwca[, i], col="grey")
         lines(ca.m, lwd=1.5, col="black")
         lines(rc, lwd=2, col="red")
     }

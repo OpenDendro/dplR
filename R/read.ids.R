@@ -8,7 +8,7 @@
     out <- matrix(NA, ncol=2, nrow=length(ids))
     rownames(out) <- ids
     colnames(out) <- c("site", "tree")
-    for(i in 1:length(ids)){
+    for(i in seq_along(ids)){
         x <- ids[i]
         n <- nchar(x)
         if(n < 8)
@@ -24,10 +24,9 @@
         warning("there appears to be more than one site")
     tree.vec <- as.numeric(out[, 2])
     core.vec <- rep(NA, length(tree.vec))
-    for(i in 1:length(unique(tree.vec))){
+    for(i in seq_along(unique(tree.vec))){
         tree.flag <- tree.vec == i
-        n.cores <- length(core.vec[tree.flag])
-        core.vec[tree.flag] <- seq(from=1, to=n.cores)
+        core.vec[tree.flag] <- seq_along(core.vec[tree.flag])
     }
     data.frame(tree=tree.vec, core=core.vec, row.names=ids)
 }

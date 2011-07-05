@@ -59,7 +59,7 @@ ccf.series.rwl <- function(rwl, series,
     colnames(res.cor) <- bin.names
 
     ## loop through bins
-    for(j in 1:nbins){
+    for(j in seq_len(nbins)){
         mask <- yrs%in%seq(from=bins[j, 1], to=bins[j, 2])
         ## cor is NA if there is not complete overlap
         if(!any(mask) ||

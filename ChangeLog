@@ -1,5 +1,11 @@
 * CHANGES IN dplR VERSION 1.4.5
 
+Various .R files:
+-----------------
+
+- Updates to sequence generation, e.g. use seq_along and seq_len where
+  applicable
+
 File: tbrm.c
 ------------
 

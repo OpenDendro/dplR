@@ -1,4 +1,4 @@
-morlet <- function(y1, x1=1:length(y1), p2=NULL, dj=0.25, siglvl=0.95){
+morlet <- function(y1, x1=seq_along(y1), p2=NULL, dj=0.25, siglvl=0.95){
 
     morlet.func <- function(k0=6, Scale, k) {
 	n <- length(k)
@@ -65,7 +65,7 @@ morlet <- function(y1, x1=1:length(y1), p2=NULL, dj=0.25, siglvl=0.95){
     wave <- matrix(complex(), n, na) # Empty wavelet array
     if(do_daughter) daughter <- wave # Empty daughter array
     ## Construct wavenumber array used in transform [Eqn(5)]
-    k <- (1:(n / 2)) * (2 * pi) / (n * Dt)
+    k <- 2 * pi / (n * Dt) * seq_len(n / 2)
     k <- c(0, k, -rev(k[-length(k)]))
     ## Compute FFT of the (padded) time series
     yfft <- fft(ypad) / length(ypad) # [Eqn(3)]
@@ -75,7 +75,7 @@ morlet <- function(y1, x1=1:length(y1), p2=NULL, dj=0.25, siglvl=0.95){
         fft_theor_k <-
             (1 - lag1 ^ 2) / (1 - 2 * lag1 * cos(k * Dt) + lag1 ^ 2) # [Eqn(16)]
     fft_theor <- rep(0, na)
-    for(a1 in 1:na) { # Scale
+    for(a1 in seq_len(na)) { # Scale
         morlet.out <- morlet.func(Scale=Scale[a1], k=k) #,period1,coi,dofmin,Cdelta,psi0)
         psi_fft <- morlet.out$psi_fft
         coi <- morlet.out$coi # One value per scale
@@ -84,12 +84,13 @@ morlet <- function(y1, x1=1:length(y1), p2=NULL, dj=0.25, siglvl=0.95){
         period[a1] <- morlet.out$period   # Save period
   	fft_theor[a1] <- sum((abs(psi_fft) ^ 2) * fft_theor_k) / n
     }
-    time.scalar <- c(1:(floor(n1 + 1) / 2), rev(1:floor(n1 / 2))) * Dt
+    time.scalar <- c(seq_len(floor(n1 + 1) / 2),
+                     seq.int(from=floor(n1 / 2), to=1, by=-1)) * Dt
     coi <- coi * time.scalar
     if(do_daughter) { # Shift so DAUGHTERs are in middle of array
         daughter <-
             rbind(daughter[(n - n1 / 2):nrow(daughter), , drop=FALSE],
-                  daughter[1:(n1 / 2 - 1), , drop=FALSE])
+                  daughter[seq_len(n1 / 2 - 1), , drop=FALSE])
     }
     ## Significance levels [Sec.4]
     Var <- var(y1) # Variance (T&C call this sdev in their code)
@@ -97,11 +98,11 @@ morlet <- function(y1, x1=1:length(y1), p2=NULL, dj=0.25, siglvl=0.95){
     dof <- 2
     Signif <- fft_theor * qchisq(siglvl, dof) / dof   # [Eqn(18)]
 
-    Power <- abs(wave[1:n1, , drop=FALSE])
+    Power <- abs(wave[seq_len(n1), , drop=FALSE])
     Power <- Power * Power  # Compute wavelet power spectrum
 
     ## Done
-    list(y=y1, x=x1, wave = wave[1:n1, , drop=FALSE], coi = coi,
+    list(y=y1, x=x1, wave = wave[seq_len(n1), , drop=FALSE], coi = coi,
          period = period, Scale = Scale, Signif = Signif, Power = Power,
          siglvl = siglvl)
 }

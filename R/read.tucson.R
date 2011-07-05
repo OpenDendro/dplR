@@ -97,20 +97,21 @@
        series.max,
        prec.rproc,
        NAOK=TRUE, DUP=FALSE)
-    cat(paste(1:nseries, "\t",
+    seq.series <- seq_len(nseries)
+    cat(paste(seq.series, "\t",
               series.ids, "\t",
               series.min, "\t",
               series.max, "\t",
-              1/prec.rproc, "\n", sep=""), sep="")
+              1 / prec.rproc, "\n", sep=""), sep="")
     rw.mat <- matrix(rw.vec, ncol=nseries, nrow=span)
     rownames(rw.mat) <- min.year:max.year
 
     ## Convert values < 0 to NA (either precision)
-    rw.mat[rw.mat<0] <- NA
+    rw.mat[rw.mat < 0] <- NA
     ## The operations in the loop depend on the precision of each series.
     ## It's not exactly clear whether the Tucson format allows mixed
     ## precisions in the same file, but we can support that in any case.
-    for(i in 1:nseries){
+    for(i in seq.series){
         this.prec.rproc <- prec.rproc[i]
         if(this.prec.rproc == 100){
             ## Convert stop marker (and any other) 999 to NA (precision 0.01)
@@ -126,7 +127,7 @@
     ## rows. The ham-handed approach below avoids removing areas with
     ## internal gaps such as those with floating, but dated segments.
     ## subset first 11 years to trim out leading NAs
-    foo <- rw.mat[1:11, , drop=FALSE]
+    foo <- rw.mat[seq_len(11), , drop=FALSE]
     foo.yrs <- as.numeric(rownames(foo))
     min.year0 <- min(foo.yrs[!apply(is.na(foo), 1, all)])
     ## subset last 11 years to trim out ending NAs

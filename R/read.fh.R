@@ -26,11 +26,11 @@ read.fh <- function(fname) {
     ## get rid of comments (if any)
     strip.comment <- function(x)
         strsplit(x, ";")[[1]][1]
-    for (i in inc(1, n)) { # loop through data blocks
+    for (i in seq_len(n)) { # loop through data blocks
         portion <- inp[(header.end[i]+1):(header.begin[i+1]-1)]
         if (nchar(portion[1]) > 4) { # data is in block format
             data <- numeric(length(portion)*10)
-            for (j in 1:length(portion)) {
+            for (j in seq_along(portion)) {
                 row <- as.character(portion[j])
                 row.numeric <- as.numeric(strsplit(row, " +")[[1]][2:11])
                 data[(j*10-9):(j*10)] <- row.numeric
@@ -50,7 +50,7 @@ read.fh <- function(fname) {
                          "There are %d series\n",
                          domain="R-dplR"),
                 n))
-    cat(paste(1:n, "\t",
+    cat(paste(seq_len(n), "\t",
               keycodes, "\t",
               start.years, "\t",
               end.years, "\n", sep=""), sep="")

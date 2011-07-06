@@ -19,3 +19,28 @@ test.tbrm <- function() {
     checkEquals(42, tbrm(outliers.in.42, C=1e-300),
                 msg="When the median of the absolute deviation from the median of the data set is zero, outliers are discarded when using a small C")
 }
+
+test.uuid.gen <- function() {
+    ## Setup
+    SAMP.SIZE <- 100
+    ugen <- uuid.gen()
+    uuids <- character(SAMP.SIZE)
+    for(i in seq_len(SAMP.SIZE))
+        uuids[i] <- ugen()
+    uuids.split <- strsplit(uuids, split="-", fixed=TRUE)
+    unique.nchar <- unique(t(sapply(uuids.split, nchar)))
+    unique.chars <-
+        unique(strsplit(paste(sapply(uuids.split, paste, collapse=""),
+                              collapse=""), split=character(0))[[1]])
+    all.4 <- unique(substr(uuids, 15, 15))
+    one.of.four <- unique(substr(uuids, 20, 20))
+    ## Test
+    checkEquals(SAMP.SIZE, length(unique(uuids)))
+    checkTrue(all(nchar(uuids) == 36))
+    checkTrue(all(sapply(uuids.split, length) == 5))
+    checkTrue(nrow(unique.nchar) == 1 &&
+              all(as.vector(unique.nchar) == c(8, 4, 4, 4, 12)))
+    checkTrue(all(unique.chars %in% c(as.character(0:9), letters[1:6])))
+    checkEquals("4", all.4)
+    checkTrue(all(one.of.four %in% c("8", "9", "a", "b")))
+}

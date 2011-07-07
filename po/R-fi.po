@@ -4,10 +4,10 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.4.4\n"
-"Report-Msgid-Bugs-To: bugs@r-project.org\n"
+"Project-Id-Version: dplR 1.4.5\n"
+"Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
 "POT-Creation-Date: 2011-07-02 22:45+0300\n"
-"PO-Revision-Date: 2011-07-02 22:49+0300\n"
+"PO-Revision-Date: 2011-07-07 22:20+0300\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"

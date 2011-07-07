@@ -49,3 +49,12 @@ test.uuid.gen <- function() {
     checkTrue(all(one.of.four %in% c("8", "9", "a", "b")),
               msg="IDs have a restricted character (one of four choices) in one position")
 }
+
+test.gini.coef <- function() {
+    ## Setup
+    SAMP.SIZE <- 1000
+    ## Test
+    checkEquals(0, gini.coef(rep(42, SAMP.SIZE)),
+                msg="Gini coefficient of repeated x is 0")
+    ## Needs more tests
+}

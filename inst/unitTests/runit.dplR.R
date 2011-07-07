@@ -1,9 +1,38 @@
+test.gini.coef <- function() {
+    ## Setup
+    SAMP.SIZE <- 1000
+    ## Test
+    checkEquals(0, gini.coef(rep(42, SAMP.SIZE)),
+                msg="Gini coefficient of a set with total equality is 0")
+    ## Needs more tests
+}
+
+test.sens1 <- function() {
+    ## Setup
+    SAMP.SIZE <- 1000
+    ## Test
+    checkEquals(0, sens1(rep(42, SAMP.SIZE)),
+                msg="Mean sensitivity (1) of a constant series is 0")
+    ## Needs more tests
+}
+
+test.sens2 <- function() {
+    ## Setup
+    SAMP.SIZE <- 1000
+    ## Test
+    checkEquals(0, sens2(rep(42, SAMP.SIZE)),
+                msg="Mean sensitivity (2) of a constant series is 0")
+    ## Needs more tests
+}
+
 test.tbrm <- function() {
     ## Setup
     SAMP.SIZE <- 1000
     half.32.52 <- c(rep(32, SAMP.SIZE / 2), rep(52, SAMP.SIZE / 2))
     outliers.in.42 <- c(rep(42, SAMP.SIZE / 2 + 1),
                         rep(-1e6, SAMP.SIZE / 4), rep(1e6, SAMP.SIZE / 4))
+    seq.odd <- seq_len(5)
+    seq.even <- seq_len(6)
     ## Test
     checkTrue(is.nan(tbrm(NA)), msg="NA input returns NaN")
     checkTrue(is.nan(tbrm(numeric(0))), msg="empty input returns NaN")
@@ -13,11 +42,17 @@ test.tbrm <- function() {
                 msg="When C is roughly at least 1, the (robust) mean of a data set consisting of equally sized subsets of two distinct numbers is the mean of those numbers")
     checkTrue(is.nan(tbrm(half.32.52, C=0.5)),
               msg="When C is 0.5, the (robust) mean of a data set consisting of equally sized subsets of two distinct numbers is NaN (all numbers are outliers)")
-    ## In the following, the value of C should not matter
+    ## In the following two tests, the value of C should not matter
     checkEquals(42, tbrm(outliers.in.42, C=1e300),
                 msg="When the median of the absolute deviation from the median of the data set is zero, outliers are discarded when using a large C")
-    checkEquals(42, tbrm(outliers.in.42, C=1e-300),
+    checkEquals(42, tbrm(outliers.in.42, C=0),
                 msg="When the median of the absolute deviation from the median of the data set is zero, outliers are discarded when using a small C")
+    ## In the following, we see what happens when the median
+    ## at first belongs and then does not belong to the set
+    checkEquals(mean(seq.odd), tbrm(seq.odd, C=0),
+                msg="Robust mean of an odd length sequence of consecutive integers is the mean of the sequence, even with C==0")
+    checkTrue(is.nan(tbrm(seq.even, C=0)),
+              msg="Robust mean of an even length sequence of consecutive integers is NaN when using a small C")
 }
 
 test.uuid.gen <- function() {
@@ -47,14 +82,5 @@ test.uuid.gen <- function() {
     checkEquals("4", all.4,
                 msg="IDs have a constant character \"4\" in one position")
     checkTrue(all(one.of.four %in% c("8", "9", "a", "b")),
-              msg="IDs have a restricted character (one of four choices) in one position")
-}
-
-test.gini.coef <- function() {
-    ## Setup
-    SAMP.SIZE <- 1000
-    ## Test
-    checkEquals(0, gini.coef(rep(42, SAMP.SIZE)),
-                msg="Gini coefficient of repeated x is 0")
-    ## Needs more tests
+              msg="IDs have a restricted character (4/16 choices) in one position")
 }

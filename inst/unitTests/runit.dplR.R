@@ -7,6 +7,35 @@ test.gini.coef <- function() {
     ## Needs more tests
 }
 
+test.hanning <- function() {
+    ## Setup
+    SAMP.SIZE <- 101
+    FILTER.LENGTH <- c(7, 51)
+    HALF.SIZE <- 50
+    x.constant <- rep(42, SAMP.SIZE)
+    x.impulse <- c(rep(0, HALF.SIZE), 1, rep(0, HALF.SIZE))
+    for(filter.length in FILTER.LENGTH){
+        length.str <- paste("(filter length ", filter.length, ")", sep="")
+        not.na.length <- SAMP.SIZE - filter.length + 1
+        y.constant <- hanning(x.constant, n=filter.length)
+        y.impulse <- hanning(x.impulse, n=filter.length)
+        not.na.constant <- which(!is.na(y.constant))
+        ## Test
+        checkEquals(not.na.length, length(not.na.constant),
+                    msg=paste("Filtering returns a certain number of NA values",
+                    length.str, sep=" "))
+        checkEquals(rep(42, not.na.length), y.constant[not.na.constant],
+                    msg=paste("A constant series is still constant after filtering",
+                    length.str, sep=" "))
+        checkEquals(1, sum(y.impulse, na.rm=TRUE),
+                    msg=paste("Sum of the filter coefficients is 1. Thus, filtering a unit impulse creates a result that sums to 1.",
+                    length.str, sep=" "))
+        ## Needs more tests (?)
+    }
+    checkException(hanning(x.constant, n=2), silent=TRUE,
+                   msg="Filter length < 3 is an error")
+}
+
 test.sens1 <- function() {
     ## Setup
     SAMP.SIZE <- 1000

@@ -7,6 +7,41 @@ test.gini.coef <- function() {
     ## Needs more tests
 }
 
+test.glk <- function() {
+    ## Setup
+    seq.inc <- seq_len(10)
+    seq.dec <- seq.int(from = -1, to = -10)
+    seq.rand <- sample(x = seq.inc, size = 10, replace = FALSE)
+    seq.step <- rep(seq.rand, each = 2)
+    seq.step <- seq.step[1:(length(seq.step) - 1)]
+    glk.4col <- glk(data.frame(seq.rand, seq.rand, seq.rand, seq.rand))
+    ## Test
+    checkEquals(4, nrow(glk.4col),
+                msg="Number of rows in result is correct")
+    checkEquals(4, ncol(glk.4col),
+                msg="Number of columns in result is correct")
+    checkTrue(all(glk.4col[upper.tri(x = glk.4col, diag = FALSE)] == 1),
+              msg="Upper triangle has correct values")
+    checkTrue(all(is.na(glk.4col[lower.tri(x = glk.4col, diag = TRUE)])),
+              msg="Lower triangle and diagonal have NA values")
+    checkEquals(1, glk(data.frame(seq.inc, seq.inc + 1))[1, 2],
+                msg="glk() is 1 when comparing two strictly monotonic sequences (both increasing)")
+    checkEquals(0, glk(data.frame(seq.inc, seq.dec))[1, 2],
+                msg="glk() is 0 when comparing two strictly monotonic sequences (one increasing, the other decreasing)")
+    checkEquals(1, glk(data.frame(seq.rand, seq.rand + 1))[1, 2],
+                msg="glk() is 1 when two sequences agree about the signs of all the differences and there are no zero differences")
+    checkEquals(0, glk(data.frame(seq.rand, -seq.rand))[1, 2],
+                msg="glk() is 0 when two sequences disagree about the signs of all the differences and there are no zero differences")
+    checkEquals(0, glk(data.frame(seq.step, -seq.step))[1, 2],
+                msg="glk() is 0 when two sequences agree about the location of zero differences and disagree about the signs of nonzero differences")
+    checkEquals(0.5, glk(data.frame(seq.rand, rep(1, length(seq.rand))))[1, 2],
+                msg="glk() is 0.5 when one sequence is constant and the other only has nonzero differences")
+    checkEquals(0.5, glk(data.frame(seq.step, seq.step))[1, 2],
+                msg="glk() is 0.5 when comparing a sequence where exactly half of the differences are zero with itself")
+    checkEquals(0.25, glk(data.frame(seq.step, rep(1, length(seq.step))))[1, 2],
+                msg="glk() is 0.25 when comparing a constant sequence and a sequence where exactly half of the differences are zero")
+}
+
 test.hanning <- function() {
     ## Setup
     SAMP.SIZE <- 101

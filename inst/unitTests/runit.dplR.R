@@ -13,7 +13,7 @@ test.glk <- function() {
     seq.dec <- seq.int(from = -1, to = -10)
     seq.rand <- sample(x = seq.inc, size = 10, replace = FALSE)
     seq.step <- rep(seq.rand, each = 2)
-    seq.step <- seq.step[1:(length(seq.step) - 1)]
+    seq.step <- seq.step[-length(seq.step)]
     glk.4col <- glk(data.frame(seq.rand, seq.rand, seq.rand, seq.rand))
     ## Test
     checkEquals(4, nrow(glk.4col),
@@ -141,7 +141,7 @@ test.uuid.gen <- function() {
     checkTrue(nrow(unique.nchar) == 1 &&
               all(as.vector(unique.nchar) == c(8, 4, 4, 4, 12)),
               msg="The parts have lengths 8, 4, 4, 4, and 12")
-    checkTrue(all(unique.chars %in% c(as.character(0:9), letters[1:6])),
+    checkTrue(all(unique.chars %in% c(as.character(0:9), letters[seq_len(6)])),
               msg="In addition to dashes, IDs only contain hexadecimal digits")
     checkEquals("4", all.4,
                 msg="IDs have a constant character \"4\" in one position")

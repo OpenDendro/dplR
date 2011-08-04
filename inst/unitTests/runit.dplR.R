@@ -1,3 +1,29 @@
+test.bai.in <- function() {
+    ## Test
+    base.seq <- pi * seq(from=3, by=2, length.out=19)
+    ones <- rep(1, 20)
+    checkEquals(c(pi, base.seq),
+                bai.in(data.frame(ones))[[1]],
+                msg="Testing with constant ring widths, zero (default) d2pith")
+    checkEquals(c(base.seq, 41 * pi),
+                bai.in(data.frame(x1 = ones),
+                       d2pith = data.frame(series="x1", d2pith=1))[[1]],
+                msg="Testing with constant ring widths, nonzero d2pith")
+}
+
+test.bai.out <- function() {
+    ## Test
+    base.seq <- pi * seq(from=3, by=2, length.out=19)
+    ones <- rep(1, 20)
+    checkEquals(c(pi, base.seq),
+                bai.out(data.frame(ones))[[1]],
+                msg="Testing with constant ring widths, zero (default) diam")
+    checkEquals(c(base.seq, 41 * pi),
+                bai.out(data.frame(x1 = ones),
+                        diam = data.frame(series="x1", diam=42))[[1]],
+                msg="Testing with constant ring widths, nonzero diam")
+}
+
 test.gini.coef <- function() {
     ## Setup
     SAMP.SIZE <- 1000

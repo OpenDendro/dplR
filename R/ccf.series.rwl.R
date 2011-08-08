@@ -40,7 +40,6 @@ ccf.series.rwl <- function(rwl, series,
     if(is.null(bin.floor) || bin.floor == 0) {
         min.bin <- min(series.yrs2)
     } else if(floor.plus1) {
-        cat("min year is", min(series.yrs2), "\n")
         min.bin <- ceiling((min(series.yrs2) - 1) / bin.floor) * bin.floor + 1
     } else {
         min.bin <- ceiling(min(series.yrs2) / bin.floor) * bin.floor

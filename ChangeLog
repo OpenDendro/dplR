@@ -6,6 +6,17 @@ Various .R files:
 - Updates to sequence generation, e.g. use seq_along and seq_len where
   applicable
 
+File: ccf.series.rwl.R
+----------------------
+
+- Fixed a bug where segment length was always actually one year longer
+  than the specified seg.length.
+- Fixed a bug where the requirement of fitting at least two segments
+  did not take into account overlapping segments (seg.lag), therefore
+  requiring more than the minimum number of years.
+- Added a "plus 1" option (floor.plus1) to location of first segment.
+  Works together with parameter bin.floor. Default value is FALSE.
+
 File: tbrm.c
 ------------
 

@@ -6,7 +6,8 @@
 }
 \usage{
   corr.rwl.seg(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRUE,
-  pcrit=0.05, biweight=TRUE, make.plot = TRUE, label.cex=1, ...)
+  pcrit=0.05, biweight=TRUE, make.plot = TRUE, label.cex=1,
+  floor.plus1 = FALSE, ...)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
@@ -28,6 +29,9 @@
   \item{make.plot}{ \code{logical flag} indicating whether to make a plot. }
   \item{label.cex}{ \code{numeric} scalar for the series labels on the
     plot. Passed to \code{axis.cex} in \code{\link{axis}}. }
+  \item{floor.plus1}{ \code{logical flag}. If \code{TRUE}, one year is
+    added to the base location of the first segment (e.g. 1601, 1701,
+    1801 AD). }
   \item{...}{ other arguments passed to plot. }
 }
 \details{  

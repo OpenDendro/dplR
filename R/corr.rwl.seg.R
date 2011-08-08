@@ -1,6 +1,7 @@
 corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                          prewhiten = TRUE, pcrit=0.05, biweight=TRUE,
-                         make.plot = TRUE, label.cex=1, ...){
+                         make.plot = TRUE, label.cex=1,
+                         floor.plus1 = FALSE, ...){
 
     ## helper function
     yr.range <- function(x, yr.vec=as.numeric(names(x))) {
@@ -26,10 +27,15 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     nyrs <- length(yrs)
     min.yr <- min(yrs)
     max.yr <- max(yrs)
-    if(is.null(bin.floor) || bin.floor == 0) min.bin <- min.yr
-    else min.bin <- ceiling(min.yr/bin.floor) * bin.floor
-    bins <- seq(from=min.bin, to=max.yr-seg.length+1, by=seg.lag)
-    bins <- cbind(bins, bins+(seg.length-1))
+    if(is.null(bin.floor) || bin.floor == 0) {
+        min.bin <- min.yr
+    } else if(floor.plus1) {
+        min.bin <- ceiling((min.yr - 1) / bin.floor) * bin.floor + 1
+    } else {
+        min.bin <- ceiling(min.yr / bin.floor) * bin.floor
+    }
+    bins <- seq(from=min.bin, to=max.yr - seg.length + 1, by=seg.lag)
+    bins <- cbind(bins, bins + (seg.length - 1))
     nbins <- nrow(bins)
     bin.names <- paste(bins[, 1], ".", bins[, 2], sep="")
     ## structures for results
@@ -70,7 +76,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         series <- rwi[, i]
         ## loop through bins
         for(j in seq_len(nbins)){
-            mask <- yrs%in%seq(from=bins[j, 1], to=bins[j, 2])
+            mask <- yrs %in% seq(from=bins[j, 1], to=bins[j, 2])
             ## cor is NA if there is not complete overlap
             if(!any(mask) ||
                any(is.na(series[mask])) ||
@@ -130,10 +136,10 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
              domain="R-dplR"),
              ...)
         ## bounding poly for even series
-        xx <- c(min.yr-100, max.yr+100)
+        xx <- c(min.yr - 100, max.yr + 100)
         xx <- c(xx, rev(xx))
         for(i in seq(from=1, to=nseries, by=2)){
-            yy <- c(i-0.5, i-0.5, i+0.5, i+0.5)
+            yy <- c(i - 0.5, i - 0.5, i + 0.5, i + 0.5)
             polygon(xx, yy, col="grey90", border=NA)
         }
         abline(v=bins, col="grey", lty="dotted")
@@ -152,7 +158,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                 for(j in seq_len(nrow(these.bins))){
                     ## minus 1 deals with edge in segment graphing
                     mask <- yrs%in%seq(from = these.bins[j, 1],
-                                       to = these.bins[j, 2]-1)
+                                       to = these.bins[j, 2] - 1)
                     ## note lack of complete overlap
                     if(any(is.na(segs[mask, i])))
                         com.segs[mask, i] <- NA

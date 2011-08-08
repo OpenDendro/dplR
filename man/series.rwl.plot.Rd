@@ -7,8 +7,9 @@
   cross-dating functions.
 }
 \usage{
-  series.rwl.plot(rwl,series,series.yrs=as.numeric(names(series)),
-  seg.length=100,bin.floor=100,n=NULL, prewhiten = TRUE, biweight=TRUE)
+  series.rwl.plot(rwl, series, series.yrs=as.numeric(names(series)),
+  seg.length=100, bin.floor=100, n=NULL, prewhiten = TRUE,
+  biweight=TRUE, floor.plus1 = FALSE)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
@@ -24,15 +25,18 @@
   \item{n}{ \code{NULL} or an integer giving the filter length for the
     \code{\link{hanning}} filter used for removal of low frequency
     variation. }
-  \item{prewhiten}{ \code{logical} flag. If \code{TRUE} each series is whitened using
-      \code{\link[stats]{ar}}. }
-  \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust mean is calculated
-    using \code{\link{tbrm}}. }
+  \item{prewhiten}{ \code{logical} flag. If \code{TRUE} each series is
+    whitened using \code{\link[stats]{ar}}. }
+  \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust
+    mean is calculated using \code{\link{tbrm}}. }
+  \item{floor.plus1}{ \code{logical flag}. If \code{TRUE}, one year is
+    added to the base location of the first segment (e.g. 1601, 1701,
+    1801 AD). }
 }
 \details{
-  The function is typically invoked to produce a four plots showing the
-  the effect of the detrending options \code{n} and \code{prewhiten} and
-  the the binning options \code{seg.length} and \code{bin.floor}.
+  The function is typically invoked to produce four plots showing the
+  effect of the detrending options \code{n} and \code{prewhiten} and
+  the binning options \code{seg.length} and \code{bin.floor}.
 
   Plot 1. Time series plot of the filtered series and the master.
   Plot 2. Scatterplot of series vs. master.
@@ -51,7 +55,7 @@
 \value{
   A \code{list} containing the filtered vectors \code{series} and \code{master}.
 }
-\author{ Andy Bunn.  Patched by Mikko Korpela. }
+\author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{corr.rwl.seg}} \code{\link{corr.series.seg}} \code{\link{ccf.series.rwl}}}
 \examples{
   data(co021)

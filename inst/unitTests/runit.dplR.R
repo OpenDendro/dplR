@@ -28,20 +28,29 @@ test.ccf.series.rwl <- function() {
     ## Setup
     srs1 <- seq(from=1, to=2, length.out=500)
     names(srs1) <- seq_along(srs1)
-    dat1 <- data.frame(srs1)
+    dat1 <- data.frame(srs1, srs1 + 0.05, srs1 + 0.1)
+    ## perfect correlation at lag 0 (mean of dat1 is srs1 + constant)
     res1.1 <- ccf.series.rwl(rwl = dat1, series = srs1,
                              seg.length = 100, bin.floor = 100,
-                             prewhiten = FALSE, make.plot = FALSE,
-                             floor.plus1 = FALSE)
+                             prewhiten = FALSE, biweight = TRUE,
+                             make.plot = FALSE, floor.plus1 = FALSE)
     res1.2 <- ccf.series.rwl(rwl = dat1, series = srs1,
                              seg.length = 100, bin.floor = 100,
-                             prewhiten = FALSE, make.plot = FALSE,
-                             floor.plus1 = TRUE)
+                             prewhiten = FALSE, biweight = FALSE,
+                             make.plot = FALSE, floor.plus1 = TRUE)
+    res1.3 <- ccf.series.rwl(rwl = dat1, series = srs1,
+                             seg.length = 100, bin.floor = 100,
+                             prewhiten = TRUE, biweight = FALSE,
+                             make.plot = FALSE, floor.plus1 = TRUE)
     bins1.1 <- res1.1$bins
     bins1.2 <- res1.2$bins
+    bins1.3 <- res1.3$bins
+    nrow1.3 <- nrow(bins1.3)
+
     srs2 <- sin(pi / 4 * seq_len(500)) + 1.5 # period is 8
     names(srs2) <- seq_along(srs2)
     dat2 <- data.frame(srs2)
+    ## perfect correlation at lag 0 (the single column dat2 is a copy of srs2)
     res2 <- ccf.series.rwl(rwl = dat2, series = srs2,
                            seg.length = 250, bin.floor = 100,
                            prewhiten = FALSE, lag.max = 7,
@@ -49,6 +58,7 @@ test.ccf.series.rwl <- function() {
     ccf2 <- res2$ccf
     bins2 <- res2$bins
     rnames2 <- rownames(ccf2)
+
     ## Test
     checkEquals(7, nrow(bins1.1),
                 msg="Correct number of bins is 7")
@@ -61,11 +71,16 @@ test.ccf.series.rwl <- function() {
     checkEqualsNumeric(499, bins1.1[7, 2],
                        msg="Last bin ends at 499")
     checkEqualsNumeric(500, bins1.2[9, 2],
-                       msg="Last bin ends at 500")
+                       msg="Last bin ends at 500 (test 2)")
+    checkEqualsNumeric(500, bins1.3[nrow1.3, 2],
+                       msg="Last bin ends at 500 (test 3)")
     checkEqualsNumeric(rep(1, 7), res1.1$ccf["lag.0", ],
                        msg="Correlation at lag 0 is 1 (test 1)")
     checkEqualsNumeric(rep(1, 9), res1.2$ccf["lag.0", ],
                        msg="Correlation at lag 0 is 1 (test 2)")
+    checkEqualsNumeric(rep(1, nrow1.3), res1.3$ccf["lag.0", ],
+                       msg="Correlation at lag 0 is 1 (test 3)")
+
     checkEquals(3, nrow(bins2),
                 msg="Correct number of bins is 3")
     checkEquals(15, length(rnames2),

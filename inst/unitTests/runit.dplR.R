@@ -24,6 +24,66 @@ test.bai.out <- function() {
                 msg="Testing with constant ring widths, nonzero diam")
 }
 
+test.ccf.series.rwl <- function() {
+    ## Setup
+    srs1 <- seq(from=1, to=2, length.out=500)
+    names(srs1) <- seq_along(srs1)
+    dat1 <- data.frame(srs1)
+    res1.1 <- ccf.series.rwl(rwl = dat1, series = srs1,
+                             seg.length = 100, bin.floor = 100,
+                             prewhiten = FALSE, make.plot = FALSE,
+                             floor.plus1 = FALSE)
+    res1.2 <- ccf.series.rwl(rwl = dat1, series = srs1,
+                             seg.length = 100, bin.floor = 100,
+                             prewhiten = FALSE, make.plot = FALSE,
+                             floor.plus1 = TRUE)
+    bins1.1 <- res1.1$bins
+    bins1.2 <- res1.2$bins
+    srs2 <- sin(pi / 4 * seq_len(500)) + 1.5 # period is 8
+    names(srs2) <- seq_along(srs2)
+    dat2 <- data.frame(srs2)
+    res2 <- ccf.series.rwl(rwl = dat2, series = srs2,
+                           seg.length = 250, bin.floor = 100,
+                           prewhiten = FALSE, lag.max = 7,
+                           make.plot = FALSE, floor.plus1 = TRUE)
+    ccf2 <- res2$ccf
+    bins2 <- res2$bins
+    rnames2 <- rownames(ccf2)
+    ## Test
+    checkEquals(7, nrow(bins1.1),
+                msg="Correct number of bins is 7")
+    checkEquals(9, nrow(bins1.2),
+                msg="Correct number of bins is 9")
+    checkEqualsNumeric(100, bins1.1[1, 1],
+                       msg="First bin starts at 100")
+    checkEqualsNumeric(1, bins1.2[1, 1],
+                       msg="First bin starts at 1")
+    checkEqualsNumeric(499, bins1.1[7, 2],
+                       msg="Last bin ends at 499")
+    checkEqualsNumeric(500, bins1.2[9, 2],
+                       msg="Last bin ends at 500")
+    checkEqualsNumeric(rep(1, 7), res1.1$ccf["lag.0", ],
+                       msg="Correlation at lag 0 is 1 (test 1)")
+    checkEqualsNumeric(rep(1, 9), res1.2$ccf["lag.0", ],
+                       msg="Correlation at lag 0 is 1 (test 2)")
+    checkEquals(3, nrow(bins2),
+                msg="Correct number of bins is 3")
+    checkEquals(15, length(rnames2),
+                msg="Correct number of lags is 15 (1 + 7 + 7)")
+    checkEqualsNumeric(c(1, 126, 251), bins2[, 1],
+                       msg="Bins start at 1, 126, 251")
+    checkEqualsNumeric(c(250, 375, 500), bins2[, 2],
+                       msg="Bins end at 250, 375, 500")
+    checkTrue(all(rnames2[apply(abs(ccf2), 2, which.min)] %in%
+                  c("lag.-6", "lag.-2", "lag.2", "lag.6")),
+              msg="Smallest absolute correlation is at a phase difference of 1/4 or 3/4 cycles")
+    checkTrue(all(rnames2[apply(ccf2, 2, which.min)] %in%
+                  c("lag.-4", "lag.4")),
+              msg="Largest negative correlation is at a phase difference of 1/2 cycles")
+    checkTrue(all(rnames2[apply(ccf2, 2, which.max)] == "lag.0"),
+              msg="Largest positive correlation is at lag 0")
+}
+
 test.gini.coef <- function() {
     ## Setup
     SAMP.SIZE <- 1000

@@ -8,7 +8,7 @@
 \usage{
   corr.series.seg(rwl,series,series.yrs=as.numeric(names(series)),
   seg.length=50,bin.floor=100,n=NULL, prewhiten = TRUE, biweight=TRUE,
-  pcrit=0.05, make.plot = TRUE,...)
+  pcrit=0.05, make.plot = TRUE, floor.plus1 = FALSE, ...)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
@@ -31,6 +31,9 @@
   \item{pcrit}{ a number between 0 and 1 giving the critical value for the
     correlation test. }
   \item{make.plot}{ \code{logical flag} indicating whether to make a plot. }
+  \item{floor.plus1}{ \code{logical flag}. If \code{TRUE}, one year is
+    added to the base location of the first segment (e.g. 1601, 1701,
+    1801 AD). }
   \item{...}{ other arguments passed to plot. }
 }
 \details{

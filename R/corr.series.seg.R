@@ -1,7 +1,8 @@
 corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
                             seg.length=50, bin.floor=100, n=NULL,
                             prewhiten = TRUE, biweight=TRUE,
-                            pcrit=0.05, make.plot = TRUE, ...){
+                            pcrit=0.05, make.plot = TRUE,
+                            floor.plus1 = FALSE, ...){
 
     ## run error checks
     qa.xdate(rwl, seg.length, n, bin.floor)
@@ -41,9 +42,14 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     yrs <- as.numeric(names(master))
     nyrs <- length(series.yrs2)
 
-    if(is.null(bin.floor) || bin.floor == 0) min.bin <- min(series.yrs2)
-    else min.bin <- ceiling(min(series.yrs2) / bin.floor) * bin.floor
-    to <- max(series.yrs2) - seg.length - seg.length + 1
+    if(is.null(bin.floor) || bin.floor == 0) {
+        min.bin <- min(series.yrs2)
+    } else if(floor.plus1) {
+        min.bin <- ceiling((min(series.yrs2) - 1) / bin.floor) * bin.floor + 1
+    } else {
+        min.bin <- ceiling(min(series.yrs2) / bin.floor) * bin.floor
+    }
+    to <- max(series.yrs2) - seg.length - seg.lag + 1
     if(min.bin > to){
         cat(gettextf("maximum year in (filtered) series: %d\n",
                      max(series.yrs2)))
@@ -51,7 +57,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
         cat(gettext("cannot fit two segments (not enough years in the series)\n"))
         stop("shorten 'seg.length' or adjust 'bin.floor'")
     }
-    bins <- seq(from=min.bin, to=to + seg.length, by=seg.lag)
+    bins <- seq(from=min.bin, to=to + seg.lag, by=seg.lag)
     bins <- cbind(bins, bins + (seg.length - 1))
     nbins <- nrow(bins)
     bin.names <- paste(bins[, 1], ".", bins[, 2], sep="")

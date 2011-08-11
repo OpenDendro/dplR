@@ -75,6 +75,26 @@ yr.range <- function(x, yr.vec = as.numeric(names(x))){
     range(yr.vec[!is.na(x)])
 }
 
+### Multiple ranges of years.
+yr.ranges <- function(x, yr.vec = as.numeric(names(x))){
+    na.flag <- is.na(x)
+    idx.good <- which(!na.flag)
+    idx.bad <- which(na.flag)
+    res <- matrix(nrow=0, ncol=2)
+    while(length(idx.good) > 0) {
+        first.good <- idx.good[1]
+        idx.bad <- idx.bad[idx.bad > first.good]
+        if(length(idx.bad) > 0) {
+            first.bad <- idx.bad[1]
+        } else {
+            first.bad <- length(x) + 1
+        }
+        idx.good <- idx.good[idx.good > first.bad]
+        res <- rbind(res, yr.vec[c(first.good, first.bad - 1)])
+    }
+    res
+}
+
 ### Used in cms, rcs, ...
 sortByIndex <- function(x){
     lowerBound <- which.min(is.na(x))

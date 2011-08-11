@@ -150,50 +150,33 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         for(odd.even in c(1, 2)){
             this.seq <- seq(from=odd.even, to=nbins, by=2)
             these.bins <- bins[this.seq, , drop=FALSE]
-            com.segs <- matrix(1, ncol=nseries, nrow=nyrs)
+            com.segs <- matrix(NA, ncol=nseries, nrow=nyrs)
             flag.segs <- matrix(NA, ncol=nseries, nrow=nyrs)
             ## loop through these.bins
             tmp <- p.val[neworder, this.seq, drop=FALSE] > pcrit
             for(i in seq_len(nseries)){
                 for(j in seq_len(nrow(these.bins))){
-                    ## minus 1 deals with edge in segment graphing
                     mask <- yrs%in%seq(from = these.bins[j, 1],
-                                       to = these.bins[j, 2] - 1)
-                    ## note lack of complete overlap
-                    if(any(is.na(segs[mask, i])))
-                        com.segs[mask, i] <- NA
-                    if(is.na(tmp[i, j]))
-                        com.segs[mask, i] <- NA
-                    else if(tmp[i, j]){
-                        mask2 <- yrs%in%seq(from = these.bins[j, 1],
-                                            to = these.bins[j, 2])
-                        flag.segs[mask2, i] <- 1
+                                       to = these.bins[j, 2])
+                    if(!is.na(tmp[i, j])) {
+                        com.segs[mask, i] <- 1
+                        if(tmp[i, j]) {
+                            flag.segs[mask, i] <- 1
+                        }
                     }
                 }
-                ## make sure any segment past year range is NA for
-                ## com.segs this is a fix because there was an errant
-                ## 1 in floating series that was not getting tagged
-                ## because of the mask indexing: these.bins[j, 2]-1
-                ## that deals with the bin overlap issue. This should
-                ## fix it.
-                mask3 <- yrs%in%seq(first.year[i], last.year[i])
-                com.segs[!mask3, i] <- NA
             }
-            idx.small.large <-
-                yrs < min(these.bins) | yrs > max(these.bins)
-            com.segs[idx.small.large, ] <- NA
-            flag.segs[idx.small.large, ] <- NA
 
             com.segs.mat <-
                 t(apply(com.segs, 2, yr.range, yr.vec=yrs))
-            flag.segs.mat <-
-                t(apply(flag.segs, 2, yr.range, yr.vec=yrs))
 
-            axis(ax[odd.even], at=these.bins)
             ## polygons for these bins (go down or up from series line)
             y.deviation <- y.offset[odd.even]
-            guides.x.base <- c(these.bins, recursive=T)
-            guides.x.base <- sort(guides.x.base[!duplicated(guides.x.base)])
+            guides.x.base <-
+                c(these.bins[, 1], these.bins[length(this.seq), 2] + 1)
+            ## Ticks at 1) first year of each bin,
+            ## and 2) first year larger than any of these bins
+            axis(ax[odd.even], at=guides.x.base)
             for(i in seq_len(nseries)){
                 y.deviation <- y.deviation + 1
                 ## whole segs
@@ -206,9 +189,12 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                 xx <- c(xx, rev(xx))
                 polygon(xx, yy, col=col.pal[2], border=NA)
                 ## flags
-                xx <- flag.segs.mat[i, ]
-                xx <- c(xx, rev(xx))
-                polygon(xx, yy, col=col.pal[1], border=NA)
+                flag.segs.mat <- yr.ranges(flag.segs[, i], yrs)
+                for(j in seq_len(nrow(flag.segs.mat))) {
+                    xx <- flag.segs.mat[j, ]
+                    xx <- c(xx, rev(xx))
+                    polygon(xx, yy, col=col.pal[1], border=NA)
+                }
                 ## guides
                 guides.x <- guides.x.base[guides.x.base >= segs.mat[i, 1]]
                 guides.x <- guides.x[guides.x <= segs.mat[i, 2]]

@@ -9,13 +9,21 @@ Various .R files:
 Files: ccf.series.rwl.R, corr.rwl.seg.R, corr.series.seg.R, series.rwl.plot.R
 -----------------------------------------------------------------------------
 
+A bunch of related bugs were fixed, some not present or already
+(partially) fixed in some files:
+
 - Fixed a bug where segment length was always actually one year longer
-  than the specified seg.length (not in corr.series.seg.R).
+  than the specified seg.length (not in corr.rwl.seg.R, corr.series.seg.R).
 - Fixed a bug where the requirement of fitting at least two segments
   did not take into account overlapping segments (seg.lag), therefore
   requiring more than the minimum number of years (not in corr.rwl.seg.R).
 - Added a "plus 1" option (floor.plus1) to location of first segment.
   Works together with parameter bin.floor. Default value is FALSE.
+- In corr.rwl.seg.R, cleaned up the code and fixed some bugs related to
+  segment boundaries. Also uses arguably prettier x axis ticks and labels,
+  which are now separated by seg.length.
+- In corr.rwl.seg.R, fixed a bug where multiple disconnected red segments
+  were not drawn correctly.
 
 File: tbrm.c
 ------------

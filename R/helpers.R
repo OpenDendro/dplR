@@ -80,19 +80,21 @@ yr.ranges <- function(x, yr.vec = as.numeric(names(x))){
     na.flag <- is.na(x)
     idx.good <- which(!na.flag)
     idx.bad <- which(na.flag)
-    res <- matrix(nrow=0, ncol=2)
+    n <- length(x)
+    res <- matrix(nrow=ceiling(n / 2), ncol=2)
+    k <- 0
     while(length(idx.good) > 0) {
         first.good <- idx.good[1]
         idx.bad <- idx.bad[idx.bad > first.good]
         if(length(idx.bad) > 0) {
             first.bad <- idx.bad[1]
         } else {
-            first.bad <- length(x) + 1
+            first.bad <- n + 1
         }
         idx.good <- idx.good[idx.good > first.bad]
-        res <- rbind(res, yr.vec[c(first.good, first.bad - 1)])
+        res[k <- k + 1, ] <- yr.vec[c(first.good, first.bad - 1)]
     }
-    res
+    res[seq_len(k), , drop=FALSE]
 }
 
 ### Used in cms, rcs, ...

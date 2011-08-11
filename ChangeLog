@@ -24,6 +24,7 @@ A bunch of related bugs were fixed, some not present or already
   which are now separated by seg.length.
 - In corr.rwl.seg.R, fixed a bug where multiple disconnected red segments
   were not drawn correctly.
+- In corr.rwl.seg.R, removed unused variables / operations
 
 File: tbrm.c
 ------------

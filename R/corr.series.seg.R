@@ -42,6 +42,9 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     yrs <- as.numeric(names(master))
     nyrs <- length(series.yrs2)
 
+    if(nyrs < seg.length) {
+        stop("number of overlapping years is less than 'seg.length'")
+    }
     if(is.null(bin.floor) || bin.floor == 0) {
         min.bin <- min(series.yrs2)
     } else if(floor.plus1) {

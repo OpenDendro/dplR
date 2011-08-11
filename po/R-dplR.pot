@@ -4,9 +4,9 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.4.4\n"
+"Project-Id-Version: dplR 1.4.5\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-07-02 22:45+0300\n"
+"POT-Creation-Date: 2011-08-11 17:09+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,6 +70,9 @@ msgid "Year"
 msgstr ""
 
 msgid "Segments: length=%d,lag=%d"
+msgstr ""
+
+msgid "number of overlapping years is smaller than 'seg.length'"
 msgstr ""
 
 msgid "'crn' must be a data.frame"

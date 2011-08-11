@@ -28,6 +28,7 @@ A bunch of related bugs were fixed, some not present or already
 - In corr.rwl.seg.R, removed unused variables / operations
 - In corr.rwl.seg.R and corr.series.seg.R, arguably prettier x axis ticks
   and labels are used (now separated by seg.length).
+- In corr.series.seg.R, an additional error check was added
 
 File: tbrm.c
 ------------

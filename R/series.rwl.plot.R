@@ -72,10 +72,15 @@ series.rwl.plot <-
     plot(yrs, series2, type="n", ylim=c(0, max(series2, master, na.rm=T)),
          ylab=gettext("RWI", domain="R-dplR"),
          xlab=gettext("Year", domain="R-dplR"), axes=FALSE)
-    abline(v=bins, col="grey", lty="dotted")
+    all.ticks <- c(bins[, 1], bins[c(nbins - 1, nbins), 2] + 1)
+    abline(v=all.ticks, col="grey", lty="dotted")
     abline(h=1)
-    axis(1, at=bins[seq(from=1, to=nbins, by=2), ])
-    axis(3, at=bins[seq(from=2, to=nbins, by=2), ])
+    odd.seq <- seq(from=1, to=nbins, by=2)
+    even.seq <- seq(from=2, to=nbins, by=2)
+    odd.ticks <- c(bins[odd.seq, 1], bins[odd.seq[length(odd.seq)], 2] + 1)
+    even.ticks <- c(bins[even.seq, 1], bins[even.seq[length(even.seq)], 2] + 1)
+    axis(1, at=odd.ticks)
+    axis(3, at=even.ticks)
     axis(2)
     box()
     lines(yrs, series2, lwd=1.5, col=col.pal[1])
@@ -98,10 +103,10 @@ series.rwl.plot <-
          xlab=gettext("Year", domain="R-dplR"),
          sub=gettextf("Segments: length=%d,lag=%d,bin.floor=%d",
          seg.length, seg.lag, bin.floor, domain="R-dplR"), axes=FALSE)
-    abline(v=bins, col="grey", lty="dotted")
+    abline(v=all.ticks, col="grey", lty="dotted")
     abline(h=0)
-    axis(1, at=bins[seq(from=1, to=nbins, by=2), ])
-    axis(3, at=bins[seq(from=2, to=nbins, by=2), ])
+    axis(1, at=odd.ticks)
+    axis(3, at=even.ticks)
     box()
     for(i in seq(1, nbins, by=2)){
         xx <- bins[i, ]

@@ -130,9 +130,11 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
              sub=gettextf("Segments: length=%d,lag=%d", seg.length, seg.lag,
              domain="R-dplR"),
              axes=FALSE, ...)
-        abline(v=bins2, col="grey", lty="dotted")
-        axis(1, at=bins2[seq(from=1, to=nrow(bins2), by=2), ])
-        axis(3, at=bins2[seq(from=2, to=nrow(bins2), by=2), ])
+        abline(v=c(bins2[, 1], bins2[nrow(bins2), 2]), col="grey", lty="dotted")
+        odd.seq <- seq(from=1, to=nrow(bins2), by=2)
+        even.seq <- seq(from=2, to=nrow(bins2), by=2)
+        axis(1, at=c(bins2[odd.seq, 1], bins2[odd.seq[length(odd.seq)], 2]))
+        axis(3, at=c(bins2[even.seq, 1], bins2[even.seq[length(even.seq)], 2]))
         axis(2)
         box()
         ## lines bins

@@ -142,7 +142,8 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             yy <- c(i - 0.5, i - 0.5, i + 0.5, i + 0.5)
             polygon(xx, yy, col="grey90", border=NA)
         }
-        abline(v=bins, col="grey", lty="dotted")
+        abline(v=c(bins[, 1], bins[c(nbins - 1, nbins), 2] + 1),
+               col="grey", lty="dotted")
 
         ## First odd segs, then even segs
         y.offset <- c(-0.25, 0.25)

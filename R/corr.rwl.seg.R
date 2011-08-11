@@ -117,13 +117,11 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         p.val <- res.pval
         segs <- rwi
         extreme.year <- apply(segs, 2, yr.range, yr.vec=yrs)
-        first.year <- extreme.year[1, ]
-        rsult <- sort.int(first.year, decreasing=FALSE, index.return=TRUE)
+        rsult <- sort.int(extreme.year[1, ], decreasing=FALSE,
+                          index.return=TRUE)
         neworder <- rsult$ix
         segs <- segs[, neworder, drop=FALSE]
         segs.mat <- t(extreme.year[, neworder])
-        first.year <- first.year[neworder]
-        last.year <- extreme.year[2, neworder]
 
         nsegs <- ncol(segs)
         op <- par(no.readonly=TRUE)

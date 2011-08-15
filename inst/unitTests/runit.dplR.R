@@ -99,6 +99,84 @@ test.ccf.series.rwl <- function() {
               msg="Largest positive correlation is at lag 0")
 }
 
+test.combine.rwl <- function() {
+    ## Setup
+    v.1 <- 1 + runif(300)
+    range.1 <- 51:400
+    rnames.1 <- as.character(range.1)
+    range.2 <- range.1 + 150
+    rnames.2 <- as.character(range.2)
+    range.3 <- range.1 + 350
+    rnames.3 <- as.character(range.3)
+    range.4 <- range.1 + 450
+    rnames.4 <- as.character(range.4)
+    df.1 <- data.frame(col1 = c(v.1, rep(NA, 50)),
+                       col2 = c(rep(NA, 25), v.1, rep(NA, 25)),
+                       col3 = c(rep(NA, 50), v.1),
+                       row.names = rnames.1)
+    df.2 <- df.1
+    rownames(df.2) <- rnames.2
+    df.3 <- df.1
+    rownames(df.3) <- rnames.3
+    df.4 <- df.1
+    rownames(df.4) <- rnames.4
+    res.3 <- combine.rwl(list(df.1))
+    res.4 <- combine.rwl(list(df.1, df.2, df.3, df.4))
+    res.5 <- combine.rwl(df.1, df.1)
+    res.6 <- combine.rwl(df.1, df.2)
+    res.7 <- combine.rwl(df.1, df.3)
+    res.8 <- combine.rwl(df.1, df.4)
+    ## Test
+    ## 1. x is an empty list (error)
+    checkException(combine.rwl(list()),
+                   msg="Nothing to combine in an empty list")
+    ## 2. x is a data.frame, y is not given (error)
+    checkException(combine.rwl(df.1),
+                   msg="Nothing to combine in a single data.frame")
+    ## 3. x is a list with one data.frame
+    checkEquals(df.1, res.3,
+                msg="Result is correct (test 3)")
+    ## 4. x is a list with four data.frames
+    checkEquals(12, ncol(res.4), msg="Result has 12 columns (test 4)")
+    checkEquals(df.1, res.4[1:350, 1:3],
+                msg="1st part of result is correct (test 4)")
+    checkEquals(df.2, res.4[150+(1:350), 4:6],
+                msg="2nd part of result is correct (test 4)")
+    checkEquals(df.3, res.4[350+(1:350), 7:9],
+                msg="3rd part of result is correct (test 4)")
+    checkEquals(df.4, res.4[450+(1:350), 10:12],
+                msg="4th part of result is correct (test 4)")
+    ## x and y are data.frames that...
+    ## 5. ...are identical
+    checkEquals(6, ncol(res.5), msg="Result has 6 columns (test 5)")
+    checkEquals(df.1, res.5[1:3],
+                msg="1st part of result is correct (test 5)")
+    checkEquals(df.1, res.5[4:6],
+                msg="2nd part of result is correct (test 5)")
+    ## 6. ...have partially overlapping years
+    checkEquals(6, ncol(res.6), msg="Result has 6 columns (test 6)")
+    checkEquals(500, nrow(res.6), msg="Result has 500 rows (test 6)")
+    checkEquals(df.1, res.6[1:350, 1:3],
+                msg="1st part of result is correct (test 6)")
+    checkEquals(df.2, res.6[150+(1:350), 4:6],
+                msg="2nd part of result is correct (test 6)")
+    ## 7. ...have separate sets of years so that the result is continuous
+    ## (y starts where x ends)
+    checkEquals(6, ncol(res.7), msg="Result has 6 columns (test 7)")
+    checkEquals(700, nrow(res.7), msg="Result has 700 rows (test 7)")
+    checkEquals(df.1, res.7[1:350, 1:3],
+                msg="1st part of result is correct (test 7)")
+    checkEquals(df.3, res.7[350+(1:350), 4:6],
+                msg="2nd part of result is correct (test 7)")
+    ## 8. ...have separate sets of years so that the result is discontinuous
+    checkEquals(6, ncol(res.8), msg="Result has 6 columns (test 8)")
+    checkEquals(800, nrow(res.8), msg="Result has 800 rows (test 8)")
+    checkEquals(df.1, res.8[1:350, 1:3],
+                msg="1st part of result is correct (test 8)")
+    checkEquals(df.4, res.8[450+(1:350), 4:6],
+                msg="2nd part of result is correct (test 8)")
+}
+
 test.gini.coef <- function() {
     ## Setup
     SAMP.SIZE <- 1000

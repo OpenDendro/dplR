@@ -1,6 +1,11 @@
 * CHANGES IN dplR VERSION 1.4.6
 
+File: corr.rwl.seg.R
+--------------------
 
+- Fixed a bug in the $flags part of the list returned by the
+  function. Previously, a single flagged segment / series was not
+  reported.
 
 2011-08-11 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.5

@@ -108,13 +108,11 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     flag.logical <- res.pval >= pcrit
     flag.logical[is.na(flag.logical)] <- FALSE
     for(i in seq_along(seg.flags))
-        seg.flags[i] <- paste(names(flag.logical[i, flag.logical[i, ]]),
-                              collapse = ", ")
+        seg.flags[i] <- paste(bin.names[flag.logical[i, ]], collapse = ", ")
     seg.flags <- seg.flags[seg.flags != ""]
 
     ## plot
     if(make.plot){
-        p.val <- res.pval
         segs <- rwi
         extreme.year <- apply(segs, 2, yr.range, yr.vec=yrs)
         rsult <- sort.int(extreme.year[1, ], decreasing=FALSE,
@@ -152,7 +150,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             com.segs <- matrix(NA, ncol=nseries, nrow=nyrs)
             flag.segs <- matrix(NA, ncol=nseries, nrow=nyrs)
             ## loop through these.bins
-            tmp <- p.val[neworder, this.seq, drop=FALSE] > pcrit
+            tmp <- res.pval[neworder, this.seq, drop=FALSE] > pcrit
             for(i in seq_len(nseries)){
                 for(j in seq_len(nrow(these.bins))){
                     mask <- yrs%in%seq(from = these.bins[j, 1],

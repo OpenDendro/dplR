@@ -107,8 +107,8 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     overall.cor[2] <- tmp$p.val
 
     ## moving correlation
-    for(i in seq_len(nyrs - seg.length)){
-        mask <- i:(i + seg.length)
+    for(i in seq_len(nyrs - seg.length + 1)){
+        mask <- i:(i + seg.length - 1)
         tmp <- cor.test(series2[mask], master[mask],
                         method = "spearman", alternative = "g")
         res.mcor[i + seg.lag, 1] <- tmp$estimate

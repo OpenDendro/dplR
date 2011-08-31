@@ -1,4 +1,4 @@
-2011-08-30 Mikko Korpela
+2011-08-31 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.6
 
 File: corr.rwl.seg.R
@@ -14,6 +14,10 @@ File: corr.series.seg.R
 - Fixed a bug where moving correlations were computed using a window one
   year longer than seg.length. This problem had gone unnoticed when
   fixing some related bugs for version 1.4.5.
+- Changed the x and y limits of the plot. Now the computation of the y
+  limits does not use p-values as an input (the y-axis is correlation, not
+  p-value). x limits are now set explicitly, and generally speaking there
+  is more space around the plotted data.
 
 2011-08-11 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.5

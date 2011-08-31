@@ -119,25 +119,25 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
         mcor.tmp <- na.omit(res.mcor)
         yrs.tmp <- as.numeric(row.names(mcor.tmp))
         mcor.tmp <- mcor.tmp[, 1]
-        ## bins2 makes plotting nicer. Adds a bin to the top
-        ## and bottom so that the mcor line isn't all alone.
-        bottom.bin2 <- bins[1, ] - seg.lag
-        top.bin2 <- bins[nbins, ] + seg.lag
-        bins2 <- rbind(bottom.bin2, bins, top.bin2)
+        n.below <- ceiling(max(0, min.bin - min(yrs.tmp)) / seg.lag)
+        start.below <- seq(from=min.bin - n.below * seg.lag, by=seg.lag,
+                           length.out=n.below)
+        ticks <- c(start.below, bins[, 1], bins[c(nbins - 1, nbins), 2] + 1)
+        nticks <- length(ticks)
+
         par(mar=c(4, 2, 2, 1) + 0.1, mgp=c(1.25, 0.25, 0), tcl=0.25)
         sig <- qnorm(1 - pcrit / 2) / sqrt(seg.length)
         plot(yrs.tmp, mcor.tmp, type="l",
-             ylim=range(res.cor, res.mcor, sig, na.rm=T),
+             xlim=c(ticks[1], ticks[nticks]),
+             ylim=range(mcor.tmp, sig, na.rm=T),
              ylab=gettext("Correlation", domain="R-dplR"),
              xlab=gettext("Year", domain="R-dplR"),
              sub=gettextf("Segments: length=%d,lag=%d", seg.length, seg.lag,
              domain="R-dplR"),
              axes=FALSE, ...)
-        abline(v=c(bins2[, 1], bins2[nrow(bins2), 2]), col="grey", lty="dotted")
-        odd.seq <- seq(from=1, to=nrow(bins2), by=2)
-        even.seq <- seq(from=2, to=nrow(bins2), by=2)
-        axis(1, at=c(bins2[odd.seq, 1], bins2[odd.seq[length(odd.seq)], 2]))
-        axis(3, at=c(bins2[even.seq, 1], bins2[even.seq[length(even.seq)], 2]))
+        abline(v=ticks, col="grey", lty="dotted")
+        axis(1, at=ticks[seq(from=1, to=nticks, by=2)])
+        axis(3, at=ticks[seq(from=2, to=nticks, by=2)])
         axis(2)
         box()
         ## lines bins

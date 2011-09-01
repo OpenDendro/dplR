@@ -187,7 +187,6 @@ test.corr.rwl.seg <- function() {
     srs4[126:175] <- rev(srs4[126:175])
     srs4[326:425] <- rev(srs4[326:425])
     names(srs1) <- seq_along(srs1)
-    names(srs2) <- names(srs1)
     dat1 <- data.frame(a=srs1, b=srs1, c=srs1, d=srs1, e=srs1, f=srs1, g=srs1)
     dat2 <- dat1
     dat2[1] <- srs2
@@ -311,6 +310,124 @@ test.corr.rwl.seg <- function() {
                 msg="$flags[\"a\"] is correct (test4)", checkNames = FALSE)
     checkEquals("101.200, 301.400, 351.450", res4$flags["b"],
                 msg="$flags[\"b\"] is correct (test4)", checkNames = FALSE)
+}
+
+test.corr.series.seg <- function() {
+    ## Setup
+    srs1 <- rep(seq(from=0.5, to=1.5, length.out=50), 10)
+    srs2 <- rev(srs1)
+    srs3 <- srs1
+    srs3[26:75] <- rev(srs3[26:75])
+    srs3[326:425] <- rev(srs3[326:425])
+    names(srs1) <- seq_along(srs1)
+    names(srs2) <- seq_along(srs2)
+    names(srs3) <- seq_along(srs3)
+    dat <- data.frame(a=srs1, b=srs1, c=srs1, d=srs1, e=srs1, f=srs1, g=srs1)
+    res1 <- corr.series.seg(rwl=dat, series=srs1, seg.length=50,
+                            bin.floor=100, make.plot=FALSE)
+    res2 <- corr.series.seg(rwl=dat, series=srs2, seg.length=50,
+                            bin.floor=100, make.plot=FALSE)
+    res3 <- corr.series.seg(rwl=dat, series=srs3, seg.length=100,
+                            bin.floor=100, make.plot=FALSE)
+    res4 <- corr.series.seg(rwl=dat, series=srs3, seg.length=100,
+                            prewhiten=FALSE, bin.floor=100,
+                            make.plot=FALSE, floor.plus1=TRUE)
+
+    expected.cnames1 <- paste(res1$bins[, 1], res1$bins[, 2], sep=".")
+    expected.cnames3 <- paste(res3$bins[, 1], res3$bins[, 2], sep=".")
+    expected.cnames4 <- paste(res4$bins[, 1], res4$bins[, 2], sep=".")
+    expected.corr1 <- rep(1, length(res1$spearman.rho))
+    names(expected.corr1) <- expected.cnames1
+    expected.corr2 <- rep(-1, length(res2$spearman.rho))
+    names(expected.corr2) <- expected.cnames1
+    expected.overall1 <- c(1, 0)
+    names(expected.overall1) <- c("rho", "p-val")
+    expected.overall2 <- c(-1, 1)
+    names(expected.overall2) <- c("rho", "p-val")
+    expected.flags1 <- rep(0, length(res1$p.val))
+    names(expected.flags1) <- names(res1$p.val)
+    expected.flags2 <- rep(1, length(res2$p.val))
+    names(expected.flags2) <- names(res2$p.val)
+    expected.flags3 <- rep(0, length(res3$p.val))
+    names(expected.flags3) <- names(res3$p.val)
+    expected.flags4 <- rep(0, length(res4$p.val))
+    names(expected.flags4) <- names(res4$p.val)
+    expected.flags3[c("300.399", "350.449")] <- 1
+    expected.flags4[c("1.100", "301.400", "351.450")] <- 1
+    res1.flags <- rep(0, length(res1$p.val))
+    names(res1.flags) <- names(res1$p.val)
+    res1.flags[res1$p.val >= 0.05] <- 1
+    res2.flags <- rep(0, length(res2$p.val))
+    names(res2.flags) <- names(res2$p.val)
+    res2.flags[res2$p.val >= 0.05] <- 1
+    res3.flags <- rep(0, length(res3$p.val))
+    names(res3.flags) <- names(res3$p.val)
+    res3.flags[res3$p.val >= 0.05] <- 1
+    res4.flags <- rep(0, length(res4$p.val))
+    names(res4.flags) <- names(res4$p.val)
+    res4.flags[res4$p.val >= 0.05] <- 1
+    range.moving.3 <- range(res3$moving.rho[, "rho"], na.rm=TRUE)
+    range.3 <- range(res3$spearman.rho)
+
+    ## Test
+    checkTrue(all(res1$bins[, 2] - res1$bins[, 1] + 1 == 50),
+              msg="Bins have correct length(test 1)")
+    checkEqualsNumeric(100, res1$bins[1, 1],
+                       msg="First bin is in correct position (test 1)")
+    checkTrue(all(diff(res1$bins[, 1]) == 25),
+              msg="Bins have correct overlap (test 1)")
+    checkEqualsNumeric(450, res1$bins[nrow(res1$bins), 1],
+                       msg="Last bin is in correct position (test 1)")
+
+    checkEquals(res1$bins, res2$bins, msg="Bins are equal (tests 1 and 2)")
+
+    checkTrue(all(res3$bins[, 2] - res3$bins[, 1] + 1 == 100),
+              msg="Bins have correct length(test 3)")
+    checkEqualsNumeric(100, res3$bins[1, 1],
+                       msg="First bin is in correct position (test 3)")
+    checkTrue(all(diff(res3$bins[, 1]) == 50),
+              msg="Bins have correct overlap (test 3)")
+    checkEqualsNumeric(400, res3$bins[nrow(res3$bins), 1],
+                       msg="Last bin is in correct position (test 3)")
+
+    checkTrue(all(res4$bins[, 2] - res4$bins[, 1] + 1 == 100),
+              msg="Bins have correct length(test 4)")
+    checkEqualsNumeric(1, res4$bins[1, 1],
+                       msg="First bin is in correct position (test 4)")
+    checkTrue(all(diff(res4$bins[, 1]) == 50),
+              msg="Bins have correct overlap (test 4)")
+    checkEqualsNumeric(401, res4$bins[nrow(res4$bins), 1],
+                       msg="Last bin is in correct position (test 4)")
+
+    checkEquals(expected.corr1, res1$spearman.rho,
+                msg="Correlations are as expected (test 1)")
+    checkEquals(expected.corr2, res2$spearman.rho,
+                msg="Correlations are as expected (test 2)")
+
+    checkEquals(expected.overall1, res1$overall,
+                msg="Overall correlations are as expected (test 1)")
+    checkEquals(expected.overall2, res2$overall,
+                msg="Overall correlations are as expected (test 2)")
+
+    checkEquals(expected.flags1, res1.flags,
+                msg="P-values are as expected (test 1)")
+    checkEquals(expected.flags2, res2.flags,
+                msg="P-values are as expected (test 2)")
+    checkEquals(expected.flags3, res3.flags,
+                msg="P-values are as expected (test 3)")
+    checkEquals(expected.flags4, res4.flags,
+                msg="P-values are as expected (test 4)")
+
+    checkEquals(c(1, 1), range(res1$moving.rho[, "rho"], na.rm=TRUE),
+                msg="Moving correlations are as expected (test 1)")
+    checkEquals(c(-1, -1), range(res2$moving.rho[, "rho"], na.rm=TRUE),
+                msg="Moving correlations are as expected (test 2)")
+    checkEquals(range.moving.3,
+                c(min(range.moving.3[1], range.3[1]),
+                  max(range.moving.3[2], range.3[2])),
+                msg="Moving correlations are as expected (test 3)")
+    checkEquals(c(-1, 1), range(res4$moving.rho[, "rho"], na.rm=TRUE),
+                msg="Moving correlations are as expected (test 4)")
 }
 
 test.gini.coef <- function() {

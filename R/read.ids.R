@@ -5,9 +5,10 @@
     if(sum(stc) != 8) stop("Site-Tree-Core mask does not sum to 8")
     ## Pad to 8 chars
     ids <- colnames(rwl)
-    out <- matrix(NA, ncol=2, nrow=length(ids))
-    rownames(out) <- ids
-    colnames(out) <- c("site", "tree")
+    n.cases <- length(ids)
+    unique.site.strs <- character(0)
+    tree.strs <- character(length=n.cases)
+    core.strs <- character(length=n.cases)
     for(i in seq_along(ids)){
         x <- ids[i]
         n <- nchar(x)
@@ -15,18 +16,56 @@
             x <- paste(x, paste(rep(" ", each=8-n), collapse=""), sep="")
         else if(n > 8) stop("unable to create tree ids")
         site.chars <- c(1, stc[1])
-        tree.chars <- c(site.chars[2]+1, site.chars[2]+stc[2])
-        out[i, 1] <- substring(x, site.chars[1], site.chars[2])
-        out[i, 2] <- substring(x, tree.chars[1], tree.chars[2])
+        tree.chars <- c(site.chars[2]+1, site.chars[2] + stc[2])
+        core.chars <- c(tree.chars[2]+1, tree.chars[2] + stc[3])
+        unique.site.strs <- union(unique.site.strs,
+                                  substring(x, site.chars[1], site.chars[2]))
+        tree.strs[i] <- substring(x, tree.chars[1], tree.chars[2])
+        core.strs[i] <- substring(x, core.chars[1], core.chars[2])
     }
     ## Warn if more than one site?
-    if(length(unique(out[, 1])) > 1)
+    if(length(unique.site.strs) > 1)
         warning("there appears to be more than one site")
-    tree.vec <- as.numeric(out[, 2])
-    core.vec <- rep(NA, length(tree.vec))
-    for(i in seq_along(unique(tree.vec))){
-        tree.flag <- tree.vec == i
-        core.vec[tree.flag] <- seq_along(core.vec[tree.flag])
+    unique.trees <- unique(tree.strs)
+    unique.trees.as.int <- suppressWarnings(as.integer(unique.trees))
+    if(!any(is.na(unique.trees.as.int))){
+        ## 1a. If tree identifiers are already integer, respect them...
+        tree.vec <- as.numeric(tree.strs)
+        core.vec <- rep(as.numeric(NA), n.cases)
+        for(uq in unique.trees.as.int){
+            tree.idx <- which(tree.vec == uq)
+            these.cores <- core.strs[tree.idx]
+            cores.as.int <- suppressWarnings(as.integer(these.cores))
+            if(!any(is.na(cores.as.int)) &&
+               length(unique(cores.as.int)) == length(cores.as.int)){
+                core.vec[tree.idx] <- cores.as.int
+                ## 2a. The same...
+            } else {
+                ## 2b. ...applies to core identifiers
+                core.vec[tree.idx[order(these.cores)]] <-
+                    seq_along(core.vec[tree.idx])
+            }
+        }
+    } else {
+        ## 1b. ...otherwise, enumerate trees from 1 to number of trees
+        tree.vec <- rep(as.numeric(NA), n.cases)
+        core.vec <- rep(as.numeric(NA), n.cases)
+        unique.trees <- sort(unique.trees)
+        for(i in seq_along(unique.trees)){
+            tree.idx <- which(tree.strs == unique.trees[i])
+            tree.vec[tree.idx] <- i
+            these.cores <- core.strs[tree.idx]
+            cores.as.int <- suppressWarnings(as.integer(these.cores))
+            if(!any(is.na(cores.as.int)) &&
+               length(unique(cores.as.int)) == length(cores.as.int)){
+                ## 2a.
+                core.vec[tree.idx] <- cores.as.int
+            } else {
+                ## 2b.
+                core.vec[tree.idx[order(these.cores)]] <-
+                    seq_along(core.vec[tree.idx])
+            }
+        }
     }
     data.frame(tree=tree.vec, core=core.vec, row.names=ids)
 }

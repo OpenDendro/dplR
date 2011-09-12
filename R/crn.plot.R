@@ -5,8 +5,8 @@
     on.exit(par(op))            # Reset par on exit
     par(mar=c(3, 3, 3, 3), mgp=c(1.25, 0.25, 0), tcl=0.25)
 
-    yr.vec <- as.numeric(rownames(crn))
-    crn.names <- colnames(crn)
+    yr.vec <- as.numeric(row.names(crn))
+    crn.names <- names(crn)
     nCrn <- ncol(crn)
     ## Check to see if the crn has sample depth
     sd.exist <- crn.names[nCrn] == "samp.depth"

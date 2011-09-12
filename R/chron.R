@@ -13,13 +13,13 @@
         else res <- apply(x.ar, 1, tbrm, C=9)
         res[is.nan(res)] <- NA
         out <- data.frame(std, res, samps)
-        colnames(out) <- c(paste(prefix.str, "std", sep=""),
-                           paste(prefix.str, "res", sep=""),
-                           "samp.depth")
+        names(out) <- c(paste(prefix.str, "std", sep=""),
+                        paste(prefix.str, "res", sep=""),
+                        "samp.depth")
     } else{
         out <- data.frame(std, samps)
-        colnames(out) <- c(paste(prefix.str, "std", sep=""), "samp.depth")
+        names(out) <- c(paste(prefix.str, "std", sep=""), "samp.depth")
     }
-    rownames(out) <- rownames(x)
+    row.names(out) <- row.names(x)
     out
 }

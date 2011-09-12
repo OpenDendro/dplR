@@ -20,10 +20,10 @@ sea <- function(x, key, lag = 5, resample = 1000) {
     se <- colMeans(se.table, na.rm = T)
     se.unscaled <- colMeans(se.unscaled.table, na.rm = T)
     re.table <- matrix(NA, ncol = m, nrow = resample)
-    row.names <- as.numeric(rownames(x.scaled))
+    rnames <- as.numeric(row.names(x.scaled))
     for (k in seq_len(resample)) {
         re.subtable <- matrix(NA, ncol = m, nrow = n)
-        rand.key <- sample(row.names, n, replace = T)
+        rand.key <- sample(rnames, n, replace = T)
         for (i in seq.n)
             re.subtable[i, ] <-
                 x.scaled[as.character(rand.key[i] + yrs.base), ]

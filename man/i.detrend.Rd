@@ -7,7 +7,7 @@
   \code{\link{detrend.series}}.
 }
 \usage{
-i.detrend(rwl, y.name = colnames(rwl),nyrs = NULL, f = 0.5, pos.slope = FALSE)
+i.detrend(rwl, y.name = names(rwl),nyrs = NULL, f = 0.5, pos.slope = FALSE)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows

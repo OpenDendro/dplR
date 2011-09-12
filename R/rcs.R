@@ -3,7 +3,7 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
     n.col <- ncol(rwl)
     if(n.col != nrow(po))
         stop("dimension problem: ", "'ncol(rw)' != 'nrow(po)'")
-    col.names <- colnames(rwl)
+    col.names <- names(rwl)
     if(!all(sort(po[, 1]) == sort(col.names)))
         stop("series ids in 'po' and 'rwl' do not match")
     if(any(po[, 2] < 1))
@@ -39,7 +39,7 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
     rwica <- rwca/rc
     ## and restore to cal years
     rwi <- rwl2
-    yrs <- as.numeric(rownames(rwi))
+    yrs <- as.numeric(row.names(rwi))
     for(i in seq.cols){
         series.yrs <- yr.range(rwl2[, i], yr.vec=yrs)
         first <- series.yrs[1]

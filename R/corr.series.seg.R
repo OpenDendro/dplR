@@ -117,7 +117,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     ## plot
     if(make.plot){
         mcor.tmp <- na.omit(res.mcor)
-        yrs.tmp <- as.numeric(row.names(mcor.tmp))
+        yrs.tmp <- as.numeric(rownames(mcor.tmp))
         mcor.tmp <- mcor.tmp[, 1]
         n.below <- ceiling(max(0, min.bin - min(yrs.tmp)) / seg.lag)
         start.below <- seq(from=min.bin - n.below * seg.lag, by=seg.lag,

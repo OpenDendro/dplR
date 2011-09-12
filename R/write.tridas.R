@@ -186,9 +186,8 @@ create.title.hierarchy <- function(cnames, ids){
 ### completeness data.frame, counting pith offset exceeding the value
 ### 1 as missing heartwood.
 po.to.wc <- function(po){
-    wc <- data.frame(n.missing.heartwood = as.integer(po[, 2] - 1))
-    rownames(wc) <- po[, 1]
-    wc
+    data.frame(n.missing.heartwood = as.integer(po[, 2] - 1),
+               row.names = po[, 1])
 }
 
 ### Helper function for handling arguments to write.tridas.
@@ -432,7 +431,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
         check.char.vars(list(c("site.info", "unknown", "type"),
                              c("site.info", "", "title")))
         n.col <- ncol(rwl.df)
-        cnames <- colnames(rwl.df)
+        cnames <- names(rwl.df)
 
         ## If 'ids' is NULL then assume one core, radius and
         ## measurement per tree.  In case of missing columns (less
@@ -547,7 +546,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
         if(!is.null(wood.completeness2)){
             if(nrow(wood.completeness2) != n.col)
                 stop("'nrow(wood.completeness)' must be equal to 'ncol(rwl.df)'")
-            if(any(rownames(wood.completeness2) != cnames))
+            if(any(row.names(wood.completeness2) != cnames))
                 stop("row names of 'wood.completeness' must match column names of 'rwl.df'")
             names.wc <- names(wood.completeness2)
             wc <- TRUE
@@ -678,7 +677,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
             doc.addTag("description", site.info$description)
 
         unique.trees <- unique(ids2$tree)
-        yrs.all <- as.numeric(rownames(rwl.df2))
+        yrs.all <- as.numeric(row.names(rwl.df2))
 
         for(tree in unique.trees){
             idx.t <- which(ids2$tree %in% tree)
@@ -871,7 +870,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
     if(!is.null(crn2)){
         for(i in seq_along(crn2)){
             this.frame <- crn2[[i]]
-            yrs.all <- as.numeric(rownames(this.frame))
+            yrs.all <- as.numeric(row.names(this.frame))
             crn.names <- names(this.frame)
             depth.idx <- grep("^samp[.]depth", crn.names)
             n.depth <- length(depth.idx)

@@ -153,6 +153,6 @@
         y
     }
     rw.df <- as.data.frame(apply(rw.mat, 2, fix.internal.na))
-    colnames(rw.df) <- as.character(series.ids)
+    names(rw.df) <- as.character(series.ids)
     rw.df
 }

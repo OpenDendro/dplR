@@ -18,8 +18,8 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     on.exit(options(w))
     options(warn = -1)
 
-    rnames <- rownames(rwl)
-    cnames <- colnames(rwl)
+    rnames <- row.names(rwl)
+    cnames <- names(rwl)
     seg.lag <- seg.length / 2
     nseries <- ncol(rwl)
     if(nseries < 2) stop("At least 2 series are needed in 'rwl'")
@@ -202,7 +202,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         ## finish up plotting
         odd.seq <- seq(from=1, to=nsegs, by=2)
         even.seq <- seq(from=2, to=nsegs, by=2)
-        cnames.segs <- colnames(segs)
+        cnames.segs <- names(segs)
         axis(2, at=odd.seq,
              labels=cnames.segs[odd.seq], srt=45,
              tick=FALSE, las=2, cex.axis=label.cex)

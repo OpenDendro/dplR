@@ -26,7 +26,7 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
 
     ## Loop through series and write each one
     nseries <- ncol(rwl.df)
-    yrs.all <- rownames(rwl.df)
+    yrs.all <- row.names(rwl.df)
 
     line.width <- 80 # max line width
     prec.rproc <- ifelse(prec == 0.01, 100, 1000) # reciprocal of precision
@@ -38,7 +38,7 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
     name.width <-
         line.width - max.field.width.width - max.n.width - max.i.width - 17
 
-    col.names <- fix.names(x=colnames(rwl.df), limit=name.width,
+    col.names <- fix.names(x=names(rwl.df), limit=name.width,
                            mapping.fname=mapping.fname,
                            mapping.append=mapping.append, basic.charset=TRUE)
 

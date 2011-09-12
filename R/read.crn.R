@@ -125,7 +125,7 @@
         crn.mat <- crn.mat[, -ncol.crn.mat, drop=FALSE]
         crn.mat <- crn.mat / 1000
         crn.df <- as.data.frame(crn.mat)
-        colnames(crn.df) <- save.names
+        names(crn.df) <- save.names
         cat(gettext("All embedded sample depths are one...Dumping from matrix\n",
                     domain="R-dplR"))
     }

@@ -4,8 +4,8 @@ combine.rwl <- function(x, y = NULL) {
         dim.y2 <- ncol(y)
         if(dim.x2 > 0 && dim.y2 > 0){
             dim2 <- dim.x2 + dim.y2
-            years.x <- rownames(x)
-            years.y <- rownames(y)
+            years.x <- row.names(x)
+            years.y <- row.names(y)
             min.x <- as.numeric(years.x[1])
             min.y <- as.numeric(years.y[1])
             max.x <- as.numeric(years.x[length(years.x)])
@@ -18,7 +18,7 @@ combine.rwl <- function(x, y = NULL) {
             new[(min.y-min.year+1):(max.y-min.year+1), (dim.x2+1):dim2] <-
                 as.matrix(y)
             rownames(new) <- years
-            colnames(new) <- c(colnames(x), colnames(y))
+            colnames(new) <- c(names(x), names(y))
             as.data.frame(new)
         } else if(dim.y2 == 0) {
             x

@@ -2,9 +2,9 @@
     function(rwl, stc=c(3, 2, 3))
 {
     ## This will try to read tree and core ids from a rwl data.frame
-    if(sum(stc) != 8) stop("Site-Tree-Core mask does not sum to 8")
+    if(sum(stc) > 8) stop("Site-Tree-Core mask is larger than 8")
     ## Pad to 8 chars
-    ids <- colnames(rwl)
+    ids <- names(rwl)
     n.cases <- length(ids)
     unique.site.strs <- character(0)
     tree.strs <- character(length=n.cases)
@@ -36,18 +36,19 @@
             tree.idx <- which(tree.vec == uq)
             these.cores <- core.strs[tree.idx]
             cores.as.int <- suppressWarnings(as.integer(these.cores))
-            if(!any(is.na(cores.as.int)) &&
-               length(unique(cores.as.int)) == length(cores.as.int)){
-                core.vec[tree.idx] <- cores.as.int
+            if(!any(is.na(cores.as.int))){
                 ## 2a. The same...
+                core.vec[tree.idx] <- cores.as.int
             } else {
                 ## 2b. ...applies to core identifiers
-                core.vec[tree.idx[order(these.cores)]] <-
-                    seq_along(core.vec[tree.idx])
+                unique.cores <- sort(unique(these.cores))
+                for(j in seq_along(unique.cores)){
+                    core.vec[tree.idx[these.cores == unique.cores[j]]] <- j
+                }
             }
         }
     } else {
-        ## 1b. ...otherwise, enumerate trees from 1 to number of trees
+        ## 1b. ...otherwise, map unique tree strings to numbers 1:n
         tree.vec <- rep(as.numeric(NA), n.cases)
         core.vec <- rep(as.numeric(NA), n.cases)
         unique.trees <- sort(unique.trees)
@@ -56,14 +57,15 @@
             tree.vec[tree.idx] <- i
             these.cores <- core.strs[tree.idx]
             cores.as.int <- suppressWarnings(as.integer(these.cores))
-            if(!any(is.na(cores.as.int)) &&
-               length(unique(cores.as.int)) == length(cores.as.int)){
+            if(!any(is.na(cores.as.int))){
                 ## 2a.
                 core.vec[tree.idx] <- cores.as.int
             } else {
                 ## 2b.
-                core.vec[tree.idx[order(these.cores)]] <-
-                    seq_along(core.vec[tree.idx])
+                unique.cores <- sort(unique(these.cores))
+                for(j in seq_along(unique.cores)){
+                    core.vec[tree.idx[these.cores == unique.cores[j]]] <- j
+                }
             }
         }
     }

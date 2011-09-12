@@ -11,8 +11,8 @@
 \usage{co021}
 \format{A \code{data.frame} containing 35 tree-ring series in columns and 788 years
   in rows. }
-\source{International tree-ring data bank, Accessed on 27-August-2007 at
-  \url{ftp://ftp.ncdc.noaa.gov/pub/data/paleo/treering/chronologies/northamerica/usa/co021.crn}
+\source{International tree-ring data bank, Accessed on 12-September-2011 at
+  \url{ftp://ftp.ncdc.noaa.gov/pub/data/paleo/treering/measurements/northamerica/usa/co021.rwl}
 }
 \references{
   Schulman, E. (1963) Schulman Old Tree No. 1 Data Set. IGBP PAGES/World Data

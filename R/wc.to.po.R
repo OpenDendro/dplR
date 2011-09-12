@@ -20,6 +20,6 @@ wc.to.po <- function(wc){
                          sum,
                          na.rm = TRUE) + 1)
 
-    data.frame(series = rownames(wc),
+    data.frame(series = row.names(wc),
                pith.offset)
 }

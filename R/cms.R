@@ -14,7 +14,7 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
     n.col <- ncol(rwl2)
     if(n.col != nrow(po))
         stop("dimension problem: ", "'ncol(rw)' != 'nrow(po)'")
-    col.names <- colnames(rwl2)
+    col.names <- names(rwl2)
     if(!all(sort(po[, 1]) == sort(col.names)))
         stop("series ids in 'po' and 'rwl' do not match")
     rownames(rwl2) <- rownames(rwl2) # guard against NULL names funniness
@@ -22,7 +22,7 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
 
     ## divide each series by c curve and restore to cal years
     rwi <- rwl2
-    yrs <- as.numeric(rownames(rwi))
+    yrs <- as.numeric(row.names(rwi))
     c.vec <- rep(as.numeric(NA), n.col)
     names(c.vec) <- col.names
     if(c.hat.t){

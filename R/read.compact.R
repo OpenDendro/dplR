@@ -27,6 +27,6 @@ read.compact <- function(fname)
             paste(project.comments, collapse="\n"), sep="\n")
 
     rw.df <- as.data.frame(rw.mat)
-    colnames(rw.df) <- series.ids
+    names(rw.df) <- series.ids
     rw.df
 }

@@ -81,9 +81,9 @@ site.info.to.df <- function(x, name.prefix=NULL){
         y <- data.frame(y)
         if(!is.null(name.prefix)){
             if(max.length == 1)
-                colnames(y) <- name.prefix
+                names(y) <- name.prefix
             else
-                colnames(y) <-
+                names(y) <-
                     paste(name.prefix, ".", seq_len(max.length), sep="")
         }
     } else{
@@ -1538,12 +1538,12 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              this.df <-
                                  data.frame(array(as.numeric(NA),
                                                   dim=c(df.nrow, df.ncol)))
-                             rownames(this.df) <- df.first:df.last
+                             row.names(this.df) <- df.first:df.last
                              composite.titles <-
                                  create.composite.titles(t.i.s, i.i.s)
                              rownames(t.i.s) <- rownames(i.i.s) <-
                                  composite.titles
-                             colnames(this.df) <- composite.titles
+                             names(this.df) <- composite.titles
                              for(l in seq_len(df.ncol)){
                                  first.idx <- f.y[l] - df.first + 1
                                  last.idx <- l.y[l] - df.first + 1
@@ -1587,8 +1587,8 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                             site.missing.sapwood.foundation[idx.utv],
                                             site.n.unmeasured.inner[idx.utv],
                                             site.n.unmeasured.outer[idx.utv])
-                             colnames(this.wc) <- wc.names
-                             rownames(this.wc) <- composite.titles
+                             names(this.wc) <- wc.names
+                             row.names(this.wc) <- composite.titles
                              ## Remove unused columns
                              delete.idx <-
                                  which(apply(this.wc,
@@ -2099,7 +2099,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              data.frame(series = value.vector,
                                         samp.depth = count.vector[seq_along(value.vector)])
                          if(is.dated){
-                             rownames(series.frame) <-
+                             row.names(series.frame) <-
                                  as.character(this.first.year:this.last.year)
                              if(this.last.year > year.now)
                                  warning(gettextf("in derived series %d: ",
@@ -2200,8 +2200,8 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      for(i in seq_len(df.size)){
                          this.df <- res.df[[i]]
                          nseries <- ncol(this.df)
-                         series.ids <- colnames(this.df)
-                         rnames <- rownames(this.df)
+                         series.ids <- names(this.df)
+                         rnames <- row.names(this.df)
                          min.year <- as.numeric(rnames[1])
                          max.year <- as.numeric(rnames[nrow(this.df)])
                          if(max.year > year.now)
@@ -2300,7 +2300,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                     res.undated.missing.sapwood.foundation,
                                     res.undated.n.unmeasured.inner,
                                     res.undated.n.unmeasured.outer)
-                     colnames(this.wc) <- wc.names
+                     names(this.wc) <- wc.names
                      delete.idx <- which(apply(this.wc,
                                                2,
                                                function(x) all(is.na(x))))
@@ -2367,7 +2367,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                     core.title = type.core.title,
                                     derived.title = type.derived.title)
                      ## Remove duplicated rows (titles are irrelevant)
-                     no.title <- !grepl("title", colnames(res.all$type))
+                     no.title <- !grepl("title", names(res.all$type))
                      res.all$type <-
                          res.all$type[!duplicated(res.all$type[no.title]), ]
                      ## Remove unused columns
@@ -2397,7 +2397,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                     measurement.title = comments.measurement.title,
                                     derived.title = comments.derived.title)
                      ## Remove duplicated rows (titles are irrelevant)
-                     no.title <- !grepl("title", colnames(res.all$comments))
+                     no.title <- !grepl("title", names(res.all$comments))
                      res.all$comments <-
                          res.all$comments[!duplicated(res.all$comments[no.title]), ]
                      ## Remove unused columns
@@ -2428,7 +2428,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                     measurement.title = identifier.measurement.title,
                                     derived.title = identifier.derived.title)
                      ## Remove duplicated rows (titles are irrelevant)
-                     no.title <- !grepl("title", colnames(res.all$identifier))
+                     no.title <- !grepl("title", names(res.all$identifier))
                      res.all$identifier <-
                          res.all$identifier[!duplicated(res.all$identifier[no.title]), ]
                      ## Remove unused columns
@@ -2486,7 +2486,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                                     "site.title"),
                                     tree.title = altitude.tree.title)
                      ## Remove duplicated rows (titles are irrelevant)
-                     no.title <- !grepl("title", colnames(res.all$altitude))
+                     no.title <- !grepl("title", names(res.all$altitude))
                      idx.temp <- !duplicated(res.all$altitude[no.title])
                      res.all$altitude <- res.all$altitude[idx.temp, ]
                  }
@@ -2505,7 +2505,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                                     "site.title"),
                                     tree.title = preferred.tree.title)
                      ## Remove duplicated rows (titles are irrelevant)
-                     no.title <- !grepl("title", colnames(res.all$preferred))
+                     no.title <- !grepl("title", names(res.all$preferred))
                      idx.temp <- !duplicated(res.all$preferred[no.title])
                      res.all$preferred <- res.all$preferred[idx.temp, ]
                      ## Remove unused columns

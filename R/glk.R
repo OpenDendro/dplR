@@ -1,7 +1,7 @@
 glk <- function(x) {
     n <- dim(x)[2]
     G <- matrix(NA, nrow = n, ncol = n)
-    rownames(G) <- colnames(G) <- colnames(x)
+    rownames(G) <- colnames(G) <- names(x)
     for (i in inc(1, n - 1)) {
         col1 <- x[, i]
         not.na.1 <- which(!is.na(col1))

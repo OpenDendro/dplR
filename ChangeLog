@@ -1,5 +1,14 @@
-2011-09-08 Mikko Korpela
+2011-09-12 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.7
+
+Various .R files:
+-----------------
+
+- For data.frames, row.names() is now used instead of rownames().
+  The opposite change was applied in one location (not a data.frame).
+  Also, names() is used instead of colnames() where appropriate.
+  This is because names() and row.names() are preferred to
+  colnames() and rownames(), respectively, when dealing with data.frames.
 
 File: read.ids.R
 ----------------
@@ -8,9 +17,23 @@ File: read.ids.R
   for non-numeric identifiers or when identifiers did not fall in the
   range from 1 to n.
 	
-- Now respects input identifiers where possible: If all
-  substrings denoting tree or core are integers, they are
-  used. Otherwise, the objects are given identifiers from 1 to n.
+- Now respects input identifiers where possible: If all substrings
+  denoting tree or core are integers, they are used. Otherwise,
+  sorted unique identifiers (number of which is n.unique) are mapped
+  to numbers 1:n.unique.
+
+- Now allows the sum of the site-tree-core mask to be smaller than 8.
+
+File: rwi.stats.running.R
+-------------------------
+
+- Now averages data from series with the same tree/core ID combination
+  before computing any statistics.
+
+- Now has the option to treat zeros as missing data (parameter
+  zero.is.missing).  Defaults to FALSE which gives identical results
+  compared to previous versions of the function, but should probably be
+  set to TRUE for most purposes.
 
 2011-09-01 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.6

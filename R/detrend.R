@@ -1,5 +1,5 @@
 `detrend` <-
-    function(rwl, y.name = colnames(rwl), make.plot = FALSE,
+    function(rwl, y.name = names(rwl), make.plot = FALSE,
              method=c("Spline", "ModNegExp", "Mean"),
              nyrs = NULL, f = 0.5, pos.slope = FALSE)
 {
@@ -7,7 +7,7 @@
     method2 <- match.arg(arg = method,
                          choices = known.methods,
                          several.ok = TRUE)
-    rn <- rownames(rwl)
+    rn <- row.names(rwl)
 
     if(!make.plot &&
        ("Spline" %in% method2 || "ModNegExp" %in% method2) &&
@@ -27,7 +27,7 @@
                                    method=method2, nyrs=nyrs, f=f,
                                    pos.slope=pos.slope)
             if(is.data.frame(fits))
-                rownames(fits) <- rn
+                row.names(fits) <- rn
             fits
         }
     } else{
@@ -38,14 +38,14 @@
                                    method=method2, nyrs=nyrs, f=f,
                                    pos.slope=pos.slope)
             if(is.data.frame(fits))
-                rownames(fits) <- rn
+                row.names(fits) <- rn
             out[[i]] <- fits
         }
     }
-    names(out) <- colnames(rwl)
+    names(out) <- names(rwl)
     if(length(method2) == 1){
         out <- data.frame(out, row.names = rn)
-        colnames(out) <- y.name
+        names(out) <- y.name
     }
     out
 }

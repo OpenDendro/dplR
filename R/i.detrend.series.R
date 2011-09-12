@@ -5,7 +5,7 @@
                            pos.slope = pos.slope)
     ## Remove the nec resids if all na
     fits <- fits[, !apply(is.na(fits), 2, all), drop=FALSE]
-    col.names <- colnames(fits)
+    col.names <- names(fits)
     cat(gettextf("\nChoose a detrending method for this series %s.\n",
                  y.name, domain="R-dplR"))
     cat(gettext("Methods are: \n", domain="R-dplR"))

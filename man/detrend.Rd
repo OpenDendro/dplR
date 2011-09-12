@@ -6,7 +6,7 @@
   series at once.
 }
 \usage{
-  detrend(rwl, y.name = colnames(rwl), make.plot = FALSE,
+  detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   method=c("Spline", "ModNegExp", "Mean"), nyrs = NULL, f = 0.5,
   pos.slope = FALSE)
 

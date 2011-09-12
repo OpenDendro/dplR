@@ -88,8 +88,8 @@ format.tucson <- (function(){
 
     ## Loop through series and write each one
     nseries <- ncol(rwl.df)
-    yrs.all <- as.numeric(rownames(rwl.df))
-    col.names <- colnames(rwl.df)
+    yrs.all <- as.numeric(row.names(rwl.df))
+    col.names <- names(rwl.df)
 
     ## Sort years using increasing order, reorder rwl.df accordingly
     yrs.order <- sort.list(yrs.all)

@@ -115,8 +115,8 @@
 
     resids2 <- matrix(NA, ncol=ncol(resids), nrow=length(y))
     resids2 <- data.frame(resids2)
-    colnames(resids2) <- colnames(resids)
-    if(!is.null(names(y))) rownames(resids2) <- names(y)
+    names(resids2) <- names(resids)
+    if(!is.null(names(y))) row.names(resids2) <- names(y)
     resids2[!is.na(y), ] <- resids
 
     ## Reorder columns of output to match the order of the argument

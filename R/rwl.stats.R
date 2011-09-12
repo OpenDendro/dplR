@@ -10,8 +10,8 @@
         sum((y-mean(y))^3) / (length(y)*sd(y)^3)
     }
 
-    yr <- as.numeric(rownames(rwl))
-    series.stats <- data.frame(series=colnames(rwl))
+    yr <- as.numeric(row.names(rwl))
+    series.stats <- data.frame(series=names(rwl))
     the.range <- apply(rwl, 2, yr.range, yr.vec=yr)
     series.stats$first <- the.range[1, ]
     series.stats$last <- the.range[2, ]

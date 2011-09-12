@@ -70,12 +70,12 @@
         hdr <- c(hdr1, hdr2, hdr3)
     }
 
-    yrs <- as.numeric(rownames(crn2))
+    yrs <- as.numeric(row.names(crn2))
     decades.vec <- yrs%/%10 * 10
     decades <- unique(decades.vec)
     n.decades <- length(decades)
     ## 1-6
-    crn.name <- colnames(crn2)[1]
+    crn.name <- names(crn2)[1]
     crn.width <- nchar(crn.name)
     ## If crn.width > 6, truncate
     if(crn.width > 6)

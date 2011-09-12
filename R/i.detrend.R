@@ -1,4 +1,4 @@
-`i.detrend` <- function(rwl, y.name=colnames(rwl), nyrs = NULL, f = 0.5,
+`i.detrend` <- function(rwl, y.name=names(rwl), nyrs = NULL, f = 0.5,
                         pos.slope = FALSE)
 {
     out <- rwl

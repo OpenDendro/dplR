@@ -46,7 +46,8 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
                               window.overlap=floor(window.length / 2),
                               first.start=NULL,
                               min.corr.overlap=min(30, window.length),
-                              round.decimals=3){
+                              round.decimals=3,
+                              zero.is.missing=FALSE){
     period2 <- match.arg(period)
 
     if(running.window){
@@ -63,44 +64,80 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
     rwi2 <- as.matrix(rwi)
     n.cores <- ncol(rwi2)
 
-    ## If tree.id is NULL then assume one core per tree
+    zero.flag <- rwi2 == 0
+    if(any(zero.flag, na.rm=TRUE)) {
+        if(!zero.is.missing) {
+            warning("There are zeros in the data. Consider the option 'zero.is.missing'.")
+        } else {
+            rwi2[zero.flag] <- NA
+        }
+    }
+
+    ## If 'ids' is NULL then assume one core per tree
     if(is.null(ids)){
         ids2 <- data.frame(tree=seq_len(n.cores), core=rep(1, n.cores))
     } else{
         ## Make error checks here
+        if(!is.data.frame(ids) || !all(c("tree", "core") %in% names(ids)))
+            stop("'ids' must be a data.frame with columns 'tree' and 'core'")
         if(nrow(ids) != n.cores)
             stop("dimension problem: ", "'ncol(rwi)' != 'nrow(ids)'")
         if(!all(sapply(ids, is.numeric)))
             stop("'ids' must have numeric columns")
-        ids2 <- ids
+        colnames.rwi <- colnames(rwi2)
+        ## If the set of row names in 'ids' is the same as the set of
+        ## column names in 'rwi', arrange 'ids' to matching order
+        if(all(row.names(ids) %in% colnames.rwi))
+            ids2 <- ids[colnames.rwi, c("tree", "core")]
+        else
+            ids2 <- ids[c("tree", "core")]
+        row.names(ids2) <- NULL
+        unique.ids <- unique(ids2)
+        n.unique <- nrow(unique.ids)
+        if(n.unique < n.cores) {
+            ## If more than one columns of 'rwi' share a tree/core ID pair,
+            ## the columns are averaged and treated as one core
+            ids3 <- unique.ids
+            rwi3 <- matrix(data=as.numeric(NA), nrow=nrow(rwi2), ncol=n.unique,
+                           dimnames=list(rownames(rwi2)))
+            for(i in seq_len(n.unique)) {
+                these.cols <- row.match(ids2, unique.ids[i, ])
+                rwi3[, i] <-
+                    rowMeans(rwi2[, these.cols, drop=FALSE], na.rm=TRUE)
+            }
+            message("Data with matching tree/core IDs have been averaged")
+        } else {
+            ids3 <- ids2
+            rwi3 <- rwi2
+        }
     }
 
-    n.years <- nrow(rwi2)
+    n.years <- nrow(rwi3)
     if(running.window && window.length > n.years)
         stop("'window.length' is larger than the number of years in 'rwi'")
 
-    unique.ids <- unique(ids2$tree)
-    n.trees <- length(unique.ids)
+    unique.trees <- unique(ids3$tree)
+    n.trees <- length(unique.trees)
     if(n.trees < 2) stop("at least 2 trees are needed")
     cores.of.tree <- list()
     seq.tree <- seq_len(n.trees)
     for(i in seq.tree)
-        cores.of.tree[[i]] <- which(ids2$tree==unique.ids[i])
+        cores.of.tree[[i]] <- which(ids3$tree==unique.trees[i])
 
     ## n.trees.by.year is recorded before setting rows with missing
     ## data to NA
     tree.any <- matrix(FALSE, n.years, n.trees)
     for(i in seq.tree)
         tree.any[, i] <-
-            apply(!is.na(rwi2[, ids2$tree == unique.ids[i], drop=FALSE]),
+            apply(!is.na(rwi3[, ids3$tree == unique.trees[i], drop=FALSE]),
                   1, any)
     n.trees.by.year <- rowSums(tree.any)
     good.rows <- which(n.trees.by.year > 1)
 
     ## Easy way to force complete overlap of data
     if(period2 == "common"){
-        bad.rows <- which(apply(is.na(rwi2), 1, any))
-        rwi2[bad.rows, ] <- NA
+        bad.rows <- which(apply(is.na(rwi3), 1, any))
+        rwi3[bad.rows, ] <- NA
         good.rows <- setdiff(good.rows, bad.rows)
     }
 
@@ -132,7 +169,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
                     (n.years - offset - window.length) %/% window.advance
                 max.idx <-
                     offset + window.length + n.windows.minusone * window.advance
-                n.data[i] <- sum(!is.na(rwi2[intersect(good.rows,
+                n.data[i] <- sum(!is.na(rwi3[intersect(good.rows,
                                                       (1 + offset):max.idx), ]))
             }
             ## In case of a tie, choose large offset.
@@ -149,7 +186,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
         window.length2 <- n.years
     }
 
-    all.years <- as.numeric(rownames(rwi2))
+    all.years <- as.numeric(rownames(rwi3))
 
     loop.body <- function(s.idx){
         rbar.tot <- NA_real_
@@ -169,9 +206,9 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
         n.bt <- 0
         good.flag <- rep(FALSE, n.trees)
         for(i in seq_len(n.trees - 1)){
-            i.data <- rwi2[year.idx, cores.of.tree[[i]], drop=FALSE]
+            i.data <- rwi3[year.idx, cores.of.tree[[i]], drop=FALSE]
             for(j in (i + 1):n.trees){
-                j.data <- rwi2[year.idx, cores.of.tree[[j]], drop=FALSE]
+                j.data <- rwi3[year.idx, cores.of.tree[[j]], drop=FALSE]
                 bt.r.mat <- dplR:::cor.with.limit(min.corr.overlap,
                                                   i.data, j.data)
                 bt.r.mat <- bt.r.mat[!is.na(bt.r.mat)]
@@ -194,7 +231,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
             if(length(these.cores)==1){ # make simple case fast
                 n.cores.tree[i] <- 1
             } else {
-                these.data <- rwi2[year.idx, these.cores, drop=FALSE]
+                these.data <- rwi3[year.idx, these.cores, drop=FALSE]
                 wt.r.vec <-
                     dplR:::cor.with.limit.upper(min.corr.overlap, these.data)
                 wt.r.vec <- wt.r.vec[!is.na(wt.r.vec)]

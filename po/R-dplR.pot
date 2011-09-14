@@ -4,9 +4,9 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.4.5\n"
+"Project-Id-Version: dplR 1.4.7\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-08-11 17:09+0300\n"
+"POT-Creation-Date: 2011-09-14 11:29+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -72,7 +72,7 @@ msgstr ""
 msgid "Segments: length=%d,lag=%d"
 msgstr ""
 
-msgid "number of overlapping years is smaller than 'seg.length'"
+msgid "number of overlapping years is less than 'seg.length'"
 msgstr ""
 
 msgid "'crn' must be a data.frame"
@@ -222,7 +222,7 @@ msgstr ""
 msgid "a 'DateBegin' and 'DateEnd' entry has to be present for each series"
 msgstr ""
 
-msgid "Site-Tree-Core mask does not sum to 8"
+msgid "Site-Tree-Core mask is larger than 8"
 msgstr ""
 
 msgid "unable to create tree ids"
@@ -346,6 +346,15 @@ msgid "'window.overlap' is too large, max value is 'window.length'-1 (%d)"
 msgstr ""
 
 msgid "'window.length' is smaller than 'min.corr.overlap'"
+msgstr ""
+
+msgid "There are zeros in the data. Consider the option 'zero.is.missing'."
+msgstr ""
+
+msgid "'ids' must be a data.frame with columns 'tree' and 'core'"
+msgstr ""
+
+msgid "Series with matching tree/core IDs have been averaged"
 msgstr ""
 
 msgid "'window.length' is larger than the number of years in 'rwi'"

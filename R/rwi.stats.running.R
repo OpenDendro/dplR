@@ -105,7 +105,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
                 rwi3[, i] <-
                     rowMeans(rwi2[, these.cols, drop=FALSE], na.rm=TRUE)
             }
-            message("Data with matching tree/core IDs have been averaged")
+            message("Series with matching tree/core IDs have been averaged")
         } else {
             ids3 <- ids2
             rwi3 <- rwi2

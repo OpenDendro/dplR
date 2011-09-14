@@ -4,10 +4,10 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.4.5\n"
-"Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-08-11 17:09+0300\n"
-"PO-Revision-Date: 2011-08-11 17:10+0300\n"
+"Project-Id-Version: dplR 1.4.7\n"
+"Report-Msgid-Bugs-To: bugs@r-project.org\n"
+"POT-Creation-Date: 2011-09-14 11:29+0300\n"
+"PO-Revision-Date: 2011-09-14 11:29+0300\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -77,7 +77,7 @@ msgstr "Vuosi"
 msgid "Segments: length=%d,lag=%d"
 msgstr "Segmentit: pituus=%d,viive=%d"
 
-msgid "number of overlapping years is smaller than 'seg.length'"
+msgid "number of overlapping years is less than 'seg.length'"
 msgstr "päällekkäisten vuosien määrä on pienempi kuin ’seg.length’"
 
 msgid "'crn' must be a data.frame"
@@ -232,8 +232,8 @@ msgstr ""
 msgid "a 'DateBegin' and 'DateEnd' entry has to be present for each series"
 msgstr "jokaisella sarjalla täytyy olla ’DateBegin’- ja ’DateEnd’-merkinnät"
 
-msgid "Site-Tree-Core mask does not sum to 8"
-msgstr "Paikka-Puu-Näyte-maski ei ole yhteensä 8"
+msgid "Site-Tree-Core mask is larger than 8"
+msgstr "Paikka-Puu-Näyte-maski on suurempi kuin 8"
 
 msgid "unable to create tree ids"
 msgstr "ei voida luoda puiden tunnisteita"
@@ -359,6 +359,15 @@ msgstr "’window.overlap’ on liian suuri, maksimiarvo on ’window.length’-
 
 msgid "'window.length' is smaller than 'min.corr.overlap'"
 msgstr "’window.length’ on pienempi kuin ’min.corr.overlap’"
+
+msgid "There are zeros in the data. Consider the option 'zero.is.missing'."
+msgstr "Datassa on nollia. Harkitse asetusta ’zero.is.missing’."
+
+msgid "'ids' must be a data.frame with columns 'tree' and 'core'"
+msgstr "’ids’:n täytyy olla data.frame, jossa on sarakkeet ’tree’ ja ’core’"
+
+msgid "Series with matching tree/core IDs have been averaged"
+msgstr "Samoilla ’tree’/’core’-tunnisteilla varustetut sarjat on keskiarvoistettu"
 
 msgid "'window.length' is larger than the number of years in 'rwi'"
 msgstr "’window.length’ on suurempi kuin vuosien määrä ’rwi’:ssä"

@@ -503,6 +503,41 @@ test.hanning <- function() {
                    msg="Filter length < 3 is an error")
 }
 
+test.read.ids <- function() {
+    ## Setup
+    site <- "abc"
+    tree <- c(1, 2, 2, 2, 3, 3, 4, 5, 5, 5, 5, 6)
+    core <- c(1, 1, 2, 3, 1, 2, 1, 1, 2, 3, 4, 1)
+    ids1 <- paste(site, "0", tree, core, sep="")
+    n.ids1 <- length(ids1)
+    ids2 <- ids1[3:n.ids1]
+    ids3 <- paste(site, "x", LETTERS[tree], letters[core], sep="")
+    frame1 <- as.data.frame(matrix(data=1, nrow=1, ncol=length(ids1),
+                                   dimnames=list("1", ids1)))
+    frame2 <- as.data.frame(matrix(data=1, nrow=1, ncol=length(ids2),
+                                   dimnames=list("1", ids2)))
+    frame3 <- as.data.frame(matrix(data=1, nrow=1, ncol=length(ids3),
+                                   dimnames=list("1", ids3)))
+    frame4 <- as.data.frame(matrix(data=1, nrow=1, ncol=length(ids3),
+                                   dimnames=list("1", rev(ids3))))
+    res1 <- read.ids(rwl=frame1, stc=c(3, 2, 1))
+    res2 <- read.ids(rwl=frame2, stc=c(3, 2, 1))
+    res3 <- read.ids(rwl=frame3, stc=c(3, 2, 1))
+    res4 <- read.ids(rwl=frame4, stc=c(3, 2, 1))
+    ## Test
+    checkEquals(ids1, row.names(res1), msg="Rows are in right order (test 1)")
+    checkEquals(tree, res1$tree, msg="Tree IDs are correct (test 1)")
+    checkEquals(core, res1$core, msg="Core IDs are correct (test 1)")
+    checkEquals(ids2, row.names(res2), msg="Rows are in right order (test 2)")
+    checkEquals(tree[3:n.ids1], res2$tree, msg="Tree IDs are correct (test 2)")
+    checkEquals(core[3:n.ids1], res2$core, msg="Core IDs are correct (test 2)")
+    checkEquals(ids3, row.names(res3), msg="Rows are in right order (test 3)")
+    checkEquals(tree, res3$tree, msg="Tree IDs are correct (test 3)")
+    checkEquals(core, res3$core, msg="Core IDs are correct (test 3)")
+    checkEquals(res3, res4[seq(from=n.ids1, to=1), ],
+                msg="Reordered input is handled correctly")
+}
+
 test.sens1 <- function() {
     ## Setup
     SAMP.SIZE <- 1000

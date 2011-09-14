@@ -1,4 +1,4 @@
-2011-09-12 Mikko Korpela
+2011-09-14 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.7
 
 Various .R files:
@@ -16,13 +16,17 @@ File: read.ids.R
 - Fixed a bug introduced in dplR 1.4.1 where the function would	not work
   for non-numeric identifiers or when identifiers did not fall in the
   range from 1 to n.
-	
+
 - Now respects input identifiers where possible: If all substrings
   denoting tree or core are integers, they are used. Otherwise,
   sorted unique identifiers (number of which is n.unique) are mapped
   to numbers 1:n.unique.
 
 - Now allows the sum of the site-tree-core mask to be smaller than 8.
+  The remaining characters will be ignored. This can be handy if there are
+  additional levels in the ID hierarchy. Then, the series with matching
+  ID strings up to the sum of the site-tree-core mask will be given
+  matching tree and core numbers.
 
 File: rwi.stats.running.R
 -------------------------

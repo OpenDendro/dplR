@@ -1,3 +1,12 @@
+* CHANGES IN dplR VERSION 1.4.7
+
+Various .c and .h files:
+------------------------
+
+- NULL, TRUE and FALSE are used for clarity
+- Rboolean type is now used more extensively for truth values
+- stddef.h is #included where NULL is used
+
 2011-09-14 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.7
 

@@ -1,4 +1,5 @@
 #include <R.h>
+#include <stddef.h>
 #include "exactsum.h"
 
 /* Written by Mikko Korpela */
@@ -16,7 +17,7 @@ void sens2(double *x_const, int *n_ptr, double *result){
 
     /* Setup for grow_exp and msum */
     tmp.next = NULL;
-    tmp.valid = 0;
+    tmp.valid = FALSE;
     tmp_p = &tmp;
 
     /* In the sum of absolute differences between consecutive elements
@@ -63,7 +64,7 @@ void sens2(double *x_const, int *n_ptr, double *result){
 
     /* Sum of absolute differences */
     sum1 = 0.0f;
-    while(tmp_p && tmp_p->valid){
+    while(tmp_p != NULL && tmp_p->valid == TRUE){
 	sum1 += tmp_p->data;
 	tmp_p = tmp_p->next;
     }
@@ -86,7 +87,7 @@ void sens1(double *x_const, int *n_ptr, double *result){
 
     /* Setup for grow_exp */
     tmp.next = NULL;
-    tmp.valid = 0;
+    tmp.valid = FALSE;
     tmp_p = &tmp;
 
     for(i = 1; i < n; i++){
@@ -99,7 +100,7 @@ void sens1(double *x_const, int *n_ptr, double *result){
 
     /* Sum of scaled absolute differences */
     sum = 0.0f;
-    while(tmp_p && tmp_p->valid){
+    while(tmp_p != NULL && tmp_p->valid == TRUE){
 	sum += tmp_p->data;
 	tmp_p = tmp_p->next;
     }

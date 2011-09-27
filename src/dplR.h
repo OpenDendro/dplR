@@ -1,3 +1,6 @@
+#ifndef DPLR_H
+#define DPLR_H
+
 #include <R.h>  /* to include Rconfig.h */
           
 #ifdef ENABLE_NLS
@@ -6,4 +9,6 @@
 #else
 #define _(String) (String)
 #define dngettext(pkg, String, StringP, N) (N > 1 ? StringP: String)
+#endif
+
 #endif

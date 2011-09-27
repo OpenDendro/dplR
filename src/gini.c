@@ -1,4 +1,5 @@
 #include <R.h>
+#include <stddef.h>
 #include "exactsum.h"
 
 /* Written by Mikko Korpela */
@@ -23,14 +24,14 @@ void gini(double *x_const, int *n_ptr, double *result){
     /* Setup for grow_exp */
     tmp1.next = NULL;
     tmp1.data = x[0];
-    tmp1.valid = 1;
+    tmp1.valid = TRUE;
 
     /* Cumulative sum */
     for(i = 1; i < n; i++){
 	grow_exp(&tmp1, x[i]);
 	tmp_p = &tmp1;
 	sum1 = 0.0f;
-	while(tmp_p && tmp_p->valid){
+	while(tmp_p != NULL && tmp_p->valid == TRUE){
 	    sum1 += tmp_p->data;
 	    tmp_p = tmp_p->next;
 	}
@@ -38,14 +39,14 @@ void gini(double *x_const, int *n_ptr, double *result){
     }
 
     /* Setup for grow_exp */
-    if(tmp1.next)
-	tmp1.next->valid = 0;
+    if(tmp1.next != NULL)
+	tmp1.next->valid = FALSE;
     tmp2.next = NULL;
 
     /* Gini */
     tmp1.data = (dplr_double)x[n-1] * (n-1);
     tmp2.data = x[0];
-    tmp2.valid = 1;
+    tmp2.valid = TRUE;
     grow_exp(&tmp2, x[0]);
     for(i = 1; i < n-1; i++){
 	grow_exp(&tmp1, (dplr_double)x[i] * i);
@@ -53,15 +54,15 @@ void gini(double *x_const, int *n_ptr, double *result){
     }
     sum1 = 0.0f;
     tmp_p = &tmp1;
-    while(tmp_p && tmp_p->valid){
+    while(tmp_p != NULL && tmp_p->valid == TRUE){
 	sum1 += tmp_p->data;
 	tmp_p = tmp_p->next;
     }
     sum2 = 0.0f;
     tmp_p = &tmp2;
-    while(tmp_p && tmp_p->valid){
+    while(tmp_p != NULL && tmp_p->valid == TRUE){
 	sum2 += tmp_p->data;
 	tmp_p = tmp_p->next;
     }
-    *result = (sum1-sum2)/((dplr_double)x[n-1]*n);
+    *result = (sum1-sum2) / ((dplr_double)x[n-1]*n);
 }

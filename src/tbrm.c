@@ -1,4 +1,5 @@
 #include <R.h>
+#include <stddef.h>
 #include "exactsum.h"
 
 /* Tukey's Biweight Robust Mean (tbrm).
@@ -16,7 +17,7 @@
    Written by Mikko Korpela.
 */
 void tbrm(double *x_const, int *n_ptr, double *C_ptr, double *result){
-    char n_odd;
+    Rboolean n_odd;
     int i, half, my_count;
     double this_val, min_val, div_const, x_med, this_wt;
     double *x, *abs_x_dev, *wt, *wtx;
@@ -37,11 +38,11 @@ void tbrm(double *x_const, int *n_ptr, double *C_ptr, double *result){
 	x[i] = x_const[i];
 
     /* Median of x */
-    if(n & 0x1){ /* n is odd */
+    if(n & 0x1 == 1){ /* n is odd */
 	half = ((unsigned int)n) >> 1;
 	rPsort(x, n, half); /* Partial sort: */
 	x_med = x[half];    /* element at position half is correct.*/
-	n_odd = 1;
+	n_odd = TRUE;
     } else { /* n is even */
 	half = ((unsigned int)n) >> 1;
 	rPsort(x, n, half-1);       /* Elements at positions half-1 */
@@ -52,7 +53,7 @@ void tbrm(double *x_const, int *n_ptr, double *C_ptr, double *result){
 		min_val = this_val;
 	}
 	x_med = (x[half-1]+min_val)/2.0f; 
-	n_odd = 0;
+	n_odd = FALSE;
     }
 
     /* abs(x - median(x)) */
@@ -63,7 +64,7 @@ void tbrm(double *x_const, int *n_ptr, double *C_ptr, double *result){
     }
 
     /* Median of abs_x_dev, stored in div_const */
-    if(n_odd){
+    if(n_odd == TRUE){
 	rPsort(abs_x_dev, n, half); /* Element at position half */
 	div_const = abs_x_dev[half];
     } else {

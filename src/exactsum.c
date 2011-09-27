@@ -1,4 +1,5 @@
 #include <R.h>
+#include <stddef.h>
 #include "exactsum.h"
 
 /* Written by Mikko Korpela. */
@@ -8,7 +9,7 @@ dplr_double msum(double *array, int n, listnode *expansion){
     listnode *readptr, *writeptr;
 
     /* Old data are not valid anymore */
-    expansion->valid = 0;
+    expansion->valid = FALSE;
 
     /* Loop through array */
     for(k=0; k<n; k++) {
@@ -16,7 +17,7 @@ dplr_double msum(double *array, int n, listnode *expansion){
 	readptr = expansion;
 	writeptr = expansion;
 	a = array[k];
-	while(readptr && readptr->valid) {
+	while(readptr != NULL && readptr->valid == TRUE) {
 	    /* Updating readptr is easy: just do it once in the loop
 	       and stay ahead of writeptr */
 	    b = readptr->data;
@@ -28,11 +29,11 @@ dplr_double msum(double *array, int n, listnode *expansion){
 	    b_roundoff = b - b_virtual;
 	    a_roundoff = a - a_virtual;
 	    y = a_roundoff + b_roundoff;
-	    if(y){
+	    if(y != 0){
 		writeptr->data = y;
 		/* Loosely specified invariant: always have writeptr
 		   point to a writable location */
-		if(writeptr->next){
+		if(writeptr->next != NULL){
 		    writeptr = writeptr->next;
 		} else{
 		    writeptr->next =
@@ -44,18 +45,18 @@ dplr_double msum(double *array, int n, listnode *expansion){
 	    a = x;
 	}
 	writeptr->data = a; /* sum of the list is sum of array[0]..array[k] */
-	writeptr->valid = 1;
+	writeptr->valid = TRUE;
 
 	/* The possible tail of the list is effectively cut (number of
 	   non-zero elements may decrease), but any allocated space
 	   remains there */
-	if(writeptr->next)
-	    writeptr->next->valid = 0;
+	if(writeptr->next != NULL)
+	    writeptr->next->valid = FALSE;
     }
 
     /* Add together the elements of the expansion */
     total = 0;
-    while(expansion && expansion->valid){
+    while(expansion != NULL && expansion->valid == TRUE){
 	total += expansion->data;
 	expansion = expansion->next;
     }
@@ -70,7 +71,7 @@ void grow_exp(listnode *expansion, dplr_double a){
     /* Grow-Expansion(expansion, array[k]) */
     readptr = expansion;
     writeptr = expansion;
-    while(readptr && readptr->valid) {
+    while(readptr != NULL && readptr->valid == TRUE) {
 	/* Updating readptr is easy: just do it once in the loop
 	   and stay ahead of writeptr */
 	b = readptr->data;
@@ -82,11 +83,11 @@ void grow_exp(listnode *expansion, dplr_double a){
 	b_roundoff = b - b_virtual;
 	a_roundoff = a - a_virtual;
 	y = a_roundoff + b_roundoff;
-	if(y){
+	if(y != 0){
 	    writeptr->data = y;
 	    /* Loosely specified invariant: always have writeptr
 	       point to a writable location */
-	    if(writeptr->next){
+	    if(writeptr->next != NULL){
 		writeptr = writeptr->next;
 	    } else{
 		writeptr->next = (listnode *) R_alloc(1, sizeof(listnode));
@@ -97,12 +98,12 @@ void grow_exp(listnode *expansion, dplr_double a){
 	a = x;
     }
     writeptr->data = a; /* sum of the list is sum of array[0]..array[k] */
-    writeptr->valid = 1;
+    writeptr->valid = TRUE;
 
     /* The possible tail of the list is effectively cut (number of
        non-zero elements may decrease), but any allocated space
        remains there */
-    if(writeptr->next)
-	writeptr->next->valid = 0;
+    if(writeptr->next != NULL)
+	writeptr->next->valid = FALSE;
 
 }

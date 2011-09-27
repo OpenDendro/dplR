@@ -2,6 +2,8 @@
 #ifndef EXACTSUM_H
 #define EXACTSUM_H
 
+#include <R.h>
+
 /* Conditional typedef of dplr_double */
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 #include <math.h>
@@ -68,7 +70,7 @@ typedef long double dplr_double;
 
 /* A linked list for storing dplr_doubles */
 struct liststruct{
-    char valid;
+    Rboolean valid;
     dplr_double data;
     struct liststruct *next;
 };

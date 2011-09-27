@@ -1,4 +1,4 @@
-#include <R.h>
+#include <stddef.h>
 #include "exactsum.h"
 
 void exactmean(double *x, int *n_ptr, double *result){

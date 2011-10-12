@@ -1,30 +1,25 @@
 ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
 ### support functions
-    ffppual <- function(breaks, c, k, x, left){
-        if (any(diff(x) < 0)){
-            tosort <- TRUE
+    ffppual <- function(breaks, c1, c2, c3, c4, x, left){
+        if (left){
             tsort <- sort(x, method="shell", index.return=TRUE)
             x2 <- tsort$x
             ix <- tsort$ix
         } else{
             x2 <- x
-            tosort <- FALSE
         }
 
         n.breaks <- length(breaks)
-        if (left == 2)
+        if (left)
             index <- pmax(ffsorted(breaks[-n.breaks], x2), 1)
         else
             index <-
                 rev(pmax(n.breaks - ffsorted(-breaks[n.breaks:2], -x2), 1))
 
         x2 <- x2 - breaks[index]
-        v <- c[index, 1]
+        v <- x2 * (x2 * (x2 * c1[index] + c2[index]) + c3[index]) + c4[index]
 
-        for(i in 2:k)
-            v <- x2 * v + c[index, i]
-
-        if (tosort)
+        if (left)
             v[ix] <- v
         v
     }
@@ -42,18 +37,28 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     ## above, negative is below the main diagonal).
     ## A value on column j in A comes from row j in B.
     ## This is similar in function to spdiags(B, d, n, n) in MATLAB.
-    spdiags <- function(B, d, n){
-        a <- matrix(0, 1, 3)
-        for(k in seq_along(d)){
+    ## NOTE: The function could be optimized for ffcsaps by making it
+    ## less generic -- exploiting the facts that B always has 3 columns
+    ## and d is -1:1.
+    spdiags <- function(B, d, n) {
+        n.d <- length(d)
+        A <- matrix(0, n.d * n, 3)
+        count <- 0
+        for(k in seq_len(n.d)){
             this.diag <- d[k]
             i <- inc(max(1, 1 - this.diag), min(n, n - this.diag)) # row
-            if(length(i) > 0){
+            n.i <- length(i)
+            if(n.i > 0){
                 j <- i + this.diag                                 # column
-                a <- rbind(a, cbind(i, j, B[j, k]))
+                row.idx <- seq(from=count+1, by=1, length.out=n.i)
+                A[row.idx, 1] <- i
+                A[row.idx, 2] <- j
+                A[row.idx, 3] <- B[j, k]
+                count <- count + n.i
             }
         }
-        test <- subset(a, a[, 3] != 0)
-        test[order(test[, 2], test[, 1]), , drop=FALSE]
+        A <- A[A[, 3] != 0, , drop=FALSE]
+        A[order(A[, 2], A[, 1]), , drop=FALSE]
     }
 
 ### start main function
@@ -113,15 +118,15 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     test0 <- xi[-c(1, n)]
     c3 <- c(0, u / p.inv, 0)
     x3 <- c(test0, seq(from=xi[1], to=xi[n], length = 101))
-    ccc <- cbind(diff(c3) / diff.xi,
-                 3 * c3[-n],
-                 diff(yi) / diff.xi - diff.xi * (2 * c3[-n] + c3[-1]),
-                 yi[-n])
+    cc.1 <- diff(c3) / diff.xi
+    cc.2 <- 3 * c3[-n]
+    cc.3 <- diff(yi) / diff.xi - diff.xi * (2 * c3[-n] + c3[-1])
+    cc.4 <- yi[-n]
     finalsort <- sort(c(test0, x3), method="shell", index.return=TRUE)
     tmp <-
-        unique(data.frame(cbind(finalsort$x,
-                                c(ffppual(xi, ccc, 4, test0, 3),
-                                  ffppual(xi, ccc, 4, x3, 2))[finalsort$ix])))
+        unique(data.frame(finalsort$x,
+                          c(ffppual(xi, cc.1,cc.2,cc.3,cc.4, test0, FALSE),
+                            ffppual(xi, cc.1,cc.2,cc.3,cc.4, x3, TRUE))[finalsort$ix]))
     ## get spline on the right timescale - kludgy
     tmp2 <- tmp
     tmp2[, 1] <- round(tmp2[, 1], 5) # tries to deal with identical() issues

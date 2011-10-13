@@ -50,9 +50,6 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     ## above, negative is below the main diagonal).
     ## A value on column j in A comes from row j in B.
     ## This is similar in function to spdiags(B, d, n, n) in MATLAB.
-    ## NOTE: The function could be optimized for ffcsaps by making it
-    ## less generic -- exploiting the facts that B always has 3 columns
-    ## and d is -1:1.
     spdiags <- function(B, d, n) {
         n.d <- length(d)
         A <- matrix(0, n.d * n, 3)

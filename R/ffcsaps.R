@@ -10,11 +10,18 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
         }
 
         n.breaks <- length(breaks)
-        if (left)
+        if (left) {
+            ## index[i] is maximum of a and b:
+            ## a) number of elements in 'breaks[-n.breaks]' that are
+            ##    less than or equal to x2[i],
+            ## b) 1
             index <- pmax(ffsorted(breaks[-n.breaks], x2), 1)
-        else
-            index <-
-                rev(pmax(n.breaks - ffsorted(-breaks[n.breaks:2], -x2), 1))
+        } else {
+            ## index[i] is:
+            ## 1 + number of elements in 'breaks[-1]' that are
+            ## less than x2[i]
+            index <- ffsorted2(breaks[-1], x2)
+        }
 
         x2 <- x2 - breaks[index]
         v <- x2 * (x2 * (x2 * c1[index] + c2[index]) + c3[index]) + c4[index]
@@ -27,7 +34,13 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     ffsorted <- function(meshsites, sites) {
         index <- sort(c(meshsites, sites),
                       method="shell", index.return=TRUE)$ix
-        seq_along(index)[index > length(meshsites)] - seq_along(sites)
+        which(index > length(meshsites)) - seq_along(sites)
+    }
+
+    ffsorted2 <- function(meshsites, sites) {
+        index <- sort(c(sites, meshsites),
+                      method="shell", index.return=TRUE)$ix
+        which(index <= length(sites)) - seq(from=0, to=length(sites)-1)
     }
 
     ## Creates a sparse matrix A of size n x n.

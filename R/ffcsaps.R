@@ -82,6 +82,10 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     n <- length(x2)
     ## quick error check
     if (n < 3) stop("there must be at least 3 data points")
+    if(!is.numeric(f) || length(f) != 1 || f < 0 || f > 1)
+        stop("'f' must be a number between 0 and 1")
+    if(!is.numeric(nyrs) || length(nyrs) != 1 || nyrs <= 1)
+        stop("'nyrs' must be a number greater than 1")
 
     thesort <- sort(x2, method="shell", index.return=TRUE)
     zz1 <- n - 1

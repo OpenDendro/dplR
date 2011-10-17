@@ -120,7 +120,7 @@ msgid "'f' must be a number between 0 and 1"
 msgstr "’f’:n täytyy olla numero väliltä 0–1"
 
 msgid "'nyrs' must be a number greater than 1"
-msgstr "’nrs’:n täytyy olla numero ja suurempi kuin 1"
+msgstr "’nyrs’:n täytyy olla numero ja suurempi kuin 1"
 
 msgid "the data abscissae must be distinct"
 msgstr "datan abskissojen täytyy olla erilliset"

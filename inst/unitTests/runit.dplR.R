@@ -430,6 +430,34 @@ test.corr.series.seg <- function() {
                 msg="Moving correlations are as expected (test 4)")
 }
 
+test.ffcsaps <- function() {
+    ## Setup
+    n <- 100
+    x <- seq_len(n)
+    y <- x + 10 * sin(pi / 15 * x) + 5 * rnorm(n)
+    lm.y <- lm(y ~ x)
+    fitted.y <- fitted(lm.y)
+    res.1 <- ffcsaps(y, f=0, nyrs=30)
+    res.2 <- ffcsaps(y, f=0.9, nyrs=30)
+    res.3 <- ffcsaps(y, f=0.9, nyrs=5)
+    res.4 <- ffcsaps(y, f=1, nyrs=30)
+    error.1 <- sum((y - res.1)^2)
+    error.2 <- sum((y - res.2)^2)
+    error.3 <- sum((y - res.3)^2)
+    ## Test
+    checkEqualsNumeric(fitted.y, res.1,
+                       msg="Extreme smoothing: we get a line")
+    checkEqualsNumeric(y, res.4,
+                       msg="The other extreme: no smoothing")
+    checkTrue(error.1 > error.2,
+              msg="Intermediate 'f', 'nyrs' work as expected (1)")
+    checkTrue(error.2 > error.3,
+              msg="Intermediate 'f', 'nyrs' work as expected (2)")
+    checkException(ffcsaps(y, f=-1), msg="Argument 'f' too small")
+    checkException(ffcsaps(y, f=2), msg="Argument 'f' too large")
+    checkException(ffcsaps(y, nyrs=0), msg="Argument 'nyrs' too small")
+}
+
 test.gini.coef <- function() {
     ## Setup
     SAMP.SIZE <- 1000

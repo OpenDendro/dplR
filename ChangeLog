@@ -1,5 +1,16 @@
 * CHANGES IN dplR VERSION 1.4.8
 
+File: NAMESPACE
+---------------
+
+- Made some internal functions truly internal by removing them from the
+  export list
+
+File: dplR-internal.Rd
+----------------------
+
+- The file was removed
+
 Various .c and .h files:
 ------------------------
 

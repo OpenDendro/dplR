@@ -22,7 +22,7 @@ License: \tab GPL\cr
     \item{\code{\link{corr.rwl.seg}}}{ crossdating function }
   }
 }
-\author{ Andy Bunn <andy.bunn@wwu.edu> with major contributions from Mikko Korpela, Franco Biondi, and Christain Zang }
+\author{ Andy Bunn <andy.bunn@wwu.edu> with major contributions from Mikko Korpela, Franco Biondi, and Christian Zang }
 \references{
   Cook, E. R. and Kairiukstis, L.A. (1990) \emph{Methods of
   Dendrochronology: Applications in the Environmental Sciences.} Springer.

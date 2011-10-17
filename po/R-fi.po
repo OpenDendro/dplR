@@ -4,10 +4,10 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.4.7\n"
-"Report-Msgid-Bugs-To: bugs@r-project.org\n"
-"POT-Creation-Date: 2011-09-14 11:29+0300\n"
-"PO-Revision-Date: 2011-09-14 11:29+0300\n"
+"Project-Id-Version: dplR 1.4.8\n"
+"Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
+"POT-Creation-Date: 2011-10-17 14:27\n"
+"PO-Revision-Date: 2011-10-17 14:31+0300\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -115,6 +115,12 @@ msgstr "’y’:n täytyy olla vektori"
 
 msgid "there must be at least 3 data points"
 msgstr "täytyy olla vähintään 3 datapistettä"
+
+msgid "'f' must be a number between 0 and 1"
+msgstr "’f’:n täytyy olla numero väliltä 0–1"
+
+msgid "'nyrs' must be a number greater than 1"
+msgstr "’nrs’:n täytyy olla numero ja suurempi kuin 1"
 
 msgid "the data abscissae must be distinct"
 msgstr "datan abskissojen täytyy olla erilliset"
@@ -367,7 +373,8 @@ msgid "'ids' must be a data.frame with columns 'tree' and 'core'"
 msgstr "’ids’:n täytyy olla data.frame, jossa on sarakkeet ’tree’ ja ’core’"
 
 msgid "Series with matching tree/core IDs have been averaged"
-msgstr "Samoilla ’tree’/’core’-tunnisteilla varustetut sarjat on keskiarvoistettu"
+msgstr ""
+"Samoilla ’tree’/’core’-tunnisteilla varustetut sarjat on keskiarvoistettu"
 
 msgid "'window.length' is larger than the number of years in 'rwi'"
 msgstr "’window.length’ on suurempi kuin vuosien määrä ’rwi’:ssä"

@@ -4,9 +4,9 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.4.7\n"
+"Project-Id-Version: dplR 1.4.8\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-09-14 11:29+0300\n"
+"POT-Creation-Date: 2011-10-17 14:27+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -109,6 +109,12 @@ msgid "'y' must be a vector"
 msgstr ""
 
 msgid "there must be at least 3 data points"
+msgstr ""
+
+msgid "'f' must be a number between 0 and 1"
+msgstr ""
+
+msgid "'nyrs' must be a number greater than 1"
 msgstr ""
 
 msgid "the data abscissae must be distinct"

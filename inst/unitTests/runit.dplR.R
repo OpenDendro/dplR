@@ -441,14 +441,15 @@ test.ffcsaps <- function() {
     res.2 <- ffcsaps(y, f=0.9, nyrs=30)
     res.3 <- ffcsaps(y, f=0.9, nyrs=5)
     res.4 <- ffcsaps(y, f=1, nyrs=30)
+    res.5 <- ffcsaps(x)
     error.1 <- sum((y - res.1)^2)
     error.2 <- sum((y - res.2)^2)
     error.3 <- sum((y - res.3)^2)
     ## Test
     checkEqualsNumeric(fitted.y, res.1,
                        msg="Extreme smoothing: we get a line")
-    checkEqualsNumeric(y, res.4,
-                       msg="The other extreme: no smoothing")
+    checkEqualsNumeric(y, res.4, msg="The other extreme: no smoothing")
+    checkEqualsNumeric(x, res.5, msg="A line stays a line")
     checkTrue(error.1 > error.2,
               msg="Intermediate 'f', 'nyrs' work as expected (1)")
     checkTrue(error.2 > error.3,

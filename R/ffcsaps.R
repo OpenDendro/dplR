@@ -2,9 +2,8 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
 ### support functions
     ffppual <- function(breaks, c1, c2, c3, c4, x, left){
         if (left){
-            tsort <- sort(x, method="shell", index.return=TRUE)
-            x2 <- tsort$x
-            ix <- tsort$ix
+            ix <- order(x)
+            x2 <- x[ix]
         } else{
             x2 <- x
         }
@@ -32,14 +31,12 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     }
 
     ffsorted <- function(meshsites, sites) {
-        index <- sort(c(meshsites, sites),
-                      method="shell", index.return=TRUE)$ix
+        index <- order(c(meshsites, sites))
         which(index > length(meshsites)) - seq_along(sites)
     }
 
     ffsorted2 <- function(meshsites, sites) {
-        index <- sort(c(sites, meshsites),
-                      method="shell", index.return=TRUE)$ix
+        index <- order(c(sites, meshsites))
         which(index <= length(sites)) - seq(from=0, to=length(sites)-1)
     }
 
@@ -87,9 +84,9 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     if(!is.numeric(nyrs) || length(nyrs) != 1 || nyrs <= 1)
         stop("'nyrs' must be a number greater than 1")
 
-    thesort <- sort(x2, method="shell", index.return=TRUE)
+    ix <- order(x2)
     zz1 <- n - 1
-    xi <- thesort$x
+    xi <- x2[ix]
     zz2 <- n - 2
     diff.xi <- diff(xi)
 
@@ -121,7 +118,7 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     ## accurate across a wide range of f and nyrs
     p.inv <- (1 - f) * (cos(2 * pi / nyrs) + 2) /
         (12 * (cos(2 * pi / nyrs) - 1) ^ 2) / f + 1
-    yi <- y2[thesort$ix]
+    yi <- y2[ix]
     p <- 1 / p.inv
     mplier <- 6 - 6 / p.inv # slightly more accurate than 6*(1-1/p.inv)
     ## forR*p is faster than forR/p.inv, and a quick test didn't
@@ -136,11 +133,13 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     cc.2 <- 3 * c3[-n]
     cc.3 <- diff(yi) / diff.xi - diff.xi * (2 * c3[-n] + c3[-1])
     cc.4 <- yi[-n]
-    finalsort <- sort(c(test0, x3), method="shell", index.return=TRUE)
+    to.sort <- c(test0, x3)
+    ix.final <- order(to.sort)
+    sorted.final <- to.sort[ix.final]
     tmp <-
-        unique(data.frame(finalsort$x,
+        unique(data.frame(sorted.final,
                           c(ffppual(xi, cc.1,cc.2,cc.3,cc.4, test0, FALSE),
-                            ffppual(xi, cc.1,cc.2,cc.3,cc.4, x3, TRUE))[finalsort$ix]))
+                            ffppual(xi, cc.1,cc.2,cc.3,cc.4, x3, TRUE))[ix.final]))
     ## get spline on the right timescale - kludgy
     tmp2 <- tmp
     tmp2[, 1] <- round(tmp2[, 1], 5) # tries to deal with identical() issues

@@ -29,6 +29,10 @@ File: ffcsaps.R
   things up a little by making a rev() call unnecessary
 - Unnecessary call to pmax() removed
 - Added some input checks
+- order() is now used instead of sort(method="shell"), because the
+  requirements for the latter being a stable sort are unclear
+  (?sort in R 2.13.2), and stability of the sort is required
+  in some parts of ffcsaps (may be desirable in others)
 
 2011-09-14 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.7

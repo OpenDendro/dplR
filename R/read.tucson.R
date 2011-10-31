@@ -62,7 +62,7 @@
     ## Remove any blank lines at the end of the file, for instance
     dat <- dat[!apply(is.na(dat), 1, all), , drop=FALSE]
 
-    series <- dat[, 1]
+    series <- dat[[1]]
     series.ids <- unique(series)
     nseries <- length(series.ids)
 
@@ -73,7 +73,7 @@
                 nseries))
 
     series.index <- match(series, series.ids)
-    decade.yr <- dat[, 2]
+    decade.yr <- dat[[2]]
     min.year <- (min(decade.yr) %/% 10) * 10
     max.year <- ((max(decade.yr)+10) %/% 10) * 10
     span <- max.year - min.year + 1

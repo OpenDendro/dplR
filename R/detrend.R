@@ -7,6 +7,8 @@
     method2 <- match.arg(arg = method,
                          choices = known.methods,
                          several.ok = TRUE)
+    if(!is.data.frame(rwl))
+        stop("'rwl' must be a data.frame")
     rn <- row.names(rwl)
 
     if(!make.plot &&
@@ -33,7 +35,7 @@
     } else{
         out <- list()
         for(i in seq_len(ncol(rwl))){
-            fits <- detrend.series(rwl[, i], y.name=y.name[i],
+            fits <- detrend.series(rwl[[i]], y.name=y.name[i],
                                    make.plot=make.plot,
                                    method=method2, nyrs=nyrs, f=f,
                                    pos.slope=pos.slope)

@@ -11,7 +11,7 @@
     ## Check to see if the crn has sample depth
     sd.exist <- crn.names[nCrn] == "samp.depth"
     if(sd.exist) {
-        samp.depth <- crn[, nCrn]
+        samp.depth <- crn[[nCrn]]
         nCrn <- nCrn-1
     }
     if(nCrn > 1) layout(matrix(seq_len(nCrn), nrow=nCrn, ncol=1))
@@ -20,9 +20,9 @@
     text.samp <- gettext("Sample Depth", domain="R-dplR")
     nyrs2 <- nyrs
     for(i in seq_len(nCrn)){
-        plot(yr.vec, crn[, i], type="l",
+        spl <- crn[[i]]
+        plot(yr.vec, spl, type="l",
              xlab=text.years, ylab=text.rwi, main=crn.names[i], ...)
-        spl <- crn[, i]
         tmp <- na.omit(spl)
         ## Only possibly NULL in the first round of the for loop
         if(is.null(nyrs2)) nyrs2 <- length(tmp)*0.33

@@ -45,11 +45,11 @@
     rw.dt <- hanning(rw.df$rw, filt.weight)
     skel <- rep(NA, length(rw.df$rw))
     ## calc rel growth
-    for(i in 2:(length(rw.df$rw) - 1)) {
-        bck <- (rw.df$rw[i] - rw.df$rw[i - 1]) / rw.dt[i]
-        fwd <- (rw.df$rw[i] - rw.df$rw[i + 1]) / rw.dt[i]
-        skel[i] <- mean(c(bck, fwd))
-    }
+    n.diff <- length(rw.df$rw) - 1
+    idx <- 2:n.diff
+    temp.diff <- diff(rw.df$rw)
+    skel[idx] <- rowMeans(cbind(temp.diff[-n.diff],
+                                -temp.diff[-1])) / rw.dt[idx]
     skel[skel > 0] <- NA
     ## rescale from 0 to 10
     na.flag <- is.na(skel)

@@ -142,10 +142,10 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
                             ffppual(xi, cc.1,cc.2,cc.3,cc.4, x3, TRUE))[ix.final]))
     ## get spline on the right timescale - kludgy
     tmp2 <- tmp
-    tmp2[, 1] <- round(tmp2[, 1], 5) # tries to deal with identical() issues
-    res <- tmp2[tmp2[, 1] %in% x2, 2]
+    tmp2[[1]] <- round(tmp2[[1]], 5) # tries to deal with identical() issues
+    res <- tmp2[[2]][tmp2[[1]] %in% x2]
     ## deals with identical() issues via linear approx
     if(length(res) != n)
-        res <- approx(x=tmp[, 1], y=tmp[, 2], xout=x2)$y
+        res <- approx(x=tmp[[1]], y=tmp[[2]], xout=x2)$y
     res
 }

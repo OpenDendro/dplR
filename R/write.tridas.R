@@ -186,8 +186,8 @@ create.title.hierarchy <- function(cnames, ids){
 ### completeness data.frame, counting pith offset exceeding the value
 ### 1 as missing heartwood.
 po.to.wc <- function(po){
-    data.frame(n.missing.heartwood = as.integer(po[, 2] - 1),
-               row.names = po[, 1])
+    data.frame(n.missing.heartwood = as.integer(po[[2]] - 1),
+               row.names = po[[1]])
 }
 
 ### Helper function for handling arguments to write.tridas.
@@ -252,7 +252,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
                          title = ""
                          ),
                          random.identifiers = FALSE,
-                         identifier.domain = lab.info[1, "name"]){
+                         identifier.domain = lab.info$name[1]){
 
     if(!is.data.frame(lab.info) || nrow(lab.info) < 1)
         stop("'lab.info' must be a data.frame with at least one row")
@@ -383,27 +383,27 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
         ## <laboratory>
         doc.addTag.nc("laboratory", close = FALSE)
         if(identifier.present){
-            this.identifier <- lab.info[i, "identifier"]
+            this.identifier <- lab.info$identifier[i]
             if(!is.na(this.identifier) && nchar(this.identifier) > 0)
                 doc.addTag("identifier",
                            this.identifier,
-                           attrs = c(domain = lab.info[i, "domain"]))
+                           attrs = c(domain = lab.info$domain[i]))
         }
         if(acronym.present){
-            this.acronym <- lab.info[i, "acronym"]
+            this.acronym <- lab.info$acronym[i]
             if(!is.na(this.acronym) && nchar(this.acronym) > 0){
-                doc.addTag("name", lab.info[i, "name"],
+                doc.addTag("name", lab.info$name[i],
                            attrs = c(acronym = this.acronym))
             } else{
-                doc.addTag("name", lab.info[i, "name"])
+                doc.addTag("name", lab.info$name[i])
             }
         } else{
-            doc.addTag("name", lab.info[i, "name"])
+            doc.addTag("name", lab.info$name[i])
         }
         ## <address>
         doc.addTag.nc("address", close = FALSE)
         for(address.line in address.order){
-            address.text <- lab.info[i, address.line]
+            address.text <- lab.info[[address.line]][i]
             if(!is.na(address.text) && nchar(address.text) > 0)
                 doc.addTag(address.line, address.text)
         }
@@ -419,15 +419,17 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
             ## <research>
             doc.addTag.nc("research", close = FALSE)
             doc.addTag("identifier",
-                       research.info[i, "identifier"],
-                       attrs = c(domain = research.info[i, "domain"]))
-            doc.addTag("description", research.info[i, "description"])
+                       research.info$identifier[i],
+                       attrs = c(domain = research.info$domain[i]))
+            doc.addTag("description", research.info$description[i])
             doc.closeTag() # </research>
         }
     }
 
     ## Preprocessing -- things related to rwl.df / <object>
     if(!is.null(rwl.df)){
+        if(!is.data.frame(rwl.df))
+            stop("'rwl.df' must be a data.frame")
         check.char.vars(list(c("site.info", "unknown", "type"),
                              c("site.info", "", "title")))
         n.col <- ncol(rwl.df)
@@ -560,13 +562,13 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
                 wood.completeness2[[nam]] <- rep("unknown", n.col)
             ## Find invalid < 0 numbers
             for(nam in names.nonnegative[names.nonnegative %in% names.wc]){
-                temp <- wood.completeness2[!is.na(wood.completeness2[[nam]]), nam]
+                temp <- na.omit(wood.completeness2[[nam]])
                 if(any(!is.int(temp) | temp < 0))
                     stop(gettextf("some values in 'wood.completeness$%s' are invalid, i.e. not integer or < 0", nam))
             }
             ## Replace NAs and consistence with complex vocabulary
             for(nam in names.complex){
-                wood.completeness2[is.na(wood.completeness2[[nam]]), nam] <-
+                wood.completeness2[[nam]][is.na(wood.completeness2[[nam]])] <-
                     "unknown"
                 wood.completeness2[[nam]] <-
                     tridas.vocabulary("complex presence / absence",
@@ -577,7 +579,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
                 wood.completeness2$bark.presence <- rep("unknown", n.col)
             idx.bark.na <- which(is.na(wood.completeness2$bark.presence))
             if(length(idx.bark.na) > 0)
-                wood.completeness2[idx.bark.na, "bark.presence"] <- "unknown"
+                wood.completeness2$bark.presence[idx.bark.na] <- "unknown"
             wood.completeness2$bark.presence <-
                 tridas.vocabulary("presence / absence",
                                   term = wood.completeness2$bark.presence)
@@ -585,10 +587,9 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
             if("last.ring.presence" %in% names.wc){
                 idx.notna <-
                     which(!is.na(wood.completeness2$last.ring.presence))
-                wood.completeness2[idx.notna, "last.ring.presence"] <-
+                wood.completeness2$last.ring.presence[idx.notna] <-
                     tridas.vocabulary("presence / absence",
-                                      term = wood.completeness2[idx.notna,
-                                      "last.ring.presence"])
+                                      term = wood.completeness2$last.ring.presence[idx.notna])
                 wc.lrp <- TRUE
                 if("last.ring.details" %in% names.wc)
                     wc.lrd <- TRUE
@@ -726,38 +727,32 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
                             ## <nrOfUnmeasuredInnerRings>
                             if(wc.nui &&
                                !is.na(this.val <-
-                                      wood.completeness2[idx.m,
-                                                         "n.unmeasured.inner"])){
+                                      wood.completeness2$n.unmeasured.inner[idx.m])){
                                 doc.addTag.nc("nrOfUnmeasuredInnerRings",
                                               this.val)
                             }
                             ## <nrOfUnmeasuredOuterRings>
                             if(wc.nuo &&
                                !is.na(this.val <-
-                                      wood.completeness2[idx.m,
-                                                         "n.unmeasured.outer"])){
+                                      wood.completeness2$n.unmeasured.outer[idx.m])){
                                 doc.addTag.nc("nrOfUnmeasuredOuterRings",
                                               this.val)
                             }
                             ## <pith/>
                             doc.addTag.nc("pith",
-                                          attrs = c(presence = wood.completeness2[idx.m,
-                                                    "pith.presence"]))
+                                          attrs = c(presence = wood.completeness2$pith.presence[idx.m]))
                             ## <heartwood>
                             doc.addTag.nc("heartwood",
-                                          attrs = c(presence = wood.completeness2[idx.m,
-                                                    "heartwood.presence"]),
+                                          attrs = c(presence = wood.completeness2$heartwood.presence[idx.m]),
                                           close = FALSE)
                             if(wc.nmh &&
                                !is.na(this.val <-
-                                      wood.completeness2[idx.m,
-                                                         "n.missing.heartwood"])){
+                                      wood.completeness2$n.missing.heartwood[idx.m])){
                                 doc.addTag.nc("missingHeartwoodRingsToPith",
                                               this.val)
                                 if(wc.mhf &&
                                    !is.na(this.val <-
-                                          wood.completeness2[idx.m,
-                                                             "missing.heartwood.foundation"])){
+                                          wood.completeness2$missing.heartwood.foundation[idx.m])){
                                     doc.addTag("missingHeartwoodRingsToPithFoundation",
                                                this.val)
                                 }
@@ -765,23 +760,20 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
                             doc.closeTag() # </heartwood>
                             ## <sapwood>
                             doc.addTag.nc("sapwood",
-                                          attrs = c(presence = wood.completeness2[idx.m,
-                                                    "sapwood.presence"]),
+                                          attrs = c(presence = wood.completeness2$sapwood.presence[idx.m]),
                                           close = FALSE)
                             if(wc.ns &&
                                !is.na(this.val <-
-                                      wood.completeness2[idx.m, "n.sapwood"])){
+                                      wood.completeness2$n.sapwood[idx.m])){
                                 doc.addTag.nc("nrOfSapwoodRings",
                                               this.val)
                             }
                             if(wc.lrp &&
                                !is.na(this.val <-
-                                      wood.completeness2[idx.m,
-                                                         "last.ring.presence"])){
+                                      wood.completeness2$last.ring.presence[idx.m])){
                                 if(wc.lrd &&
                                    !is.na(this.detail <-
-                                          wood.completeness2[idx.m,
-                                                             "last.ring.details"])){
+                                          wood.completeness2$last.ring.details[idx.m])){
                                     doc.addTag("lastRingUnderBark",
                                                this.detail,
                                                attrs = c(presence = this.val))
@@ -792,14 +784,12 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
                             }
                             if(wc.nms &&
                                !is.na(this.val <-
-                                      wood.completeness2[idx.m,
-                                                         "n.missing.sapwood"])){
+                                      wood.completeness2$n.missing.sapwood[idx.m])){
                                 doc.addTag.nc("missingSapwoodRingsToBark",
                                               this.val)
                                 if(wc.msf &&
                                    !is.na(this.val <-
-                                          wood.completeness2[idx.m,
-                                                             "missing.sapwood.foundation"])){
+                                          wood.completeness2$missing.sapwood.foundation[idx.m])){
                                     doc.addTag("missingSapwoodRingsToBarkFoundation",
                                                this.val)
                                 }
@@ -807,8 +797,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
                             doc.closeTag() # </sapwood>
                             ## <bark>
                             doc.addTag.nc("bark",
-                                          attrs = c(presence = wood.completeness2[idx.m,
-                                                    "bark.presence"]))
+                                          attrs = c(presence = wood.completeness2$bark.presence[idx.m]))
                             doc.closeTag() # </woodCompleteness>
                         }
                         if(!is.na(this.mm <- tridas.measuring.method2[idx.m]))
@@ -819,7 +808,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
                                        other.measuring.method2[idx.m])
                         ## <interpretation>
                         doc.addTag.nc("interpretation", close = FALSE)
-                        series <- as.numeric(rwl.df2[, idx.m])
+                        series <- as.numeric(rwl.df2[[idx.m]])
                         idx <- !is.na(series)
                         series <- series[idx]
                         yrs <- yrs.all[idx]
@@ -910,7 +899,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
             for(j in seq_len(n.series)){
                 ## <derivedSeries>
                 this.idx <- series.idx[j]
-                series <- as.numeric(this.frame[, this.idx])
+                series <- as.numeric(this.frame[[this.idx]])
                 if(depth.present)
                     samp.depth <- as.numeric(this.frame[[depth.idx[j]]])
                 doc.addTag.nc("derivedSeries", close = FALSE)

@@ -22,7 +22,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
   research.info = data.frame(identifier = NULL, domain = NULL,
     description = NULL),
   site.info = list(type = "unknown", description = NULL, title = ""),
-  random.identifiers = FALSE, identifier.domain = lab.info[1, "name"])
+  random.identifiers = FALSE, identifier.domain = lab.info$name[1])
 }
 \arguments{
   \item{rwl.df}{

@@ -10,12 +10,16 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
         list(indices=err6, c.val=med)
     }
 ### main func
+    if(!is.data.frame(rwl))
+        stop("'rwl' must be a data.frame")
+    if(!is.data.frame(po))
+        stop("'po' must be a data.frame")
     rwl2 <- rwl
     n.col <- ncol(rwl2)
     if(n.col != nrow(po))
         stop("dimension problem: ", "'ncol(rw)' != 'nrow(po)'")
     col.names <- names(rwl2)
-    if(!all(sort(po[, 1]) == sort(col.names)))
+    if(!all(sort(po[[1]]) == sort(col.names)))
         stop("series ids in 'po' and 'rwl' do not match")
     rownames(rwl2) <- rownames(rwl2) # guard against NULL names funniness
     n.row <- nrow(rwl2)
@@ -26,12 +30,12 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
     c.vec <- rep(as.numeric(NA), n.col)
     names(c.vec) <- col.names
     if(c.hat.t){
-        c.curve.mat <- matrix(NA, ncol=n.col, nrow=n.row + max(po[, 2]))
+        c.curve.mat <- matrix(NA, ncol=n.col, nrow=n.row + max(po[[2]]))
         colnames(c.curve.mat) <- col.names
     }
     for(i in seq_len(n.col)){
-        the.po <- po[po[, 1] %in% col.names[i], 2]
-        this.series <- rwl2[, i]
+        the.po <- po[[2]][po[[1]] %in% col.names[i]]
+        this.series <- rwl2[[i]]
         series.yrs <- yr.range(this.series, yr.vec=yrs)
         this.series <- sortByIndex(this.series)
         no.na <- which(!is.na(this.series))
@@ -45,7 +49,7 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
                     c.curve
             first <- series.yrs[1]
             last <- series.yrs[2]
-            rwi[yrs %in% first:last, i] <- series.no.na / c.curve
+            rwi[[i]][yrs %in% first:last] <- series.no.na / c.curve
         }
     }
     ## export options

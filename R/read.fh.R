@@ -1,5 +1,5 @@
 read.fh <- function(fname) {
-    inp <- as.character(read.csv(file = fname, header = F)[, 1])
+    inp <- as.character(read.csv(file = fname, header = F)[[1]])
     ## get start and end positions of data blocks
     header.begin <- c(grep("^HEADER:$", inp), length(inp) + 1)
     header.end <- grep("^DATA:(Tree|Single)$", inp)

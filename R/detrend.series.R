@@ -8,7 +8,8 @@
                          choices = known.methods,
                          several.ok = TRUE)
     ## Remove NA from the data (they will be reinserted later)
-    y2 <- y[!is.na(y)]
+    good.y <- !is.na(y)
+    y2 <- y[good.y]
     ## Recode any zero values to 0.001
     y2[y2 == 0] <- 0.001
 
@@ -117,7 +118,7 @@
     resids2 <- data.frame(resids2)
     names(resids2) <- names(resids)
     if(!is.null(names(y))) row.names(resids2) <- names(y)
-    resids2[!is.na(y), ] <- resids
+    resids2[good.y, ] <- resids
 
     ## Reorder columns of output to match the order of the argument
     ## "method".

@@ -64,8 +64,8 @@
                     skip=skip.lines, strip.white=TRUE)
     ## If columns 3 in chron.stats is an integer then there is no
     ## statistics line
-    if(is.numeric(chron.stats[, 3]) &&
-       !is.int(as.numeric(chron.stats[, 3]))){
+    if(is.numeric(chron.stats[[3]]) &&
+       !is.int(as.numeric(chron.stats[[3]]))){
         names(chron.stats) <-
             c("SiteID", "nYears", "AC[1]", "StdDev", "MeanSens",
               "MeanRWI", "IndicesSum", "IndicesSS", "MaxSeries")
@@ -75,7 +75,7 @@
         dat <- dat[-nrow(dat), , drop=FALSE]
     }
 
-    series <- dat[, 1]
+    series <- dat[[1]]
     series.ids <- unique(series)
     nseries <- length(series.ids)
     cat(sprintf(ngettext(nseries,
@@ -84,15 +84,15 @@
                          domain="R-dplR"),
                 nseries))
     series.index <- match(series, series.ids)
-    min.year <- (min(dat[, 2]) %/% 10) * 10
-    max.year <- ((max(dat[, 2])+10) %/% 10) * 10
+    min.year <- (min(dat[[2]]) %/% 10) * 10
+    max.year <- ((max(dat[[2]])+10) %/% 10) * 10
     span <- max.year - min.year + 1
     ncol.crn.mat <- nseries + 1
     crn.mat <- matrix(NA, ncol=ncol.crn.mat, nrow=span)
     colnames(crn.mat) <- c(as.character(series.ids), "samp.depth")
     rownames(crn.mat) <- min.year:max.year
     for(i in seq_len(nseries)){
-        decade.yr <- dat[series.index==i, 2]
+        decade.yr <- dat[[2]][series.index==i]
         ## RWI
         x <- dat[series.index == i, -c(1, 2, seq(from=4, to=22, by=2)),
                  drop=FALSE]

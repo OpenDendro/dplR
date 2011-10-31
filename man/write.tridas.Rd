@@ -299,8 +299,10 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 \examples{
  data(co021)
  write.tridas(rwl.df = co021, fname = 'tmp.xml', prec=0.01,
-              site.info=list(title="Schulman old tree no. 1, Mesa Verde"),
-              taxon = "Pseudotsuga menziesii var. menziesii (Mirb.) Franco",
-              project.info=list(investigator = "E. Schulman"))
+              site.info=list(title="Schulman old tree no. 1, Mesa Verde",
+                type="unknown"),
+              taxon="Pseudotsuga menziesii var. menziesii (Mirb.) Franco",
+              project.info = list(investigator = "E. Schulman",
+                title="", category="", period="", type="unknown"))
 }
 \keyword{ IO }

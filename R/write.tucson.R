@@ -25,6 +25,8 @@ format.tucson <- (function(){
              mapping.fname="", mapping.append=FALSE, long.names=FALSE)
 {
     line.term <- "\x0D\x0A" # CR+LF, ASCII carriage return and line feed
+    if(!is.data.frame(rwl.df))
+        stop("'rwl.df' must be a data.frame")
     if(!(prec == 0.01 || prec == 0.001))
         stop("'prec' must equal 0.01 or 0.001")
     header2 <- header
@@ -165,7 +167,7 @@ format.tucson <- (function(){
     format.year <- sprintf("%%%d.0f", year.width)
 
     for(l in seq_len(nseries)) {
-        series <- rwl.df2[, l]
+        series <- rwl.df2[[l]]
         idx <- !is.na(series)
         yrs <- yrs.all[idx]
         series <- series[idx]

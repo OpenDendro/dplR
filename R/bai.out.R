@@ -1,5 +1,7 @@
 bai.out <- function(rwl, diam = NULL) {
 
+    if(!is.data.frame(rwl))
+        stop("'rwl' must be a data.frame")
     if(!is.null(diam)) {
         if(ncol(rwl) != nrow(diam))
             stop("dimension problem: ", "'ncol(rw)' != 'nrow(diam)'")
@@ -13,7 +15,7 @@ bai.out <- function(rwl, diam = NULL) {
     n.vec <- seq_len(nrow(rwl))
     for(i in seq_len(ncol(rwl))){
         ## series to work with
-        dat <- rwl[, i]
+        dat <- rwl[[i]]
         ## strip out data from NA
         dat2 <- na.omit(dat)
         ## get diameter if not given

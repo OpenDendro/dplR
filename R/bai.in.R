@@ -1,5 +1,7 @@
 bai.in <- function(rwl, d2pith = NULL) {
 
+    if(!is.data.frame(rwl))
+        stop("'rwl' must be a data.frame")
     if(!is.null(d2pith)) {
         if(ncol(rwl) != nrow(d2pith))
             stop("dimension problem: ", "'ncol(rw)' != 'nrow(d2pith)'")
@@ -16,7 +18,7 @@ bai.in <- function(rwl, d2pith = NULL) {
     n.vec <- seq_len(nrow(rwl))
     for(i in seq_len(ncol(rwl))){
         ## series to work with
-        dat <- rwl[, i]
+        dat <- rwl[[i]]
         ## strip out data from NA
         dat2 <- na.omit(dat)
         ## get ring area

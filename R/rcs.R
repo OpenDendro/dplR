@@ -1,5 +1,7 @@
 rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
                 make.plot=TRUE, ...) {
+    if(!is.data.frame(rwl))
+        stop("'rwl' must be a data.frame")
     n.col <- ncol(rwl)
     if(n.col != nrow(po))
         stop("dimension problem: ", "'ncol(rw)' != 'nrow(po)'")
@@ -41,14 +43,14 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
     rwi <- rwl2
     yrs <- as.numeric(row.names(rwi))
     for(i in seq.cols){
-        series.yrs <- yr.range(rwl2[, i], yr.vec=yrs)
+        series.yrs <- yr.range(rwl2[[i]], yr.vec=yrs)
         first <- series.yrs[1]
         last <- series.yrs[2]
         ## check
         tmp <- na.omit(rwica[, i])
         if(first+length(tmp) != last+1)
             warning("indexing problem when restoring to cal years: first+length(tmp) != last+1")
-        rwi[yrs %in% first:last, i] <- tmp
+        rwi[[i]][yrs %in% first:last] <- tmp
     }
     if(make.plot) {
         par(mar = c(4, 4, 4, 4) + 0.1, mgp = c(1.25, 0.25, 0), tcl = 0.25)

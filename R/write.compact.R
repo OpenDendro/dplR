@@ -19,6 +19,8 @@ create.format <- function(n.fields, field.width){
 write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
                           mapping.fname="", mapping.append=FALSE){
     line.term <- "\x0D\x0A" # CR+LF, ASCII carriage return and line feed
+    if(!is.data.frame(rwl.df))
+        stop("'rwl.df' must be a data.frame")
     if(!(prec == 0.01 || prec == 0.001))
         stop("'prec' must equal 0.01 or 0.001")
     if(append && !file.exists(fname))
@@ -56,7 +58,7 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
     missing.str <- 0
 
     for(l in seq_len(nseries)) {
-        series <- rwl.df2[, l]
+        series <- rwl.df2[[l]]
         idx <- !is.na(series)
         yrs <- yrs.all[idx]
         series <- round(prec.rproc * series[idx])
@@ -78,7 +80,7 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
             series <- series[series.order]
         }
         ## Find negative values and mark as missing data
-        series[series<0] <- missing.str
+        series[series < 0] <- missing.str
 
         series <- as.character(series)
         field.width <- max(nchar(series))

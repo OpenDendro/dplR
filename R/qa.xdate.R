@@ -1,4 +1,6 @@
 qa.xdate <- function(rwl, seg.length, n, bin.floor){
+    if(!is.data.frame(rwl))
+        stop("'rwl' must be a data.frame")
     ## seg.length
     if(seg.length*2 > nrow(rwl))
         stop("'seg.length' can be at most 1/2 the number of years in 'rwl'")

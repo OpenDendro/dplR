@@ -53,10 +53,22 @@ File: normalize1.R
   degradation introduced in dplR 1.2.7.  Tested on a computer with a
   Core 2 processor, 3.0 GHz.
 
+File: seg.plot.R
+----------------
+
+- Uses order() and numeric indexing instead of sort() and indexing with
+  names
+
 File: skel.plot.R
 -----------------
 
 - Replaced one for loop with vectorized operations
+
+File: spag.plot.R
+----------------
+
+- Uses order() and numeric indexing instead of sort() and indexing with
+  names
 
 2011-09-14 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.7

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.4.8\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-10-17 14:27+0300\n"
+"POT-Creation-Date: 2011-11-01 19:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,6 +14,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+
+msgid "'rwl' must be a data.frame"
+msgstr ""
 
 msgid "dimension problem:"
 msgstr ""
@@ -52,6 +55,9 @@ msgid "Correlation"
 msgstr ""
 
 msgid "'prefix' must be a character string with less than 4 characters"
+msgstr ""
+
+msgid "'po' must be a data.frame"
 msgstr ""
 
 msgid "'ncol(rw)' != 'nrow(po)'"
@@ -448,6 +454,9 @@ msgid "Time"
 msgstr ""
 
 msgid "Period"
+msgstr ""
+
+msgid "'rwl.df' must be a data.frame"
 msgstr ""
 
 msgid "'prec' must equal 0.01 or 0.001"

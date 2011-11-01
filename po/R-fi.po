@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.4.8\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-10-17 14:27+0300\n"
-"PO-Revision-Date: 2011-10-17 14:56+0300\n"
+"POT-Creation-Date: 2011-11-01 19:30+0200\n"
+"PO-Revision-Date: 2011-11-01 19:32+0200\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -15,6 +15,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "'rwl' must be a data.frame"
+msgstr "’rwl’:n täytyy olla data.frame"
 
 msgid "dimension problem:"
 msgstr "dimensio-ongelma:"
@@ -54,6 +57,9 @@ msgstr "Korrelaatio"
 
 msgid "'prefix' must be a character string with less than 4 characters"
 msgstr "’prefix’in täytyy olla alle 4-merkkinen merkkijono"
+
+msgid "'po' must be a data.frame"
+msgstr "’po’:n täytyy olla data.frame"
 
 msgid "'ncol(rw)' != 'nrow(po)'"
 msgstr "’ncol(rw)’ ≠ ’nrow(po)’"
@@ -467,6 +473,9 @@ msgstr "Aika"
 
 msgid "Period"
 msgstr "Jakso"
+
+msgid "'rwl.df' must be a data.frame"
+msgstr "’rwl.df’:n täytyy olla data.frame"
 
 msgid "'prec' must equal 0.01 or 0.001"
 msgstr "’prec’in täytyy olla 0.01 tai 0.002"

@@ -4,8 +4,8 @@ spag.plot <- function(rwl, zfac=1, ...){
     rwl2 <- scale(rwl * zfac, center = TRUE, scale = FALSE) # result is a matrix
     yr <- as.numeric(rownames(rwl2))
     first.year <- apply(rwl2, 2, yr.range, yr.vec=yr)[1, ]
-    neworder <- sort(first.year, decreasing=FALSE)
-    rwl2 <- rwl2[, names(neworder), drop=FALSE]
+    neworder <- order(first.year, decreasing=FALSE)
+    rwl2 <- rwl2[, neworder, drop=FALSE]
     op <- par(no.readonly=TRUE)
     on.exit(par(op))
     par(mar=c(4, 4, 4, 4) + 0.1, mgp=c(1.25, 0.25, 0), tcl=0.25)

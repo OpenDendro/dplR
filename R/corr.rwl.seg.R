@@ -54,7 +54,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     ## normalize all series
     norm.one <- normalize1(rwl, n, prewhiten)
     ## rwi for segments altered by normalizing
-    rwi <- norm.one$master
+    rwi <- norm.one$master # is a matrix
     idx.good <- norm.one$idx.good
 
     ## loop through series

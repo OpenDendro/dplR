@@ -42,6 +42,17 @@ File: ffcsaps.R
   (?sort in R 2.13.2), and stability of the sort is required
   in some parts of ffcsaps (may be desirable in others)
 
+File: normalize1.R
+------------------
+
+- For consistency, the first part of the returned list is now a
+  matrix regardless of the value of 'prewhiten'.  This also gives an
+  amazing speed improvement in corr.rwl.seg: from 42 seconds to 1
+  second in the ?corr.rwl.seg Example, modified with
+  prewhiten=FALSE, make.plot=FALSE.  This corrects the performance
+  degradation introduced in dplR 1.2.7.  Tested on a computer with a
+  Core 2 processor, 3.0 GHz.
+
 File: skel.plot.R
 -----------------
 

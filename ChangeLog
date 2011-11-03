@@ -1,3 +1,4 @@
+2011-11-03 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.8
 
 File: NAMESPACE
@@ -22,8 +23,9 @@ Various .R files:
 -----------------
 
 - When indexing data.frames, use df[[foo]][bar] instead of df[bar, foo]
-  when foo is a single index. The former is supposed to be faster than the
-  latter. https://stat.ethz.ch/pipermail/r-devel/2011-October/062313.html
+  when foo is a single index (or df$foo[bar] instead of df[bar, "foo"]).
+  The former is supposed to be faster than the latter.
+  https://stat.ethz.ch/pipermail/r-devel/2011-October/062313.html
 - Some input checks added
 
 File: combine.rwl.R

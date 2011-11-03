@@ -38,7 +38,7 @@ void tbrm(double *x_const, int *n_ptr, double *C_ptr, double *result){
 	x[i] = x_const[i];
 
     /* Median of x */
-    if(n & 0x1 == 1){ /* n is odd */
+    if((n & 0x1) == 1){ /* n is odd */
 	half = ((unsigned int)n) >> 1;
 	rPsort(x, n, half); /* Partial sort: */
 	x_med = x[half];    /* element at position half is correct.*/

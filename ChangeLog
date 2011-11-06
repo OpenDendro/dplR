@@ -1,4 +1,4 @@
-2011-11-03 Mikko Korpela
+2011-11-06 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.8
 
 File: NAMESPACE
@@ -59,6 +59,11 @@ File: normalize1.R
   prewhiten=FALSE, make.plot=FALSE.  This corrects the performance
   degradation introduced in dplR 1.2.7.  Tested on a computer with a
   Core 2 processor, 3.0 GHz.
+
+File: rcompact.c
+----------------
+
+- Now accepts series IDs with spaces.
 
 File: seg.plot.R
 ----------------

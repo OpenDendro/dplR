@@ -111,8 +111,9 @@ char *fgets_eol(char *s, int *n_noteol, int size, FILE *stream){
  */
 SEXP rcompact(SEXP filename){
     char field_id, line[LINE_LENGTH], mplier_str[MPLIER_LENGTH], *found1,
-	*found2, *found_leftpar, *found_dot, *found_rightpar, *id_start,
-	*old_point, *point, *endp, *tmp_name, *tmp_comment;
+        *found2, *found_leftpar, *found_dot, *found_rightpar, *found_tilde,
+        *id_start, *old_point, *point, *point2, *endp, *tmp_name,
+        *tmp_comment;
     int i, j, n, first_yr, last_yr, id_length, exponent,
 	n_repeats, field_width, precision, n_x_w, n_lines, remainder, idx,
 	this_last, *i_first, *i_last;
@@ -289,12 +290,31 @@ SEXP rcompact(SEXP filename){
 	while(*point == ' ')
 	    ++point;
 
+	/* Find last character of series id */
+	found_tilde = strchr(point+1, '~');
+	if(found_tilde == NULL || found_tilde < point + 2){
+	    error(_("Series %d (%s): '~' not found in expected location"),
+		  n+1, this->id);
+	    fclose(f);
+	}
+	point2 = found_tilde - 1;
+	while(*point2 != ' ' && point2 > point + 1)
+	    --point2;
+	--point2;
+	while(*point2 == ' ')
+	    --point2;
+	
 	/* Read series id */
 	if(isalnum((unsigned char)(*point))){
 	    id_start = point;
 	    ++point;
-	    while(isalnum((unsigned char)(*point)))
-		++point;
+	    while(point < point2 + 1){
+	        if(!isalnum((unsigned char)(*point)) && *point != ' '){
+		    fclose(f);
+		    error(_("Series %d: Invalid character in series ID"), n+1);
+	        }
+	        ++point;
+	    }
 	    id_length = (int)(point - id_start);
 	    tmp_name = (char *) R_alloc(id_length+1, sizeof(char));
 	    strncpy(tmp_name, id_start, id_length);
@@ -348,11 +368,6 @@ SEXP rcompact(SEXP filename){
 	if(found_rightpar == NULL){
 	    fclose(f);
 	    error(_("Series %d (%s): No closing parenthesis found"),
-		  n+1, this->id);
-	}
-	if(*(found_rightpar+1) != '~'){
-	    fclose(f);
-	    error(_("Series %d (%s): '~' not found in expected location"),
 		  n+1, this->id);
 	}
 	if(divide == TRUE){

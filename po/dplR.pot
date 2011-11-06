@@ -4,9 +4,9 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.4.7\n"
+"Project-Id-Version: dplR 1.4.8\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-09-14 10:54+0300\n"
+"POT-Creation-Date: 2011-11-06 18:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,196 +15,201 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: rcompact.c:134
+#: rcompact.c:137
 #, c-format
 msgid "Could not open file %s for reading"
 msgstr ""
 
-#: rcompact.c:179
+#: rcompact.c:182
 #, c-format
 msgid "Series %d: Header line is too long (max length %d)"
 msgstr ""
 
-#: rcompact.c:189
+#: rcompact.c:192
 #, c-format
 msgid "Series %d: No '=' found when header line was expected"
 msgstr ""
 
-#: rcompact.c:194
+#: rcompact.c:197
 #, c-format
 msgid "Series %d: No room for number before first '='"
 msgstr ""
 
-#: rcompact.c:201
+#: rcompact.c:204
 #, c-format
 msgid "Series %d: Only a number must be found right before 1st '='"
 msgstr ""
 
-#: rcompact.c:206 rcompact.c:251
+#: rcompact.c:209 rcompact.c:254
 #, c-format
 msgid "Series %d: Number %lld exceeds integer range"
 msgstr ""
 
-#: rcompact.c:216 rcompact.c:260
+#: rcompact.c:219 rcompact.c:263
 #, c-format
 msgid "Series %d: Length of series must be at least one (%ld seen)"
 msgstr ""
 
-#: rcompact.c:224
+#: rcompact.c:227
 #, c-format
 msgid "Series %d: Unknown field id: %c"
 msgstr ""
 
-#: rcompact.c:230
+#: rcompact.c:233
 #, c-format
 msgid "Series %d: Space required between N and I fields"
 msgstr ""
 
-#: rcompact.c:237
+#: rcompact.c:240
 #, c-format
 msgid "Series %d: Second '=' missing"
 msgstr ""
 
-#: rcompact.c:241
+#: rcompact.c:244
 #, c-format
 msgid "Series %d: No room for number before second '='"
 msgstr ""
 
-#: rcompact.c:246
+#: rcompact.c:249
 #, c-format
 msgid ""
 "Series %d: Only a number must be found after first field, right before 2nd "
 "'='"
 msgstr ""
 
-#: rcompact.c:266
+#: rcompact.c:269
 #, c-format
 msgid "Series %d: Unknown or doubled field id: %c"
 msgstr ""
 
-#: rcompact.c:281
+#: rcompact.c:284
 #, c-format
 msgid "Series %d (%s): Space required before ID"
 msgstr ""
 
-#: rcompact.c:303
-#, c-format
-msgid "Series %d: Alphanumeric series ID not found"
-msgstr ""
-
-#: rcompact.c:309
-#, c-format
-msgid "Series %d (%s): Space required after alphanumerid ID"
-msgstr ""
-
-#: rcompact.c:318
-#, c-format
-msgid "Series %d (%s): Exponent not found"
-msgstr ""
-
-#: rcompact.c:330
-#, c-format
-msgid "Series %d (%s): Exponent has too many characters"
-msgstr ""
-
-#: rcompact.c:335
-#, c-format
-msgid "Series %d (%s): Opening parenthesis required after exponent"
-msgstr ""
-
-#: rcompact.c:342
-#, c-format
-msgid "Series %d (%s): No dot found in number format description"
-msgstr ""
-
-#: rcompact.c:348
-#, c-format
-msgid "Series %d (%s): No closing parenthesis found"
-msgstr ""
-
-#: rcompact.c:353
+#: rcompact.c:296
 #, c-format
 msgid "Series %d (%s): '~' not found in expected location"
 msgstr ""
 
-#: rcompact.c:367
+#: rcompact.c:314
+#, c-format
+msgid "Series %d: Invalid character in series ID"
+msgstr ""
+
+#: rcompact.c:325
+#, c-format
+msgid "Series %d: Alphanumeric series ID not found"
+msgstr ""
+
+#: rcompact.c:331
+#, c-format
+msgid "Series %d (%s): Space required after alphanumerid ID"
+msgstr ""
+
+#: rcompact.c:340
+#, c-format
+msgid "Series %d (%s): Exponent not found"
+msgstr ""
+
+#: rcompact.c:352
+#, c-format
+msgid "Series %d (%s): Exponent has too many characters"
+msgstr ""
+
+#: rcompact.c:357
+#, c-format
+msgid "Series %d (%s): Opening parenthesis required after exponent"
+msgstr ""
+
+#: rcompact.c:364
+#, c-format
+msgid "Series %d (%s): No dot found in number format description"
+msgstr ""
+
+#: rcompact.c:370
+#, c-format
+msgid "Series %d (%s): No closing parenthesis found"
+msgstr ""
+
+#: rcompact.c:384
 #, c-format
 msgid "Series %d (%s): Number of values per line not found"
 msgstr ""
 
-#: rcompact.c:372
+#: rcompact.c:389
 #, c-format
 msgid "Series %d (%s): At least one value per line is needed"
 msgstr ""
 
-#: rcompact.c:377
+#: rcompact.c:394
 #, c-format
 msgid "Series %d (%s): Number of values per line (%d) > max line length (%d)"
 msgstr ""
 
-#: rcompact.c:382
+#: rcompact.c:399
 #, c-format
 msgid "Series %d (%s): Only 'F' number format is supported"
 msgstr ""
 
-#: rcompact.c:389
+#: rcompact.c:406
 #, c-format
 msgid "Series %d (%s): Field width not found"
 msgstr ""
 
-#: rcompact.c:394
+#: rcompact.c:411
 #, c-format
 msgid "Series %d (%s): Field width and '.' must be adjacent"
 msgstr ""
 
-#: rcompact.c:399
+#: rcompact.c:416
 #, c-format
 msgid "Series %d (%s): Field width must be at least one (%d seen)"
 msgstr ""
 
-#: rcompact.c:406
+#: rcompact.c:423
 #, c-format
 msgid "Series %d (%s): Number of decimals not found"
 msgstr ""
 
-#: rcompact.c:411
+#: rcompact.c:428
 #, c-format
 msgid "Series %d (%s): Number of decimals and ')' must be adjacent"
 msgstr ""
 
-#: rcompact.c:416
+#: rcompact.c:433
 #, c-format
 msgid "Series %d (%s): No (implied) decimal places allowed in format"
 msgstr ""
 
-#: rcompact.c:422
+#: rcompact.c:439
 #, c-format
 msgid "Series %d (%s): Required line length %d exceeds the maximum %d"
 msgstr ""
 
-#: rcompact.c:438 rcompact.c:478
+#: rcompact.c:455 rcompact.c:495
 #, c-format
 msgid "Series %d (%s): Unexpected end of file (%d data lines read)"
 msgstr ""
 
-#: rcompact.c:444 rcompact.c:483
+#: rcompact.c:461 rcompact.c:500
 #, c-format
 msgid "Series %d (%s): Data line %d is too long (max length %d)"
 msgstr ""
 
-#: rcompact.c:457 rcompact.c:495
+#: rcompact.c:474 rcompact.c:512
 #, c-format
 msgid ""
 "Series %d (%s): Could not read number (data row %d, field %d).\n"
 "Malformed number or previous line too long."
 msgstr ""
 
-#: rcompact.c:513
+#: rcompact.c:530
 #, c-format
 msgid "Error reading file %s"
 msgstr ""
 
-#: rcompact.c:520
+#: rcompact.c:537
 #, c-format
 msgid "No data found in file %s"
 msgstr ""

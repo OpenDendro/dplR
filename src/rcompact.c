@@ -305,11 +305,11 @@ SEXP rcompact(SEXP filename){
 	    --point2;
 	
 	/* Read series id */
-	if(isalnum((unsigned char)(*point))){
+	if(isprint((unsigned char)(*point))){
 	    id_start = point;
 	    ++point;
 	    while(point < point2 + 1){
-	        if(!isalnum((unsigned char)(*point)) && *point != ' '){
+	        if(!isprint((unsigned char)(*point))){
 		    fclose(f);
 		    error(_("Series %d: Invalid character in series ID"), n+1);
 	        }

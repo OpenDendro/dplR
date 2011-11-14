@@ -1,3 +1,12 @@
+2011-11-14 Mikko Korpela
+* CHANGES IN dplR VERSION 1.4.9
+
+File: rcompact.c
+----------------
+
+- read.compact() now accepts series IDs consisting of any sequence of
+  printable ASCII characters.
+
 2011-11-06 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.8
 

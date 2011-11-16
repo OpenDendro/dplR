@@ -23,6 +23,7 @@ File: read.fh.R
 - The possibly dangerous removal of zeros, even from the middle of
   series, was rewritten
 - Gives a clear error message when a data series has unexpected length
+- Handles empty files / files with zero records better
 
 File: read.tucson.R
 -------------------

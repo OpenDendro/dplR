@@ -13,6 +13,17 @@ File: read.crn.R
   versions assumed the same range of years for all series. This rule,
   breaking of which would give strange results, no longer applies.
 
+File: read.fh.R
+---------------
+
+- Replaced read.csv() with readLines()
+- Unnecessary captures removed from regular expressions
+- Small optimizations (e.g., positions() was replaced with a more
+  efficient solutions)
+- The possibly dangerous removal of zeros, even from the middle of
+  series, was rewritten
+- Gives a clear error message when a data series has unexpected length
+
 File: read.tucson.R
 -------------------
 

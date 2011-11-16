@@ -4,10 +4,10 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.4.8\n"
+"Project-Id-Version: dplR 1.5.0\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-11-01 19:30+0200\n"
-"PO-Revision-Date: 2011-11-01 19:32+0200\n"
+"POT-Creation-Date: 2011-11-16 15:55+0200\n"
+"PO-Revision-Date: 2011-11-16 15:57+0200\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -244,6 +244,15 @@ msgstr ""
 msgid "a 'DateBegin' and 'DateEnd' entry has to be present for each series"
 msgstr "jokaisella sarjalla täytyy olla ’DateBegin’- ja ’DateEnd’-merkinnät"
 
+msgid "in series %s:"
+msgstr "sarjassa %s:"
+
+msgid "too few values (expected %d, got %d)"
+msgstr "liian vähän arvoja (odotettiin %d, saatiin %d)"
+
+msgid "too many values (expected %d, got %d)"
+msgstr "liian monta arvoa (odotettiin %d, saatiin %d)"
+
 msgid "Site-Tree-Core mask is larger than 8"
 msgstr "Paikka-Puu-Näyte-maski on suurempi kuin 8"
 
@@ -296,12 +305,6 @@ msgstr "projektissa %d, johdannaissarjassa %d:"
 
 msgid "negative values interpreted as missing"
 msgstr "negatiiviset arvot tulkittu puuttuviksi"
-
-msgid "too many values (expected %d, got %d)"
-msgstr "liian monta arvoa (odotettiin %d, saatiin %d)"
-
-msgid "too few values (expected %d, got %d)"
-msgstr "liian vähän arvoja (odotettiin %d, saatiin %d)"
 
 msgid "in undated series %d:"
 msgstr "ajoittamattomassa sarjassa %d:"

@@ -55,10 +55,12 @@
     ## function to support different encodings.
     if(long)
         dat <- read.fwf(con, c(7, 5, rep(6, 10)), skip=skip.lines,
-                        strip.white=TRUE, blank.lines.skip=TRUE)
+                        strip.white=TRUE, blank.lines.skip=TRUE,
+                        colClasses=c("character", rep("integer", 11)))
     else
         dat <- read.fwf(con, c(8, 4, rep(6, 10)), skip=skip.lines,
-                        strip.white=TRUE, blank.lines.skip=TRUE)
+                        strip.white=TRUE, blank.lines.skip=TRUE,
+                        colClasses=c("character", rep("integer", 11)))
     ## Remove any blank lines at the end of the file, for instance
     dat <- dat[!apply(is.na(dat), 1, all), , drop=FALSE]
 
@@ -85,8 +87,8 @@
     x <- as.matrix(dat[, -c(1, 2), drop=FALSE])
     .C(rwl.readloop,
        series.index,
-       as.integer(decade.yr),
-       as.vector(x, mode="integer"),
+       decade.yr,
+       as.vector(x),
        nrow(x),
        ncol(x),
        as.integer(min.year),

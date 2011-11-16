@@ -59,9 +59,6 @@
     ## Unintuitively, the connection object seems to have been destroyed
     ## by the previous read.fwf.  We need to create a new one.
     con <- file(fname, encoding = encoding)
-    ## Really read file
-    dat <- read.fwf(con, c(6, 4, rep(c(4, 3), 10)),
-                    skip=skip.lines, strip.white=TRUE)
     ## If columns 3 in chron.stats is an integer then there is no
     ## statistics line
     if(is.numeric(chron.stats[[3]]) &&
@@ -71,12 +68,22 @@
               "MeanRWI", "IndicesSum", "IndicesSS", "MaxSeries")
         cat(gettext("Embedded chronology statistics\n", domain="R-dplR"))
         print(chron.stats)
-        ## Chop off last row of dat
-        dat <- dat[-nrow(dat), , drop=FALSE]
+        ## Really read file
+        dat <- read.fwf(con, c(6, 4, rep(c(4, 3), 10)),
+                        skip=skip.lines, n=nlines-skip.lines-1,
+                        colClasses=c("character", rep("integer", 21)),
+                        strip.white=TRUE)
+    } else {
+        ## Really read file
+        dat <- read.fwf(con, c(6, 4, rep(c(4, 3), 10)),
+                        skip=skip.lines, n=nlines-skip.lines,
+                        colClasses=c("character", rep("integer", 21)),
+                        strip.white=TRUE)
     }
 
     series <- dat[[1]]
     series.ids <- unique(series)
+    decade.yr <- dat[[2]]
     nseries <- length(series.ids)
     cat(sprintf(ngettext(nseries,
                          "There is %d series\n",
@@ -84,31 +91,25 @@
                          domain="R-dplR"),
                 nseries))
     series.index <- match(series, series.ids)
-    min.year <- (min(dat[[2]]) %/% 10) * 10
-    max.year <- ((max(dat[[2]])+10) %/% 10) * 10
+    min.year <- (min(decade.yr) %/% 10) * 10
+    max.year <- ((max(decade.yr)+10) %/% 10) * 10
     span <- max.year - min.year + 1
     ncol.crn.mat <- nseries + 1
-    crn.mat <- matrix(NA, ncol=ncol.crn.mat, nrow=span)
+    crn.mat <- matrix(NA_real_, ncol=ncol.crn.mat, nrow=span)
     colnames(crn.mat) <- c(as.character(series.ids), "samp.depth")
     rownames(crn.mat) <- min.year:max.year
+    ## RWI
+    x <- as.matrix(dat[seq(from=3, to=21, by=2)])
+    ## All sample depths
+    y <- as.matrix(dat[seq(from=4, to=22, by=2)])
     for(i in seq_len(nseries)){
-        decade.yr <- dat[[2]][series.index==i]
-        ## RWI
-        x <- dat[series.index == i, -c(1, 2, seq(from=4, to=22, by=2)),
-                 drop=FALSE]
-        ## All sample depths
-        y <- dat[series.index == i, -c(1, 2, seq(from=3, to=21, by=2)),
-                 drop=FALSE]
-        for(j in seq_len(nrow(x))) {
-            yr <- decade.yr[j]
-            if(j == 1) yr <- min.year
-            for(k in seq_len(ncol(x))){
-                if(is.na(x[j, k])) break
-                crn.mat[as.character(yr), i] <- x[j, k]
-                ## If i is one then make samp depth
-                if(i == 1)
-                    crn.mat[as.character(yr), ncol.crn.mat] <- y[j, k]
-                yr <- yr + 1
+        idx <- which(series.index == i)
+        for(j in idx) {
+            yr <- (decade.yr[j] %/% 10) * 10
+            row.seq <- seq(from = yr - min.year + 1, by = 1, length.out = 10)
+            crn.mat[row.seq, i] <- x[j, ]
+            if(i == 1) {
+                crn.mat[row.seq, ncol.crn.mat] <- y[j, ]
             }
         }
     }

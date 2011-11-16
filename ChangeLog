@@ -1,3 +1,24 @@
+* CHANGES IN dplR VERSION 1.5.0
+
+File: read.crn.R
+----------------
+
+- Calls to read.fwf() now set the colClasses parameter. This gives
+  more predictable behavior when the input file contains non-integer
+  data where integers are expected. That is,.the function stops with
+  a clear error message, whereas previously, the resulting data.frame
+  would have contained seemingly random zeros.
+- Some optimizations (vectorization, less copying, etc.)
+- In the non-standard situation of multiple series per file, the previous
+  versions assumed the same range of years for all series. This rule,
+  breaking of which would give strange results, no longer applies.
+
+File: read.tucson.R
+-------------------
+
+- Calls to read.fwf() now set the colClasses parameter (see explanation above)
+
+
 2011-11-14 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.9
 

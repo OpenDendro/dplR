@@ -100,7 +100,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         overall.cor[i, 2] <- tmp$p.val
     }
     ## avg seg correlation
-    segavg.cor <- colMeans(res.cor, na.rm=T)
+    segavg.cor <- colMeans(res.cor, na.rm=TRUE)
 
     ## make a list of problem segments
     seg.flags <- rep(NA, nseries)

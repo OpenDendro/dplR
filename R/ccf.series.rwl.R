@@ -82,7 +82,7 @@ ccf.series.rwl <- function(rwl, series,
     }
     ## plot
     if(make.plot){
-        ccf.df <- data.frame(r = c(res.cor, recursive=T),
+        ccf.df <- data.frame(r = c(res.cor, recursive=TRUE),
                              bin = rep(colnames(res.cor),
                              each=length(lag.vec)),
                              lag = rep(lag.vec, nbins))
@@ -101,7 +101,7 @@ ccf.series.rwl <- function(rwl, series,
         sig <- c(-sig, sig)
         ccf.plot <-
             xyplot(r ~ lag | bin, data = ccf.df,
-                   ylim = range(ccf.df$r, sig, na.rm=T) * 1.1,
+                   ylim = range(ccf.df$r, sig, na.rm=TRUE) * 1.1,
                    xlab = gettext("Lag", domain="R-dplR"),
                    ylab = gettext("Correlation", domain="R-dplR"),
                    col.line = NA,

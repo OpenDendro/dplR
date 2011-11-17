@@ -4,11 +4,11 @@ normalize.xdate <- function(rwl, series, n, prewhiten, biweight){
     if(is.null(n)){
         master.stats <- colMeans(rwl, na.rm=TRUE)
         master.df <- sweep(rwl, 2, master.stats, "/")
-        series.out <- series/mean(series, na.rm=T)
+        series.out <- series / mean(series, na.rm=TRUE)
     } else {
         master.stats <- apply(rwl, 2, hanning, n)
-        master.df <-  rwl/master.stats
-        series.out <- series/hanning(series, n)
+        master.df <-  rwl / master.stats
+        series.out <- series / hanning(series, n)
     }
     ## Apply ar if prewhiten
     if(prewhiten){

@@ -12,7 +12,7 @@ spag.plot <- function(rwl, zfac=1, ...){
     ## Set vertical offset for plotting each series
     for(i in 1:nseries)
         rwl2[, i] <- rwl2[, i] + i
-    plot(yr, rwl2[, 1], type="n", ylim=c(0, max(rwl2, na.rm=T)),
+    plot(yr, rwl2[, 1], type="n", ylim=c(0, max(rwl2, na.rm=TRUE)),
          axes=FALSE, ylab="", xlab=gettext("Year", domain="R-dplR"))
     abline(h=1:nseries, col="grey")
     grid(ny = NA)

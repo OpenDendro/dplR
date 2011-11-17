@@ -17,17 +17,17 @@ sea <- function(x, key, lag = 5, resample = 1000) {
         se.table[i, ] <- x.scaled[yrs, ]
         se.unscaled.table[i, ] <- x.unscaled[yrs, ]
     }
-    se <- colMeans(se.table, na.rm = T)
-    se.unscaled <- colMeans(se.unscaled.table, na.rm = T)
+    se <- colMeans(se.table, na.rm = TRUE)
+    se.unscaled <- colMeans(se.unscaled.table, na.rm = TRUE)
     re.table <- matrix(NA, ncol = m, nrow = resample)
     rnames <- as.numeric(row.names(x.scaled))
     for (k in seq_len(resample)) {
         re.subtable <- matrix(NA, ncol = m, nrow = n)
-        rand.key <- sample(rnames, n, replace = T)
+        rand.key <- sample(rnames, n, replace = TRUE)
         for (i in seq.n)
             re.subtable[i, ] <-
                 x.scaled[as.character(rand.key[i] + yrs.base), ]
-        re.table[k, ] <- colMeans(re.subtable, na.rm = T)
+        re.table[k, ] <- colMeans(re.subtable, na.rm = TRUE)
     }
     ## calculate significance for each (lagged) year
     p <- rep(as.numeric(NA), m)

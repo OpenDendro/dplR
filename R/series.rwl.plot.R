@@ -69,7 +69,7 @@ series.rwl.plot <-
     par(mar=c(4, 2, 2, 1) + 0.1, mgp=c(1.25, 0.25, 0), tcl=0.25)
     col.pal <- c("#E41A1C", "#377EB8", "#4DAF4A")
     ## plot 1
-    plot(yrs, series2, type="n", ylim=c(0, max(series2, master, na.rm=T)),
+    plot(yrs, series2, type="n", ylim=c(0, max(series2, master, na.rm=TRUE)),
          ylab=gettext("RWI", domain="R-dplR"),
          xlab=gettext("Year", domain="R-dplR"), axes=FALSE)
     all.ticks <- c(bins[, 1], bins[c(nbins - 1, nbins), 2] + 1)
@@ -85,7 +85,7 @@ series.rwl.plot <-
     box()
     lines(yrs, series2, lwd=1.5, col=col.pal[1])
     lines(yrs, master, lwd=1.5, col=col.pal[2])
-    legend(x = min(yrs, na.rm=T), y = max(series2, master, na.rm=T),
+    legend(x = min(yrs, na.rm=TRUE), y = max(series2, master, na.rm=TRUE),
            legend = gettext(c("Detrended Series", "Detrended Master"),
            domain="R-dplR"),
            col = c(col.pal[1], col.pal[2]), lty = "solid", lwd=1.5, bg="white")

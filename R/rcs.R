@@ -54,7 +54,7 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
     }
     if(make.plot) {
         par(mar = c(4, 4, 4, 4) + 0.1, mgp = c(1.25, 0.25, 0), tcl = 0.25)
-        plot(rwca[, 1], ylim=range(rwca, na.rm=T), type="n", ylab="mm",
+        plot(rwca[, 1], ylim=range(rwca, na.rm=TRUE), type="n", ylab="mm",
              xlab=gettext("Cambial Age (Years)", domain="R-dplR"), ...)
         for(i in seq.cols) lines(rwca[, i], col="grey")
         lines(ca.m, lwd=1.5, col="black")

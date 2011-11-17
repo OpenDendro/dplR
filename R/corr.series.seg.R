@@ -129,7 +129,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
         sig <- qnorm(1 - pcrit / 2) / sqrt(seg.length)
         plot(yrs.tmp, mcor.tmp, type="l",
              xlim=c(ticks[1], ticks[nticks]),
-             ylim=range(mcor.tmp, sig, na.rm=T),
+             ylim=range(mcor.tmp, sig, na.rm=TRUE),
              ylab=gettext("Correlation", domain="R-dplR"),
              xlab=gettext("Year", domain="R-dplR"),
              sub=gettextf("Segments: length=%d,lag=%d", seg.length, seg.lag,

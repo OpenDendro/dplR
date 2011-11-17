@@ -28,7 +28,7 @@
         yr.vec2 <- 0:(n.val - 1)
     else
         yr.vec2 <- yr.vec[!na.mask]
-    ## pad down to the nearst 10 if not already there
+    ## pad down to the nearest 10 if not already there
     pad0 <- floor(min(yr.vec2) / 10) * 10
     if(pad0 != min(yr.vec2)){
         pad.length <- min(yr.vec2) - pad0

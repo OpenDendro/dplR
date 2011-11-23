@@ -75,14 +75,15 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
 
     ## If 'ids' is NULL then assume one core per tree
     if(is.null(ids)){
-        ids2 <- data.frame(tree=seq_len(n.cores), core=rep(1, n.cores))
+        ids3 <- data.frame(tree=seq_len(n.cores), core=rep(1, n.cores))
+        rwi3 <- rwi2
     } else{
         ## Make error checks here
         if(!is.data.frame(ids) || !all(c("tree", "core") %in% names(ids)))
             stop("'ids' must be a data.frame with columns 'tree' and 'core'")
         if(nrow(ids) != n.cores)
             stop("dimension problem: ", "'ncol(rwi)' != 'nrow(ids)'")
-        if(!all(sapply(ids, is.numeric)))
+        if(!all(vapply(ids, is.numeric, TRUE)))
             stop("'ids' must have numeric columns")
         colnames.rwi <- colnames(rwi2)
         ## If the set of row names in 'ids' is the same as the set of

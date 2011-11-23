@@ -8,7 +8,12 @@
                          choices = known.methods,
                          several.ok = TRUE)
     ## Remove NA from the data (they will be reinserted later)
-    good.y <- !is.na(y)
+    good.y <- which(!is.na(y))
+    if(length(good.y) == 0) {
+        stop("all values are 'NA'")
+    } else if(any(diff(good.y) != 1)) {
+        stop("'NA's are not allowed in the middle of the series")
+    }
     y2 <- y[good.y]
     ## Recode any zero values to 0.001
     y2[y2 == 0] <- 0.001

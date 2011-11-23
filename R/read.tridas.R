@@ -70,7 +70,7 @@ create.composite.titles <- function(titles, ids=titles){
 site.info.to.df <- function(x, name.prefix=NULL){
     x.length <- length(x)
     if(x.length > 0){
-        item.length <- sapply(x, length) # assumed that all are > 0
+        item.length <- vapply(x, length, 0) # assumed that all are > 0
         max.length <- max(item.length)
         one.na <- NA
         mode(one.na) <- mode(x[[1]]) # works for numeric and character
@@ -381,20 +381,20 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                             md.in.site[!is.na(identifier.tree.id[md.in.site])]
                     if(length(md.in.site) > 0)
                         md.in.site <-
-                            md.in.site[sapply(identifier.site.id[md.in.site],
+                            md.in.site[vapply(identifier.site.id[md.in.site],
                                               function(x){
                                                   if(is.na(x[1]))
                                                       -1
                                                   else
                                                       length(x)
-                                              }) == object.level]
+                                              }, 0) == object.level]
                     if(length(md.in.site) > 0)
                         md.in.site <-
-                            md.in.site[sapply(identifier.site.id[md.in.site],
+                            md.in.site[vapply(identifier.site.id[md.in.site],
                                               function(x){
                                                   all(x ==
                                                       idx.object[seq_len(object.level)])
-                                              })]
+                                              }, TRUE)]
                     if(length(md.in.site) > 0){
                         temp.identifiers <- rep(as.character(NA), n.all)
                         temp.domains <- rep(as.character(NA), n.all)
@@ -455,20 +455,20 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                 md.in.site[!is.na(md.tree.id[md.in.site])]
                         if(length(md.in.site) > 0)
                             md.in.site <-
-                                md.in.site[sapply(md.site.id[md.in.site],
+                                md.in.site[vapply(md.site.id[md.in.site],
                                                   function(x){
                                                       if(is.na(x[1])){
                                                           -1
                                                       } else{
                                                           length(x)
                                                       }
-                                                  }) == object.level]
+                                                  }, 0) == object.level]
                         if(length(md.in.site) > 0)
                             md.in.site <-
-                                md.in.site[sapply(md.site.id[md.in.site],
+                                md.in.site[vapply(md.site.id[md.in.site],
                                                   function(x){
                                                       all(x == idx.object[seq_len(object.level)])
-                                                  })]
+                                                  }, TRUE)]
 
                         for(md.idx in md.in.site){
                             this.idvec <- md.tree.id[md.idx]
@@ -2165,7 +2165,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                          res.all$measurements <- res.df
                          res.all$ids <- res.ids
                          res.all$titles <- res.titles
-                         if(any(sapply(res.wc, ncol) > 0))
+                         if(any(vapply(res.wc, ncol, 0) > 0))
                              res.all$wood.completeness <- res.wc
                      }
                      res.all$unit <- res.unit
@@ -2175,16 +2175,18 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      res.all$site.title <-
                          site.info.to.df(res.site.title, "site.title")
                      res.taxon <<- data.frame(res.taxon)
-                     delete.idx <- which(sapply(res.taxon,
-                                                function(x) all(is.na(x))))
+                     delete.idx <- which(vapply(res.taxon,
+                                                function(x) all(is.na(x)),
+                                                TRUE))
                      if(length(delete.idx) == length(res.taxon))
                          delete.idx <- delete.idx[-1]
                      res.taxon[delete.idx] <<-
                          rep(list(NULL), length(delete.idx))
                      res.all$taxon <- res.taxon
                      res.var <<- data.frame(res.var)
-                     delete.idx <- which(sapply(res.var,
-                                                function(x) all(is.na(x))))
+                     delete.idx <- which(vapply(res.var,
+                                                function(x) all(is.na(x)),
+                                                TRUE))
                      if(length(delete.idx) == length(res.var))
                          delete.idx <- delete.idx[-1]
                      res.var[delete.idx] <<- rep(list(NULL), length(delete.idx))
@@ -2208,8 +2210,8 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                              warning(gettextf("in data.frame %d: ", i),
                                      "data from the future")
                          not.na <- lapply(this.df, function(x) which(!is.na(x)))
-                         series.min <- sapply(not.na, min) + (min.year - 1)
-                         series.max <- sapply(not.na, max) + (min.year - 1)
+                         series.min <- vapply(not.na, min, 0) + (min.year - 1)
+                         series.max <- vapply(not.na, max, 0) + (min.year - 1)
                          not.na.title <- which(!is.na(res.all$site.title[i, ]))
                          title.level <-
                              max(not.na.title[length(not.na.title)], 1)
@@ -2269,8 +2271,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      ## Create data.frames, remove unused elements
                      ## 1. Variable
                      res.undated.var <<- data.frame(res.undated.var)
-                     delete.idx <- which(sapply(res.undated.var,
-                                                function(x) all(is.na(x))))
+                     delete.idx <- which(vapply(res.undated.var,
+                                                function(x) all(is.na(x)),
+                                                TRUE))
                      if(length(delete.idx) == length(res.undated.var))
                          delete.idx <- delete.idx[-1]
                      res.undated.var[delete.idx] <<-
@@ -2278,8 +2281,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      res.undated$variable <<- res.undated.var
                      ## 2. Taxon
                      res.undated.taxon <<- data.frame(res.undated.taxon)
-                     delete.idx <- which(sapply(res.undated.taxon,
-                                                function(x) all(is.na(x))))
+                     delete.idx <- which(vapply(res.undated.taxon,
+                                                function(x) all(is.na(x)),
+                                                TRUE))
                      if(length(delete.idx) == length(res.undated.taxon))
                          delete.idx <- delete.idx[-1]
                      res.undated.taxon[delete.idx] <<-
@@ -2309,8 +2313,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      res.undated$wood.completeness <<- this.wc
 
                      ## Final preparations
-                     delete.idx <- which(sapply(res.undated,
-                                                function(x) all(is.na(x))))
+                     delete.idx <- which(vapply(res.undated,
+                                                function(x) all(is.na(x)),
+                                                TRUE))
                      if(length(delete.idx) > 0)
                          res.undated <<- res.undated[-delete.idx]
                      res.all$undated <- res.undated
@@ -2326,7 +2331,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                           "There are %d derived series, returned in '$derived'\n",
                                           domain="R-dplR"),
                                  derived.nvalues))
-                     if(all(sapply(res.derived$link, is.na))){
+                     if(all(vapply(res.derived$link, is.na, TRUE))){
                          ## If there was no content in any of the linkSeries,
                          ## res.derived$link is removed
                          res.derived$link <<- NULL
@@ -2337,8 +2342,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      ## Create a data.frame (Variable)
                      res.derived.var <<- data.frame(res.derived.var)
                      ## Remove unused elements
-                     delete.idx <- which(sapply(res.derived.var,
-                                                function(x) all(is.na(x))))
+                     delete.idx <- which(vapply(res.derived.var,
+                                                function(x) all(is.na(x)),
+                                                TRUE))
                      if(length(delete.idx) == length(res.derived.var))
                          delete.idx <- delete.idx[-1]
                      res.derived.var[delete.idx] <<-
@@ -2371,8 +2377,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      res.all$type <-
                          res.all$type[!duplicated(res.all$type[no.title]), ]
                      ## Remove unused columns
-                     delete.idx <- which(sapply(res.all$type,
-                                                function(x) all(is.na(x))))
+                     delete.idx <- which(vapply(res.all$type,
+                                                function(x) all(is.na(x)),
+                                                TRUE))
                      res.all$type[delete.idx] <- rep(list(NULL),
                                                      length(delete.idx))
                  }
@@ -2401,8 +2408,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      res.all$comments <-
                          res.all$comments[!duplicated(res.all$comments[no.title]), ]
                      ## Remove unused columns
-                     delete.idx <- which(sapply(res.all$comments,
-                                                function(x) all(is.na(x))))
+                     delete.idx <- which(vapply(res.all$comments,
+                                                function(x) all(is.na(x)),
+                                                TRUE))
                      res.all$comments[delete.idx] <- rep(list(NULL),
                                                          length(delete.idx))
                  }
@@ -2432,8 +2440,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      res.all$identifier <-
                          res.all$identifier[!duplicated(res.all$identifier[no.title]), ]
                      ## Remove unused columns
-                     delete.idx <- which(sapply(res.all$identifier,
-                                                function(x) all(is.na(x))))
+                     delete.idx <- which(vapply(res.all$identifier,
+                                                function(x) all(is.na(x)),
+                                                TRUE))
                      res.all$identifier[delete.idx] <- rep(list(NULL),
                                                            length(delete.idx))
                  }
@@ -2467,7 +2476,8 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                          res.all$laboratory <- res.lab[[1]]
                      else
                          res.all$laboratory <- res.lab
-                     if(any(sapply(res.research, function(x) !is.na(x)))){
+                     if(any(vapply(res.research,
+                                   function(x) !is.na(x), TRUE))){
                          if(idx.project == 1)
                              res.all$research <- res.research[[1]]
                          else
@@ -2509,8 +2519,9 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      idx.temp <- !duplicated(res.all$preferred[no.title])
                      res.all$preferred <- res.all$preferred[idx.temp, ]
                      ## Remove unused columns
-                     delete.idx <- which(sapply(res.all$preferred,
-                                                function(x) all(is.na(x))))
+                     delete.idx <- which(vapply(res.all$preferred,
+                                                function(x) all(is.na(x)),
+                                                TRUE))
                      res.all$preferred[delete.idx] <-
                          rep(list(NULL), length(delete.idx))
                  }

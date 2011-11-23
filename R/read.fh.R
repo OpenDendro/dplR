@@ -53,7 +53,7 @@ read.fh <- function(fname) {
             }
             data <- data / 100
         } else { # data is in column format
-            data <- as.numeric(sapply(portion, strip.comment)) / 100
+            data <- as.numeric(vapply(portion, strip.comment, "foo")) / 100
         }
         n.expected <- end.years[i] - start.years[i] + 1
         n.true <- length(data)

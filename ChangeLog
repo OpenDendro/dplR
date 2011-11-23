@@ -1,9 +1,11 @@
+2011-11-23 Mikko Korpela
 * CHANGES IN dplR VERSION 1.5.0
 
 Various .R files:
 -----------------
 
 - Use TRUE instead of T
+- sapply() replaced with vapply() or vectorized operations
 
 File: read.crn.R
 ----------------
@@ -33,8 +35,13 @@ File: read.fh.R
 File: read.tucson.R
 -------------------
 
-- Calls to read.fwf() now set the colClasses parameter (see explanation above)
+- Calls to read.fwf() now set the colClasses parameter (see explanation
+  above)
 
+File: rwi.stats.running.R
+-------------------------
+
+- Fixes a bug where the function would not work if 'ids' was NULL
 
 2011-11-14 Mikko Korpela
 * CHANGES IN dplR VERSION 1.4.9

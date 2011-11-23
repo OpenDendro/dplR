@@ -472,7 +472,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
         } else{
             stop("argument 'ids' is not data.frame or has wrong number of rows")
         }
-        if(!all(sapply(ids2, is.numeric)))
+        if(!all(vapply(ids2, is.numeric, TRUE)))
             stop("'ids' must have numeric columns")
 
         if(is.null(titles2)){

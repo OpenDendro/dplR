@@ -30,7 +30,7 @@ combine.rwl <- function(x, y = NULL) {
     ## if no: just use combinator() with x and y
     if (is.list(x)) {
         n <- length(x)
-        if (n > 0 && all(sapply(x, is.data.frame))) {
+        if (n > 0 && all(vapply(x, is.data.frame, TRUE))) {
             new.mat <- as.matrix(x[[1]])
             for (i in inc(2, n))
                 new.mat <- combinator(new.mat, as.matrix(x[[i]]))

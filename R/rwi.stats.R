@@ -18,7 +18,7 @@
         ## Make error checks here
         if(nrow(ids) != n.cores)
             stop("dimension problem: ", "'ncol(rwi)' != 'nrow(ids)'")
-        if(!all(sapply(ids, is.numeric)))
+        if(!all(vapply(ids, is.numeric, TRUE)))
             stop("'ids' must have numeric columns")
         ids2 <- ids
     }
@@ -35,10 +35,10 @@
 
     ## See p 138 in C&K
     ## Mean of all correlations among different cores (within and between trees)
-    n.tot <- 0.5*n.cores*(n.cores-1) # length(r.mat[upper.tri(r.mat)])
+    n.tot <- 0.5 * n.cores * (n.cores - 1) # length(r.mat[upper.tri(r.mat)])
     rbar.tot <- mean(r.mat[upper.tri(r.mat)], na.rm=TRUE) # 1/n.tot * sum(r.mat[upper.tri(r.mat)])
     ## Within-tree signal
-    n.wt <- sum(sapply(n.cores.tree, function(x) 0.5*x*(x-1)), na.rm=TRUE)
+    n.wt <- 0.5 * sum(n.cores.tree * (n.cores.tree - 1), na.rm=TRUE)
 
     r.wt.func <- function(x, x.id){
         samps <- unique(x.id)

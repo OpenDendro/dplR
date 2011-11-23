@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.5.0\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-11-16 15:55+0200\n"
-"PO-Revision-Date: 2011-11-16 15:57+0200\n"
+"POT-Creation-Date: 2011-11-23 17:11+0200\n"
+"PO-Revision-Date: 2011-11-23 17:14+0200\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -97,6 +97,12 @@ msgstr "Indeksi"
 
 msgid "Sample Depth"
 msgstr "Näytteiden määrä"
+
+msgid "all values are 'NA'"
+msgstr "kaikki arvot ovat ’NA’"
+
+msgid "'NA's are not allowed in the middle of the series"
+msgstr "’NA’-arvoja ei sallita sarjan keskellä"
 
 msgid "Age (Yrs)"
 msgstr "Ikä (v)"

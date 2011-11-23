@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.5.0\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-11-16 15:55+0200\n"
+"POT-Creation-Date: 2011-11-23 17:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,6 +91,12 @@ msgid "RWI"
 msgstr ""
 
 msgid "Sample Depth"
+msgstr ""
+
+msgid "all values are 'NA'"
+msgstr ""
+
+msgid "'NA's are not allowed in the middle of the series"
 msgstr ""
 
 msgid "Age (Yrs)"

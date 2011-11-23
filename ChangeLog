@@ -7,6 +7,13 @@ Various .R files:
 - Use TRUE instead of T
 - sapply() replaced with vapply() or vectorized operations
 
+File: detrend.series.R
+----------------------
+
+- Checks that there are no NAs in the middle of the series.  Series from
+  dplR rwl data.frames don't have mid-series NAs (unless manipulated by
+  the user), but other data might.
+
 File: read.crn.R
 ----------------
 

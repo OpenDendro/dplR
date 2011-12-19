@@ -94,7 +94,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
         }
         else {
             tmp <- cor.test(series2[mask], master[mask], method = "spearman",
-                            alternative = "g")
+                            alternative = "greater")
             bin.cor <- tmp$estimate
             bin.pval <- tmp$p.val
         }
@@ -102,7 +102,8 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
         res.pval[j] <- bin.pval
     }
     ## overall correlation
-    tmp <- cor.test(series2, master, method = "spearman", alternative = "g")
+    tmp <- cor.test(series2, master, method = "spearman",
+                    alternative = "greater")
     overall.cor[1] <- tmp$estimate
     overall.cor[2] <- tmp$p.val
 
@@ -110,7 +111,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     for(i in seq_len(nyrs - seg.length + 1)){
         mask <- i:(i + seg.length - 1)
         tmp <- cor.test(series2[mask], master[mask],
-                        method = "spearman", alternative = "g")
+                        method = "spearman", alternative = "greater")
         res.mcor[i + seg.lag, 1] <- tmp$estimate
         res.mcor[i + seg.lag, 2] <- tmp$p.val
     }

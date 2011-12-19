@@ -145,7 +145,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             }
             else {
                 tmp <- cor.test(series[mask], master2[mask],
-                                method = "spearman", alternative = "g")
+                                method = "spearman", alternative = "greater")
                 bin.cor <- tmp$estimate
                 bin.pval <- tmp$p.val
             }
@@ -154,7 +154,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         }
         ## overall correlation
         tmp <- cor.test(series, master2,
-                        method = "spearman", alternative = "g")
+                        method = "spearman", alternative = "greater")
         overall.cor[i, 1] <- tmp$estimate
         overall.cor[i, 2] <- tmp$p.val
     }

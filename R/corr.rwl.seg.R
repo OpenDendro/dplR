@@ -1,7 +1,8 @@
 corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                          prewhiten = TRUE, pcrit=0.05, biweight=TRUE,
                          make.plot = TRUE, label.cex=1,
-                         floor.plus1 = FALSE, ...){
+                         floor.plus1 = FALSE, master = NULL,
+                         master.yrs = as.numeric(names(master)), ...){
 
     ## helper function
     yr.range <- function(x, yr.vec=as.numeric(names(x))) {
@@ -18,15 +19,71 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     on.exit(options(w))
     options(warn = -1)
 
-    rnames <- row.names(rwl)
+    nseries <- length(rwl)
+    if(is.null(master) && nseries < 2) {
+        stop("At least 2 series are needed in 'rwl'")
+    } else if(nseries < 1) {
+        stop("At least 1 series is needed in 'rwl'")
+    }
+
     cnames <- names(rwl)
-    seg.lag <- seg.length / 2
-    nseries <- ncol(rwl)
-    if(nseries < 2) stop("At least 2 series are needed in 'rwl'")
-    yrs <- as.numeric(rnames)
-    nyrs <- length(yrs)
+    yrs <- as.numeric(row.names(rwl))
     min.yr <- min(yrs)
     max.yr <- max(yrs)
+    rwl2 <- rwl
+
+    ## Ensure that rwl has consecutive years in increasing order
+    if(!all(diff(yrs) == 1)) {
+        yrs <- min.yr : max.yr
+        rwl2 <- matrix(NA_real_,
+                       nrow = max.yr - min.yr + 1,
+                       ncol = nseries,
+                       dimnames = list(as.character(yrs), cnames))
+        rwl.tmp <- as.matrix(rwl)
+        for(rname in row.names(rwl)) {
+            rwl2[rname, ] <- rwl.tmp[rname, ]
+        }
+        rwl2 <- as.data.frame(rwl2)
+    }
+
+    ## Pad rwl and master (if present) to same number of years
+    if(!is.null(master)) {
+        min.master.yr <- min(master.yrs)
+        max.master.yr <- max(master.yrs)
+        master2 <- rep(NA_real_, max.master.yr - min.master.yr + 1)
+        names(master2) <- min.master.yr : max.master.yr
+        master2[as.character(master.yrs)] <- master
+        if(min.master.yr < min.yr) {
+            n.pad <- min.yr - min.master.yr
+            padding <- matrix(NA_real_, n.pad, nseries)
+            colnames(padding) <- cnames
+            rownames(padding) <- min.master.yr : (min.yr - 1)
+            rwl2 <- rbind(padding, rwl2)
+            min.yr <- min.master.yr
+        } else if(min.master.yr > min.yr) {
+            n.pad <- min.master.yr - min.yr
+            padding <- rep(NA_real_, n.pad)
+            names(padding) <- min.yr : (min.master.yr - 1)
+            master2 <- c(padding, master2)
+        }
+        if(max.master.yr < max.yr) {
+            n.pad <- max.yr - max.master.yr
+            padding <- rep(NA_real_, n.pad)
+            names(padding) <- (max.master.yr + 1) : max.yr
+            master2 <- c(master2, padding)
+        } else if(max.master.yr > max.yr) {
+            n.pad <- max.master.yr - max.yr
+            padding <- matrix(NA_real_, n.pad, nseries)
+            colnames(padding) <- cnames
+            rownames(padding) <- (max.yr + 1) : max.master.yr
+            rwl2 <- rbind(rwl2, padding)
+            max.yr <- max.master.yr
+        }
+        yrs <- min.yr : max.yr
+    }
+
+    seg.lag <- seg.length / 2
+    nyrs <- length(yrs)
     if(is.null(bin.floor) || bin.floor == 0) {
         min.bin <- min.yr
     } else if(floor.plus1) {
@@ -52,26 +109,28 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     colnames(overall.cor) <- c("rho", "p-val")
 
     ## normalize all series
-    norm.one <- normalize1(rwl, n, prewhiten)
+    norm.one <- normalize1(rwl2, n, prewhiten)
     ## rwi for segments altered by normalizing
     rwi <- norm.one$master # is a matrix
     idx.good <- norm.one$idx.good
 
     ## loop through series
     for(i in seq_len(nseries)){
-        idx.noti <- rep(TRUE, nseries)
-        idx.noti[i] <- FALSE
-        master.norm <- rwi[, idx.good & idx.noti, drop=FALSE]
+        if(is.null(master)) {
+            idx.noti <- rep(TRUE, nseries)
+            idx.noti[i] <- FALSE
+            master.norm <- rwi[, idx.good & idx.noti, drop=FALSE]
 
-        ## compute master series by normal mean or robust mean
-        master <- vector(mode="numeric", length=nyrs)
-        if (!biweight){
-            for (j in seq_len(nyrs))
-                master[j] <- exactmean(master.norm[j, ])
-        } else {
-            ## surprisingly, for loop is faster than apply
-            for (j in seq_len(nyrs))
-                master[j] <- tbrm(master.norm[j, ], C=9)
+            ## compute master series by normal mean or robust mean
+            master2 <- vector(mode="numeric", length=nyrs)
+            if (!biweight){
+                for (j in seq_len(nyrs))
+                    master2[j] <- exactmean(master.norm[j, ])
+            } else {
+                ## surprisingly, for loop is faster than apply
+                for (j in seq_len(nyrs))
+                    master2[j] <- tbrm(master.norm[j, ], C=9)
+            }
         }
         series <- rwi[, i]
         ## loop through bins
@@ -80,12 +139,12 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             ## cor is NA if there is not complete overlap
             if(!any(mask) ||
                any(is.na(series[mask])) ||
-               any(is.na(master[mask]))){
+               any(is.na(master2[mask]))){
                 bin.cor <- NA
                 bin.pval <- NA
             }
             else {
-                tmp <- cor.test(series[mask], master[mask],
+                tmp <- cor.test(series[mask], master2[mask],
                                 method = "spearman", alternative = "g")
                 bin.cor <- tmp$estimate
                 bin.pval <- tmp$p.val
@@ -94,7 +153,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             res.pval[i, j] <- bin.pval
         }
         ## overall correlation
-        tmp <- cor.test(series, master,
+        tmp <- cor.test(series, master2,
                         method = "spearman", alternative = "g")
         overall.cor[i, 1] <- tmp$estimate
         overall.cor[i, 2] <- tmp$p.val

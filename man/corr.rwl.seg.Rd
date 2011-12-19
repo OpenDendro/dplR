@@ -92,10 +92,10 @@
   \code{overall}, \code{bins}, vector \code{avg.seg.rho}. An additional
   character \code{flags} is also returned if any segments fall below the
   critical value. Matrix \code{spearman.rho} contains the correlations
-  each series by bin.  Matrix \code{p.val} contains the p-values on the
-  correlation for each series by bin. Matrix \code{overall} contains the
-  average correlation and p-value for each series. Matrix \code{bins}
-  contains the years encapsulated by each bin.  The vector
+  for each series by bin.  Matrix \code{p.val} contains the p-values on
+  the correlation for each series by bin. Matrix \code{overall} contains
+  the average correlation and p-value for each series. Matrix
+  \code{bins} contains the years encapsulated by each bin.  The vector
   \code{avg.seg.rho} contains the average correlation for each bin.
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }

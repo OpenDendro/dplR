@@ -1,3 +1,14 @@
+2011-12-19 Mikko Korpela
+* CHANGES IN dplR VERSION 1.5.1
+
+File: corr.rwl.seg.R
+--------------------
+
+- New parameters 'master' and 'master.yrs': Instead of letting
+  corr.rwl.seg() compute master series based on 'rwl', the user can use
+  her own master series.
+- Ensures that rwl (and master) have consecutive years in increasing order
+
 2011-11-23 Mikko Korpela
 * CHANGES IN dplR VERSION 1.5.0
 

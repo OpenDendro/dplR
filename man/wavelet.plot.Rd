@@ -20,7 +20,7 @@
 \arguments{
   \item{wave.list}{List. Output from \code{\link{morlet}}.}
   \item{wavelet.levels}{Numeric. Values for levels of the filled
-    countours for the wavelet plot.}
+    contours for the wavelet plot.}
   \item{add.coi}{Logical. Add cone of influence?}
   \item{add.sig}{Logical. Add contour lines for significance?}
   \item{x.lab}{X-axis label.}

@@ -9,7 +9,7 @@
 }
 \arguments{
   \item{x}{ a vector }
-  \item{n}{ length of the hanning filter, defaults to 7 }
+  \item{n}{ length of the Hanning filter, defaults to 7 }
 }
 \details{
   This applies a low frequency Hanning filter to x with weight

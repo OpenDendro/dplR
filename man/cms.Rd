@@ -10,7 +10,7 @@
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows such as
     that produced by \code{\link{read.rwl}} }
-  \item{po}{ a \code{data.frame} containing two variables. Variable one (\code{series} in the example below) gives the series ID as either \code{characters} or \code{factors}. These must exactly match \code{colnames(rwl)}. Variable two (\code{pith.offset} in the example below) must be \code{integers} and give the years from the begining of the core to the pith (or center) of the tree. }
+  \item{po}{ a \code{data.frame} containing two variables. Variable one (\code{series} in the example below) gives the series ID as either \code{characters} or \code{factors}. These must exactly match \code{colnames(rwl)}. Variable two (\code{pith.offset} in the example below) must be \code{integers} and give the years from the beginning of the core to the pith (or center) of the tree. }
   \item{c.hat.t}{ a \code{logical} a logical indicating whether to export the C-curves for each tree by biological age. }
   \item{c.hat.i}{ a \code{logical} indicating whether to export the expected ring widths for each series. }
 }

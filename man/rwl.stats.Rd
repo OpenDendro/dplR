@@ -11,7 +11,7 @@
 \arguments{
   \item{rwl}{ a \code{data.frame} with (usually) raw ring-width series as
   columns and years as rows such as that produced by \code{\link{read.rwl}}.
-  It is sometimes desireable to run this on detrended (e.g., rwi)
+  It is sometimes desirable to run this on detrended (e.g., rwi)
   data particularly for the sensitivity measures ( \code{\link{sens1}},
   \code{\link{sens2}}, \code{\link{gini.coef}}). }
 }
@@ -21,13 +21,14 @@
   and Kairiukstis (1990) and Fritts (2001) for further details.
 
 }
-\value{ A \code{data.frame} containing descriptive stats on
-  each \code{series}. These are the first and last year of the series
-  as well as the length of the series (\code{first},\code{last},\code{year}).
-  The mean, median, standard deviation are given (\code{mean},\code{median},
-  \code{stdev}) as are the skewness, two measures of sensitivity, the Gini
-  coefficent, and first order autocorrelation (\code{skew},\code{\link{sens1}},
-  \code{\link{sens2}}, \code{\link{gini.coef}}, \code{ar1}).
+\value{ A \code{data.frame} containing descriptive stats on each
+  \code{series}. These are the first and last year of the series as well
+  as the length of the series (\code{first},\code{last},\code{year}).
+  The mean, median, standard deviation are given
+  (\code{mean},\code{median}, \code{stdev}) as are the skewness, two
+  measures of sensitivity, the Gini coefficient, and first order
+  autocorrelation (\code{skew},\code{\link{sens1}}, \code{\link{sens2}},
+  \code{\link{gini.coef}}, \code{ar1}).
 }
 \references{ Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
   Dendrochronology: Applications in the Environmental Sciences.} Springer.

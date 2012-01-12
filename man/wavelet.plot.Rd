@@ -22,7 +22,7 @@
   \item{wavelet.levels}{Numeric. Values for levels of the filled
     countours for the wavelet plot.}
   \item{add.coi}{Logical. Add cone of influence?}
-  \item{add.sig}{Logical. Add countour lines for significance?}
+  \item{add.sig}{Logical. Add contour lines for significance?}
   \item{x.lab}{X-axis label.}
   \item{period.lab}{Y-axis label for the wavelet plot.}
   \item{crn.lab}{Y-axis label for the time-series plot.}
@@ -41,9 +41,9 @@
 }
 \details{
   This produces a plot of a continuous wavelet transform and plots the
-  original time series. Countors are added for significance and a cone
-  of influence polygon can be added as well. Anything within the cone of influence
-  should not be interpreted.
+  original time series. Contours are added for significance and a cone of
+  influence polygon can be added as well. Anything within the cone of
+  influence should not be interpreted.
 
   The time series can be plotted with a smoothing spline as well.
 }

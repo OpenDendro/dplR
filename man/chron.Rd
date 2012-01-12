@@ -26,7 +26,7 @@ chron(x, prefix = "xxx", biweight = TRUE, prewhiten = FALSE)
   residuals of an ar process (the residual chronology).
 }
 \value{
-  A \code{data.frame} with the standard chronology, redisual chronology (if
+  A \code{data.frame} with the standard chronology, residual chronology (if
   prewhitening was performed), and the sample depth.
 }
 \references{ Cook, E. R. and Kairiukstis, L.A. (1990) \emph{Methods of

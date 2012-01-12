@@ -12,7 +12,7 @@
   \item{x1}{Numeric. A vector of values giving the years for the plot. Must be the
     same length as \code{length(y1)}.}
   \item{p2}{Numeric. The number of power of two to be computed for the wavelet
-    transform. Calculated from legnth of \code{y1} if \code{NULL}. }
+    transform. Calculated from length of \code{y1} if \code{NULL}. }
   \item{dj}{Numeric. sub-octaves per octave calculated.}
   \item{siglvl}{level for the significance test.}
 }

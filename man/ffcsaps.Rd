@@ -25,7 +25,7 @@
 }
 \details{
   This applies a smoothing spline similar to the spline applied in most
-  dendrochonological software. See references for more information.
+  dendrochronological software. See references for more information.
 }
 \value{
   A filtered vector.

@@ -85,7 +85,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     the column names of \code{rwl.df}, taking \code{ids} into account.
   }
   \item{crn.types}{
-    \code{character} vector or a \code{list} of charater vectors giving
+    \code{character} vector or a \code{list} of character vectors giving
     the types of the derived series in \code{crn}.  A single vector is
     interpreted as one type per data.frame in \code{crn}, recycled if
     not long enough.  A list of vectors is interpreted as one list
@@ -95,14 +95,14 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     \code{crn}.  The default is to write empty type elements.
   }
   \item{crn.titles}{
-    optional \code{character} vector or a \code{list} of charater
+    optional \code{character} vector or a \code{list} of character
     vectors giving the titles of the derived series in \code{crn}.  The
     interpretation is the same as with \code{crn.types}, except that the
     default is to derive the titles from the column names of \code{crn}.
     Also \code{NA} means that the column name is used.
   }
   \item{crn.units}{
-    optional \code{character} vector or a \code{list} of charater
+    optional \code{character} vector or a \code{list} of character
     vectors giving the units of the derived series in \code{crn}.  The
     interpretation is the same as with \code{crn.types}, except that the
     default is to mark the series as \verb{<unitless>}.  Also \code{NA}

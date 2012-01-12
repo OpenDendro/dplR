@@ -9,7 +9,7 @@
   rwi.stats(rwi, ids = NULL, period = c("max", "common"))
 }
 \arguments{
-  \item{rwi}{ a \code{data.frame} with detreneded and standardised ring width
+  \item{rwi}{ a \code{data.frame} with detrended and standardised ring width
   indices as columns and years as rows such as that produced by
   \code{\link{detrend}}. }
   \item{ids}{ a optional \code{data.frame} with column one named \dQuote{tree}

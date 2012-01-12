@@ -17,7 +17,7 @@ rwi.stats.running(rwi, ids=NULL, period=c("max", "common"),
                   zero.is.missing=FALSE)
 }
 \arguments{
-  \item{rwi}{ a \code{data.frame} with detrended and standardised ring
+  \item{rwi}{ a \code{data.frame} with detrended and standardized ring
     width indices as columns and years as rows such as that produced by
     \code{\link{detrend}}. }
   \item{ids}{ an optional \code{data.frame} with column one named

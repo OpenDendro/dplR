@@ -28,9 +28,9 @@
     in method \dQuote{ModNegExp}. If FALSE the line will be horizontal. }
 }
 \details{
-  This detrends and standardises a tree-ring series. The detrending is
+  This detrends and standardizes a tree-ring series. The detrending is
   the estimation and removal of the tree's natural biological growth trend.
-  The standardisation is done by dividing each series by the growth trend to
+  The standardization is done by dividing each series by the growth trend to
   produce units in the dimensionless ring-width index (RWI). There are
   currently three methods available for detrending although more are
   certainly possible. The methods implemented are a smoothing spline via

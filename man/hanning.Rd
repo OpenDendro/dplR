@@ -5,15 +5,15 @@
   Applies a Hanning filter of length \code{n} to \code{x}.
 }
 \usage{
-  hanning(x,n=7)
+hanning(x, n=7)
 }
 \arguments{
   \item{x}{ a vector }
   \item{n}{ length of the Hanning filter, defaults to 7 }
 }
 \details{
-  This applies a low frequency Hanning filter to x with weight
-  set to n. 
+  This applies a low frequency Hanning filter to \code{x} with weight
+  set to \code{n}.
 }
 \value{
   A filtered vector.
@@ -25,14 +25,13 @@
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link[stats]{filter} } }
 
-\examples{
-data(ca533)
+\examples{data(ca533)
 yrs <- as.numeric(rownames(ca533))
 y <- ca533[, 1]
 yrs <- yrs[!is.na(y)]
 y <- y[!is.na(y)]
-plot(yrs, y, xlab='Years', ylab='Series1 (mm)', type='l', col='grey')
-lines(yrs, hanning(y, n=9), col='red', lwd=2)
-lines(yrs, hanning(y, n=21), col='blue', lwd=2)
+plot(yrs, y, xlab="Years", ylab="Series1 (mm)", type="l", col="grey")
+lines(yrs, hanning(y, n=9), col="red", lwd=2)
+lines(yrs, hanning(y, n=21), col="blue", lwd=2)
 }
 \keyword{ misc }

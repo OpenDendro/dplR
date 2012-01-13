@@ -14,8 +14,8 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9, dat.out = FALSE,
   \item{sname}{ an optional string of less than 8 characters
     giving the id for the data }
   \item{filt.weight}{ filter length for the hanning filter, defaults to 9 }
-  \item{dat.out}{ logical flag indicating whether to return a \code{data.frame}
-    containing the data. }
+  \item{dat.out}{ logical flag indicating whether to return a
+    \code{data.frame} containing the data. }
   \item{master}{ logical flag indicating whether to make the plot with the
     segments inverted to ease pattern matching. If \code{TRUE} the segments
     will be plotted from the top down and the labels on the x axes will be
@@ -48,9 +48,10 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9, dat.out = FALSE,
   possible if the data are output.
 }
 \value{
-  This function is invoked primarily for its side effect, which is to produce a
-  plot. If \code{dat.out} is \code{TRUE} then a \code{data.frame} is returned
-  with the years and height of the skeleton plot segments as columns.
+  This function is invoked primarily for its side effect, which is to
+  produce a plot. If \code{dat.out} is \code{TRUE} then a
+  \code{data.frame} is returned with the years and height of the
+  skeleton plot segments as columns.
 }
 \references{ Stokes, M.A. and Smiley, T.L. (1968) \emph{An Introduction to
   Tree-Ring Dating.} The University of Arizona Press.
@@ -63,39 +64,37 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9, dat.out = FALSE,
   \url{http://www.mathworks.com/matlabcentral/}
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
-\seealso{  \code{\link[grDevices]{Devices}}, \code{\link{hanning}}  }
+\seealso{  \code{\link{Devices}}, \code{\link{hanning}}  }
 
-\examples{
+\examples{data(co021)
+x <- co021[,33]
+x.yrs <- as.numeric(rownames(co021))
+x.name <- colnames(co021)[33]
+## On a raw ring width series - undated
+skel.plot(x)
+## On a raw ring width series - dated with names
+skel.plot(x, yr.vec = x.yrs, sname= x.name, master=TRUE)
+\dontrun{
+## Try cross-dating
+y <- co021[, 11]
+y.yrs <- as.numeric(rownames(co021))
+y.name <- colnames(co021)[11]
+## send to postscript - 3 pages total
+postscript("xdating.examp.ps")
+## "Master series" with correct calendar dates
+skel.plot(x, yr.vec = x.yrs, sname= x.name, master=TRUE)
+## Undated series, try to align with last plot
+skel.plot(y)
+## Here's the answer...
+skel.plot(y, yr.vec = y.yrs, sname= y.name)
+dev.off()
 
-  data(co021)
-  x <- co021[,33]
-  x.yrs <- as.numeric(rownames(co021))
-  x.name <- colnames(co021)[33]
-  # On a raw ring width series - undated
-  skel.plot(x)
-  # On a raw ring width series - dated with names
-  skel.plot(x, yr.vec = x.yrs, sname= x.name, master=TRUE)
-  \dontrun{
-    # try cross-dating
-    y <- co021[,11]
-    y.yrs <- as.numeric(rownames(co021))
-    y.name <- colnames(co021)[11]
-    # send to postscript - 3 pages total
-    postscript('xdating.examp.ps')
-      # 'Master series' with correct calendar dates
-      skel.plot(x, yr.vec = x.yrs, sname= x.name, master=TRUE)
-      # Undated series, try to align with last plot
-      skel.plot(y)
-      # Here's the answer...
-      skel.plot(y, yr.vec = y.yrs, sname= y.name)
-    dev.off()
-
-    # alternatively send to pdf
-    pdf('xdating.examp.pdf', width = 10, height = 7.5, paper = 'USr')
-      skel.plot(x, yr.vec = x.yrs, sname= x.name, master=TRUE)
-      skel.plot(y)
-      skel.plot(y, yr.vec = y.yrs, sname= y.name)
-    dev.off()
-  }
+## alternatively send to pdf
+pdf("xdating.examp.pdf", width = 10, height = 7.5, paper = 'USr')
+skel.plot(x, yr.vec = x.yrs, sname= x.name, master=TRUE)
+skel.plot(y)
+skel.plot(y, yr.vec = y.yrs, sname= y.name)
+dev.off()
+}
 }
 \keyword{ hplot }

@@ -2,25 +2,25 @@
 \alias{rwi.stats}
 \title{ Calculates Summary Statistics on Detrended Ring Width Series }
 \description{
-  This function calculates descriptive statistics on a \code{data.frame} of
-  (usually) ring-width indices.
+  This function calculates descriptive statistics on a \code{data.frame}
+  of (usually) ring-width indices.
 }
 \usage{
-  rwi.stats(rwi, ids = NULL, period = c("max", "common"))
+rwi.stats(rwi, ids = NULL, period = c("max", "common"))
 }
 \arguments{
   \item{rwi}{ a \code{data.frame} with detrended and standardized ring width
   indices as columns and years as rows such as that produced by
   \code{\link{detrend}}. }
-  \item{ids}{ a optional \code{data.frame} with column one named \dQuote{tree}
-  giving a numeric id for each tree and column two named \dQuote{core} giving a
+  \item{ids}{ a optional \code{data.frame} with column one named \code{"tree"}
+  giving a numeric id for each tree and column two named \code{"core"} giving a
   numeric id for each core. Defaults to one core per tree as
   \code{data.frame(tree=1:ncol(rwi),core=rep(1,ncol(rwi)))}. }
-  \item{period}{ a character string, either \dQuote{common} or \dQuote{max}
+  \item{period}{ a character string, either \code{"common"} or \code{"max"}
   indicating whether correlations should be limited to complete
   observations over the period common to all cores or the maximum
-  pairwise overlap. See Details of \code{\link[stats]{cor}}. Defaults to
-  \dQuote{max}. }
+  pairwise overlap. See Details of \code{\link{cor}}. Defaults to
+  \code{"max"}. }
 }
 \details{
   This calculates a variety of descriptive statistics commonly used in
@@ -28,12 +28,12 @@
 
   For correctly calculating the statistics on within and between series
   variability, an appropriate mask must be provided that identifies each
-  series with a tree as it is common for dendrochronologists to take more
-  than one core per tree. The function \code{\link{read.ids}} is be helpful for
-  creating a mask based on the series id.
+  series with a tree as it is common for dendrochronologists to take
+  more than one core per tree. The function \code{\link{read.ids}} is be
+  helpful for creating a mask based on the series id.
 
-  Note that period=\dQuote{common} can produce \code{NaN} for many of the
-  stats if there is no common overlap period among the cores. This
+  Note that \code{period="common"} can produce \code{NaN} for many of
+  the stats if there is no common overlap period among the cores. This
   happens especially in chronologies with floating subfossil samples
   (e.g., \code{\link{ca533}}).
 
@@ -69,13 +69,11 @@
 
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
-\seealso{ \code{\link{detrend}}, \code{\link[stats]{cor}},
+\seealso{ \code{\link{detrend}}, \code{\link{cor}},
   \code{\link{read.ids}}, \code{\link{rwi.stats.running}} }
-\examples{
-
-  data(ca533)
-  ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
-  ca533.ids <- read.ids(ca533, stc=c(3,2,3))
-  rwi.stats(ca533.rwi, ca533.ids)
+\examples{data(ca533)
+ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
+ca533.ids <- read.ids(ca533, stc=c(3,2,3))
+rwi.stats(ca533.rwi, ca533.ids)
 }
 \keyword{ misc }

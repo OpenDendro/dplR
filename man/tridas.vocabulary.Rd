@@ -11,11 +11,11 @@ tridas.vocabulary(category = c("dating type", "measuring method", "shape", "loca
 }
 \arguments{
   \item{category}{Vocabulary category as a \code{character} vector of
-    length one. One of \dQuote{dating type}, \dQuote{measuring method},
-    \dQuote{shape}, \dQuote{location type}, \dQuote{variable},
-    \dQuote{unit}, \dQuote{remark}, \dQuote{dating suffix}, 
-    \dQuote{presence / absence}, \dQuote{complex presence / absence},
-    \dQuote{certainty}. Partial matches are allowed.}
+    length one. One of \code{"dating type"}, \code{"measuring method"},
+    \code{"shape"}, \code{"location type"}, \code{"variable"},
+    \code{"unit"}, \code{"remark"}, \code{"dating suffix"}, 
+    \code{"presence / absence"}, \code{"complex presence / absence"},
+    \code{"certainty"}. Partial matches are allowed.}
   \item{idx}{A \code{numeric} vector. Index to the \code{character}
     vector containing the vocabulary of the given category.}
   \item{term}{A \code{character} vector. One or more (partial) terms to

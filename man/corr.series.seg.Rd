@@ -6,9 +6,9 @@
   segment.
 }
 \usage{
-  corr.series.seg(rwl,series,series.yrs=as.numeric(names(series)),
-  seg.length=50,bin.floor=100,n=NULL, prewhiten = TRUE, biweight=TRUE,
-  pcrit=0.05, make.plot = TRUE, floor.plus1 = FALSE, ...)
+corr.series.seg(rwl, series, series.yrs=as.numeric(names(series)),
+  seg.length=50, bin.floor=100, n=NULL, prewhiten = TRUE, biweight=TRUE,
+  pcrit=0.05, make.plot = TRUE, floor.plus1 = FALSE, \dots{})
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
@@ -25,7 +25,7 @@
     \code{\link{hanning}} filter used for removal of low frequency
     variation. }
   \item{prewhiten}{ \code{logical} flag. If \code{TRUE} each series is whitened using
-      \code{\link[stats]{ar}}. }
+      \code{\link{ar}}. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust mean is calculated
     using \code{\link{tbrm}}. }
   \item{pcrit}{ a number between 0 and 1 giving the critical value for the
@@ -34,7 +34,7 @@
   \item{floor.plus1}{ \code{logical flag}. If \code{TRUE}, one year is
     added to the base location of the first segment (e.g. 1601, 1701,
     1801 AD). }
-  \item{...}{ other arguments passed to plot. }
+  \item{\dots{}}{ other arguments passed to plot. }
 }
 \details{
   This function calculates the correlation a tree-ring series and a master
@@ -57,9 +57,11 @@
   contains the average correlation and p-value.
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
-\seealso{ \code{\link{corr.series.seg}} \code{\link{skel.plot}}  \code{\link{series.rwl.plot}} \code{\link{ccf.series.rwl}}}
-\examples{
-data(co021)
+\seealso{
+  \code{\link{corr.series.seg}}, \code{\link{skel.plot}},
+  \code{\link{series.rwl.plot}}, \code{\link{ccf.series.rwl}}
+}
+\examples{data(co021)
 dat <- co021
 ## Create a missing ring by deleting a year of growth in a random series
 flagged <- dat$"641143"

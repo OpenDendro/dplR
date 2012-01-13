@@ -7,7 +7,7 @@
   \code{nyrs} years.
 }
 \usage{
-  ffcsaps(y, x=seq_along(y), nyrs=length(y)/2, f=0.5)
+ffcsaps(y, x=seq_along(y), nyrs=length(y)/2, f=0.5)
 }
 \arguments{
   \item{y}{ a vector, typically a tree-ring series. }
@@ -36,29 +36,32 @@
 
 }
 \note{ DendroLab website: \url{http://dendrolab.org/} }
-\author{ Code provided by DendroLab based on programming by F. Qeadan and F. Biondi, University of Nevada Reno, USA and adapted for dplR by Andy Bunn. Patched and improved by Mikko Korpela. }
+\author{
+  Code provided by DendroLab based on programming by F. Qeadan and
+  F. Biondi, University of Nevada Reno, \acronym{USA} and adapted for
+  dplR by Andy Bunn.  Patched and improved by Mikko Korpela.
+}
 
 \seealso{ \code{\link{hanning}} \code{\link{detrend}} }
 
 \examples{
+## Use series CAM011 from the Campito dataset
+data(ca533)
+series <- ca533[, "CAM011"]
+series <- series[!is.na(series)]
+plot(series, type="l", ylab="Ring Width (mm)", col='grey')
+lines(ffcsaps(series, nyrs=32), col="red", lwd=2)
+lines(ffcsaps(series, nyrs=64), col="green", lwd=2)
+lines(ffcsaps(series, nyrs=128), col="blue", lwd=2)
 
-  # Use series CAM011 from the Campito dataset
-  data(ca533)
-  series = ca533[,"CAM011"]
-  series=series[!is.na(series)]
-  plot(series,type='l',ylab='Ring Width (mm)',col='grey')
-  lines(ffcsaps(series,nyrs=32),col='red',lwd=2)
-  lines(ffcsaps(series,nyrs=64),col='green',lwd=2)
-  lines(ffcsaps(series,nyrs=128),col='blue',lwd=2)
-
-  # Use first series from the Mesa Verde dataset
-  data(co021)
-  series = co021[,1]
-  series=series[!is.na(series)]
-  plot(series,type='l',ylab='Ring Width (mm)',col='grey')
-  lines(ffcsaps(series,nyrs=32),col='red',lwd=2)
-  lines(ffcsaps(series,nyrs=64),col='green',lwd=2)
-  #nyrs defaults to 0.5*length(series) = 347
-  lines(ffcsaps(series),col='blue',lwd=2)
+## Use first series from the Mesa Verde dataset
+data(co021)
+series <- co021[, 1]
+series <- series[!is.na(series)]
+plot(series, type="l", ylab="Ring Width (mm)", col="grey")
+lines(ffcsaps(series, nyrs=32), col="red", lwd=2)
+lines(ffcsaps(series, nyrs=64), col="green", lwd=2)
+## nyrs defaults to 0.5*length(series) = 347
+lines(ffcsaps(series), col="blue", lwd=2)
 }
 \keyword{ misc }

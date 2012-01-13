@@ -14,11 +14,11 @@ chron(x, prefix = "xxx", biweight = TRUE, prewhiten = FALSE)
     containing years and \code{colnames(x)} containing each series id
     such as produced by \code{\link{read.rwl}}}
   \item{prefix}{a character string with less than 4 characters. Defaults
-    to \dQuote{xxx}}
-  \item{biweight}{logical flag. If TRUE then a robust mean is calculated
-    using \code{\link{tbrm}.}}
-  \item{prewhiten}{logical flag. If TRUE each series is whitened using
-      \code{\link[stats]{ar}} prior to averaging.}
+    to \code{"xxx"}}
+  \item{biweight}{logical flag. If \acronym{TRUE} then a robust mean is
+    calculated using \code{\link{tbrm}.}}
+  \item{prewhiten}{logical flag. If \acronym{TRUE} each series is
+    whitened using \code{\link{ar}} prior to averaging.}
 }
 \details{
   This either averages the rows of the \code{data.frame} using a mean or a
@@ -38,10 +38,9 @@ chron(x, prefix = "xxx", biweight = TRUE, prewhiten = FALSE)
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{read.rwl}}, \code{\link{detrend}},
-  \code{\link[stats]{ar}}, \code{\link{chron}}
+  \code{\link{ar}}, \code{\link{chron}}
 }
-\examples{
-data(ca533)
+\examples{data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM")
 ## With residual chron

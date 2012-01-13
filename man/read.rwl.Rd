@@ -6,17 +6,17 @@
   available formats.
 }
 \usage{
-  read.rwl(fname,
-           format=c("auto", "tucson", "compact", "tridas", "heidelberg"),
-           ...)
+read.rwl(fname,
+         format=c("auto", "tucson", "compact", "tridas", "heidelberg"),
+         \dots{})
 }
 \arguments{
   \item{fname}{ a character vector giving the file name of the rwl file. }
   \item{format}{ a character vector giving the format.  This must be
-    \dQuote{auto} (automatic detection), \dQuote{tucson}, \dQuote{compact},
-    \dQuote{tridas} or \dQuote{heidelberg}.  Automatic format detection
-    is the default. }
-  \item{...}{ arguments specific to the function implementing the
+    \code{"auto"} (automatic detection), \code{"tucson"},
+    \code{"compact"}, \code{"tridas"} or \code{"heidelberg"}.  Automatic
+    format detection is the default. }
+  \item{\dots{}}{ arguments specific to the function implementing the
     operation for the chosen format. }
 }
 \details{
@@ -24,13 +24,14 @@
   read operation.
 }
 \value{
-  If a \dQuote{tucson} or \dQuote{compact} file is read (even through
-  \dQuote{auto}), returns a \code{data.frame} with the series in columns
-  and the years as rows.  The series ids are the column names and
-  the years are the row names.
+  If a \code{"tucson"} or \code{"compact"} file is read (even through
+  \code{"auto"}), returns a \code{data.frame} with the series in columns
+  and the years as rows.  The series ids are the column names and the
+  years are the row names.
   
-  If a \dQuote{tridas} file is read (even through \dQuote{auto}), returns
-  a list of results.  See \code{\link{read.tridas}} for more information.
+  If a \code{"tridas"} file is read (even through \code{"auto"}),
+  returns a list of results.  See \code{\link{read.tridas}} for more
+  information.
 }
 \author{ Mikko Korpela }
 \seealso{ \code{\link{read.tucson}}, \code{\link{read.compact}},

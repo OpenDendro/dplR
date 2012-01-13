@@ -5,10 +5,10 @@
   Computes the correlation between each tree-ring series in a rwl object.
 }
 \usage{
-  corr.rwl.seg(rwl,seg.length=50,bin.floor=100,n=NULL, prewhiten = TRUE,
-  pcrit=0.05, biweight=TRUE, make.plot = TRUE, label.cex=1,
-  floor.plus1 = FALSE, master = NULL,
-  master.yrs =  as.numeric(names(master)), ...)
+corr.rwl.seg(rwl, seg.length=50, bin.floor=100, n=NULL,
+  prewhiten = TRUE, pcrit=0.05, biweight=TRUE, make.plot = TRUE,
+  label.cex=1, floor.plus1 = FALSE, master = NULL,
+  master.yrs =  as.numeric(names(master)), \dots{})
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as
@@ -22,7 +22,7 @@
     \code{\link{hanning}} filter used for removal of low frequency
     variation. }
   \item{prewhiten}{ \code{logical} flag. If \code{TRUE} each series is
-    whitened using \code{\link[stats]{ar}}. }
+    whitened using \code{\link{ar}}. }
   \item{pcrit}{ a number between 0 and 1 giving the critical value for
     the correlation test. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust
@@ -40,7 +40,7 @@
     built from \code{rwl} using the leave-one-out principle. }
   \item{master.yrs}{ a \code{numeric} vector giving the years of
     \code{series}.  Defaults to \code{as.numeric(names(master))}. }
-  \item{...}{ other arguments passed to plot. }
+  \item{\dots{}}{ other arguments passed to plot. }
 }
 \details{
   This function calculates correlation serially between each tree-ring
@@ -63,19 +63,19 @@
   segment and so on. Correlations are only calculated for segments with
   complete overlap with the master chronology. For now, correlations are
   Spearman's rho calculated via \code{\link{cor.test}} using
-  method="spearman."
+  \code{method="spearman"}.
 
   Each series (including those in the rwl object) is optionally
   detrended as the residuals from a \code{\link{hanning}} filter with
   weight \code{n}. The filter is not applied if \code{n} is
   \code{NULL}. Detrending can also be done via prewhitening where the
-  residuals of an \code{\link[stats]{ar}} model are added to each series
+  residuals of an \code{\link{ar}} model are added to each series
   mean. This is the default. The master chronology is computed as the
   mean of rwl object using \code{\link{tbrm}} if \code{biweight=TRUE}
   and \code{rowMeans} if not. Note that detrending can change the length
   of the series. E.g., a \code{\link{hanning}} filter will shorten the
   series on either end by \code{floor(n/2)}. The prewhitening default
-  will change the series length based on the \code{\link[stats]{ar}}
+  will change the series length based on the \code{\link{ar}}
   model fit. The effects of detrending can be seen with
   \code{\link{series.rwl.plot}}.
 
@@ -99,8 +99,10 @@
   \code{avg.seg.rho} contains the average correlation for each bin.
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
-\seealso{ \code{\link{corr.series.seg}} \code{\link{skel.plot}}  \code{\link{series.rwl.plot}} \code{\link{ccf.series.rwl}}}
-
+\seealso{
+  \code{\link{corr.series.seg}}, \code{\link{skel.plot}},
+  \code{\link{series.rwl.plot}}, \code{\link{ccf.series.rwl}}
+}
 \examples{data(co021)
 corr.rwl.seg(co021,seg.length=100,label.cex=1.25)
 }

@@ -5,13 +5,14 @@
   Makes a spaghetti plot of tree-ring data.
 }
 \usage{
-spag.plot(rwl,zfac=1,...)
+spag.plot(rwl, zfac=1, \dots{})
 }
 \arguments{
-  \item{rwl}{ a \code{data.frame} with series as columns and years as rows
-    such as that produced by \code{\link{read.rwl}}. }
-  \item{zfac}{ a multiplier for \code{rwl} to enhance clarity when plotting. }
-  \item{...}{ arguments to be passed to \code{lines}. }
+  \item{rwl}{ a \code{data.frame} with series as columns and years as
+    rows such as that produced by \code{\link{read.rwl}}. }
+  \item{zfac}{ a multiplier for \code{rwl} to enhance clarity when
+    plotting. }
+  \item{\dots{}}{ arguments to be passed to \code{lines}. }
 }
 \details{
   This makes a simple plot of each series in a tree-ring dataset. Each series is centered first by subtracting the column mean using \code{\link{scale}}. The plot can be grossly tuned with \code{zfac} which is multiplier to \code{rwl} before plotting and centering.
@@ -21,11 +22,8 @@ spag.plot(rwl,zfac=1,...)
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{seg.plot}} }
-\examples{
-
-  data(ca533)
-  spag.plot(ca533,main="Campito Mountain")
-  spag.plot(ca533,zfac=2,main="Campito Mountain")
-
+\examples{data(ca533)
+spag.plot(ca533, main="Campito Mountain")
+spag.plot(ca533, zfac=2, main="Campito Mountain")
 }
 \keyword{ hplot }

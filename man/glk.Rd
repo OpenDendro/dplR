@@ -10,7 +10,7 @@
 }
 
 \usage{
-  glk(x)
+glk(x)
 }
 
 \arguments{
@@ -43,8 +43,7 @@ Schweingruber, F.H. (1988) \emph{Tree rings: basics and applications of
 dendrochronology} Kluwer Academic Publishers, Dordrecht, Netherlands, 276
 p.}
 
-\examples{
-data(ca533)
+\examples{data(ca533)
 ca533.glk <- glk(ca533)
 mean(ca533.glk, na.rm = TRUE)
 }

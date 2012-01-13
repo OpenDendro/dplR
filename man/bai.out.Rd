@@ -6,7 +6,7 @@
 
 }
 \usage{
-  bai.out(rwl, diam = NULL)
+bai.out(rwl, diam = NULL)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows such as that produced by \code{\link{read.rwl}} }
@@ -25,7 +25,7 @@ Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring standardi
 }
 \note{ DendroLab website: \url{http://dendrolab.org/} }
 \author{ Code by Andy Bunn based on work from DendroLab, University of
-  Nevada Reno, USA. Patched and improved by Mikko Korpela. }
+  Nevada Reno, \acronym{USA}. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{bai.in}} }
 \examples{
 \dontrun{## Toy

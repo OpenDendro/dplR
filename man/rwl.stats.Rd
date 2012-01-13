@@ -2,11 +2,11 @@
 \alias{rwl.stats}
 \title{ Calculates Descriptive Statistics on Ring Width Series }
 \description{
-  This function calculates descriptive statistics on a \code{data.frame} of
-  raw or detrended ring-width series.
+  This function calculates descriptive statistics on a \code{data.frame}
+  of raw or detrended ring-width series.
 }
 \usage{
-  rwl.stats(rwl)
+rwl.stats(rwl)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with (usually) raw ring-width series as
@@ -22,13 +22,13 @@
 
 }
 \value{ A \code{data.frame} containing descriptive stats on each
-  \code{series}. These are the first and last year of the series as well
-  as the length of the series (\code{first},\code{last},\code{year}).
+  \code{"series"}. These are the first and last year of the series as well
+  as the length of the series (\code{"first"}, \code{"last"}, \code{"year"}).
   The mean, median, standard deviation are given
-  (\code{mean},\code{median}, \code{stdev}) as are the skewness, two
+  (\code{"mean"}, \code{"median"}, \code{"stdev"}) as are the skewness, two
   measures of sensitivity, the Gini coefficient, and first order
-  autocorrelation (\code{skew},\code{\link{sens1}}, \code{\link{sens2}},
-  \code{\link{gini.coef}}, \code{ar1}).
+  autocorrelation (\code{"skew"}, \code{"\link{sens1}"},
+  \code{"\link{sens2}"}, \code{"\link{gini.coef}"}, \code{"ar1"}).
 }
 \references{ Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
   Dendrochronology: Applications in the Environmental Sciences.} Springer.
@@ -40,10 +40,7 @@
 }
 \author{ Andy Bunn. Slightly improved by Mikko Korpela. }
 \seealso{ \code{\link{rwi.stats}}, \code{\link{read.rwl}} }
-\examples{
-
-  data(ca533)
-  rwl.stats(ca533)
-
+\examples{data(ca533)
+rwl.stats(ca533)
 }
 \keyword{ misc }

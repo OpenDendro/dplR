@@ -1,6 +1,6 @@
 \name{rwi.stats.running}
 \alias{rwi.stats.running}
-\title{ Calculates Running Window Statistics on Detrended Ring Width Series }
+\title{ Running Window Statistics on Detrended Ring Width Series }
 \description{
   This function calculates descriptive statistics on a \code{data.frame} of
   (usually) ring-width indices. The statistics are computed in a running
@@ -21,15 +21,15 @@ rwi.stats.running(rwi, ids=NULL, period=c("max", "common"),
     width indices as columns and years as rows such as that produced by
     \code{\link{detrend}}. }
   \item{ids}{ an optional \code{data.frame} with column one named
-    \dQuote{tree} giving a numeric id for each tree and column two named
-    \dQuote{core} giving a numeric id for each core. Defaults to one core
+    \code{"tree"} giving a numeric id for each tree and column two named
+    \code{"core"} giving a numeric id for each core. Defaults to one core
     per tree as
     \code{data.frame(tree=1:ncol(rwi),core=rep(1,ncol(rwi)))}. }
-  \item{period}{ a character string, either \dQuote{common} or
-    \dQuote{max} indicating whether correlations should be limited to
+  \item{period}{ a character string, either \code{"common"} or
+    \code{"max"} indicating whether correlations should be limited to
     complete observations over the period common to all cores (i.e. rows
     common to all samples) or the maximum pairwise overlap. Defaults
-    to \dQuote{max}. }
+    to \code{"max"}. }
   \item{running.window}{ logical flag indicating whether to use a
     running window (\code{TRUE}, the default) or to ignore the other
     window parameters and effectively use one window covering all years
@@ -70,7 +70,7 @@ rwi.stats.running(rwi, ids=NULL, period=c("max", "common"),
   series id.  If \code{ids} has duplicate tree/core combinations, the
   corresponding series are averaged before any statistics are computed.
 
-  Note that period=\dQuote{common} can produce \code{NaN} for many of
+  Note that \code{period="common"} can produce \code{NaN} for many of
   the stats if there is no common overlap period among the cores.  This
   happens especially in chronologies with floating subfossil samples
   (e.g., \code{\link{ca533}}).
@@ -108,7 +108,7 @@ number of within-tree correlations in each tree),
   (rbar.wt + (1-rbar.wt) / c.eff) },
 \code{eps} the expressed population signal,
 \code{n} the average number of trees (for each year, a tree needs
-at least one non-NA core in order to be counted).
+at least one non-\code{NA} core in order to be counted).
 }
 \references{ Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
   Dendrochronology: Applications in the Environmental Sciences.} Springer.
@@ -120,15 +120,14 @@ at least one non-NA core in order to be counted).
 }
 \note{
   This function uses the \code{\link[foreach]{foreach}} looping
-  construct with the \code{\link[foreach]{\%dopar\%}} operator.  For
-  parallel computing and a potential speedup, a parallel backend must be
-  registered before running the function.
+  construct with the \code{\link[foreach:foreach]{\%dopar\%}} operator.
+  For parallel computing and a potential speedup, a parallel backend
+  must be registered before running the function.
 }
 \author{ Mikko Korpela, based on \code{\link{rwi.stats}} by Andy Bunn }
-\seealso{ \code{\link{detrend}}, \code{\link[stats]{cor}},
+\seealso{ \code{\link{detrend}}, \code{\link{cor}},
   \code{\link{read.ids}}, \code{\link{rwi.stats}} }
-\examples{
-data(ca533)
+\examples{data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "Mean") # mean is fast
 ca533.ids <- read.ids(ca533, stc=c(3, 2, 3))
 rwi.stats.running(ca533.rwi, ca533.ids)

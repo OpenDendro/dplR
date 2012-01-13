@@ -13,19 +13,20 @@ tbrm(x, C = 9)
     Cook reference below but other values are possible. }
 }
 \details{
-  This is a one step computation that follows the Affy whitepaper below see
-  page 22. This function is called by  \code{\link{chron}} to calculate a
-  robust mean.  \code{C} determines the point at which outliers are given a
-  weight of 0 and therefore do not contribute to the calculation of the mean.
-  C=9 sets values roughly +/-6 standard deviations to 0. C=6 is also used in
-  tree-ring chronology development. Cook and Kairiukstis (1990) have further
+  This is a one step computation that follows the Affy whitepaper below
+  see page 22. This function is called by \code{\link{chron}} to
+  calculate a robust mean.  \code{C} determines the point at which
+  outliers are given a weight of 0 and therefore do not contribute to
+  the calculation of the mean.  \code{C=9} sets values roughly +/-6
+  standard deviations to 0. \code{C=6} is also used in tree-ring
+  chronology development. Cook and Kairiukstis (1990) have further
   details.
 
-  An exact summation algorithm (Shewchuk 1997) is used. When some assumptions 
-  about the rounding of floating point numbers and conservative compiler 
-  optimizations hold, summation error is completely avoided. 
-  Whether the assumptions hold depends on the platform, i.e. compiler and CPU.
-  
+  An exact summation algorithm (Shewchuk 1997) is used. When some
+  assumptions about the rounding of floating point numbers and
+  conservative compiler optimizations hold, summation error is
+  completely avoided.  Whether the assumptions hold depends on the
+  platform, i.e. compiler and \acronym{CPU}.
 }
 \value{
   A numeric mean.
@@ -46,8 +47,7 @@ tbrm(x, C = 9)
 }
 \author{ Mikko Korpela }
 \seealso{ \code{\link{chron}} }
-\examples{
-tbrm(rnorm(100))
+\examples{tbrm(rnorm(100))
 
 ## Compare
 data(co021)

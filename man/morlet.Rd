@@ -5,12 +5,12 @@
   This function performs a continuous wavelet transform on a time series.
 }
 \usage{
-  morlet(y1,x1=seq_along(y1),p2=NULL,dj=0.25,siglvl=0.95)
+morlet(y1, x1=seq_along(y1), p2=NULL, dj=0.25, siglvl=0.95)
 }
 \arguments{
   \item{y1}{Numeric. Series to be transformed.}
-  \item{x1}{Numeric. A vector of values giving the years for the plot. Must be the
-    same length as \code{length(y1)}.}
+  \item{x1}{Numeric. A vector of values giving the years for the
+    plot. Must be the same length as \code{length(y1)}.}
   \item{p2}{Numeric. The number of power of two to be computed for the wavelet
     transform. Calculated from length of \code{y1} if \code{NULL}. }
   \item{dj}{Numeric. sub-octaves per octave calculated.}
@@ -35,13 +35,12 @@
 \references{ Torrence, C. and Compo, G.P. (1998) A practical guide to wavelet
   analysis. \emph{Bulletin of the American Meteorological Society}, 79: 61--78.
 }
-\note{ This is a port of Torrence's IDL code available at
+\note{ This is a port of Torrence's \acronym{IDL} code available at
   \url{http://atoc.colorado.edu/research/wavelets/software.html}
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{wavelet.plot}} }
-\examples{
-data(ca533)
+\examples{data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = FALSE)
 Years <- as.numeric(rownames(ca533.crn))

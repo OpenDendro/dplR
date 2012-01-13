@@ -41,7 +41,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     chronologies.  Accepts data.frames of the type produced by
     \code{\link{chron}}.  Additionally, allows several chronologies per
     data.frame.  Any column of the data.frame(s) with a name starting
-    with \dQuote{samp.depth} is interpreted as a sample depth.  The
+    with \code{"samp.depth"} is interpreted as a sample depth.  The
     rest of the columns are interpreted as chronologies whose titles are
     determined from the column names (optionally from parameter
     \code{crn.titles}).  Chronology columns and sample depth columns are
@@ -64,22 +64,22 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     ending in zero).  Otherwise, the matching unit is used in the file.
   }
   \item{ids}{
-    optional \code{data.frame} with column one named \dQuote{tree}
-    giving the numeric id of the tree, column two named \dQuote{core}
+    optional \code{data.frame} with column one named \code{"tree"}
+    giving the numeric id of the tree, column two named \code{"core"}
     giving the numeric id of the core, optional column three named
-    \dQuote{radius} giving the numeric id of the radius, and optional
-    column four named \dQuote{measurement} giving the numeric id of the
-    measurement.  If column \dQuote{measurement} exists, column
-    \dQuote{radius} must also exist.  Defaults to one core, radius and
+    \code{"radius"} giving the numeric id of the radius, and optional
+    column four named \code{"measurement"} giving the numeric id of the
+    measurement.  If column \code{"measurement"} exists, column
+    \code{"radius"} must also exist.  Defaults to one core, radius and
     measurement per tree: \code{data.frame(tree = 1:n.col, core =
       rep(1,n.col), radius = rep(1,n.col), measurement = rep(1,n.col))},
     where \code{n.col} is the number of columns in \code{rwl.df}.
   }
   \item{titles}{
-    optional \code{data.frame} with column one named \dQuote{tree}
-    giving the title of the tree, column two named \dQuote{core} giving
-    the title of the core, column three named \dQuote{radius} giving the
-    title of the radius, and column four named \dQuote{measurement}
+    optional \code{data.frame} with column one named \code{"tree"}
+    giving the title of the tree, column two named \code{"core"} giving
+    the title of the core, column three named \code{"radius"} giving the
+    title of the radius, and column four named \code{"measurement"}
     giving the title of the measurement.  By default, \code{titles} is
     \code{NULL}, and the title hierarchy is automatically created out of
     the column names of \code{rwl.df}, taking \code{ids} into account.
@@ -125,15 +125,15 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     \code{tridas.measuring.method}, these are free-form strings in
     English.  If the vector is shorter than the number of columns in
     \code{rwl.df}, it is recycled to the correct length.  The default
-    value is \dQuote{unknown}.
+    value is \code{"unknown"}.
   }
   \item{sample.type}{
     optional \code{character} vector giving the type of the samples,
-    corresponding to \dQuote{core} in \code{ids}.  The length of the
+    corresponding to \code{"core"} in \code{ids}.  The length of the
     vector, however, must match the number of columns in \code{rwl.df},
     or it is recycled to the correct length.  If there are several
     measurements per sample, some elements of \code{sample.type} are
-    redundant.  The default is to use \dQuote{core} for all series.
+    redundant.  The default is to use \code{"core"} for all series.
   }
   \item{wood.completeness}{
     optional \code{data.frame} giving wood completeness information for
@@ -152,11 +152,11 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 	are too damaged to measure.  Non-negative integer.}
       \item{pith.presence}{Whether the pith is present or absent.  Each
 	element must be a partial match with the contents of category
-	\dQuote{complex presence / absence} in
+	\code{"complex presence / absence"} in
 	\code{\link{tridas.vocabulary}}.}
       \item{heartwood.presence}{Whether the outer (youngest) heartwood
 	is present and if so whether it is complete.  Category
-	\dQuote{complex presence / absence} in
+	\code{"complex presence / absence"} in
 	\code{\link{tridas.vocabulary}}.}
       \item{n.missing.heartwood}{Estimated number of missing heartwood
 	rings to the pith.  Non-negative integer.}
@@ -164,11 +164,11 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 	estimation of how many heartwood rings are missing was made and
 	what the certainty is.  Free-form string.}
       \item{sapwood.presence}{Whether the sapwood is present or not.
-	Category \dQuote{complex presence / absence}.}
+	Category \code{"complex presence / absence"}.}
       \item{n.sapwood}{Number of sapwood rings measured.  Non-negative
 	integer.}
       \item{last.ring.presence}{Last ring under the bark is present or
-	absent.  Category \dQuote{presence / absence}.}
+	absent.  Category \code{"presence / absence"}.}
       \item{last.ring.details}{If the last ring under the bark is
 	present, include information about the completeness of this ring
 	and/or season of felling.  Free-form string.}
@@ -178,7 +178,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 	estimation of how many sapwood rings are missing was made and
 	what the certainty is.  Free-form string.}
       \item{bark.presence}{Bark is present or absent.  Category
-	\dQuote{presence / absence} in \code{\link{tridas.vocabulary}}.}
+	\code{"presence / absence"} in \code{\link{tridas.vocabulary}}.}
     }
   }
   \item{taxon}{
@@ -191,9 +191,9 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
   \item{tridas.variable}{
     \code{character} string.  Measured variable (ring width, earlywood,
     latewood etc) taken from the TRiDaS controlled vocabulary
-    (\code{\link{tridas.vocabulary}}, category \dQuote{variable}).  The
+    (\code{\link{tridas.vocabulary}}, category \code{"variable"}).  The
     same string is used for all of \code{rwl.df}.  Defaults to
-    \dQuote{ring width}.
+    \code{"ring width"}.
   }
   \item{other.variable}{
     \code{character} string.  Measured variable as a free-form string.
@@ -205,7 +205,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     the following (includes quotes from the TRiDaS specification):
     \describe{
       \item{type}{\code{character} vector.  The type(s) of the project.
-	Defaults to \dQuote{unknown}.}
+	Defaults to \code{"unknown"}.}
       \item{description}{\code{character} string.  A description of the
 	project.  Defaults to \code{NULL}: no description.}
       \item{title}{\code{character} string.  The title of the project.
@@ -231,8 +231,9 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
       \item{acronym}{Optional acronym of the laboratory}
       \item{identifier}{Optional identifier of the laboratory}
       \item{domain}{The domain which the identifier of the laboratory is
-	applicable to.  Could be the URL of the organisation's server or
-	the name of the organisation as long as it is not ambiguous.}
+	applicable to.  Could be the \acronym{URL} of the organisation's
+	server or the name of the organisation as long as it is not
+	ambiguous.}
       \item{addressLine1}{First address line}
       \item{addressLine2}{Second address line}
       \item{cityOrTown}{City or town}
@@ -257,7 +258,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     (\verb{<object>}).  Elements are the following, and all are
     \code{character} strings:
     \describe{
-      \item{type}{Type of the site.  Defaults to \dQuote{unknown}.}
+      \item{type}{Type of the site.  Defaults to \code{"unknown"}.}
       \item{description}{Description.  Defaults to no description.}
       \item{title}{Title of the site.  Defaults to an empty string.}
     }
@@ -272,9 +273,10 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
   }
   \item{identifier.domain}{
     \code{character} string.  The domain which the random identifiers
-    are applicable to.  Could be the URL of the organisation's server or
-    the name of the organisation as long as it is not ambiguous.
-    Defaults to the name of the first laboratory in \code{lab.info}.
+    are applicable to.  Could be the \acronym{URL} of the organisation's
+    server or the name of the organisation as long as it is not
+    ambiguous.  Defaults to the name of the first laboratory in
+    \code{lab.info}.
   }
 }
 \value{
@@ -296,13 +298,13 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
   \code{\link{write.compact}}, \code{\link{write.crn}},
   \code{\link{read.tridas}}
 }
-\examples{
- data(co021)
- write.tridas(rwl.df = co021, fname = 'tmp.xml', prec=0.01,
-              site.info=list(title="Schulman old tree no. 1, Mesa Verde",
-                type="unknown"),
-              taxon="Pseudotsuga menziesii var. menziesii (Mirb.) Franco",
-              project.info = list(investigator = "E. Schulman",
-                title="", category="", period="", type="unknown"))
+\examples{data(co021)
+write.tridas(rwl.df = co021, fname = "tmp.xml", prec = 0.01,
+  site.info = list(title = "Schulman old tree no. 1, Mesa Verde",
+                   type = "unknown"),
+  taxon = "Pseudotsuga menziesii var. menziesii (Mirb.) Franco",
+  project.info = list(investigator = "E. Schulman",
+                      title = "", category = "",
+                      period = "", type = "unknown"))
 }
 \keyword{ IO }

@@ -4,11 +4,14 @@
   Function to read Tree Ring Data Standard (TRiDaS) files
 }
 \description{
-  This function reads in a TRiDaS format XML file.  Measurements,
-  derived series and various kinds of metadata are supported.
+  This function reads in a TRiDaS format \acronym{XML} file.
+  Measurements, derived series and various kinds of metadata are
+  supported.
 }
 \usage{
-read.tridas(fname, ids.from.titles = FALSE, ids.from.identifiers = TRUE, combine.series = TRUE, trim.whitespace = TRUE, warn.units = TRUE)
+read.tridas(fname, ids.from.titles = FALSE,
+  ids.from.identifiers = TRUE, combine.series = TRUE,
+  trim.whitespace = TRUE, warn.units = TRUE)
 }
 \arguments{
   \item{fname}{
@@ -76,26 +79,26 @@ read.tridas(fname, ids.from.titles = FALSE, ids.from.identifiers = TRUE, combine
     \verb{<unit>}, \verb{<taxon>}, and
     \verb{<variable>} gets a separate data.frame.}
   \item{ids}{A \code{data.frame} or a list of data.frames with columns
-    named \dQuote{tree}, \dQuote{core}, \dQuote{radius}, and
-    \dQuote{measurement}, together giving a unique numeric id for each
+    named \code{"tree"}, \code{"core"}, \code{"radius"}, and
+    \code{"measurement"}, together giving a unique numeric id for each
     column of the data.frame(s) in \code{measurements}.  If
     \code{!combine.series && (ids.from.titles || ids.from.identifiers)},
     some rows may be non-unique.}
   \item{titles}{A \code{data.frame} or a list of data.frames with columns
-    named \dQuote{tree}, \dQuote{core}, \dQuote{radius}, and
-    \dQuote{measurement}, containing the \verb{<title>}
+    named \code{"tree"}, \code{"core"}, \code{"radius"}, and
+    \code{"measurement"}, containing the \verb{<title>}
     hierarchy of each column of the data.frame(s) in
     \code{measurements}.}
   \item{wood.completeness}{A \code{data.frame} or a list of data.frames
     containing wood completeness information.  Column names are a
     subset of the following, almost self-explanatory set:
-    \dQuote{pith.presence}, \dQuote{heartwood.presence},
-    \dQuote{sapwood.presence}, \dQuote{last.ring.presence},
-    \dQuote{last.ring.details}, \dQuote{bark.presence},
-    \dQuote{n.sapwood}, \dQuote{n.missing.heartwood},
-    \dQuote{n.missing.sapwood}, \dQuote{missing.heartwood.foundation},
-    \dQuote{missing.sapwood.foundation}, \dQuote{n.unmeasured.inner},
-    \dQuote{n.unmeasured.outer}.} 
+    \code{"pith.presence"}, \code{"heartwood.presence"},
+    \code{"sapwood.presence"}, \code{"last.ring.presence"},
+    \code{"last.ring.details"}, \code{"bark.presence"},
+    \code{"n.sapwood"}, \code{"n.missing.heartwood"},
+    \code{"n.missing.sapwood"}, \code{"missing.heartwood.foundation"},
+    \code{"missing.sapwood.foundation"}, \code{"n.unmeasured.inner"},
+    \code{"n.unmeasured.outer"}.} 
   \item{unit}{A \code{character} vector giving the unit of the
     measurements. Length equals the number of data.frames in
     \code{measurements}.}
@@ -117,14 +120,14 @@ read.tridas(fname, ids.from.titles = FALSE, ids.from.identifiers = TRUE, combine
     possibly nested \verb{<object>} elements.}
   \item{taxon}{A \code{data.frame} showing the taxonomic name for each
     data.frame in \code{measurements}.  Contains some of the following
-    columns: \dQuote{text}, \dQuote{lang}, \dQuote{normal},
-    \dQuote{normalId}, \dQuote{normalStd}.  The first two are a
+    columns: \code{"text"}, \code{"lang"}, \code{"normal"},
+    \code{"normalId"}, \code{"normalStd"}.  The first two are a
     free-form name and its language, and the rest are related to a
     normalized name.}
   \item{variable}{A \code{data.frame} showing the measured variable of
     each data.frame in \code{measurements}.  Contains some of the
-    following columns: \dQuote{text}, \dQuote{lang}, \dQuote{normal},
-    \dQuote{normalId}, \dQuote{normalStd}, \dQuote{normalTridas}.  The
+    following columns: \code{"text"}, \code{"lang"}, \code{"normal"},
+    \code{"normalId"}, \code{"normalStd"}, \code{"normalTridas"}.  The
     first two are a free-form name and its language, and the rest are
     related to a normalized name.}
   \item{undated}{A \code{list} of measurements with unknown years,
@@ -135,15 +138,15 @@ read.tridas(fname, ids.from.titles = FALSE, ids.from.identifiers = TRUE, combine
       \item{unit}{A \code{character} vector giving the unit of the
 	measurements.  Length equals the number of measurement series in
 	\code{undated$data}}
-      \item{ids}{A \code{data.frame} with columns named \dQuote{tree},
-	\dQuote{core}, \dQuote{radius}, and \dQuote{measurement}, together
+      \item{ids}{A \code{data.frame} with columns named \code{"tree"},
+	\code{"core"}, \code{"radius"}, and \code{"measurement"}, together
 	giving a numeric id for each measurement series in
 	\code{undated$data}.  The rows are guaranteed to be unique only
 	when comparing measurement series with the same \code{project.id}
 	and \code{site.id}, but not if
 	\code{ids.from.titles || ids.from.identifiers}.}
-      \item{titles}{A \code{data.frame} with columns named \dQuote{tree},
-	\dQuote{core}, \dQuote{radius}, and \dQuote{measurement},
+      \item{titles}{A \code{data.frame} with columns named \code{"tree"},
+	\code{"core"}, \code{"radius"}, and \code{"measurement"},
 	containing the \verb{<title>} hierarchy of each
 	measurement series in \code{undated$data}}
       \item{project.id}{A \code{numeric} vector giving the project
@@ -171,9 +174,9 @@ read.tridas(fname, ids.from.titles = FALSE, ids.from.identifiers = TRUE, combine
       \item{link}{A \code{list} of data.frames, one for each series in
 	\code{derived$data}, giving links to the measurements used to form
 	the corresponding derived series.  Each data.frame has a subset of
-	the following columns: \dQuote{idRef} (reference to a series in
-	the same file), \dQuote{xLink} (URI),
-	\dQuote{identifier}, and \dQuote{domain} (identifier and its
+	the following columns: \code{"idRef"} (reference to a series in
+	the same file), \code{"xLink"} (\acronym{URI}),
+	\code{"identifier"}, and \code{"domain"} (identifier and its
 	domain, not necessarily in the same file).}
       \item{project.id}{A \code{numeric} vector giving the project
 	id of each derived series in \code{derived$data}}
@@ -352,7 +355,7 @@ read.tridas(fname, ids.from.titles = FALSE, ids.from.identifiers = TRUE, combine
     measurement series. Columns are a subset of the following:
     \describe{
       \item{idRef}{Reference to a series in the same file}
-      \item{xLink}{URI}
+      \item{xLink}{\acronym{URI}}
       \item{identifier}{Identifier of a series not necessarily in the same
 	file}
       \item{domain}{Domain which the identifier is applicable to}

@@ -1,13 +1,13 @@
 \name{series.rwl.plot}
 \alias{series.rwl.plot}
-\title{ Plot Series and a Master  }
+\title{ Plot Series and a Master }
 \description{
   Plots a tree-ring series with a master chronology and displays
   their fit, segments, and detrending options in support of the
   cross-dating functions.
 }
 \usage{
-  series.rwl.plot(rwl, series, series.yrs=as.numeric(names(series)),
+series.rwl.plot(rwl, series, series.yrs=as.numeric(names(series)),
   seg.length=100, bin.floor=100, n=NULL, prewhiten = TRUE,
   biweight=TRUE, floor.plus1 = FALSE)
 }
@@ -26,10 +26,10 @@
     \code{\link{hanning}} filter used for removal of low frequency
     variation. }
   \item{prewhiten}{ \code{logical} flag. If \code{TRUE} each series is
-    whitened using \code{\link[stats]{ar}}. }
+    whitened using \code{\link{ar}}. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}}. }
-  \item{floor.plus1}{ \code{logical flag}. If \code{TRUE}, one year is
+  \item{floor.plus1}{ \code{logical} flag. If \code{TRUE}, one year is
     added to the base location of the first segment (e.g. 1601, 1701,
     1801 AD). }
 }
@@ -50,24 +50,26 @@
   See help pages for  \code{\link{corr.rwl.seg}},
   \code{\link{corr.series.seg}}, and  \code{\link{ccf.series.rwl}} for
   more information on these arguments.
-
 }
 \value{
-  A \code{list} containing the filtered vectors \code{series} and \code{master}.
+  A \code{list} containing the filtered vectors \code{series} and
+  \code{master}.
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
-\seealso{ \code{\link{corr.rwl.seg}} \code{\link{corr.series.seg}} \code{\link{ccf.series.rwl}}}
-\examples{
-  data(co021)
-  dat=co021
-  flagged=dat$'646244'
-  names(flagged)=rownames(dat)
-  dat$'646107'=NULL
-  foo=series.rwl.plot(rwl=dat,series=flagged,seg.length=100,n=5)
-  #note effect of n on first year in the series
-  foo=series.rwl.plot(rwl=dat,series=flagged,seg.length=100,n=13,prewhiten=FALSE)
-  bar=series.rwl.plot(rwl=dat,series=flagged,seg.length=100,n=7,prewhiten=FALSE)
-  head(foo$series)
-  head(bar$series)
+\seealso{
+  \code{\link{corr.rwl.seg}}, \code{\link{corr.series.seg}},
+  \code{\link{ccf.series.rwl}}
+}
+\examples{data(co021)
+dat <- co021
+flagged <- dat$"646244"
+names(flagged) <- rownames(dat)
+dat$'646107' <- NULL
+foo <- series.rwl.plot(rwl=dat, series=flagged, seg.length=100, n=5)
+## note effect of n on first year in the series
+foo <- series.rwl.plot(rwl=dat, series=flagged, seg.length=100, n=13, prewhiten=FALSE)
+bar <- series.rwl.plot(rwl=dat, series=flagged, seg.length=100, n=7, prewhiten=FALSE)
+head(foo$series)
+head(bar$series)
 }
 \keyword{ manip }

@@ -8,7 +8,7 @@
 corr.rwl.seg(rwl, seg.length=50, bin.floor=100, n=NULL,
   prewhiten = TRUE, pcrit=0.05, biweight=TRUE, make.plot = TRUE,
   label.cex=1, floor.plus1 = FALSE, master = NULL,
-  master.yrs =  as.numeric(names(master)), \dots{})
+  master.yrs =  as.numeric(names(master)), \dots)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as
@@ -42,7 +42,7 @@ corr.rwl.seg(rwl, seg.length=50, bin.floor=100, n=NULL,
   \item{master.yrs}{ a \code{numeric} vector giving the years of
     \code{\var{series}}.  Defaults to
     \code{as.numeric(names(\var{master}))}. }
-  \item{\dots{}}{ other arguments passed to plot. }
+  \item{\dots}{ other arguments passed to plot. }
 }
 \details{
   This function calculates correlation serially between each tree-ring

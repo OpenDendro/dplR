@@ -7,7 +7,7 @@
 }
 \usage{
 rcs(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
-  make.plot=TRUE, \dots{})
+  make.plot=TRUE, \dots)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as
@@ -30,7 +30,7 @@ rcs(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
     regional curve if \code{TRUE}. }
   \item{rc.out}{ \code{logical} flag. Returns the regional curve along
     with the ring-width indices if \code{TRUE}. }
-  \item{\dots{}}{ other arguments passed to
+  \item{\dots}{ other arguments passed to
     \code{\link[graphics]{plot}}. }
 }
 \details{

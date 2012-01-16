@@ -8,7 +8,7 @@
 \usage{
 read.rwl(fname,
          format=c("auto", "tucson", "compact", "tridas", "heidelberg"),
-         \dots{})
+         \dots)
 }
 \arguments{
   \item{fname}{ a character vector giving the file name of the rwl file. }
@@ -16,7 +16,7 @@ read.rwl(fname,
     \code{"auto"} (automatic detection), \code{"tucson"},
     \code{"compact"}, \code{"tridas"} or \code{"heidelberg"}.  Automatic
     format detection is the default. }
-  \item{\dots{}}{ arguments specific to the function implementing the
+  \item{\dots}{ arguments specific to the function implementing the
     operation for the chosen format. }
 }
 \details{

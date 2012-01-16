@@ -6,7 +6,7 @@
   \code{data.frame} of the type produced by \code{\link{chron}}.
 }
 \usage{
-crn.plot(crn, add.spline=FALSE, nyrs=NULL, f=0.5, \dots{})
+crn.plot(crn, add.spline=FALSE, nyrs=NULL, f=0.5, \dots)
 }
 \arguments{
   \item{crn}{ a \code{data.frame} as produced by
@@ -21,7 +21,7 @@ crn.plot(crn, add.spline=FALSE, nyrs=NULL, f=0.5, \dots{})
     \code{NULL}. }
   \item{f}{ a number between 0 and 1 giving the frequency response or
     wavelength cutoff. Defaults to 0.5. }
-  \item{\dots{}}{ other arguments passed to
+  \item{\dots}{ other arguments passed to
     \code{\link[graphics]{plot}}. }
 }
 \details{

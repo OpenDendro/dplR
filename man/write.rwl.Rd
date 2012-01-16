@@ -6,7 +6,7 @@
   formats.
 }
 \usage{
-write.rwl(rwl.df, fname, format=c("tucson", "compact", "tridas"), \dots{})
+write.rwl(rwl.df, fname, format=c("tucson", "compact", "tridas"), \dots)
 }
 \arguments{
   \item{rwl.df}{ a \code{data.frame} containing tree-ring ring widths
@@ -19,7 +19,7 @@ write.rwl(rwl.df, fname, format=c("tucson", "compact", "tridas"), \dots{})
   \item{format}{ a character vector giving the format. This must be
     \code{"tucson"}, \code{"compact"}, or \code{"tridas"}. Tucson format
     is the default. }
-  \item{\dots{}}{ arguments specific to the function implementing the
+  \item{\dots}{ arguments specific to the function implementing the
     operation for the chosen format. }
 }
 \details{

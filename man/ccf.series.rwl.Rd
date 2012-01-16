@@ -10,7 +10,7 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
                seg.length = 50, bin.floor = 100, n = NULL,
                prewhiten = TRUE, biweight = TRUE, pcrit = 0.05,
                lag.max = 5, make.plot = TRUE,
-               floor.plus1 = FALSE, \dots{})
+               floor.plus1 = FALSE, \dots)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
@@ -40,7 +40,7 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
   \item{floor.plus1}{ \code{logical} flag. If \code{TRUE}, one year is
     added to the base location of the first segment (e.g. 1601, 1701,
     1801 \acronym{AD}). }
-  \item{\dots{}}{ other arguments passed to plot. }
+  \item{\dots}{ other arguments passed to plot. }
 }
 \details{
   This function calculates the cross-correlation function between a

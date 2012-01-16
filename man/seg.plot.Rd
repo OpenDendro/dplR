@@ -5,12 +5,12 @@
   Makes a segment plot of tree-ring data.
 }
 \usage{
-seg.plot(rwl, \dots{})
+seg.plot(rwl, \dots)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
     such as that produced by \code{\link{read.rwl}}. }
-  \item{\dots{}}{ arguments to be passed to plot. }
+  \item{\dots}{ arguments to be passed to plot. }
 }
 \details{
   This makes a simple plot of the length of each series in a tree-ring

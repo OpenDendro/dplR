@@ -4,17 +4,19 @@
 
 \title{ Combine tree-ring data sets }
 
-\description{ This function combines any number of \code{data.frames} of tree-ring data
-  into one \code{data.frame}.  }
+\description{ This function combines any number of \code{data.frames} of
+  tree-ring data into one \code{data.frame}.  }
 
 \usage{
 combine.rwl(x, y = NULL)
 }
 
-\arguments{ \item{x}{ either a \code{data.frame} to be combined with \code{y}, or a
-    \code{list} of \code{data.frames} to be combined. }
-  \item{y}{a \code{data.frame} to be combined with \code{data.frame}
-x.}}
+\arguments{
+  \item{x}{ either a \code{data.frame} to be combined with
+    \code{\var{y}}, or a \code{list} of \code{data.frame}s to be
+    combined. } \item{y}{a \code{data.frame} to be combined with
+    \code{data.frame} \code{\var{x}}.}
+}
 
 \details{ The sequence of years in each \code{data.frame} must be
   increasing and continuous.  The output produced by the function

@@ -21,26 +21,26 @@ uuid.gen(more.state = "")
   \acronym{UUID}s.  The state of that anonymous function is set when
   \code{uuid.gen} is called.  The state consists of the following:
   \itemize{
-    \item System and user information (\code{Sys.info})
-    \item \R version (\code{R.version})
-    \item Platform information (\code{.Platform})
+    \item System and user information (\code{\link{Sys.info}})
+    \item \R version (\code{\link{R.version}})
+    \item Platform information (\code{\link{.Platform}})
     \item Working directory
-    \item Process ID of the \R session
+    \item Process \acronym{ID} of the \R session
     \item Time when \code{uuid.gen} was called (precision of seconds or
     finer)
-    \item The text in parameter \code{more.state}
+    \item The text in parameter \code{\var{more.state}}
   }
 
-  The Pseudo Random Number Generator of \R (see \code{.Random.seed}) is
-  used in the generation of \acronym{UUID}s.  No initialization of the
-  \acronym{PRNG} is done.  Tampering with the state of the \R
-  \acronym{PRNG} while using a given \acronym{UUID} generator causes a
-  risk of non-unique identifiers.  Particularly, setting the state of
-  the \acronym{PRNG} to the same value before two calls to the
-  \acronym{UUID} generator guarantees two identical identifiers.  If two
-  \acronym{UUID} generators have a different state, it is \emph{not} a
-  problem to have the \acronym{PRNG} going through or starting from the
-  same state with both generators.
+  The Pseudo Random Number Generator of \R (see
+  \code{\link{.Random.seed}}) is used in the generation of
+  \acronym{UUID}s.  No initialization of the \acronym{PRNG} is done.
+  Tampering with the state of the \R \acronym{PRNG} while using a given
+  \acronym{UUID} generator causes a risk of non-unique identifiers.
+  Particularly, setting the state of the \acronym{PRNG} to the same
+  value before two calls to the \acronym{UUID} generator guarantees two
+  identical identifiers.  If two \acronym{UUID} generators have a
+  different state, it is \emph{not} a problem to have the \acronym{PRNG}
+  going through or starting from the same state with both generators.
 
   The user is responsible for selecting a \acronym{PRNG} with a
   reasonable number of randomness.  Usually, this doesn't require any

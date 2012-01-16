@@ -11,22 +11,31 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   f = 0.5, pos.slope = FALSE)
 }
 \arguments{
-  \item{y}{ a numeric vector. Usually a tree-ring series. }
-  \item{y.name}{ an optional character vector to name the series for plotting
-    purposes. }
-  \item{make.plot}{ logical flag. Makes plots of the raw data and detrended
-    data if \code{TRUE}. }
-  \item{method}{ a character vector to determine the detrending
+
+  \item{y}{ a \code{numeric} vector. Usually a tree-ring series. }
+
+  \item{y.name}{ an optional \code{character} vector to name the series
+    for plotting purposes. }
+
+  \item{make.plot}{ a \code{logical} flag. Makes plots of the raw data
+    and detrended data if \code{TRUE}. }
+
+  \item{method}{ a \code{character} vector to determine the detrending
     methods. See details below. Possible values are all subsets of
     \code{c("Spline", "ModNegExp", "Mean")}. Defaults to using all the
     available methods.}
-  \item{nyrs}{ a number giving the rigidity of the smoothing spline, defaults to
-    0.67 of series length if nyrs is \code{NULL}. }
+
+  \item{nyrs}{ a number giving the rigidity of the smoothing spline,
+    defaults to 0.67 of series length if \code{\var{nyrs}} is
+    \code{NULL}. }
+  
   \item{f}{ a number between 0 and 1 giving the frequency response or
     wavelength cutoff. Defaults to 0.5. }
-  \item{pos.slope}{ a logical flag. Will allow for a positive slope to
-    be used in method \code{"ModNegExp"}. If \code{FALSE} the line will
-    be horizontal. }
+  
+  \item{pos.slope}{ a \code{logical} flag. Will allow for a positive
+    slope to be used in method \code{"ModNegExp"}. If \code{FALSE} the
+    line will be horizontal. }
+  
 }
 \details{
   This detrends and standardizes a tree-ring series. The detrending is
@@ -36,15 +45,16 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   (\acronym{RWI}). There are currently three methods available for
   detrending although more are certainly possible. The methods
   implemented are a smoothing spline via \code{\link{ffcsaps}}
-  (\code{method = "Spline"}), a modified negative exponential curve
-  (\code{method = "ModNegExp"}), or a simple horizontal line
-  (\code{method = "Mean"}).
+  (\code{\var{method} = "Spline"}), a modified negative exponential
+  curve (\code{\var{method} = "ModNegExp"}), or a simple horizontal line
+  (\code{\var{method} = "Mean"}).
 
-  The \code{"Spline"} approach uses an n-year spline where the frequency
-  response is 0.50 at a wavelength of 0.67*n years unless specified
-  differently using \code{nyrs} and \code{f} in the function
-  \code{\link{ffcsaps}}.  This attempts to remove the low frequency
-  variability that is due to biological or stand effects.
+  The \code{"Spline"} approach uses an spline where the frequency
+  response is 0.50 at a wavelength of 0.67 * \dQuote{series length in
+  years}, unless specified differently using \code{\var{nyrs}} and
+  \code{\var{f}} in the function \code{\link{ffcsaps}}.  This attempts
+  to remove the low frequency variability that is due to biological or
+  stand effects.
 
   The \code{"ModNegExp"} approach attempts to fit a classic nonlinear
   model of biological growth of the form \code{\var{Y} ~ \var{a} *
@@ -64,15 +74,16 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 }
 \value{
   If several methods are used, returns a \code{data.frame} containing
-  the detrended series (y) according to the methods used. If only one
-  method is selected, returns a vector.
+  the detrended series (\code{\var{y}}) according to the methods
+  used. If only one method is selected, returns a vector.
 }
-\references{ Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
-  Dendrochronology: Applications in the Environmental Sciences.} Springer.
-  ISBN-13: 978-0792305866.
+\references{
+  Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
+  Dendrochronology: Applications in the Environmental Sciences.}
+  Springer.  \acronym{ISBN-13}: 978-0792305866.
 
-  Fritts, H.C. (2001) \emph{Tree Rings and Climate.} Blackburn. ISBN-13:
-  978-1930665392.
+  Fritts, H.C. (2001) \emph{Tree Rings and Climate.}
+  Blackburn. \acronym{ISBN-13}: 978-1930665392.
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{detrend}} }

@@ -31,9 +31,9 @@ read.crn(fname, header=NULL, encoding = getOption("encoding"))
 }
 \value{
   A \code{data.frame} with each chronology in columns and the years as
-  rows. The chronology ids are the column names and the years are the
-  row names. If the file includes sample depth that is included as the
-  last column (\code{samp.depth}).
+  rows. The chronology \acronym{ID}s are the column names and the years
+  are the row names. If the file includes sample depth that is included
+  as the last column (\code{\var{samp.depth}}).
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \keyword{ IO }

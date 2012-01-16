@@ -17,16 +17,16 @@ wc.to.po(wc)
   }
 }
 \details{
-  Computes the sum of the variables \code{n.missing.heartwood} and
-  \code{n.unmeasured.inner} in \code{wc}.
+  Computes the sum of the variables \code{\var{n.missing.heartwood}} and
+  \code{\var{n.unmeasured.inner}} in \code{\var{wc}}.
 }
 \value{
   A \code{data.frame} containing two variables. Variable one
-  (\code{series}) gives the series ID as either characters or
-  factors. These match \code{rownames(wc)}. Variable two
-  (\code{pith.offset}) is of integer type and gives the years from the
-  beginning of the core to the pith (or center) of the tree. The minimum
-  value is 1.
+  (\code{\var{series}}) gives the series \acronym{ID} as either
+  characters or factors. These match \code{rownames(\var{wc})}. Variable
+  two (\code{\var{pith.offset}}) is of integer type and gives the years
+  from the beginning of the core to the pith (or center) of the
+  tree. The minimum value is 1.
 }
 \author{
   Mikko Korpela

@@ -10,7 +10,7 @@ crn.plot(crn, add.spline=FALSE, nyrs=NULL, f=0.5, \dots{})
 }
 \arguments{
   \item{crn}{ a \code{data.frame} as produced by
-    \code{\link{chron}}. The data.frame should have the years in
+    \code{\link{chron}}. The \code{data.frame} should have the years in
     rownames(crn), the chronologies in the columns.  Optionally, the
     last column can contain the sample depth named
     \code{"samp.depth"}. }

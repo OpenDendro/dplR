@@ -13,11 +13,12 @@ i.detrend(rwl, y.name = names(rwl), nyrs = NULL, f = 0.5, pos.slope = FALSE)
   \item{rwl}{ a \code{data.frame} with series as columns and years as
     rows such as that produced by \code{\link{read.rwl}} or
     \code{\link{ca533}} }
-  \item{y.name}{ a character vector of length \code{ncol(rwl)} that
-    gives the id of each series. Defaults to the column names of
-    \code{rwl}. }
+  \item{y.name}{ a character vector of length \code{ncol(\var{rwl})} that
+    gives the \acronym{ID} of each series. Defaults to the column names
+    of \code{\var{rwl}}. }
   \item{nyrs}{ a number giving the rigidity of the smoothing spline,
-    defaults to 0.67 of series length if nyrs is \code{NULL}. }
+    defaults to 0.67 of series length if \code{\var{nyrs}} is
+    \code{NULL}. }
   \item{f}{ a number between 0 and 1 giving the frequency response or
     wavelength cutoff. Defaults to 0.5. }
   \item{pos.slope}{ a logical flag. Will allow for a positive slope to
@@ -34,11 +35,11 @@ i.detrend(rwl, y.name = names(rwl), nyrs = NULL, f = 0.5, pos.slope = FALSE)
 }
 \value{
   A \code{data.frame} containing each detrended series according to the
-  method used as columns and rownames set to colnames(y). These are
-  typically years.  Plots are also produced as the user chooses the
-  detrending methods through keyboard input.
+  method used as columns and rownames set to
+  \code{colnames(\var{y})}. These are typically years.  Plots are also
+  produced as the user chooses the detrending methods through keyboard
+  input.
 }
 \author{ Andy Bunn }
 \seealso{ \code{\link{detrend.series}} }
 \keyword{ iplot }
-

@@ -10,14 +10,14 @@ bai.out(rwl, diam = NULL)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows such as that produced by \code{\link{read.rwl}} }
-  \item{diam}{ an optional \code{data.frame} containing two variables. If present, variable one (\code{series} in the example below) gives the series ID as either \code{characters} or \code{factors}. These must exactly match \code{colnames(rwl)}. Variable two (\code{diam} in the example below) gives the diameter of the tree (in mm) up to the outermost ring (e.g., the diameter of the tree where the core was taken minus the thickness of the bark). If \code{diam=NULL} then the diameter is taken as twice the sum of the widths for each series (column) in \code{rwl}. }
+  \item{diam}{ an optional \code{data.frame} containing two variables. If present, variable one (\code{\var{series}} in the example below) gives the series ID as either \code{character}s or \code{factor}s. These must exactly match \code{colnames(\var{rwl})}. Variable two (\code{\var{diam}} in the example below) gives the diameter of the tree (in mm) up to the outermost ring (e.g., the diameter of the tree where the core was taken minus the thickness of the bark). If \code{\var{diam}==NULL} then the diameter is taken as twice the sum of the widths for each series (column) in \code{\var{rwl}}. }
 }
 \details{
 This converts ring-width series (mm) to ring-area series (mm squared) (aka basal area increments) based on the diameter of the tree and the width of each ring moving towards the pith of the tree. It is related to \code{\link{bai.in}}, which calculates each ring area starting from the inside of the tree and working outward. Both methods assume a circular cross section (Biondi 1999). See the references below for further details. 
 
 }
 \value{
-  A \code{data.frame} containing the ring-areas for each series with column names, row names and dimensions of \code{rwl}.
+  A \code{data.frame} containing the ring-areas for each series with column names, row names and dimensions of \code{\var{rwl}}.
 }
 \references{ Biondi, F. (1999) Comparing tree-ring chronologies and repeated timber inventories as forest monitoring tools. Ecological Applications 9(1): 216-227.
 

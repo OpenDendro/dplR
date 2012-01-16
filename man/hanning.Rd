@@ -2,7 +2,7 @@
 \alias{hanning}
 \title{ Hanning Filter }
 \description{
-  Applies a Hanning filter of length \code{n} to \code{x}.
+  Applies a Hanning filter of length \code{\var{n}} to \code{\var{x}}.
 }
 \usage{
 hanning(x, n=7)
@@ -12,15 +12,16 @@ hanning(x, n=7)
   \item{n}{ length of the Hanning filter, defaults to 7 }
 }
 \details{
-  This applies a low frequency Hanning filter to \code{x} with weight
-  set to \code{n}.
+  This applies a low frequency Hanning filter to \code{\var{x}} with
+  weight set to \code{\var{n}}.
 }
 \value{
   A filtered vector.
 }
-\references{ Oppenheim, A.V., Schafer, R.W., and Buck, J.R. (1999)
-  \emph{ Discrete-Time Signal Processing (2nd Edition). } Prentice-Hall.
-  ISBN-13: 978-0137549207.
+\references{
+  Oppenheim, A.V., Schafer, R.W., and Buck, J.R. (1999) \emph{
+  Discrete-Time Signal Processing (2nd Edition). } Prentice-Hall.
+  \acronym{ISBN-13}: 978-0137549207.
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link[stats]{filter} } }

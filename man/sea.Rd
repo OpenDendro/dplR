@@ -14,8 +14,8 @@ sea(x, key, lag = 5, resample = 1000)
 }
 
 \arguments{
-  \item{x}{ a chronology data.frame of ring-width indices (such as
-  produced by \link{chron})}
+  \item{x}{ a chronology \code{data.frame} of ring-width indices (such
+    as produced by \link{chron})}
   \item{key}{ a vector specifying the key event years for the superposed
     epoch}
   \item{lag}{ an integer defining the number of lagged years }

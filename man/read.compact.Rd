@@ -18,8 +18,8 @@ read.compact(fname)
 }
 \value{
   A \code{data.frame} with the series in columns and the years as
-  rows. The series ids are the column names and the years are the row
-  names.
+  rows. The series \acronym{ID}s are the column names and the years are
+  the row names.
 }
 \author{ Mikko Korpela }
 \seealso{ \code{\link{read.rwl}}, \code{\link{read.tucson}},

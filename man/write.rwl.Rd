@@ -10,9 +10,10 @@ write.rwl(rwl.df, fname, format=c("tucson", "compact", "tridas"), \dots{})
 }
 \arguments{
   \item{rwl.df}{ a \code{data.frame} containing tree-ring ring widths
-    with the series in columns and the years as rows. The series ids are
-    the column names and the years are the row names. This type of
-    \code{data.frame} is produced by \code{\link{read.rwl}}. }
+    with the series in columns and the years as rows. The series
+    \acronym{ID}s are the column names and the years are the row
+    names. This type of \code{data.frame} is produced by
+    \code{\link{read.rwl}}. }
   \item{fname}{ a character vector giving the file name of the rwl
     file. }
   \item{format}{ a character vector giving the format. This must be

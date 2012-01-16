@@ -26,8 +26,8 @@ read.rwl(fname,
 \value{
   If a \code{"tucson"} or \code{"compact"} file is read (even through
   \code{"auto"}), returns a \code{data.frame} with the series in columns
-  and the years as rows.  The series ids are the column names and the
-  years are the row names.
+  and the years as rows.  The series \acronym{ID}s are the column names
+  and the years are the row names.
   
   If a \code{"tridas"} file is read (even through \code{"auto"}),
   returns a list of results.  See \code{\link{read.tridas}} for more

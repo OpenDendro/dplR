@@ -14,10 +14,11 @@ read.tucson(fname, header = NULL, long = FALSE,
   \item{header}{ logical flag indicating whether the file has a header.
     If \code{NULL} then the function will attempt to determine if a
     header exists. }
-  \item{long}{ logical flag indicating whether dates in file span 0 CE
-    and therefore use negative numbers.  If \code{TRUE} only the first 7
-    characters can be used for series ids.  If \code{FALSE} then series
-    ids can be up to 8 characters. }
+  \item{long}{ logical flag indicating whether dates in file span 0
+    \acronym{CE} and therefore use negative numbers.  If \code{TRUE}
+    only the first 7 characters can be used for series \acronym{ID}s.
+    If \code{FALSE} then series \acronym{ID}s can be up to 8
+    characters. }
   \item{encoding}{ the name of the encoding to be used when reading the
     rwl file.  Usually the default value will work, but an rwl file
     written in a non-default encoding may crash the function.  In that
@@ -35,8 +36,8 @@ read.tucson(fname, header = NULL, long = FALSE,
 }
 \value{
   A \code{data.frame} with the series in columns and the years as
-  rows. The series ids are the column names and the years are the row
-  names.
+  rows. The series \acronym{ID}s are the column names and the years are
+  the row names.
 }
 \author{ Andy Bunn. Patched and greatly improved by Mikko Korpela. }
 \seealso{ \code{\link{read.rwl}}, \code{\link{read.compact}},

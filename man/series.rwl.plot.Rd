@@ -15,8 +15,9 @@ series.rwl.plot(rwl, series, series.yrs=as.numeric(names(series)),
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
     such as that produced by \code{\link{read.rwl}}. }
   \item{series}{ a \code{numeric} vector. Usually a tree-ring series. }
-  \item{series.yrs}{ a \code{numeric} vector giving the years of \code{series}.
-    Defaults to \code{as.numeric(names(series))}. }
+  \item{series.yrs}{ a \code{numeric} vector giving the years of
+    \code{\var{series}}.  Defaults to
+    \code{as.numeric(names(\var{series}))}. }
   \item{seg.length}{ an even \code{integer} giving length of segments in years
     (e.g., 20, 50, 100 years). }
   \item{bin.floor}{ a non-negative \code{integer} giving the base for
@@ -35,8 +36,9 @@ series.rwl.plot(rwl, series, series.yrs=as.numeric(names(series)),
 }
 \details{
   The function is typically invoked to produce four plots showing the
-  effect of the detrending options \code{n} and \code{prewhiten} and
-  the binning options \code{seg.length} and \code{bin.floor}.
+  effect of the detrending options \code{\var{n}} and
+  \code{\var{prewhiten}} and the binning options \code{\var{seg.length}}
+  and \code{\var{bin.floor}}.
 
   Plot 1. Time series plot of the filtered series and the master.
   Plot 2. Scatterplot of series vs. master.
@@ -52,8 +54,8 @@ series.rwl.plot(rwl, series, series.yrs=as.numeric(names(series)),
   more information on these arguments.
 }
 \value{
-  A \code{list} containing the filtered vectors \code{series} and
-  \code{master}.
+  A \code{list} containing the filtered vectors \code{\var{series}} and
+  \code{\var{master}}.
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{

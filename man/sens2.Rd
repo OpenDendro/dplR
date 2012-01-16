@@ -20,16 +20,16 @@
 }
 \value{ the mean sensitivity.
 }
-\references{ Biondi, F. and Qeadan, F. (2008) Inequality in Paleorecords.
+\references{
+  Biondi, F. and Qeadan, F. (2008) Inequality in Paleorecords.
   \emph{Ecology}. 89(4):1056-1067.
 
   Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
-  Dendrochronology: Applications in the Environmental Sciences.} Springer.
-  ISBN-13: 978-0792305866.
+  Dendrochronology: Applications in the Environmental Sciences.}
+  Springer.  \acronym{ISBN-13}: 978-0792305866.
 
-  Fritts, H.C. (2001) \emph{Tree Rings and Climate.} Blackburn. ISBN-13:
-  978-1930665392.
-
+  Fritts, H.C. (2001) \emph{Tree Rings and Climate.}
+  Blackburn. \acronym{ISBN-13}: 978-1930665392.
 }
 \author{ Mikko Korpela, based on original by Andy Bunn }
 \seealso{ \code{\link{sens1}},\code{\link{rwl.stats}} }

@@ -21,10 +21,10 @@ rwi.stats.running(rwi, ids=NULL, period=c("max", "common"),
     width indices as columns and years as rows such as that produced by
     \code{\link{detrend}}. }
   \item{ids}{ an optional \code{data.frame} with column one named
-    \code{"tree"} giving a numeric id for each tree and column two named
-    \code{"core"} giving a numeric id for each core. Defaults to one core
-    per tree as
-    \code{data.frame(tree=1:ncol(rwi),core=rep(1,ncol(rwi)))}. }
+    \code{"tree"} giving a numeric \acronym{ID} for each tree and column
+    two named \code{"core"} giving a numeric \acronym{ID} for each
+    core. Defaults to one core per tree as
+    \code{data.frame(tree=1:ncol(\var{rwi}),core=rep(1,ncol(\var{rwi})))}. }
   \item{period}{ a character string, either \code{"common"} or
     \code{"max"} indicating whether correlations should be limited to
     complete observations over the period common to all cores (i.e. rows
@@ -36,22 +36,23 @@ rwi.stats.running(rwi, ids=NULL, period=c("max", "common"),
     (\code{FALSE}). }
   \item{window.length}{ numeric value indicating the length of the
     running window in years. The default is 50 years or the number of
-    years (rows) in \code{rwi}, whichever is smaller. }
+    years (rows) in \code{\var{rwi}}, whichever is smaller. }
   \item{window.overlap}{ numeric value indicating the overlap of
     consecutive window positions, i.e. the number of common years. The
     default is half of the window length, rounded down. }
   \item{first.start}{ an optional numeric value setting the position of
     the first window. Must be a value between \code{1} and
-    \code{n.years-window.length+1}, where \code{n.years} is the number of
-    years in \code{rwi}. The default value \code{NULL} lets the function
-    make the decision using some heuristic rules. }
+    \code{\var{n.years}-\var{window.length}+1}, where
+    \code{\var{n.years}} is the number of years in \code{\var{rwi}}. The
+    default value \code{NULL} lets the function make the decision using
+    some heuristic rules. }
   \item{min.corr.overlap}{ numeric value setting the minimum number of
     common years in any pair of ring width series required for their
     correlation to be included in the calculations. Smaller overlaps are
     considered to yield unreliable correlation values which are
     ignored. Defaults to the minimum of 30 and the length of the
     window. One way to lift the restriction and include all correlations
-    is to set \code{min.corr.overlap=0}. }
+    is to set \code{\var{min.corr.overlap}=0}. }
   \item{round.decimals}{ the desired number of decimal places in the
     results. }
   \item{zero.is.missing}{ logical flag indicating whether to treat zeros
@@ -63,12 +64,13 @@ rwi.stats.running(rwi, ids=NULL, period=c("max", "common"),
   dendrochronology.
 
   For correctly calculating the statistics on within and between series
-  variability, an appropriate mask (parameter \code{ids}) must be
+  variability, an appropriate mask (parameter \code{\var{ids}}) must be
   provided that identifies each series with a tree as it is common for
   dendrochronologists to take more than one core per tree.  The function
   \code{\link{read.ids}} is be helpful for creating a mask based on the
-  series id.  If \code{ids} has duplicate tree/core combinations, the
-  corresponding series are averaged before any statistics are computed.
+  series \acronym{ID}.  If \code{\var{ids}} has duplicate tree/core
+  combinations, the corresponding series are averaged before any
+  statistics are computed.
 
   Note that \code{period="common"} can produce \code{NaN} for many of
   the stats if there is no common overlap period among the cores.  This
@@ -80,43 +82,58 @@ rwi.stats.running(rwi, ids=NULL, period=c("max", "common"),
   unfamiliar with these should see Cook and Kairiukstis (1990) and
   Fritts (2001) for further details.
 
-  The default value of \code{zero.is.missing} is \code{FALSE} mostly
-  because of backward compatibility of results.  Usually it will
+  The default value of \code{\var{zero.is.missing}} is \code{FALSE}
+  mostly because of backward compatibility of results.  Usually it will
   probably make more sense to set this to \code{TRUE}.  If the parameter
   is left to the default value, the user will be warned in case zeros
   are present.
 }
 \value{ A \code{data.frame} containing the following columns (each row
   corresponds to one position of the window):
-\code{start.year} the first year in the window (not present
-if \code{running.window} is \code{FALSE}),
-\code{mid.year} the middle year in the window, rounded down (not present
-if \code{running.window} is \code{FALSE}),
-\code{end.year} the last year in the window (not present
-if \code{running.window} is \code{FALSE}),
-\code{n.tot} total number of correlations computed,
-\code{n.wt} number of within-tree correlations computed,
-\code{n.bt} number of between-tree correlations computed,
-\code{rbar.tot} the mean of all correlation between different cores,
-\code{rbar.wt} the mean of the correlations between series from the same
-tree over all trees,
-\code{rbar.bt} the mean interseries correlation between all series from
-different trees,
-\code{c.eff} the effective number of cores (takes into account the
-number of within-tree correlations in each tree),
-\code{rbar.eff} the effective signal calculated as \code{ rbar.bt /
-  (rbar.wt + (1-rbar.wt) / c.eff) },
-\code{eps} the expressed population signal,
-\code{n} the average number of trees (for each year, a tree needs
-at least one non-\code{NA} core in order to be counted).
+
+  \code{\var{start.year}} the first year in the window (not present if
+  \code{running.window} is \code{FALSE}),
+
+  \code{\var{mid.year}} the middle year in the window, rounded down (not
+  present if \code{running.window} is \code{FALSE}),
+  
+  \code{\var{end.year}} the last year in the window (not present if
+  \code{running.window} is \code{FALSE}),
+
+  \code{\var{n.tot}} total number of correlations computed,
+
+  \code{\var{n.wt}} number of within-tree correlations computed,
+
+  \code{\var{n.bt}} number of between-tree correlations computed,
+
+  \code{\var{rbar.tot}} the mean of all correlation between different
+  cores,
+
+  \code{\var{rbar.wt}} the mean of the correlations between series from
+  the same tree over all trees,
+
+  \code{\var{rbar.bt}} the mean interseries correlation between all
+  series from different trees,
+
+  \code{\var{c.eff}} the effective number of cores (takes into account
+  the number of within-tree correlations in each tree),
+
+  \code{\var{rbar.eff}} the effective signal calculated as \code{
+    \var{rbar.bt} / (\var{rbar.wt} + (1-\var{rbar.wt}) / \var{c.eff}) },
+
+  \code{\var{eps}} the expressed population signal,
+
+  \code{\var{n}} the average number of trees (for each year, a tree
+  needs at least one non-\code{NA} core in order to be counted).
+  
 }
-\references{ Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
-  Dendrochronology: Applications in the Environmental Sciences.} Springer.
-  ISBN-13: 978-0792305866.
+\references{
+  Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
+  Dendrochronology: Applications in the Environmental Sciences.}
+  Springer.  \acronym{ISBN-13}: 978-0792305866.
 
-  Fritts, H.C. (2001) \emph{Tree Rings and Climate.} Blackburn. ISBN-13:
-  978-1930665392.
-
+  Fritts, H.C. (2001) \emph{Tree Rings and Climate.}
+  Blackburn. \acronym{ISBN-13}: 978-1930665392.
 }
 \note{
   This function uses the \code{\link[foreach]{foreach}} looping

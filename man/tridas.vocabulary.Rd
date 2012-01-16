@@ -21,29 +21,43 @@ tridas.vocabulary(category = c("dating type", "measuring method", "shape", "loca
   \item{term}{A \code{character} vector. One or more (partial) terms to
     look for in the given category.}
   \item{match.exact}{A \code{logical} value. If \code{TRUE}, partial
-    matching of \code{term} is not used. Defaults to \code{FALSE}.}
+    matching of \code{\var{term}} is not used. Defaults to
+    \code{FALSE}.}
 }
 \details{
   The function has four usage modes:
   \enumerate{
-    \item When \code{idx} is given, returns item number \code{idx} in
-    the given \code{category}. There may be several numbers in
-    \code{idx}, in which case multiple items are returned.
-    \item When \code{term} contains one or more items and
-    \code{match.exact==TRUE}, checks whether any of the terms is an
-    exact match in the given \code{category}
-    \item When \code{term} contains one or more items and
-    \code{match.exact==FALSE}, expands partial matches of the terms in
-    the vocabulary of the given \code{category}
-    \item When only \code{category} is given, returns the complete
-    vocabulary in the given \code{category}
+
+    \item When \code{\var{idx}} is given, returns item number
+    \code{\var{idx}} in the given \code{\var{category}}. There may be
+    several numbers in \code{\var{idx}}, in which case multiple items
+    are returned.
+
+    \item When \code{\var{term}} contains one or more items and
+    \code{\var{match.exact}==TRUE}, checks whether any of the terms is
+    an exact match in the given \code{\var{category}}
+
+    \item When \code{\var{term}} contains one or more items and
+    \code{\var{match.exact}==FALSE}, expands partial matches of the
+    terms in the vocabulary of the given \code{\var{category}}
+
+    \item When only \code{\var{category}} is given, returns the complete
+    vocabulary in the given \code{\var{category}}
+
   }
 }
 \value{
-\item{In mode 1}{A \code{character} vector, same length as in \code{idx}}
-\item{In mode 2}{A \code{logical} value}
-\item{In mode 3}{A \code{character} vector, same length as in \code{term}}
-\item{In mode 4}{A \code{character} vector}
+
+  \item{In mode 1}{A \code{character} vector, same length as in
+    \code{\var{idx}}}
+
+  \item{In mode 2}{A \code{logical} value}
+
+  \item{In mode 3}{A \code{character} vector, same length as in
+    \code{\var{term}}}
+
+  \item{In mode 4}{A \code{character} vector}
+
 }
 \references{
   TRiDaS - The Tree Ring Data Standard, \url{http://www.tridas.org/}

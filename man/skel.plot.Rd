@@ -12,7 +12,7 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9, dat.out = FALSE,
   \item{rw.vec}{ a vector of a tree-ring chronology or series }
   \item{yr.vec}{ optional vector giving years for the tree-ring data }
   \item{sname}{ an optional string of less than 8 characters
-    giving the id for the data }
+    giving the \acronym{ID} for the data }
   \item{filt.weight}{ filter length for the hanning filter, defaults to 9 }
   \item{dat.out}{ logical flag indicating whether to return a
     \code{data.frame} containing the data. }
@@ -24,40 +24,44 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9, dat.out = FALSE,
 }
 \details{
   This makes a skeleton plot - a plot that gives the relative growth for
-  year t relative to years t-1 and t+1. Note that this plot is a
-  standard plot in dendrochronology and typically made by hand for
-  visually cross-dating series. This type of plot might be confusing to
-  those not accustomed to visual cross-dating. See references for more
-  information. The implementation is based on Meko's (2002) skeleton
-  plotting approach.
+  year \code{\var{t}} relative to years \code{\var{t}-1} and
+  \code{\var{t}+1}. Note that this plot is a standard plot in
+  dendrochronology and typically made by hand for visually cross-dating
+  series. This type of plot might be confusing to those not accustomed
+  to visual cross-dating. See references for more information. The
+  implementation is based on Meko's (2002) skeleton plotting approach.
 
   The skeleton plot is made by calculating departures from high
-  frequency growth for each year by comparing year t to the surrounding
-  three years (t-1,t,t+1). Low frequency variation is removed using a
-  \code{\link{hanning}} filter. Relative growth is scaled from one to
-  ten but only values greater than three are plotted. This function's
-  primary effect is to create plot with absolute units that can be
-  printed and compared to other plots. Here, anomalous growth is plotted
-  on a 2mm grid and up to 120 years are plotted on a single row with a
-  maximum of 7 rows (840 years). These plots are designed to be plotted
-  on standard paper using an appropriate \code{device}, e.g.,
-  \code{postscript} with defaults or to \code{pdf} with plot width and
-  height to accommodate a landscape plot, e.g., \code{width = 10, height
-  = 7.5, paper = 'USr'}. These plots are designed to be printable and
-  cut into strips to align long series. Statistical cross-dating is
-  possible if the data are output.
+  frequency growth for each year by comparing year \code{\var{t}} to the
+  surrounding three years
+  (\code{\var{t}-1},\code{\var{t}},\code{\var{t}+1}). Low frequency
+  variation is removed using a \code{\link{hanning}} filter. Relative
+  growth is scaled from one to ten but only values greater than three
+  are plotted. This function's primary effect is to create plot with
+  absolute units that can be printed and compared to other plots. Here,
+  anomalous growth is plotted on a 2mm grid and up to 120 years are
+  plotted on a single row with a maximum of 7 rows (840 years). These
+  plots are designed to be plotted on standard paper using an
+  appropriate \code{device}, e.g., \code{postscript} with defaults or to
+  \code{pdf} with plot width and height to accommodate a landscape plot,
+  e.g., \code{\var{width} = 10, \var{height} = 7.5, \var{paper} =
+  "USr"}. These plots are designed to be printable and cut into strips
+  to align long series. Statistical cross-dating is possible if the data
+  are output.
 }
 \value{
   This function is invoked primarily for its side effect, which is to
-  produce a plot. If \code{dat.out} is \code{TRUE} then a
+  produce a plot. If \code{\var{dat.out}} is \code{TRUE} then a
   \code{data.frame} is returned with the years and height of the
   skeleton plot segments as columns.
 }
-\references{ Stokes, M.A. and Smiley, T.L. (1968) \emph{An Introduction to
+\references{
+  Stokes, M.A. and Smiley, T.L. (1968) \emph{An Introduction to
   Tree-Ring Dating.} The University of Arizona Press.
-  ISBN-13: 978-0816516803.
+  \acronym{ISBN-13}: 978-0816516803.
   
-  Sheppard, P.R. (2002) \emph{Crossdating Tree Rings Using Skeleton Plotting.}
+  Sheppard, P.R. (2002) \emph{Crossdating Tree Rings Using Skeleton
+  Plotting.}
   \url{http://www.ltrr.arizona.edu/skeletonplot/introcrossdate.htm}
   
   Meko, D. (2002) \emph{Tree-Ring MATLAB Toolbox.}

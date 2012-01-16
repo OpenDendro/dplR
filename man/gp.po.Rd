@@ -11,11 +11,11 @@
 }
 \usage{gp.po}
 \format{
-  A \code{data.frame} containing series ids in column 1 (\code{series})
-  and the number of years between the beginning of that series in
-  \code{\link{gp.rwl}} and the pith of the tree
-  (\code{pith.offset}). This can be used together with the ring widths
-  to calculate the cambial age of each ring.
+  A \code{data.frame} containing series \acronym{ID}s in column 1
+  (\code{\var{series}}) and the number of years between the beginning of
+  that series in \code{\link{gp.rwl}} and the pith of the tree
+  (\code{\var{pith.offset}}). This can be used together with the ring
+  widths to calculate the cambial age of each ring.
 }
 \source{
   DendroLab, University of Nevada Reno, \acronym{USA}.

@@ -16,14 +16,15 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
     such as that produced by \code{\link{read.rwl}}. }
   \item{series}{ a \code{numeric} vector. Usually a tree-ring series. }
-  \item{series.yrs}{ a \code{numeric} vector giving the years of \code{series}.
-    Defaults to \code{as.numeric(names(series))}. }
-  \item{seg.length}{ an even \code{integer} giving length of segments in years
-    (e.g., 20, 50, 100 years). }
+  \item{series.yrs}{ a \code{numeric} vector giving the years of
+    \code{\var{series}}.  Defaults to
+    \code{as.numeric(names(\var{series}))}. }
+  \item{seg.length}{ an even \code{integer} giving length of segments in
+    years (e.g., 20, 50, 100 years). }
   \item{bin.floor}{ a non-negative \code{integer} giving the base for
-    locating the first segment (e.g.,1600, 1700, 1800 AD). Typically 0,
-    10, 50, 100, etc. }
-  \item{n}{ \code{NULL} or an integer giving the filter length for the
+    locating the first segment (e.g.,1600, 1700, 1800
+    \acronym{AD}). Typically 0, 10, 50, 100, etc. }
+    \item{n}{ \code{NULL} or an integer giving the filter length for the
     \code{\link{hanning}} filter used for removal of low frequency
     variation. }
   \item{prewhiten}{ \code{logical} flag. If \code{TRUE} each series is
@@ -34,45 +35,48 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
     correlation test. }
   \item{lag.max}{ an integer giving the maximum lag at which to calculate
     the \code{\link{ccf}}. }
-  \item{make.plot}{ \code{logical flag} indicating whether to make a
+  \item{make.plot}{ \code{logical} flag indicating whether to make a
     plot. }
-  \item{floor.plus1}{ \code{logical flag}. If \code{TRUE}, one year is
+  \item{floor.plus1}{ \code{logical} flag. If \code{TRUE}, one year is
     added to the base location of the first segment (e.g. 1601, 1701,
-    1801 AD). }
+    1801 \acronym{AD}). }
   \item{\dots{}}{ other arguments passed to plot. }
 }
 \details{
-  This function calculates the cross-correlation function between a tree-ring
-  series and a master chronology built from a rwl object looking at
-  correlations lagged positively and negatively using \code{link{ccf}} at
-  overlapping segments set by \code{seg.length}. For instance,
-  with \code{lag.max} set to 5, cross-correlations would be
-  calculated at for each segment with the master lagged at \code{k=c(-5:5)} years.
-  The function is typically invoked to produce a plot.
+  This function calculates the cross-correlation function between a
+  tree-ring series and a master chronology built from a rwl object
+  looking at correlations lagged positively and negatively using
+  \code{link{ccf}} at overlapping segments set by
+  \code{\var{seg.length}}. For instance, with \code{\var{lag.max}} set
+  to 5, cross-correlations would be calculated at for each segment with
+  the master lagged at \code{\var{k}=-5:5} years.  The function is
+  typically invoked to produce a plot.
 
   Correlations are calculated for the first segment, then the
   second segment and so on. Correlations are only calculated for segments with
   complete overlap with the master chronology.
 
-  Each series (including those in the rwl object) is optionally detrended as the residuals
-  from a \code{\link{hanning}} filter with weight \code{n}. The filter is not applied
-  if \code{n} is \code{NULL}. Detrending can also be done via prewhitening where
-  the residuals of an \code{\link{ar}} model are added to each series
-  mean. This is the default. The master chronology is computed as the mean of
-  rwl object using \code{\link{tbrm}} if \code{biweight=TRUE} and \code{rowMeans}
-  if not. Note that detrending typically changes the length of the series. E.g., a
+  Each series (including those in the \code{\var{rwl}} object) is
+  optionally detrended as the residuals from a \code{\link{hanning}}
+  filter with weight \code{\var{n}}. The filter is not applied if
+  \code{\var{n}} is \code{NULL}. Detrending can also be done via
+  prewhitening where the residuals of an \code{\link{ar}} model are
+  added to each series mean. This is the default. The master chronology
+  is computed as the mean of rwl object using \code{\link{tbrm}} if
+  \code{\var{biweight}==TRUE} and \code{rowMeans} if not. Note that
+  detrending typically changes the length of the series. E.g., a
   \code{\link{hanning}} filter will shorten the series on either end by
-  \code{floor(n/2)}. The prewhitening default will change the series
-  length based on the \code{\link{ar}} model fit. The effects of
+  \code{floor(\var{n}/2)}. The prewhitening default will change the
+  series length based on the \code{\link{ar}} model fit. The effects of
   detrending can be seen with \code{\link{series.rwl.plot}}.
 
 }
 \value{
-  A \code{list} containing matrices \code{ccf} and \code{bins}. Matrix \code{ccf}
-  contains the correlations between the series and the master chronology at
-  the lags window given by \code{lag.max}. Matrix \code{bins} contains the
-  years encapsulated by each bin.
-
+  A \code{list} containing matrices \code{\var{ccf}} and
+  \code{\var{bins}}. Matrix \code{\var{ccf}} contains the correlations
+  between the series and the master chronology at the lags window given
+  by \code{\var{lag.max}}. Matrix \code{\var{bins}} contains the years
+  encapsulated by each bin.
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{corr.rwl.seg}}, \code{\link{corr.series.seg}},

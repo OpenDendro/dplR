@@ -30,13 +30,13 @@ rwl.stats(rwl)
   autocorrelation (\code{"skew"}, \code{"\link{sens1}"},
   \code{"\link{sens2}"}, \code{"\link{gini.coef}"}, \code{"ar1"}).
 }
-\references{ Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
-  Dendrochronology: Applications in the Environmental Sciences.} Springer.
-  ISBN-13: 978-0792305866.
+\references{
+  Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
+  Dendrochronology: Applications in the Environmental Sciences.}
+  Springer.  \acronym{ISBN-13}: 978-0792305866.
 
-  Fritts, H.C. (2001) \emph{Tree Rings and Climate.} Blackburn. ISBN-13:
-  978-1930665392.
-
+  Fritts, H.C. (2001) \emph{Tree Rings and Climate.}
+  Blackburn. \acronym{ISBN-13}: 978-1930665392.
 }
 \author{ Andy Bunn. Slightly improved by Mikko Korpela. }
 \seealso{ \code{\link{rwi.stats}}, \code{\link{read.rwl}} }

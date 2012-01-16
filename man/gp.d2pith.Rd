@@ -11,10 +11,10 @@
 }
 \usage{gp.d2pith}
 \format{
-  A \code{data.frame} containing series ids in column 1 (\code{series})
-  and the distance (in mm) from the innermost ring to the pith of the
-  tree (\code{d2pith}). This can be used together with the ring widths
-  to calculate the area of each ring.
+  A \code{data.frame} containing series \acronym{ID}s in column 1
+  (\code{\var{series}}) and the distance (in mm) from the innermost ring
+  to the pith of the tree (\code{\var{d2pith}}). This can be used
+  together with the ring widths to calculate the area of each ring.
 }
 \source{DendroLab, University of Nevada Reno, \acronym{USA}.
   \url{http://dendrolab.org/}

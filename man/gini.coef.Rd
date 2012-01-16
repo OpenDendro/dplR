@@ -9,7 +9,7 @@
 gini.coef(x)
 }
 \arguments{
-  \item{x}{ a \code{vector}. }
+  \item{x}{ a \code{numeric} vector }
 }
 \details{
   This calculates the Gini coefficient of inequality which is used as an
@@ -25,7 +25,8 @@ gini.coef(x)
   \emph{Ecology}. 89(4):1056-1067.
 
   Handcock. M.S. and Morris, M. (1999) \emph{Relative Distribution
-  Methods in the Social Sciences.} Springer-Verlag. ISBN: 0387987789.
+    Methods in the Social Sciences.} Springer-Verlag. \acronym{ISBN}:
+    0387987789.
 }
 \author{ Mikko Korpela, based on original by Andy Bunn }
 \seealso{ \code{\link{rwl.stats}} }

@@ -13,12 +13,12 @@ rcs(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
   \item{rwl}{ a \code{data.frame} with series as columns and years as
     rows such as that produced by \code{\link{read.rwl}} }
   \item{po}{ a \code{data.frame} containing two variables. Variable one
-    (\code{\var{series}} in the example below) gives the series ID as
-    either \code{character}s or \code{factor}s. These must exactly match
-    \code{colnames(\var{rwl})}. Variable two (\code{\var{pith.offset}}
-    in the example below) must be integral values and give the years
-    from the beginning of the core to the pith (or center) of the
-    tree. The minimum value is 1. }
+    (\code{\var{series}} in the example below) gives the series
+    \acronym{ID} as either \code{character}s or \code{factor}s. These
+    must exactly match \code{colnames(\var{rwl})}. Variable two
+    (\code{\var{pith.offset}} in the example below) must be integral
+    values and give the years from the beginning of the core to the pith
+    (or center) of the tree. The minimum value is 1. }
   \item{nyrs}{ a number giving the rigidity of the smoothing spline,
     defaults to 0.1 of length of the maximum cambial age (i.e., the
     length of the regional curve) if \code{\var{nyrs}} is \code{NULL}. }

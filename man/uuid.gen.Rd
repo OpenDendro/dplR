@@ -70,8 +70,8 @@ uuid.gen(more.state = "")
 }
 \references{
   Leach, P., Mealling, M. and Salz, R. (July 2005) A Universally Unique
-  IDentifier (UUID) URN Namespace, RFC 4122. [Online].  Available:
-  \url{http://tools.ietf.org/html/rfc4122}
+  IDentifier (\acronym{UUID}) \acronym{URN} Namespace, \acronym{RFC}
+  4122. [Online].  Available: \url{http://tools.ietf.org/html/rfc4122}
 }
 \author{
   Mikko Korpela

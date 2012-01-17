@@ -9,7 +9,7 @@ bai.in(rwl, d2pith = NULL)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows such as that produced by \code{\link{read.rwl}} }
-  \item{d2pith}{ an optional \code{vector} containing two variables. If present, then variable one (\code{series} in the example below) gives the series ID as either \code{characters} or \code{factors}. These must exactly match \code{colnames(\var{rwl})}. Variable two (\code{\var{d2pith}} in the example below) gives the distance from the innermost measured ring to the pith of the tree in mm. If \code{\var{d2pith}} is \code{NULL} then the distance to pith is assumed to be zero for each series (column) in \code{\var{rwl}}. }
+  \item{d2pith}{ an optional \code{vector} containing two variables. If present, then variable one (\code{series} in the example below) gives the series \acronym{ID} as either \code{characters} or \code{factors}. These must exactly match \code{colnames(\var{rwl})}. Variable two (\code{\var{d2pith}} in the example below) gives the distance from the innermost measured ring to the pith of the tree in mm. If \code{\var{d2pith}} is \code{NULL} then the distance to pith is assumed to be zero for each series (column) in \code{\var{rwl}}. }
 }
 \details{
 This converts ring width series (mm) to ring-area series (mm squared) (aka basal area increments) based on the distance between the innermost measured ring and the pith of the tree. It is related to \code{\link{bai.out}}, which calculates each ring area starting from the outside of the tree and working inward. Both methods assume a circular cross section (Biondi 1999). See the references below for further details. 

@@ -19,6 +19,6 @@ read.fh(fname)
  }
 \author{ Christian Zang.  Patched by Mikko Korpela. }
 \seealso{ \code{\link{read.rwl}} }
-\references{ Rinn, F. (2003) \emph{TSAP-Win User Reference Manual.} Rinntech, Heidelberg \url{http://www.rinntech.com}
+\references{ Rinn, F. (2003) \emph{TSAP-Win User Reference Manual.} Rinntech, Heidelberg \url{http://www.rinntech.com/}
 }
 \keyword{ IO }

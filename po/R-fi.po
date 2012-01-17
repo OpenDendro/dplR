@@ -1,13 +1,13 @@
 # Finnish translations for messages in dplR R code
 # Copyright (C) dplR copyright holders
 # This file is distributed under the same license as the dplR package.
-# Mikko Korpela <mvkorpel@iki.fi>, 2011.
+# Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.5.0\n"
+"Project-Id-Version: dplR 1.5.2\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-11-23 17:11+0200\n"
-"PO-Revision-Date: 2011-11-23 17:14+0200\n"
+"POT-Creation-Date: 2012-01-17 19:01+0200\n"
+"PO-Revision-Date: 2012-01-17 19:01+0200\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -262,6 +262,12 @@ msgstr "liian monta arvoa (odotettiin %d, saatiin %d)"
 msgid "Site-Tree-Core mask is larger than 8"
 msgstr "Paikka-Puu-Näyte-maski on suurempi kuin 8"
 
+msgid "Site-Tree-Core mask must only contain integral values"
+msgstr "Paikka-Puu-Näyte-maskissa täytyy olla pelkkiä kokonaislukuja"
+
+msgid "length of Site-Tree-Core mask must be 3"
+msgstr "Paikka-Puu-Näyte-maskin pituuden täytyy olla 3"
+
 msgid "unable to create tree ids"
 msgstr "ei voida luoda puiden tunnisteita"
 
@@ -457,7 +463,7 @@ msgid "Detrending Options:"
 msgstr "Trendinpuhdistusvaihtoehdot:"
 
 msgid "'sname' must be a character string less than 8 characters long"
-msgstr "’sname’n pitää olla alle 8-merkkinen merkkijono"
+msgstr "’sname’n täytyy olla alle 8-merkkinen merkkijono"
 
 msgid "input series has length of %d"
 msgstr "syötesarjan pituus on %d"
@@ -540,17 +546,17 @@ msgstr "’%s$%s’:n täytyy olla character-tyyppinen – asetetaan arvo ”%s�
 
 msgid "2-col 'ids' needs \"tree\" and \"core\" columns"
 msgstr ""
-"2-sarakkeisessa ’ids’-muuttujassa pitää olla ”tree”- ja ”core”-sarakkeet"
+"2-sarakkeisessa ’ids’-muuttujassa täytyy olla ”tree”- ja ”core”-sarakkeet"
 
 msgid "3-col 'ids' needs \"tree\", \"core\", and \"radius\" columns"
 msgstr ""
-"3-sarakkeisessa ’ids’-muuttujassa pitää olla ”tree”-, ”core”- ja ”radius”-"
+"3-sarakkeisessa ’ids’-muuttujassa täytyy olla ”tree”-, ”core”- ja ”radius”-"
 "sarakkeet"
 
 msgid ""
 "4-col 'ids' needs \"tree\", \"core\", \"radius\", and \"measurement\" columns"
 msgstr ""
-"4-sarakkeisessa ’ids’-muuttujassa pitää olla ”tree”-, ”core”-, ”radius”- ja "
+"4-sarakkeisessa ’ids’-muuttujassa täytyy olla ”tree”-, ”core”-, ”radius”- ja "
 "”measurement”-sarakkeet"
 
 msgid "argument 'ids' is in wrong format (2, 3, or 4 columns required)"

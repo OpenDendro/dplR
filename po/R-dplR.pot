@@ -1,12 +1,12 @@
 # Translation template for messages in dplR R code
 # Copyright (C) dplR copyright holders
 # This file is distributed under the same license as the dplR package.
-# Mikko Korpela <mvkorpel@iki.fi>, 2011.
+# Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.5.0\n"
+"Project-Id-Version: dplR 1.5.2\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-11-23 17:11+0200\n"
+"POT-Creation-Date: 2012-01-17 19:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -250,6 +250,12 @@ msgid "too many values (expected %d, got %d)"
 msgstr ""
 
 msgid "Site-Tree-Core mask is larger than 8"
+msgstr ""
+
+msgid "Site-Tree-Core mask must only contain integral values"
+msgstr ""
+
+msgid "length of Site-Tree-Core mask must be 3"
 msgstr ""
 
 msgid "unable to create tree ids"

@@ -2,7 +2,7 @@
 
 \alias{combine.rwl}
 
-\title{ Combine tree-ring data sets }
+\title{ Combine Tree-Ring Data Sets }
 
 \description{ This function combines any number of \code{data.frames} of
   tree-ring data into one \code{data.frame}.  }

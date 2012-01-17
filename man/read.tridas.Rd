@@ -1,7 +1,7 @@
 \name{read.tridas}
 \alias{read.tridas}
 
-\title{ Function to read Tree Ring Data Standard (TRiDaS) files }
+\title{ Read Tree Ring Data Standard (TRiDaS) File }
 
 \description{ This function reads in a TRiDaS format \acronym{XML} file.
   Measurements, derived series and various kinds of metadata are
@@ -9,8 +9,8 @@
 
 \usage{
 read.tridas(fname, ids.from.titles = FALSE,
-  ids.from.identifiers = TRUE, combine.series = TRUE,
-  trim.whitespace = TRUE, warn.units = TRUE)
+            ids.from.identifiers = TRUE, combine.series = TRUE,
+            trim.whitespace = TRUE, warn.units = TRUE)
 }
 
 \arguments{

@@ -1,9 +1,9 @@
 \name{rwi.stats}
 \alias{rwi.stats}
-\title{ Calculates Summary Statistics on Detrended Ring Width Series }
+\title{ Calculate Summary Statistics on Detrended Ring Width Series }
 \description{
   This function calculates descriptive statistics on a \code{data.frame}
-  of (usually) ring-width indices.
+  of (usually) ring width indices.
 }
 \usage{
 rwi.stats(rwi, ids = NULL, period = c("max", "common"))
@@ -12,11 +12,12 @@ rwi.stats(rwi, ids = NULL, period = c("max", "common"))
   \item{rwi}{ a \code{data.frame} with detrended and standardized ring width
     indices as columns and years as rows such as that produced by
     \code{\link{detrend}}. }
-  \item{ids}{ a optional \code{data.frame} with column one named
-    \code{"tree"} giving a numeric \acronym{ID} for each tree and column
-    two named \code{"core"} giving a numeric \acronym{ID} for each
-    core. Defaults to one core per tree as
-    \code{data.frame(tree=1:ncol(\var{rwi}),core=rep(1,ncol(\var{rwi})))}. }
+  \item{ids}{ an optional \code{data.frame} with column one named
+    \code{"tree"} giving a \code{numeric} \acronym{ID} for each tree and
+    column two named \code{"core"} giving a \code{numeric} \acronym{ID}
+    for each core. Defaults to one core per tree as
+    \code{data.frame(tree = 1:ncol(\var{rwi}), core = rep(1,
+    ncol(\var{rwi})))}. }
   \item{period}{ a character string, either \code{"common"} or
     \code{"max"} indicating whether correlations should be limited to
     complete observations over the period common to all cores or the
@@ -43,31 +44,32 @@ rwi.stats(rwi, ids = NULL, period = c("max", "common"))
   unfamiliar with these should see Cook and Kairiukstis (1990) and Fritts
   (2001) for further details.
 }
-\value{ A \code{data.frame} containing the following:
+\value{ A \code{data.frame} containing
 
-  \code{\var{n.tot}} total number of unique combinations of the input
-  series (i.e., n*n-1/2),
+  \item{n.tot}{total number of unique combinations of the input series
+    (i.e., \code{\var{n}*(\var{n}-1)/2}, where \var{n} is the number of
+    series)}
 
-  \code{\var{n.wt}} total number of unique combinations of the within-tree
-  series,
+  \item{n.wt}{total number of unique combinations of the within-tree
+    series}
 
-  \code{\var{n.bt}} total number of unique combinations of the between-tree
-  series,
+  \item{n.bt}{total number of unique combinations of the between-tree
+    series}
 
-  \code{\var{rbar.tot}} the mean of all correlation between different cores,
+  \item{rbar.tot}{the mean of all correlation between different cores}
 
-  \code{\var{rbar.wt}} the mean of the correlations between series from the same
-  tree over all trees,
+  \item{rbar.wt}{the mean of the correlations between series from the
+    same tree over all trees}
 
-  \code{\var{rbar.bt}} the mean interseries correlation between all series from
-  different trees,
+  \item{rbar.bt}{the mean interseries correlation between all series
+    from different trees}
 
-  \code{\var{c.eff}} the effective number of cores,
+  \item{c.eff}{the effective number of cores}
 
-  \code{\var{rbar.eff}} the effective signal calculated as \code{
-    \var{rbar.bt} / (\var{rbar.wt} + (1-\var{rbar.wt}) / \var{c.eff}) },
+  \item{rbar.eff}{the effective signal calculated as \code{
+    \var{rbar.bt} / (\var{rbar.wt} + (1-\var{rbar.wt}) / \var{c.eff}) }}
 
-  \code{\var{eps}} the expressed population signal.
+  \item{eps}{the expressed population signal}
 }
 \references{
   Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of

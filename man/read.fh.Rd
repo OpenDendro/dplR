@@ -11,7 +11,7 @@ read.fh(fname)
   \item{fname}{ a character vector giving the file name of the fh file. }
 }
 \details{
-  This reads in a fh-file with ring-widths in blocks (decadal format) or in columns (as with comment flags e.g.) as used by \acronym{TSAP} program. Chronologies or half-chronos in fh-format are not supported.
+  This reads in a fh-file with ring widths in blocks (decadal format) or in columns (as with comment flags e.g.) as used by TSAP program. Chronologies or half-chronos in fh-format are not supported.
 }
 \value{
   A \code{data.frame} with the series in columns and the years as rows. The

@@ -1,6 +1,6 @@
 \name{detrend.series}
 \alias{detrend.series}
-\title{ Detrend a Ring-Width Series }
+\title{ Detrend a Ring Width Series }
 \description{
   Detrend a tree-ring series by one of two methods, a smoothing spline or
   a statistical model. The series and fits are plotted by default.
@@ -41,7 +41,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   This detrends and standardizes a tree-ring series. The detrending is
   the estimation and removal of the tree's natural biological growth
   trend.  The standardization is done by dividing each series by the
-  growth trend to produce units in the dimensionless ring-width index
+  growth trend to produce units in the dimensionless ring width index
   (\acronym{RWI}). There are currently three methods available for
   detrending although more are certainly possible. The methods
   implemented are a smoothing spline via \code{\link{ffcsaps}}
@@ -61,8 +61,8 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   exp(\var{b}*1:length(\var{Y})) + \var{k}} using \code{\link{nls}}. See
   Fritts (2001) for details about the parameters. If a nonlinear model
   cannot be fit then a linear model is fit.  That linear model can have
-  a positive slope unless pos.slope is \code{FALSE} in which case method
-  \code{"Mean"} is used.
+  a positive slope unless \code{\var{pos.slope}} is \code{FALSE} in
+  which case method \code{"Mean"} is used.
 
   The \code{"Mean"} approach fits a horizontal line using the mean of
   the series.

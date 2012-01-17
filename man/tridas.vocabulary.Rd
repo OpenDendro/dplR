@@ -1,13 +1,16 @@
 \name{tridas.vocabulary}
 \alias{tridas.vocabulary}
 \title{
-  Function to browse and check standard TRiDaS vocabulary
+  Browse and Check Standard TRiDaS Vocabulary
 }
 \description{
   This function can be used to browse the TRiDaS vocabulary by category.
 }
 \usage{
-tridas.vocabulary(category = c("dating type", "measuring method", "shape", "location type", "variable", "unit", "remark", "dating suffix", "presence / absence", "complex presence / absence", "certainty"), idx = NA, term = NA, match.exact = FALSE)
+tridas.vocabulary(category = c("dating type", "measuring method",
+  "shape", "location type", "variable", "unit", "remark",
+  "dating suffix", "presence / absence", "complex presence / absence",
+  "certainty"), idx = NA, term = NA, match.exact = FALSE)
 }
 \arguments{
   \item{category}{Vocabulary category as a \code{character} vector of
@@ -34,12 +37,12 @@ tridas.vocabulary(category = c("dating type", "measuring method", "shape", "loca
     are returned.
 
     \item When \code{\var{term}} contains one or more items and
-    \code{\var{match.exact}==TRUE}, checks whether any of the terms is
-    an exact match in the given \code{\var{category}}
+    \code{\var{match.exact}} is \code{TRUE}, checks whether any of the
+    terms is an exact match in the given \code{\var{category}}
 
     \item When \code{\var{term}} contains one or more items and
-    \code{\var{match.exact}==FALSE}, expands partial matches of the
-    terms in the vocabulary of the given \code{\var{category}}
+    \code{\var{match.exact}} is \code{FALSE}, expands partial matches of
+    the terms in the vocabulary of the given \code{\var{category}}
 
     \item When only \code{\var{category}} is given, returns the complete
     vocabulary in the given \code{\var{category}}

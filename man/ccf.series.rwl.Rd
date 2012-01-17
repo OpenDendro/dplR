@@ -1,6 +1,6 @@
 \name{ccf.series.rwl}
 \alias{ccf.series.rwl}
-\title{ Compute Cross-Correlation between a Series and a Master Chronology }
+\title{ Cross-Correlation between a Series and a Master Chronology }
 \description{
   Computes cross-correlations between a tree-ring series and a master
   chronology built from a rwl object at user-specified lags and segments.
@@ -44,9 +44,9 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
 }
 \details{
   This function calculates the cross-correlation function between a
-  tree-ring series and a master chronology built from a rwl object
+  tree-ring series and a master chronology built from \code{\var{rwl}}
   looking at correlations lagged positively and negatively using
-  \code{link{ccf}} at overlapping segments set by
+  \code{\link{ccf}} at overlapping segments set by
   \code{\var{seg.length}}. For instance, with \code{\var{lag.max}} set
   to 5, cross-correlations would be calculated at for each segment with
   the master lagged at \code{\var{k}=-5:5} years.  The function is
@@ -62,13 +62,14 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
   \code{\var{n}} is \code{NULL}. Detrending can also be done via
   prewhitening where the residuals of an \code{\link{ar}} model are
   added to each series mean. This is the default. The master chronology
-  is computed as the mean of rwl object using \code{\link{tbrm}} if
-  \code{\var{biweight}==TRUE} and \code{rowMeans} if not. Note that
-  detrending typically changes the length of the series. E.g., a
-  \code{\link{hanning}} filter will shorten the series on either end by
-  \code{floor(\var{n}/2)}. The prewhitening default will change the
-  series length based on the \code{\link{ar}} model fit. The effects of
-  detrending can be seen with \code{\link{series.rwl.plot}}.
+  is computed as the mean of the \code{\var{rwl}} object using
+  \code{\link{tbrm}} if \code{\var{biweight}} is \code{TRUE} and
+  \code{rowMeans} if not. Note that detrending typically changes the
+  length of the series. E.g., a \code{\link{hanning}} filter will
+  shorten the series on either end by \code{floor(\var{n}/2)}. The
+  prewhitening default will change the series length based on the
+  \code{\link{ar}} model fit. The effects of detrending can be seen with
+  \code{\link{series.rwl.plot}}.
 
 }
 \value{

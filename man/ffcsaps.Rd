@@ -11,8 +11,8 @@ ffcsaps(y, x=seq_along(y), nyrs=length(y)/2, f=0.5)
 }
 \arguments{
   \item{y}{ a vector, typically a tree-ring series. }
-  \item{x}{ a vector with \code{length(\var{y})}, typically giving the
-    years of y. }
+  \item{x}{ a vector with the same length as \code{\var{y}}, typically
+    giving the years of \code{\var{y}}. }
   \item{nyrs}{ a number greater than 1, affecting the rigidity of the
     spline.  When \code{\var{f}} is kept constant, a larger
     \code{\var{nyrs}} produces a more rigid spline.  Defaults to
@@ -23,7 +23,8 @@ ffcsaps(y, x=seq_along(y), nyrs=length(y)/2, f=0.5)
     spline: At one extreme, \code{\var{f}=0} causes the function to
     return the least-squares straight line fit to the data.  At the
     other extreme, \code{\var{f}=1} results in the natural spline,
-    i.e. the function outputs y.  The default value is 0.5.}
+    i.e. the function outputs \code{\var{y}}.  The default value is
+    0.5.}
 }
 \details{
   This applies a smoothing spline similar to the spline applied in most

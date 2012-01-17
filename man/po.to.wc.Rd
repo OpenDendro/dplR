@@ -1,7 +1,7 @@
 \name{po.to.wc}
 \alias{po.to.wc}
 \title{
-  Function to convert pith offset to wood completeness
+  Convert Pith Offset to Wood Completeness
 }
 \description{
   This function creates a partial wood completeness data structure based
@@ -15,8 +15,8 @@ po.to.wc(po)
     A \code{data.frame} containing two variables. Variable one
     (\code{\var{series}}) gives the series \acronym{ID} as either
     characters or factors. Variable two (\code{\var{pith.offset}}) is of
-    integer type and gives the years from the beginning of the core to
-    the pith (or center) of the tree. The minimum value is 1.
+    \code{integer} type and gives the years from the beginning of the
+    core to the pith (or center) of the tree. The minimum value is 1.
   }
 }
 \details{

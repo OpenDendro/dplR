@@ -1,6 +1,6 @@
 \name{i.detrend}
 \alias{i.detrend}
-\title{ Interactively Detrend Multiple Ring-Width Series }
+\title{ Interactively Detrend Multiple Ring Width Series }
 \description{
   Interactively detrend multiple tree-ring series by one of two methods, a
   smoothing spline or a statistical model. This is a wrapper for
@@ -29,9 +29,9 @@ i.detrend(rwl, y.name = names(rwl), nyrs = NULL, f = 0.5, pos.slope = FALSE)
   This function allows a user to choose detrending curves based on plots
   that are produced by \code{\link{detrend.series}} for which it is
   essentially a wrapper. The user enters their choice of detrended
-  method via keyboard at a prompt for each ring width series in rwl. See
-  \code{\link{detrend.series}} for examples and details on the
-  detrending methods.
+  method via keyboard at a prompt for each ring width series in
+  \code{\var{rwl}}. See \code{\link{detrend.series}} for examples and
+  details on the detrending methods.
 }
 \value{
   A \code{data.frame} containing each detrended series according to the

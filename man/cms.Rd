@@ -2,7 +2,7 @@
 \alias{cms}
 \title{ C-Method Standardization }
 \description{
-  Detrend multiple ring-width series simultaneously using the C-method.
+  Detrend multiple ring width series simultaneously using the C-method.
 }
 \usage{
 cms(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE)
@@ -15,7 +15,7 @@ cms(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE)
   \item{c.hat.i}{ a \code{logical} indicating whether to export the expected ring widths for each series. }
 }
 \details{
-  This method detrends and standardizes tree-ring series by calculating a growth curve based on constant annual basal area increment. The method is based on the \dQuote{assumption that constant growth is expressed by a constant basal area increment distributed over a growing surface} (Biondi and Qeadan 2008). The detrending is the estimation and removal of the tree's natural biological growth trend. The standardization is done by dividing each series by the growth trend to produce units in the dimensionless ring-width index (\acronym{RWI}).
+  This method detrends and standardizes tree-ring series by calculating a growth curve based on constant annual basal area increment. The method is based on the \dQuote{assumption that constant growth is expressed by a constant basal area increment distributed over a growing surface} (Biondi and Qeadan 2008). The detrending is the estimation and removal of the tree's natural biological growth trend. The standardization is done by dividing each series by the growth trend to produce units in the dimensionless ring width index (\acronym{RWI}).
 
   This attempts to remove the low frequency variability that is due to biological or stand effects.
 
@@ -41,9 +41,10 @@ gp.crn <- chron(gp.rwi)
 crn.plot(gp.crn, add.spline=TRUE, ylim=c(0, 2.5))
 ## c.hat
 gp.rwi <- cms(rwl=gp.rwl, po=gp.po, c.hat.t=TRUE, c.hat.i=TRUE)
-dotchart(gp.rwi$c.hat.i, ylab='Series', xlab=expression(hat(c)[i]))
+dotchart(gp.rwi$c.hat.i, ylab="Series", xlab=expression(hat(c)[i]))
 tmp <- gp.rwi$c.hat.t
-plot(tmp[, 1], type='n', ylim=range(tmp, na.rm=TRUE), xlab='Cambial Age', ylab=expression(hat(c)[t]))
+plot(tmp[, 1], type="n", ylim=range(tmp, na.rm=TRUE),
+     xlab="Cambial Age", ylab=expression(hat(c)[t]))
 apply(tmp, 2, lines)
 }
 \keyword{ manip }

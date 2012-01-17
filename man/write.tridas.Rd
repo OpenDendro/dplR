@@ -1,7 +1,7 @@
 \name{write.tridas}
 \alias{write.tridas}
 
-\title{ Function to write Tree Ring Data Standard (TRiDaS) files }
+\title{ Write Tree Ring Data Standard (TRiDaS) file }
 
 \description{ This function writes measured or derived (standardized,
   averaged) series of values to a TRiDaS format file.  Some metadata are
@@ -199,10 +199,10 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 
   \item{taxon}{ \code{character} string.  The most detailed taxonomic
     name known for this element (species, genus, family etc).
-    Preferably from the Catalogue of Life (www.catalogueoflife.org)
-    controlled vocabulary.  The same string is used for all of
-    \code{\var{rwl.df}}.  The default value is an empty string, but a
-    proper value should really be given.  }
+    Preferably from the Catalogue of Life
+    (\url{www.catalogueoflife.org}) controlled vocabulary.  The same
+    string is used for all of \code{\var{rwl.df}}.  The default value is
+    an empty string, but a proper value should really be given.  }
 
   \item{tridas.variable}{ \code{character} string.  Measured variable
     (ring width, earlywood, latewood etc) taken from the TRiDaS

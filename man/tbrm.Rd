@@ -1,6 +1,6 @@
 \name{tbrm}
 \alias{tbrm}
-\title{ Calculates Tukey's Biweight Robust Mean }
+\title{ Calculate Tukey's Biweight Robust Mean }
 \description{
   This calculates a robust average that is unaffected by outliers.
 }

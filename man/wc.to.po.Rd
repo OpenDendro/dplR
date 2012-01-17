@@ -1,7 +1,7 @@
 \name{wc.to.po}
 \alias{wc.to.po}
 \title{
-  Function to convert wood completeness to pith offset
+  Convert Wood Completeness to Pith Offset
 }
 \description{
   This function creates a pith offset data structure based on wood

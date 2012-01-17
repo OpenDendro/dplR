@@ -2,7 +2,7 @@
 
 \alias{glk}
 
-\title{ Calculation of Gleichlaeufigkeit }
+\title{ Calculate Gleichlaeufigkeit }
 
 \description{
   This function calculates the matrix of Gleichlaeufigkeit for a given set

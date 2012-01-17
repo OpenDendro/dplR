@@ -1,6 +1,6 @@
 \name{i.detrend.series}
 \alias{i.detrend.series}
-\title{ Interactively Detrend a Ring-Width Series }
+\title{ Interactively Detrend a Ring Width Series }
 \description{
   Interactively detrend a tree-ring series by one of three methods, a
   smoothing spline, a linear model, or the mean. This is a wrapper for
@@ -14,7 +14,8 @@ i.detrend.series(y, y.name = NULL, nyrs = NULL, f = 0.5, pos.slope = FALSE)
   \item{y.name}{ an optional character vector to name the series for
     plotting purposes. }
   \item{nyrs}{ a number giving the rigidity of the smoothing spline,
-    defaults to 0.67 of series length if nyrs is \code{NULL}. }
+    defaults to 0.67 of series length if \code{\var{nyrs}} is
+    \code{NULL}. }
   \item{f}{ a number between 0 and 1 giving the frequency response or
     wavelength cutoff. Defaults to 0.5. }
   \item{pos.slope}{ a logical flag. Will allow for a positive slope to
@@ -29,9 +30,10 @@ i.detrend.series(y, y.name = NULL, nyrs = NULL, f = 0.5, pos.slope = FALSE)
   examples and details on the detrending methods.
 }
 \value{
-  A vector containing the detrended series (y) according to the method
-  used with names set to colnames(y). These are typically years. A plot
-  is also produced and the user chooses a method through keyboard input.
+  A vector containing the detrended series (\code{\var{y}}) according to
+  the method used with names set to \code{colnames(\var{y})}. These are
+  typically years. A plot is also produced and the user chooses a method
+  through keyboard input.
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{detrend.series}} }

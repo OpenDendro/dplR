@@ -44,7 +44,7 @@ write.tucson(rwl.df, fname, header=NULL, append=FALSE, prec=0.01,
   readable by the standard dendrochronology programs. Header information
   for the rwl can be written according to the International Tree Ring
   Data Bank (\acronym{ITRDB}) standard. The header standard is not very
-  reliable however and should be though of as experimental here. Do not
+  reliable however and should be thought of as experimental here. Do not
   try to write headers using dplR to submit to the \acronym{ITRDB}. When
   submitting to the \acronym{ITRDB}, you can enter the metadata via
   their website. If you insist however, the header information is given

@@ -1,8 +1,8 @@
 \name{sens1}
 \alias{sens1}
-\title{ Calculates Mean Sensitivity  }
+\title{ Calculate Mean Sensitivity  }
 \description{
-  This function calculates mean sensitivity of a detrended ring-width
+  This function calculates mean sensitivity of a detrended ring width
   series.
 }
 \usage{

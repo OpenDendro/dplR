@@ -76,8 +76,8 @@ corr.rwl.seg(rwl, seg.length=50, bin.floor=100, n=NULL,
   residuals of an \code{\link{ar}} model are added to each series
   mean. This is the default. The master chronology is computed as the
   mean of the \code{\var{rwl}} object using \code{\link{tbrm}} if
-  \code{\var{biweight}==TRUE} and \code{rowMeans} if not. Note that
-  detrending can change the length of the series. E.g., a
+  \code{\var{biweight}} is \code{TRUE} and \code{rowMeans} if not. Note
+  that detrending can change the length of the series. E.g., a
   \code{\link{hanning}} filter will shorten the series on either end by
   \code{floor(\var{n}/2)}. The prewhitening default will change the
   series length based on the \code{\link{ar}} model fit. The effects of

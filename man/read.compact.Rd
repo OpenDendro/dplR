@@ -9,7 +9,8 @@
 read.compact(fname)
 }
 \arguments{
-  \item{fname}{ a character vector giving the file name of the rwl file. }
+  \item{fname}{ a \code{character} vector giving the file name of the
+    rwl file. }
 }
 \details{
   This function should be able to read files written by the

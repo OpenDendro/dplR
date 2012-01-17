@@ -2,7 +2,7 @@
 \alias{bai.out}
 \title{ Basal Area Increment (Outside In) }
 \description{
-  Convert multiple ring-width series to basal area increment (i.e., ring area) going from the bark to the pith.
+  Convert multiple ring width series to basal area increment (i.e., ring area) going from the bark to the pith.
 
 }
 \usage{
@@ -10,10 +10,10 @@ bai.out(rwl, diam = NULL)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows such as that produced by \code{\link{read.rwl}} }
-  \item{diam}{ an optional \code{data.frame} containing two variables. If present, variable one (\code{\var{series}} in the example below) gives the series ID as either \code{character}s or \code{factor}s. These must exactly match \code{colnames(\var{rwl})}. Variable two (\code{\var{diam}} in the example below) gives the diameter of the tree (in mm) up to the outermost ring (e.g., the diameter of the tree where the core was taken minus the thickness of the bark). If \code{\var{diam}==NULL} then the diameter is taken as twice the sum of the widths for each series (column) in \code{\var{rwl}}. }
+  \item{diam}{ an optional \code{data.frame} containing two variables. If present, variable one (\code{\var{series}} in the example below) gives the series ID as either \code{character}s or \code{factor}s. These must exactly match \code{colnames(\var{rwl})}. Variable two (\code{\var{diam}} in the example below) gives the diameter of the tree (in mm) up to the outermost ring (e.g., the diameter of the tree where the core was taken minus the thickness of the bark). If \code{\var{diam}} is \code{NULL} then the diameter is taken as twice the sum of the widths for each series (column) in \code{\var{rwl}}. }
 }
 \details{
-This converts ring-width series (mm) to ring-area series (mm squared) (aka basal area increments) based on the diameter of the tree and the width of each ring moving towards the pith of the tree. It is related to \code{\link{bai.in}}, which calculates each ring area starting from the inside of the tree and working outward. Both methods assume a circular cross section (Biondi 1999). See the references below for further details. 
+This converts ring width series (mm) to ring-area series (mm squared) (aka basal area increments) based on the diameter of the tree and the width of each ring moving towards the pith of the tree. It is related to \code{\link{bai.in}}, which calculates each ring area starting from the inside of the tree and working outward. Both methods assume a circular cross section (Biondi 1999). See the references below for further details. 
 
 }
 \value{
@@ -33,8 +33,8 @@ n <- 100
 ## Make three fake tree ring series to show that these funcs work on rwl objects
 base.series <- 0.75 + exp(-0.2 * 1:n)
 rwl <- data.frame(x1 = base.series + abs(rnorm(n, 0, 0.05)),
-  x2 = base.series + abs(rnorm(n, 0, 0.05)),
-  x3 = base.series + abs(rnorm(n, 0, 0.05)))
+                  x2 = base.series + abs(rnorm(n, 0, 0.05)),
+                  x3 = base.series + abs(rnorm(n, 0, 0.05)))
 
 ## The inside out method
 foo <- bai.in(rwl=rwl)
@@ -55,7 +55,7 @@ bar <- bai.out(rwl=gp.rwl, diam=gp.dbh2)
 bar.crn <- chron(bar)
 yr <- as.numeric(rownames(bar.crn))
 plot(yr, bar.crn[, 1], type="n",
-  xlab="Year", ylab=expression(mm^2))
+     xlab="Year", ylab=expression(mm^2))
 lines(yr, bar.crn[, 1], col="grey", lty="dashed")
 lines(yr, ffcsaps(bar.crn[, 1], nyrs=32), col="red", lwd=2)
 }

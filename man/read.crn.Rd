@@ -9,11 +9,11 @@
 read.crn(fname, header=NULL, encoding = getOption("encoding"))
 }
 \arguments{
-  \item{fname}{ a character vector giving the file name of the crn
-    file. }
-  \item{header}{ logical flag indicating whether the file has a header.
-    If \code{NULL} then the function will attempt to determine if a
-    header exists }
+  \item{fname}{ a \code{character} vector giving the file name of the
+    crn file. }
+  \item{header}{ \code{logical} flag indicating whether the file has a
+    header.  If \code{NULL} then the function will attempt to determine
+    if a header exists }
   \item{encoding}{the name of the encoding to be used when reading the
     crn file.  Usually the default value will work, but a crn file
     written in a non-default encoding may crash the function.  In that

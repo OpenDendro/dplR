@@ -3,61 +3,73 @@
 \title{ Running Window Statistics on Detrended Ring Width Series }
 \description{
   This function calculates descriptive statistics on a \code{data.frame} of
-  (usually) ring-width indices. The statistics are computed in a running
+  (usually) ring width indices. The statistics are computed in a running
   window with adjustable length and overlap.
 }
 \usage{
 rwi.stats.running(rwi, ids=NULL, period=c("max", "common"),
-                  running.window=TRUE,
-                  window.length=min(50,nrow(rwi)),
-                  window.overlap=floor(window.length/2),
-                  first.start=NULL,
-                  min.corr.overlap=min(30,window.length),
-                  round.decimals=3,
-                  zero.is.missing=FALSE)
+                  running.window = TRUE,
+                  window.length = min(50, nrow(rwi)),
+                  window.overlap = floor(window.length / 2),
+                  first.start = NULL,
+                  min.corr.overlap = min(30, window.length),
+                  round.decimals = 3,
+                  zero.is.missing = FALSE)
 }
 \arguments{
+
   \item{rwi}{ a \code{data.frame} with detrended and standardized ring
     width indices as columns and years as rows such as that produced by
     \code{\link{detrend}}. }
+
   \item{ids}{ an optional \code{data.frame} with column one named
-    \code{"tree"} giving a numeric \acronym{ID} for each tree and column
-    two named \code{"core"} giving a numeric \acronym{ID} for each
-    core. Defaults to one core per tree as
-    \code{data.frame(tree=1:ncol(\var{rwi}),core=rep(1,ncol(\var{rwi})))}. }
-  \item{period}{ a character string, either \code{"common"} or
+    \code{"tree"} giving a \code{numeric} \acronym{ID} for each tree and
+    column two named \code{"core"} giving a \code{numeric} \acronym{ID}
+    for each core. Defaults to one core per tree as
+    \code{data.frame(tree = 1:ncol(\var{rwi}), core = rep(1,
+      ncol(\var{rwi})))}. }
+
+  \item{period}{ a \code{character} string, either \code{"common"} or
     \code{"max"} indicating whether correlations should be limited to
     complete observations over the period common to all cores (i.e. rows
     common to all samples) or the maximum pairwise overlap. Defaults
     to \code{"max"}. }
-  \item{running.window}{ logical flag indicating whether to use a
+
+  \item{running.window}{ \code{logical} flag indicating whether to use a
     running window (\code{TRUE}, the default) or to ignore the other
     window parameters and effectively use one window covering all years
     (\code{FALSE}). }
-  \item{window.length}{ numeric value indicating the length of the
-    running window in years. The default is 50 years or the number of
-    years (rows) in \code{\var{rwi}}, whichever is smaller. }
-  \item{window.overlap}{ numeric value indicating the overlap of
+
+  \item{window.length}{ \code{numeric} value indicating the length of
+    the running window in years. The default is 50 years or the number
+    of years (rows) in \code{\var{rwi}}, whichever is smaller. }
+
+  \item{window.overlap}{ \code{numeric} value indicating the overlap of
     consecutive window positions, i.e. the number of common years. The
     default is half of the window length, rounded down. }
-  \item{first.start}{ an optional numeric value setting the position of
-    the first window. Must be a value between \code{1} and
+
+  \item{first.start}{ an optional \code{numeric} value setting the
+    position of the first window. Must be a value between \code{1} and
     \code{\var{n.years}-\var{window.length}+1}, where
     \code{\var{n.years}} is the number of years in \code{\var{rwi}}. The
     default value \code{NULL} lets the function make the decision using
     some heuristic rules. }
-  \item{min.corr.overlap}{ numeric value setting the minimum number of
-    common years in any pair of ring width series required for their
-    correlation to be included in the calculations. Smaller overlaps are
-    considered to yield unreliable correlation values which are
-    ignored. Defaults to the minimum of 30 and the length of the
+
+  \item{min.corr.overlap}{ \code{numeric} value setting the minimum
+    number of common years in any pair of ring width series required for
+    their correlation to be included in the calculations. Smaller
+    overlaps are considered to yield unreliable correlation values which
+    are ignored. Defaults to the minimum of 30 and the length of the
     window. One way to lift the restriction and include all correlations
     is to set \code{\var{min.corr.overlap}=0}. }
+
   \item{round.decimals}{ the desired number of decimal places in the
     results. }
-  \item{zero.is.missing}{ logical flag indicating whether to treat zeros
-    as missing values (\code{TRUE}) or to include them in computation
-    (\code{FALSE}, the default).  }
+
+  \item{zero.is.missing}{ \code{logical} flag indicating whether to
+    treat zeros as missing values (\code{TRUE}) or to include them in
+    computation (\code{FALSE}, the default).  }
+  
 }
 \details{
   This calculates a variety of descriptive statistics commonly used in
@@ -91,40 +103,39 @@ rwi.stats.running(rwi, ids=NULL, period=c("max", "common"),
 \value{ A \code{data.frame} containing the following columns (each row
   corresponds to one position of the window):
 
-  \code{\var{start.year}} the first year in the window (not present if
-  \code{running.window} is \code{FALSE}),
+  \item{start.year}{the first year in the window (not present if
+    \code{running.window} is \code{FALSE})}
 
-  \code{\var{mid.year}} the middle year in the window, rounded down (not
-  present if \code{running.window} is \code{FALSE}),
+  \item{mid.year}{the middle year in the window, rounded down (not
+    present if \code{running.window} is \code{FALSE})}
   
-  \code{\var{end.year}} the last year in the window (not present if
-  \code{running.window} is \code{FALSE}),
+  \item{end.year}{the last year in the window (not present if
+    \code{running.window} is \code{FALSE})}
 
-  \code{\var{n.tot}} total number of correlations computed,
+  \item{n.tot}{total number of correlations computed}
 
-  \code{\var{n.wt}} number of within-tree correlations computed,
+  \item{n.wt}{number of within-tree correlations computed}
 
-  \code{\var{n.bt}} number of between-tree correlations computed,
+  \item{n.bt}{number of between-tree correlations computed}
 
-  \code{\var{rbar.tot}} the mean of all correlation between different
-  cores,
+  \item{rbar.tot}{the mean of all correlation between different cores}
 
-  \code{\var{rbar.wt}} the mean of the correlations between series from
-  the same tree over all trees,
+  \item{rbar.wt}{the mean of the correlations between series from the
+    same tree over all trees}
 
-  \code{\var{rbar.bt}} the mean interseries correlation between all
-  series from different trees,
+  \item{rbar.bt}{the mean interseries correlation between all series
+    from different trees}
 
-  \code{\var{c.eff}} the effective number of cores (takes into account
-  the number of within-tree correlations in each tree),
+  \item{c.eff}{the effective number of cores (takes into account the
+    number of within-tree correlations in each tree)}
 
-  \code{\var{rbar.eff}} the effective signal calculated as \code{
-    \var{rbar.bt} / (\var{rbar.wt} + (1-\var{rbar.wt}) / \var{c.eff}) },
+  \item{rbar.eff}{the effective signal calculated as \code{
+      \var{rbar.bt} / (\var{rbar.wt} + (1-\var{rbar.wt}) / \var{c.eff}) }}
 
-  \code{\var{eps}} the expressed population signal,
+  \item{eps}{the expressed population signal}
 
-  \code{\var{n}} the average number of trees (for each year, a tree
-  needs at least one non-\code{NA} core in order to be counted).
+  \item{n}{the average number of trees (for each year, a tree needs at
+    least one non-\code{NA} core in order to be counted)}
   
 }
 \references{

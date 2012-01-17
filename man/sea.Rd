@@ -2,7 +2,7 @@
 
 \alias{sea}
 
-\title{ Superposed epoch analysis }
+\title{ Superposed Epoch Analysis }
 
 \description{
   This function calculates the significance of the departure from the
@@ -14,7 +14,7 @@ sea(x, key, lag = 5, resample = 1000)
 }
 
 \arguments{
-  \item{x}{ a chronology \code{data.frame} of ring-width indices (such
+  \item{x}{ a chronology \code{data.frame} of ring width indices (such
     as produced by \link{chron})}
   \item{key}{ a vector specifying the key event years for the superposed
     epoch}
@@ -30,9 +30,10 @@ sea(x, key, lag = 5, resample = 1000)
   each event year, the event year, and the specified years immediately
   after each event are averaged to a superposed epoch. To determine if
   \acronym{RWI} for these years was significantly different from
-  randomly selected sets of (lag+1) other years, bootstrap resampling is
-  used to randomly select sets of (lag+1) years from the data set and to
-  estimate significances for the departures from the mean \acronym{RWI}.
+  randomly selected sets of \code{\var{lag}+1} other years, bootstrap
+  resampling is used to randomly select sets of \code{\var{lag}+1} years
+  from the data set and to estimate significances for the departures
+  from the mean \acronym{RWI}.
 }
 
 \value{

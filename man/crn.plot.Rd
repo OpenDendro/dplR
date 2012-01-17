@@ -1,6 +1,6 @@
 \name{crn.plot}
 \alias{crn.plot}
-\title{ Plots a Tree-Ring Chronology }
+\title{ Plot a Tree-Ring Chronology }
 \description{
   This function makes a default plot of a tree-ring chronology from a
   \code{data.frame} of the type produced by \code{\link{chron}}.
@@ -11,14 +11,14 @@ crn.plot(crn, add.spline=FALSE, nyrs=NULL, f=0.5, \dots)
 \arguments{
   \item{crn}{ a \code{data.frame} as produced by
     \code{\link{chron}}. The \code{data.frame} should have the years in
-    rownames(crn), the chronologies in the columns.  Optionally, the
-    last column can contain the sample depth named
+    \code{rownames(\var{crn})}, the chronologies in the columns.
+    Optionally, the last column can contain the sample depth named
     \code{"samp.depth"}. }
-  \item{add.spline}{ a logical flag. Will add a line with a smoothing
-    spline. }
+  \item{add.spline}{ a \code{logical} flag. Will add a line with a
+    smoothing spline. }
   \item{nyrs}{ a number giving the rigidity of the smoothing spline.
-    Defaults to 0.33 times the length of the first chronology if nyrs is
-    \code{NULL}. }
+    Defaults to 0.33 times the length of the first chronology if
+    \code{\var{nyrs}} is \code{NULL}. }
   \item{f}{ a number between 0 and 1 giving the frequency response or
     wavelength cutoff. Defaults to 0.5. }
   \item{\dots}{ other arguments passed to

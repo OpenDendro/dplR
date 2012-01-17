@@ -1,9 +1,9 @@
 \name{detrend}
 \alias{detrend}
-\title{ Detrend Multiple Ring-Width Series Simultaneously }
+\title{ Detrend Multiple Ring Width Series Simultaneously }
 \description{
   This is a wrapper for \code{\link{detrend.series}} to detrend many
-  ring-width series at once.
+  ring width series at once.
 }
 \usage{
 detrend(rwl, y.name = names(rwl), make.plot = FALSE,
@@ -41,9 +41,9 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
 }
 \details{
   See \code{\link{detrend.series}} for details on detrending
-  methods. Setting make.plot = TRUE will cause plots of each series to
-  be produced. These could be saved using \code{\link{Devices}} if
-  desired.
+  methods. Setting \code{\var{make.plot} = TRUE} will cause plots of
+  each series to be produced. These could be saved using
+  \code{\link{Devices}} if desired.
 }
 \value{
   If one detrending method is used, a \code{data.frame} containing the

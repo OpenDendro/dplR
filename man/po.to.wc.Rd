@@ -14,9 +14,10 @@ po.to.wc(po)
   \item{po}{
     A \code{data.frame} containing two variables. Variable one
     (\code{\var{series}}) gives the series \acronym{ID} as either
-    characters or factors. Variable two (\code{\var{pith.offset}}) is of
-    \code{integer} type and gives the years from the beginning of the
-    core to the pith (or center) of the tree. The minimum value is 1.
+    characters or factors. Variable two (\code{\var{pith.offset}})
+    contains integral values and gives the years from the beginning of
+    the core to the pith (or center) of the tree. The minimum value is
+    1.
   }
 }
 \details{
@@ -25,8 +26,8 @@ po.to.wc(po)
 }
 \value{
   A \code{data.frame} containing one variable of wood completeness data:
-  \code{\var{n.missing.heartwood}}. This can be used as input to
-  \code{\link{write.tridas}}.
+  \code{\var{n.missing.heartwood}} (\code{integer} type). This can be
+  used as input to \code{\link{write.tridas}}.
 }
 \author{
   Mikko Korpela

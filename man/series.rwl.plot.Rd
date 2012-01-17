@@ -18,21 +18,21 @@ series.rwl.plot(rwl, series, series.yrs=as.numeric(names(series)),
   \item{series.yrs}{ a \code{numeric} vector giving the years of
     \code{\var{series}}.  Defaults to
     \code{as.numeric(names(\var{series}))}. }
-  \item{seg.length}{ an even \code{integer} giving length of segments in years
-    (e.g., 20, 50, 100 years). }
-  \item{bin.floor}{ a non-negative \code{integer} giving the base for
-    locating the first segment (e.g.,1600, 1700, 1800 AD). Typically 0,
-    10, 50, 100, etc. }
-  \item{n}{ \code{NULL} or an integer giving the filter length for the
-    \code{\link{hanning}} filter used for removal of low frequency
-    variation. }
+  \item{seg.length}{ an even integral value giving length of segments in
+    years (e.g., 20, 50, 100 years). }
+  \item{bin.floor}{ a non-negative integral value giving the base for
+    locating the first segment (e.g.,1600, 1700, 1800
+    \acronym{AD}). Typically 0, 10, 50, 100, etc. }
+  \item{n}{ \code{NULL} or an integral value giving the filter length
+    for the \code{\link{hanning}} filter used for removal of low
+    frequency variation. }
   \item{prewhiten}{ \code{logical} flag. If \code{TRUE} each series is
     whitened using \code{\link{ar}}. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}}. }
   \item{floor.plus1}{ \code{logical} flag. If \code{TRUE}, one year is
     added to the base location of the first segment (e.g. 1601, 1701,
-    1801 AD). }
+    1801 \acronym{AD}). }
 }
 \details{
   The function is typically invoked to produce four plots showing the
@@ -40,12 +40,15 @@ series.rwl.plot(rwl, series, series.yrs=as.numeric(names(series)),
   \code{\var{prewhiten}} and the binning options \code{\var{seg.length}}
   and \code{\var{bin.floor}}.
 
-  Plot 1. Time series plot of the filtered series and the master.
-  Plot 2. Scatterplot of series vs. master.
-  Plot 3. Segments that would be used in the other cross-dating
-  functions (e.g., \code{\link{corr.series.seg}}).
-  Plot 4. Text giving the detrending options and the time span of the
-  raw and filtered series and master.
+  \describe{
+    \item{Plot 1}{Time series plot of the filtered series and the
+      master}
+    \item{Plot 2}{Scatterplot of series vs. master}
+    \item{Plot 3}{Segments that would be used in the other cross-dating
+      functions (e.g., \code{\link{corr.series.seg}})}
+    \item{Plot 4}{Text giving the detrending options and the time span
+      of the raw and filtered series and master}
+  }
 
   The series and master are returned as well.
 

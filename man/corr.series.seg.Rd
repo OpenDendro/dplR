@@ -17,14 +17,14 @@ corr.series.seg(rwl, series, series.yrs=as.numeric(names(series)),
   \item{series.yrs}{ a \code{numeric} vector giving the years of
     \code{\var{series}}.  Defaults to
     \code{as.numeric(names(\var{series}))}. }
-  \item{seg.length}{ an even \code{integer} giving length of segments in
+  \item{seg.length}{ an even integral value giving length of segments in
     years (e.g., 20, 50, 100 years). }
-  \item{bin.floor}{ a non-negative \code{integer} giving the base for
-    locating the first segment (e.g.,1600, 1700, 1800
+  \item{bin.floor}{ a non-negative integral value giving the base for
+    locating the first segment (e.g., 1600, 1700, 1800
     \acronym{AD}). Typically 0, 10, 50, 100, etc. }
-  \item{n}{ \code{NULL} or an integer giving the filter length for the
-    \code{\link{hanning}} filter used for removal of low frequency
-    variation. }
+  \item{n}{ \code{NULL} or an integral value giving the filter length
+    for the \code{\link{hanning}} filter used for removal of low
+    frequency variation. }
   \item{prewhiten}{ \code{logical} flag. If \code{TRUE} each series is
     whitened using \code{\link{ar}}. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust

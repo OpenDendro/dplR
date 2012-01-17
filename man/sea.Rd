@@ -18,8 +18,8 @@ sea(x, key, lag = 5, resample = 1000)
     as produced by \link{chron})}
   \item{key}{ a vector specifying the key event years for the superposed
     epoch}
-  \item{lag}{ an integer defining the number of lagged years }
-  \item{resample}{ an integer specifying the number of bootstrap
+  \item{lag}{ an integral value defining the number of lagged years }
+  \item{resample}{ an integral value specifying the number of bootstrap
     sample for calculation of confidence intervals}
 }
 

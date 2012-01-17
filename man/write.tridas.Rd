@@ -59,21 +59,21 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     100 and 1000, which cause the data to be transformed to micrometres,
     1/100th millimetres, 1/20th millimetres, 1/10 millimetres,
     (millimetres), centimetres, decimetres or metres, respectively, and
-    then rounded to integer.  Data rounded to decimetres are written in
-    centimetres (values always ending in zero).  Otherwise, the matching
-    unit is used in the file. }
+    then rounded to integral values.  Data rounded to decimetres are
+    written in centimetres (values always ending in zero).  Otherwise,
+    the matching unit is used in the file. }
 
   \item{ids}{ optional \code{data.frame} with column one named
-    \code{"tree"} giving the numeric \acronym{ID} of the tree, column
-    two named \code{"core"} giving the numeric \acronym{ID} of the core,
-    optional column three named \code{"radius"} giving the numeric
+    \code{"tree"} giving the \code{numeric} \acronym{ID} of the tree, column
+    two named \code{"core"} giving the \code{numeric} \acronym{ID} of the core,
+    optional column three named \code{"radius"} giving the \code{numeric}
     \acronym{ID} of the radius, and optional column four named
-    \code{"measurement"} giving the numeric \acronym{ID} of the
+    \code{"measurement"} giving the \code{numeric} \acronym{ID} of the
     measurement.  If column \code{"measurement"} exists, column
     \code{"radius"} must also exist.  Defaults to one core, radius and
     measurement per tree: \code{data.frame(tree = 1:\var{n.col}, core =
-    rep(1,\var{n.col}), radius = rep(1,\var{n.col}), measurement =
-    rep(1,\var{n.col}))}, where \code{\var{n.col}} is the number of
+      rep(1,\var{n.col}), radius = rep(1,\var{n.col}), measurement =
+      rep(1,\var{n.col}))}, where \code{\var{n.col}} is the number of
     columns in \code{\var{rwl.df}}. }
 
   \item{titles}{ optional \code{data.frame} with column one named
@@ -93,7 +93,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     this case, the list is recycled to the correct length.  After that,
     the vectors inside the list are recycled to match the number of
     derived series in each data.frame of \code{\var{crn}}.  The default
-    is to write empty type elements. }
+    is to write empty \verb{<type>} elements. }
 
   \item{crn.titles}{ optional \code{character} vector or a \code{list}
     of character vectors giving the titles of the derived series in
@@ -118,7 +118,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     \code{\var{other.measuring.method}} instead.  Also, \code{NA} in any
     position of the vector means that the measuring method information
     for that series is looked up in \code{\var{other.measuring.method}}.
-    }
+  }
 
   \item{other.measuring.method}{ \code{character} vector giving the
     measuring method used to acquire each series of \code{\var{rwl.df}}.
@@ -147,12 +147,12 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
       \item{n.unmeasured.inner}{Field for recording whether there are
 	any rings at the inner (i.e. towards pith) edge of the sample
 	that have not been measured.  Typically used to note when rings
-	are too damaged to measure.  Non-negative integer.}
+	are too damaged to measure.  Non-negative integral value.}
 
       \item{n.unmeasured.outer}{Field for recording whether there are
 	any rings at the outer (i.e. towards bark) edge of the sample
 	that have not been measured.  Typically used to note when rings
-	are too damaged to measure.  Non-negative integer.}
+	are too damaged to measure.  Non-negative integral value.}
 
       \item{pith.presence}{Whether the pith is present or absent.  Each
 	element must be a partial match with the contents of category
@@ -165,7 +165,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 	\code{\link{tridas.vocabulary}}.}
 
       \item{n.missing.heartwood}{Estimated number of missing heartwood
-	rings to the pith.  Non-negative integer.}
+	rings to the pith.  Non-negative integral value.}
 
       \item{missing.heartwood.foundation}{Description of the way the
 	estimation of how many heartwood rings are missing was made and
@@ -175,7 +175,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 	Category \code{"complex presence / absence"}.}
 
       \item{n.sapwood}{Number of sapwood rings measured.  Non-negative
-	integer.}
+	integral value.}
 
       \item{last.ring.presence}{Last ring under the bark is present or
 	absent.  Category \code{"presence / absence"}.}
@@ -185,7 +185,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 	and/or season of felling.  Free-form string.}
 
       \item{n.missing.sapwood}{Estimated number of missing sapwood rings
-	to the bark.  Non-negative integer.}
+	to the bark.  Non-negative integral value.}
 
       \item{missing.sapwood.foundation}{Description of the way the
 	estimation of how many sapwood rings are missing was made and
@@ -200,7 +200,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
   \item{taxon}{ \code{character} string.  The most detailed taxonomic
     name known for this element (species, genus, family etc).
     Preferably from the \href{http://www.catalogueoflife.org/}{Catalogue
-    of Life} controlled vocabulary.  The same string is used for all of
+      of Life} controlled vocabulary.  The same string is used for all of
     \code{\var{rwl.df}}.  The default value is an empty string, but a
     proper value should really be given.  }
 

@@ -10,8 +10,8 @@ cms(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE)
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows such as
     that produced by \code{\link{read.rwl}} }
-  \item{po}{ a \code{data.frame} containing two variables. Variable one (\code{\var{series}} in the example below) gives the series \acronym{ID} as either \code{character}s or \code{factor}s. These must exactly match \code{colnames(\var{rwl})}. Variable two (\code{\var{pith.offset}} in the example below) must be \code{integer}s and give the years from the beginning of the core to the pith (or center) of the tree. }
-  \item{c.hat.t}{ a \code{logical} a logical indicating whether to export the C-curves for each tree by biological age. }
+  \item{po}{ a \code{data.frame} containing two variables. Variable one (\code{\var{series}} in the example below) gives the series \acronym{ID} as either \code{character}s or \code{factor}s. These must exactly match \code{colnames(\var{rwl})}. Variable two (\code{\var{pith.offset}} in the example below) must be integral values and give the years from the beginning of the core to the pith (or center) of the tree. }
+  \item{c.hat.t}{ a \code{logical} indicating whether to export the C-curves for each tree by biological age. }
   \item{c.hat.i}{ a \code{logical} indicating whether to export the expected ring widths for each series. }
 }
 \details{

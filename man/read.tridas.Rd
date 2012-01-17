@@ -81,7 +81,7 @@ read.tridas(fname, ids.from.titles = FALSE,
 
   \item{ids}{A \code{data.frame} or a list of \code{data.frame}s with columns
     named \code{"tree"}, \code{"core"}, \code{"radius"}, and
-    \code{"measurement"}, together giving a unique numeric \acronym{ID}
+    \code{"measurement"}, together giving a unique \code{numeric} \acronym{ID}
     for each column of the \code{data.frame}(s) in
     \code{\var{measurements}}.  If \code{!\var{combine.series} &&
       (\var{ids.from.titles} || \var{ids.from.identifiers})}, some rows
@@ -156,12 +156,12 @@ read.tridas(fname, ids.from.titles = FALSE,
 
       \item{ids}{A \code{data.frame} with columns named \code{"tree"},
 	\code{"core"}, \code{"radius"}, and \code{"measurement"},
-	together giving a numeric \acronym{ID} for each measurement
+	together giving a \code{numeric} \acronym{ID} for each measurement
 	series in \code{\var{undated}$\var{data}}.  The rows are
 	guaranteed to be unique only when comparing measurement series
 	with the same \code{\var{project.id}} and \code{\var{site.id}},
 	but not if \code{\var{ids.from.titles} ||
-	\var{ids.from.identifiers}}. }
+	  \var{ids.from.identifiers}}. }
 
       \item{titles}{A \code{data.frame} with columns named
 	\code{"tree"}, \code{"core"}, \code{"radius"}, and

@@ -13,14 +13,14 @@ corr.rwl.seg(rwl, seg.length=50, bin.floor=100, n=NULL,
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as
     rows such as that produced by \code{\link{read.rwl}}. }
-  \item{seg.length}{ an even \code{integer} giving length of segments in
+  \item{seg.length}{ an even integral value giving length of segments in
     years (e.g., 20, 50, 100 years). }
-  \item{bin.floor}{ a non-negative \code{integer} giving the base for
+  \item{bin.floor}{ a non-negative integral value giving the base for
     locating the first segment (e.g.,1600, 1700, 1800
     \acronym{AD}). Typically 0, 10, 50, 100, etc. }
-  \item{n}{ \code{NULL} or an integer giving the filter length for the
-    \code{\link{hanning}} filter used for removal of low frequency
-    variation. }
+  \item{n}{ \code{NULL} or an integral value giving the filter length
+    for the \code{\link{hanning}} filter used for removal of low
+    frequency variation. }
   \item{prewhiten}{ \code{logical} flag. If \code{TRUE} each series is
     whitened using \code{\link{ar}}. }
   \item{pcrit}{ a number between 0 and 1 giving the critical value for

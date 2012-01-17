@@ -12,8 +12,7 @@ read.ids(rwl, stc = c(3, 2, 3))
   \item{rwl}{ a \code{data.frame} with series as columns and years as
     rows such as that produced by \code{\link{read.rwl}} or
     \code{\link{ca533}} }
-
-  \item{stc}{ a vector of three integers summing to eight. These
+  \item{stc}{ a vector of three integral values summing to eight. These
     indicate the number of characters to split the site code
     (\code{\var{stc}[1]}), the tree \acronym{ID}s (\code{\var{stc}[2]}),
     and the core \acronym{ID}s (\code{\var{stc}[3]}). Defaults to
@@ -39,22 +38,23 @@ read.ids(rwl, stc = c(3, 2, 3))
   manually.  See below for format.
 
   The function attempts to convert the tree and core substrings to
-  integers.  When this succeeds, the converted values are copied to the
-  output without modification.  When non-integer substrings are
-  observed, each unique tree substring is assigned an integer value in
+  \code{integer}s.  When this succeeds, the converted values are copied
+  to the output without modification.  When non-integral substrings are
+  observed, each unique tree substring is assigned an integral value in
   the range 1 to \var{n}, where \var{n} is the number of unique tree
   substrings.  The same applies to cores within a tree.  Substrings are
-  sorted before assigning the numeric \acronym{ID}s.
+  sorted before assigning the \code{numeric} \acronym{ID}s.
 
   The order of columns in \code{\var{rwl}} does not affect the tree and
   core \acronym{ID}s assigned to each series.
 }
 \value{
   A \code{data.frame} with column one named \code{"tree"} giving a
-  numeric \acronym{ID} for each tree and column two named \code{"core"}
-  giving a numeric \acronym{ID} for each core.  The original series
-  \acronym{ID}s are copied from rwl as rownames.  The order of the rows
-  in the output matches the order of the series in \code{\var{rwl}}.
+  \code{numeric} \acronym{ID} for each tree and column two named
+  \code{"core"} giving a \code{numeric} \acronym{ID} for each core.  The
+  original series \acronym{ID}s are copied from rwl as rownames.  The
+  order of the rows in the output matches the order of the series in
+  \code{\var{rwl}}.
 }
 \author{ Andy Bunn.  Patched by Mikko Korpela. }
 \seealso{ \code{\link{rwi.stats}}, \code{\link{read.rwl}} }

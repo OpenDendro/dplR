@@ -54,8 +54,8 @@ write.crn(crn, fname, header=NULL, append=FALSE)
   the fields is less than the max width, then the fields will be padded
   to the right length when written. Note that \code{\var{lat}} and
   \code{\var{long}} are really \code{\var{lat}*100} or
-  \code{\var{long}*100} and given as integers. E.g., 37 degrees 30
-  minutes would be given as 3750.
+  \code{\var{long}*100} and given as integral values. E.g., 37 degrees
+  30 minutes would be given as 3750.
 
   This function takes a single chronology with sample depth as
   input. This means that it will fail if given output from

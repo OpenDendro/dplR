@@ -13,17 +13,17 @@ i.detrend(rwl, y.name = names(rwl), nyrs = NULL, f = 0.5, pos.slope = FALSE)
   \item{rwl}{ a \code{data.frame} with series as columns and years as
     rows such as that produced by \code{\link{read.rwl}} or
     \code{\link{ca533}} }
-  \item{y.name}{ a character vector of length \code{ncol(\var{rwl})} that
-    gives the \acronym{ID} of each series. Defaults to the column names
-    of \code{\var{rwl}}. }
+  \item{y.name}{ a \code{character} vector of length
+    \code{ncol(\var{rwl})} that gives the \acronym{ID} of each
+    series. Defaults to the column names of \code{\var{rwl}}. }
   \item{nyrs}{ a number giving the rigidity of the smoothing spline,
     defaults to 0.67 of series length if \code{\var{nyrs}} is
     \code{NULL}. }
   \item{f}{ a number between 0 and 1 giving the frequency response or
     wavelength cutoff. Defaults to 0.5. }
-  \item{pos.slope}{ a logical flag. Will allow for a positive slope to
-    be used in method \code{"ModNegExp"}. If \code{FALSE} the line will
-    be horizontal. }
+  \item{pos.slope}{ a \code{logical} flag. Will allow for a positive
+    slope to be used in method \code{"ModNegExp"}. If \code{FALSE} the
+    line will be horizontal. }
 }
 \details{
   This function allows a user to choose detrending curves based on plots

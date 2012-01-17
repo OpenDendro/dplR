@@ -16,7 +16,7 @@ rcs(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
     (\code{\var{series}} in the example below) gives the series ID as
     either \code{character}s or \code{factor}s. These must exactly match
     \code{colnames(\var{rwl})}. Variable two (\code{\var{pith.offset}}
-    in the example below) must be \code{integer}s and give the years
+    in the example below) must be integral values and give the years
     from the beginning of the core to the pith (or center) of the
     tree. The minimum value is 1. }
   \item{nyrs}{ a number giving the rigidity of the smoothing spline,

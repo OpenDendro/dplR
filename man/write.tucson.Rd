@@ -68,8 +68,8 @@ write.tucson(rwl.df, fname, header=NULL, append=FALSE, prec=0.01,
   the fields is less than the max width, then the fields will be padded
   to the right length when written. Note that \code{\var{lat}} and
   \code{\var{long}} are really \code{\var{lat}*100} or
-  \code{\var{long}*100} and given as integers. E.g., 37 degrees 30
-  minutes would be given as 3750.
+  \code{\var{long}*100} and given as integral values. E.g., 37 degrees
+  30 minutes would be given as 3750.
 
   Series can be appended to the bottom of an existing file with a second
   call to \code{write.tucson}. The output from this file is suitable for

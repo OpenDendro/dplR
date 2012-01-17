@@ -24,8 +24,8 @@ wc.to.po(wc)
   A \code{data.frame} containing two variables. Variable one
   (\code{\var{series}}) gives the series \acronym{ID} as either
   characters or factors. These match \code{rownames(\var{wc})}. Variable
-  two (\code{\var{pith.offset}}) is of integer type and gives the years
-  from the beginning of the core to the pith (or center) of the
+  two (\code{\var{pith.offset}}) is of \code{integer} type and gives the
+  years from the beginning of the core to the pith (or center) of the
   tree. The minimum value is 1.
 }
 \author{

@@ -2,7 +2,15 @@
     function(rwl, stc=c(3, 2, 3))
 {
     ## This will try to read tree and core ids from a rwl data.frame
-    if(sum(stc) > 8) stop("Site-Tree-Core mask is larger than 8")
+    if(sum(stc) > 8) {
+        stop("Site-Tree-Core mask is larger than 8")
+    }
+    if(!all(is.int(stc))) {
+        stop("Site-Tree-Core mask must only contain integral values")
+    }
+    if(length(stc) != 3) {
+        stop("length of Site-Tree-Core mask must be 3")
+    }
     ## Pad to 8 chars
     ids <- names(rwl)
     n.cases <- length(ids)

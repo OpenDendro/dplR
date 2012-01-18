@@ -44,10 +44,11 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9, dat.out = FALSE,
   plots are designed to be plotted on standard paper using an
   appropriate \code{device}, e.g., \code{postscript} with defaults or to
   \code{pdf} with plot width and height to accommodate a landscape plot,
-  e.g., \code{\var{width} = 10, \var{height} = 7.5, \var{paper} =
-  "USr"}. These plots are designed to be printable and cut into strips
-  to align long series. Statistical cross-dating is possible if the data
-  are output.
+  e.g., \code{\var{width} = 10}, \code{\var{height} = 7.5},
+  \code{\var{paper} = "USr"}. These plots are designed to be printable
+  and cut into strips to align long series. Statistical cross-dating is
+  possible if the data are output.
+
 }
 \value{
   This function is invoked primarily for its side effect, which is to

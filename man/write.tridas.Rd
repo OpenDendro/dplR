@@ -259,8 +259,8 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
       \item{identifier}{Optional identifier of the laboratory}
 
       \item{domain}{The domain which the identifier of the laboratory is
-	applicable to.  Could be the \acronym{URL} of the organisation's
-	server or the name of the organisation as long as it is not
+	applicable to.  Could be the \acronym{URL} of the organization's
+	server or the name of the organization as long as it is not
 	ambiguous.}
 
       \item{addressLine1}{First address line}
@@ -320,8 +320,8 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 
   \item{identifier.domain}{ \code{character} string.  The domain which
     the random identifiers are applicable to.  Could be the
-    \acronym{URL} of the organisation's server or the name of the
-    organisation as long as it is not ambiguous.  Defaults to the name
+    \acronym{URL} of the organization's server or the name of the
+    organization as long as it is not ambiguous.  Defaults to the name
     of the first laboratory in \code{\var{lab.info}}.  }
 
 }

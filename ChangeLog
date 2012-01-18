@@ -1,4 +1,4 @@
-2012-01-17 Mikko Korpela
+2012-01-18 Mikko Korpela
 * CHANGES IN dplR VERSION 1.5.2
 
 - Requires R >= 2.12.0 (use of markup in some Rd \title{} sections).

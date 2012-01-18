@@ -7,7 +7,8 @@
   \code{\link{detrend.series}}.
 }
 \usage{
-i.detrend.series(y, y.name = NULL, nyrs = NULL, f = 0.5, pos.slope = FALSE)
+i.detrend.series(y, y.name = NULL, nyrs = NULL, f = 0.5,
+                 pos.slope = FALSE)
 }
 \arguments{
   \item{y}{ a \code{numeric} vector. Usually a tree-ring series. }

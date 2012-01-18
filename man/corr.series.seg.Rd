@@ -6,9 +6,10 @@
   segment.
 }
 \usage{
-corr.series.seg(rwl, series, series.yrs=as.numeric(names(series)),
-  seg.length=50, bin.floor=100, n=NULL, prewhiten = TRUE, biweight=TRUE,
-  pcrit=0.05, make.plot = TRUE, floor.plus1 = FALSE, \dots)
+corr.series.seg(rwl, series, series.yrs = as.numeric(names(series)),
+                seg.length = 50, bin.floor = 100, n = NULL,
+                prewhiten = TRUE, biweight = TRUE, pcrit = 0.05,
+                make.plot = TRUE, floor.plus1 = FALSE, \dots)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as
@@ -72,7 +73,7 @@ flagged <- dat$"641143"
 flagged <- c(NA, flagged[-325])
 names(flagged) <- rownames(dat)
 dat$"641143" <- NULL
-seg.100 <- corr.series.seg(rwl=dat, series=flagged, seg.length=100,
-                           biweight=FALSE)
+seg.100 <- corr.series.seg(rwl = dat, series = flagged,
+                           seg.length = 100, biweight = FALSE)
 }
 \keyword{ manip }

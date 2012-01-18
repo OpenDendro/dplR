@@ -7,7 +7,7 @@
   of \code{\var{nyrs}} years.
 }
 \usage{
-ffcsaps(y, x=seq_along(y), nyrs=length(y)/2, f=0.5)
+ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
 }
 \arguments{
   \item{y}{ a vector, typically a tree-ring series. }
@@ -20,9 +20,9 @@ ffcsaps(y, x=seq_along(y), nyrs=length(y)/2, f=0.5)
   \item{f}{ a number between 0 and 1 giving the frequency response at a
     wavelength of \code{\var{nyrs}} years.  When \code{\var{nyrs}} is
     kept constant, a smaller \code{\var{f}} produces a more rigid
-    spline: At one extreme, \code{\var{f}=0} causes the function to
+    spline: At one extreme, \code{\var{f} = 0} causes the function to
     return the least-squares straight line fit to the data.  At the
-    other extreme, \code{\var{f}=1} results in the natural spline,
+    other extreme, \code{\var{f} = 1} results in the natural spline,
     i.e. the function outputs \code{\var{y}}.  The default value is
     0.5.}
 }
@@ -52,19 +52,19 @@ ffcsaps(y, x=seq_along(y), nyrs=length(y)/2, f=0.5)
 data(ca533)
 series <- ca533[, "CAM011"]
 series <- series[!is.na(series)]
-plot(series, type="l", ylab="Ring Width (mm)", col='grey')
-lines(ffcsaps(series, nyrs=32), col="red", lwd=2)
-lines(ffcsaps(series, nyrs=64), col="green", lwd=2)
-lines(ffcsaps(series, nyrs=128), col="blue", lwd=2)
+plot(series, type = "l", ylab = "Ring Width (mm)", col = "grey")
+lines(ffcsaps(series, nyrs = 32), col = "red", lwd = 2)
+lines(ffcsaps(series, nyrs = 64), col = "green", lwd = 2)
+lines(ffcsaps(series, nyrs = 128), col = "blue", lwd = 2)
 
 ## Use first series from the Mesa Verde dataset
 data(co021)
 series <- co021[, 1]
 series <- series[!is.na(series)]
-plot(series, type="l", ylab="Ring Width (mm)", col="grey")
-lines(ffcsaps(series, nyrs=32), col="red", lwd=2)
-lines(ffcsaps(series, nyrs=64), col="green", lwd=2)
+plot(series, type = "l", ylab = "Ring Width (mm)", col = "grey")
+lines(ffcsaps(series, nyrs = 32), col = "red", lwd = 2)
+lines(ffcsaps(series, nyrs = 64), col = "green", lwd = 2)
 ## nyrs defaults to 0.5*length(series) = 347
-lines(ffcsaps(series), col="blue", lwd=2)
+lines(ffcsaps(series), col = "blue", lwd = 2)
 }
 \keyword{ smooth }

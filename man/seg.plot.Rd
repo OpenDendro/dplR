@@ -23,6 +23,6 @@ seg.plot(rwl, \dots)
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{spag.plot}} }
 \examples{data(ca533)
-seg.plot(ca533, main="Campito Mountain")
+seg.plot(ca533, main = "Campito Mountain")
 }
 \keyword{ hplot }

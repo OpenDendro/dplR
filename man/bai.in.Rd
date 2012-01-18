@@ -36,9 +36,9 @@ rwl <- data.frame(x1 = base.series + abs(rnorm(n, 0, 0.05)),
                   x3 = base.series + abs(rnorm(n, 0, 0.05)))
 
 ## The inside out method
-foo <- bai.in(rwl=rwl)
+foo <- bai.in(rwl = rwl)
 ## The outside in method
-bar <- bai.out(rwl=rwl)
+bar <- bai.out(rwl = rwl)
 
 ## Identical
 head(bar)
@@ -47,12 +47,12 @@ head(foo)
 ## Use gp data
 data(gp.rwl)
 data(gp.d2pith)
-foo <- bai.in(rwl=gp.rwl, d2pith=gp.d2pith)
+foo <- bai.in(rwl = gp.rwl, d2pith = gp.d2pith)
 foo.crn <- chron(foo)
 yr <- as.numeric(rownames(foo.crn))
-plot(yr, foo.crn[, 1], type="n",
-     xlab="Year", ylab=expression(mm^2))
-lines(yr, foo.crn[, 1], col="grey", lty="dashed")
-lines(yr, ffcsaps(foo.crn[, 1], nyrs=32), col="red", lwd=2)
+plot(yr, foo.crn[, 1], type = "n",
+     xlab = "Year", ylab = expression(mm^2))
+lines(yr, foo.crn[, 1], col = "grey", lty = "dashed")
+lines(yr, ffcsaps(foo.crn[, 1], nyrs = 32), col = "red", lwd = 2)
 }
 \keyword{ manip }

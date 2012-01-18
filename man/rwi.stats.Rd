@@ -84,7 +84,7 @@ rwi.stats(rwi, ids = NULL, period = c("max", "common"))
   \code{\link{read.ids}}, \code{\link{rwi.stats.running}} }
 \examples{data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
-ca533.ids <- read.ids(ca533, stc=c(3,2,3))
+ca533.ids <- read.ids(ca533, stc = c(3,2,3))
 rwi.stats(ca533.rwi, ca533.ids)
 }
 \keyword{ misc }

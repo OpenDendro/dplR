@@ -8,9 +8,10 @@
 }
 \usage{
 tridas.vocabulary(category = c("dating type", "measuring method",
-  "shape", "location type", "variable", "unit", "remark",
-  "dating suffix", "presence / absence", "complex presence / absence",
-  "certainty"), idx = NA, term = NA, match.exact = FALSE)
+                      "shape", "location type", "variable", "unit",
+                      "remark", "dating suffix", "presence / absence",
+                      "complex presence / absence", "certainty"),
+                  idx = NA, term = NA, match.exact = FALSE)
 }
 \arguments{
   \item{category}{Vocabulary category as a \code{character} vector of
@@ -74,16 +75,18 @@ tridas.vocabulary(category = c("dating type", "measuring method",
 }
 \examples{
 ## Show all entries in category "measuring method"
-tridas.vocabulary(category="measuring")
+tridas.vocabulary(category = "measuring")
 
 ## Show item number one in category "complex presence / absence"
-tridas.vocabulary(category="complex", idx=1)
+tridas.vocabulary(category = "complex", idx = 1)
 
 ## Check whether "half section" exists in category "shape"
-tridas.vocabulary(category="shape", term="half section", match.exact=TRUE)
+tridas.vocabulary(category = "shape",
+                  term = "half section", match.exact = TRUE)
 
 ## Return unabbreviated matches to several queries in category "remark"
-tridas.vocabulary(category="remark", term=c("trauma", "fire", "diffuse"))
+tridas.vocabulary(category = "remark",
+                  term = c("trauma", "fire", "diffuse"))
 
 }
 \keyword{ utilities }

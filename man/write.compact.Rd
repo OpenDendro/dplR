@@ -6,8 +6,8 @@
   file.
 }
 \usage{
-write.compact(rwl.df, fname, append=FALSE, prec=0.01,
-              mapping.fname="", mapping.append=FALSE)
+write.compact(rwl.df, fname, append = FALSE, prec = 0.01,
+              mapping.fname = "", mapping.append = FALSE)
 }
 \arguments{
   \item{rwl.df}{ a \code{data.frame} containing tree-ring ring widths
@@ -54,6 +54,7 @@ write.compact(rwl.df, fname, append=FALSE, prec=0.01,
   \code{\link{write.tridas}}, \code{\link{read.compact}}
 }
 \examples{data(co021)
-write.compact(rwl.df=co021, fname="tmp.rwl", append=FALSE, prec=0.001)
+write.compact(rwl.df = co021, fname = "tmp.rwl", append = FALSE,
+              prec = 0.001)
 }
 \keyword{ IO }

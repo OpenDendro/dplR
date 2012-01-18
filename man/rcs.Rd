@@ -6,8 +6,8 @@
   curve.
 }
 \usage{
-rcs(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
-  make.plot=TRUE, \dots)
+rcs(rwl, po, nyrs = NULL, f = 0.5, biweight = TRUE, rc.out = FALSE,
+    make.plot = TRUE, \dots)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as
@@ -60,8 +60,10 @@ This attempts to remove the low frequency variability that is due to biological 
   \code{\link{ffcsaps}} }
 \examples{data(gp.rwl)
 data(gp.po)
-gp.rwi <- rcs(rwl=gp.rwl, po=gp.po, biweight=TRUE, rc.out=TRUE, make.plot=FALSE)
+gp.rwi <- rcs(rwl = gp.rwl, po = gp.po, biweight = TRUE,
+              rc.out = TRUE, make.plot = FALSE)
 str(gp.rwi)
-gp.rwi <- rcs(rwl=gp.rwl, po=gp.po, biweight=TRUE, make.plot=TRUE, main="Regional Curve")
+gp.rwi <- rcs(rwl = gp.rwl, po = gp.po, biweight = TRUE,
+              make.plot = TRUE, main = "Regional Curve")
 }
 \keyword{ manip }

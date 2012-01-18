@@ -91,6 +91,6 @@ flagged <- dat$"641143"
 flagged <- c(NA, flagged[-325])
 names(flagged) <- rownames(dat)
 dat$"641143" <- NULL
-ccf.100 <- ccf.series.rwl(rwl=dat, series=flagged, seg.length=100)
+ccf.100 <- ccf.series.rwl(rwl = dat, series = flagged, seg.length = 100)
 }
 \keyword{ manip }

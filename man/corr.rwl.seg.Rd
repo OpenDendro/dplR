@@ -5,10 +5,11 @@
   Computes the correlation between each tree-ring series in a rwl object.
 }
 \usage{
-corr.rwl.seg(rwl, seg.length=50, bin.floor=100, n=NULL,
-  prewhiten = TRUE, pcrit=0.05, biweight=TRUE, make.plot = TRUE,
-  label.cex=1, floor.plus1 = FALSE, master = NULL,
-  master.yrs =  as.numeric(names(master)), \dots)
+corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
+             prewhiten = TRUE, pcrit = 0.05, biweight = TRUE,
+             make.plot = TRUE, label.cex = 1, floor.plus1 = FALSE,
+             master = NULL, master.yrs = as.numeric(names(master)),
+             \dots)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as
@@ -110,7 +111,7 @@ corr.rwl.seg(rwl, seg.length=50, bin.floor=100, n=NULL,
   \code{\link{series.rwl.plot}}, \code{\link{ccf.series.rwl}}
 }
 \examples{data(co021)
-corr.rwl.seg(co021,seg.length=100,label.cex=1.25)
+corr.rwl.seg(co021, seg.length = 100, label.cex = 1.25)
 }
 \keyword{ manip }
 

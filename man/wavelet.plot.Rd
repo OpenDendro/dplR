@@ -7,14 +7,15 @@
 }
 \usage{
 wavelet.plot(wave.list,
-  wavelet.levels = quantile(wave.list$Power,probs=seq(from=0, to=1, by=0.1)),
-  add.coi = TRUE, add.sig = TRUE, x.lab = gettext("Time"),
-  period.lab = gettext("Period"), crn.lab = gettext("RWI"),
-  key.cols = rev(rainbow(length(wavelet.levels)-1)),
-  key.lab = expression(paste("Power"^2)),
-  add.spline = FALSE, f = 0.5, nyrs = NULL,
-  crn.col = "black", crn.lwd = 1,
-  crn.ylim = range(wave.list$y)*1.1, side.by.side = FALSE)
+             wavelet.levels = quantile(wave.list$Power,
+                                       probs=seq(from=0, to=1, by=0.1)),
+             add.coi = TRUE, add.sig = TRUE, x.lab = gettext("Time"),
+             period.lab = gettext("Period"), crn.lab = gettext("RWI"),
+             key.cols = rev(rainbow(length(wavelet.levels)-1)),
+             key.lab = expression(paste("Power"^2)),
+             add.spline = FALSE, f = 0.5, nyrs = NULL,
+             crn.col = "black", crn.lwd = 1,
+             crn.ylim = range(wave.list$y)*1.1, side.by.side = FALSE)
 }
 \arguments{
   \item{wave.list}{A \code{list}. Output from \code{\link{morlet}}.}
@@ -65,10 +66,11 @@ ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = FALSE)
 Years <- as.numeric(rownames(ca533.crn))
 CAMstd <- ca533.crn[, 1]
-out.wave <- morlet(y1=CAMstd, x1=Years, p2=9, dj=0.1, siglvl=0.99)
+out.wave <- morlet(y1 = CAMstd, x1 = Years, p2 = 9, dj = 0.1,
+                   siglvl = 0.99)
 wavelet.plot(out.wave)
-levs <- quantile(out.wave$Power, probs=c(0, 0.5, 0.75, 0.9, 0.99))
-wavelet.plot(out.wave, wavelet.levels=levs, add.sig=FALSE,
+levs <- quantile(out.wave$Power, probs = c(0, 0.5, 0.75, 0.9, 0.99))
+wavelet.plot(out.wave, wavelet.levels = levs, add.sig = FALSE,
              key.cols = c("white", "green", "blue", "red"))
 }
 \keyword{ hplot }

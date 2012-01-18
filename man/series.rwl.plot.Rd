@@ -7,9 +7,9 @@
   cross-dating functions.
 }
 \usage{
-series.rwl.plot(rwl, series, series.yrs=as.numeric(names(series)),
-  seg.length=100, bin.floor=100, n=NULL, prewhiten = TRUE,
-  biweight=TRUE, floor.plus1 = FALSE)
+series.rwl.plot(rwl, series, series.yrs = as.numeric(names(series)),
+  seg.length = 100, bin.floor = 100, n = NULL, prewhiten = TRUE,
+  biweight = TRUE, floor.plus1 = FALSE)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
@@ -69,11 +69,14 @@ series.rwl.plot(rwl, series, series.yrs=as.numeric(names(series)),
 dat <- co021
 flagged <- dat$"646244"
 names(flagged) <- rownames(dat)
-dat$'646107' <- NULL
-foo <- series.rwl.plot(rwl=dat, series=flagged, seg.length=100, n=5)
+dat$"646107" <- NULL
+foo <- series.rwl.plot(rwl = dat, series = flagged,
+                       seg.length = 100, n = 5)
 ## note effect of n on first year in the series
-foo <- series.rwl.plot(rwl=dat, series=flagged, seg.length=100, n=13, prewhiten=FALSE)
-bar <- series.rwl.plot(rwl=dat, series=flagged, seg.length=100, n=7, prewhiten=FALSE)
+foo <- series.rwl.plot(rwl = dat, series = flagged,
+                       seg.length = 100, n = 13, prewhiten = FALSE)
+bar <- series.rwl.plot(rwl = dat, series = flagged,
+                       seg.length = 100, n = 7, prewhiten = FALSE)
 head(foo$series)
 head(bar$series)
 }

@@ -5,7 +5,7 @@
   Detrend multiple ring-width series simultaneously using the C-method.
 }
 \usage{
-cms(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE)
+cms(rwl, po, c.hat.t = FALSE, c.hat.i = FALSE)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows such as
@@ -36,15 +36,15 @@ cms(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE)
 \seealso{ \code{\link{detrend}}, \code{\link{chron}}, \code{\link{rcs}} }
 \examples{data(gp.rwl)
 data(gp.po)
-gp.rwi <- cms(rwl=gp.rwl, po=gp.po)
+gp.rwi <- cms(rwl = gp.rwl, po = gp.po)
 gp.crn <- chron(gp.rwi)
-crn.plot(gp.crn, add.spline=TRUE, ylim=c(0, 2.5))
+crn.plot(gp.crn, add.spline = TRUE, ylim = c(0, 2.5))
 ## c.hat
-gp.rwi <- cms(rwl=gp.rwl, po=gp.po, c.hat.t=TRUE, c.hat.i=TRUE)
-dotchart(gp.rwi$c.hat.i, ylab="Series", xlab=expression(hat(c)[i]))
+gp.rwi <- cms(rwl = gp.rwl, po = gp.po, c.hat.t = TRUE, c.hat.i = TRUE)
+dotchart(gp.rwi$c.hat.i, ylab = "Series", xlab = expression(hat(c)[i]))
 tmp <- gp.rwi$c.hat.t
-plot(tmp[, 1], type="n", ylim=range(tmp, na.rm=TRUE),
-     xlab="Cambial Age", ylab=expression(hat(c)[t]))
+plot(tmp[, 1], type = "n", ylim = range(tmp, na.rm = TRUE),
+     xlab = "Cambial Age", ylab = expression(hat(c)[t]))
 apply(tmp, 2, lines)
 }
 \keyword{ manip }

@@ -7,8 +7,8 @@
 }
 \usage{
 detrend.series(y, y.name = "", make.plot = TRUE,
-  method = c("Spline", "ModNegExp", "Mean"), nyrs = NULL,
-  f = 0.5, pos.slope = FALSE)
+               method = c("Spline", "ModNegExp", "Mean"),
+               nyrs = NULL, f = 0.5, pos.slope = FALSE)
 }
 \arguments{
 

@@ -5,7 +5,7 @@
   This function writes a chronology to a Tucson (decadal) format file.
 }
 \usage{
-write.crn(crn, fname, header=NULL, append=FALSE)
+write.crn(crn, fname, header = NULL, append = FALSE)
 }
 \arguments{
   \item{crn}{ a \code{data.frame} containing a tree-ring chronology with

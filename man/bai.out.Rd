@@ -37,9 +37,9 @@ rwl <- data.frame(x1 = base.series + abs(rnorm(n, 0, 0.05)),
                   x3 = base.series + abs(rnorm(n, 0, 0.05)))
 
 ## The inside out method
-foo <- bai.in(rwl=rwl)
+foo <- bai.in(rwl = rwl)
 ## The outside in method
-bar <- bai.out(rwl=rwl)
+bar <- bai.out(rwl = rwl)
 
 ## Identical
 head(bar)
@@ -51,12 +51,12 @@ data(gp.dbh)
 ## dbh (minus the bark) from cm to mm 
 gp.dbh2 <- gp.dbh[, 1:2]
 gp.dbh2[, 2] <- (gp.dbh[, 2] - gp.dbh[, 3]) * 10
-bar <- bai.out(rwl=gp.rwl, diam=gp.dbh2)
+bar <- bai.out(rwl = gp.rwl, diam = gp.dbh2)
 bar.crn <- chron(bar)
 yr <- as.numeric(rownames(bar.crn))
-plot(yr, bar.crn[, 1], type="n",
-     xlab="Year", ylab=expression(mm^2))
-lines(yr, bar.crn[, 1], col="grey", lty="dashed")
-lines(yr, ffcsaps(bar.crn[, 1], nyrs=32), col="red", lwd=2)
+plot(yr, bar.crn[, 1], type = "n",
+     xlab = "Year", ylab = expression(mm^2))
+lines(yr, bar.crn[, 1], col = "grey", lty = "dashed")
+lines(yr, ffcsaps(bar.crn[, 1], nyrs = 32), col = "red", lwd = 2)
 }
 \keyword{ manip }

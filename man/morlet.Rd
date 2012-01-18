@@ -5,7 +5,7 @@
   This function performs a continuous wavelet transform on a time series.
 }
 \usage{
-morlet(y1, x1=seq_along(y1), p2=NULL, dj=0.25, siglvl=0.95)
+morlet(y1, x1 = seq_along(y1), p2 = NULL, dj = 0.25, siglvl = 0.95)
 }
 \arguments{
   \item{y1}{\code{numeric} vector. Series to be transformed.}
@@ -32,9 +32,13 @@ morlet(y1, x1=seq_along(y1), p2=NULL, dj=0.25, siglvl=0.95)
     \item{Signif}{\code{numeric}. The significant values.}
     \item{Power}{\code{numeric}. The squared power.}
 }
-\references{ Torrence, C. and Compo, G.P. (1998) A practical guide to wavelet
-  analysis. \emph{Bulletin of the American Meteorological Society}, 79: 61--78.
+
+\references{
+  Torrence, C. and Compo, G.P. (1998) A practical guide to wavelet
+  analysis. \emph{Bulletin of the American Meteorological Society},
+  79:61--78.
 }
+
 \note{ This is a port of Torrence's \acronym{IDL} code available at
   \url{http://atoc.colorado.edu/research/wavelets/software.html}
 }
@@ -45,6 +49,6 @@ ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = FALSE)
 Years <- as.numeric(rownames(ca533.crn))
 CAMstd <- ca533.crn[, 1]
-out.wave <- morlet(y1=CAMstd, x1=Years, dj=0.1, siglvl=0.99)
+out.wave <- morlet(y1 = CAMstd, x1 = Years, dj = 0.1, siglvl = 0.99)
 }
 \keyword{ hplot }

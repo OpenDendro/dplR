@@ -7,7 +7,7 @@
   window with adjustable length and overlap.
 }
 \usage{
-rwi.stats.running(rwi, ids=NULL, period=c("max", "common"),
+rwi.stats.running(rwi, ids = NULL, period = c("max", "common"),
                   running.window = TRUE,
                   window.length = min(50, nrow(rwi)),
                   window.overlap = floor(window.length / 2),
@@ -61,7 +61,7 @@ rwi.stats.running(rwi, ids=NULL, period=c("max", "common"),
     overlaps are considered to yield unreliable correlation values which
     are ignored. Defaults to the minimum of 30 and the length of the
     window. One way to lift the restriction and include all correlations
-    is to set \code{\var{min.corr.overlap}=0}. }
+    is to set \code{\var{min.corr.overlap} = 0}. }
 
   \item{round.decimals}{ the desired number of decimal places in the
     results. }
@@ -84,7 +84,7 @@ rwi.stats.running(rwi, ids=NULL, period=c("max", "common"),
   combinations, the corresponding series are averaged before any
   statistics are computed.
 
-  Note that \code{period="common"} can produce \code{NaN} for many of
+  Note that \code{period = "common"} can produce \code{NaN} for many of
   the stats if there is no common overlap period among the cores.  This
   happens especially in chronologies with floating subfossil samples
   (e.g., \code{\link{ca533}}).
@@ -157,42 +157,42 @@ rwi.stats.running(rwi, ids=NULL, period=c("max", "common"),
   \code{\link{read.ids}}, \code{\link{rwi.stats}} }
 \examples{data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "Mean") # mean is fast
-ca533.ids <- read.ids(ca533, stc=c(3, 2, 3))
+ca533.ids <- read.ids(ca533, stc = c(3, 2, 3))
 rwi.stats.running(ca533.rwi, ca533.ids)
 
 \dontrun{## Plot the chronology showing a potential cutoff year based on eps
 ca533.rwi <- detrend(rwl = ca533, method = "Spline") # detrend again
 ca533.crn <- chron(ca533.rwi)
 ## Running stats on the rwi with an 80 yr window
-foo <- rwi.stats.running(ca533.rwi, ca533.ids, window.length=80)
+foo <- rwi.stats.running(ca533.rwi, ca533.ids, window.length = 80)
 yrs <- as.numeric(rownames(ca533.crn))
-bar <- data.frame(yrs=c(min(yrs), foo$mid.year, max(yrs)),
-                  eps=c(NA, foo$eps, NA))
+bar <- data.frame(yrs = c(min(yrs), foo$mid.year, max(yrs)),
+                  eps = c(NA, foo$eps, NA))
 par(mar = c(3, 3, 3, 3), mgp = c(1.25, 0.25, 0), tcl = 0.25,
-    mfcol=c(2, 1))
-plot(yrs, ca533.crn[, 1], type="n", xlab = "Years", ylab = "RWI")
-xx <- c(500, 500, max(bar$yrs[bar$eps < 0.8], na.rm=TRUE),
-        max(bar$yrs[bar$eps < 0.8], na.rm=TRUE))
+    mfcol = c(2, 1))
+plot(yrs, ca533.crn[, 1], type = "n", xlab = "Years", ylab = "RWI")
+xx <- c(500, 500, max(bar$yrs[bar$eps < 0.8], na.rm = TRUE),
+        max(bar$yrs[bar$eps < 0.8], na.rm = TRUE))
 yy <- c(-1, 3, 3, -1)
-polygon(xx, yy, col="grey80")
-abline(h=1, lwd=1.5)
-lines(yrs, ca533.crn[, 1], col="grey50")
-lines(yrs, ffcsaps(ca533.crn[, 1], nyrs=32), col="red", lwd=2)
+polygon(xx, yy, col = "grey80")
+abline(h = 1, lwd = 1.5)
+lines(yrs, ca533.crn[, 1], col = "grey50")
+lines(yrs, ffcsaps(ca533.crn[, 1], nyrs = 32), col = "red", lwd = 2)
 par(new = TRUE)
 
 ## Second plot is the chronology after the cut off only
-plot(bar$yrs, bar$eps, type="b", xlab = "", ylab = "", axes = FALSE,
-     pch=20, col="blue")
+plot(bar$yrs, bar$eps, type = "b", xlab = "", ylab = "", axes = FALSE,
+     pch = 20, col = "blue")
 axis(4, at = pretty(foo$eps))
 mtext("EPS", side = 4, line = 1.25)
 box()
-yr.mask <- yrs > max(bar$yrs[bar$eps<0.8], na.rm=TRUE)
-plot(yrs[yr.mask], ca533.crn[yr.mask, 1], type="n",
+yr.mask <- yrs > max(bar$yrs[bar$eps<0.8], na.rm = TRUE)
+plot(yrs[yr.mask], ca533.crn[yr.mask, 1], type = "n",
      xlab = "Years", ylab = "RWI")
-abline(h=1, lwd=1.5)
-lines(yrs[yr.mask], ca533.crn[yr.mask, 1], col="grey50")
-lines(yrs[yr.mask], ffcsaps(ca533.crn[yr.mask, 1], nyrs=32),
-      col="red", lwd=2)
+abline(h = 1, lwd = 1.5)
+lines(yrs[yr.mask], ca533.crn[yr.mask, 1], col = "grey50")
+lines(yrs[yr.mask], ffcsaps(ca533.crn[yr.mask, 1], nyrs = 32),
+      col = "red", lwd = 2)
 }
 }
 \keyword{ misc }

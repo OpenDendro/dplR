@@ -6,7 +6,7 @@
   \code{data.frame} of the type produced by \code{\link{chron}}.
 }
 \usage{
-crn.plot(crn, add.spline=FALSE, nyrs=NULL, f=0.5, \dots)
+crn.plot(crn, add.spline = FALSE, nyrs = NULL, f = 0.5, \dots)
 }
 \arguments{
   \item{crn}{ a \code{data.frame} as produced by
@@ -37,15 +37,15 @@ crn.plot(crn, add.spline=FALSE, nyrs=NULL, f=0.5, \dots)
 crn.plot(cana157)
 
 ## Without sample depth
-cana157.mod <- data.frame(TTRSTD=cana157[, 1])
+cana157.mod <- data.frame(TTRSTD = cana157[, 1])
 rownames(cana157.mod) <- rownames(cana157)
-crn.plot(cana157.mod, add.spline=TRUE)
+crn.plot(cana157.mod, add.spline = TRUE)
 
 \dontrun{## With multiple chronologies
 data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)
-crn.plot(ca533.crn, add.spline=TRUE, nyrs=64)
+crn.plot(ca533.crn, add.spline = TRUE, nyrs = 64)
 }
 }
 \keyword{ hplot }

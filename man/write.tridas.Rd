@@ -8,20 +8,28 @@
   also supported. }
 
 \usage{
-write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
-  titles = NULL, crn.types = NULL, crn.titles = NULL, crn.units = NULL,
-  tridas.measuring.method = NA, other.measuring.method = "unknown",
-  sample.type = "core", wood.completeness = NULL, taxon = "",
-  tridas.variable = "ring width", other.variable = NA,
-  project.info = list(type = c("unknown"), description = NULL,
-    title = "", category = "", investigator = "", period = ""),
-  lab.info = data.frame(name = "", acronym = NA, identifier = NA,
-    domain = "", addressLine1 = NA, addressLine2 = NA, cityOrTown = NA,
-    stateProvinceRegion = NA, postalCode = NA, country = NA),
-  research.info = data.frame(identifier = NULL, domain = NULL,
-    description = NULL),
-  site.info = list(type = "unknown", description = NULL, title = ""),
-  random.identifiers = FALSE, identifier.domain = lab.info$name[1])
+write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL,
+             ids = NULL, titles = NULL, crn.types = NULL,
+             crn.titles = NULL, crn.units = NULL,
+             tridas.measuring.method = NA,
+             other.measuring.method = "unknown",
+             sample.type = "core", wood.completeness = NULL,
+             taxon = "", tridas.variable = "ring width",
+             other.variable = NA,
+             project.info = list(type = c("unknown"),
+                 description = NULL, title = "", category = "",
+                 investigator = "", period = ""),
+             lab.info = data.frame(name = "", acronym = NA,
+                 identifier = NA, domain = "", addressLine1 = NA,
+                 addressLine2 = NA, cityOrTown = NA,
+                 stateProvinceRegion = NA, postalCode = NA,
+                 country = NA),
+             research.info = data.frame(identifier = NULL,
+                 domain = NULL, description = NULL),
+             site.info = list(type = "unknown",
+                 description = NULL, title = ""),
+             random.identifiers = FALSE,
+             identifier.domain = lab.info$name[1])
 }
 
 \arguments{

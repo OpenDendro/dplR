@@ -5,8 +5,8 @@
   Automatically generates a skeleton plot of tree-ring data.
 }
 \usage{
-skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9, dat.out = FALSE,
-  master=FALSE, plot=TRUE)
+skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9,
+          dat.out = FALSE, master = FALSE, plot = TRUE)
 }
 \arguments{
   \item{rw.vec}{ a vector of a tree-ring chronology or series }
@@ -78,7 +78,7 @@ x.name <- colnames(co021)[33]
 ## On a raw ring width series - undated
 skel.plot(x)
 ## On a raw ring width series - dated with names
-skel.plot(x, yr.vec = x.yrs, sname= x.name, master=TRUE)
+skel.plot(x, yr.vec = x.yrs, sname = x.name, master = TRUE)
 \dontrun{
 ## Try cross-dating
 y <- co021[, 11]
@@ -87,18 +87,18 @@ y.name <- colnames(co021)[11]
 ## send to postscript - 3 pages total
 postscript("xdating.examp.ps")
 ## "Master series" with correct calendar dates
-skel.plot(x, yr.vec = x.yrs, sname= x.name, master=TRUE)
+skel.plot(x, yr.vec = x.yrs, sname = x.name, master = TRUE)
 ## Undated series, try to align with last plot
 skel.plot(y)
 ## Here's the answer...
-skel.plot(y, yr.vec = y.yrs, sname= y.name)
+skel.plot(y, yr.vec = y.yrs, sname = y.name)
 dev.off()
 
 ## alternatively send to pdf
 pdf("xdating.examp.pdf", width = 10, height = 7.5, paper = 'USr')
-skel.plot(x, yr.vec = x.yrs, sname= x.name, master=TRUE)
+skel.plot(x, yr.vec = x.yrs, sname = x.name, master = TRUE)
 skel.plot(y)
-skel.plot(y, yr.vec = y.yrs, sname= y.name)
+skel.plot(y, yr.vec = y.yrs, sname = y.name)
 dev.off()
 }
 }

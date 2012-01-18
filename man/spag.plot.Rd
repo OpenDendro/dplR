@@ -5,7 +5,7 @@
   Makes a spaghetti plot of tree-ring data.
 }
 \usage{
-spag.plot(rwl, zfac=1, \dots)
+spag.plot(rwl, zfac = 1, \dots)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as
@@ -23,7 +23,7 @@ spag.plot(rwl, zfac=1, \dots)
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{seg.plot}} }
 \examples{data(ca533)
-spag.plot(ca533, main="Campito Mountain")
-spag.plot(ca533, zfac=2, main="Campito Mountain")
+spag.plot(ca533, main = "Campito Mountain")
+spag.plot(ca533, zfac = 2, main = "Campito Mountain")
 }
 \keyword{ hplot }

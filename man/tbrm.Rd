@@ -58,4 +58,5 @@ crn1 <- apply(co021.rwi, 1, tbrm)
 crn2 <- chron(co021.rwi)
 cor(crn1, crn2[, 1])
 }
-\keyword{ misc }
+\keyword{ robust }
+\keyword{ univar }

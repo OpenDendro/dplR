@@ -35,4 +35,4 @@ plot(yrs, y, xlab="Years", ylab="Series1 (mm)", type="l", col="grey")
 lines(yrs, hanning(y, n=9), col="red", lwd=2)
 lines(yrs, hanning(y, n=21), col="blue", lwd=2)
 }
-\keyword{ misc }
+\keyword{ ts }

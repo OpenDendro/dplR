@@ -67,4 +67,4 @@ lines(ffcsaps(series, nyrs=64), col="green", lwd=2)
 ## nyrs defaults to 0.5*length(series) = 347
 lines(ffcsaps(series), col="blue", lwd=2)
 }
-\keyword{ misc }
+\keyword{ smooth }

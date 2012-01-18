@@ -37,4 +37,4 @@
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 sens2(ca533.rwi[, 1])
 }
-\keyword{ misc }
+\keyword{ univar }

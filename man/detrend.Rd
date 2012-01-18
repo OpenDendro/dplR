@@ -73,4 +73,4 @@ ca533.rwi <- detrend(rwl = ca533, method = c("Spline", "ModNegExp"),
 dev.off()
 }
 }
-\keyword{ misc }
+\keyword{ manip }

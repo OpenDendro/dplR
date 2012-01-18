@@ -1,9 +1,9 @@
 \name{detrend}
 \alias{detrend}
-\title{ Detrend Multiple Ring Width Series Simultaneously }
+\title{ Detrend Multiple Ring-Width Series Simultaneously }
 \description{
   This is a wrapper for \code{\link{detrend.series}} to detrend many
-  ring width series at once.
+  ring-width series at once.
 }
 \usage{
 detrend(rwl, y.name = names(rwl), make.plot = FALSE,

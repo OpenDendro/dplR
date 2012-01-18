@@ -3,7 +3,7 @@
 \title{ Calculate Mean Sensitivity on Series with a Trend }
 \description{
   This function calculates mean sensitivity of a raw or detrended
-  ring width series.
+  ring-width series.
 }
 \usage{
   sens2(x)

@@ -1,15 +1,15 @@
 \name{rwl.stats}
 \alias{rwl.stats}
-\title{ Calculate Descriptive Statistics on Ring Width Series }
+\title{ Calculate Descriptive Statistics on Ring-Width Series }
 \description{
   This function calculates descriptive statistics on a \code{data.frame}
-  of raw or detrended ring width series.
+  of raw or detrended ring-width series.
 }
 \usage{
 rwl.stats(rwl)
 }
 \arguments{
-  \item{rwl}{ a \code{data.frame} with (usually) raw ring width series as
+  \item{rwl}{ a \code{data.frame} with (usually) raw ring-width series as
   columns and years as rows such as that produced by \code{\link{read.rwl}}.
   It is sometimes desirable to run this on detrended (e.g., rwi)
   data particularly for the sensitivity measures (\code{\link{sens1}},

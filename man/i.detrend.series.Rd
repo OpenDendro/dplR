@@ -1,6 +1,6 @@
 \name{i.detrend.series}
 \alias{i.detrend.series}
-\title{ Interactively Detrend a Ring Width Series }
+\title{ Interactively Detrend a Ring-Width Series }
 \description{
   Interactively detrend a tree-ring series by one of three methods, a
   smoothing spline, a linear model, or the mean. This is a wrapper for

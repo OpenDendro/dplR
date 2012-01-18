@@ -2,7 +2,7 @@
 \alias{rcs}
 \title{ Regional Curve Standardization }
 \description{  
-  Detrend multiple ring width series simultaneously using a regional
+  Detrend multiple ring-width series simultaneously using a regional
   curve.
 }
 \usage{
@@ -29,19 +29,19 @@ rcs(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
   \item{make.plot}{ \code{logical} flag. Makes plots of the raw data and
     regional curve if \code{TRUE}. }
   \item{rc.out}{ \code{logical} flag. Returns the regional curve along
-    with the ring width indices if \code{TRUE}. }
+    with the ring-width indices if \code{TRUE}. }
   \item{\dots}{ other arguments passed to
     \code{\link[graphics]{plot}}. }
 }
 \details{
-This method detrends and standardizes tree-ring series by calculating an age-related growth curve specific to the \code{\var{rwl}}. The detrending is the estimation and removal of the tree's natural biological growth trend. The standardization is done by dividing each series by the growth trend to produce units in the dimensionless ring width index (\acronym{RWI}).
+This method detrends and standardizes tree-ring series by calculating an age-related growth curve specific to the \code{\var{rwl}}. The detrending is the estimation and removal of the tree's natural biological growth trend. The standardization is done by dividing each series by the growth trend to produce units in the dimensionless ring-width index (\acronym{RWI}).
 
 The spline approach uses an n-year spline where the frequency response is 0.50 at a wavelength of 10 percent of the maximum cambial age unless specified differently using \code{\var{nyrs}} and \code{\var{f}} in the function \code{\link{ffcsaps}}.
 
 This attempts to remove the low frequency variability that is due to biological or stand effects. See the references below for further details on detrending in general, and Biondi and Qeadan (2008) for an explanation of \acronym{RCS}.
 }
 \value{
-  A \code{data.frame} containing the dimensionless and detrended ring widths indices with column names, row names and dimensions of \code{\var{rwl}}. If \code{\var{rc.out}} is \code{TRUE} then a \code{list} will be returned with a \code{data.frame} containing the detrended ring widths as above and a \code{vector} containing the regional curve.
+  A \code{data.frame} containing the dimensionless and detrended ring-width indices with column names, row names and dimensions of \code{\var{rwl}}. If \code{\var{rc.out}} is \code{TRUE} then a \code{list} will be returned with a \code{data.frame} containing the detrended ring widths as above and a \code{vector} containing the regional curve.
 }
 \references{
   Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring standardization: Defining the biological trend from expected basal area increment. Tree-Ring Research 64(2): 81-96.

@@ -1,9 +1,9 @@
 \name{rwi.stats.running}
 \alias{rwi.stats.running}
-\title{ Running Window Statistics on Detrended Ring Width Series }
+\title{ Running Window Statistics on Detrended Ring-Width Series }
 \description{
   This function calculates descriptive statistics on a \code{data.frame} of
-  (usually) ring width indices. The statistics are computed in a running
+  (usually) ring-width indices. The statistics are computed in a running
   window with adjustable length and overlap.
 }
 \usage{
@@ -56,7 +56,7 @@ rwi.stats.running(rwi, ids=NULL, period=c("max", "common"),
     some heuristic rules. }
 
   \item{min.corr.overlap}{ \code{numeric} value setting the minimum
-    number of common years in any pair of ring width series required for
+    number of common years in any pair of ring-width series required for
     their correlation to be included in the calculations. Smaller
     overlaps are considered to yield unreliable correlation values which
     are ignored. Defaults to the minimum of 30 and the length of the

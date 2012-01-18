@@ -2,7 +2,7 @@
 \alias{bai.out}
 \title{ Basal Area Increment (Outside In) }
 \description{
-  Convert multiple ring width series to basal area increment (i.e., ring area) going from the bark to the pith.
+  Convert multiple ring-width series to basal area increment (i.e., ring area) going from the bark to the pith.
 
 }
 \usage{
@@ -13,7 +13,7 @@ bai.out(rwl, diam = NULL)
   \item{diam}{ an optional \code{data.frame} containing two variables. If present, variable one (\code{\var{series}} in the example below) gives the series \acronym{ID} as either \code{character}s or \code{factor}s. These must exactly match \code{colnames(\var{rwl})}. Variable two (\code{\var{diam}} in the example below) gives the diameter of the tree (in mm) up to the outermost ring (e.g., the diameter of the tree where the core was taken minus the thickness of the bark). If \code{\var{diam}} is \code{NULL} then the diameter is taken as twice the sum of the widths for each series (column) in \code{\var{rwl}}. }
 }
 \details{
-This converts ring width series (mm) to ring area series (mm squared) (aka basal area increments) based on the diameter of the tree and the width of each ring moving towards the pith of the tree. It is related to \code{\link{bai.in}}, which calculates each ring area starting from the inside of the tree and working outward. Both methods assume a circular cross section (Biondi 1999). See the references below for further details. 
+This converts ring-width series (mm) to ring-area series (mm squared) (aka basal area increments) based on the diameter of the tree and the width of each ring moving towards the pith of the tree. It is related to \code{\link{bai.in}}, which calculates each ring area starting from the inside of the tree and working outward. Both methods assume a circular cross section (Biondi 1999). See the references below for further details. 
 
 }
 \value{
@@ -30,7 +30,7 @@ Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring standardi
 \examples{
 \dontrun{## Toy
 n <- 100
-## Make three fake tree ring series to show that these funcs work on rwl objects
+## Make three fake tree-ring series to show that these funcs work on rwl objects
 base.series <- 0.75 + exp(-0.2 * 1:n)
 rwl <- data.frame(x1 = base.series + abs(rnorm(n, 0, 0.05)),
                   x2 = base.series + abs(rnorm(n, 0, 0.05)),

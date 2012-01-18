@@ -1,17 +1,17 @@
 \name{rwi.stats}
 \alias{rwi.stats}
-\title{ Calculate Summary Statistics on Detrended Ring Width Series }
+\title{ Calculate Summary Statistics on Detrended Ring-Width Series }
 \description{
   This function calculates descriptive statistics on a \code{data.frame}
-  of (usually) ring width indices.
+  of (usually) ring-width indices.
 }
 \usage{
 rwi.stats(rwi, ids = NULL, period = c("max", "common"))
 }
 \arguments{
-  \item{rwi}{ a \code{data.frame} with detrended and standardized ring width
-    indices as columns and years as rows such as that produced by
-    \code{\link{detrend}}. }
+  \item{rwi}{ a \code{data.frame} with detrended and standardized
+    ring-width indices as columns and years as rows such as that
+    produced by \code{\link{detrend}}. }
   \item{ids}{ an optional \code{data.frame} with column one named
     \code{"tree"} giving a \code{numeric} \acronym{ID} for each tree and
     column two named \code{"core"} giving a \code{numeric} \acronym{ID}

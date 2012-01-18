@@ -2,8 +2,8 @@
 \alias{gini.coef}
 \title{ Calculate the Gini Coefficient   }
 \description{
-  This function calculates the Gini coefficient on raw or detrended ring width
-  series.
+  This function calculates the Gini coefficient on raw or detrended
+  ring-width series.
 }
 \usage{
 gini.coef(x)

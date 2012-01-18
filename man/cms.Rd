@@ -2,7 +2,7 @@
 \alias{cms}
 \title{ C-Method Standardization }
 \description{
-  Detrend multiple ring width series simultaneously using the C-method.
+  Detrend multiple ring-width series simultaneously using the C-method.
 }
 \usage{
 cms(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE)
@@ -15,14 +15,14 @@ cms(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE)
   \item{c.hat.i}{ a \code{logical} indicating whether to export the expected ring widths for each series. }
 }
 \details{
-  This method detrends and standardizes tree-ring series by calculating a growth curve based on constant annual basal area increment. The method is based on the \dQuote{assumption that constant growth is expressed by a constant basal area increment distributed over a growing surface} (Biondi and Qeadan 2008). The detrending is the estimation and removal of the tree's natural biological growth trend. The standardization is done by dividing each series by the growth trend to produce units in the dimensionless ring width index (\acronym{RWI}).
+  This method detrends and standardizes tree-ring series by calculating a growth curve based on constant annual basal area increment. The method is based on the \dQuote{assumption that constant growth is expressed by a constant basal area increment distributed over a growing surface} (Biondi and Qeadan 2008). The detrending is the estimation and removal of the tree's natural biological growth trend. The standardization is done by dividing each series by the growth trend to produce units in the dimensionless ring-width index (\acronym{RWI}).
 
   This attempts to remove the low frequency variability that is due to biological or stand effects.
 
   See the reference below for further details.
 }
 \value{
-  A \code{data.frame} containing the dimensionless and detrended ring widths indices with column names, row names and dimensions of \code{\var{rwl}} if \code{\var{c.hat.t}} is \code{FALSE} and \code{\var{c.hat.i}} is \code{FALSE}.
+  A \code{data.frame} containing the dimensionless and detrended ring-width indices with column names, row names and dimensions of \code{\var{rwl}} if \code{\var{c.hat.t}} is \code{FALSE} and \code{\var{c.hat.i}} is \code{FALSE}.
   Otherwise a \code{list} of length 2 or 3 containing the \acronym{RWI} \code{data.frame}, a \code{data.frame} containing the C-curves for each tree (\code{\var{c.hat.t}}), and/or a vector containing the C-values for each tree (\code{\var{c.hat.i}}) depending on the output flags. See Eq. 12 in Biondi and Qeadan (2008) for more detail on \code{\var{c.hat.t}}, and \code{\var{c.hat.i}}.
 }
 \references{ Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring standardization: Defining the biological trend from expected basal area increment. Tree-Ring Research 64(2): 81-96.

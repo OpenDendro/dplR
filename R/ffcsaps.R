@@ -70,11 +70,10 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
 
 ### start main function
 
-    x2 <- as.vector(x)
-    y2 <- as.vector(y)
-    ## quick error check
-    if(!is.vector(x2)) stop("'x' must be a vector")
-    if(!is.vector(y2)) stop("'y' must be a vector")
+    y2 <- as.numeric(y)
+    if(!is.numeric(y2)) stop("'y' must be coercible to a numeric vector")
+    x2 <- as.numeric(x)
+    if(!is.numeric(x2)) stop("'x' must be coercible to a numeric vector")
 
     n <- length(x2)
     ## quick error check

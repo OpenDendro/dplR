@@ -10,9 +10,9 @@
 ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
 }
 \arguments{
-  \item{y}{ a vector, typically a tree-ring series. }
-  \item{x}{ a vector with the same length as \code{\var{y}}, typically
-    giving the years of \code{\var{y}}. }
+  \item{y}{ a \code{numeric} vector, typically a tree-ring series. }
+  \item{x}{ a \code{numeric} vector with the same length as
+    \code{\var{y}}, typically giving the years of \code{\var{y}}. }
   \item{nyrs}{ a number greater than 1, affecting the rigidity of the
     spline.  When \code{\var{f}} is kept constant, a larger
     \code{\var{nyrs}} produces a more rigid spline.  Defaults to

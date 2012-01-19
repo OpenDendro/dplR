@@ -17,7 +17,7 @@ create.format <- function(n.fields, field.width){
 }
 
 write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
-                          mapping.fname="", mapping.append=FALSE){
+                          mapping.fname="", mapping.append=FALSE, ...){
     line.term <- "\x0D\x0A" # CR+LF, ASCII carriage return and line feed
     if(!is.data.frame(rwl.df))
         stop("'rwl.df' must be a data.frame")

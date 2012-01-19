@@ -252,7 +252,8 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
                          title = ""
                          ),
                          random.identifiers = FALSE,
-                         identifier.domain = lab.info$name[1]){
+                         identifier.domain = lab.info$name[1],
+                         ...){
 
     if(!is.data.frame(lab.info) || nrow(lab.info) < 1)
         stop("'lab.info' must be a data.frame with at least one row")

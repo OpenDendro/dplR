@@ -22,7 +22,8 @@ format.tucson <- (function(){
 ### Exportable function
 `write.tucson` <-
     function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01,
-             mapping.fname="", mapping.append=FALSE, long.names=FALSE)
+             mapping.fname="", mapping.append=FALSE, long.names=FALSE,
+             ...)
 {
     line.term <- "\x0D\x0A" # CR+LF, ASCII carriage return and line feed
     if(!is.data.frame(rwl.df))

@@ -7,7 +7,7 @@
 }
 \usage{
 write.compact(rwl.df, fname, append = FALSE, prec = 0.01,
-              mapping.fname = "", mapping.append = FALSE)
+              mapping.fname = "", mapping.append = FALSE, \dots)
 }
 \arguments{
   \item{rwl.df}{ a \code{data.frame} containing tree-ring ring widths
@@ -15,22 +15,22 @@ write.compact(rwl.df, fname, append = FALSE, prec = 0.01,
     \acronym{ID}s are the column names and the years are the row
     names. This type of \code{data.frame} is produced by
     \code{\link{read.rwl}} and \code{\link{read.compact}}. }  
-  \item{fname}{ a character vector giving the file name of the rwl
-    file. }
-  \item{append}{ logical flag indicating whether to append this
+  \item{fname}{ a \code{character} vector giving the file name of the
+    rwl file. }
+  \item{append}{ \code{logical} flag indicating whether to append this
     chronology to an existing file. }
   \item{prec}{ \code{numeric} indicating the precision of the output
-    file. - This must be equal to either 0.01 or 0.001 (units are in
+    file. This must be equal to either 0.01 or 0.001 (units are in
     mm). }
   \item{mapping.fname}{ a \code{character} vector of length one giving
     the file name of an optional output file showing the mapping between
     input and output series \acronym{ID}s. The mapping is only printed
     for those \acronym{ID}s that are transformed. An empty name (the
     default) disables output. }
-
   \item{mapping.append}{ \code{logical} flag indicating whether to
     append the description of the altered series \acronym{ID}s to an
     existing file.  The default is to create a new file. }
+  \item{\dots}{ Unknown arguments are accepted but not used. }
 }
 \details{
   The output should be readable by the Dendrochronology Program Library

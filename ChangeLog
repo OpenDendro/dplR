@@ -4,6 +4,11 @@
 - Requires R >= 2.12.0 (use of markup in some Rd \title{} sections).
 - Documentation has been cleaned up / uses better markup.
 
+File: ffcsaps.R
+---------------
+
+- Checks that 'x' and 'y' are coercible to _numeric_ vectors
+
 File: read.ids.R
 ----------------
 

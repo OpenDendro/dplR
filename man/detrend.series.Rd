@@ -58,11 +58,12 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 
   The \code{"ModNegExp"} approach attempts to fit a classic nonlinear
   model of biological growth of the form \code{\var{Y} ~ \var{a} *
-  exp(\var{b}*1:length(\var{Y})) + \var{k}} using \code{\link{nls}}. See
-  Fritts (2001) for details about the parameters. If a nonlinear model
-  cannot be fit then a linear model is fit.  That linear model can have
-  a positive slope unless \code{\var{pos.slope}} is \code{FALSE} in
-  which case method \code{"Mean"} is used.
+  exp(\var{b} * 1:length(\var{Y})) + \var{k}} using
+  \code{\link{nls}}. See Fritts (2001) for details about the
+  parameters. If a nonlinear model cannot be fit then a linear model is
+  fit.  That linear model can have a positive slope unless
+  \code{\var{pos.slope}} is \code{FALSE} in which case method
+  \code{"Mean"} is used.
 
   The \code{"Mean"} approach fits a horizontal line using the mean of
   the series.
@@ -78,12 +79,12 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   used. If only one method is selected, returns a vector.
 }
 \references{
-  Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
-  Dendrochronology: Applications in the Environmental Sciences.}
+  Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
+  Dendrochronology: Applications in the Environmental Sciences}.
   Springer.  \acronym{ISBN-13}: 978-0792305866.
 
-  Fritts, H.C. (2001) \emph{Tree Rings and Climate.}
-  Blackburn. \acronym{ISBN-13}: 978-1930665392.
+  Fritts, H. C. (2001) \emph{Tree Rings and Climate}.
+  Blackburn.  \acronym{ISBN-13}: 978-1930665392.
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{detrend}} }
@@ -95,7 +96,7 @@ series <- gt * noise
 series.rwi <- detrend.series(y = series, y.name = "Foo")
 ## Use series CAM011 from the Campito dataset
 data(ca533)
-series <- ca533[,"CAM011"]
+series <- ca533[, "CAM011"]
 names(series) <- rownames(ca533)
 series.rwi <- detrend.series(y = series, y.name = "CAM011")
 }

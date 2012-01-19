@@ -44,11 +44,16 @@ This attempts to remove the low frequency variability that is due to biological 
   A \code{data.frame} containing the dimensionless and detrended ring-width indices with column names, row names and dimensions of \code{\var{rwl}}. If \code{\var{rc.out}} is \code{TRUE} then a \code{list} will be returned with a \code{data.frame} containing the detrended ring widths as above and a \code{vector} containing the regional curve.
 }
 \references{
-  Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring standardization: Defining the biological trend from expected basal area increment. Tree-Ring Research 64(2): 81-96.
+  Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring
+  standardization: Defining the biological trend from expected basal
+  area increment.  \emph{Tree-Ring Research}, 64(2):81--96.
 
-  Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of Dendrochronology: Applications in the Environmental Sciences.} Springer. \acronym{ISBN-13}: 978-0792305866.
+  Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
+  Dendrochronology: Applications in the Environmental Sciences}.
+  Springer.  \acronym{ISBN-13}: 978-0792305866.
 
-  Fritts, H.C. (2001) \emph{Tree Rings and Climate.} Blackburn. \acronym{ISBN-13}: 978-1930665392.
+  Fritts, H. C. (2001) \emph{Tree Rings and Climate}.
+  Blackburn.  \acronym{ISBN-13}: 978-1930665392.
 }
 \note{ DendroLab website: \url{http://dendrolab.org/} }
 \author{

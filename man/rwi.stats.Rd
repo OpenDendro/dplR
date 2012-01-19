@@ -9,20 +9,24 @@
 rwi.stats(rwi, ids = NULL, period = c("max", "common"))
 }
 \arguments{
+
   \item{rwi}{ a \code{data.frame} with detrended and standardized
     ring-width indices as columns and years as rows such as that
     produced by \code{\link{detrend}}. }
+
   \item{ids}{ an optional \code{data.frame} with column one named
     \code{"tree"} giving a \code{numeric} \acronym{ID} for each tree and
     column two named \code{"core"} giving a \code{numeric} \acronym{ID}
     for each core. Defaults to one core per tree as
     \code{data.frame(tree = 1:ncol(\var{rwi}), core = rep(1,
     ncol(\var{rwi})))}. }
-  \item{period}{ a character string, either \code{"common"} or
+
+\item{period}{ a \code{character} string, either \code{"common"} or
     \code{"max"} indicating whether correlations should be limited to
     complete observations over the period common to all cores or the
     maximum pairwise overlap. See Details of \code{\link{cor}}. Defaults
     to \code{"max"}. }
+  
 }
 \details{
   This calculates a variety of descriptive statistics commonly used in
@@ -34,8 +38,8 @@ rwi.stats(rwi, ids = NULL, period = c("max", "common"))
   more than one core per tree. The function \code{\link{read.ids}} is be
   helpful for creating a mask based on the series \acronym{ID}.
 
-  Note that \code{\var{period}="common"} can produce \code{NaN} for many
-  of the stats if there is no common overlap period among the
+  Note that \code{\var{period} = "common"} can produce \code{NaN} for
+  many of the stats if there is no common overlap period among the
   cores. This happens especially in chronologies with floating subfossil
   samples (e.g., \code{\link{ca533}}).
 
@@ -72,12 +76,14 @@ rwi.stats(rwi, ids = NULL, period = c("max", "common"))
   \item{eps}{the expressed population signal}
 }
 \references{
-  Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
-  Dendrochronology: Applications in the Environmental Sciences.}
+
+  Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
+    Dendrochronology: Applications in the Environmental Sciences}.
   Springer.  \acronym{ISBN-13}: 978-0792305866.
 
-  Fritts, H.C. (2001) \emph{Tree Rings and Climate.}
-  Blackburn. \acronym{ISBN-13}: 978-1930665392.
+  Fritts, H. C. (2001) \emph{Tree Rings and Climate}.  Blackburn.
+  \acronym{ISBN-13}: 978-1930665392.
+  
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{detrend}}, \code{\link{cor}},

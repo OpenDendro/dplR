@@ -49,8 +49,8 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   If one detrending method is used, a \code{data.frame} containing the
   dimensionless detrended ring widths with column names, row names and
   dimensions of \code{\var{rwl}}. If more methods are used, a list with
-  \code{ncol(\var{rwl})} elements each containing a data.frame with the
-  detrended ring widths in each column.
+  \code{ncol(\var{rwl})} elements each containing a \code{data.frame}
+  with the detrended ring widths in each column.
 }
 \note{
   This function uses the \code{\link[foreach]{foreach}} looping

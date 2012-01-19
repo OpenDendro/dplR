@@ -14,11 +14,11 @@ chron(x, prefix = "xxx", biweight = TRUE, prewhiten = FALSE)
     \code{rownames(\var{x})} containing years and \code{colnames(x)}
     containing each series \acronym{ID} such as produced by
     \code{\link{read.rwl}}}
-  \item{prefix}{a character string with less than 4 characters. Defaults
-    to \code{"xxx"}}
-  \item{biweight}{logical flag. If \acronym{TRUE} then a robust mean is
-    calculated using \code{\link{tbrm}.}}
-  \item{prewhiten}{logical flag. If \acronym{TRUE} each series is
+  \item{prefix}{a \code{character} string with less than 4
+    characters. Defaults to \code{"xxx"}}
+  \item{biweight}{\code{logical} flag. If \acronym{TRUE} then a robust
+    mean is calculated using \code{\link{tbrm}.}}
+  \item{prewhiten}{\code{logical} flag. If \acronym{TRUE} each series is
     whitened using \code{\link{ar}} prior to averaging.}
 }
 \details{
@@ -31,12 +31,12 @@ chron(x, prefix = "xxx", biweight = TRUE, prewhiten = FALSE)
   prewhitening was performed), and the sample depth.
 }
 \references{
-  Cook, E. R. and Kairiukstis, L.A. (1990) \emph{Methods of
+  Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
     Dendrochronology: Applications in the Environmental Sciences.} Springer.
   \acronym{ISBN-13}: 978-0792305866.
 
-  Fritts, H.C. (2001) \emph{Tree Rings and Climate.}
-  Blackburn. \acronym{ISBN-13}: 978-1930665392.
+  Fritts, H. C. (2001) \emph{Tree Rings and Climate.}
+  Blackburn.  \acronym{ISBN-13}: 978-1930665392.
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{read.rwl}}, \code{\link{detrend}},

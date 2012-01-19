@@ -6,7 +6,7 @@
   chronologies (.crn).
 }
 \usage{
-read.crn(fname, header=NULL, encoding = getOption("encoding"))
+read.crn(fname, header = NULL, encoding = getOption("encoding"))
 }
 \arguments{
   \item{fname}{ a \code{character} vector giving the file name of the

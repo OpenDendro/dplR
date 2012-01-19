@@ -20,9 +20,9 @@ co021
   \url{ftp://ftp.ncdc.noaa.gov/pub/data/paleo/treering/measurements/northamerica/usa/co021.rwl}
 }
 \references{
-  Schulman, E. (1963) Schulman Old Tree No. 1 Data Set.  IGBP
-  PAGES/World Data Center for Paleoclimatology Data Contribution Series
-  1983-CO021.RWL.  NOAA/NCDC Paleoclimatology Program, Boulder,
-  Colorado, USA.
+  Schulman, E. (1963) Schulman Old Tree No. 1 Data Set.  \acronym{IGBP}
+  \acronym{PAGES}/World Data Center for Paleoclimatology Data
+  Contribution Series 1983-CO021.RWL.  \acronym{NOAA}/\acronym{NCDC}
+  Paleoclimatology Program, Boulder, Colorado, \acronym{USA}.
 }
 \keyword{datasets}

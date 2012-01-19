@@ -9,18 +9,20 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9,
           dat.out = FALSE, master = FALSE, plot = TRUE)
 }
 \arguments{
-  \item{rw.vec}{ a vector of a tree-ring chronology or series }
-  \item{yr.vec}{ optional vector giving years for the tree-ring data }
-  \item{sname}{ an optional string of less than 8 characters
-    giving the \acronym{ID} for the data }
-  \item{filt.weight}{ filter length for the hanning filter, defaults to 9 }
-  \item{dat.out}{ logical flag indicating whether to return a
+  \item{rw.vec}{ a \code{numeric} vector of a tree-ring chronology or
+    series }
+  \item{yr.vec}{ optional \code{numeric} vector giving years for the
+    tree-ring data }
+  \item{sname}{ an optional \code{character} string of less than 8
+    characters giving the \acronym{ID} for the data }
+  \item{filt.weight}{ filter length for the Hanning filter, defaults to 9 }
+  \item{dat.out}{ \code{logical} flag indicating whether to return a
     \code{data.frame} containing the data. }
-  \item{master}{ logical flag indicating whether to make the plot with the
-    segments inverted to ease pattern matching. If \code{TRUE} the segments
-    will be plotted from the top down and the labels on the x axes will be
-    on the bottom. }
-  \item{plot}{ logical flag indicating whether to make a plot. }
+  \item{master}{ \code{logical} flag indicating whether to make the plot
+    with the segments inverted to ease pattern matching. If \code{TRUE}
+    the segments will be plotted from the top down and the labels on the
+    x axes will be on the bottom. }
+  \item{plot}{ \code{logical} flag indicating whether to make a plot. }
 }
 \details{
   This makes a skeleton plot - a plot that gives the relative growth for
@@ -57,16 +59,17 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9,
   skeleton plot segments as columns.
 }
 \references{
-  Stokes, M.A. and Smiley, T.L. (1968) \emph{An Introduction to
-  Tree-Ring Dating.} The University of Arizona Press.
+
+  Stokes, M. A. and Smiley, T. L. (1968) \emph{An Introduction to
+    Tree-Ring Dating}.  The University of Arizona Press.
   \acronym{ISBN-13}: 978-0816516803.
   
-  Sheppard, P.R. (2002) \emph{Crossdating Tree Rings Using Skeleton
-  Plotting.}
+  Sheppard, P. R. (2002) Crossdating Tree Rings Using Skeleton Plotting.
   \url{http://www.ltrr.arizona.edu/skeletonplot/introcrossdate.htm}
   
-  Meko, D. (2002) \emph{Tree-Ring MATLAB Toolbox.}
+  Meko, D. (2002) Tree-Ring MATLAB Toolbox.
   \url{http://www.mathworks.com/matlabcentral/}
+  
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{  \code{\link{Devices}}, \code{\link{hanning}}  }
@@ -95,7 +98,7 @@ skel.plot(y, yr.vec = y.yrs, sname = y.name)
 dev.off()
 
 ## alternatively send to pdf
-pdf("xdating.examp.pdf", width = 10, height = 7.5, paper = 'USr')
+pdf("xdating.examp.pdf", width = 10, height = 7.5, paper = "USr")
 skel.plot(x, yr.vec = x.yrs, sname = x.name, master = TRUE)
 skel.plot(y)
 skel.plot(y, yr.vec = y.yrs, sname = y.name)

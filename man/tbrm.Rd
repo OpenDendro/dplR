@@ -18,8 +18,8 @@ tbrm(x, C = 9)
   see page 22. This function is called by \code{\link{chron}} to
   calculate a robust mean.  \code{\var{C}} determines the point at which
   outliers are given a weight of 0 and therefore do not contribute to
-  the calculation of the mean.  \code{\var{C}=9} sets values roughly
-  +/-6 standard deviations to 0. \code{\var{C}=6} is also used in
+  the calculation of the mean.  \code{\var{C} = 9} sets values roughly
+  +/-6 standard deviations to 0. \code{\var{C} = 6} is also used in
   tree-ring chronology development. Cook and Kairiukstis (1990) have
   further details.
 
@@ -33,19 +33,21 @@ tbrm(x, C = 9)
   A \code{numeric} mean.
 }
 \references{
+
   Statistical Algorithms Description Document, 2002, Affymetrix.
 
-  Cook, E. R. and Kairiukstis, L.A. (1990) \emph{Methods of
-  Dendrochronology: Applications in the Environmental Sciences.}
+  Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
+  Dendrochronology: Applications in the Environmental Sciences}.
   Springer.  \acronym{ISBN-13}: 978-0792305866.
 
   Mosteller, F. and Tukey, J. W. (1977) \emph{Data Analysis and
-  Regression: a second course in statistics.}
-  Addison-Wesley. \acronym{ISBN-13}: 978-0201048544.
+  Regression: a second course in statistics}.  Addison-Wesley.
+  \acronym{ISBN-13}: 978-0201048544.
 
-  Shewchuk, J. R. (1997) \emph{Adaptive Precision Floating-Point
-  Arithmetic and Fast Robust Geometric Predicates.} Discrete and
-  Computational Geometry, 18(3):305--363. Springer.
+  Shewchuk, J. R. (1997) Adaptive Precision Floating-Point Arithmetic
+  and Fast Robust Geometric Predicates.  \emph{Discrete and
+  Computational Geometry}, 18(3):305--363. Springer.
+
 }
 \author{ Mikko Korpela }
 \seealso{ \code{\link{chron}} }

@@ -50,8 +50,8 @@ uuid.gen(more.state = "")
 
   The \acronym{UUID}s produced by \code{uuid.gen} generators are Version
   4 (random) with 122 random bits and 6 fixed bits.  The \acronym{UUID}
-  is presented as a character string of 32 hexadecimal digits and 4
-  hyphens:
+  is presented as a \code{character} string of 32 hexadecimal digits and
+  4 hyphens:
 
   \samp{xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx}
 
@@ -66,7 +66,7 @@ uuid.gen(more.state = "")
 }
 \value{
   A parameterless function which returns a single \acronym{UUID}
-  (character string)
+  (\code{character} string)
 }
 \references{
   Leach, P., Mealling, M. and Salz, R. (July 2005) A Universally Unique

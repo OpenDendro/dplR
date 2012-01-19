@@ -8,8 +8,8 @@
 seg.plot(rwl, \dots)
 }
 \arguments{
-  \item{rwl}{ a \code{data.frame} with series as columns and years as rows
-    such as that produced by \code{\link{read.rwl}}. }
+  \item{rwl}{ a \code{data.frame} with series as columns and years as
+    rows such as that produced by \code{\link{read.rwl}}. }
   \item{\dots}{ arguments to be passed to plot. }
 }
 \details{

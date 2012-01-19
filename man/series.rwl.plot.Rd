@@ -8,8 +8,8 @@
 }
 \usage{
 series.rwl.plot(rwl, series, series.yrs = as.numeric(names(series)),
-  seg.length = 100, bin.floor = 100, n = NULL, prewhiten = TRUE,
-  biweight = TRUE, floor.plus1 = FALSE)
+                seg.length = 100, bin.floor = 100, n = NULL,
+                prewhiten = TRUE, biweight = TRUE, floor.plus1 = FALSE)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
@@ -21,7 +21,7 @@ series.rwl.plot(rwl, series, series.yrs = as.numeric(names(series)),
   \item{seg.length}{ an even integral value giving length of segments in
     years (e.g., 20, 50, 100 years). }
   \item{bin.floor}{ a non-negative integral value giving the base for
-    locating the first segment (e.g.,1600, 1700, 1800
+    locating the first segment (e.g., 1600, 1700, 1800
     \acronym{AD}). Typically 0, 10, 50, 100, etc. }
   \item{n}{ \code{NULL} or an integral value giving the filter length
     for the \code{\link{hanning}} filter used for removal of low
@@ -70,13 +70,13 @@ dat <- co021
 flagged <- dat$"646244"
 names(flagged) <- rownames(dat)
 dat$"646107" <- NULL
-foo <- series.rwl.plot(rwl = dat, series = flagged,
-                       seg.length = 100, n = 5)
+foo <- series.rwl.plot(rwl = dat, series = flagged, seg.length = 100,
+                       n = 5)
 ## note effect of n on first year in the series
-foo <- series.rwl.plot(rwl = dat, series = flagged,
-                       seg.length = 100, n = 13, prewhiten = FALSE)
-bar <- series.rwl.plot(rwl = dat, series = flagged,
-                       seg.length = 100, n = 7, prewhiten = FALSE)
+foo <- series.rwl.plot(rwl = dat, series = flagged, seg.length = 100,
+                       n = 13, prewhiten = FALSE)
+bar <- series.rwl.plot(rwl = dat, series = flagged, seg.length = 100,
+                       n = 7, prewhiten = FALSE)
 head(foo$series)
 head(bar$series)
 }

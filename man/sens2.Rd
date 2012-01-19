@@ -21,18 +21,20 @@
 \value{ the mean sensitivity.
 }
 \references{
-  Biondi, F. and Qeadan, F. (2008) Inequality in Paleorecords.
-  \emph{Ecology}. 89(4):1056-1067.
 
-  Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
-  Dendrochronology: Applications in the Environmental Sciences.}
+  Biondi, F. and Qeadan, F. (2008) Inequality in Paleorecords.
+  \emph{Ecology}, 89(4):1056--1067.
+
+  Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
+  Dendrochronology: Applications in the Environmental Sciences}.
   Springer.  \acronym{ISBN-13}: 978-0792305866.
 
-  Fritts, H.C. (2001) \emph{Tree Rings and Climate.}
-  Blackburn. \acronym{ISBN-13}: 978-1930665392.
+  Fritts, H. C. (2001) \emph{Tree Rings and Climate}.  Blackburn.
+  \acronym{ISBN-13}: 978-1930665392.
+  
 }
 \author{ Mikko Korpela, based on original by Andy Bunn }
-\seealso{ \code{\link{sens1}},\code{\link{rwl.stats}} }
+\seealso{ \code{\link{sens1}}, \code{\link{rwl.stats}} }
 \examples{data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 sens2(ca533.rwi[, 1])

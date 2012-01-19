@@ -8,7 +8,7 @@
 \usage{
 wavelet.plot(wave.list,
              wavelet.levels = quantile(wave.list$Power,
-                                       probs=seq(from=0, to=1, by=0.1)),
+                                       probs = seq(from=0, to=1, by=0.1)),
              add.coi = TRUE, add.sig = TRUE, x.lab = gettext("Time"),
              period.lab = gettext("Period"), crn.lab = gettext("RWI"),
              key.cols = rev(rainbow(length(wavelet.levels)-1)),
@@ -52,15 +52,17 @@ wavelet.plot(wave.list,
   None. This function is invoked for its side effect, which is to produce a
   plot.
 }
-\references{ Torrence, C. and Compo, G.P. (1998) A practical guide to wavelet
-  analysis. \emph{Bulletin of the American Meteorological Society}, 79: 61--78.
+\references{
+  Torrence, C. and Compo, G. P. (1998) A practical guide to wavelet
+  analysis.  \emph{Bulletin of the American Meteorological Society},
+  79:61--78.
 }
 \note{ The function \code{morlet} is a port of Torrence's
   \acronym{IDL} code available at
   \url{http://atoc.colorado.edu/research/wavelets/software.html}
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
-\seealso{ \code{\link{morlet}} \code{\link{ffcsaps}}}
+\seealso{ \code{\link{morlet}}, \code{\link{ffcsaps}}}
 \examples{data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = FALSE)

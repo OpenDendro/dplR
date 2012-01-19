@@ -25,7 +25,10 @@ cms(rwl, po, c.hat.t = FALSE, c.hat.i = FALSE)
   A \code{data.frame} containing the dimensionless and detrended ring-width indices with column names, row names and dimensions of \code{\var{rwl}} if \code{\var{c.hat.t}} is \code{FALSE} and \code{\var{c.hat.i}} is \code{FALSE}.
   Otherwise a \code{list} of length 2 or 3 containing the \acronym{RWI} \code{data.frame}, a \code{data.frame} containing the C-curves for each tree (\code{\var{c.hat.t}}), and/or a vector containing the C-values for each tree (\code{\var{c.hat.i}}) depending on the output flags. See Eq. 12 in Biondi and Qeadan (2008) for more detail on \code{\var{c.hat.t}}, and \code{\var{c.hat.i}}.
 }
-\references{ Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring standardization: Defining the biological trend from expected basal area increment. Tree-Ring Research 64(2): 81-96.
+\references{
+  Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring
+  standardization: Defining the biological trend from expected basal
+  area increment.  \emph{Tree-Ring Research}, 64(2):81--96.
 }
 \note{ DendroLab website: \url{http://dendrolab.org/} }
 \author{

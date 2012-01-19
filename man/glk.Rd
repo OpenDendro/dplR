@@ -37,13 +37,14 @@ glk(x)
 \author{ Christian Zang.  Patched and improved by Mikko Korpela. }
 
 \references{
-Eckstein, D., Bauch J. (1969) \emph{Beitrag zur Rationalisierung eines
-dendrochronologischen Verfahrens und zur Analyse seiner
-Aussagesicherheit} Forstwissenschaftliches Centralblatt 88:230-250.
+  Eckstein, D., Bauch J. (1969) Beitrag zur Rationalisierung eines
+  dendrochronologischen Verfahrens und zur Analyse seiner
+  Aussagesicherheit.  \emph{Forstwissenschaftliches Centralblatt},
+  88:230--250.
 
-Schweingruber, F.H. (1988) \emph{Tree rings: basics and applications of
-dendrochronology} Kluwer Academic Publishers, Dordrecht, Netherlands,
-276 p.
+  Schweingruber, F. H. (1988) \emph{Tree rings: basics and applications
+    of dendrochronology}.  Kluwer Academic Publishers, Dordrecht,
+  Netherlands, 276 p.
 }
 
 \examples{data(ca533)

@@ -139,12 +139,14 @@ rwi.stats.running(rwi, ids = NULL, period = c("max", "common"),
   
 }
 \references{
-  Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
-  Dendrochronology: Applications in the Environmental Sciences.}
+
+  Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
+    Dendrochronology: Applications in the Environmental Sciences}.
   Springer.  \acronym{ISBN-13}: 978-0792305866.
 
-  Fritts, H.C. (2001) \emph{Tree Rings and Climate.}
-  Blackburn. \acronym{ISBN-13}: 978-1930665392.
+  Fritts, H. C. (2001) \emph{Tree Rings and Climate}.  Blackburn.
+  \acronym{ISBN-13}: 978-1930665392.
+  
 }
 \note{
   This function uses the \code{\link[foreach]{foreach}} looping

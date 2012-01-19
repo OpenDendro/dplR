@@ -83,11 +83,11 @@ write.crn(ca533.crn, "tmp.crn")
 ## with ITRDB header info on top. Not reccomended.
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)
 ca533.hdr <- list(site.id = "CAM", site.name = "Campito Mountain",
-  spp.code = "PILO", state.country = "California",
-  spp = "Bristlecone Pine", elev = "3400M", lat = 3730,
-  long = -11813, first.yr = 626, last.yr = 1983,
-  lead.invs = "Donald A. Graybill, V.C. LaMarche, Jr.",
-  comp.date = "Nov1983")
+                  spp.code = "PILO", state.country = "California",
+                  spp = "Bristlecone Pine", elev = "3400M", lat = 3730,
+                  long = -11813, first.yr = 626, last.yr = 1983,
+                  lead.invs = "Donald A. Graybill, V.C. LaMarche, Jr.",
+                  comp.date = "Nov1983")
 write.crn(ca533.crn[, -2], "tmp.crn", header = ca533.hdr)
 write.crn(ca533.crn[, -1], "tmp.crn", append = TRUE)
 }

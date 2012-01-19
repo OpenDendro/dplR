@@ -32,10 +32,9 @@ morlet(y1, x1 = seq_along(y1), p2 = NULL, dj = 0.25, siglvl = 0.95)
     \item{Signif}{\code{numeric}. The significant values.}
     \item{Power}{\code{numeric}. The squared power.}
 }
-
 \references{
   Torrence, C. and Compo, G.P. (1998) A practical guide to wavelet
-  analysis. \emph{Bulletin of the American Meteorological Society},
+  analysis.  \emph{Bulletin of the American Meteorological Society},
   79:61--78.
 }
 

@@ -28,11 +28,11 @@ License: \tab \acronym{GPL}\cr
   Mikko Korpela, Franco Biondi, and Christian Zang
 }
 \references{
-  Cook, E. R. and Kairiukstis, L.A. (1990) \emph{Methods of
+  Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
   Dendrochronology: Applications in the Environmental Sciences.}
   Springer.  \acronym{ISBN-13}: 978-0792305866.
 
-  Fritts, H.C. (2001) \emph{Tree Rings and Climate.}
-  Blackburn. \acronym{ISBN-13}: 978-1930665392.
+  Fritts, H. C. (2001) \emph{Tree Rings and Climate.}
+  Blackburn.  \acronym{ISBN-13}: 978-1930665392.
 }
 \keyword{ package }

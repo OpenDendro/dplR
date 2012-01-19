@@ -59,6 +59,6 @@ read.ids(rwl, stc = c(3, 2, 3))
 \author{ Andy Bunn.  Patched by Mikko Korpela. }
 \seealso{ \code{\link{rwi.stats}}, \code{\link{read.rwl}} }
 \examples{data(ca533)
-read.ids(ca533, stc=c(3, 2, 3))
+read.ids(ca533, stc = c(3, 2, 3))
 }
 \keyword{ misc }

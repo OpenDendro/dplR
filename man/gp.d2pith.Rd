@@ -22,6 +22,6 @@
 \references{
   Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring
   standardization: Defining the biological trend from expected basal
-  area increment. Tree-Ring Research 64(2): 81-96.
+  area increment.  \emph{Tree-Ring Research}, 64(2):81--96.
 }
 \keyword{datasets}

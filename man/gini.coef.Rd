@@ -22,11 +22,11 @@ gini.coef(x)
 }
 \references{
   Biondi, F. and Qeadan, F. (2008) Inequality in Paleorecords.
-  \emph{Ecology}. 89(4):1056-1067.
+  \emph{Ecology},  89(4):1056--1067.
 
-  Handcock. M.S. and Morris, M. (1999) \emph{Relative Distribution
-    Methods in the Social Sciences.} Springer-Verlag. \acronym{ISBN}:
-    0387987789.
+  Handcock. M. S. and Morris, M. (1999) \emph{Relative Distribution
+    Methods in the Social Sciences}.  Springer-Verlag.  \acronym{ISBN}:
+  0387987789.
 }
 \author{ Mikko Korpela, based on original by Andy Bunn }
 \seealso{ \code{\link{rwl.stats}} }

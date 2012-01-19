@@ -49,7 +49,7 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
   \code{\link{ccf}} at overlapping segments set by
   \code{\var{seg.length}}. For instance, with \code{\var{lag.max}} set
   to 5, cross-correlations would be calculated at for each segment with
-  the master lagged at \code{\var{k}=-5:5} years.  The function is
+  the master lagged at \code{\var{k} = -5:5} years.  The function is
   typically invoked to produce a plot.
 
   Correlations are calculated for the first segment, then the

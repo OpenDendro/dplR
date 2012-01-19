@@ -9,13 +9,13 @@ read.tucson(fname, header = NULL, long = FALSE,
             encoding = getOption("encoding"))
 }
 \arguments{
-  \item{fname}{ a character vector giving the file name of the rwl
-    file. }
-  \item{header}{ logical flag indicating whether the file has a header.
-    If \code{NULL} then the function will attempt to determine if a
-    header exists. }
-  \item{long}{ logical flag indicating whether dates in file span 0
-    \acronym{CE} and therefore use negative numbers.  If \code{TRUE}
+  \item{fname}{ a \code{character} vector giving the file name of the
+    rwl file. }
+  \item{header}{ \code{logical} flag indicating whether the file has a
+    header.  If \code{NULL} then the function will attempt to determine
+    if a header exists. }
+  \item{long}{ \code{logical} flag indicating whether dates in file span
+    0 \acronym{CE} and therefore use negative numbers.  If \code{TRUE}
     only the first 7 characters can be used for series \acronym{ID}s.
     If \code{FALSE} then series \acronym{ID}s can be up to 8
     characters. }

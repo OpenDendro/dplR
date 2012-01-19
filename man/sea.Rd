@@ -49,9 +49,14 @@ sea(x, key, lag = 5, resample = 1000)
 
 \author{ Christian Zang.  Patched and improved by Mikko Korpela. }
 
-\references{ Lough, J.M., Fritts, H.C. (1987) \emph{An assessment of the
-possible effects of volcanic eruptions on North American climate using
-tree-ring data, 1602 to 1900 \acronym{AD}} Climatic Change 10:219-239 }
+\references{
+
+  Lough, J. M., Fritts, H. C. (1987) An assessment of the possible
+  effects of volcanic eruptions on North American climate using
+  tree-ring data, 1602 to 1900 \acronym{AD}.  \emph{Climatic Change},
+  10:219--239.
+  
+}
 
 \examples{data(cana157)
 event.years <- c(1631, 1742, 1845)

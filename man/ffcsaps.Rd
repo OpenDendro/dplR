@@ -34,8 +34,8 @@ ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
   A filtered vector.
 }
 \references{
-  Cook, E.R. and Kairiukstis, L.A. (1990) \emph{Methods of
-  Dendrochronology: Applications in the Environmental Sciences.}
+  Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
+  Dendrochronology: Applications in the Environmental Sciences}.
   Springer.  \acronym{ISBN-13}: 978-0792305866.
 }
 \note{ DendroLab website: \url{http://dendrolab.org/} }
@@ -45,7 +45,7 @@ ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
   dplR by Andy Bunn.  Patched and improved by Mikko Korpela.
 }
 
-\seealso{ \code{\link{hanning}} \code{\link{detrend}} }
+\seealso{ \code{\link{hanning}}, \code{\link{detrend}} }
 
 \examples{
 ## Use series CAM011 from the Campito dataset
@@ -64,7 +64,7 @@ series <- series[!is.na(series)]
 plot(series, type = "l", ylab = "Ring Width (mm)", col = "grey")
 lines(ffcsaps(series, nyrs = 32), col = "red", lwd = 2)
 lines(ffcsaps(series, nyrs = 64), col = "green", lwd = 2)
-## nyrs defaults to 0.5*length(series) = 347
+## nyrs defaults to 0.5*length(series) == 347
 lines(ffcsaps(series), col = "blue", lwd = 2)
 }
 \keyword{ smooth }

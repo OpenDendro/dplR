@@ -14,10 +14,10 @@ po.to.wc(po)
   \item{po}{
     A \code{data.frame} containing two variables. Variable one
     (\code{\var{series}}) gives the series \acronym{ID} as either
-    characters or factors. Variable two (\code{\var{pith.offset}})
-    contains integral values and gives the years from the beginning of
-    the core to the pith (or center) of the tree. The minimum value is
-    1.
+    \code{character}s or \code{factor}s. Variable two
+    (\code{\var{pith.offset}}) contains integral values and gives the
+    years from the beginning of the core to the pith (or center) of the
+    tree. The minimum value is 1.
   }
 }
 \details{

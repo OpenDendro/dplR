@@ -1,4 +1,4 @@
-2012-01-18 Mikko Korpela
+2012-01-19 Mikko Korpela
 * CHANGES IN dplR VERSION 1.5.2
 
 - Requires R >= 2.12.0 (use of markup in some Rd \title{} sections).
@@ -8,6 +8,11 @@ File: read.ids.R
 ----------------
 
 - Checks that 'stc' contains nothing but integral values and has length 3
+
+Files: write.compact.R, write.tridas.R, write.tucson.R
+------------------------------------------------------
+
+- Accept unknown arguments ('...')
 
 2011-12-19 Mikko Korpela
 * CHANGES IN dplR VERSION 1.5.1

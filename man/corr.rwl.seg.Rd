@@ -17,7 +17,7 @@ corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   \item{seg.length}{ an even integral value giving length of segments in
     years (e.g., 20, 50, 100 years). }
   \item{bin.floor}{ a non-negative integral value giving the base for
-    locating the first segment (e.g.,1600, 1700, 1800
+    locating the first segment (e.g., 1600, 1700, 1800
     \acronym{AD}).  Typically 0, 10, 50, 100, etc. }
   \item{n}{ \code{NULL} or an integral value giving the filter length
     for the \code{\link{hanning}} filter used for removal of low

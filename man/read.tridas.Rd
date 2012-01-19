@@ -242,8 +242,8 @@ read.tridas(fname, ids.from.titles = FALSE,
 
   \item{type}{A \code{data.frame} containing the type of various
     entities, and metadata related to each \verb{type} element.
-    Contents are \code{NA} where the metadata is not applicable (e.g. no
-    \code{\var{tree.id}} when the \verb{type} element refers to a
+    Contents are \code{NA} where the metadata is not applicable (e.g.,
+    no \code{\var{tree.id}} when the \verb{type} element refers to a
     project). Columns are a subset of the following:
 
     \describe{

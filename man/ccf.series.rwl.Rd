@@ -22,7 +22,7 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
   \item{seg.length}{ an even integral value giving length of segments in
     years (e.g., 20, 50, 100 years). }
   \item{bin.floor}{ a non-negative integral value giving the base for
-    locating the first segment (e.g.,1600, 1700, 1800
+    locating the first segment (e.g., 1600, 1700, 1800
     \acronym{AD}). Typically 0, 10, 50, 100, etc. } \item{n}{
     \code{NULL} or an integral value giving the filter length for the
     \code{\link{hanning}} filter used for removal of low frequency
@@ -38,7 +38,7 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
   \item{make.plot}{ \code{logical} flag indicating whether to make a
     plot. }
   \item{floor.plus1}{ \code{logical} flag. If \code{TRUE}, one year is
-    added to the base location of the first segment (e.g. 1601, 1701,
+    added to the base location of the first segment (e.g., 1601, 1701,
     1801 \acronym{AD}). }
   \item{\dots}{ other arguments passed to plot. }
 }

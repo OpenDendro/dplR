@@ -31,7 +31,7 @@ series.rwl.plot(rwl, series, series.yrs = as.numeric(names(series)),
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}}. }
   \item{floor.plus1}{ \code{logical} flag. If \code{TRUE}, one year is
-    added to the base location of the first segment (e.g. 1601, 1701,
+    added to the base location of the first segment (e.g., 1601, 1701,
     1801 \acronym{AD}). }
 }
 \details{

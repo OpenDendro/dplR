@@ -35,7 +35,7 @@ corr.series.seg(rwl, series, series.yrs = as.numeric(names(series)),
   \item{make.plot}{ \code{logical} flag indicating whether to make a
     plot. }
   \item{floor.plus1}{ \code{logical} flag. If \code{TRUE}, one year is
-    added to the base location of the first segment (e.g. 1601, 1701,
+    added to the base location of the first segment (e.g., 1601, 1701,
     1801 \acronym{AD}). }
   \item{\dots}{ other arguments passed to plot. }
 }

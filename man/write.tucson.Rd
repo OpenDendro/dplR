@@ -5,8 +5,9 @@
   This function writes a chronology to a Tucson (decadal) format file.
 }
 \usage{
-write.tucson(rwl.df, fname, header=NULL, append=FALSE, prec=0.01,
-  mapping.fname="", mapping.append=FALSE, long.names=FALSE)
+write.tucson(rwl.df, fname, header = NULL, append = FALSE,
+             prec = 0.01, mapping.fname = "", mapping.append = FALSE,
+             long.names = FALSE, \dots)
 }
 \arguments{
   \item{rwl.df}{ a \code{data.frame} containing tree-ring ring widths
@@ -14,15 +15,15 @@ write.tucson(rwl.df, fname, header=NULL, append=FALSE, prec=0.01,
     \acronym{ID}s are the column names and the years are the row
     names. This type of \code{data.frame} is produced by
     \code{\link{read.rwl}} and \code{\link{read.compact}}. }
-  \item{fname}{ a character vector giving the file name of the rwl
-    file. }
-  \item{header}{ a list giving information for the header of the file.
-    If \code{NULL} then no header information will be written. }
-  \item{append}{ logical flag indicating whether to append this
+  \item{fname}{ a \code{character} vector giving the file name of the
+    rwl file. }
+  \item{header}{ a \code{list} giving information for the header of the
+    file.  If \code{NULL} then no header information will be written. }
+  \item{append}{ \code{logical} flag indicating whether to append this
     chronology to an existing file. The default is to create a new
     file. }
   \item{prec}{ \code{numeric} indicating the precision of the output
-    file. - This must be equal to either 0.01 or 0.001 (units are in
+    file. This must be equal to either 0.01 or 0.001 (units are in
     mm). }
   \item{mapping.fname}{ a \code{character} vector of length one giving
     the file name of an optional output file showing the mapping between
@@ -35,6 +36,7 @@ write.tucson(rwl.df, fname, header=NULL, append=FALSE, prec=0.01,
   \item{long.names}{ \code{logical} flag indicating whether to allow
     long series \acronym{ID}s (7 or 8 characters) to be written to the
     output.  The default is to only allow 6 characters. }
+  \item{\dots}{ Unknown arguments are accepted but not used. }
 }
 \details{
   This writes a standard rwl file as defined according to the standards
@@ -67,8 +69,8 @@ write.tucson(rwl.df, fname, header=NULL, append=FALSE, prec=0.01,
   See examples for a correctly formatted header list. If the width of
   the fields is less than the max width, then the fields will be padded
   to the right length when written. Note that \code{\var{lat}} and
-  \code{\var{long}} are really \code{\var{lat}*100} or
-  \code{\var{long}*100} and given as integral values. E.g., 37 degrees
+  \code{\var{long}} are really \code{\var{lat} * 100} or
+  \code{\var{long} * 100} and given as integral values. E.g., 37 degrees
   30 minutes would be given as 3750.
 
   Series can be appended to the bottom of an existing file with a second
@@ -82,13 +84,13 @@ write.tucson(rwl.df, fname, header=NULL, append=FALSE, prec=0.01,
   that case, the user may wish to print a list of the renamings (see
   Arguments).
 
-  Setting \code{\var{long.names}=TRUE} allows series \acronym{ID}s to be
-  8 characters long, or 7 in case there are year numbers using 5
+  Setting \code{\var{long.names} = TRUE} allows series \acronym{ID}s to
+  be 8 characters long, or 7 in case there are year numbers using 5
   characters. Note that in the latter case the limit of 7 characters
   applies to all \acronym{ID}s, not just the one corresponding to the
-  series with long year numbers. The default
-  (\code{\var{long.names}=FALSE}) is to allow 6 characters. Long
-  \acronym{ID}s may cause incompatibility with other software.
+  series with long year numbers. The default (\code{\var{long.names} =
+  FALSE}) is to allow 6 characters. Long \acronym{ID}s may cause
+  incompatibility with other software.
 }
 \value{
   None. Invoked for side effect (file is written).
@@ -100,11 +102,12 @@ write.tucson(rwl.df, fname, header=NULL, append=FALSE, prec=0.01,
 }
 \examples{data(co021)
 co021.hdr <- list(site.id = "CO021",
-  site.name = "SCHULMAN OLD TREE NO. 1, MESA VERDE",
-  spp.code = "PSME", state.country = "COLORADO", spp = "DOUGLAS FIR",
-  elev = "2103M", lat = 3712, long = -10830, first.yr = 1400,
-  last.yr = 1963, lead.invs = "E. SCHULMAN", comp.date = "")
-write.tucson(rwl.df = co021, fname = 'tmp.rwl', header = co021.hdr,
-  append = FALSE, prec = 0.001)
+                  site.name = "SCHULMAN OLD TREE NO. 1, MESA VERDE",
+                  spp.code = "PSME", state.country = "COLORADO",
+                  spp = "DOUGLAS FIR", elev = "2103M", lat = 3712,
+                  long = -10830, first.yr = 1400, last.yr = 1963,
+                  lead.invs = "E. SCHULMAN", comp.date = "")
+write.tucson(rwl.df = co021, fname = "tmp.rwl", header = co021.hdr,
+             append = FALSE, prec = 0.001)
 }
 \keyword{ IO }

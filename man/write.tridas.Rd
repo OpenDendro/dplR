@@ -8,28 +8,25 @@
   also supported. }
 
 \usage{
-write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL,
-             ids = NULL, titles = NULL, crn.types = NULL,
-             crn.titles = NULL, crn.units = NULL,
-             tridas.measuring.method = NA,
-             other.measuring.method = "unknown",
-             sample.type = "core", wood.completeness = NULL,
-             taxon = "", tridas.variable = "ring width",
-             other.variable = NA,
-             project.info = list(type = c("unknown"),
-                 description = NULL, title = "", category = "",
-                 investigator = "", period = ""),
-             lab.info = data.frame(name = "", acronym = NA,
-                 identifier = NA, domain = "", addressLine1 = NA,
-                 addressLine2 = NA, cityOrTown = NA,
-                 stateProvinceRegion = NA, postalCode = NA,
-                 country = NA),
-             research.info = data.frame(identifier = NULL,
-                 domain = NULL, description = NULL),
-             site.info = list(type = "unknown",
-                 description = NULL, title = ""),
-             random.identifiers = FALSE,
-             identifier.domain = lab.info$name[1])
+write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
+    titles = NULL, crn.types = NULL, crn.titles = NULL,
+    crn.units = NULL, tridas.measuring.method = NA,
+    other.measuring.method = "unknown", sample.type = "core",
+    wood.completeness = NULL, taxon = "",
+    tridas.variable = "ring width", other.variable = NA,
+    project.info = list(type = c("unknown"), description = NULL,
+                        title = "", category = "", investigator = "",
+                        period = ""),
+    lab.info = data.frame(name = "", acronym = NA, identifier = NA,
+                          domain = "", addressLine1 = NA,
+                          addressLine2 = NA, cityOrTown = NA,
+                          stateProvinceRegion = NA, postalCode = NA,
+                          country = NA),
+    research.info = data.frame(identifier = NULL, domain = NULL,
+                               description = NULL),
+    site.info = list(type = "unknown", description = NULL, title = ""),
+    random.identifiers = FALSE, identifier.domain = lab.info$name[1],
+    \dots)
 }
 
 \arguments{
@@ -45,19 +42,19 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL,
   \item{fname}{ \code{character} vector giving the file name of the rwl
     file }
 
-  \item{crn}{ \code{data.frame} or a list of data.frames containing
-    tree-ring chronologies.  Accepts data.frames of the type produced by
-    \code{\link{chron}}.  Additionally, allows several chronologies per
-    data.frame.  Any column of the data.frame(s) with a name starting
-    with \code{"samp.depth"} is interpreted as a sample depth.  The rest
-    of the columns are interpreted as chronologies whose titles are
-    determined from the column names (optionally from parameter
-    \code{\var{crn.titles}}).  Chronology columns and sample depth
-    columns are paired in order so that the first chronology gets the
-    first sample depth column, second chronology gets the second set of
-    sample depths, etc.  If there are less sample depth columns than
-    chronologies, the sample depths are recycled.  Defaults to
-    \code{NULL} -- no chronologies are written. }
+  \item{crn}{ \code{data.frame} or a list of \code{data.frame}s
+    containing tree-ring chronologies.  Accepts \code{data.frame}s of
+    the type produced by \code{\link{chron}}.  Additionally, allows
+    several chronologies per \code{data.frame}.  Any column of the
+    \code{data.frame}(s) with a name starting with \code{"samp.depth"}
+    is interpreted as a sample depth.  The rest of the columns are
+    interpreted as chronologies whose titles are determined from the
+    column names (optionally from parameter \code{\var{crn.titles}}).
+    Chronology columns and sample depth columns are paired in order so
+    that the first chronology gets the first sample depth column, second
+    chronology gets the second set of sample depths, etc.  If there are
+    less sample depth columns than chronologies, the sample depths are
+    recycled.  Defaults to \code{NULL} -- no chronologies are written. }
 
   \item{prec}{ optional \code{numeric} indicating the rounding precision
     of the output file when writing the data contained in
@@ -72,17 +69,18 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL,
     the matching unit is used in the file. }
 
   \item{ids}{ optional \code{data.frame} with column one named
-    \code{"tree"} giving the \code{numeric} \acronym{ID} of the tree, column
-    two named \code{"core"} giving the \code{numeric} \acronym{ID} of the core,
-    optional column three named \code{"radius"} giving the \code{numeric}
-    \acronym{ID} of the radius, and optional column four named
-    \code{"measurement"} giving the \code{numeric} \acronym{ID} of the
-    measurement.  If column \code{"measurement"} exists, column
-    \code{"radius"} must also exist.  Defaults to one core, radius and
-    measurement per tree: \code{data.frame(tree = 1:\var{n.col}, core =
-      rep(1,\var{n.col}), radius = rep(1,\var{n.col}), measurement =
-      rep(1,\var{n.col}))}, where \code{\var{n.col}} is the number of
-    columns in \code{\var{rwl.df}}. }
+    \code{"tree"} giving the \code{numeric} \acronym{ID} of the tree,
+    column two named \code{"core"} giving the \code{numeric}
+    \acronym{ID} of the core, optional column three named
+    \code{"radius"} giving the \code{numeric} \acronym{ID} of the
+    radius, and optional column four named \code{"measurement"} giving
+    the \code{numeric} \acronym{ID} of the measurement.  If column
+    \code{"measurement"} exists, column \code{"radius"} must also exist.
+    Defaults to one core, radius and measurement per tree:
+    \code{data.frame(tree = 1:\var{n.col}, core = rep(1,\var{n.col}),
+    radius = rep(1,\var{n.col}), measurement = rep(1,\var{n.col}))},
+    where \code{\var{n.col}} is the number of columns in
+    \code{\var{rwl.df}}. }
 
   \item{titles}{ optional \code{data.frame} with column one named
     \code{"tree"} giving the title of the tree, column two named
@@ -94,24 +92,25 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL,
     \code{\var{rwl.df}}, taking \code{\var{ids}} into account. }
 
   \item{crn.types}{ \code{character} vector or a \code{list} of
-    character vectors giving the types of the derived series in
+    \code{character} vectors giving the types of the derived series in
     \code{\var{crn}}.  A single vector is interpreted as one type per
-    data.frame in \code{\var{crn}}, recycled if not long enough.  A list
-    of vectors is interpreted as one list element per data.frame.  In
-    this case, the list is recycled to the correct length.  After that,
-    the vectors inside the list are recycled to match the number of
-    derived series in each data.frame of \code{\var{crn}}.  The default
-    is to write empty \verb{<type>} elements. }
+    \code{data.frame} in \code{\var{crn}}, recycled if not long enough.
+    A list of vectors is interpreted as one list element per
+    \code{data.frame}.  In this case, the list is recycled to the
+    correct length.  After that, the vectors inside the list are
+    recycled to match the number of derived series in each
+    \code{data.frame} of \code{\var{crn}}.  The default is to write
+    empty \verb{<type>} elements. }
 
   \item{crn.titles}{ optional \code{character} vector or a \code{list}
-    of character vectors giving the titles of the derived series in
-    \code{\var{crn}}.  The interpretation is the same as with
+    of \code{character} vectors giving the titles of the derived series
+    in \code{\var{crn}}.  The interpretation is the same as with
     \code{\var{crn.types}}, except that the default is to derive the
     titles from the column names of \code{\var{crn}}.  Also \code{NA}
     means that the column name is used.  }
 
   \item{crn.units}{ optional \code{character} vector or a \code{list} of
-    character vectors giving the units of the derived series in
+    \code{character} vectors giving the units of the derived series in
     \code{\var{crn}}.  The interpretation is the same as with
     \code{\var{crn.types}}, except that the default is to mark the
     series as \verb{<unitless>}.  Also \code{NA} means
@@ -126,7 +125,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL,
     \code{\var{other.measuring.method}} instead.  Also, \code{NA} in any
     position of the vector means that the measuring method information
     for that series is looked up in \code{\var{other.measuring.method}}.
-  }
+    }
 
   \item{other.measuring.method}{ \code{character} vector giving the
     measuring method used to acquire each series of \code{\var{rwl.df}}.
@@ -332,6 +331,8 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL,
     organization as long as it is not ambiguous.  Defaults to the name
     of the first laboratory in \code{\var{lab.info}}.  }
 
+  \item{\dots}{ Unknown arguments are accepted but not used. }
+
 }
 
 \value{ None. Invoked for side effect (file is written).  }
@@ -350,11 +351,11 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL,
 
 \examples{data(co021)
 write.tridas(rwl.df = co021, fname = "tmp.xml", prec = 0.01,
-  site.info = list(title = "Schulman old tree no. 1, Mesa Verde",
-                   type = "unknown"),
-  taxon = "Pseudotsuga menziesii var. menziesii (Mirb.) Franco",
-  project.info = list(investigator = "E. Schulman",
-                      title = "", category = "",
-                      period = "", type = "unknown"))
+    site.info = list(title = "Schulman old tree no. 1, Mesa Verde",
+                     type = "unknown"),
+    taxon = "Pseudotsuga menziesii var. menziesii (Mirb.) Franco",
+    project.info = list(investigator = "E. Schulman",
+                        title = "", category = "",
+                        period = "", type = "unknown"))
 }
 \keyword{ IO }

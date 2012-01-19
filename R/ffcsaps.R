@@ -71,6 +71,8 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
 ### start main function
 
     y2 <- as.numeric(y)
+    ## If as.numeric() does not signal an error, it is unlikely that
+    ## the result would not be numeric, but...
     if(!is.numeric(y2)) stop("'y' must be coercible to a numeric vector")
     x2 <- as.numeric(x)
     if(!is.numeric(x2)) stop("'x' must be coercible to a numeric vector")

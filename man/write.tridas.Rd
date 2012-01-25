@@ -349,13 +349,25 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
   \code{\link{write.compact}}, \code{\link{write.crn}},
   \code{\link{read.tridas}} }
 
-\examples{data(co021)
-write.tridas(rwl.df = co021, fname = "tmp.xml", prec = 0.01,
+\examples{## Write raw ring widths
+data(co021)
+write.tridas(rwl.df = co021, fname = "tmp1.xml", prec = 0.01,
     site.info = list(title = "Schulman old tree no. 1, Mesa Verde",
                      type = "unknown"),
     taxon = "Pseudotsuga menziesii var. menziesii (Mirb.) Franco",
     project.info = list(investigator = "E. Schulman",
                         title = "", category = "",
                         period = "", type = "unknown"))
+
+## Write mean value chronology of detrended ring widths
+data(ca533)
+ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
+ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)
+write.tridas(crn = ca533.crn, fname = "tmp2.xml",
+    taxon = "Pinus longaeva D.K. Bailey",
+    project.info =
+        list(investigator = "Donald A. Graybill, V.C. LaMarche, Jr.",
+             title = "Campito Mountain", category = "",
+             period = "", type = "unknown"))
 }
 \keyword{ IO }

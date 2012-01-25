@@ -48,7 +48,7 @@ ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
 \seealso{ \code{\link{hanning}}, \code{\link{detrend}} }
 
 \examples{
-## Use series CAM011 from the Campito dataset
+\dontrun{## Use series CAM011 from the Campito dataset
 data(ca533)
 series <- ca533[, "CAM011"]
 series <- series[!is.na(series)]
@@ -56,7 +56,7 @@ plot(series, type = "l", ylab = "Ring Width (mm)", col = "grey")
 lines(ffcsaps(series, nyrs = 32), col = "red", lwd = 2)
 lines(ffcsaps(series, nyrs = 64), col = "green", lwd = 2)
 lines(ffcsaps(series, nyrs = 128), col = "blue", lwd = 2)
-
+}
 ## Use first series from the Mesa Verde dataset
 data(co021)
 series <- co021[, 1]
@@ -66,5 +66,9 @@ lines(ffcsaps(series, nyrs = 32), col = "red", lwd = 2)
 lines(ffcsaps(series, nyrs = 64), col = "green", lwd = 2)
 ## nyrs defaults to 0.5*length(series) == 347
 lines(ffcsaps(series), col = "blue", lwd = 2)
+legend("topright",
+       c("Series", "nyrs=32", "nyrs=64",
+         paste("Default nyrs (", length(series) / 2, ")", sep="")),
+       fill=c("grey", "red", "green", "blue"))
 }
 \keyword{ smooth }

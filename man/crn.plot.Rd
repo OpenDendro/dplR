@@ -41,7 +41,8 @@ cana157.mod <- data.frame(TTRSTD = cana157[, 1])
 rownames(cana157.mod) <- rownames(cana157)
 crn.plot(cana157.mod, add.spline = TRUE)
 
-\dontrun{## With multiple chronologies
+\dontrun{
+## With multiple chronologies
 data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)

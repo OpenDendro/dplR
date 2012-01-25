@@ -48,7 +48,8 @@ ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
 \seealso{ \code{\link{hanning}}, \code{\link{detrend}} }
 
 \examples{
-\dontrun{## Use series CAM011 from the Campito dataset
+\dontrun{
+## Use series CAM011 from the Campito dataset
 data(ca533)
 series <- ca533[, "CAM011"]
 series <- series[!is.na(series)]

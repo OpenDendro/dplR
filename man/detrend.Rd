@@ -64,7 +64,8 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
 ## Detrend using modified expontential decay. Returns a data.frame
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 
-\dontrun{## Detrend using all methods. Returns a list
+\dontrun{
+## Detrend using all methods. Returns a list
 ca533.rwi <- detrend(rwl = ca533)
 ## Save a pdf of all series
 pdf("foo.pdf")

@@ -162,7 +162,8 @@ ca533.rwi <- detrend(rwl = ca533, method = "Mean") # mean is fast
 ca533.ids <- read.ids(ca533, stc = c(3, 2, 3))
 rwi.stats.running(ca533.rwi, ca533.ids)
 
-\dontrun{## Plot the chronology showing a potential cutoff year based on eps
+\dontrun{
+## Plot the chronology showing a potential cutoff year based on eps
 ca533.rwi <- detrend(rwl = ca533, method = "Spline") # detrend again
 ca533.crn <- chron(ca533.rwi)
 ## Running stats on the rwi with an 80 yr window

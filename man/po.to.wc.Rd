@@ -36,7 +36,8 @@ po.to.wc(po)
   \code{\link{wc.to.po}}, \code{\link{rcs}}, \code{\link{write.tridas}}
 }
 \examples{
-\dontrun{data(gp.po)
+\dontrun{
+data(gp.po)
 all(wc.to.po(po.to.wc(gp.po)) == gp.po)
 }
 }

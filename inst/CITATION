@@ -1,34 +1,45 @@
-citEntry(entry="Article",
-         title        = "The Dendrochronology Program Library in R (dplR)",
-         author       = "Andy Bunn",
-         organization = "Western Washington University",
-         address      = "Bellingham, WA, USA",
-         year         = "2008",
-         journal      = "Dendrochronolgia",
-         volume       = "26",
-         pages        = "115-124",
-         
-         textVersion = 
-         paste("Bunn, A.G. (2008). ", 
-               "A Dendrochronology Program Library in R (dplR). ",
-               "Dendrochronolgia, 26: 115-124.",
-               sep="")
-         )
+c(bibentry(bibtype = "Article",
+           title = "A dendrochronology program library in R (dplR)",
+           journal = "Dendrochronologia",
+           volume = "26",
+           number = "2",
+           pages = "115--124",
+           year = "2008",
+           issn = "1125-7865",
+           doi = "10.1016/j.dendro.2008.01.002",
+           author = "Andrew G. Bunn",
+           keywords = "statistical software, R, detrending, chronology",
+           key = "Bunn2008115"
+           ),
 
-citEntry(entry="Article",
-         title        = "Crossdating in R using the dplR library",
-         author       = "Andy Bunn",
-         organization = "Western Washington University",
-         address      = "Bellingham, WA, USA",
-         year         = "In Press",
-         journal      = "Dendrochronolgia",
-         volume       = "xx",
-         pages        = "xxx-xxx",
-         
-         textVersion = 
-         paste("Bunn, A.G. (In Press). ", 
-               "Crossdating in R using the dplR library. ",
-               "Dendrochronolgia.",
-               sep="")
-         )
+  bibentry(bibtype = "Article",
+           title = "Statistical and visual crossdating in R using the dplR library",
+           journal = "Dendrochronologia",
+           volume = "28",
+           number = "4",
+           pages = "251--258",
+           year = "2010",
+           issn = "1125-7865",
+           doi = "10.1016/j.dendro.2009.12.001",
+           author = "Andrew G. Bunn",
+           keywords = "statistical software, moving correlation, cross-correlation, skeleton plot, COFECHA",
+           key = "Bunn2010251"
+           ),
 
+  bibentry(bibtype = "Manual",
+           title = "dplR: Dendrochronology Program Library in R",
+           author = c(person(c("Andrew", "G."), "Bunn",
+                             role = c("aut", "cph", "cre", "trl"),
+                             email = "andy.bunn@wwu.edu"),
+                      person("Mikko", "Korpela", role = c("aut", "cph")),
+                      person("Franco", "Biondi", role = c("aut", "cph")),
+                      person("Christian", "Zang", role = c("aut", "cph")),
+                      person("Fares", "Qeadan", role = c("ctb", "cph"))
+                      ),
+           year = format(as.Date(meta$Date), "%Y"),
+           note = paste("R package version", meta$Version),
+           url = "http://CRAN.R-project.org/package=dplR",
+           key = "dplR-package"
+           )
+
+  )

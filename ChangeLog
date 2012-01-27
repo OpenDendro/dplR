@@ -1,5 +1,13 @@
 * CHANGES IN dplR VERSION 1.5.3
 
+File: CITATION
+--------------
+
+- Uses the new bibentry() style
+- Has an entry for the dplR manual
+- Entry for "Statistical and visual crossdating in R using the dplR
+  library" was updated
+
 2012-01-19 Mikko Korpela
 * CHANGES IN dplR VERSION 1.5.2
 

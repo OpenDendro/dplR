@@ -2,7 +2,7 @@ useDynLib(dplR, rwl.readloop=readloop, dplR.tbrm=tbrm, dplR.mean=exactmean,
           dplR.gini=gini, dplR.sens1=sens1, dplR.sens2=sens2,
           dplR.rcompact=rcompact)
 
-import(digest, lattice)
+import(graphics, stats, utils, digest, lattice)
 
 importFrom(grid, grid.newpage, pushViewport, viewport, grid.layout,
            seekViewport, unit, grid.segments, gpar, grid.lines, grid.polygon,

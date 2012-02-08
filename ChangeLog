@@ -8,6 +8,21 @@ File: CITATION
 - Entry for "Statistical and visual crossdating in R using the dplR
   library" was updated
 
+File: NAMESPACE
+---------------
+
+- import() from all the "base" Priority packages that are used in
+  dplR. Previously, the use of functions from those packages seems
+  to have relied on the assumption of them being attached.
+
+  Quote from "Writing R Extensions":
+  "Packages implicitly import the base namespace. Variables exported
+  from other packages with namespaces need to be imported explicitly
+  using the directives import and importFrom."
+
+  Clearly, packages with Priority "base" (different from the package /
+  namespace called "base") fall into the category of "other packages".
+
 2012-01-19 Mikko Korpela
 * CHANGES IN dplR VERSION 1.5.2
 

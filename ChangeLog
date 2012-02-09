@@ -11,9 +11,10 @@ File: CITATION
 File: NAMESPACE
 ---------------
 
-- import() from all the "base" Priority packages that are used in
-  dplR. Previously, the use of functions from those packages seems
-  to have relied on the assumption of them being attached.
+- import() or importFrom() from all the "base" Priority packages
+  that are used in dplR. Previously, the use of functions from those
+  packages seems to have relied on the assumption of them being
+  attached.
 
   Quote from "Writing R Extensions":
   "Packages implicitly import the base namespace. Variables exported
@@ -22,6 +23,8 @@ File: NAMESPACE
 
   Clearly, packages with Priority "base" (different from the package /
   namespace called "base") fall into the category of "other packages".
+
+- importFrom() used in more cases
 
 2012-01-19 Mikko Korpela
 * CHANGES IN dplR VERSION 1.5.2

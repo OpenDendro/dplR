@@ -1,21 +1,31 @@
-useDynLib(dplR, rwl.readloop=readloop, dplR.tbrm=tbrm, dplR.mean=exactmean,
-          dplR.gini=gini, dplR.sens1=sens1, dplR.sens2=sens2,
-          dplR.rcompact=rcompact)
+useDynLib(dplR, dplR.gini=gini, dplR.mean=exactmean,
+          dplR.rcompact=rcompact, dplR.sens1=sens1, dplR.sens2=sens2,
+          dplR.tbrm=tbrm, rwl.readloop=readloop)
 
-import(graphics, grDevices, stats, utils, digest, lattice)
+import(graphics, stats)
 
-importFrom(grid, grid.newpage, pushViewport, viewport, grid.layout,
-           seekViewport, unit, grid.segments, gpar, grid.lines, grid.polygon,
-           grid.text, vpTree, vpList)
+importFrom(digest, digest)
+
+importFrom(grDevices, rainbow)
+
+importFrom(grid, gpar, grid.lines, grid.newpage, grid.polygon,
+           grid.segments, grid.text, pushViewport, seekViewport, unit,
+           viewport, vpList, vpTree)
+
+importFrom(lattice, panel.abline, panel.dotplot, panel.segments,
+           trellis.par.set, xyplot)
+
+importFrom(utils, head, installed.packages, read.fwf, tail)
 
 importFrom(XML, xmlEventParse)
 
-export(chron, hanning, read.ids, tbrm, crn.plot, i.detrend, read.rwl,
-  i.detrend.series, rwi.stats, wavelet.plot,
-  detrend, morlet, rwl.stats, write.crn, detrend.series, read.crn,
-  seg.plot, skel.plot, write.rwl, sens1, sens2, gini.coef, read.fh,
-  corr.rwl.seg, series.rwl.plot,
-  corr.series.seg, ccf.series.rwl, ffcsaps, rcs, cms, spag.plot,
-  combine.rwl, bai.in, bai.out, read.compact, write.compact, read.tucson,
-  write.tucson, glk, sea, rwi.stats.running, read.tridas,
-  write.tridas, uuid.gen, po.to.wc, wc.to.po, tridas.vocabulary)
+export(bai.in, bai.out, ccf.series.rwl, chron, cms, combine.rwl,
+       corr.rwl.seg, corr.series.seg, crn.plot, detrend,
+       detrend.series, ffcsaps, gini.coef, glk, hanning, i.detrend,
+       i.detrend.series, morlet, po.to.wc, rcs, read.compact,
+       read.crn, read.fh, read.ids, read.rwl, read.tridas,
+       read.tucson, rwi.stats, rwi.stats.running, rwl.stats, sea,
+       seg.plot, sens1, sens2, series.rwl.plot, skel.plot, spag.plot,
+       tbrm, tridas.vocabulary, uuid.gen, wavelet.plot, wc.to.po,
+       write.compact, write.crn, write.rwl, write.tridas,
+       write.tucson)

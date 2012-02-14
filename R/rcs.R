@@ -1,5 +1,5 @@
-rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
-                make.plot=TRUE, ...) {
+rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, ratios=TRUE,
+                rc.out=FALSE, make.plot=TRUE, ...) {
     if(!is.data.frame(rwl))
         stop("'rwl' must be a data.frame")
     n.col <- ncol(rwl)
@@ -37,8 +37,10 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, rc.out=FALSE,
     tmp <- ffcsaps(y=na.omit(ca.m), nyrs=nyrs2, f=f)
     rc <- rep(NA, nrow(rwca))
     rc[!is.na(ca.m)] <- tmp
-    ## divide each series by curve
-    rwica <- rwca/rc
+    ## calculate indices as ratios or differences
+    if (ratios)
+      rwica <- rwca/rc
+    else rwica <- rwca - rc
     ## and restore to cal years
     rwi <- rwl2
     yrs <- as.numeric(row.names(rwi))

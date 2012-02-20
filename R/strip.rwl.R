@@ -63,7 +63,7 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
       rwl.all <- rwl.all[,!flags]
       eps.all.iter <- rwi.stats(rwl.all)$eps
       removed[[iter]] <- colnames(rwl.d2)[flags]
-      cat("REMOVE -- Iteration ", iter, ": leaving ", length(which(flags)),
+      cat("REMOVE -- Iteration ", iter, ": leaving ", sum(flags),
           " series out.\n", sep = "")
       cat("EPS improved from ", eps.all, " to ", eps.all.iter,
           ".\n\n", sep = "")

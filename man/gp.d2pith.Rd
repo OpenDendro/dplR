@@ -9,7 +9,7 @@
   Area (\acronym{GPNA}) in northern Arizona, \acronym{USA}. Data are
   further described by Biondi and Qeadan (2008) and references therein.
 }
-\usage{gp.d2pith}
+\usage{data(gp.d2pith)}
 \format{
   A \code{data.frame} containing series \acronym{ID}s in column 1
   (\code{\var{series}}) and the distance (in mm) from the innermost ring

@@ -9,7 +9,7 @@
   northern Arizona, \acronym{USA}. Data are further described by Biondi
   and Qeadan (2008) and references therein.
 }
-\usage{gp.po}
+\usage{data(gp.po)}
 \format{
   A \code{data.frame} containing series \acronym{ID}s in column 1
   (\code{\var{series}}) and the number of years between the beginning of

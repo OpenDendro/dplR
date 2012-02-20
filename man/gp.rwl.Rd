@@ -10,7 +10,7 @@
   tree). Data are further described by Biondi and Qeadan (2008) and
   references therein.
 }
-\usage{gp.rwl}
+\usage{data(gp.rwl)}
 \format{
   A \code{data.frame} containing 58 ring-width series in columns and 421
   years in rows.

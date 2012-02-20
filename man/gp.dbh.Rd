@@ -9,7 +9,7 @@
   (\acronym{GPNA}) in northern Arizona, \acronym{USA}. Data are further
   described by Biondi and Qeadan (2008) and references therein.
 }
-\usage{gp.dbh}
+\usage{data(gp.dbh)}
 \format{
   A \code{data.frame} containing series \acronym{ID}s in column 1
   (\code{\var{series}}), tree diameter (in cm) at breast height

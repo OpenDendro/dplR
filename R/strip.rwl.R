@@ -49,7 +49,7 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
       eps.loo <- rwi.stats(rwl.loo)$eps
       flags[i] <- ifelse (eps.loo > eps.all, TRUE, FALSE)
       if (verbose) {
-        cat(colnames(rwl.all)[i], ": ", eps.loo, sep = "")
+        cat(names(rwl.all)[i], ": ", eps.loo, sep = "")
         if (flags[i]) {
           cat(" *\n")
         } else {
@@ -62,7 +62,7 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
     if (any(flags)) {
       rwl.all <- rwl.all[,!flags]
       eps.all.iter <- rwi.stats(rwl.all)$eps
-      removed[[iter]] <- colnames(rwl.d2)[flags]
+      removed[[iter]] <- names(rwl.d2)[flags]
       cat("REMOVE -- Iteration ", iter, ": leaving ", sum(flags),
           " series out.\n", sep = "")
       cat("EPS improved from ", eps.all, " to ", eps.all.iter,
@@ -96,10 +96,9 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
         e <- substitute(reins <- rwl.d2$NAME, list(NAME = series.name))
         eval(e)
         reins <- data.frame(reins)
-        e <- substitute(colnames(reins) <- NAME, list(NAME =
-                                                      series.name))
+        e <- substitute(names(reins) <- NAME, list(NAME = series.name))
         eval(e)
-        rownames(reins) <- rownames(rwl.d2)
+        row.names(reins) <- row.names(rwl.d2)
         rwl.reins <- combine.rwl(rwl.all, reins)
         eps.reins <- rwi.stats(rwl.reins)$eps
         flags[i] <- ifelse(eps.reins > eps.init, TRUE, FALSE)
@@ -120,10 +119,9 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
           e <- substitute(reins <- rwl.d2$NAME, list(NAME = series.name))
           eval(e)
           reins <- data.frame(reins)
-          e <- substitute(colnames(reins) <- NAME, list(NAME =
-                                                        series.name))
+          e <- substitute(names(reins) <- NAME, list(NAME = series.name))
           eval(e)
-          rownames(reins) <- rownames(rwl.d2)
+          row.names(reins) <- row.names(rwl.d2)
           rwl.all <- combine.rwl(rwl.all, reins)
         }
         removed.flat <- removed.flat[!flags]
@@ -141,7 +139,7 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
   ## if comp.plot == T, compare for each year stripped and unstripped
   ## chronologies by EPS
   if (comp.plot && length(removed.flat) > 0) {
-    yrs <- as.numeric(rownames(rwl.d2))
+    yrs <- as.numeric(row.names(rwl.d2))
     nyrs <- length(yrs)
     comp.eps <- matrix(NA, ncol = 3, nrow = nyrs)
     for (i in 1:nyrs) {
@@ -165,14 +163,14 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
   }
   ## return *raw* series
   if (length(removed.flat) > 0) {
-    out <- match(removed.flat, colnames(rwl))
+    out <- match(removed.flat, names(rwl))
     rwl.out <- rwl[,-out]
     recovered.flat <- unique(unlist(recovered))
     if (length(recovered.flat) > 0) {
-      backin <- match(recovered.flat, colnames(rwl))
+      backin <- match(recovered.flat, names(rwl))
       rwl.backin <- data.frame(rwl[,backin])
-      colnames(rwl.backin) <- recovered.flat
-      rownames(rwl.backin) <- rownames(rwl)
+      names(rwl.backin) <- recovered.flat
+      row.names(rwl.backin) <- row.names(rwl)
       rwl.out <- combine.rwl(rwl.out, rwl.backin)
     }
   } else {

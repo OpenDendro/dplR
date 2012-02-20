@@ -2,9 +2,8 @@
 ## 1) all series are standardized using splines with 50% FC at 20 and
 ## 200 yrs
 ## 2) EPS of chronology with all series present
-## 3) iterate through all series, calculating leave-one-out EPS,
-## flagging series whose removal increases EPS
-## 4) discard flagged series
+## 3) iterate through all series, calculating leave-one-out EPS
+## 4) discard the single series (if any) whose removal increases EPS the most
 ## 5) iterate 2)-4) until no further increase in EPS is yielded
 ## 6) repeat 2)-5), but this time reinsert previously removed series
 ## 7) iterate through each year of the chronology and compare stripped
@@ -15,8 +14,14 @@
 
 strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
 
-  if (!is.data.frame(rwl))
-        stop("'rwl' must be a data.frame")
+  if (!is.data.frame(rwl)) {
+    stop("'rwl' must be a data.frame")
+  }
+  names.rwl <- names(rwl)
+  if (is.null(names.rwl) || anyDuplicated(names.rwl) ||
+      any(is.na(names.rwl))) {
+    stop("'rwl' must have unique, non-NA names")
+  }
 
   ## double detrend rwl
   rwl.d1 <- detrend(rwl, method = "Spline", nyrs = 20)
@@ -24,19 +29,19 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
   rwl.all <- rwl.d2
 
   eps.imp <- TRUE
-  iter <- 0
-  removed <- list()                     # this list holds a vector of
-                                        # the *names* of removed
-                                        # series for *each* iteration
-  recovered <- list()                   # same for the series that go
-                                        # back in afterwards
+  iter <- 1
+  n <- length(rwl.all)
+
+  ## This vector holds the name of the removed series for *each*
+  ## iteration.  Names will be removed from the vector as series are
+  ## added back in.
+  removed <- rep(NA_character_, n)
+
+  ## calc EPS for complete data.frame
+  eps.all <- rwi.stats(rwl.all)$eps
 
   while (eps.imp) {
-    iter <- iter + 1
-    n <- dim(rwl.all)[2]
-    flags <- logical(n)
-    ## calc EPS for complete (or previously stripped) data.frame
-    eps.all <- rwi.stats(rwl.all)$eps
+    eps.loo <- numeric(n)
     ## loop through series and flag series which *lower* EPS when
     ## included
     if (verbose) {
@@ -44,13 +49,13 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
           "\n", sep = "")
       cat("Leave-one-out EPS:\n")
     }
-    for (i in 1:n) {
-      rwl.loo <- rwl.all[,-i]
-      eps.loo <- rwi.stats(rwl.loo)$eps
-      flags[i] <- ifelse (eps.loo > eps.all, TRUE, FALSE)
+    names.all <- names(rwl.all)
+    for (i in seq_len(n)) {
+      rwl.loo <- rwl.all[-i]
+      eps.loo[i] <- rwi.stats(rwl.loo)$eps
       if (verbose) {
-        cat(names(rwl.all)[i], ": ", eps.loo, sep = "")
-        if (flags[i]) {
+        cat(names.all[i], ": ", eps.loo[i], sep = "")
+        if (eps.loo[i] > eps.all) {
           cat(" *\n")
         } else {
           cat("\n")
@@ -59,14 +64,18 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
     }
     if (verbose)
       cat("   ***\n")
-    if (any(flags)) {
-      rwl.all <- rwl.all[,!flags]
-      eps.all.iter <- rwi.stats(rwl.all)$eps
-      removed[[iter]] <- names(rwl.d2)[flags]
-      cat("REMOVE -- Iteration ", iter, ": leaving ", sum(flags),
-          " series out.\n", sep = "")
+    if (any(eps.loo > eps.all)) {
+      rm.idx <- which.max(eps.loo)
+      rwl.all <- rwl.all[-rm.idx]
+      eps.all.iter <- eps.loo[rm.idx]
+      removed[iter] <- names.all[rm.idx]
+      cat("REMOVE -- Iteration ", iter, ": leaving series ",
+          removed[iter], " out.\n", sep = "")
       cat("EPS improved from ", eps.all, " to ", eps.all.iter,
           ".\n\n", sep = "")
+      eps.all <- eps.all.iter
+      iter <- iter + 1
+      n <- n - 1
     } else {
       eps.imp <- FALSE
       cat("REMOVE -- Iteration ", iter,
@@ -74,61 +83,46 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
     }
   }
 
-  removed.flat <- unique(unlist(removed))
+  removed <- removed[seq_len(iter - 1)]
 
-  if (length(removed.flat) > 0) {
+  if (iter > 1) {
 
     ## reinsert previously removed series (if there are any)
     eps.imp <- TRUE
-    iter <- 0
+    n <- iter - 1
+    iter <- 1
 
     while (eps.imp) {
-      iter <- iter + 1
-      n <- length(removed.flat)
-      flags <- logical(n)
+      eps.reins <- numeric(n)
       eps.init <- rwi.stats(rwl.all)$eps
       if (verbose) {
         cat("REINSERT -- Initial EPS:", eps.init, "\n")
         cat("Back-in EPS:\n")
       }
-      for (i in 1:n) {
-        series.name <- removed.flat[i]
-        e <- substitute(reins <- rwl.d2$NAME, list(NAME = series.name))
-        eval(e)
-        reins <- data.frame(reins)
-        e <- substitute(names(reins) <- NAME, list(NAME = series.name))
-        eval(e)
-        row.names(reins) <- row.names(rwl.d2)
-        rwl.reins <- combine.rwl(rwl.all, reins)
-        eps.reins <- rwi.stats(rwl.reins)$eps
-        flags[i] <- ifelse(eps.reins > eps.init, TRUE, FALSE)
+      for (i in seq_len(n)) {
+        series.name <- removed[i]
+        rwl.reins <- cbind(rwl.all, rwl.d2[series.name])
+        eps.reins[i] <- rwi.stats(rwl.reins)$eps
         if (verbose) {
-          cat(series.name, ": ", eps.reins, sep = "")
-          if (flags[i]) {
+          cat(series.name, ": ", eps.reins[i], sep = "")
+          if (eps.reins[i] > eps.init) {
             cat(" *\n")
           } else {
             cat(" \n")
           }
         }
       }
-      if (any(flags)) {
-        m <- sum(flags)
-        recovered[[iter]] <- removed.flat[flags]
-        for (j in 1:m) {
-          series.name <- removed.flat[j]
-          e <- substitute(reins <- rwl.d2$NAME, list(NAME = series.name))
-          eval(e)
-          reins <- data.frame(reins)
-          e <- substitute(names(reins) <- NAME, list(NAME = series.name))
-          eval(e)
-          row.names(reins) <- row.names(rwl.d2)
-          rwl.all <- combine.rwl(rwl.all, reins)
-        }
-        removed.flat <- removed.flat[!flags]
+      if (any(eps.reins > eps.init)) {
+        reins.idx <- which.max(eps.reins)
+        recovered <- removed[reins.idx]
+        rwl.all <- cbind(rwl.all, rwl.d2[recovered])
+        removed <- removed[-reins.idx]
         eps.all <- rwi.stats(rwl.all)$eps
-        cat("REINSERT -- Iteration ", iter, ": Inserting", m,
-            "series. EPS improved from ", eps.init, " to ", eps.all, ".\n",
-            sep = "")
+        cat("REINSERT -- Iteration ", iter, ": Inserting series ",
+            recovered, ". EPS improved from ", eps.init,
+            " to ", eps.all, ".\n", sep = "")
+        iter <- iter + 1
+        n <- n - 1
       } else {
         eps.imp <- FALSE
         cat("REINSERT -- Iteration ", iter,
@@ -138,43 +132,33 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
   }
   ## if comp.plot == T, compare for each year stripped and unstripped
   ## chronologies by EPS
-  if (comp.plot && length(removed.flat) > 0) {
+  n.removed <- length(removed)
+  if (comp.plot && n.removed > 0) {
     yrs <- as.numeric(row.names(rwl.d2))
     nyrs <- length(yrs)
-    comp.eps <- matrix(NA, ncol = 3, nrow = nyrs)
-    for (i in 1:nyrs) {
-      comp.eps[i,1] <- yrs[i]
-      present.d2 <- which(!is.na(rwl.d2[i,]))
-      present.str <- which(!is.na(rwl.all[i,]))
+    comp.eps <- matrix(NA, ncol = 2, nrow = nyrs)
+    comp.1 <- rep(NA_real_, nyrs)
+    comp.2 <- rep(NA_real_, nyrs)
+    notna.d2 <- !is.na(rwl.d2)
+    notna.all <- !is.na(rwl.all)
+    for (i in seq_len(nyrs)) {
+      present.d2 <- which(notna.d2[i, ])
+      present.str <- which(notna.all[i, ])
       if (length(present.d2) > 1) {
-        comp.eps[i,2] <- rwi.stats(rwl.d2[,present.d2])$eps
-      } else {
-        comp.eps[i,2] <- NA
+        comp.1[i] <- rwi.stats(rwl.d2[present.d2])$eps
       }
       if (length(present.str) > 1) {
-        comp.eps[i,3] <- rwi.stats(rwl.all[,present.str])$eps
-      } else {
-        comp.eps[i,3] <- NA
+        comp.2[i] <- rwi.stats(rwl.all[present.str])$eps
       }
     }
-    diffs <- comp.eps[,3] - comp.eps[,2]
-    plot(yrs, diffs, col = ifelse(diffs >= 0, "blue", "red"), pch =
-         "-")
+    diffs <- comp.2 - comp.1
+    plot(yrs, diffs, col = ifelse(diffs >= 0, "blue", "red"),
+         pch = "-")
   }
   ## return *raw* series
-  if (length(removed.flat) > 0) {
-    out <- match(removed.flat, names(rwl))
-    rwl.out <- rwl[,-out]
-    recovered.flat <- unique(unlist(recovered))
-    if (length(recovered.flat) > 0) {
-      backin <- match(recovered.flat, names(rwl))
-      rwl.backin <- data.frame(rwl[,backin])
-      names(rwl.backin) <- recovered.flat
-      row.names(rwl.backin) <- row.names(rwl)
-      rwl.out <- combine.rwl(rwl.out, rwl.backin)
-    }
+  if (n.removed > 0) {
+    rwl[-match(removed, names.rwl)]
   } else {
-    rwl.out <- rwl
+    rwl
   }
-  rwl.out
 }

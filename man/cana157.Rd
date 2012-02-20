@@ -8,9 +8,7 @@
   Canada.  Dataset was created using \code{\link{read.crn}} and saved to
   an .rda file using \code{\link{save}}.
 }
-\usage{
-cana157
-}
+\usage{data(cana157)}
 \format{
   A \code{data.frame} containing the standard chronology in column one
   and the sample depth in column two.  There are 463 years (1530--1992)

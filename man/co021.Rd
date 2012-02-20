@@ -8,9 +8,7 @@
   There are 35 series.  Dataset was created using \code{\link{read.rwl}}
   and saved to an .rda file using \code{\link{save}}.
 }
-\usage{
-co021
-}
+\usage{data(co021)}
 \format{
   A \code{data.frame} containing 35 tree-ring series in columns and 788
   years in rows.

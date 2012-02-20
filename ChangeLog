@@ -26,6 +26,21 @@ File: NAMESPACE
 
 - importFrom() used in more cases
 
+File: powt.R
+------------
+
+- New function for power transformation after Cook and Peters
+
+File: rcs.R
+-----------
+
+- Allows for standardization by subtraction
+
+File: strip.rwl.R
+-----------------
+
+- New function for EPS-based chronology stripping
+
 2012-01-19 Mikko Korpela
 * CHANGES IN dplR VERSION 1.5.2
 

@@ -8,10 +8,9 @@
   Dataset was created using \code{\link{read.rwl}} and saved to an .rda file
   using \code{\link[base]{save}}.
 }
-\usage{ca533}
+\usage{data(anos1)}
 \format{A \code{data.frame} containing 20 tree-ring series in columns
   and 98 years in rows. }
-}
 \references{
   Zang, C. (2010) Growth reaction of temperate forest tree species to
   summer drought -- a multispecies tree-ring network

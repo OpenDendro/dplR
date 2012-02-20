@@ -140,7 +140,7 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
   }
   ## if comp.plot == T, compare for each year stripped and unstripped
   ## chronologies by EPS
-  if (comp.plot & length(removed.flat > 0)) {
+  if (comp.plot && length(removed.flat) > 0) {
     yrs <- as.numeric(rownames(rwl.d2))
     nyrs <- length(yrs)
     comp.eps <- matrix(NA, ncol = 3, nrow = nyrs)

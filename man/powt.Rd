@@ -33,9 +33,8 @@ powt(rwl)
 }
 \seealso{\code{\link{rcs}}
 }
-\examples{
-data(gp.rwl)
-gp.pt <- powt(gp)
+\examples{data(gp.rwl)
+gp.pt <- powt(gp.rwl)
 }
 \author{Christian Zang}
 \keyword{manip}

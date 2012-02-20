@@ -113,7 +113,7 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
         }
       }
       if (any(flags)) {
-        m <- length(which(flags))
+        m <- sum(flags)
         recovered[[iter]] <- removed.flat[flags]
         for (j in 1:m) {
           series.name <- removed.flat[j]

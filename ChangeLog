@@ -8,6 +8,11 @@ File: CITATION
 - Entry for "Statistical and visual crossdating in R using the dplR
   library" was updated
 
+File: DESCRIPTION
+-----------------
+
+- Encoding: UTF-8
+
 File: NAMESPACE
 ---------------
 

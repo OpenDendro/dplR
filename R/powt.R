@@ -5,8 +5,7 @@ powt <- function(rwl) {
   ## get maximum precision of rwl data from number of digits
   getprec <- function(rwl) {
     maxdig <- max(apply(rwl, MARGIN = c(1,2), FUN = nchar)) - 2
-    prec <- 10^(-1*maxdig)
-    prec
+    10^(-1*maxdig)
   }
   fit.lm <- function(series) {
     n <- length(series) - 1
@@ -22,8 +21,7 @@ powt <- function(rwl) {
     }
     mod <- lm(log(runn.S) ~ log(runn.M))
     b <- coef(mod)[2]
-    p <- 1 - b
-    p
+    1 - b
   }
   transf <- function(x) {
     Xt <- x
@@ -41,7 +39,7 @@ powt <- function(rwl) {
   prec <- getprec(rwl)
   xt <- apply(rwl, MARGIN = 2, FUN = transf)
   xt <- data.frame(xt)
-  rownames(xt) <- rownames(rwl)
-  colnames(xt) <- colnames(rwl)
+  row.names(xt) <- row.names(rwl)
+  names(xt) <- names(rwl)
   xt
 }

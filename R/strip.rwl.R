@@ -153,7 +153,7 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
     }
     diffs <- comp.2 - comp.1
     plot(yrs, diffs, col = ifelse(diffs >= 0, "blue", "red"),
-         pch = "-")
+         pch = "-", xlab=gettext("Year", domain="R-dplR"))
   }
   ## return *raw* series
   if (n.removed > 0) {

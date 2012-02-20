@@ -9,9 +9,7 @@
   \code{\link{read.rwl}} and saved to an .rda file using
   \code{\link{save}}.
 }
-\usage{
-ca533
-}
+\usage{data(ca533)}
 \format{
   A \code{data.frame} containing 34 tree-ring series in columns and 1358
   years in rows.

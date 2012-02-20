@@ -1,3 +1,4 @@
+Encoding: UTF-8
 Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R

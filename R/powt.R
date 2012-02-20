@@ -1,10 +1,10 @@
 ## Power transform raw ring-width series after Cook & Peters 1997
 powt <- function(rwl) {
-  if (!is.data.frame(rwl)) 
+  if (!is.data.frame(rwl))
     stop("'rwl' must be a data.frame")
   ## get maximum precision of rwl data from number of digits
   getprec <- function(rwl) {
-    maxdig <- max(apply(rwl, MAR = c(1,2), FUN = nchar)) - 2
+    maxdig <- max(apply(rwl, MARGIN = c(1,2), FUN = nchar)) - 2
     prec <- 10^(-1*maxdig)
     prec
   }
@@ -39,7 +39,7 @@ powt <- function(rwl) {
     Xt
   }
   prec <- getprec(rwl)
-  xt <- apply(rwl, MAR = 2, FUN = transf)
+  xt <- apply(rwl, MARGIN = 2, FUN = transf)
   xt <- data.frame(xt)
   rownames(xt) <- rownames(rwl)
   colnames(xt) <- colnames(rwl)

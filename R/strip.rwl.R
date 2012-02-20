@@ -14,8 +14,8 @@
 ## not a chronology
 
 strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
-  
-  if (!is.data.frame(rwl)) 
+
+  if (!is.data.frame(rwl))
         stop("'rwl' must be a data.frame")
 
   ## double detrend rwl
@@ -30,7 +30,7 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
                                         # series for *each* iteration
   recovered <- list()                   # same for the series that go
                                         # back in afterwards
-  
+
   while (eps.imp) {
     iter <- iter + 1
     n <- dim(rwl.all)[2]
@@ -50,7 +50,7 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
       flags[i] <- ifelse (eps.loo > eps.all, TRUE, FALSE)
       if (verbose) {
         cat(colnames(rwl.all)[i], ": ", eps.loo, sep = "")
-        if (flags[i] == TRUE) {
+        if (flags[i]) {
           cat(" *\n")
         } else {
           cat("\n")
@@ -63,8 +63,7 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
       rwl.all <- rwl.all[,!flags]
       eps.all.iter <- rwi.stats(rwl.all)$eps
       removed[[iter]] <- colnames(rwl.d2)[flags]
-      cat("REMOVE -- Iteration ", iter, ": leaving ", length(which(flags ==
-                                                                   TRUE)),
+      cat("REMOVE -- Iteration ", iter, ": leaving ", length(which(flags)),
           " series out.\n", sep = "")
       cat("EPS improved from ", eps.all, " to ", eps.all.iter,
           ".\n\n", sep = "")
@@ -78,11 +77,11 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
   removed.flat <- unique(unlist(removed))
 
   if (length(removed.flat) > 0) {
-  
+
     ## reinsert previously removed series (if there are any)
     eps.imp <- TRUE
     iter <- 0
-    
+
     while (eps.imp) {
       iter <- iter + 1
       n <- length(removed.flat)
@@ -106,7 +105,7 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
         flags[i] <- ifelse(eps.reins > eps.init, TRUE, FALSE)
         if (verbose) {
           cat(series.name, ": ", eps.reins, sep = "")
-          if (flags[i] == TRUE) {
+          if (flags[i]) {
             cat(" *\n")
           } else {
             cat(" \n")
@@ -114,7 +113,7 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
         }
       }
       if (any(flags)) {
-        m <- length(which(flags == TRUE))
+        m <- length(which(flags))
         recovered[[iter]] <- removed.flat[flags]
         for (j in 1:m) {
           series.name <- removed.flat[j]
@@ -137,7 +136,7 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
         cat("REINSERT -- Iteration ", iter,
             ": no improvement of EPS. Aborting...\n", sep = "")
       }
-    }                                    
+    }
   }
   ## if comp.plot == T, compare for each year stripped and unstripped
   ## chronologies by EPS

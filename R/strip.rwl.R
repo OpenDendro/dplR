@@ -136,7 +136,6 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
   if (comp.plot && n.removed > 0) {
     yrs <- as.numeric(row.names(rwl.d2))
     nyrs <- length(yrs)
-    comp.eps <- matrix(NA, ncol = 2, nrow = nyrs)
     comp.1 <- rep(NA_real_, nyrs)
     comp.2 <- rep(NA_real_, nyrs)
     notna.d2 <- !is.na(rwl.d2)

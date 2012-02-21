@@ -62,8 +62,9 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
         }
       }
     }
-    if (verbose)
+    if (verbose) {
       cat("   ***\n")
+    }
     if (any(eps.loo > eps.all)) {
       rm.idx <- which.max(eps.loo)
       rwl.all <- rwl.all[-rm.idx]
@@ -152,7 +153,7 @@ strip.rwl <- function(rwl, verbose = FALSE, comp.plot = FALSE) {
     }
     diffs <- comp.2 - comp.1
     plot(yrs, diffs, col = ifelse(diffs >= 0, "blue", "red"),
-         pch = "-", xlab=gettext("Year", domain="R-dplR"))
+         pch = "-", xlab = gettext("Year", domain="R-dplR"))
   }
   ## return *raw* series
   if (n.removed > 0) {

@@ -4,8 +4,15 @@ Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.5.3
 Date: 2012-02-21
+Authors@R: c(person(c("Andrew", "G."), "Bunn", role = c("aut", "cph",
+        "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
+        "Korpela", role = c("aut", "cph")), person("Franco", "Biondi",
+        role = c("aut", "cph")), person("Fares", "Qeadan", role =
+        c("aut", "cph")), person("Christian", "Zang", role = c("aut",
+        "cph")))
 Author: Andy Bunn with major additions from Mikko Korpela and other
-        significant contributions from Franco Biondi and Christian Zang
+        significant contributions from Franco Biondi, Fares Qeadan
+        and Christian Zang
 Maintainer: Andy Bunn <andy.bunn@wwu.edu>
 Depends: R (>= 2.12.0)
 Imports: graphics, grDevices, grid, stats, utils, digest (>= 0.2.3),
@@ -13,6 +20,7 @@ Imports: graphics, grDevices, grid, stats, utils, digest (>= 0.2.3),
 Suggests: foreach, iterators, RUnit (>= 0.4.25)
 Description: This package contains functions for performing tree-ring
         analyses, IO, and graphics.
+LazyData: no
 License: GPL
-URL: http://www.wwu.edu/huxley/treering/dplR.shtml
-        http://dplr.r-forge.r-project.org/
+URL: http://www.wwu.edu/huxley/treering/dplR.shtml,
+        http://R-Forge.R-project.org/projects/dplr/

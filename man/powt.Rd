@@ -36,5 +36,7 @@ powt(rwl)
 \examples{data(gp.rwl)
 gp.pt <- powt(gp.rwl)
 }
-\author{Christian Zang}
+\author{
+  Christian Zang.  Patched and improved by Mikko Korpela.
+}
 \keyword{manip}

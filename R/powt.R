@@ -2,23 +2,32 @@
 powt <- function(rwl) {
   if (!is.data.frame(rwl))
     stop("'rwl' must be a data.frame")
-  ## get maximum precision of rwl data from number of digits
+  ## Get maximum precision of rwl data from number of digits.
+  ## Assumes non-negative numbers.
   getprec <- function(rwl) {
-    maxdig <- max(apply(rwl, MARGIN = c(1,2), FUN = nchar)) - 2
-    10^(-1*maxdig)
+    rwl.num <- as.numeric(as.matrix(rwl))
+    rwl.num <- rwl.num[!is.na(rwl.num) & rwl.num != 0]
+    if (length(rwl.num) == 0) {
+      NA_real_
+    } else {
+      rwl.char <- format(rwl.num, scientific = FALSE)
+      if (grepl(".", rwl.char[1], fixed = TRUE)) {
+        maxdig <- nchar(sub("^[^.]*\\.", "", rwl.char[1]))
+      } else {
+        rm.trail.zeros <- sub("0*$", "", rwl.char)
+        n.trail.zeros <- nchar(rwl.char) - nchar(rm.trail.zeros)
+        maxdig <- -min(n.trail.zeros)
+      }
+      10^-maxdig
+    }
   }
   fit.lm <- function(series) {
-    n <- length(series) - 1
-    runn.M <- runn.S <- numeric(n)
-    for (i in 1:n) {
-      runn.M[i] <- (series[i+1] + series[i])/2
-      S <- abs(series[i+1] - series[i])
-      if (S == 0) {
-        runn.S[i] <- prec               # add minimal difference
-      } else {
-        runn.S[i] <- abs(series[i+1] - series[i])
-      }
-    }
+    n <- length(series)
+    drop.1 <- series[-1]
+    drop.n <- series[-n]
+    runn.M <- (drop.1 + drop.n) / 2
+    runn.S <- abs(drop.1 - drop.n)
+    runn.S[runn.S == 0] <- prec         # add minimal difference
     mod <- lm(log(runn.S) ~ log(runn.M))
     b <- coef(mod)[2]
     1 - b

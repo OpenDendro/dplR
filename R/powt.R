@@ -37,9 +37,6 @@ powt <- function(rwl) {
     Xt
   }
   prec <- getprec(rwl)
-  xt <- apply(rwl, MARGIN = 2, FUN = transf)
-  xt <- data.frame(xt)
-  row.names(xt) <- row.names(rwl)
-  names(xt) <- names(rwl)
-  xt
+  xt <- lapply(rwl, FUN = transf)
+  data.frame(xt, row.names = row.names(rwl), check.names = FALSE)
 }

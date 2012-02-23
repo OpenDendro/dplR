@@ -13,6 +13,7 @@ File: DESCRIPTION
 
 - Encoding: UTF-8
 - Depends: R (>= 2.14.0)
+- Author and Maintainer fields dropped (made obsolete by Authors@R)
 
 File: NAMESPACE
 ---------------
@@ -55,6 +56,8 @@ File: rwi.stats.running.R
 
 - zero.is.missing now has default value TRUE
 - rwi.stats() is now a wrapper to rwi.stats.running()
+- allows 'ids' to have extra rows if all names of 'rwi' appear as its row
+  names
 
 File: strip.rwl.R
 -----------------

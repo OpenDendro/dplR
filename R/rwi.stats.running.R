@@ -104,9 +104,9 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
         ## names in 'ids', arrange 'ids' to matching order
         rownames.ids <- row.names(ids)
         if (!is.null(rownames.ids) && all(colnames.rwi %in% rownames.ids)) {
-            ids2 <- ids[colnames.rwi, c("tree", "core"), drop = FALSE]
+            ids2 <- ids[colnames.rwi, c("tree", "core")]
         } else if (nrow(ids) == n.cores) {
-            ids2 <- ids[c("tree", "core"), drop = FALSE]
+            ids2 <- ids[c("tree", "core")]
         } else {
             stop("dimension problem: ", "'ncol(rwi)' != 'nrow(ids)'")
         }

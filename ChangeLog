@@ -4,7 +4,7 @@ File: CITATION
 --------------
 
 - Uses the new bibentry() style
-- Has an entry for the dplR manual
+- Has an automatic entry for the dplR manual (R >= 2.14.0 requirement)
 - Entry for "Statistical and visual crossdating in R using the dplR
   library" was updated
 
@@ -12,6 +12,7 @@ File: DESCRIPTION
 -----------------
 
 - Encoding: UTF-8
+- Depends: R (>= 2.14.0)
 
 File: NAMESPACE
 ---------------
@@ -30,6 +31,8 @@ File: NAMESPACE
   namespace called "base") fall into the category of "other packages".
 
 - importFrom() used in more cases
+
+- exports rwi.stats.legacy()
 
 File: powt.R
 ------------

@@ -28,28 +28,4 @@ bibentry(bibtype = "Article",
          keywords = "statistical software, moving correlation, cross-correlation, skeleton plot, COFECHA",
          key = "Bunn2010251")
 
-bibentry(bibtype = "Manual",
-         title = if (grepl(meta[["Package"]], meta[["Title"]], fixed = TRUE)) {
-                     meta[["Title"]]
-                 } else {
-                     paste(meta[["Package"]], ": ", meta[["Title"]], sep="")
-                 },
-         author = eval(parse(text = meta[["Authors@R"]])),
-         year = format(as.Date(if(!is.null(t <- meta[["Date/Publication"]])){
-                                   t
-                               } else if(!is.null(t <- meta[["Packaged"]])) {
-                                   t
-                               } else {
-                                   meta[["Date"]]
-                               }), "%Y"),
-         note = paste("R package version ", meta[["Version"]],
-                      if (identical(meta[["Repository"]], "R-Forge") &&
-                          !is.null(revision <-
-                                   meta[["Repository/R-Forge/Revision"]])) {
-                          paste("/r", revision, sep="")
-                      } else {
-                          ""
-                      }, sep=""),
-         url = paste(unlist(strsplit(meta[["URL"]], "(?:,|[[:space:]])+")),
-                     collapse = ", "),
-         key = "dplR-package")
+citation(auto = meta)

@@ -1,51 +1,51 @@
 ## Power transform raw ring-width series after Cook & Peters 1997
 powt <- function(rwl) {
-  if (!is.data.frame(rwl))
-    stop("'rwl' must be a data.frame")
-  ## Get maximum precision of rwl data from number of digits.
-  ## Assumes non-negative numbers.
-  getprec <- function(rwl) {
-    rwl.num <- as.numeric(as.matrix(rwl))
-    rwl.num <- rwl.num[!is.na(rwl.num) & rwl.num != 0]
-    if (length(rwl.num) == 0) {
-      NA_real_
-    } else {
-      rwl.char <- format(rwl.num, scientific = FALSE)
-      if (grepl(".", rwl.char[1], fixed = TRUE)) {
-        maxdig <- nchar(sub("^[^.]*\\.", "", rwl.char[1]))
-      } else {
-        rm.trail.zeros <- sub("0*$", "", rwl.char)
-        n.trail.zeros <- nchar(rwl.char) - nchar(rm.trail.zeros)
-        maxdig <- -min(n.trail.zeros)
-      }
-      10^-maxdig
+    if (!is.data.frame(rwl))
+        stop("'rwl' must be a data.frame")
+    ## Get maximum precision of rwl data from number of digits.
+    ## Assumes non-negative numbers.
+    getprec <- function(rwl) {
+        rwl.num <- as.numeric(as.matrix(rwl))
+        rwl.num <- rwl.num[!is.na(rwl.num) & rwl.num != 0]
+        if (length(rwl.num) == 0) {
+            NA_real_
+        } else {
+            rwl.char <- format(rwl.num, scientific = FALSE)
+            if (grepl(".", rwl.char[1], fixed = TRUE)) {
+                maxdig <- nchar(sub("^[^.]*\\.", "", rwl.char[1]))
+            } else {
+                rm.trail.zeros <- sub("0*$", "", rwl.char)
+                n.trail.zeros <- nchar(rwl.char) - nchar(rm.trail.zeros)
+                maxdig <- -min(n.trail.zeros)
+            }
+            10^-maxdig
+        }
     }
-  }
-  fit.lm <- function(series) {
-    n <- length(series)
-    drop.1 <- series[-1]
-    drop.n <- series[-n]
-    runn.M <- (drop.1 + drop.n) / 2
-    runn.S <- abs(drop.1 - drop.n)
-    runn.S[runn.S == 0] <- prec         # add minimal difference
-    mod <- lm(log(runn.S) ~ log(runn.M))
-    b <- coef(mod)[2]
-    1 - b
-  }
-  transf <- function(x) {
-    Xt <- x
-    sdx <- sd(x, na.rm = TRUE)
-    meanx <- mean(x, na.rm = TRUE)
-    X.nna <- which(!is.na(x))
-    X <- na.omit(x)
-    p <- fit.lm(X)
-    X2 <- X^p
-    X2sc <- scale(X2)
-    X2resc <- (X2sc * sdx) + meanx
-    Xt[X.nna] <- X2resc
-    Xt
-  }
-  prec <- getprec(rwl)
-  xt <- lapply(rwl, FUN = transf)
-  data.frame(xt, row.names = row.names(rwl), check.names = FALSE)
+    fit.lm <- function(series) {
+        n <- length(series)
+        drop.1 <- series[-1]
+        drop.n <- series[-n]
+        runn.M <- (drop.1 + drop.n) / 2
+        runn.S <- abs(drop.1 - drop.n)
+        runn.S[runn.S == 0] <- prec         # add minimal difference
+        mod <- lm(log(runn.S) ~ log(runn.M))
+        b <- coef(mod)[2]
+        1 - b
+    }
+    transf <- function(x) {
+        Xt <- x
+        sdx <- sd(x, na.rm = TRUE)
+        meanx <- mean(x, na.rm = TRUE)
+        X.nna <- which(!is.na(x))
+        X <- na.omit(x)
+        p <- fit.lm(X)
+        X2 <- X^p
+        X2sc <- scale(X2)
+        X2resc <- (X2sc * sdx) + meanx
+        Xt[X.nna] <- X2resc
+        Xt
+    }
+    prec <- getprec(rwl)
+    xt <- lapply(rwl, FUN = transf)
+    data.frame(xt, row.names = row.names(rwl), check.names = FALSE)
 }

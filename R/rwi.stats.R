@@ -1,4 +1,4 @@
-`rwi.stats` <-
+`rwi.stats.legacy` <-
     function(rwi, ids=NULL, period=c("max", "common"))
 {
     ## Run correlations over period common to all cores is "common"

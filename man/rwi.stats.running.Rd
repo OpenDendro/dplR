@@ -1,10 +1,12 @@
 \name{rwi.stats.running}
 \alias{rwi.stats.running}
-\title{ Running Window Statistics on Detrended Ring-Width Series }
+\alias{rwi.stats}
+\alias{rwi.stats.legacy}
+\title{ (Running Window) Statistics on Detrended Ring-Width Series }
 \description{
-  This function calculates descriptive statistics on a \code{data.frame} of
-  (usually) ring-width indices. The statistics are computed in a running
-  window with adjustable length and overlap.
+  This function calculates descriptive statistics on a \code{data.frame}
+  of (usually) ring-width indices. The statistics are optionally
+  computed in a running window with adjustable length and overlap.
 }
 \usage{
 rwi.stats.running(rwi, ids = NULL, period = c("max", "common"),
@@ -14,7 +16,11 @@ rwi.stats.running(rwi, ids = NULL, period = c("max", "common"),
                   first.start = NULL,
                   min.corr.overlap = min(30, window.length),
                   round.decimals = 3,
-                  zero.is.missing = FALSE)
+                  zero.is.missing = TRUE)
+
+rwi.stats(rwi, ids=NULL, period=c("max", "common"), \dots)
+
+rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
 }
 \arguments{
 
@@ -67,22 +73,48 @@ rwi.stats.running(rwi, ids = NULL, period = c("max", "common"),
     results. }
 
   \item{zero.is.missing}{ \code{logical} flag indicating whether to
-    treat zeros as missing values (\code{TRUE}) or to include them in
-    computation (\code{FALSE}, the default).  }
+    treat zeros as missing values (\code{TRUE}, the default) or to
+    include them in computation (\code{FALSE}).  }
   
+  \item{\dots}{ arguments passed on to \code{rwi.stats.running} }
+
 }
 \details{
   This calculates a variety of descriptive statistics commonly used in
   dendrochronology.
 
+  The function \code{rwi.stats} is a wrapper that calls
+  \code{rwi.stats.running} with \code{\var{running.window} = FALSE}.
+  The results may differ from those prior to dplR 1.5.3, where the
+  former \code{rwi.stats} (now renamed to \code{rwi.stats.legacy}) was
+  replaced with a call to \code{rwi.stats.running}.
+
   For correctly calculating the statistics on within and between series
   variability, an appropriate mask (parameter \code{\var{ids}}) must be
   provided that identifies each series with a tree as it is common for
   dendrochronologists to take more than one core per tree.  The function
-  \code{\link{read.ids}} is be helpful for creating a mask based on the
-  series \acronym{ID}.  If \code{\var{ids}} has duplicate tree/core
-  combinations, the corresponding series are averaged before any
-  statistics are computed.
+  \code{\link{read.ids}} is helpful for creating a mask based on the
+  series \acronym{ID}.
+
+  If \code{\var{ids}} has duplicate tree/core combinations, the
+  corresponding series are averaged before any statistics are computed.
+  The value of the parameter \code{\var{zero.is.missing}} is relevant in
+  the averaging: \code{TRUE} ensures that zeros don't contribute to the
+  average.  The default value of \code{\var{zero.is.missing}} is
+  \code{TRUE}.  The default prior to dplR 1.5.3 was \code{FALSE}. If the
+  parameter is set to \code{FALSE}, the user will be warned in case
+  zeros are present.  Duplicate tree/core combinations are not detected
+  by \code{rwi.stats.legacy}.
+
+  Row names of \code{\var{ids}} may be used for matching the
+  \acronym{ID}s with series in \code{\var{rwi}}.  In this case, the
+  number of rows in \code{\var{ids}} is allowed to exceed the number of
+  series.  If some names of \code{\var{rwi}} are missing from the row
+  names of \code{\var{ids}}, the rows of \code{\var{ids}} are assumed to
+  be in the same order as the columns of \code{\var{rwi}}, and the
+  dimensions must match.  The latter is also the way that
+  \code{rwi.stats.legacy} handles \code{\var{ids}}, i.e. names are
+  ignored and dimensions must match.
 
   Note that \code{period = "common"} can produce \code{NaN} for many of
   the stats if there is no common overlap period among the cores.  This
@@ -94,23 +126,21 @@ rwi.stats.running(rwi, ids = NULL, period = c("max", "common"),
   unfamiliar with these should see Cook and Kairiukstis (1990) and
   Fritts (2001) for further details.
 
-  The default value of \code{\var{zero.is.missing}} is \code{FALSE}
-  mostly because of backward compatibility of results.  Usually it will
-  probably make more sense to set this to \code{TRUE}.  If the parameter
-  is left to the default value, the user will be warned in case zeros
-  are present.
 }
 \value{ A \code{data.frame} containing the following columns (each row
   corresponds to one position of the window):
 
-  \item{start.year}{the first year in the window (not present if
-    \code{running.window} is \code{FALSE})}
+  \item{start.year}{the first year in the window.  Not returned if
+    \code{running.window} is \code{FALSE} or called as
+    \code{rwi.stats} or \code{rwi.stats.legacy}.}
 
-  \item{mid.year}{the middle year in the window, rounded down (not
-    present if \code{running.window} is \code{FALSE})}
+  \item{mid.year}{the middle year in the window, rounded down.  Not
+    returned if \code{running.window} is \code{FALSE} or called as
+    \code{rwi.stats} or \code{rwi.stats.legacy}.}
   
-  \item{end.year}{the last year in the window (not present if
-    \code{running.window} is \code{FALSE})}
+  \item{end.year}{the last year in the window.  Not returned if
+    \code{running.window} is \code{FALSE} or called as
+    \code{rwi.stats} or \code{rwi.stats.legacy}.}
 
   \item{n.tot}{total number of correlations computed}
 
@@ -135,7 +165,8 @@ rwi.stats.running(rwi, ids = NULL, period = c("max", "common"),
   \item{eps}{the expressed population signal}
 
   \item{n}{the average number of trees (for each year, a tree needs at
-    least one non-\code{NA} core in order to be counted)}
+    least one non-\code{NA} core in order to be counted).  Not returned
+    in the results of \code{rwi.stats.legacy}.}
   
 }
 \references{
@@ -154,14 +185,16 @@ rwi.stats.running(rwi, ids = NULL, period = c("max", "common"),
   For parallel computing and a potential speedup, a parallel backend
   must be registered before running the function.
 }
-\author{ Mikko Korpela, based on \code{\link{rwi.stats}} by Andy Bunn }
+\author{ Mikko Korpela, based on \code{\link{rwi.stats.legacy}} by Andy
+  Bunn }
 \seealso{ \code{\link{detrend}}, \code{\link{cor}},
   \code{\link{read.ids}}, \code{\link{rwi.stats}} }
 \examples{data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "Mean") # mean is fast
 ca533.ids <- read.ids(ca533, stc = c(3, 2, 3))
 rwi.stats.running(ca533.rwi, ca533.ids)
-
+rwi.stats(ca533.rwi, ca533.ids)        # i.e. running.window = FALSE
+rwi.stats.legacy(ca533.rwi, ca533.ids) # rwi.stats prior to dplR 1.5.3
 \dontrun{
 ## Plot the chronology showing a potential cutoff year based on eps
 ca533.rwi <- detrend(rwl = ca533, method = "Spline") # detrend again

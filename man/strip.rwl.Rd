@@ -5,21 +5,32 @@
   EPS-based chronology stripping after Fowler & Boswijk 2003.
 }
 \usage{
-strip.rwl(rwl, verbose = FALSE, comp.plot = FALSE)
+strip.rwl(rwl, ids = NULL, verbose = FALSE, comp.plot = FALSE,
+          legacy.eps = FALSE)
 }
 \arguments{
   \item{rwl}{a \code{data.frame} of raw tree-ring widths series, such as that
     produced by \code{\link{read.rwl}} or \code{\link{read.fh}}}
+  \item{ids}{ an optional \code{data.frame} with column one named
+    \code{"tree"} giving a \code{numeric} \acronym{ID} for each tree and
+    column two named \code{"core"} giving a \code{numeric} \acronym{ID}
+    for each core.  This is passed on to \code{\link{rwi.stats}}.  See
+    its manual for the meaning of the default value \code{NULL} and more
+    information. }
   \item{verbose}{\code{logical} flag, indicating if the EPS calculated
     at each step and other details should be printed on the console
     during the chronology stripping process}
   \item{comp.plot}{\code{logical} flag, indicating if a diagnostic plot
     with year-wise stripped and unstripped EPS should be drawn (see
     details below)}
+  \item{legacy.eps}{\code{logical} flag, indicating if the EPS will be
+    calculated with \code{rwi.stats} (\code{FALSE}, the default) or
+    \code{rwi.stats.legacy} (\code{TRUE})}
 }
 \value{
-The functions returns a \code{data.frame} of raw tree-ring widths, where
-series that do not contribute to an overall improvement in EPS are left out.
+  The functions returns a \code{data.frame} of raw tree-ring widths,
+  where series that do not contribute to an overall improvement in EPS
+  are left out.
 }
 \details{
 

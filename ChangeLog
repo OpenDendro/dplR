@@ -41,6 +41,18 @@ File: rcs.R
 
 - Allows for standardization by subtraction
 
+File: rwi.stats.R
+-----------------
+
+- rwi.stats() was renamed to rwi.stats.legacy(), potentially useful for
+  comparing the results of the old and new code
+
+File: rwi.stats.running.R
+-------------------------
+
+- zero.is.missing now has default value TRUE
+- rwi.stats() is now a wrapper to rwi.stats.running()
+
 File: strip.rwl.R
 -----------------
 

@@ -41,6 +41,15 @@ cor.with.limit.upper <- function(limit, x) {
     r.vec
 }
 
+rwi.stats <- function(rwi, ids=NULL, period=c("max", "common"), ...) {
+    args <- list(...)
+    args[["rwi"]] <- rwi
+    args[["ids"]] <- ids
+    args[["period"]] <- period
+    args[["running.window"]] <- FALSE
+    do.call(rwi.stats.running, args)
+}
+
 ### Main function, exported to user
 rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
                               running.window=TRUE,
@@ -49,7 +58,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
                               first.start=NULL,
                               min.corr.overlap=min(30, window.length),
                               round.decimals=3,
-                              zero.is.missing=FALSE) {
+                              zero.is.missing=TRUE) {
     period2 <- match.arg(period)
 
     if (running.window) {
@@ -309,7 +318,8 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
     }
 
     ## Iterate over all windows
-    if (!inherits(try(suppressWarnings(req.fe <-
+    if (running.window &&
+        !inherits(try(suppressWarnings(req.fe <-
                                        require(foreach, quietly=TRUE)),
                       silent = TRUE),
                   "try-error") && req.fe) {
@@ -325,9 +335,6 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
         }
     }
 
-    if (!running.window) {
-        compos.stats <- rbind(compos.stats)
-    }
     rownames(compos.stats) <- NULL
     if (is.numeric(round.decimals) && round.decimals >= 0) {
         data.frame(round(compos.stats, round.decimals))

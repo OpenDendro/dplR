@@ -336,8 +336,9 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
     }
 
     rownames(compos.stats) <- NULL
-    if (is.numeric(round.decimals) && round.decimals >= 0) {
-        data.frame(round(compos.stats, round.decimals))
+    if (is.numeric(round.decimals) && length(round.decimals) > 0 &&
+        is.finite(round.decimals[1]) && round.decimals[1] >= 0) {
+        data.frame(round(compos.stats, round.decimals[1]))
     } else {
         data.frame(compos.stats)
     }

@@ -65,8 +65,10 @@ strip.rwl(rwl, ids = NULL, verbose = FALSE, comp.plot = FALSE,
 \seealso{
   \code{\link{rwi.stats}}
 }
-\examples{data(anos1)
-strip.rwl(anos1, verbose = TRUE)
+\examples{
+data(anos1)
+anos1.ids <- read.ids(anos1, stc = c(4, 3, 1))
+strip.rwl(anos1, ids = anos1.ids, verbose = TRUE)
 }
 \author{
   Christian Zang.  Patched and improved by Mikko Korpela.

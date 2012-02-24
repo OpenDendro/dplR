@@ -69,8 +69,9 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
     window. One way to lift the restriction and include all correlations
     is to set \code{\var{min.corr.overlap} = 0}. }
 
-  \item{round.decimals}{ the desired number of decimal places in the
-    results. }
+  \item{round.decimals}{ non-negative integer \code{numeric} value
+    setting the desired number of decimal places in the results. Use
+    \code{NA}, \code{NULL} or a negative number for no rounding. }
 
   \item{zero.is.missing}{ \code{logical} flag indicating whether to
     treat zeros as missing values (\code{TRUE}, the default) or to

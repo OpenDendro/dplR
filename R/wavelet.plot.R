@@ -1,6 +1,6 @@
 wavelet.plot <-
     function(wave.list,
-             wavelet.levels = quantile(wave.list$Power,probs=seq(from=0, to=1, by=0.1)),
+             wavelet.levels = quantile(wave.list$Power, probs=seq(from=0, to=1, by=0.1)),
              add.coi = TRUE, add.sig = TRUE, x.lab = gettext("Time"),
              period.lab = gettext("Period"), crn.lab = gettext("RWI"),
              key.cols = rev(rainbow(length(wavelet.levels)-1)),
@@ -20,6 +20,13 @@ wavelet.plot <-
     coi[coi == 0] <- 1e-12
     Power <- wave.list$Power
     siglvl <- wave.list$siglvl
+
+    if (any(diff(x) <= 0) || any(diff(period) <= 0)) {
+        stop("'wave.list$x' and 'wave.list$period' must be strictly ascending")
+    }
+    if (period[1] <= 0) {
+        stop("'wave.list$period' must be positive")
+    }
 
     ## Expand signif --> (length(wave.list$Scale))x(N) array
     Signif <- t(matrix(Signif, dim(wave)[2], dim(wave)[1]))

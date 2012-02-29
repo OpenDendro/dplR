@@ -3,19 +3,18 @@
 File: DESCRIPTION
 -----------------
 
-- Depends: R (>= 2.15.0) to accomodate use of .filled.contour() in 
+- Depends: R (>= 2.15.0) to accomodate use of .filled.contour() in
   wavelet.plot()
 
 
 File: wavelet.plot.R
------------------
+--------------------
 
-- Switched from using an .Internal() call to using new bare-bones 
-  function .filled.contour() for the plotting. This is at the request
-  of Ripley who wrote that 'Packages should not call .Internal(): it is not 
-  part of the API, for use only by R itself and subject to change without 
-  notice.'
-
+- Switched from using an .Internal() call to using new bare-bones
+  function .filled.contour() for the plotting. This is at the
+  request of Prof. Ripley who wrote that 'Packages should not call
+  .Internal(): it is not part of the API, for use only by R itself
+  and subject to change without notice.'
 
 * CHANGES IN dplR VERSION 1.5.3
 

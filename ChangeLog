@@ -15,6 +15,8 @@ File: wavelet.plot.R
   request of Prof. Ripley who wrote that 'Packages should not call
   .Internal(): it is not part of the API, for use only by R itself
   and subject to change without notice.'
+- enabled translation of default value of 'key.lab'
+- checks 'wave.list$x' and 'wave.list$period'
 
 * CHANGES IN dplR VERSION 1.5.3
 

@@ -6,8 +6,8 @@
   curve.
 }
 \usage{
-rcs(rwl, po, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE, rc.out = FALSE,
-    make.plot = TRUE, \dots)
+rcs(rwl, po, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE,
+    rc.out = FALSE, make.plot = TRUE, \dots)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as
@@ -26,8 +26,9 @@ rcs(rwl, po, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE, rc.out = FALS
     wavelength cutoff. Defaults to 0.5. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}}. }
-  \item{ratios}{ \code{logical} flag. If \code{TRUE} then indices are
-    calculated by division, if \code{FALSE} indices are calculated by subtraction. }
+  \item{ratios}{ \code{logical} flag. If \code{TRUE} (the default) then
+    indices are calculated by division, if \code{FALSE} indices are
+    calculated by subtraction. }
   \item{make.plot}{ \code{logical} flag. Makes plots of the raw data and
     regional curve if \code{TRUE}. }
   \item{rc.out}{ \code{logical} flag. Returns the regional curve along
@@ -36,21 +37,37 @@ rcs(rwl, po, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE, rc.out = FALS
     \code{\link[graphics]{plot}}. }
 }
 \details{
-This method detrends and standardizes tree-ring series by calculating an
-age-related growth curve specific to the \code{\var{rwl}}. The
-detrending is the estimation and removal of the tree's natural
-biological growth trend. The standardization is done by either dividing
-each series by the growth trend or subtracting the growth trend from each series to produce
-units in the dimensionless ring-width index (\acronym{RWI}). The option to produce
-indices by subtraction is intended to be used on series that have
-been subject to variance stabilization (e.g., using \code{\link{powt}}).
 
-The spline approach uses an n-year spline where the frequency response is 0.50 at a wavelength of 10 percent of the maximum cambial age unless specified differently using \code{\var{nyrs}} and \code{\var{f}} in the function \code{\link{ffcsaps}}.
+  This method detrends and standardizes tree-ring series by calculating
+  an age-related growth curve specific to the \code{\var{rwl}}. The
+  detrending is the estimation and removal of the tree's natural
+  biological growth trend. The standardization is done by either
+  dividing each series by the growth trend or subtracting the growth
+  trend from each series to produce units in the dimensionless
+  ring-width index (\acronym{RWI}). The option to produce indices by
+  subtraction is intended to be used on series that have been subject to
+  variance stabilization (e.g., using \code{\link{powt}}).
 
-This attempts to remove the low frequency variability that is due to biological or stand effects. See the references below for further details on detrending in general, and Biondi and Qeadan (2008) for an explanation of \acronym{RCS}.
+  The spline approach uses an n-year spline where the frequency response
+  is 0.50 at a wavelength of 10 percent of the maximum cambial age
+  unless specified differently using \code{\var{nyrs}} and
+  \code{\var{f}} in the function \code{\link{ffcsaps}}.
+
+  This attempts to remove the low frequency variability that is due to
+  biological or stand effects. See the references below for further
+  details on detrending in general, and Biondi and Qeadan (2008) for an
+  explanation of \acronym{RCS}.
+
 }
 \value{
-  A \code{data.frame} containing the dimensionless and detrended ring-width indices with column names, row names and dimensions of \code{\var{rwl}}. If \code{\var{rc.out}} is \code{TRUE} then a \code{list} will be returned with a \code{data.frame} containing the detrended ring widths as above and a \code{vector} containing the regional curve.
+
+  A \code{data.frame} containing the dimensionless and detrended
+  ring-width indices with column names, row names and dimensions of
+  \code{\var{rwl}}. If \code{\var{rc.out}} is \code{TRUE} then a
+  \code{list} will be returned with a \code{data.frame} containing the
+  detrended ring widths as above and a \code{vector} containing the
+  regional curve.
+
 }
 \references{
   Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring

@@ -4,10 +4,10 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.5.2\n"
+"Project-Id-Version: dplR 1.5.3\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-01-19 17:29+0200\n"
-"PO-Revision-Date: 2012-01-19 17:44+0200\n"
+"POT-Creation-Date: 2012-02-29 17:40+0200\n"
+"PO-Revision-Date: 2012-03-01 09:34+0200\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -76,6 +76,9 @@ msgstr ""
 
 msgid "At least 2 series are needed in 'rwl'"
 msgstr "Vähintään 2 sarjaa tarvitaan ’rwl’:ssä"
+
+msgid "At least 1 series is needed in 'rwl'"
+msgstr "Vähintään 1 sarja tarvitaan ’rwl’:ssä"
 
 msgid "Year"
 msgstr "Vuosi"
@@ -378,15 +381,6 @@ msgstr "’ids’:llä täytyy olla numeric-tyyppiset sarakkeet"
 msgid "Correlations are all NA. No overlap in series?"
 msgstr "Kaikki korrelaatiot ovat NA. Sarjoissa ei päällekkäisyyttä?"
 
-msgid "minimum 'window.length' is 3"
-msgstr "pienin mahdollinen ’window.length’ on 3"
-
-msgid "'window.overlap' is too large, max value is 'window.length'-1 (%d)"
-msgstr "’window.overlap’ on liian suuri, maksimiarvo on ’window.length’-1 (%d)"
-
-msgid "'window.length' is smaller than 'min.corr.overlap'"
-msgstr "’window.length’ on pienempi kuin ’min.corr.overlap’"
-
 msgid "There are zeros in the data. Consider the option 'zero.is.missing'."
 msgstr "Datassa on nollia. Harkitse asetusta ’zero.is.missing’."
 
@@ -397,11 +391,20 @@ msgid "Series with matching tree/core IDs have been averaged"
 msgstr ""
 "Samoilla ’tree’/’core’-tunnisteilla varustetut sarjat on keskiarvoistettu"
 
-msgid "'window.length' is larger than the number of years in 'rwi'"
-msgstr "’window.length’ on suurempi kuin vuosien määrä ’rwi’:ssä"
-
 msgid "at least 2 trees are needed"
 msgstr "ainakin 2 puuta tarvitaan"
+
+msgid "minimum 'window.length' is 3"
+msgstr "pienin mahdollinen ’window.length’ on 3"
+
+msgid "'window.overlap' is too large, max value is 'window.length'-1 (%d)"
+msgstr "’window.overlap’ on liian suuri, maksimiarvo on ’window.length’-1 (%d)"
+
+msgid "'window.length' is smaller than 'min.corr.overlap'"
+msgstr "’window.length’ on pienempi kuin ’min.corr.overlap’"
+
+msgid "'window.length' is larger than the number of years in 'rwi'"
+msgstr "’window.length’ on suurempi kuin vuosien määrä ’rwi’:ssä"
 
 msgid "too few years with enough trees for correlation calculations"
 msgstr ""
@@ -479,6 +482,15 @@ msgstr "’filt.weight’ ei saa olla suurempi kuin syötesarjan pituus"
 
 msgid "empty 'rwl' given, nothing to draw"
 msgstr "tyhjä ’rwl’ annettu, ei mitään piirrettävää"
+
+msgid "'rwl' must have unique, non-NA names"
+msgstr "’rwl’:ssä pitää olla uniikit, ei-NA-nimet"
+
+msgid "'ids' must be NULL or a data.frame"
+msgstr "’ids’:n täytyy olla NULL tai data.frame"
+
+msgid "'length(rwl)' != 'nrow(ids)'"
+msgstr "’length(rwl)’ ≠ ’nrow(ids)’"
 
 msgid "a user-coded (pseudo) random number generator is in use"
 msgstr "käyttäjän tekemä (pseudo)satunnaislukugeneraattori on käytössä"

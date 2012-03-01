@@ -4,9 +4,9 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.5.2\n"
+"Project-Id-Version: dplR 1.5.3\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-01-19 17:29+0200\n"
+"POT-Creation-Date: 2012-02-29 17:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,6 +70,9 @@ msgid "Nothing to combine here. Please supply data.frames formatted according to
 msgstr ""
 
 msgid "At least 2 series are needed in 'rwl'"
+msgstr ""
+
+msgid "At least 1 series is needed in 'rwl'"
 msgstr ""
 
 msgid "Year"
@@ -366,15 +369,6 @@ msgstr ""
 msgid "Correlations are all NA. No overlap in series?"
 msgstr ""
 
-msgid "minimum 'window.length' is 3"
-msgstr ""
-
-msgid "'window.overlap' is too large, max value is 'window.length'-1 (%d)"
-msgstr ""
-
-msgid "'window.length' is smaller than 'min.corr.overlap'"
-msgstr ""
-
 msgid "There are zeros in the data. Consider the option 'zero.is.missing'."
 msgstr ""
 
@@ -384,10 +378,19 @@ msgstr ""
 msgid "Series with matching tree/core IDs have been averaged"
 msgstr ""
 
-msgid "'window.length' is larger than the number of years in 'rwi'"
+msgid "at least 2 trees are needed"
 msgstr ""
 
-msgid "at least 2 trees are needed"
+msgid "minimum 'window.length' is 3"
+msgstr ""
+
+msgid "'window.overlap' is too large, max value is 'window.length'-1 (%d)"
+msgstr ""
+
+msgid "'window.length' is smaller than 'min.corr.overlap'"
+msgstr ""
+
+msgid "'window.length' is larger than the number of years in 'rwi'"
 msgstr ""
 
 msgid "too few years with enough trees for correlation calculations"
@@ -460,6 +463,15 @@ msgid "'filt.weight' must not be larger than length of input series"
 msgstr ""
 
 msgid "empty 'rwl' given, nothing to draw"
+msgstr ""
+
+msgid "'rwl' must have unique, non-NA names"
+msgstr ""
+
+msgid "'ids' must be NULL or a data.frame"
+msgstr ""
+
+msgid "'length(rwl)' != 'nrow(ids)'"
 msgstr ""
 
 msgid "a user-coded (pseudo) random number generator is in use"

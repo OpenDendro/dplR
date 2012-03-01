@@ -1,7 +1,7 @@
 series.rwl.plot <-
     function(rwl, series, series.yrs=as.numeric(names(series)),
              seg.length=100, bin.floor=100, n=NULL, prewhiten = TRUE,
-             biweight=TRUE, floor.plus1 = FALSE){
+             biweight=TRUE, floor.plus1 = FALSE) {
 
     ## run error checks
     qa.xdate(rwl, seg.length, n, bin.floor)
@@ -43,15 +43,15 @@ series.rwl.plot <-
     master <- master[yrs %in% series.yrs2]
     yrs <- as.numeric(names(master))
 
-    if(is.null(bin.floor) || bin.floor == 0) {
+    if (is.null(bin.floor) || bin.floor == 0) {
         min.bin <- min(series.yrs2)
-    } else if(floor.plus1) {
+    } else if (floor.plus1) {
         min.bin <- ceiling((min(series.yrs2) - 1) / bin.floor) * bin.floor + 1
     } else {
         min.bin <- ceiling(min(series.yrs2) / bin.floor) * bin.floor
     }
     to <- max(series.yrs2) - seg.length - seg.lag + 1
-    if(min.bin > to){
+    if (min.bin > to) {
         cat(gettextf("maximum year in (filtered) series: %d\n",
                      max(series.yrs2)))
         cat(gettextf("first bin begins: %d\n", min.bin))
@@ -108,13 +108,13 @@ series.rwl.plot <-
     axis(1, at=odd.ticks)
     axis(3, at=even.ticks)
     box()
-    for(i in seq(1, nbins, by=2)){
+    for (i in seq(1, nbins, by=2)) {
         xx <- bins[i, ]
         xx <- c(xx, rev(xx))
         yy <- c(0, 0, 0.5, 0.5)
         polygon(xx, yy, col="grey90")
     }
-    for(i in seq(2, nbins, by=2)){
+    for (i in seq(2, nbins, by=2)) {
         xx <- bins[i, ]
         xx <- c(xx, rev(xx))
         yy <- c(0, 0, -0.5, -0.5)
@@ -134,8 +134,11 @@ series.rwl.plot <-
     text(-1, -0.5, txt4, pos=4)
     txt5 <- gettext("Detrending Options:", domain="R-dplR")
     text(-1, -1, txt5, pos=4)
-    if(is.null(n)) txt6 <- paste("Hanning=NULL,ar=", prewhiten, sep="")
-    else txt6 <- paste("Hanning=", n, ",ar=", prewhiten, sep="")
+    if (is.null(n)) {
+        txt6 <- paste0("Hanning=NULL,ar=", prewhiten)
+    } else {
+        txt6 <- paste0("Hanning=", n, ",ar=", prewhiten)
+    }
     text(-1, -1.5, txt6, pos=4)
 
     list(series = series2, master = master)

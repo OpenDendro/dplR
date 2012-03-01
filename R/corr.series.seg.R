@@ -2,7 +2,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
                             seg.length=50, bin.floor=100, n=NULL,
                             prewhiten = TRUE, biweight=TRUE,
                             pcrit=0.05, make.plot = TRUE,
-                            floor.plus1 = FALSE, ...){
+                            floor.plus1 = FALSE, ...) {
 
     ## run error checks
     qa.xdate(rwl, seg.length, n, bin.floor)
@@ -42,18 +42,18 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     yrs <- as.numeric(names(master))
     nyrs <- length(series.yrs2)
 
-    if(nyrs < seg.length) {
+    if (nyrs < seg.length) {
         stop("number of overlapping years is less than 'seg.length'")
     }
-    if(is.null(bin.floor) || bin.floor == 0) {
+    if (is.null(bin.floor) || bin.floor == 0) {
         min.bin <- min(series.yrs2)
-    } else if(floor.plus1) {
+    } else if (floor.plus1) {
         min.bin <- ceiling((min(series.yrs2) - 1) / bin.floor) * bin.floor + 1
     } else {
         min.bin <- ceiling(min(series.yrs2) / bin.floor) * bin.floor
     }
     to <- max(series.yrs2) - seg.length - seg.lag + 1
-    if(min.bin > to){
+    if (min.bin > to) {
         cat(gettextf("maximum year in (filtered) series: %d\n",
                      max(series.yrs2)))
         cat(gettextf("first bin begins: %d\n", min.bin))
@@ -63,7 +63,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     bins <- seq(from=min.bin, to=to + seg.lag, by=seg.lag)
     bins <- cbind(bins, bins + (seg.length - 1))
     nbins <- nrow(bins)
-    bin.names <- paste(bins[, 1], ".", bins[, 2], sep="")
+    bin.names <- paste0(bins[, 1], ".", bins[, 2])
     ## structures for results
     res.cor <- rep(NA, nbins)
     names(res.cor) <- bin.names
@@ -83,16 +83,15 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     rownames(res.mcor) <- series.yrs2
 
     ## loop through bins
-    for(j in seq_len(nbins)){
-        mask <- yrs%in%seq(from=bins[j, 1], to=bins[j, 2])
+    for (j in seq_len(nbins)) {
+        mask <- yrs %in% seq(from=bins[j, 1], to=bins[j, 2])
         ## cor is NA if there is not complete overlap
-        if(!any(mask) ||
-           any(is.na(series2[mask])) ||
-           any(is.na(master[mask]))){
+        if (!any(mask) ||
+            any(is.na(series2[mask])) ||
+            any(is.na(master[mask]))) {
             bin.cor <- NA
             bin.pval <- NA
-        }
-        else {
+        } else {
             tmp <- cor.test(series2[mask], master[mask], method = "spearman",
                             alternative = "greater")
             bin.cor <- tmp$estimate
@@ -108,7 +107,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     overall.cor[2] <- tmp$p.val
 
     ## moving correlation
-    for(i in seq_len(nyrs - seg.length + 1)){
+    for (i in seq_len(nyrs - seg.length + 1)) {
         mask <- i:(i + seg.length - 1)
         tmp <- cor.test(series2[mask], master[mask],
                         method = "spearman", alternative = "greater")
@@ -116,7 +115,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
         res.mcor[i + seg.lag, 2] <- tmp$p.val
     }
     ## plot
-    if(make.plot){
+    if (make.plot) {
         mcor.tmp <- na.omit(res.mcor)
         yrs.tmp <- as.numeric(rownames(mcor.tmp))
         mcor.tmp <- mcor.tmp[, 1]
@@ -142,7 +141,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
         axis(2)
         box()
         ## lines bins
-        for(i in seq_len(nbins)){
+        for (i in seq_len(nbins)) {
             xx <- c(bins[i, ], recursive=TRUE)
             yy <- c(res.cor[i], res.cor[i])
             lines(xx, yy, lwd=2)

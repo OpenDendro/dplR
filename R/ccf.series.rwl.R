@@ -3,12 +3,13 @@ ccf.series.rwl <- function(rwl, series,
                            seg.length = 50, bin.floor = 100, n = NULL,
                            prewhiten = TRUE, biweight = TRUE,
                            pcrit = 0.05, lag.max = 5, make.plot = TRUE,
-                           floor.plus1 = FALSE, ...){
+                           floor.plus1 = FALSE, ...) {
 
     ## run error checks
     qa.xdate(rwl, seg.length, n, bin.floor)
-    if(lag.max > seg.length)
+    if (lag.max > seg.length) {
         stop("'lag.max' > 'seg.length'")
+    }
     seg.lag <- seg.length / 2
 
     ## Normalize.
@@ -37,7 +38,7 @@ ccf.series.rwl <- function(rwl, series,
     master <- master[yrs %in% series.yrs2]
     yrs <- as.numeric(names(master))
 
-    if(is.null(bin.floor) || bin.floor == 0) {
+    if (is.null(bin.floor) || bin.floor == 0) {
         min.bin <- min(series.yrs2)
     } else if(floor.plus1) {
         min.bin <- ceiling((min(series.yrs2) - 1) / bin.floor) * bin.floor + 1
@@ -45,7 +46,7 @@ ccf.series.rwl <- function(rwl, series,
         min.bin <- ceiling(min(series.yrs2) / bin.floor) * bin.floor
     }
     to <- max(series.yrs2) - seg.length - seg.lag + 1
-    if(min.bin > to){
+    if (min.bin > to) {
         cat(gettextf("maximum year in (filtered) series: %d\n",
                      max(series.yrs2), domain="R-dplR"))
         cat(gettextf("first bin begins: %d\n", min.bin, domain="R-dplR"))
@@ -56,7 +57,7 @@ ccf.series.rwl <- function(rwl, series,
     bins <- seq(from=min.bin, to=to + seg.lag, by=seg.lag)
     bins <- cbind(bins, bins + (seg.length - 1))
     nbins <- nrow(bins)
-    bin.names <- paste(bins[, 1], ".", bins[, 2], sep="")
+    bin.names <- paste0(bins[, 1], ".", bins[, 2])
 
     ## structures for results
     lag.vec <- seq(from=-lag.max, to=lag.max, by=1)
@@ -65,13 +66,13 @@ ccf.series.rwl <- function(rwl, series,
     colnames(res.cor) <- bin.names
 
     ## loop through bins
-    for(j in seq_len(nbins)){
+    for (j in seq_len(nbins)) {
         mask <- yrs%in%seq(from=bins[j, 1], to=bins[j, 2])
         ## cor is NA if there is not complete overlap
-        if(!any(mask) ||
-           any(is.na(series2[mask])) ||
-           any(is.na(master[mask])) ||
-           table(mask)[2] < seg.length){
+        if (!any(mask) ||
+            any(is.na(series2[mask])) ||
+            any(is.na(master[mask])) ||
+            table(mask)[2] < seg.length) {
             bin.ccf <- NA
         }
         else {
@@ -81,7 +82,7 @@ ccf.series.rwl <- function(rwl, series,
         res.cor[, j] <- bin.ccf
     }
     ## plot
-    if(make.plot){
+    if (make.plot) {
         ccf.df <- data.frame(r = c(res.cor, recursive=TRUE),
                              bin = rep(colnames(res.cor),
                              each=length(lag.vec)),

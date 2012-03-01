@@ -1,10 +1,16 @@
 * CHANGES IN dplR VERSION 1.5.4
 
+Various .R files
+----------------
+
+- use paste0(...) instead of paste(..., sep="")
+- prettier, more consistent formatting of source code
+
 File: DESCRIPTION
 -----------------
 
 - Depends: R (>= 2.15.0) to accomodate use of .filled.contour() in
-  wavelet.plot()
+  wavelet.plot(). Also enables the use of paste0().
 
 
 File: wavelet.plot.R

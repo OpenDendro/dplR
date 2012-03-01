@@ -17,14 +17,15 @@ read.compact <- function(fname)
                          "There are %d series\n",
                          domain="R-dplR"),
                 nseries))
-    cat(paste(seq_len(nseries), "\t",
-              series.ids, "\t",
-              series.min, "\t",
-              series.max, "\t",
-              series.mplier, "\n", sep=""), sep="")
-    if(length(project.comments) > 0)
+    cat(paste0(seq_len(nseries), "\t",
+               series.ids, "\t",
+               series.min, "\t",
+               series.max, "\t",
+               series.mplier, "\n"), sep="")
+    if (length(project.comments) > 0) {
         cat(gettext("Comments:", domain="R-dplR"),
             paste(project.comments, collapse="\n"), sep="\n")
+    }
 
     rw.df <- as.data.frame(rw.mat)
     names(rw.df) <- series.ids

@@ -4,63 +4,64 @@
     ## Open the data file (stateless, opened on-demand)
     con <- file(fname, encoding = encoding)
     on.exit(close(con))
-    if(is.null(header)){
+    if (is.null(header)) {
         ## Try to determine if the file has a header. This is failable.
         ## 3 lines in file
         hdr1 <- readLines(con, n=1)
-        if(length(hdr1) == 0){
+        if (length(hdr1) == 0) {
             stop("file is empty")
         }
-        if(nchar(hdr1) < 12){
+        if (nchar(hdr1) < 12) {
             stop("first line in rwl file ends before col 12")
         }
         yrcheck <- suppressWarnings(as.numeric(substr(hdr1, 9, 12)))
-        if(is.null(yrcheck) || length(yrcheck) != 1 || is.na(yrcheck) ||
-           yrcheck < -1e04 || yrcheck > 1e04) {
+        if (is.null(yrcheck) || length(yrcheck) != 1 || is.na(yrcheck) ||
+            yrcheck < -1e04 || yrcheck > 1e04) {
             cat(gettext("There appears to be a header in the rwl file\n",
                         domain="R-dplR"))
             is.head <- TRUE
-        }
-        else {
+        } else {
             is.head <- FALSE # No header lines
             cat(gettext("There does not appear to be a header in the rwl file\n",
                         domain="R-dplR"))
         }
-    } else if(!is.logical(header)){
+    } else if (!is.logical(header)) {
         stop("'header' must be NULL or logical")
-    } else{
+    } else {
         is.head <- header
     }
-    if(is.head){
+    if (is.head) {
         ## Read 4th line - should be first data line
         dat1 <- readLines(con, n=4)
-        if(length(dat1)<4){
+        if (length(dat1) < 4) {
             stop("file has under 4 lines")
         }
         dat1 <- dat1[4]
-    } else{
+    } else {
         dat1 <- readLines(con, n=1)
-        if(length(dat1) == 0){
+        if (length(dat1) == 0) {
             stop("file is empty")
         }
     }
     yrcheck <- as.numeric(substr(dat1, 9, 12))
-    if(is.null(yrcheck) || length(yrcheck) != 1)
+    if (is.null(yrcheck) || length(yrcheck) != 1) {
         stop(gettextf("cols %d-%d of first data line not a year", 9, 12))
+    }
 
     skip.lines <- ifelse(is.head, 3, 0)
     ## Do nothing. read.fwf closes (and destroys ?!?) the file connection
     on.exit()
     ## Using a connection instead of a file name in read.fwf allows the
     ## function to support different encodings.
-    if(long)
+    if (long) {
         dat <- read.fwf(con, c(7, 5, rep(6, 10)), skip=skip.lines,
                         strip.white=TRUE, blank.lines.skip=TRUE,
                         colClasses=c("character", rep("integer", 11)))
-    else
+    } else {
         dat <- read.fwf(con, c(8, 4, rep(6, 10)), skip=skip.lines,
                         strip.white=TRUE, blank.lines.skip=TRUE,
                         colClasses=c("character", rep("integer", 11)))
+    }
     ## Remove any blank lines at the end of the file, for instance
     dat <- dat[!apply(is.na(dat), 1, all), , drop=FALSE]
 
@@ -100,11 +101,11 @@
        prec.rproc,
        NAOK=TRUE, DUP=FALSE)
     seq.series <- seq_len(nseries)
-    cat(paste(seq.series, "\t",
-              series.ids, "\t",
-              series.min, "\t",
-              series.max, "\t",
-              1 / prec.rproc, "\n", sep=""), sep="")
+    cat(paste0(seq.series, "\t",
+               series.ids, "\t",
+               series.min, "\t",
+               series.max, "\t",
+               1 / prec.rproc, "\n"), sep="")
     rw.mat <- matrix(rw.vec, ncol=nseries, nrow=span)
     rownames(rw.mat) <- min.year:max.year
 
@@ -113,12 +114,12 @@
     ## The operations in the loop depend on the precision of each series.
     ## It's not exactly clear whether the Tucson format allows mixed
     ## precisions in the same file, but we can support that in any case.
-    for(i in seq.series){
+    for (i in seq.series) {
         this.prec.rproc <- prec.rproc[i]
-        if(this.prec.rproc == 100){
+        if (this.prec.rproc == 100) {
             ## Convert stop marker (and any other) 999 to NA (precision 0.01)
             rw.mat[rw.mat[, i] == 999, i] <- NA
-        } else if(this.prec.rproc != 1000){
+        } else if (this.prec.rproc != 1000) {
             stop(gettextf("precision unknown in series %s", series.ids[i]))
         }
         ## Convert to mm
@@ -140,11 +141,11 @@
     yrs <- min.year0:max.year0
     rw.mat <- rw.mat[as.numeric(rownames(rw.mat)) %in% yrs, , drop=FALSE]
     ## Fix internal NAs. These are coded as 0 in the DPL programs
-    fix.internal.na <- function(x){
+    fix.internal.na <- function(x) {
         na.flag <- is.na(x)
         good.idx <- which(!na.flag)
         y <- x
-        if(length(good.idx) >= 2){
+        if (length(good.idx) >= 2) {
             min.good <- min(good.idx)
             max.good <- max(good.idx)
             fix.flag <- na.flag & c(rep(FALSE, min.good),

@@ -64,7 +64,7 @@ wavelet.plot <-
     ##Signif <-Signif[,ncol(Signif):1]
     ##ytick <- rev(ytick)
 
-    if(side.by.side) {
+    if (side.by.side) {
         ## plot set up
         layout(matrix(c(3, 2, 1), nrow=1, byrow=TRUE),
                widths=c(1, 1, 0.2))
@@ -92,17 +92,18 @@ wavelet.plot <-
                         as.double(wavelet.levels),
                         key.cols)
 
-        if(add.sig) {
+        if (add.sig) {
             contour(x, period2, Signif, levels=1, labels=siglvl,
                     drawlabels = FALSE, axes = FALSE,
                     frame.plot = FALSE, add = TRUE,
                     lwd = 2, col="black")
         }
-        if(add.coi) {
+        if (add.coi) {
             polygon(yr.vec.xx, coi2.yy, density=c(10, 20),
                     angle=c(-45, 45), col="black")
         }
-        axis(1);axis(3)
+        axis(1)
+        axis(3)
         axis(2, at = ytick, labels = ytickv)
         axis(4, at = ytick, labels = ytickv)
         title(xlab = x.lab, ylab = period.lab)
@@ -114,19 +115,22 @@ wavelet.plot <-
         plot(x, y, type = "l", xlim, xaxs = xaxs, yaxs = yaxs,
              asp = asp, xlab = "", ylab = "", axes = FALSE, col = crn.col,
              lwd = crn.lwd, ylim = crn.ylim)
-        if(add.spline){
+        if (add.spline) {
             spl <- y
             tmp <- na.omit(spl)
-            if(is.null(nyrs))
+            if (is.null(nyrs)) {
                 nyrs2 <- length(tmp) * 0.33
-            else
+            } else {
                 nyrs2 <- nyrs
+            }
             tmp <- ffcsaps(y = tmp, x = seq_along(tmp), nyrs = nyrs2, f = f)
             spl[!is.na(spl)] <- tmp
             lines(x, spl, col = "red", lwd = 2)
         }
-        axis(1);axis(3)
-        axis(2);axis(4)
+        axis(1)
+        axis(3)
+        axis(2)
+        axis(4)
         title(xlab = x.lab, ylab = crn.lab)
         box()
     }
@@ -157,13 +161,13 @@ wavelet.plot <-
                         as.double(wavelet.levels),
                         key.cols)
 
-        if(add.sig) {
+        if (add.sig) {
             contour(x, period2, Signif, levels=1, labels=siglvl,
                     drawlabels = FALSE, axes = FALSE,
                     frame.plot = FALSE, add = TRUE,
                     lwd = 2, col="black")
         }
-        if(add.coi) {
+        if (add.coi) {
             polygon(yr.vec.xx, coi2.yy, density=c(10, 20),
                     angle=c(-45, 45), col="black")
         }
@@ -180,13 +184,14 @@ wavelet.plot <-
         plot(x, y, type = "l", xlim, xaxs = xaxs, yaxs = yaxs,
              asp = asp, xlab = "", ylab = "", axes = FALSE, col = crn.col,
              lwd = crn.lwd, ylim = crn.ylim)
-        if(add.spline){
+        if (add.spline) {
             spl <- y
             tmp <- na.omit(spl)
-            if(is.null(nyrs))
+            if (is.null(nyrs)) {
                 nyrs2 <- length(tmp) * 0.33
-            else
+            } else {
                 nyrs2 <- nyrs
+            }
             tmp <- ffcsaps(y = tmp, x = seq_along(tmp), nyrs = nyrs2, f = f)
             spl[!is.na(spl)] <- tmp
             lines(x, spl, col = "red", lwd = 2)

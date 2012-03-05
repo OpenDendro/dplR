@@ -1,3 +1,4 @@
+2012-03-05 Mikko Korpela
 * CHANGES IN dplR VERSION 1.5.3
 
 File: CITATION
@@ -44,6 +45,11 @@ File: rcs.R
 -----------
 
 - Allows for standardization by subtraction
+
+File: read.tucson.R
+-------------------
+
+- Fix handling of empty lines (thanks to Heather Gamper for reporting)
 
 File: rwi.stats.R
 -----------------

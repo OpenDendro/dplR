@@ -62,7 +62,7 @@
                         strip.white=TRUE, blank.lines.skip=TRUE,
                         colClasses=c("character", rep("integer", 11)))
     ## Remove any blank lines at the end of the file, for instance
-    dat <- dat[!apply(is.na(dat), 1, all), , drop=FALSE]
+    dat <- dat[!is.na(dat[[2]]), , drop=FALSE] # requires non-NA year
 
     series <- dat[[1]]
     series.ids <- unique(series)

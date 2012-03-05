@@ -77,11 +77,19 @@ wavelet.plot <-
         plot.new()
 
         plot.window(xlim, ylim, "", xaxs=xaxs, yaxs=yaxs, asp=asp, las=las)
-        .Internal(filledcontour(as.double(x),
-                                as.double(period2),
-                                z,
-                                as.double(wavelet.levels),
-                                col = key.cols))
+        if (getRversion() < "2.15.0") {
+            .Internal(filledcontour(as.double(x),
+                                    as.double(period2),
+                                    z,
+                                    as.double(wavelet.levels),
+                                    col = key.cols))
+        } else {
+            .filled.contour(as.double(x),
+                            as.double(period2),
+                            z,
+                            as.double(wavelet.levels),
+                            key.cols)
+        }
 
         if(add.sig) {
             contour(x, period2, Signif, levels=1, labels=siglvl,
@@ -140,11 +148,19 @@ wavelet.plot <-
         plot.new()
 
         plot.window(xlim, ylim, "", xaxs=xaxs, yaxs=yaxs, asp=asp, las=las)
-        .Internal(filledcontour(as.double(x),
-                                as.double(period2),
-                                z,
-                                as.double(wavelet.levels),
-                                col = key.cols))
+        if (getRversion() < "2.15.0") {
+            .Internal(filledcontour(as.double(x),
+                                    as.double(period2),
+                                    z,
+                                    as.double(wavelet.levels),
+                                    col = key.cols))
+        } else {
+            .filled.contour(as.double(x),
+                            as.double(period2),
+                            z,
+                            as.double(wavelet.levels),
+                            key.cols)
+        }
 
         if(add.sig) {
             contour(x, period2, Signif, levels=1, labels=siglvl,

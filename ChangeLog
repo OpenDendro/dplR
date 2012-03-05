@@ -1,4 +1,4 @@
-2012-03-05 Mikko Korpela
+2012-03-05 Andy Bunn
 * CHANGES IN dplR VERSION 1.5.3
 
 File: CITATION
@@ -46,10 +46,11 @@ File: rcs.R
 
 - Allows for standardization by subtraction
 
-File: read.tucson.R
--------------------
+Files: read.crn.R, read.tucson.R
+--------------------------------
 
-- Fix handling of empty lines (thanks to Heather Gamper for reporting)
+- Fix handling of (effectively) empty lines (thanks to Heather
+  Gamper for reporting)
 
 File: rwi.stats.R
 -----------------
@@ -69,6 +70,11 @@ File: strip.rwl.R
 -----------------
 
 - New function for EPS-based chronology stripping
+
+File: wavelet.plot.R
+--------------------
+
+- Replaces .Internal(filledcontour) with .filled.contour in R >= 2.15.0
 
 2012-01-19 Mikko Korpela
 * CHANGES IN dplR VERSION 1.5.2

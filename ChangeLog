@@ -9,7 +9,7 @@ Various .R files
 File: DESCRIPTION
 -----------------
 
-- Depends: R (>= 2.15.0) to accomodate use of .filled.contour() in
+- Depends: R (>= 2.15.0) to accommodate use of .filled.contour() in
   wavelet.plot(). Also enables the use of paste0().
 
 
@@ -20,10 +20,14 @@ File: wavelet.plot.R
   function .filled.contour() for the plotting. This is at the
   request of Prof. Ripley who wrote that 'Packages should not call
   .Internal(): it is not part of the API, for use only by R itself
-  and subject to change without notice.'
+  and subject to change without notice.' In 1.5.3, the use of
+  .Internal() or .filled.contour() was an if-else decision based on
+  the version of R, but now the latter function is always used,
+  making R >= 2.15.0 required.
 - enabled translation of default value of 'key.lab'
 - checks 'wave.list$x' and 'wave.list$period'
 
+2012-03-05 Andy Bunn
 * CHANGES IN dplR VERSION 1.5.3
 
 File: CITATION
@@ -71,6 +75,12 @@ File: rcs.R
 
 - Allows for standardization by subtraction
 
+Files: read.crn.R, read.tucson.R
+--------------------------------
+
+- Fix handling of (effectively) empty lines (thanks to Heather
+  Gamper for reporting)
+
 File: rwi.stats.R
 -----------------
 
@@ -89,6 +99,11 @@ File: strip.rwl.R
 -----------------
 
 - New function for EPS-based chronology stripping
+
+File: wavelet.plot.R
+--------------------
+
+- Replaces .Internal(filledcontour) with .filled.contour in R >= 2.15.0
 
 2012-01-19 Mikko Korpela
 * CHANGES IN dplR VERSION 1.5.2

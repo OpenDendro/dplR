@@ -2,41 +2,30 @@
     function(rwl, stc=c(3, 2, 3))
 {
     ## This will try to read tree and core ids from a rwl data.frame
-    if(sum(stc) > 8) {
-        stop("Site-Tree-Core mask is larger than 8")
-    }
     if(!all(is.int(stc))) {
         stop("Site-Tree-Core mask must only contain integral values")
     }
     if(length(stc) != 3) {
         stop("length of Site-Tree-Core mask must be 3")
     }
-    ## Pad to 8 chars
     ids <- names(rwl)
     n.cases <- length(ids)
     unique.site.strs <- character(0)
     tree.strs <- character(length=n.cases)
     core.strs <- character(length=n.cases)
-    for(i in seq_along(ids)){
-        x <- ids[i]
-        n <- nchar(x)
-        if(n < 8)
-            x <- paste(x, paste(rep(" ", each=8-n), collapse=""), sep="")
-        else if(n > 8) stop("unable to create tree ids")
-        site.chars <- c(1, stc[1])
-        tree.chars <- c(site.chars[2]+1, site.chars[2] + stc[2])
-        core.chars <- c(tree.chars[2]+1, tree.chars[2] + stc[3])
-        unique.site.strs <- union(unique.site.strs,
-                                  substring(x, site.chars[1], site.chars[2]))
-        tree.strs[i] <- substring(x, tree.chars[1], tree.chars[2])
-        core.strs[i] <- substring(x, core.chars[1], core.chars[2])
-    }
+    site.chars <- c(1, stc[1])
+    tree.chars <- c(site.chars[2]+1, site.chars[2] + stc[2])
+    core.chars <- c(tree.chars[2]+1, tree.chars[2] + stc[3])
+    unique.site.strs <- unique(substr(ids, site.chars[1], site.chars[2]))
+    tree.strs <- substr(ids, tree.chars[1], tree.chars[2])
+    core.strs <- substr(ids, core.chars[1], core.chars[2])
     ## Warn if more than one site?
-    if(length(unique.site.strs) > 1)
+    if (length(unique.site.strs) > 1) {
         warning("there appears to be more than one site")
+    }
     unique.trees <- unique(tree.strs)
     unique.trees.as.int <- suppressWarnings(as.integer(unique.trees))
-    if(!any(is.na(unique.trees.as.int))){
+    if (!any(is.na(unique.trees.as.int))) {
         ## 1a. If tree identifiers are already integer, respect them...
         tree.vec <- as.numeric(tree.strs)
         core.vec <- rep(as.numeric(NA), n.cases)

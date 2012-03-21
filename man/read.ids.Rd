@@ -12,11 +12,11 @@ read.ids(rwl, stc = c(3, 2, 3))
   \item{rwl}{ a \code{data.frame} with series as columns and years as
     rows such as that produced by \code{\link{read.rwl}} or
     \code{\link{ca533}} }
-  \item{stc}{ a vector of three integral values summing to eight. These
-    indicate the number of characters to split the site code
-    (\code{\var{stc}[1]}), the tree \acronym{ID}s (\code{\var{stc}[2]}),
-    and the core \acronym{ID}s (\code{\var{stc}[3]}). Defaults to
-    \code{c(3, 2, 3)}. See details for further information. }
+  \item{stc}{ a vector of three integral values. These indicate the
+    number of characters to split the site code (\code{\var{stc}[1]}),
+    the tree \acronym{ID}s (\code{\var{stc}[2]}), and the core
+    \acronym{ID}s (\code{\var{stc}[3]}). Defaults to \code{c(3, 2,
+    3)}. See details for further information. }
 }
 \details{
   Because dendrochronologists often take more than one core per tree, it
@@ -57,7 +57,8 @@ read.ids(rwl, stc = c(3, 2, 3))
   \code{\var{rwl}}.
 }
 \author{ Andy Bunn.  Patched by Mikko Korpela. }
-\seealso{ \code{\link{rwi.stats}}, \code{\link{read.rwl}} }
+\seealso{ \code{\link{autoread.ids}}, \code{\link{rwi.stats}},
+  \code{\link{read.rwl}} }
 \examples{data(ca533)
 read.ids(ca533, stc = c(3, 2, 3))
 }

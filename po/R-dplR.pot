@@ -4,9 +4,9 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.5.3\n"
+"Project-Id-Version: dplR 1.5.4\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-02-29 17:40+0200\n"
+"POT-Creation-Date: 2012-04-26 17:50+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -141,6 +141,9 @@ msgstr ""
 msgid "Intersection of series %d and %d is not contiguous. NA returned."
 msgstr ""
 
+msgid "must be TRUE or FALSE: %s"
+msgstr ""
+
 msgid "characters outside a-z, A-Z, 0-9 present: renaming series"
 msgstr ""
 
@@ -252,16 +255,37 @@ msgstr ""
 msgid "too many values (expected %d, got %d)"
 msgstr ""
 
-msgid "Site-Tree-Core mask is larger than 8"
-msgstr ""
-
 msgid "Site-Tree-Core mask must only contain integral values"
 msgstr ""
 
 msgid "length of Site-Tree-Core mask must be 3"
 msgstr ""
 
-msgid "unable to create tree ids"
+msgid "changed tree-core code \"%s\" to \"%s\""
+msgstr ""
+
+msgid "'rwl' must have non-NA names"
+msgstr ""
+
+msgid "series names must be at least 1 character long"
+msgstr ""
+
+msgid "%d times:"
+msgstr ""
+
+msgid "changed site code \"%s\" to \"%s\""
+msgstr ""
+
+msgid "uncertain tree-core scheme in %d name (\"%s\")"
+msgstr ""
+
+msgid "uncertain tree-core scheme in %d names (\"%s\", \"%s\")"
+msgstr ""
+
+msgid "uncertain tree-core scheme in %d names (\"%s\", ..., \"%s\")"
+msgstr ""
+
+msgid "using %d as size of tree part"
 msgstr ""
 
 msgid "there appears to be more than one site"
@@ -369,18 +393,6 @@ msgstr ""
 msgid "Correlations are all NA. No overlap in series?"
 msgstr ""
 
-msgid "There are zeros in the data. Consider the option 'zero.is.missing'."
-msgstr ""
-
-msgid "'ids' must be a data.frame with columns 'tree' and 'core'"
-msgstr ""
-
-msgid "Series with matching tree/core IDs have been averaged"
-msgstr ""
-
-msgid "at least 2 trees are needed"
-msgstr ""
-
 msgid "minimum 'window.length' is 3"
 msgstr ""
 
@@ -390,7 +402,19 @@ msgstr ""
 msgid "'window.length' is smaller than 'min.corr.overlap'"
 msgstr ""
 
+msgid "There are zeros in the data. Consider the option 'zero.is.missing'."
+msgstr ""
+
+msgid "'ids' must be a data.frame with columns 'tree' and 'core'"
+msgstr ""
+
+msgid "Series with matching tree/core IDs have been averaged"
+msgstr ""
+
 msgid "'window.length' is larger than the number of years in 'rwi'"
+msgstr ""
+
+msgid "at least 2 trees are needed"
 msgstr ""
 
 msgid "too few years with enough trees for correlation calculations"

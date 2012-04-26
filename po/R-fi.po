@@ -4,10 +4,10 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.5.3\n"
+"Project-Id-Version: dplR 1.5.4\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-02-29 17:40+0200\n"
-"PO-Revision-Date: 2012-03-01 09:34+0200\n"
+"POT-Creation-Date: 2012-04-26 17:50+0300\n"
+"PO-Revision-Date: 2012-04-26 18:44+0300\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -20,7 +20,7 @@ msgid "'rwl' must be a data.frame"
 msgstr "’rwl’:n täytyy olla data.frame"
 
 msgid "dimension problem:"
-msgstr "dimensio-ongelma:"
+msgstr "dimensio‐ongelma:"
 
 msgid "'ncol(rw)' != 'nrow(d2pith)'"
 msgstr "’ncol(rw)’ ≠ ’nrow(d2pith)’"
@@ -56,7 +56,7 @@ msgid "Correlation"
 msgstr "Korrelaatio"
 
 msgid "'prefix' must be a character string with less than 4 characters"
-msgstr "’prefix’in täytyy olla alle 4-merkkinen merkkijono"
+msgstr "’prefix’in täytyy olla alle 4‐merkkinen merkkijono"
 
 msgid "'po' must be a data.frame"
 msgstr "’po’:n täytyy olla data.frame"
@@ -105,7 +105,7 @@ msgid "all values are 'NA'"
 msgstr "kaikki arvot ovat ’NA’"
 
 msgid "'NA's are not allowed in the middle of the series"
-msgstr "’NA’-arvoja ei sallita sarjan keskellä"
+msgstr "’NA’‐arvoja ei sallita sarjan keskellä"
 
 msgid "Age (Yrs)"
 msgstr "Ikä (v)"
@@ -145,6 +145,9 @@ msgstr "abskissa- ja ordinaattavektorien täytyy olla samanpituiset"
 
 msgid "Intersection of series %d and %d is not contiguous. NA returned."
 msgstr "Sarjojen %d ja %d leikkaus ei ole katkeamaton. Palautetaan NA."
+
+msgid "must be TRUE or FALSE: %s"
+msgstr "täytyy olla TRUE tai FALSE: %s"
 
 msgid "characters outside a-z, A-Z, 0-9 present: renaming series"
 msgstr ""
@@ -251,7 +254,7 @@ msgstr ""
 "Kaikki sisäänrakennetut näytemäärät ovat yksi...Jätetään pois matriisista"
 
 msgid "a 'DateBegin' and 'DateEnd' entry has to be present for each series"
-msgstr "jokaisella sarjalla täytyy olla ’DateBegin’- ja ’DateEnd’-merkinnät"
+msgstr "jokaisella sarjalla täytyy olla ’DateBegin’‐ ja ’DateEnd’‐merkinnät"
 
 msgid "in series %s:"
 msgstr "sarjassa %s:"
@@ -262,32 +265,53 @@ msgstr "liian vähän arvoja (odotettiin %d, saatiin %d)"
 msgid "too many values (expected %d, got %d)"
 msgstr "liian monta arvoa (odotettiin %d, saatiin %d)"
 
-msgid "Site-Tree-Core mask is larger than 8"
-msgstr "Paikka-Puu-Näyte-maski on suurempi kuin 8"
-
 msgid "Site-Tree-Core mask must only contain integral values"
-msgstr "Paikka-Puu-Näyte-maskissa täytyy olla pelkkiä kokonaislukuja"
+msgstr "Paikka–Puu–Näyte‐maskissa täytyy olla pelkkiä kokonaislukuja"
 
 msgid "length of Site-Tree-Core mask must be 3"
-msgstr "Paikka-Puu-Näyte-maskin pituuden täytyy olla 3"
+msgstr "Paikka–Puu–Näyte‐maskin pituuden täytyy olla 3"
 
-msgid "unable to create tree ids"
-msgstr "ei voida luoda puiden tunnisteita"
+msgid "changed tree-core code \"%s\" to \"%s\""
+msgstr "vaihdettiin puu–näyte‐koodi ”%s” koodiksi ”%s”"
+
+msgid "'rwl' must have non-NA names"
+msgstr "’rwl’:ssä pitää olla ei-NA-nimet"
+
+msgid "series names must be at least 1 character long"
+msgstr "sarjojen nimien täytyy olla vähintään 1 merkin mittaisia"
+
+msgid "%d times:"
+msgstr "%d kertaa:"
+
+msgid "changed site code \"%s\" to \"%s\""
+msgstr "vaihdettiin paikan koodi ”%s” koodiksi ”%s”"
+
+msgid "uncertain tree-core scheme in %d name (\"%s\")"
+msgstr "epävarma puu–näyte‐kaava %d nimessä (”%s”)"
+
+msgid "uncertain tree-core scheme in %d names (\"%s\", \"%s\")"
+msgstr "epävarma puu–näyte‐kaava %d nimessä (”%s”, ”%s”)"
+
+msgid "uncertain tree-core scheme in %d names (\"%s\", ..., \"%s\")"
+msgstr "epävarma puu–näyte‐kaava %d nimessä (”%s”, …, ”%s”)"
+
+msgid "using %d as size of tree part"
+msgstr "puuosan pituutena käytössä %d"
 
 msgid "there appears to be more than one site"
-msgstr "näyttää olevan useampi kuin yksi "
+msgstr "näyttää olevan useampi kuin yksi kasvupaikka"
 
 msgid "Detected a DPL compact format file."
-msgstr "Tunnistettiin DPL compact -tyyppinen tiedosto."
+msgstr "Tunnistettiin DPL compact ‐tyyppinen tiedosto."
 
 msgid "Detected a Heidelberg format file."
-msgstr "Tunnistettiin Heidelberg-tyyppinen tiedosto."
+msgstr "Tunnistettiin Heidelberg‐tyyppinen tiedosto."
 
 msgid "Detected a TRiDaS file."
-msgstr "Tunnistettiin TRiDaS-tiedosto."
+msgstr "Tunnistettiin TRiDaS‐tiedosto."
 
 msgid "Assuming a Tucson format file."
-msgstr "Oletetaan Tucson-tyyppinen tiedosto."
+msgstr "Oletetaan Tucson‐tyyppinen tiedosto."
 
 msgid "in project %d, object %s, element %d, sample %d, radius %d, series %d:"
 msgstr ""
@@ -343,7 +367,7 @@ msgid "'$measurements' is a data.frame"
 msgstr "’$measurements’ on data.frame"
 
 msgid "there are %d data.frames in the '$measurements' list"
-msgstr "’$measurements’-listassa on %d data.framea"
+msgstr "’$measurements’‐listassa on %d data.framea"
 
 msgid "in data.frame %d:"
 msgstr "data.framessa %d:"
@@ -381,6 +405,15 @@ msgstr "’ids’:llä täytyy olla numeric-tyyppiset sarakkeet"
 msgid "Correlations are all NA. No overlap in series?"
 msgstr "Kaikki korrelaatiot ovat NA. Sarjoissa ei päällekkäisyyttä?"
 
+msgid "minimum 'window.length' is 3"
+msgstr "pienin mahdollinen ’window.length’ on 3"
+
+msgid "'window.overlap' is too large, max value is 'window.length'-1 (%d)"
+msgstr "’window.overlap’ on liian suuri, maksimiarvo on ’window.length’−1 (%d)"
+
+msgid "'window.length' is smaller than 'min.corr.overlap'"
+msgstr "’window.length’ on pienempi kuin ’min.corr.overlap’"
+
 msgid "There are zeros in the data. Consider the option 'zero.is.missing'."
 msgstr "Datassa on nollia. Harkitse asetusta ’zero.is.missing’."
 
@@ -388,23 +421,13 @@ msgid "'ids' must be a data.frame with columns 'tree' and 'core'"
 msgstr "’ids’:n täytyy olla data.frame, jossa on sarakkeet ’tree’ ja ’core’"
 
 msgid "Series with matching tree/core IDs have been averaged"
-msgstr ""
-"Samoilla ’tree’/’core’-tunnisteilla varustetut sarjat on keskiarvoistettu"
-
-msgid "at least 2 trees are needed"
-msgstr "ainakin 2 puuta tarvitaan"
-
-msgid "minimum 'window.length' is 3"
-msgstr "pienin mahdollinen ’window.length’ on 3"
-
-msgid "'window.overlap' is too large, max value is 'window.length'-1 (%d)"
-msgstr "’window.overlap’ on liian suuri, maksimiarvo on ’window.length’-1 (%d)"
-
-msgid "'window.length' is smaller than 'min.corr.overlap'"
-msgstr "’window.length’ on pienempi kuin ’min.corr.overlap’"
+msgstr "Samoilla ’tree’/’core’-tunnisteilla varustetut sarjat on keskiarvoistettu"
 
 msgid "'window.length' is larger than the number of years in 'rwi'"
 msgstr "’window.length’ on suurempi kuin vuosien määrä ’rwi’:ssä"
+
+msgid "at least 2 trees are needed"
+msgstr "ainakin 2 puuta tarvitaan"
 
 msgid "too few years with enough trees for correlation calculations"
 msgstr ""
@@ -428,9 +451,7 @@ msgstr "Voisit tarkastaa ovatko ’key’-vuodet alueen sisällä."
 msgid ""
 "Exact p-value (< %f) could not be estimated for superposed epoch at position "
 "%d."
-msgstr ""
-"Tarkkaa p-arvoa (< %f) ei voitu estimoida päällekkäiselle aikakaudelle "
-"paikassa %d."
+msgstr "Tarkkaa p-arvoa (< %f) ei voitu estimoida päällekkäiselle aikakaudelle paikassa %d."
 
 msgid "You could try a higher value for 'resample'."
 msgstr "Voisit kokeilla korkeampaa arvoa muuttujalle ’resample’."
@@ -523,8 +544,7 @@ msgid "header must be a list"
 msgstr "’header’in täytyy olla list-tyyppinen muuttuja"
 
 msgid "'header' must be a list with the following names:"
-msgstr ""
-"’header’in täytyy olla list-tyyppinen muuttuja jossa on seuraavat nimet:"
+msgstr "’header’in täytyy olla list-tyyppinen muuttuja jossa on seuraavat nimet:"
 
 msgid ","
 msgstr ","
@@ -557,19 +577,14 @@ msgid "'%s$%s' must be of type character - inserting \"%s\""
 msgstr "’%s$%s’:n täytyy olla character-tyyppinen – asetetaan arvo ”%s”"
 
 msgid "2-col 'ids' needs \"tree\" and \"core\" columns"
-msgstr ""
-"2-sarakkeisessa ’ids’-muuttujassa täytyy olla ”tree”- ja ”core”-sarakkeet"
+msgstr "2-sarakkeisessa ’ids’-muuttujassa täytyy olla ”tree”- ja ”core”-sarakkeet"
 
 msgid "3-col 'ids' needs \"tree\", \"core\", and \"radius\" columns"
-msgstr ""
-"3-sarakkeisessa ’ids’-muuttujassa täytyy olla ”tree”-, ”core”- ja ”radius”-"
-"sarakkeet"
+msgstr "3-sarakkeisessa ’ids’-muuttujassa täytyy olla ”tree”-, ”core”- ja ”radius”-sarakkeet"
 
 msgid ""
 "4-col 'ids' needs \"tree\", \"core\", \"radius\", and \"measurement\" columns"
-msgstr ""
-"4-sarakkeisessa ’ids’-muuttujassa täytyy olla ”tree”-, ”core”-, ”radius”- ja "
-"”measurement”-sarakkeet"
+msgstr "4-sarakkeisessa ’ids’-muuttujassa täytyy olla ”tree”-, ”core”-, ”radius”- ja ”measurement”-sarakkeet"
 
 msgid "argument 'ids' is in wrong format (2, 3, or 4 columns required)"
 msgstr "argumentti ’ids’ on vääränmuotoinen (vaaditaan 2, 3 tai 4 saraketta)"

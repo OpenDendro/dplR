@@ -1,30 +1,15 @@
-### Create a list of R expressions. format.compact[[i]], when evaluated
-### (later), returns a string of n.fields[i] concatenated ring widths.
-create.format <- function(n.fields, field.width){
-    format.compact <- list()
-    for (k in seq_along(n.fields)){
-        i <- n.fields[k]
-        format.str <-
-            paste("sprintf(\"",
-                  paste(rep(paste("%", field.width, "s", sep=""), i),
-                        collapse=""),
-                  "\"",
-                  paste(",line.rwl[", seq_len(i), "]", sep="", collapse=""),
-                  ")", sep="")
-        format.compact[[k]] <- parse(text = format.str)
-    }
-    format.compact
-}
-
 write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
                           mapping.fname="", mapping.append=FALSE, ...){
     line.term <- "\x0D\x0A" # CR+LF, ASCII carriage return and line feed
-    if(!is.data.frame(rwl.df))
+    if (!is.data.frame(rwl.df)) {
         stop("'rwl.df' must be a data.frame")
-    if(!(prec == 0.01 || prec == 0.001))
+    }
+    if (!(prec == 0.01 || prec == 0.001)) {
         stop("'prec' must equal 0.01 or 0.001")
-    if(append && !file.exists(fname))
+    }
+    if (append && !file.exists(fname)) {
         stop(gettextf("file %s does not exist, cannot append", fname))
+    }
 
     ## Loop through series and write each one
     nseries <- ncol(rwl.df)
@@ -50,14 +35,15 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
     yrs.all <- yrs.all[yrs.order]
     rwl.df2 <- rwl.df[yrs.order, , drop=FALSE]
 
-    if(append)
+    if (append) {
         rwl.out <- file(fname, "a")
-    else
+    } else {
         rwl.out <- file(fname, "w")
+    }
     on.exit(close(rwl.out))
     missing.str <- 0
 
-    for(l in seq_len(nseries)) {
+    for (l in seq_len(nseries)) {
         series <- rwl.df2[[l]]
         idx <- !is.na(series)
         yrs <- yrs.all[idx]
@@ -87,37 +73,31 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
         n.fields <- floor(line.width / field.width)
         n.lines <- floor(nyrs / n.fields)
         remainder <- nyrs - n.lines * n.fields
-        if(remainder > 0)
-            format.compact <- create.format(c(n.fields, remainder), field.width)
-        else
-            format.compact <- create.format(n.fields, field.width)
 
         ## Write header
         head1 <- paste(nyrs, "=N", " ", min.year, "=I", " ", sep="")
         head2 <- paste(ifelse(prec == 0.01, -2, -3), "(", n.fields, "F",
                        field.width, ".0)~", sep="")
         n.space <- line.width - nchar(head1) - nchar(head2) - nchar(rwl.df.name)
-        if(n.space < 1) # since names are cut to length, this should not happen
+        if (n.space < 1) {# as names are cut to length, this should not happen
             stop(gettextf("series %s: header line would be too long",
                           rwl.df.name))
+        }
         cat(head1, rwl.df.name, rep(" ", n.space), head2, line.term,
             file=rwl.out, sep="")
 
         ## Write full lines
-        full.format <- format.compact[[1]]
-        for(i in seq_len(n.lines)){
+        for (i in seq_len(n.lines)) {
             end.idx <- i * n.fields
-            ## The following eval uses line.rwl
-            line.rwl <- series[(end.idx - n.fields + 1) : end.idx]
-            line.str <- eval(full.format)
+            line.str <- sprintf("%*s", field.width,
+                                series[(end.idx - n.fields + 1) : end.idx])
             cat(line.str, line.term, file=rwl.out, sep="")
         }
         ## Write possibly remaining shorter line
-        if(remainder > 0){
+        if (remainder > 0) {
             end.idx <- length(series)
-            ## The following eval uses line.rwl
-            line.rwl <- series[(end.idx - remainder + 1) : end.idx]
-            line.str <- eval(format.compact[[2]])
+            line.str <- sprintf("%*s", field.width,
+                                series[(end.idx - remainder + 1) : end.idx])
             cat(line.str, line.term, file=rwl.out, sep="")
         }
     }

@@ -1,3 +1,20 @@
+### Checks that all arguments are TRUE or FALSE
+check.flags <- function(...) {
+    flag.bad <- vapply(list(...),
+                       function(x) { !(identical(x, TRUE) ||
+                                       identical(x, FALSE)) },
+                       TRUE,
+                       USE.NAMES = FALSE)
+    if (any(flag.bad)) {
+        offending <- vapply(match.call(expand.dots=TRUE)[c(FALSE, flag.bad)],
+                            deparse, "")
+        stop(gettextf("must be TRUE or FALSE: %s",
+                      paste(sQuote(offending), collapse=", "),
+                      domain="R-dplR"),
+             domain = NA)
+    }
+}
+
 ### Function to check if x is equivalent to its integer
 ### representation. Note: Returns FALSE for values that fall outside
 ### the range of the integer type. The result has the same shape as x;

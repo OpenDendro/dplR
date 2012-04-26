@@ -4,9 +4,10 @@
 \alias{rwi.stats.legacy}
 \title{ (Running Window) Statistics on Detrended Ring-Width Series }
 \description{
-  This function calculates descriptive statistics on a \code{data.frame}
-  of (usually) ring-width indices. The statistics are optionally
-  computed in a running window with adjustable length and overlap.
+  These functions calculate descriptive statistics on a
+  \code{data.frame} of (usually) ring-width indices. The statistics are
+  optionally computed in a running window with adjustable length and
+  overlap.
 }
 \usage{
 rwi.stats.running(rwi, ids = NULL, period = c("max", "common"),

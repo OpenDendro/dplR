@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.5.4\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-03-01 09:48+0200\n"
+"POT-Creation-Date: 2012-04-26 19:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -141,6 +141,9 @@ msgstr ""
 msgid "Intersection of series %d and %d is not contiguous. NA returned."
 msgstr ""
 
+msgid "must be TRUE or FALSE: %s"
+msgstr ""
+
 msgid "characters outside a-z, A-Z, 0-9 present: renaming series"
 msgstr ""
 
@@ -252,16 +255,37 @@ msgstr ""
 msgid "too many values (expected %d, got %d)"
 msgstr ""
 
-msgid "Site-Tree-Core mask is larger than 8"
-msgstr ""
-
 msgid "Site-Tree-Core mask must only contain integral values"
 msgstr ""
 
 msgid "length of Site-Tree-Core mask must be 3"
 msgstr ""
 
-msgid "unable to create tree ids"
+msgid "changed tree-core code \"%s\" to \"%s\""
+msgstr ""
+
+msgid "'rwl' must have non-NA names"
+msgstr ""
+
+msgid "series names must be at least 1 character long"
+msgstr ""
+
+msgid "%d times:"
+msgstr ""
+
+msgid "changed site code \"%s\" to \"%s\""
+msgstr ""
+
+msgid "uncertain tree-core scheme in %d name (\"%s\")"
+msgstr ""
+
+msgid "uncertain tree-core scheme in %d names (\"%s\", \"%s\")"
+msgstr ""
+
+msgid "uncertain tree-core scheme in %d names (\"%s\", ..., \"%s\")"
+msgstr ""
+
+msgid "using %d as size of tree part"
 msgstr ""
 
 msgid "there appears to be more than one site"

@@ -1,21 +1,3 @@
-### Create a list of R expressions. format.compact[[i]], when evaluated
-### (later), returns a string of n.fields[i] concatenated ring widths.
-create.format <- function(n.fields, field.width) {
-    format.compact <- list()
-    for (k in seq_along(n.fields)) {
-        i <- n.fields[k]
-        format.str <-
-            paste0("sprintf(\"",
-                   paste(rep(paste0("%", field.width, "s"), i),
-                         collapse=""),
-                   "\"",
-                   paste0(",line.rwl[", seq_len(i), "]", collapse=""),
-                   ")")
-        format.compact[[k]] <- parse(text = format.str)
-    }
-    format.compact
-}
-
 write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
                           mapping.fname="", mapping.append=FALSE, ...) {
     line.term <- "\x0D\x0A" # CR+LF, ASCII carriage return and line feed
@@ -91,11 +73,6 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
         n.fields <- floor(line.width / field.width)
         n.lines <- floor(nyrs / n.fields)
         remainder <- nyrs - n.lines * n.fields
-        if (remainder > 0) {
-            format.compact <- create.format(c(n.fields, remainder), field.width)
-        } else {
-            format.compact <- create.format(n.fields, field.width)
-        }
 
         ## Write header
         head1 <- paste0(nyrs, "=N", " ", min.year, "=I", " ")
@@ -111,20 +88,17 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
             file=rwl.out, sep="")
 
         ## Write full lines
-        full.format <- format.compact[[1]]
         for (i in seq_len(n.lines)) {
             end.idx <- i * n.fields
-            ## The following eval uses line.rwl
-            line.rwl <- series[(end.idx - n.fields + 1) : end.idx]
-            line.str <- eval(full.format)
+            line.str <- sprintf("%*s", field.width,
+                                series[(end.idx - n.fields + 1) : end.idx])
             cat(line.str, line.term, file=rwl.out, sep="")
         }
         ## Write possibly remaining shorter line
         if (remainder > 0) {
             end.idx <- length(series)
-            ## The following eval uses line.rwl
-            line.rwl <- series[(end.idx - remainder + 1) : end.idx]
-            line.str <- eval(format.compact[[2]])
+            line.str <- sprintf("%*s", field.width,
+                                series[(end.idx - remainder + 1) : end.idx])
             cat(line.str, line.term, file=rwl.out, sep="")
         }
     }

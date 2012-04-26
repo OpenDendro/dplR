@@ -1,24 +1,3 @@
-### Internal variable.
-### Create a list of R expressions. format.tucson[[i]], when evaluated
-### (later), returns a string of i concatenated ring widths (6
-### characters each).  By having the code here, some time is saved if
-### write.tucson.R is called multiple times. Downside: this slows down
-### the loading of the library a tiny bit. The list of expressions
-### could easily be written open. While these for loops are slower,
-### they are arguably a cleaner solution, because one sees the
-### systematic structure of the formatting expressions.
-format.tucson <- (function() {
-    ft <- list()
-    for (i in seq_len(10)) {
-        format.str <-
-            paste0("sprintf(\"", paste(rep("%6.0f", i), collapse=""), "\"",
-                   paste0(",dec.rwl[", seq_len(i), "]", collapse=""),
-                   ")")
-        ft[[i]] <- parse(text = format.str)
-    }
-    ft
-})()
-
 ### Exportable function
 `write.tucson` <-
     function(rwl.df, fname, header=NULL, append=FALSE, prec=0.01,
@@ -200,7 +179,9 @@ format.tucson <- (function() {
         rwl.df.width <- nchar(rwl.df.name)
         ## Pad to name.width
         rwl.df.name <- ifelse(rwl.df.width < name.width,
-        format(rwl.df.name, width=name.width, justify="right"), rwl.df.name)
+                              format(rwl.df.name, width=name.width,
+                                     justify="right"),
+                              rwl.df.name)
 
         for (i in seq_len(n.decades)) {
             ## up to 4 numbers and a minus sign from long series
@@ -254,10 +235,10 @@ format.tucson <- (function() {
             }
 
             ## Pad to nchar 6 (no leading zero)
-            dec.rwl <- eval(format.tucson[[length(dec.rwl)]])
+            dec.rwl <- sprintf("%6.0f", dec.rwl)
 
-            cat(paste0(rwl.df.name, opt.space, dec.year1, dec.rwl),
-                line.term, file = rwl.out, sep="")
+            cat(rwl.df.name, opt.space, dec.year1, dec.rwl, line.term,
+                file = rwl.out, sep="")
         }
     }
 }

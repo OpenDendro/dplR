@@ -1,17 +1,42 @@
 * CHANGES IN dplR VERSION 1.5.4
 
-Various .R files
-----------------
-
-- use paste0(...) instead of paste(..., sep="")
-- prettier, more consistent formatting of source code
-
 File: DESCRIPTION
 -----------------
 
 - Depends: R (>= 2.15.0) to accommodate use of .filled.contour() in
   wavelet.plot(). Also enables the use of paste0().
 
+File: NAMESPACE
+---------------
+
+- Imports from package stringr (also in DESCRIPTION)
+- Exports new function autoread.ids()
+
+Various .R files
+----------------
+
+- use paste0(...) instead of paste(..., sep="")
+- prettier, more consistent formatting of source code
+
+File: helpers.R
+---------------
+
+- New internal function check.flags() requires that its arguments are TRUE
+  or FALSE
+
+File: read.ids.R
+----------------
+
+- Optional automatic detection of the site-tree-core scheme (stc="auto")
+- Optional fixing of typos in series names
+- Optional (adaptive) case insensitivity
+- New wrapper function autoread.ids() calls read.ids with stc="auto" and
+  an alternative set of parameter values
+
+File: read.tucson.R
+-------------------
+
+- More robust detection of header
 
 File: wavelet.plot.R
 --------------------
@@ -26,6 +51,11 @@ File: wavelet.plot.R
   making R >= 2.15.0 required.
 - enabled translation of default value of 'key.lab'
 - checks 'wave.list$x' and 'wave.list$period'
+
+Files: write.compact.R, write.tucson.R
+--------------------------------------
+
+- Useless uses of eval() removed
 
 2012-03-05 Andy Bunn
 * CHANGES IN dplR VERSION 1.5.3

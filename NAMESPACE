@@ -15,12 +15,14 @@ importFrom(grid, gpar, grid.lines, grid.newpage, grid.polygon,
 importFrom(lattice, panel.abline, panel.dotplot, panel.segments,
            trellis.par.set, xyplot)
 
+importFrom(stringr, str_pad)
+
 importFrom(utils, head, installed.packages, read.fwf, tail)
 
 importFrom(XML, xmlEventParse)
 
-export(bai.in, bai.out, ccf.series.rwl, chron, cms, combine.rwl,
-       corr.rwl.seg, corr.series.seg, crn.plot, detrend,
+export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, cms,
+       combine.rwl, corr.rwl.seg, corr.series.seg, crn.plot, detrend,
        detrend.series, ffcsaps, gini.coef, glk, hanning, i.detrend,
        i.detrend.series, morlet, po.to.wc, powt, rcs, read.compact,
        read.crn, read.fh, read.ids, read.rwl, read.tridas,

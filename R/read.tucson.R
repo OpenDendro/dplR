@@ -14,14 +14,34 @@
         if (nchar(hdr1) < 12) {
             stop("first line in rwl file ends before col 12")
         }
+        is.head <- FALSE
         yrcheck <- suppressWarnings(as.numeric(substr(hdr1, 9, 12)))
         if (is.null(yrcheck) || length(yrcheck) != 1 || is.na(yrcheck) ||
-            yrcheck < -1e04 || yrcheck > 1e04) {
+            yrcheck < -1e04 || yrcheck > 1e04 || round(yrcheck) != yrcheck) {
+            is.head <- TRUE
+        }
+        if (!is.head) {
+            datacheck <- substring(hdr1,
+                                   seq(from=13, by=6, length=10),
+                                   seq(from=18, by=6, length=10))
+            datacheck <- sub("^[[:blank:]]+", "", datacheck)
+            idx.good <- which(nchar(datacheck) > 0)
+            n.good <- length(idx.good)
+            if (n.good == 0) {
+                is.head <- TRUE
+            } else {
+                datacheck <- datacheck[seq_len(idx.good[n.good])]
+                datacheck <- suppressWarnings(as.numeric(datacheck))
+                if (is.null(datacheck) || any(is.na(datacheck)) ||
+                    any(round(datacheck) != datacheck)) {
+                    is.head <- TRUE
+                }
+            }
+        }
+        if (is.head) {
             cat(gettext("There appears to be a header in the rwl file\n",
                         domain="R-dplR"))
-            is.head <- TRUE
         } else {
-            is.head <- FALSE # No header lines
             cat(gettext("There does not appear to be a header in the rwl file\n",
                         domain="R-dplR"))
         }

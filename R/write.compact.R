@@ -1,5 +1,5 @@
 write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
-                          mapping.fname="", mapping.append=FALSE, ...){
+                          mapping.fname="", mapping.append=FALSE, ...) {
     line.term <- "\x0D\x0A" # CR+LF, ASCII carriage return and line feed
     if (!is.data.frame(rwl.df)) {
         stop("'rwl.df' must be a data.frame")
@@ -58,7 +58,7 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
         ## Find missing data.
         missing.years <- setdiff(min.year:max.year, yrs)
         ## Mark missing data.
-        if (length(missing.years) > 0){
+        if (length(missing.years) > 0) {
             yrs <- c(yrs, missing.years)
             series <- c(series, rep(missing.str, times=length(missing.years)))
             series.order <- sort.list(yrs)
@@ -75,11 +75,12 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
         remainder <- nyrs - n.lines * n.fields
 
         ## Write header
-        head1 <- paste(nyrs, "=N", " ", min.year, "=I", " ", sep="")
-        head2 <- paste(ifelse(prec == 0.01, -2, -3), "(", n.fields, "F",
-                       field.width, ".0)~", sep="")
+        head1 <- paste0(nyrs, "=N", " ", min.year, "=I", " ")
+        head2 <- paste0(ifelse(prec == 0.01, -2, -3), "(", n.fields, "F",
+                        field.width, ".0)~")
         n.space <- line.width - nchar(head1) - nchar(head2) - nchar(rwl.df.name)
-        if (n.space < 1) {# as names are cut to length, this should not happen
+        if (n.space < 1) {
+            ## since names are cut to length, this should not happen
             stop(gettextf("series %s: header line would be too long",
                           rwl.df.name))
         }

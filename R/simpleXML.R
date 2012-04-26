@@ -1,19 +1,19 @@
 ### Written by Mikko Korpela.
 simpleXML <- function(fname, root="tridas", xml.ns=NULL,
-                      line.term="\x0D\x0A", indent.step=2){
+                      line.term="\x0D\x0A", indent.step=2) {
 ### \x0D\x0A is CR+LF, ASCII carriage return and line feed.
 ### Another possible choice: \x0A, i.e. just the line feed.
 
     ## Takes _one_ string x, converts it to UTF-8 (if not UTF-8 already),
     ## and removes characters not allowed in XML.
-    to.xml.utf8 <- function(x){
+    to.xml.utf8 <- function(x) {
         enc <- Encoding(x) # 3 possible values: "latin1", "UTF-8", or "unknown"
         ## If x not already UTF-8, we convert...
-        if(enc == "unknown"){
+        if (enc == "unknown") {
             y <- iconv(x, from="", to="UTF-8")  # from encoding of the locale
-        } else if(enc == "latin1"){
+        } else if (enc == "latin1") {
             y <- iconv(x, from=enc, to="UTF-8") # from latin1
-        } else{
+        } else {
             y <- x
         }
         y.int <- utf8ToInt(y)
@@ -30,8 +30,8 @@ simpleXML <- function(fname, root="tridas", xml.ns=NULL,
               collapse = "")
     }
 
-    close.tag <- function(){
-        if(stack.pointer > 0){
+    close.tag <- function() {
+        if (stack.pointer > 0) {
             indent <<- indent - indent.step
             cat(rep(" ", indent),
                 "</", tag.stack[stack.pointer], ">", line.term,
@@ -41,7 +41,7 @@ simpleXML <- function(fname, root="tridas", xml.ns=NULL,
     }
 
     ## Escapes characters not allowed in the value of an attribute
-    escape.attribute <- function(x){
+    escape.attribute <- function(x) {
         gsub("\t", "&\t;",
              gsub("\n", "&\n;",
                   gsub("\r", "&\r;",
@@ -57,7 +57,7 @@ simpleXML <- function(fname, root="tridas", xml.ns=NULL,
     }
 
     ## Escapes characters not allowed in content
-    escape.content <- function(x){
+    escape.content <- function(x) {
         gsub("\r", "&\r;",
              gsub(">", "&gt;",
                   gsub("<", "&lt;",
@@ -74,56 +74,60 @@ simpleXML <- function(fname, root="tridas", xml.ns=NULL,
     stack.pointer <- 1
     cat('<?xml version="1.0" encoding="UTF-8"?>', line.term,
         '<', root, sep="", file=f)
-    if(!is.null(xml.ns))
+    if (!is.null(xml.ns)) {
         cat(' xmlns="', xml.ns, '"', sep="", file=f)
+    }
     cat('>', line.term, sep="", file=f)
     indent <- indent.step
 
     list(# This list of functions (function closures) is returned
-         addTag = function(tag, content=NULL, attrs=character(0), close=TRUE){
+         addTag = function(tag, content=NULL, attrs=character(0), close=TRUE) {
              cat(rep(" ", indent), "<", tag, sep="", file=f)
-             for(attr in names(attrs))
+             for (attr in names(attrs)) {
                  cat(" ", attr, '="',
                      escape.attribute(to.xml.utf8(as.character(attrs[attr]))),
                      '"', sep="", file=f)
-             if(close){
-                 if(length(content) == 0){
+             }
+             if (close) {
+                 if (length(content) == 0) {
                      cat("/>", line.term, sep="", file=f)
-                 } else{
+                 } else {
                      cat(">",
                          escape.content(to.xml.utf8(paste(content,
                                                           collapse=" "))),
                          "</", tag, ">", line.term,
                          sep="", file=f)
                  }
-             } else{
+             } else {
                  cat(">", line.term, sep="", file=f)
                  indent <<- indent + indent.step
                  tag.stack[stack.pointer <<- stack.pointer+1] <<- tag
              }
          },
          addTag.noCheck = function(tag, content=NULL, attrs=character(0),
-         close=TRUE){
+         close=TRUE) {
              cat(rep(" ", indent), "<", tag, sep="", file=f)
-             for(attr in names(attrs))
+             for (attr in names(attrs)) {
                  cat(" ", attr, '="', attrs[attr], '"', sep="", file=f)
-             if(close){
-                 if(length(content) == 0){
+             }
+             if (close) {
+                 if (length(content) == 0) {
                      cat("/>", line.term, sep="", file=f)
-                 } else{
+                 } else {
                      cat(">", content, "</", tag, ">", line.term,
                          sep="", file=f)
                  }
-             } else{
+             } else {
                  cat(">", line.term, sep="", file=f)
                  indent <<- indent + indent.step
                  tag.stack[stack.pointer <<- stack.pointer+1] <<- tag
              }
          },
          closeTag = close.tag,
-         close = function(){
-             while(stack.pointer > 0)
+         close = function() {
+             while (stack.pointer > 0) {
                  close.tag()
+             }
              close(f)
          }
          )

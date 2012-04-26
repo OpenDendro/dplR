@@ -121,11 +121,11 @@
        prec.rproc,
        NAOK=TRUE, DUP=FALSE)
     seq.series <- seq_len(nseries)
-    cat(paste(seq.series, "\t",
-              series.ids, "\t",
-              series.min, "\t",
-              series.max, "\t",
-              1 / prec.rproc, "\n", sep=""), sep="")
+    cat(paste0(seq.series, "\t",
+               series.ids, "\t",
+               series.min, "\t",
+               series.max, "\t",
+               1 / prec.rproc, "\n"), sep="")
     rw.mat <- matrix(rw.vec, ncol=nseries, nrow=span)
     rownames(rw.mat) <- min.year:max.year
 

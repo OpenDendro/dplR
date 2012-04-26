@@ -12,7 +12,7 @@ wavelet.plot(wave.list,
              add.coi = TRUE, add.sig = TRUE, x.lab = gettext("Time"),
              period.lab = gettext("Period"), crn.lab = gettext("RWI"),
              key.cols = rev(rainbow(length(wavelet.levels)-1)),
-             key.lab = expression(paste("Power"^2)),
+             key.lab = parse(text=paste0("\"", gettext("Power"), "\"^2")),
              add.spline = FALSE, f = 0.5, nyrs = NULL,
              crn.col = "black", crn.lwd = 1,
              crn.ylim = range(wave.list$y)*1.1, side.by.side = FALSE)

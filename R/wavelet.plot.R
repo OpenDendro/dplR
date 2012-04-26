@@ -1,10 +1,10 @@
 wavelet.plot <-
     function(wave.list,
-             wavelet.levels = quantile(wave.list$Power,probs=seq(from=0, to=1, by=0.1)),
+             wavelet.levels = quantile(wave.list$Power, probs=seq(from=0, to=1, by=0.1)),
              add.coi = TRUE, add.sig = TRUE, x.lab = gettext("Time"),
              period.lab = gettext("Period"), crn.lab = gettext("RWI"),
              key.cols = rev(rainbow(length(wavelet.levels)-1)),
-             key.lab = expression(paste("Power"^2)),
+             key.lab = parse(text = paste0("\"", gettext("Power"), "\"^2")),
              add.spline = FALSE, f = 0.5, nyrs = NULL,
              crn.col = "black", crn.lwd = 1,
              crn.ylim = range(wave.list$y)*1.1, side.by.side = FALSE)
@@ -20,6 +20,13 @@ wavelet.plot <-
     coi[coi == 0] <- 1e-12
     Power <- wave.list$Power
     siglvl <- wave.list$siglvl
+
+    if (any(diff(x) <= 0) || any(diff(period) <= 0)) {
+        stop("'wave.list$x' and 'wave.list$period' must be strictly ascending")
+    }
+    if (period[1] <= 0) {
+        stop("'wave.list$period' must be positive")
+    }
 
     ## Expand signif --> (length(wave.list$Scale))x(N) array
     Signif <- t(matrix(Signif, dim(wave)[2], dim(wave)[1]))
@@ -57,7 +64,7 @@ wavelet.plot <-
     ##Signif <-Signif[,ncol(Signif):1]
     ##ytick <- rev(ytick)
 
-    if(side.by.side) {
+    if (side.by.side) {
         ## plot set up
         layout(matrix(c(3, 2, 1), nrow=1, byrow=TRUE),
                widths=c(1, 1, 0.2))
@@ -77,31 +84,26 @@ wavelet.plot <-
         plot.new()
 
         plot.window(xlim, ylim, "", xaxs=xaxs, yaxs=yaxs, asp=asp, las=las)
-        if (getRversion() < "2.15.0") {
-            .Internal(filledcontour(as.double(x),
-                                    as.double(period2),
-                                    z,
-                                    as.double(wavelet.levels),
-                                    col = key.cols))
-        } else {
-            .filled.contour(as.double(x),
-                            as.double(period2),
-                            z,
-                            as.double(wavelet.levels),
-                            key.cols)
-        }
+        # note replacement of .Internal(filledcontour(as.double(x),...)
+        # with .filled.contour() as of R-2.15.0
+        .filled.contour(as.double(x),
+                        as.double(period2),
+                        z,
+                        as.double(wavelet.levels),
+                        key.cols)
 
-        if(add.sig) {
+        if (add.sig) {
             contour(x, period2, Signif, levels=1, labels=siglvl,
                     drawlabels = FALSE, axes = FALSE,
                     frame.plot = FALSE, add = TRUE,
                     lwd = 2, col="black")
         }
-        if(add.coi) {
+        if (add.coi) {
             polygon(yr.vec.xx, coi2.yy, density=c(10, 20),
                     angle=c(-45, 45), col="black")
         }
-        axis(1);axis(3)
+        axis(1)
+        axis(3)
         axis(2, at = ytick, labels = ytickv)
         axis(4, at = ytick, labels = ytickv)
         title(xlab = x.lab, ylab = period.lab)
@@ -113,19 +115,22 @@ wavelet.plot <-
         plot(x, y, type = "l", xlim, xaxs = xaxs, yaxs = yaxs,
              asp = asp, xlab = "", ylab = "", axes = FALSE, col = crn.col,
              lwd = crn.lwd, ylim = crn.ylim)
-        if(add.spline){
+        if (add.spline) {
             spl <- y
             tmp <- na.omit(spl)
-            if(is.null(nyrs))
+            if (is.null(nyrs)) {
                 nyrs2 <- length(tmp) * 0.33
-            else
+            } else {
                 nyrs2 <- nyrs
+            }
             tmp <- ffcsaps(y = tmp, x = seq_along(tmp), nyrs = nyrs2, f = f)
             spl[!is.na(spl)] <- tmp
             lines(x, spl, col = "red", lwd = 2)
         }
-        axis(1);axis(3)
-        axis(2);axis(4)
+        axis(1)
+        axis(3)
+        axis(2)
+        axis(4)
         title(xlab = x.lab, ylab = crn.lab)
         box()
     }
@@ -148,27 +153,21 @@ wavelet.plot <-
         plot.new()
 
         plot.window(xlim, ylim, "", xaxs=xaxs, yaxs=yaxs, asp=asp, las=las)
-        if (getRversion() < "2.15.0") {
-            .Internal(filledcontour(as.double(x),
-                                    as.double(period2),
-                                    z,
-                                    as.double(wavelet.levels),
-                                    col = key.cols))
-        } else {
-            .filled.contour(as.double(x),
-                            as.double(period2),
-                            z,
-                            as.double(wavelet.levels),
-                            key.cols)
-        }
+        # note replacement of .Internal(filledcontour(as.double(x),...)
+        # with .filled.contour() as of R-2.15.0
+        .filled.contour(as.double(x),
+                        as.double(period2),
+                        z,
+                        as.double(wavelet.levels),
+                        key.cols)
 
-        if(add.sig) {
+        if (add.sig) {
             contour(x, period2, Signif, levels=1, labels=siglvl,
                     drawlabels = FALSE, axes = FALSE,
                     frame.plot = FALSE, add = TRUE,
                     lwd = 2, col="black")
         }
-        if(add.coi) {
+        if (add.coi) {
             polygon(yr.vec.xx, coi2.yy, density=c(10, 20),
                     angle=c(-45, 45), col="black")
         }
@@ -185,13 +184,14 @@ wavelet.plot <-
         plot(x, y, type = "l", xlim, xaxs = xaxs, yaxs = yaxs,
              asp = asp, xlab = "", ylab = "", axes = FALSE, col = crn.col,
              lwd = crn.lwd, ylim = crn.ylim)
-        if(add.spline){
+        if (add.spline) {
             spl <- y
             tmp <- na.omit(spl)
-            if(is.null(nyrs))
+            if (is.null(nyrs)) {
                 nyrs2 <- length(tmp) * 0.33
-            else
+            } else {
                 nyrs2 <- nyrs
+            }
             tmp <- ffcsaps(y = tmp, x = seq_along(tmp), nyrs = nyrs2, f = f)
             spl[!is.na(spl)] <- tmp
             lines(x, spl, col = "red", lwd = 2)

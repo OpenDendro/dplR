@@ -16,8 +16,9 @@ read.fh <- function(fname) {
     ## get end years from meta data
     end.years.pos <- grep("DateEnd=",  inp)
     end.years <- as.numeric(gsub("DateEnd=(.*)", "\\1", inp[end.years.pos]))
-    if (length(start.years) != n || length(end.years) != n)
+    if (length(start.years) != n || length(end.years) != n) {
         stop("a 'DateBegin' and 'DateEnd' entry has to be present for each series")
+    }
     ## calculate time span for data.frame
     min.year <- min(start.years)
     r.off <- min.year - 1
@@ -27,8 +28,9 @@ read.fh <- function(fname) {
     colnames(dendro.matrix) <- keycodes
     rownames(dendro.matrix) <- span
     ## get rid of comments (if any)
-    strip.comment <- function(x)
+    strip.comment <- function(x) {
         strsplit(x, ";")[[1]][1]
+    }
     for (i in seq_len(n)) { # loop through data blocks
         portion <- inp[(header.end[i]+1):(header.begin[i+1]-1)]
         if (nchar(portion[1]) > 4) { # data is in block format
@@ -57,11 +59,11 @@ read.fh <- function(fname) {
         }
         n.expected <- end.years[i] - start.years[i] + 1
         n.true <- length(data)
-        if(n.true == n.expected) {
+        if (n.true == n.expected) {
             ## write data into matrix
             dendro.matrix[(start.years[i]-r.off):(end.years[i]-r.off), i] <-
                 data
-        } else if(n.true < n.expected) {
+        } else if (n.true < n.expected) {
             stop(gettextf("in series %s: ", keycodes[i]),
                  gettextf("too few values (expected %d, got %d)",
                           n.expected, n.true))
@@ -76,9 +78,9 @@ read.fh <- function(fname) {
                          "There are %d series\n",
                          domain="R-dplR"),
                 n))
-    cat(paste(seq_len(n), "\t",
-              keycodes, "\t",
-              start.years, "\t",
-              end.years, "\n", sep=""), sep="")
+    cat(paste0(seq_len(n), "\t",
+               keycodes, "\t",
+               start.years, "\t",
+               end.years, "\n"), sep="")
     as.data.frame(dendro.matrix) # return data.frame
 }

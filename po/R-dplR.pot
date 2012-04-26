@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.5.4\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-04-26 17:50+0300\n"
+"POT-Creation-Date: 2012-04-26 19:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -505,6 +505,15 @@ msgid "Time"
 msgstr ""
 
 msgid "Period"
+msgstr ""
+
+msgid "Power"
+msgstr ""
+
+msgid "'wave.list$x' and 'wave.list$period' must be strictly ascending"
+msgstr ""
+
+msgid "'wave.list$period' must be positive"
 msgstr ""
 
 msgid "'rwl.df' must be a data.frame"

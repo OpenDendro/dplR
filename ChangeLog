@@ -3,13 +3,20 @@
 File: DESCRIPTION
 -----------------
 
-- Depends: R (>= 2.15.0)
+- Depends: R (>= 2.15.0) to accommodate use of .filled.contour() in
+  wavelet.plot(). Also enables the use of paste0().
 
 File: NAMESPACE
 ---------------
 
 - Imports from package stringr (also in DESCRIPTION)
 - Exports new function autoread.ids()
+
+Various .R files
+----------------
+
+- use paste0(...) instead of paste(..., sep="")
+- prettier, more consistent formatting of source code
 
 File: helpers.R
 ---------------
@@ -30,6 +37,20 @@ File: read.tucson.R
 -------------------
 
 - More robust detection of header
+
+File: wavelet.plot.R
+--------------------
+
+- Switched from using an .Internal() call to using new bare-bones
+  function .filled.contour() for the plotting. This is at the
+  request of Prof. Ripley who wrote that 'Packages should not call
+  .Internal(): it is not part of the API, for use only by R itself
+  and subject to change without notice.' In 1.5.3, the use of
+  .Internal() or .filled.contour() was an if-else decision based on
+  the version of R, but now the latter function is always used,
+  making R >= 2.15.0 required.
+- enabled translation of default value of 'key.lab'
+- checks 'wave.list$x' and 'wave.list$period'
 
 Files: write.compact.R, write.tucson.R
 --------------------------------------

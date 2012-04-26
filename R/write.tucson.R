@@ -50,7 +50,7 @@
         long <- header2$long[1]
         lead.invs <- header2$lead.invs[1]
         comp.date <- header2$comp.date[1]
-        lat.long <- ifelse(nchar(long) > 5, paste(lat, long, sep=""),
+        lat.long <- ifelse(nchar(long) > 5, paste0(lat, long),
                            paste(lat, long, sep=" "))
         yrs <- paste(header2$first.yr[1], header2$last.yr[1], sep=" ")
 
@@ -65,15 +65,15 @@
             this.nchar <- nchar(this.var)
             if (this.nchar > this.width) {
                 assign(this.name, substr(this.var, 1, this.width))
-            } else if(this.nchar < this.width) {
+            } else if (this.nchar < this.width) {
                 assign(this.name, encodeString(this.var, width = this.width))
             }
         }
 
-        hdr1 <- paste(site.id, "   ", site.name, spp.code, sep="")
-        hdr2 <- paste(site.id, "   ", state.country, spp, " ", elev, "  ",
-                      lat.long, "          ", yrs, sep="")
-        hdr3 <- paste(site.id, "   ", lead.invs, comp.date, sep="")
+        hdr1 <- paste0(site.id, "   ", site.name, spp.code)
+        hdr2 <- paste0(site.id, "   ", state.country, spp, " ", elev, "  ",
+                       lat.long, "          ", yrs)
+        hdr3 <- paste0(site.id, "   ", lead.invs, comp.date)
     }
 
     ## Loop through series and write each one
@@ -118,7 +118,7 @@
     ## We offer the user only one bit of customization (i.e. two options),
     ## at this time anyway. Maybe the original idea of two customization
     ## options was too fine-grained.
-    if(long.names) { # http://www.cybis.se/wiki/index.php?title=.rwl on 2010-04-21
+    if (long.names) { # http://www.cybis.se/wiki/index.php?title=.rwl on 2010-04-21
         exploit.short <- TRUE  # limit is
         use.space <- FALSE     # 7 or 8 characters
     } else { # http://www.ncdc.noaa.gov/paleo/treeinfo.html on 2010-04-21

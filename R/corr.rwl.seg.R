@@ -2,12 +2,15 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                          prewhiten = TRUE, pcrit=0.05, biweight=TRUE,
                          make.plot = TRUE, label.cex=1,
                          floor.plus1 = FALSE, master = NULL,
-                         master.yrs = as.numeric(names(master)), ...){
+                         master.yrs = as.numeric(names(master)), ...) {
 
     ## helper function
     yr.range <- function(x, yr.vec=as.numeric(names(x))) {
-        if(any(mask <- !is.na(x))) range(yr.vec[mask])
-        else c(NA, NA)
+        if (any(mask <- !is.na(x))) {
+            range(yr.vec[mask])
+        } else {
+            c(NA, NA)
+        }
     }
 
     ## run error checks
@@ -20,9 +23,9 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     options(warn = -1)
 
     nseries <- length(rwl)
-    if(is.null(master) && nseries < 2) {
+    if (is.null(master) && nseries < 2) {
         stop("At least 2 series are needed in 'rwl'")
-    } else if(nseries < 1) {
+    } else if (nseries < 1) {
         stop("At least 1 series is needed in 'rwl'")
     }
 
@@ -33,45 +36,45 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     rwl2 <- rwl
 
     ## Ensure that rwl has consecutive years in increasing order
-    if(!all(diff(yrs) == 1)) {
+    if (!all(diff(yrs) == 1)) {
         yrs <- min.yr : max.yr
         rwl2 <- matrix(NA_real_,
                        nrow = max.yr - min.yr + 1,
                        ncol = nseries,
                        dimnames = list(as.character(yrs), cnames))
         rwl.tmp <- as.matrix(rwl)
-        for(rname in row.names(rwl)) {
+        for (rname in row.names(rwl)) {
             rwl2[rname, ] <- rwl.tmp[rname, ]
         }
         rwl2 <- as.data.frame(rwl2)
     }
 
     ## Pad rwl and master (if present) to same number of years
-    if(!is.null(master)) {
+    if (!is.null(master)) {
         min.master.yr <- min(master.yrs)
         max.master.yr <- max(master.yrs)
         master2 <- rep(NA_real_, max.master.yr - min.master.yr + 1)
         names(master2) <- min.master.yr : max.master.yr
         master2[as.character(master.yrs)] <- master
-        if(min.master.yr < min.yr) {
+        if (min.master.yr < min.yr) {
             n.pad <- min.yr - min.master.yr
             padding <- matrix(NA_real_, n.pad, nseries)
             colnames(padding) <- cnames
             rownames(padding) <- min.master.yr : (min.yr - 1)
             rwl2 <- rbind(padding, rwl2)
             min.yr <- min.master.yr
-        } else if(min.master.yr > min.yr) {
+        } else if (min.master.yr > min.yr) {
             n.pad <- min.master.yr - min.yr
             padding <- rep(NA_real_, n.pad)
             names(padding) <- min.yr : (min.master.yr - 1)
             master2 <- c(padding, master2)
         }
-        if(max.master.yr < max.yr) {
+        if (max.master.yr < max.yr) {
             n.pad <- max.yr - max.master.yr
             padding <- rep(NA_real_, n.pad)
             names(padding) <- (max.master.yr + 1) : max.yr
             master2 <- c(master2, padding)
-        } else if(max.master.yr > max.yr) {
+        } else if (max.master.yr > max.yr) {
             n.pad <- max.master.yr - max.yr
             padding <- matrix(NA_real_, n.pad, nseries)
             colnames(padding) <- cnames
@@ -84,9 +87,9 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
 
     seg.lag <- seg.length / 2
     nyrs <- length(yrs)
-    if(is.null(bin.floor) || bin.floor == 0) {
+    if (is.null(bin.floor) || bin.floor == 0) {
         min.bin <- min.yr
-    } else if(floor.plus1) {
+    } else if (floor.plus1) {
         min.bin <- ceiling((min.yr - 1) / bin.floor) * bin.floor + 1
     } else {
         min.bin <- ceiling(min.yr / bin.floor) * bin.floor
@@ -94,7 +97,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     bins <- seq(from=min.bin, to=max.yr - seg.length + 1, by=seg.lag)
     bins <- cbind(bins, bins + (seg.length - 1))
     nbins <- nrow(bins)
-    bin.names <- paste(bins[, 1], ".", bins[, 2], sep="")
+    bin.names <- paste0(bins[, 1], ".", bins[, 2])
     ## structures for results
     res.cor <- matrix(NA, nseries, nbins)
     rownames(res.cor) <- cnames
@@ -115,35 +118,36 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     idx.good <- norm.one$idx.good
 
     ## loop through series
-    for(i in seq_len(nseries)){
-        if(is.null(master)) {
+    for (i in seq_len(nseries)) {
+        if (is.null(master)) {
             idx.noti <- rep(TRUE, nseries)
             idx.noti[i] <- FALSE
             master.norm <- rwi[, idx.good & idx.noti, drop=FALSE]
 
             ## compute master series by normal mean or robust mean
             master2 <- vector(mode="numeric", length=nyrs)
-            if (!biweight){
-                for (j in seq_len(nyrs))
+            if (!biweight) {
+                for (j in seq_len(nyrs)) {
                     master2[j] <- exactmean(master.norm[j, ])
+                }
             } else {
                 ## surprisingly, for loop is faster than apply
-                for (j in seq_len(nyrs))
+                for (j in seq_len(nyrs)) {
                     master2[j] <- tbrm(master.norm[j, ], C=9)
+                }
             }
         }
         series <- rwi[, i]
         ## loop through bins
-        for(j in seq_len(nbins)){
+        for (j in seq_len(nbins)) {
             mask <- yrs %in% seq(from=bins[j, 1], to=bins[j, 2])
             ## cor is NA if there is not complete overlap
-            if(!any(mask) ||
-               any(is.na(series[mask])) ||
-               any(is.na(master2[mask]))){
+            if (!any(mask) ||
+                any(is.na(series[mask])) ||
+                any(is.na(master2[mask]))) {
                 bin.cor <- NA
                 bin.pval <- NA
-            }
-            else {
+            } else {
                 tmp <- cor.test(series[mask], master2[mask],
                                 method = "spearman", alternative = "greater")
                 bin.cor <- tmp$estimate
@@ -166,12 +170,13 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     names(seg.flags) <- cnames
     flag.logical <- res.pval >= pcrit
     flag.logical[is.na(flag.logical)] <- FALSE
-    for(i in seq_along(seg.flags))
+    for (i in seq_along(seg.flags)) {
         seg.flags[i] <- paste(bin.names[flag.logical[i, ]], collapse = ", ")
+    }
     seg.flags <- seg.flags[seg.flags != ""]
 
     ## plot
-    if(make.plot){
+    if (make.plot) {
         segs <- rwi
         extreme.year <- apply(segs, 2, yr.range, yr.vec=yrs)
         rsult <- sort.int(extreme.year[1, ], decreasing=FALSE,
@@ -193,7 +198,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         ## bounding poly for even series
         xx <- c(min.yr - 100, max.yr + 100)
         xx <- c(xx, rev(xx))
-        for(i in seq(from=1, to=nseries, by=2)){
+        for (i in seq(from=1, to=nseries, by=2)) {
             yy <- c(i - 0.5, i - 0.5, i + 0.5, i + 0.5)
             polygon(xx, yy, col="grey90", border=NA)
         }
@@ -203,20 +208,20 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         ## First odd segs, then even segs
         y.offset <- c(-0.25, 0.25)
         ax <- c(1, 3)
-        for(odd.even in c(1, 2)){
+        for (odd.even in c(1, 2)) {
             this.seq <- seq(from=odd.even, to=nbins, by=2)
             these.bins <- bins[this.seq, , drop=FALSE]
             com.segs <- matrix(NA, ncol=nseries, nrow=nyrs)
             flag.segs <- matrix(NA, ncol=nseries, nrow=nyrs)
             ## loop through these.bins
             tmp <- res.pval[neworder, this.seq, drop=FALSE] > pcrit
-            for(i in seq_len(nseries)){
-                for(j in seq_len(nrow(these.bins))){
-                    mask <- yrs%in%seq(from = these.bins[j, 1],
-                                       to = these.bins[j, 2])
-                    if(!is.na(tmp[i, j])) {
+            for (i in seq_len(nseries)) {
+                for (j in seq_len(nrow(these.bins))) {
+                    mask <- yrs %in% seq(from = these.bins[j, 1],
+                                         to = these.bins[j, 2])
+                    if (!is.na(tmp[i, j])) {
                         com.segs[mask, i] <- 1
-                        if(tmp[i, j]) {
+                        if (tmp[i, j]) {
                             flag.segs[mask, i] <- 1
                         }
                     }
@@ -233,7 +238,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             ## Ticks at 1) first year of each bin,
             ## and 2) first year larger than any of these bins
             axis(ax[odd.even], at=guides.x.base)
-            for(i in seq_len(nseries)){
+            for (i in seq_len(nseries)) {
                 y.deviation <- y.deviation + 1
                 ## whole segs
                 xx <- segs.mat[i, ]
@@ -246,7 +251,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                 polygon(xx, yy, col=col.pal[2], border=NA)
                 ## flags
                 flag.segs.mat <- yr.ranges(flag.segs[, i], yrs)
-                for(j in seq_len(nrow(flag.segs.mat))) {
+                for (j in seq_len(nrow(flag.segs.mat))) {
                     xx <- flag.segs.mat[j, ]
                     xx <- c(xx, rev(xx))
                     polygon(xx, yy, col=col.pal[1], border=NA)

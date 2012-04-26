@@ -117,8 +117,10 @@ read.ids <- function(rwl, stc=c(3, 2, 3), ignore.site.case = FALSE,
             trim.amount <- nchar1[1] - nchar2[1]
             part1.rem <- part1[remaining]
             nchar.rem <- nchar(part1.rem)
-            if (all(nchar1 - nchar2 == trim.amount) && all(nchar.rem >= trim.amount)) {
-                res[remaining] <- substring(part1.rem, 1, nchar.rem - trim.amount)
+            if (all(nchar1 - nchar2 == trim.amount) &&
+                all(nchar.rem >= trim.amount)) {
+                res[remaining] <- substring(part1.rem,
+                                            1, nchar.rem - trim.amount)
             }
         }
         res

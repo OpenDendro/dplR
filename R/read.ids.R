@@ -293,9 +293,7 @@ read.ids <- function(rwl, stc=c(3, 2, 3), ignore.site.case = FALSE,
         orig.tree.strs <- substring(ids, 1, stc.t.vec)
         unique.orig.trees <- unique(orig.tree.strs)
         orig.match <- match(orig.tree.strs, unique.orig.trees)
-        max.start <- max(1, min(stc.t.vec))
-        for (new.start in seq(from=max.start, by=-1,
-                              length.out=max.start-1)) {
+        for (new.start in dec(min(stc.t.vec), 2)) {
             new.tree.strs <- substring(ids, new.start, stc.t.vec)
             new.match <- match(new.tree.strs, unique(new.tree.strs))
             if (all(new.match == orig.match &
@@ -1388,8 +1386,7 @@ read.ids <- function(rwl, stc=c(3, 2, 3), ignore.site.case = FALSE,
                 max.nchar.ids.class <- 0
             }
             numeric.trees <- FALSE
-            for (stc.t in seq(from=max.nchar.ids.class-1, by=-1,
-                              length.out=max(0, max.nchar.ids.class-1))) {
+            for (stc.t in dec(max.nchar.ids.class - 1, 1)) {
                 firstpart <- substr(ids.class, 1, stc.t)
                 lastpart <- substr(ids.class,
                                    stc.t + 1, max.nchar.ids.class)
@@ -1581,13 +1578,9 @@ read.ids <- function(rwl, stc=c(3, 2, 3), ignore.site.case = FALSE,
                     ord.char.ids <- ids2[ii]
                     stc.t <- NA
                     remember.zero <- FALSE
-                    ## sequence from min.stc.t+1 to max.nchar.ids.class
-                    for (stcIter in seq(from=max.nchar.ids.class, by=-1,
-                                        length.out=max(0, max.nchar.ids.class -
-                                        min.stc.t))) {
-                        num.firstpart <-
-                            as.numeric(substr(ord.char.ids,
-                                              1, stcIter - 1))
+                    for (stcIter in dec(max.nchar.ids.class, min.stc.t + 1)) {
+                        num.firstpart <- as.numeric(substr(ord.char.ids,
+                                                           1, stcIter - 1))
                         if (0 %in% num.firstpart) {
                             break
                         }

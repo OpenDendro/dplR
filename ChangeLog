@@ -6,6 +6,11 @@ File: corr.rwl.seg.R
 - Fixed 'ylim' in plot()
 - Fixed "no guides" case
 
+File: rcs.R
+-----------
+
+- Graceful handling of empty input
+
 * CHANGES IN dplR VERSION 1.5.4
 
 File: DESCRIPTION

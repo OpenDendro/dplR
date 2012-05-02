@@ -259,7 +259,9 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                 ## guides
                 guides.x <- guides.x.base[guides.x.base >= segs.mat[i, 1]]
                 guides.x <- guides.x[guides.x <= segs.mat[i, 2]]
-                segments(guides.x, i, guides.x, y.deviation, col="white")
+                if (length(guides.x) > 0) {
+                    segments(guides.x, i, guides.x, y.deviation, col="white")
+                }
             }
         }
 

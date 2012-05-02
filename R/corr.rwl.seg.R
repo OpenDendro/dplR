@@ -190,7 +190,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         on.exit(par(op), add=TRUE)
         col.pal <- c("#E41A1C", "#377EB8", "#4DAF4A")
         par(mar=c(4, 5, 4, 5) + 0.1, mgp=c(1.25, 0.25, 0), tcl=0.25)
-        plot(yrs, segs[, 1], type="n", ylim=c(0, nsegs),
+        plot(yrs, segs[, 1], type="n", ylim=c(0.5, nsegs + 0.5),
              axes=FALSE, ylab="", xlab=gettext("Year"),
              sub=gettextf("Segments: length=%d,lag=%d", seg.length, seg.lag,
              domain="R-dplR"),

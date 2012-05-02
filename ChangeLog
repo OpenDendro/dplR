@@ -4,6 +4,7 @@ File: corr.rwl.seg.R
 --------------------
 
 - Fixed 'ylim' in plot()
+- Fixed "no guides" case
 
 * CHANGES IN dplR VERSION 1.5.4
 

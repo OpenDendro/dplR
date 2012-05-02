@@ -12,7 +12,7 @@
 
     yr <- as.numeric(row.names(rwl))
     series.stats <- data.frame(series=names(rwl))
-    the.range <- apply(rwl, 2, yr.range, yr.vec=yr)
+    the.range <- as.matrix(apply(rwl, 2, yr.range, yr.vec=yr))
     series.stats$first <- the.range[1, ]
     series.stats$last <- the.range[2, ]
     series.stats$year <- series.stats$last - series.stats$first + 1

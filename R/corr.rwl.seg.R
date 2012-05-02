@@ -178,7 +178,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     ## plot
     if (make.plot) {
         segs <- rwi
-        extreme.year <- apply(segs, 2, yr.range, yr.vec=yrs)
+        extreme.year <- as.matrix(apply(segs, 2, yr.range, yr.vec=yrs))
         rsult <- sort.int(extreme.year[1, ], decreasing=FALSE,
                           index.return=TRUE)
         neworder <- rsult$ix

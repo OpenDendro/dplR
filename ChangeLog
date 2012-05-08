@@ -1,5 +1,12 @@
 * CHANGES IN dplR VERSION 1.5.5
 
+File: rwi.stats.running.R
+-----------------
+
+- Added prewhitening option to rwi.stats.running() and by extension rwi.stats().
+  There are two new arguments prewhiten and n that are passed to normalize1()
+  as in the xdating functions e.g., corr.rwl.seg(). Help file changed.
+
 Files: corr.rwl.seg.R, seg.plot.R, rwl.stats.R, spag.plot.R
 -----------------------------------------------------------
 

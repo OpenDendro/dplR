@@ -17,6 +17,8 @@ File: corr.rwl.seg.R
 
 - Fixed 'ylim' in plot()
 - Fixed "no guides" case
+- stops with a clear error message if 'rwl' has too few rows for the given
+  'seg.length' and 'bin.floor' combination
 
 File: rcs.R
 -----------

@@ -76,7 +76,10 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
         }
     }
     tmp <- normalize1(rwi, n, prewhiten)
-    if(!all(tmp$idx.good)) warning('after prewhitening, rwi contains column(s) without at least four observations',call.=FALSE)
+    if(!all(tmp$idx.good)) {
+        warning('after prewhitening, rwi contains column(s) without at least four observations',call.=FALSE)
+        cat('note that there is no error checking on column lengths if filtering is not performed\n')
+    }
     rwi <- tmp$master
     rwi2 <- as.matrix(rwi)
     n.cores <- ncol(rwi2)

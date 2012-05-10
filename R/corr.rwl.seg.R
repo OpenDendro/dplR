@@ -94,7 +94,11 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     } else {
         min.bin <- ceiling(min.yr / bin.floor) * bin.floor
     }
-    bins <- seq(from=min.bin, to=max.yr - seg.length + 1, by=seg.lag)
+    max.bin <- max.yr - seg.length + 1
+    if (max.bin < min.bin) {
+        stop("shorten 'seg.length' or adjust 'bin.floor'")
+    }
+    bins <- seq(from=min.bin, to=max.bin, by=seg.lag)
     bins <- cbind(bins, bins + (seg.length - 1))
     nbins <- nrow(bins)
     bin.names <- paste0(bins[, 1], ".", bins[, 2])

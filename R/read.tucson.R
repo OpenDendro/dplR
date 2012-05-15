@@ -147,19 +147,15 @@
     }
 
     ## trim the front and back of the output file to remove blank
-    ## rows. The ham-handed approach below avoids removing areas with
-    ## internal gaps such as those with floating, but dated segments.
-    ## subset first 11 years to trim out leading NAs
-    foo <- rw.mat[seq_len(11), , drop=FALSE]
-    foo.yrs <- as.numeric(rownames(foo))
-    min.year0 <- min(foo.yrs[!apply(is.na(foo), 1, all)])
-    ## subset last 11 years to trim out ending NAs
-    foo <- rw.mat[(nrow(rw.mat)-11):nrow(rw.mat), , drop=FALSE]
-    foo.yrs <- as.numeric(rownames(foo))
-    max.year0 <- max(foo.yrs[!apply(is.na(foo), 1, all)])
+    ## rows.
+    good.rows <- which(!apply(is.na(rw.mat), 1, all))
+    n.good <- length(good.rows)
+    if (n.good == 0) {
+        stop("file has no good data")
+    }
+    incl.rows <- good.rows[1]:good.rows[n.good]
     ## trim
-    yrs <- min.year0:max.year0
-    rw.mat <- rw.mat[as.numeric(rownames(rw.mat)) %in% yrs, , drop=FALSE]
+    rw.mat <- rw.mat[incl.rows, , drop=FALSE]
     ## Fix internal NAs. These are coded as 0 in the DPL programs
     fix.internal.na <- function(x) {
         na.flag <- is.na(x)

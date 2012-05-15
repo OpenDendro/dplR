@@ -25,6 +25,11 @@ File: rcs.R
 
 - Graceful handling of empty input
 
+File: read.tucson.R
+-------------------
+
+- Fixed trimming of all-NA rows
+
 * CHANGES IN dplR VERSION 1.5.4
 
 File: DESCRIPTION

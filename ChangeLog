@@ -31,6 +31,10 @@ File: read.tucson.R
 - Fixed trimming of all-NA rows
 - Fixed a bug that could crash R if the fided-width columns of the input
   file did not follow the (loose) specifications of the Tucson format
+- Note to dplR developers that this is a result of a poor standard in the
+  Tucson format but this fix is needed to work with files that are on the 
+  ITRDB. Interestingly, dpl and ARSTAN are more robust to these kinds of
+  inconsistencies.
 
 * CHANGES IN dplR VERSION 1.5.4
 

@@ -29,6 +29,8 @@ File: read.tucson.R
 -------------------
 
 - Fixed trimming of all-NA rows
+- Fixed a bug that could crash R if the fided-width columns of the input
+  file did not follow the (loose) specifications of the Tucson format
 
 * CHANGES IN dplR VERSION 1.5.4
 

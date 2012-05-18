@@ -97,6 +97,26 @@
 
     series.index <- match(series, series.ids)
     decade.yr <- dat[[2]]
+
+    ## Only one row per series can have
+    ## a "non-decadal" (not ending in zero) header year
+    part.decades <- which(decade.yr %% 10 != 0)
+    if (length(part.decades) > 0) {
+        idtable <- table(series.index[part.decades])
+        idx.bad <- which(idtable > 1)
+        n.bad <- length(idx.bad)
+        if (n.bad > 0) {
+            warning("bad fixed-width columns?")
+            stop(sprintf(gettext(paste0("%d series with > 1 non-decade value ",
+                                        "in year column (%s)"),
+                                 domain="R-dplR"),
+                         n.bad,
+                         paste(series.ids[as.integer(names(idtable)[idx.bad])],
+                               collapse=", ")),
+                 domain=NA)
+        }
+    }
+
     min.year <- (min(decade.yr) %/% 10) * 10
     max.year <- ((max(decade.yr)+10) %/% 10) * 10
     span <- max.year - min.year + 1
@@ -106,6 +126,34 @@
     series.max <- rep.int(as.integer(min.year-1), nseries)
     prec.rproc <- rep.int(as.integer(1), nseries)
     x <- as.matrix(dat[, -c(1, 2), drop=FALSE])
+
+    ## Number of values allowed per row depends on first year modulo 10
+    n.per.row <-
+        apply(x, 1,
+              function(x) {
+                  notna <- which(!is.na(x))
+                  n.notna <- length(notna)
+                  if (n.notna == 0) {
+                      0
+                  } else {
+                      notna[n.notna]
+                  }
+              })
+    idx.bad <- which(n.per.row > 10 - decade.yr %% 10)
+    n.bad <- length(idx.bad)
+    if (n.bad > 0) {
+        idtable <- table(series.index[n.bad])
+        if (any(idtable > 1)) {
+            warning("bad fixed-width columns?")
+        }
+        stop(sprintf(ngettext(n.bad,
+                              "%d row crosses a decade boundary (decade %s)",
+                              "%d rows cross a decade boundary (decades %s)",
+                              domain="R-dplR"),
+                     n.bad, paste(decade.yr[idx.bad], collapse=", ")),
+             domain=NA)
+    }
+
     .C(rwl.readloop,
        series.index,
        decade.yr,

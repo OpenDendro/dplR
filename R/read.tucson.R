@@ -2,12 +2,14 @@
                           encoding = getOption("encoding"))
 {
     ## Read data file into memory
-    goodLines <- readLines(fname, encoding = encoding)
+    con <- file(fname, encoding = encoding)
+    on.exit(close(con))
+    goodLines <- readLines(con)
     ## Strip empty lines (caused by CR CR LF endings etc.)
     goodLines <- goodLines[nchar(goodLines) > 0]
     ## Text connection to the good lines
+    close(con)
     con <- textConnection(goodLines)
-    on.exit(close(con))
     if (is.null(header)) {
         ## Try to determine if the file has a header. This is failable.
         ## 3 lines in file

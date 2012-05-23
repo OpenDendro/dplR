@@ -31,10 +31,14 @@ File: read.tucson.R
 - Fixed trimming of all-NA rows
 - Fixed a bug that could crash R if the fided-width columns of the input
   file did not follow the (loose) specifications of the Tucson format
-- Note to dplR developers that this is a result of a poor standard in the
-  Tucson format but this fix is needed to work with files that are on the 
-  ITRDB. Interestingly, dpl and ARSTAN are more robust to these kinds of
-  inconsistencies.
+- Note to dplR developers that this is a result of a poor standard in
+  the Tucson format but this fix is needed to work with files that are
+  on the ITRDB. Interestingly, dpl and ARSTAN are more robust to these
+  kinds of inconsistencies. Mikko's note: always check that your
+  assumptions a piece of input are correct before using the said input
+  to compute array indices, particularly in C code.
+- Can deal with CR CR LF newlines by reading the whole file into memory
+  at first and stripping empty lines
 
 * CHANGES IN dplR VERSION 1.5.4
 

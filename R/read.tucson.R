@@ -1,8 +1,12 @@
 `read.tucson` <- function(fname, header = NULL, long = FALSE,
                           encoding = getOption("encoding"))
 {
-    ## Open the data file (stateless, opened on-demand)
-    con <- file(fname, encoding = encoding)
+    ## Read data file into memory
+    goodLines <- readLines(fname, encoding = encoding)
+    ## Strip empty lines (caused by CR CR LF endings etc.)
+    goodLines <- goodLines[nchar(goodLines) > 0]
+    ## Text connection to the good lines
+    con <- textConnection(goodLines)
     on.exit(close(con))
     if (is.null(header)) {
         ## Try to determine if the file has a header. This is failable.
@@ -50,6 +54,8 @@
     } else {
         is.head <- header
     }
+    close(con)
+    con <- textConnection(goodLines) # back to start
     if (is.head) {
         ## Read 4th line - should be first data line
         dat1 <- readLines(con, n=4)
@@ -68,9 +74,9 @@
         stop(gettextf("cols %d-%d of first data line not a year", 9, 12))
     }
 
+    close(con)
+    con <- textConnection(goodLines) # back to start
     skip.lines <- ifelse(is.head, 3, 0)
-    ## Do nothing. read.fwf closes (and destroys ?!?) the file connection
-    on.exit()
     ## Using a connection instead of a file name in read.fwf allows the
     ## function to support different encodings.
     if (long) {

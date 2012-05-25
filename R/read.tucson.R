@@ -265,11 +265,15 @@
         as.matrix(apply(rw.mat, 2, yr.range, yr.vec=min.year:max.year))
     series.min <- the.range[1, ]
     series.max <- the.range[2, ]
-    cat(paste0(seq.series, "\t",
-               series.ids, "\t",
-               series.min, "\t",
-               series.max, "\t",
-               1 / prec.rproc, "\n"), sep="")
+    series.min.char <- format(series.min, scientific=FALSE, trim=TRUE)
+    series.max.char <- format(series.max, scientific=FALSE, trim=TRUE)
+    seq.series.char <- format(seq.series, scientific=FALSE, trim=TRUE)
+    cat(paste0(format(seq.series.char), "\t",
+               format(series.ids), "\t",
+               format(series.min.char, justify="right"), "\t",
+               format(series.max.char, justify="right"), "\t",
+               format(1/prec.rproc, scientific=FALSE,drop0trailing=TRUE),"\n"),
+        sep="")
 
     ## trim the front and back of the output to remove blank rows
     good.series <- !is.na(series.min)

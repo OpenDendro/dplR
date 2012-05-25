@@ -45,6 +45,7 @@ File: read.tucson.R
   widths, including tab-delimited files
 - Can read non-standard files where missing data is marked with
   non-numeric characters
+- Printed summary is justified, no more ragged lines
 
 File: write.tucson.R
 --------------------

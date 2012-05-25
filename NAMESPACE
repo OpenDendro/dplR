@@ -15,7 +15,7 @@ importFrom(grid, gpar, grid.lines, grid.newpage, grid.polygon,
 importFrom(lattice, panel.abline, panel.dotplot, panel.segments,
            trellis.par.set, xyplot)
 
-importFrom(stringr, str_pad)
+importFrom(stringr, str_pad, str_trim)
 
 importFrom(utils, head, installed.packages, read.fwf, tail)
 

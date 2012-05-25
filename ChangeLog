@@ -39,6 +39,18 @@ File: read.tucson.R
   to compute array indices, particularly in C code.
 - Can deal with CR CR LF newlines by reading the whole file into memory
   at first and stripping empty lines
+- Can read non-standard files where one or more of the stop markers is
+  the 11th data column of its row
+- Can read non-standard files where columns don't have their proper
+  widths, including tab-delimited files
+- Can read non-standard files where missing data is marked with
+  non-numeric characters
+
+File: write.tucson.R
+--------------------
+
+- Instead of always using 1000, 999 is now randomly converted to either
+  998 or 1000 (prec == 0.01) => no bias (even if small)
 
 * CHANGES IN dplR VERSION 1.5.4
 

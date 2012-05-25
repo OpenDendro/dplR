@@ -92,7 +92,14 @@ ar.func <- function(x) {
 
 ### Range of years. Used in cms, rcs, rwl.stats, seg.plot, spag.plot, ...
 yr.range <- function(x, yr.vec = as.numeric(names(x))) {
-    range(yr.vec[!is.na(x)])
+    na.flag <- is.na(x)
+    if (all(na.flag)) {
+        res <- rep(NA, 2)
+        mode(res) <- mode(yr.vec)
+        res
+    } else {
+        range(yr.vec[!na.flag])
+    }
 }
 
 ### Multiple ranges of years.

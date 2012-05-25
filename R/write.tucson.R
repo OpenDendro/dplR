@@ -231,7 +231,8 @@
                 if (i == n.decades) {
                     end.match[length(end.match)] <- FALSE
                 }
-                dec.rwl[end.match] <- 1000
+                dec.rwl[end.match] <-
+                    sample(c(998, 1000), sum(end.match), replace=TRUE)
             }
 
             ## Pad to nchar 6 (no leading zero)

@@ -1,6 +1,7 @@
 `read.tucson` <- function(fname, header = NULL, long = FALSE,
                           encoding = getOption("encoding"))
 {
+    ## Checks that data.frame 'dat' is good
     input.ok <- function(dat) {
         if (nrow(dat) == 0) {
             return(FALSE)
@@ -17,8 +18,7 @@
             n.bad <- length(idx.bad)
             if (n.bad > 0) {
                 warn.fmt <-
-                    gettext(paste0("%d series with > 1 non-decade value ",
-                                   "in year column (%s)"),
+                    gettext("%d series with > 1 non-decade value in year column (%s)",
                             domain="R-dplR")
                 warning(sprintf(warn.fmt,
                                 n.bad,
@@ -45,10 +45,11 @@
         idx.bad <- which(n.per.row > full.per.row)
         n.bad <- length(idx.bad)
         if (n.bad > 0) {
-            warning(sprintf(ngettext(n.bad,
-                                     "%d row has too many values (decade %s)",
-                                     "%d rows have too many values (decades %s)",
-                                  domain="R-dplR"),
+            warn.fmt <- ngettext(n.bad,
+                                 "%d row has too many values (decade %s)",
+                                 "%d rows have too many values (decades %s)",
+                                 domain="R-dplR")
+            warning(sprintf(warn.fmt,
                             n.bad, paste(decade.yr[idx.bad], collapse=", ")),
                     domain=NA)
             FALSE
@@ -63,7 +64,11 @@
     goodLines <- readLines(con)
     ## Strip empty lines (caused by CR CR LF endings etc.)
     goodLines <- goodLines[nchar(goodLines) > 0]
-    ## Text connection to the good lines
+    ## Remove comment lines (print them?)
+    foo <- regexpr("#", goodLines, fixed=TRUE)
+    commentFlag <- foo >= 1 & foo <= 78
+    goodLines <- goodLines[!commentFlag]
+    ## Text connection to the good lines (comments removed)
     tc <- textConnection(goodLines)
     if (is.null(header)) {
         ## Try to determine if the file has a header. This is failable.

@@ -253,12 +253,8 @@
         }
         this.prec.rproc <- prec.rproc[i]
         if (this.prec.rproc == 100) {
-            ## Convert (the last) stop marker 999 to NA (precision 0.01)
-            stop.loc <- which(rw.mat[, i] == 999)
-            n.stop <- length(stop.loc)
-            if (n.stop > 0) {
-                rw.mat[stop.loc[n.stop], i] <- NA
-            }
+            ## Convert stop marker (and any other) 999 to NA (precision 0.01)
+            rw.mat[rw.mat[, i] == 999, i] <- NA
         } else if (this.prec.rproc != 1000) {
             stop(gettextf("precision unknown in series %s", series.ids[i],
                           domain="R-dplR"))

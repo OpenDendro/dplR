@@ -25,6 +25,11 @@ File: rcs.R
 
 - Graceful handling of empty input
 
+File: read.compact.R
+--------------------
+
+- Pretty printing of summary output, no more ragged lines
+
 File: read.tucson.R
 -------------------
 
@@ -46,6 +51,8 @@ File: read.tucson.R
 - Can read non-standard files where missing data is marked with
   non-numeric characters
 - Printed summary is justified, no more ragged lines
+- Interprets lines containing "#" characters (in positions 1-78) as
+  comments. For now, comments are ignored.
 
 File: write.tucson.R
 --------------------

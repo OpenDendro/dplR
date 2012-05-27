@@ -17,11 +17,15 @@ read.compact <- function(fname)
                          "There are %d series\n",
                          domain="R-dplR"),
                 nseries))
-    cat(paste0(seq_len(nseries), "\t",
-               series.ids, "\t",
-               series.min, "\t",
-               series.max, "\t",
-               series.mplier, "\n"), sep="")
+    series.min.char <- format(series.min, scientific=FALSE, trim=TRUE)
+    series.max.char <- format(series.max, scientific=FALSE, trim=TRUE)
+    seq.series.char <- format(seq_len(nseries), scientific=FALSE, trim=TRUE)
+    cat(paste0(format(seq.series.char), "\t",
+               format(series.ids), "\t",
+               format(series.min.char, justify="right"), "\t",
+               format(series.max.char, justify="right"), "\t",
+               format(series.mplier, scientific=FALSE,drop0trailing=TRUE),"\n"),
+        sep="")
     if (length(project.comments) > 0) {
         cat(gettext("Comments:", domain="R-dplR"),
             paste(project.comments, collapse="\n"), sep="\n")

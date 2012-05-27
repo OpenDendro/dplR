@@ -9,31 +9,12 @@
         series <- dat[[1]]
         decade.yr <- dat[[2]]
 
-        ## Only one row per series can have
-        ## a "non-decadal" (not ending in zero) header year
-        part.decades <- which(decade.yr %% 10 != 0)
-        if (length(part.decades) > 0) {
-            idtable <- table(series[part.decades])
-            idx.bad <- which(idtable > 1)
-            n.bad <- length(idx.bad)
-            if (n.bad > 0) {
-                warn.fmt <-
-                    gettext("%d series with > 1 non-decade value in year column (%s)",
-                            domain="R-dplR")
-                warning(sprintf(warn.fmt,
-                                n.bad,
-                                paste(names(idtable)[idx.bad], collapse=", ")),
-                        domain=NA)
-                return(FALSE)
-            }
-        }
-
         x <- as.matrix(dat[-c(1, 2, 13)])
         ## Number of values allowed per row depends on first year modulo 10
         n.per.row <-
             apply(x, 1,
                   function(x) {
-                      notna <- which(!is.na(x))
+                      notna <- which(!is.na(x) & (x > 0 | x == -9999))
                       n.notna <- length(notna)
                       if (n.notna == 0) {
                           0
@@ -52,6 +33,25 @@
             warning(sprintf(warn.fmt,
                             n.bad, paste(decade.yr[idx.bad], collapse=", ")),
                     domain=NA)
+            return(FALSE)
+        }
+
+        series.ids <- unique(series)
+        nseries <- length(series.ids)
+        series.index <- match(series, series.ids)
+        min.year <- (min(decade.yr) %/% 10) * 10
+        max.year <- ((max(decade.yr)+10) %/% 10) * 10
+        span <- max.year - min.year + 1
+        val.count <- matrix(0, span, nseries)
+        for (i in nrow(dat)) {
+            this.col <- series.index[i]
+            these.rows <- seq(from = decade.yr[i] - min.year + 1, by = 1,
+                              length.out = n.per.row[i])
+            val.count[these.rows, this.col] <-
+                val.count[these.rows, this.col] + 1
+        }
+        if (any(val.count > 1)) {
+            warning("more than 1 value found for at least 1 pair of ID, year")
             FALSE
         } else {
             TRUE
@@ -222,6 +222,8 @@
     scratch <- rep.int(as.integer(min.year-1), nseries)
     prec.rproc <- rep.int(as.integer(1), nseries)
     x <- as.matrix(dat[-c(1, 2, 13)])
+    ## Convert values <= 0 (not -9999) to NA
+    x[x <= 0 & x != -9999] <- NA
 
     .C(rwl.readloop, series.index, decade.yr, as.vector(x),
        nrow(x), ncol(x), as.integer(min.year), rw.vec,
@@ -230,8 +232,6 @@
     rw.mat <- matrix(rw.vec, ncol=nseries, nrow=span)
     rownames(rw.mat) <- min.year:max.year
 
-    ## Convert values <= 0 to NA (either precision)
-    rw.mat[rw.mat <= 0] <- NA
     ## The operations in the loop depend on the precision of each series.
     ## It's not exactly clear whether the Tucson format allows mixed
     ## precisions in the same file, but we can support that in any case.

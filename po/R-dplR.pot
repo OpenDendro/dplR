@@ -4,9 +4,9 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.5.4\n"
+"Project-Id-Version: dplR 1.5.5\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-04-26 19:31+0300\n"
+"POT-Creation-Date: 2012-05-28 10:30+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -372,6 +372,9 @@ msgstr ""
 msgid "* variable:"
 msgstr ""
 
+msgid "more than 1 value found for at least 1 pair of ID, year"
+msgstr ""
+
 msgid "first line in rwl file ends before col 12"
 msgstr ""
 
@@ -381,7 +384,22 @@ msgstr ""
 msgid "There does not appear to be a header in the rwl file"
 msgstr ""
 
+msgid "non-integral numbers found"
+msgstr ""
+
+msgid "fixed width failed, trying variable width columns"
+msgstr ""
+
+msgid "failed to read rwl file"
+msgstr ""
+
+msgid "bad location of stop marker in series %s"
+msgstr ""
+
 msgid "precision unknown in series %s"
+msgstr ""
+
+msgid "file has no good data"
 msgstr ""
 
 msgid "'ncol(rwi)' != 'nrow(ids)'"
@@ -400,6 +418,12 @@ msgid "'window.overlap' is too large, max value is 'window.length'-1 (%d)"
 msgstr ""
 
 msgid "'window.length' is smaller than 'min.corr.overlap'"
+msgstr ""
+
+msgid "after prewhitening, 'rwi' contains column(s) without at least four observations"
+msgstr ""
+
+msgid "note that there is no error checking on column lengths if filtering is not performed"
 msgstr ""
 
 msgid "There are zeros in the data. Consider the option 'zero.is.missing'."
@@ -627,5 +651,10 @@ msgstr[1]    ""
 
 msgid        "There is %d derived series, returned in '$derived'\n"
 msgid_plural "There are %d derived series, returned in '$derived'\n"
+msgstr[0]    ""
+msgstr[1]    ""
+
+msgid        "%d row has too many values (decade %s)"
+msgid_plural "%d rows have too many values (decades %s)"
 msgstr[0]    ""
 msgstr[1]    ""

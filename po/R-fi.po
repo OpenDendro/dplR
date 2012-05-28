@@ -4,10 +4,10 @@
 # Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.5.4\n"
+"Project-Id-Version: dplR 1.5.5\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-04-26 19:31+0300\n"
-"PO-Revision-Date: 2012-04-26 19:37+0300\n"
+"POT-Creation-Date: 2012-05-28 10:30+0300\n"
+"PO-Revision-Date: 2012-05-28 10:31+0300\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -384,6 +384,9 @@ msgstr "* laji:"
 msgid "* variable:"
 msgstr "* muuttuja:"
 
+msgid "more than 1 value found for at least 1 pair of ID, year"
+msgstr "ainakin yhdelle ID–vuosi-parille löytyi useampi kuin yksi arvo"
+
 msgid "first line in rwl file ends before col 12"
 msgstr "tiedoston ensimmäinen rivi päättyy ennen saraketta 12"
 
@@ -393,8 +396,23 @@ msgstr "Tiedostossa näyttää olevan otsake"
 msgid "There does not appear to be a header in the rwl file"
 msgstr "Tiedostossa ei näytä olevan otsaketta"
 
+msgid "non-integral numbers found"
+msgstr "löydettiin ei‐kokonaislukuja"
+
+msgid "fixed width failed, trying variable width columns"
+msgstr "kiinteä sarakeleveys epäonnistui, kokeillaan säätyvää leveyttä"
+
+msgid "failed to read rwl file"
+msgstr "tiedoston luku epäonnistui"
+
+msgid "bad location of stop marker in series %s"
+msgstr "epäkelpo loppumerkin sijainti sarjassa %s"
+
 msgid "precision unknown in series %s"
 msgstr "tuntematon tarkkuus sarjassa %s"
+
+msgid "file has no good data"
+msgstr "tiedostossa ei ole kelvollista dataa"
 
 msgid "'ncol(rwi)' != 'nrow(ids)'"
 msgstr "’ncol(rwi)’ ≠ ’nrow(ids)’"
@@ -413,6 +431,20 @@ msgstr "’window.overlap’ on liian suuri, maksimiarvo on ’window.length’�
 
 msgid "'window.length' is smaller than 'min.corr.overlap'"
 msgstr "’window.length’ on pienempi kuin ’min.corr.overlap’"
+
+msgid ""
+"after prewhitening, 'rwi' contains column(s) without at least four "
+"observations"
+msgstr ""
+"valkaisun jälkeen ’rwi’ sisältää ainakin yhden sarakkeen, jossa on\n"
+"vähemmän kuin 4 havaintoa"
+
+msgid ""
+"note that there is no error checking on column lengths if filtering is not "
+"performed"
+msgstr ""
+"huomaa että sarakkeiden pituuksia ei tarkisteta, jos suodatus jätetään\n"
+"pois"
 
 msgid "There are zeros in the data. Consider the option 'zero.is.missing'."
 msgstr "Datassa on nollia. Harkitse asetusta ’zero.is.missing’."
@@ -663,3 +695,8 @@ msgid "There is %d derived series, returned in '$derived'\n"
 msgid_plural "There are %d derived series, returned in '$derived'\n"
 msgstr[0] "On %d johdannaissarja, joka palautetaan muuttujassa ’$derived’\n"
 msgstr[1] "On %d johdannaissarjaa, jotka palautetaan muuttujassa ’$derived’\n"
+
+msgid "%d row has too many values (decade %s)"
+msgid_plural "%d rows have too many values (decades %s)"
+msgstr[0] "%d rivissä on liian monta arvoa (vuosikymmen %s)"
+msgstr[1] "%d rivissä on liian monta arvoa (vuosikymmenet %s)"

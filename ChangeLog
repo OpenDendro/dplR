@@ -53,6 +53,9 @@ File: read.tucson.R
 - Printed summary is justified, no more ragged lines
 - Interprets lines containing "#" characters (in positions 1-78) as
   comments. For now, comments are ignored.
+- Fixed a bug that could cause mixing of values from two or more
+  measurement series sharing the same ID. Now it is an error if the input
+  file contains more than one measurement for any year, ID pair.
 
 File: write.tucson.R
 --------------------

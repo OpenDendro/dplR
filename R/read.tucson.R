@@ -280,10 +280,10 @@
     series.min.char <- format(series.min, scientific=FALSE, trim=TRUE)
     series.max.char <- format(series.max, scientific=FALSE, trim=TRUE)
     seq.series.char <- format(seq.series, scientific=FALSE, trim=TRUE)
-    cat(paste0(format(seq.series.char), "\t",
-               format(series.ids), "\t",
-               format(series.min.char, justify="right"), "\t",
-               format(series.max.char, justify="right"), "\t",
+    cat(paste0(format(seq.series.char, width=5), "\t",
+               format(series.ids, width=8), "\t",
+               format(series.min.char, width=5, justify="right"), "\t",
+               format(series.max.char, width=5, justify="right"), "\t",
                format(1/prec.rproc, scientific=FALSE,drop0trailing=TRUE),"\n"),
         sep="")
 

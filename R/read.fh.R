@@ -78,9 +78,12 @@ read.fh <- function(fname) {
                          "There are %d series\n",
                          domain="R-dplR"),
                 n))
-    cat(paste0(seq_len(n), "\t",
-               keycodes, "\t",
-               start.years, "\t",
-               end.years, "\n"), sep="")
+    start.years.char <- format(start.years, scientific=FALSE, trim=TRUE)
+    end.years.char <- format(end.years, scientific=FALSE, trim=TRUE)
+    seq.series.char <- format(seq_len(n), scientific=FALSE, trim=TRUE)
+    cat(paste0(format(seq.series.char, width=5), "\t",
+               format(keycodes, width=8), "\t",
+               format(start.years.char, width=5, justify="right"), "\t",
+               format(end.years.char, width=5, justify="right"), "\n"), sep="")
     as.data.frame(dendro.matrix) # return data.frame
 }

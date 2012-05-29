@@ -1,20 +1,19 @@
 `read.tucson` <- function(fname, header = NULL, long = FALSE,
                           encoding = getOption("encoding"))
 {
-    ## Checks that data.frame 'dat' is good
-    input.ok <- function(dat) {
-        if (nrow(dat) == 0) {
+    ## Checks that the input is good. The input variables are vectors
+    ## ('series', 'decade.yr') or matrices ('x') containing most of
+    ## the data acquired from the input file 'fname'.
+    input.ok <- function(series, decade.yr, x) {
+        if (length(series) == 0) {
             return(FALSE)
         }
-        series <- dat[[1]]
-        decade.yr <- dat[[2]]
 
-        x <- as.matrix(dat[-c(1, 2, 13)])
         ## Number of values allowed per row depends on first year modulo 10
         n.per.row <-
             apply(x, 1,
                   function(x) {
-                      notna <- which(!is.na(x) & (x > 0 | x == -9999))
+                      notna <- which(!is.na(x))
                       n.notna <- length(notna)
                       if (n.notna == 0) {
                           0
@@ -68,12 +67,20 @@
     foo <- regexpr("#", goodLines, fixed=TRUE)
     commentFlag <- foo >= 1 & foo <= 78
     goodLines <- goodLines[!commentFlag]
-    ## Text connection to the good lines (comments removed)
-    tc <- textConnection(goodLines)
+    ## Temporary file for 'goodLines'. Reading from this file is
+    ## faster than making a textConnection to 'goodLines'.
+    tf <- tempfile()
+    tfcon <- file(tf, encoding="UTF-8")
+    on.exit(try(close(tfcon), silent=TRUE), add=TRUE)
+    on.exit(unlink(tf), add=TRUE)
+    writeLines(goodLines, tf)
+    ## New connection for reading from the temp file
+    close(tfcon)
+    tfcon <- file(tf, encoding="UTF-8")
     if (is.null(header)) {
         ## Try to determine if the file has a header. This is failable.
         ## 3 lines in file
-        hdr1 <- readLines(tc, n=1)
+        hdr1 <- readLines(tfcon, n=1)
         if (length(hdr1) == 0) {
             stop("file is empty")
         }
@@ -131,7 +138,6 @@
         is.head <- header
     }
 
-    tc <- textConnection(goodLines) # back to start
     skip.lines <- ifelse(is.head, 3, 0)
     ## Using a connection instead of a file name in read.fwf and
     ## read.table allows the function to support different encodings.
@@ -145,16 +151,17 @@
     }
     ## First, try fixed width columns as in Tucson "standard"
     dat <-
-        tryCatch(read.fwf(tc, widths=fields, skip=skip.lines, comment.char="",
-                          strip.white=TRUE, blank.lines.skip=FALSE,
+        tryCatch(read.fwf(tfcon, widths=fields, skip=skip.lines,
+                          comment.char="", strip.white=TRUE,
+                          blank.lines.skip=FALSE,
                           colClasses=c("character", rep("integer", 11),
                           "character")),
                  error = function(...) {
                      ## If predefined column classes fail
                      ## (e.g. missing values marked with "."), convert
                      ## types manually
-                     tc <- textConnection(goodLines) # back to start
-                     tmp <- read.fwf(tc, widths=fields, skip=skip.lines,
+                     tfcon <- file(tf, encoding="UTF-8")
+                     tmp <- read.fwf(tfcon, widths=fields, skip=skip.lines,
                                      strip.white=TRUE, blank.lines.skip=FALSE,
                                      colClasses="character", comment.char="")
                      for (idx in 2:12) {
@@ -167,21 +174,26 @@
                      tmp
                  })
     dat <- dat[!is.na(dat[[2]]), , drop=FALSE] # requires non-NA year
+    series <- dat[[1]]
+    decade.yr <- dat[[2]]
+    x <- as.matrix(dat[3:12])
+    ## Convert values <= 0 (not -9999) to NA
+    x[x <= 0 & x != -9999] <- NA
     ## If that fails, try columns separated by white space (non-standard)
-    if (!input.ok(dat)) {
+    if (!input.ok(series, decade.yr, x)) {
         warning("fixed width failed, trying variable width columns")
-        tc <- textConnection(goodLines) # back to start
+        tfcon <- file(tf, encoding="UTF-8")
         ## Number of columns is decided by length(col.names)
         dat <-
-            tryCatch(read.table(tc, skip=skip.lines, blank.lines.skip=FALSE,
-                                comment.char="",col.names=letters[1:13],
+            tryCatch(read.table(tfcon, skip=skip.lines, blank.lines.skip=FALSE,
+                                comment.char="", col.names=letters[1:13],
                                 colClasses=c("character", rep("integer", 11),
-                                "character"), fill=TRUE),
+                                "character"), fill=TRUE, quote=""),
                      error = function(...) {
                          ## In case predefined column classes fail
-                         tc <- textConnection(goodLines) # back to start
-                         tmp <- read.table(tc, skip=skip.lines,
-                                           blank.lines.skip=FALSE,
+                         tfcon <- file(tf, encoding="UTF-8")
+                         tmp <- read.table(tfcon, skip=skip.lines,
+                                           blank.lines.skip=FALSE, quote="",
                                            comment.char="", fill=TRUE,
                                            col.names=letters[1:13],
                                            colClasses="character")
@@ -196,16 +208,18 @@
                          tmp
                      })
         dat <- dat[!is.na(dat[[2]]), , drop=FALSE] # requires non-NA year
-        if (!input.ok(dat)) {
+        series <- dat[[1]]
+        decade.yr <- dat[[2]]
+        x <- as.matrix(dat[3:12])
+        x[x <= 0 & x != -9999] <- NA
+        if (!input.ok(series, decade.yr, x)) {
             stop("failed to read rwl file")
         }
     }
-    series <- dat[[1]]
     series.ids <- unique(series)
     nseries <- length(series.ids)
     seq.series <- seq_len(nseries)
     series.index <- match(series, series.ids)
-    decade.yr <- dat[[2]]
     extra.col <- dat[[13]]
 
     cat(sprintf(ngettext(nseries,
@@ -221,9 +235,6 @@
     rw.vec <- NA*vector(mode="numeric", length=nseries*span)
     scratch <- rep.int(as.integer(min.year-1), nseries)
     prec.rproc <- rep.int(as.integer(1), nseries)
-    x <- as.matrix(dat[-c(1, 2, 13)])
-    ## Convert values <= 0 (not -9999) to NA
-    x[x <= 0 & x != -9999] <- NA
 
     .C(rwl.readloop, series.index, decade.yr, as.vector(x),
        nrow(x), ncol(x), as.integer(min.year), rw.vec,

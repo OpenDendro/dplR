@@ -25,10 +25,27 @@ File: rcs.R
 
 - Graceful handling of empty input
 
-Files: read.compact.R, read.fh.R
---------------------------------
+File: read.compact.R
+--------------------
 
 - Pretty printing of summary output, no more ragged lines
+
+File: read.fh.R
+---------------
+
+- Pretty printing of summary output, no more ragged lines
+- More robust detection of block and single column data representations
+- Data block, when using block representation, is interpreted as fixed
+  width fields (10*6)). Reference: TRiCYCLE Users Manual, Version 0.2.6.
+- Different units are supported. Default is 1/100 mm.
+- Each data block is mapped to the correct header block. Previously, there
+  was a risk of using the wrong header if the file contained data in
+  formats other than "Tree" or "Single". Also, the end position
+  of any data block could be off if data with different formats was
+  present in the file. Presumably the function would have failed with an
+  obscure error message.
+- Added support for site, tree, code metadata. Results are given as
+  an attribute of the return value, named "ids".
 
 File: read.tucson.R
 -------------------

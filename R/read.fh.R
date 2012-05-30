@@ -1,24 +1,134 @@
 read.fh <- function(fname) {
     inp <- readLines(fname, ok=TRUE, warn=FALSE)
-    ## get start and end positions of data blocks
-    header.begin <- c(grep("^HEADER:$", inp), length(inp) + 1)
+
+    ## Get start and end positions of headers and data blocks
+    header.begin <- grep("^HEADER:$", inp)
     header.end <- grep("^DATA:(Tree|Single)$", inp)
-    ## get keycodes (= series ids)
-    keycodes <- gsub("KeyCode=(.*)", "\\1", inp[grep("^KeyCode=", inp)])
-    n <- length(keycodes)
+    n <- length(header.end)
     if(n == 0) {
-        stop("file is empty")
+        stop('file has no data in "Tree" or "Single" formats')
     }
-    ## get start years from meta data
-    start.years.pos <- grep("DateBegin=", inp)
-    start.years <- as.numeric(gsub("DateBegin=(.*)", "\\1",
-                                   inp[start.years.pos]))
-    ## get end years from meta data
-    end.years.pos <- grep("DateEnd=",  inp)
-    end.years <- as.numeric(gsub("DateEnd=(.*)", "\\1", inp[end.years.pos]))
-    if (length(start.years) != n || length(end.years) != n) {
-        stop("a 'DateBegin' and 'DateEnd' entry has to be present for each series")
+    ## For each data block in one of the supported formats, find the
+    ## corresponding header block
+    header.taken <- logical(length(header.begin))
+    for (i in seq_len(n)) {
+        n.preceding <- sum(header.begin < header.end[i] - 1)
+        if (n.preceding == 0 || header.taken[n.preceding]) {
+            stop("invalid file: HEADER and DATA don't match")
+        } else {
+            header.taken[n.preceding] <- TRUE
+        }
     }
+    if (!all(header.taken)) {
+        warning("more HEADER blocks than DATA blocks in supported formats")
+    }
+    ## For each data block in one of the supported formats, find the
+    ## following header block (or end of file)
+    data.end <- numeric(n)
+    for (i in seq_len(n-1)) {
+        tmp <- header.begin[header.begin > header.end[i]]
+        data.end[i] <- tmp[1]
+    }
+    tmp <- header.begin[header.begin > header.end[n]]
+    if (length(tmp) > 0) {
+        data.end[n] <- tmp[1]
+    } else {
+        data.end[n] <- length(inp) + 1
+    }
+    ## Forget headers that are not used by the data blocks
+    header.begin <- header.begin[header.taken]
+
+    ## Get essential metadata from headers
+    keycodes <- character(n)
+    start.years <- numeric(n)
+    end.years <- numeric(n)
+    multipliers <- rep(1, n)
+    divisors <- rep(100, n)
+    site.code <- rep(NA_character_, n)
+    tree.vec <- rep(NA_real_, n)
+    core.vec <- rep(NA_real_, n)
+    for (i in seq_len(n)) {
+        this.header <- inp[(header.begin[i]+1):(header.end[i]-1)]
+        ## get keycode (= series id)
+        this.keycode <- sub("KeyCode=", "", fixed=TRUE,
+                            x=grep("^KeyCode=", this.header, value=TRUE))
+        if (length(this.keycode) != 1) {
+            stop(gettextf('in series %d, number of "KeyCode" lines is not 1',
+                          i, domain="R-dplR"),
+                 domain=NA)
+        } else {
+            keycodes[i] <- this.keycode
+        }
+        ## get start year
+        this.start.year <- sub("DateBegin=", "", fixed=TRUE,
+                               x=grep("^DateBegin=", this.header, value=TRUE))
+        if (length(this.start.year) != 1) {
+            stop(gettextf('in series %d, number of "DateBegin" lines is not 1',
+                          i, domain="R-dplR"),
+                 domain=NA)
+        } else {
+            start.years[i] <- as.numeric(this.start.year)
+        }
+        ## get end year
+        this.end.year <- sub("DateEnd=", "", fixed=TRUE,
+                             x=grep("^DateEnd=", this.header, value=TRUE))
+        if (length(this.end.year) != 1) {
+            stop(gettextf('in series %d, number of "DateEnd" lines is not 1',
+                          i, domain="R-dplR"),
+                 domain=NA)
+        } else {
+            end.years[i] <- as.numeric(this.end.year)
+        }
+        ## get unit (by default, divide by 100)
+        this.unit <- sub("Unit=", "", fixed=TRUE,
+                         x=grep("^Unit=", this.header, value=TRUE))
+        if (length(this.unit) == 1) {
+            this.unit <- sub("mm", "", this.unit, fixed=TRUE)
+            div.loc <- regexpr("/", this.unit, fixed=TRUE)
+            if (div.loc > 0) {
+                multipliers[i] <- as.numeric(substr(this.unit, 1, div.loc-1))
+                divisors[i] <- as.numeric(substr(this.unit, div.loc+1,
+                                                 nchar(this.unit)))
+            } else {
+                multipliers[i] <- as.numeric(this.unit)
+                divisors[i] <- 1
+            }
+            if (is.na(multipliers[i]) || is.na(divisors[i])) {
+                stop(gettextf('in series %d, cannot interpret "Unit" line',
+                              i, domain="R-dplR"),
+                     domain=NA)
+            }
+        } else if (length(this.unit) > 1) {
+            stop(gettextf('in series %d, number of "Unit" lines is > 1',
+                          i, domain="R-dplR"),
+                 domain=NA)
+        }
+        ## get site code
+        this.site <- sub("SiteCode=", "", fixed=TRUE,
+                         x=grep("^SiteCode=", this.header, value=TRUE))
+        if (length(this.site) == 1) {
+            site.code[i] <- this.site
+        }
+        ## get tree number
+        this.tree <- sub("TreeNo=", "", fixed=TRUE,
+                         x=grep("^TreeNo=", this.header, value=TRUE))
+        if (length(this.tree) == 1) {
+            tmp <- suppressWarnings(as.numeric(this.tree))
+            if (identical(tmp, round(tmp))) {
+                tree.vec[i] <- tmp
+            }
+        }
+        ## get core number
+        this.core <- sub("CoreNo=", "", fixed=TRUE,
+                         x=grep("^CoreNo=", this.header, value=TRUE))
+        if (length(this.core) == 1) {
+            tmp <- suppressWarnings(as.numeric(this.core))
+            if (identical(tmp, round(tmp))) {
+                core.vec[i] <- tmp
+            }
+        }
+    }
+
     ## calculate time span for data.frame
     min.year <- min(start.years)
     r.off <- min.year - 1
@@ -32,12 +142,24 @@ read.fh <- function(fname) {
         strsplit(x, ";")[[1]][1]
     }
     for (i in seq_len(n)) { # loop through data blocks
-        portion <- inp[(header.end[i]+1):(header.begin[i+1]-1)]
-        if (nchar(portion[1]) > 4) { # data is in block format
+        portion.start <- header.end[i] + 1
+        portion.end <- data.end[i] - 1
+        if (portion.end < portion.start) {
+            warning(gettextf("in series %s: ", keycodes[i], domain="R-dplR"),
+                    gettextf("no data", domain="R-dplR"), domain=NA)
+            next
+        }
+        portion <- inp[portion.start:portion.end]
+        if (nchar(portion[1]) < 60 ||
+            grepl(";", portion[1], fixed=TRUE)) { # data is in column format
+            data <- as.numeric(vapply(portion, strip.comment, "foo"))
+        } else { # data is in block format
             data <- numeric(length(portion) * 10)
             for (j in seq_along(portion)) {
-                row <- as.character(portion[j])
-                row.numeric <- as.numeric(strsplit(row, " +")[[1]][2:11])
+                row.fwf <- substring(portion[j],
+                                     seq(from=1, by=6, length=10),
+                                     seq(from=6, by=6, length=10))
+                row.numeric <- as.numeric(row.fwf)
                 data[(j * 10 - 9):(j * 10)] <- row.numeric
             }
             ## Remove trailing zeros
@@ -53,10 +175,8 @@ read.fh <- function(fname) {
                     data <- data[-zeros]
                 }
             }
-            data <- data / 100
-        } else { # data is in column format
-            data <- as.numeric(vapply(portion, strip.comment, "foo")) / 100
         }
+        data <- data * multipliers[i] / divisors[i]
         n.expected <- end.years[i] - start.years[i] + 1
         n.true <- length(data)
         if (n.true == n.expected) {
@@ -64,13 +184,13 @@ read.fh <- function(fname) {
             dendro.matrix[(start.years[i]-r.off):(end.years[i]-r.off), i] <-
                 data
         } else if (n.true < n.expected) {
-            stop(gettextf("in series %s: ", keycodes[i]),
+            stop(gettextf("in series %s: ", keycodes[i], domain="R-dplR"),
                  gettextf("too few values (expected %d, got %d)",
-                          n.expected, n.true))
+                          n.expected, n.true, domain="R-dplR"), domain=NA)
         } else {
-            stop(gettextf("in series %s: ", keycodes[i]),
+            stop(gettextf("in series %s: ", keycodes[i], domain="R-dplR"),
                  gettextf("too many values (expected %d, got %d)",
-                          n.expected, n.true))
+                          n.expected, n.true, domain="R-dplR"), domain=NA)
         }
     }
     cat(sprintf(ngettext(n,
@@ -85,5 +205,51 @@ read.fh <- function(fname) {
                format(keycodes, width=8), "\t",
                format(start.years.char, width=5, justify="right"), "\t",
                format(end.years.char, width=5, justify="right"), "\n"), sep="")
-    as.data.frame(dendro.matrix) # return data.frame
+    rwl <- as.data.frame(dendro.matrix) # return data.frame
+    ## Create data.frame for site, tree, core IDs
+    if (!any(is.na(tree.vec)) && !any(is.na(core.vec))) {
+        unique.sites <- unique(site.code)
+        n.unique <- length(unique.sites)
+        if (n.unique > 1) {
+            site.vec <- match(site.code, unique.sites)
+            tree.vec2 <- complex(n, NA_real_, NA_real_)
+            total.dupl <- 0
+            for (i in seq_len(n.unique)) {
+                idx <- which(site.vec == i)
+                ut <- unique(tree.vec[idx])
+                for (this.tree in ut) {
+                    idx2 <- idx[tree.vec[idx] == this.tree]
+                    if (this.tree %in% tree.vec2) {
+                        tree.vec2[idx2] <- 1i * (total.dupl + 1)
+                        total.dupl <- total.dupl + 1
+                    } else {
+                        tree.vec2[idx2] <- this.tree
+                    }
+                }
+            }
+            if (total.dupl > 0) {
+                dont.change <- Im(tree.vec2) == 0
+                existing <- unique(Re(tree.vec2[dont.change]))
+                max.existing <- max(existing)
+                if (max.existing < 1) {
+                    free.ids <- 1:total.dupl
+                } else {
+                    free.ids <- which(!(1:max.existing %in% existing))
+                    free.ids <-
+                        c(free.ids,
+                          seq(from=max.existing+1, by=1,
+                              length.out=max(0, total.dupl-length(free.ids))))
+                }
+                tree.vec2[!dont.change] <-
+                    free.ids[Im(tree.vec2[!dont.change])]
+            }
+            tree.vec2 <- Re(tree.vec2)
+            attr(res, "ids") <- data.frame(tree=tree.vec2, core=core.vec,
+                                           site=site.vec, row.names=keycodes)
+        } else {
+            attr(res, "ids") <- data.frame(tree=tree.vec, core=core.vec,
+                                           row.names=keycodes)
+        }
+    }
+    rwl
 }

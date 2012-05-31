@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.5.5\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-05-31 16:40+0300\n"
+"POT-Creation-Date: 2012-05-31 17:20+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -271,9 +271,6 @@ msgid "cannot interpret \"Unit\" line"
 msgstr ""
 
 msgid "number of \"Unit\" lines is > 1"
-msgstr ""
-
-msgid "no data"
 msgstr ""
 
 msgid "too few values (expected %d, got %d)"

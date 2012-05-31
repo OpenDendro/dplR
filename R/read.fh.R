@@ -176,10 +176,11 @@ read.fh <- function(fname) {
     for (i in seq_len(n)) { # loop through data blocks
         portion.start <- header.end[i] + 1
         portion.end <- data.end[i] - 1
+        n.expected <- end.years[i] - start.years[i] + 1
         if (portion.end < portion.start) {
-            warning(gettextf("in series %s: ", keycodes[i], domain="R-dplR"),
-                    gettext("no data", domain="R-dplR"), domain=NA)
-            next
+            stop(gettextf("in series %s: ", keycodes[i], domain="R-dplR"),
+                 gettextf("too few values (expected %d, got %d)",
+                          n.expected, 0, domain="R-dplR"), domain=NA)
         }
         portion <- inp[portion.start:portion.end]
         if (nchar(portion[1]) < 60 ||
@@ -209,7 +210,6 @@ read.fh <- function(fname) {
             }
         }
         data <- data * multipliers[i] / divisors[i]
-        n.expected <- end.years[i] - start.years[i] + 1
         n.true <- length(data)
         if (n.true == n.expected) {
             ## write data into matrix

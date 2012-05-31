@@ -16,9 +16,18 @@ read.fh(fname)
 }
 \value{
   A \code{data.frame} with the series in columns and the years as rows. The
-  keycodes are the column names and the years are the row names.
- }
-\author{ Christian Zang.  Patched by Mikko Korpela. }
+  keycodes are the column names and the years are the row
+  names. Depending on metadata available in the input file, the
+  following attributes may be present in the \code{data.frame}:
+
+  \item{ids}{A \code{data.frame} identifying the series. Always contains
+    columns \code{"tree"} and \code{"core"}, may contain columns
+    \code{"site"}, \code{"radius"}, and \code{"stemDisk"}. All
+    columns are \code{numeric}.}
+  \item{po}{A \code{data.frame} containing pith offsets, formatted for
+    use in \code{\link{rcs}}.}
+}
+\author{ Christian Zang.  New features and patches by Mikko Korpela. }
 \seealso{ \code{\link{read.rwl}} }
 \references{ Rinn, F. (2003) \emph{TSAP-Win User Reference Manual.} Rinntech, Heidelberg \url{http://www.rinntech.com/}
 }

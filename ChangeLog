@@ -44,8 +44,10 @@ File: read.fh.R
   of any data block could be off if data with different formats was
   present in the file. Presumably the function would have failed with an
   obscure error message.
-- Added support for site, tree, code metadata. Results are given as
+- Added support for site, tree, core, etc. metadata. Results are given as
   an attribute of the return value, named "ids".
+- Added support for MissingRingsBefore (pith offset) metadata. Results are
+  given as an attribute named "po".
 
 File: read.tucson.R
 -------------------

@@ -47,6 +47,9 @@ read.fh <- function(fname) {
     site.code <- rep(NA_character_, n)
     tree.vec <- rep(NA_real_, n)
     core.vec <- rep(NA_real_, n)
+    radius.vec <- rep(NA_real_, n)
+    stemdisk.vec <- rep(NA_real_, n)
+    pith.offset <- rep(NA_real_, n)
     for (i in seq_len(n)) {
         this.header <- inp[(header.begin[i]+1):(header.end[i]-1)]
         ## get keycode (= series id)
@@ -127,6 +130,34 @@ read.fh <- function(fname) {
                 core.vec[i] <- tmp
             }
         }
+        ## get radius number
+        this.radius <- sub("RadiusNo=", "", fixed=TRUE,
+                           x=grep("^RadiusNo=", this.header, value=TRUE))
+        if (length(this.radius) == 1) {
+            tmp <- suppressWarnings(as.numeric(this.radius))
+            if (identical(tmp, round(tmp))) {
+                radius.vec[i] <- tmp
+            }
+        }
+        ## get stem disk number
+        this.stemdisk <- sub("StemDiskNo=", "", fixed=TRUE,
+                             x=grep("^StemDiskNo=", this.header, value=TRUE))
+        if (length(this.stemdisk) == 1) {
+            tmp <- suppressWarnings(as.numeric(this.stemdisk))
+            if (identical(tmp, round(tmp))) {
+                stemdisk.vec[i] <- tmp
+            }
+        }
+        ## get pith offset (missing rings before start of series)
+        this.missing <-
+            sub("MissingRingsBefore=", "", fixed=TRUE,
+                x=grep("^MissingRingsBefore=", this.header, value=TRUE))
+        if (length(this.missing) == 1) {
+            tmp <- suppressWarnings(as.numeric(this.missing))
+            if (identical(tmp, round(tmp)) && tmp >= 0) {
+                pith.offset[i] <- tmp + 1
+            }
+        }
     }
 
     ## calculate time span for data.frame
@@ -204,10 +235,23 @@ read.fh <- function(fname) {
     cat(paste0(format(seq.series.char, width=5), "\t",
                format(keycodes, width=8), "\t",
                format(start.years.char, width=5, justify="right"), "\t",
-               format(end.years.char, width=5, justify="right"), "\n"), sep="")
+               format(end.years.char, width=5, justify="right"), "\t",
+               format(multipliers/divisors,
+                      scientific=FALSE, drop0trailing=TRUE),"\n"), sep="")
     rwl <- as.data.frame(dendro.matrix) # return data.frame
-    ## Create data.frame for site, tree, core IDs
-    if (!any(is.na(tree.vec)) && !any(is.na(core.vec))) {
+    ## Create data.frame for site, tree, core, radius, stem disk IDs
+    all.have.treeID <- !any(is.na(tree.vec))
+    na.core <- is.na(core.vec)
+    all.have.coreID <- !any(na.core)
+    ## Try to find implicit core IDs (tree ID occurs once)
+    if (all.have.treeID && !all.have.coreID) {
+        foo <- table(tree.vec)
+        measured.once <- as.numeric(names(foo)[foo == 1])
+        core.vec[na.core & tree.vec %in% measured.once] <- 1
+        all.have.coreID <- !any(is.na(core.vec))
+    }
+    ## Only include "ids" data.frame if all tree and core IDs are known
+    if (all.have.treeID && all.have.coreID) {
         unique.sites <- unique(site.code)
         n.unique <- length(unique.sites)
         if (n.unique > 1) {
@@ -244,11 +288,31 @@ read.fh <- function(fname) {
                     free.ids[Im(tree.vec2[!dont.change])]
             }
             tree.vec2 <- Re(tree.vec2)
-            attr(res, "ids") <- data.frame(tree=tree.vec2, core=core.vec,
-                                           site=site.vec, row.names=keycodes)
+            adf <- data.frame(tree=tree.vec2, core=core.vec, site=site.vec,
+                              row.names=keycodes)
         } else {
-            attr(res, "ids") <- data.frame(tree=tree.vec, core=core.vec,
-                                           row.names=keycodes)
+            adf <- data.frame(tree=tree.vec, core=core.vec, row.names=keycodes)
+        }
+        if (any(!is.na(radius.vec))) {
+            adf <- cbind(adf, radius=radius.vec)
+        }
+        if (any(!is.na(stemdisk.vec))) {
+            adf <- cbind(adf, stemDisk=stemdisk.vec)
+        }
+        attr(rwl, "ids") <- adf
+        cat(gettext('Tree and core IDs were found. See attribute "ids".\n',
+                    domain="R-dplR"))
+    }
+    ## Include pith offset data.frame if some pith offsets are known
+    na.po <- is.na(pith.offset)
+    if (any(!na.po)) {
+        attr(rwl, "po") <- data.frame(series=keycodes, pith.offset=pith.offset)
+        if (any(na.po)) {
+            cat(gettext('Pith offsets were found (some missing values). See attribute "po".\n',
+                        domain="R-dplR"))
+        } else {
+            cat(gettext('Pith offsets were found (no missing values). See attribute "po".\n',
+                        domain="R-dplR"))
         }
     }
     rwl

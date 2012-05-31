@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.5.5\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-05-28 10:30+0300\n"
+"POT-Creation-Date: 2012-05-31 16:40+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -243,16 +243,52 @@ msgstr ""
 msgid "All embedded sample depths are one...Dumping from matrix"
 msgstr ""
 
-msgid "a 'DateBegin' and 'DateEnd' entry has to be present for each series"
+msgid "file has no data in \"Tree\" or \"Single\" formats"
+msgstr ""
+
+msgid "invalid file: HEADER and DATA don't match"
+msgstr ""
+
+msgid "more HEADER blocks than DATA blocks in supported formats"
 msgstr ""
 
 msgid "in series %s:"
+msgstr ""
+
+msgid "number of \"KeyCode\" lines is not 1"
+msgstr ""
+
+msgid "R-dplR"
+msgstr ""
+
+msgid "number of \"DateBegin\" lines is not 1"
+msgstr ""
+
+msgid "number of \"DateEnd\" lines is not 1"
+msgstr ""
+
+msgid "cannot interpret \"Unit\" line"
+msgstr ""
+
+msgid "number of \"Unit\" lines is > 1"
+msgstr ""
+
+msgid "no data"
 msgstr ""
 
 msgid "too few values (expected %d, got %d)"
 msgstr ""
 
 msgid "too many values (expected %d, got %d)"
+msgstr ""
+
+msgid "Tree and core IDs were found. See attribute \"ids\"."
+msgstr ""
+
+msgid "Pith offsets were found (some missing values). See attribute \"po\"."
+msgstr ""
+
+msgid "Pith offsets were found (no missing values). See attribute \"po\"."
 msgstr ""
 
 msgid "Site-Tree-Core mask must only contain integral values"

@@ -56,8 +56,8 @@ read.fh <- function(fname) {
         this.keycode <- sub("KeyCode=", "", fixed=TRUE,
                             x=grep("^KeyCode=", this.header, value=TRUE))
         if (length(this.keycode) != 1) {
-            stop(gettextf('in series %d, number of "KeyCode" lines is not 1',
-                          i, domain="R-dplR"),
+            stop(gettextf("in series %s: ", as.character(i), domain="R-dplR"),
+                 gettext('number of "KeyCode" lines is not 1',domain="R-dplR"),
                  domain=NA)
         } else {
             keycodes[i] <- this.keycode
@@ -66,8 +66,9 @@ read.fh <- function(fname) {
         this.start.year <- sub("DateBegin=", "", fixed=TRUE,
                                x=grep("^DateBegin=", this.header, value=TRUE))
         if (length(this.start.year) != 1) {
-            stop(gettextf('in series %d, number of "DateBegin" lines is not 1',
-                          i, domain="R-dplR"),
+            stop(gettextf("in series %s: ", keycodes[i], domain="R-dplR"),
+                 gettext('number of "DateBegin" lines is not 1',
+                         domain="R-dplR"),
                  domain=NA)
         } else {
             start.years[i] <- as.numeric(this.start.year)
@@ -76,8 +77,8 @@ read.fh <- function(fname) {
         this.end.year <- sub("DateEnd=", "", fixed=TRUE,
                              x=grep("^DateEnd=", this.header, value=TRUE))
         if (length(this.end.year) != 1) {
-            stop(gettextf('in series %d, number of "DateEnd" lines is not 1',
-                          i, domain="R-dplR"),
+            stop(gettextf("in series %s: ", keycodes[i], domain="R-dplR"),
+                 gettext('number of "DateEnd" lines is not 1',domain="R-dplR"),
                  domain=NA)
         } else {
             end.years[i] <- as.numeric(this.end.year)
@@ -97,13 +98,13 @@ read.fh <- function(fname) {
                 divisors[i] <- 1
             }
             if (is.na(multipliers[i]) || is.na(divisors[i])) {
-                stop(gettextf('in series %d, cannot interpret "Unit" line',
-                              i, domain="R-dplR"),
+                stop(gettextf("in series %s: ", keycodes[i], domain="R-dplR"),
+                     gettext('cannot interpret "Unit" line', domain="R-dplR"),
                      domain=NA)
             }
         } else if (length(this.unit) > 1) {
-            stop(gettextf('in series %d, number of "Unit" lines is > 1',
-                          i, domain="R-dplR"),
+            stop(gettextf("in series %s: ", keycodes[i], domain="R-dplR"),
+                 gettext('number of "Unit" lines is > 1', domain="R-dplR"),
                  domain=NA)
         }
         ## get site code
@@ -177,7 +178,7 @@ read.fh <- function(fname) {
         portion.end <- data.end[i] - 1
         if (portion.end < portion.start) {
             warning(gettextf("in series %s: ", keycodes[i], domain="R-dplR"),
-                    gettextf("no data", domain="R-dplR"), domain=NA)
+                    gettext("no data", domain="R-dplR"), domain=NA)
             next
         }
         portion <- inp[portion.start:portion.end]

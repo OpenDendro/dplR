@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.5.5\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-05-28 10:30+0300\n"
-"PO-Revision-Date: 2012-05-28 10:31+0300\n"
+"POT-Creation-Date: 2012-05-31 16:40+0300\n"
+"PO-Revision-Date: 2012-05-31 16:58+0300\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -253,17 +253,57 @@ msgid "All embedded sample depths are one...Dumping from matrix"
 msgstr ""
 "Kaikki sisäänrakennetut näytemäärät ovat yksi...Jätetään pois matriisista"
 
-msgid "a 'DateBegin' and 'DateEnd' entry has to be present for each series"
-msgstr "jokaisella sarjalla täytyy olla ’DateBegin’‐ ja ’DateEnd’‐merkinnät"
+msgid "file has no data in \"Tree\" or \"Single\" formats"
+msgstr "tiedostossa ei ole \"Tree\"- tai \"Single\"-muotoista dataa"
+
+msgid "invalid file: HEADER and DATA don't match"
+msgstr "epäkelpo tiedosto: HEADER- ja DATA-osat eivät sovi yhteen"
+
+msgid "more HEADER blocks than DATA blocks in supported formats"
+msgstr "enemmän HEADER-osia kuin tuettuja DATA-osia"
 
 msgid "in series %s:"
 msgstr "sarjassa %s:"
+
+msgid "number of \"KeyCode\" lines is not 1"
+msgstr "\"KeyCode\"-rivien lukumäärä ei ole 1"
+
+msgid "R-dplR"
+msgstr "R-dplR"
+
+msgid "number of \"DateBegin\" lines is not 1"
+msgstr "\"DateBegin\"-rivien lukumäärä ei ole 1"
+
+msgid "number of \"DateEnd\" lines is not 1"
+msgstr "\"DateEnd\"-rivien lukumäärä ei ole 1"
+
+msgid "cannot interpret \"Unit\" line"
+msgstr "\"Unit\"-riviä ei voida tulkita"
+
+msgid "number of \"Unit\" lines is > 1"
+msgstr "\"Unit\"-rivien lukumäärä on > 1"
+
+msgid "no data"
+msgstr "ei dataa"
 
 msgid "too few values (expected %d, got %d)"
 msgstr "liian vähän arvoja (odotettiin %d, saatiin %d)"
 
 msgid "too many values (expected %d, got %d)"
 msgstr "liian monta arvoa (odotettiin %d, saatiin %d)"
+
+msgid "Tree and core IDs were found. See attribute \"ids\"."
+msgstr "Puu- ja näytetunnisteet löydettiin. Katso attribuutti \"ids\"."
+
+msgid "Pith offsets were found (some missing values). See attribute \"po\"."
+msgstr ""
+"Sarjojen alusta puuttuvien renkaiden määriä löydettiin. Katso attribuutti "
+"\"po\"."
+
+msgid "Pith offsets were found (no missing values). See attribute \"po\"."
+msgstr ""
+"Sarjojen alusta puuttuvien renkaiden määrät löydettiin. Katso attribuutti "
+"\"po\"."
 
 msgid "Site-Tree-Core mask must only contain integral values"
 msgstr "Paikka–Puu–Näyte‐maskissa täytyy olla pelkkiä kokonaislukuja"
@@ -454,7 +494,7 @@ msgstr "’ids’:n täytyy olla data.frame, jossa on sarakkeet ’tree’ ja �
 
 msgid "Series with matching tree/core IDs have been averaged"
 msgstr ""
-"Samoilla ’tree’/’core’-tunnisteilla varustetut sarjat on keskiarvoistettu"
+"Samoilla puu- ja näytetunnisteilla varustetut sarjat on keskiarvoistettu"
 
 msgid "'window.length' is larger than the number of years in 'rwi'"
 msgstr "’window.length’ on suurempi kuin vuosien määrä ’rwi’:ssä"

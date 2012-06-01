@@ -62,7 +62,7 @@
     on.exit(close(con))
     goodLines <- readLines(con)
     ## Strip empty lines (caused by CR CR LF endings etc.)
-    goodLines <- goodLines[nchar(goodLines) > 0]
+    goodLines <- goodLines[nzchar(goodLines)]
     ## Remove comment lines (print them?)
     foo <- regexpr("#", goodLines, fixed=TRUE)
     commentFlag <- foo >= 1 & foo <= 78
@@ -99,7 +99,7 @@
                                    seq(from=13, by=6, length=10),
                                    seq(from=18, by=6, length=10))
             datacheck <- sub("^[[:blank:]]+", "", datacheck)
-            idx.good <- which(nchar(datacheck) > 0)
+            idx.good <- which(nzchar(datacheck))
             n.good <- length(idx.good)
             if (n.good == 0) {
                 is.head <- TRUE

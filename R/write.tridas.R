@@ -411,7 +411,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
         doc.addTag.nc("laboratory", close = FALSE)
         if (identifier.present) {
             this.identifier <- lab.info$identifier[i]
-            if (!is.na(this.identifier) && nchar(this.identifier) > 0) {
+            if (!is.na(this.identifier) && nzchar(this.identifier)) {
                 doc.addTag("identifier",
                            this.identifier,
                            attrs = c(domain = lab.info$domain[i]))
@@ -419,7 +419,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
         }
         if (acronym.present) {
             this.acronym <- lab.info$acronym[i]
-            if (!is.na(this.acronym) && nchar(this.acronym) > 0) {
+            if (!is.na(this.acronym) && nzchar(this.acronym)) {
                 doc.addTag("name", lab.info$name[i],
                            attrs = c(acronym = this.acronym))
             } else {
@@ -432,7 +432,7 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
         doc.addTag.nc("address", close = FALSE)
         for (address.line in address.order) {
             address.text <- lab.info[[address.line]][i]
-            if (!is.na(address.text) && nchar(address.text) > 0) {
+            if (!is.na(address.text) && nzchar(address.text)) {
                 doc.addTag(address.line, address.text)
             }
         }

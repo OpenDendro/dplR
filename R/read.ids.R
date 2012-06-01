@@ -769,7 +769,7 @@ read.ids <- function(rwl, stc=c(3, 2, 3), ignore.site.case = FALSE,
                 unique(sub("^([[:alpha:]]*).*", "\\1",
                            grep("\\d", site.strs15, value=TRUE)))
             unique.alphasites <-
-                unique.alphasites[nchar(unique.alphasites) > 0]
+                unique.alphasites[nzchar(unique.alphasites)]
             for (ua in unique.alphasites) {
                 nchar.this <- nchar(ua)
                 sub.others <- substr(ids[others.idx], 1, nchar.this)

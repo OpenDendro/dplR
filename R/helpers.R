@@ -189,7 +189,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
         idx.bad <- grep(bad.chars, x.cut, perl=TRUE)
         if (length(idx.bad) > 0) {
             warning("characters outside a-z, A-Z, 0-9 present: renaming series")
-            if (nchar(mapping.fname) > 0) {
+            if (nzchar(mapping.fname)) {
                 write.map <- TRUE
             }
             rename.flag[idx.bad] <- TRUE
@@ -201,7 +201,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
         over.limit <- nchar(x.cut) > limit
         if (any(over.limit)) {
             warning("some names are too long: renaming series")
-            if (nchar(mapping.fname) > 0) {
+            if (nzchar(mapping.fname)) {
                 write.map <- TRUE
             }
             rename.flag[over.limit] <- TRUE
@@ -217,7 +217,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
         y <- x.cut
     } else {
         warning("duplicate names present: renaming series")
-        if (nchar(mapping.fname) > 0) {
+        if (nzchar(mapping.fname)) {
             write.map <- TRUE
         }
 
@@ -256,7 +256,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
                     suffix.count <- count.base(suffix.count, n.an)
                     proposed <-
                         compose.name(unique.cut[i],alphanumeric,suffix.count,limit)
-                    if (nchar(proposed) == 0) {
+                    if (nzchar(proposed)) {
                         warning("could not remap a name: some series will be missing")
                         still.looking <- FALSE
                         ## F for Fail...

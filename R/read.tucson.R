@@ -22,7 +22,11 @@
                       }
                   })
         full.per.row <- 10 - decade.yr %% 10
-        idx.bad <- which(n.per.row > full.per.row)
+        ## One extra column per row is allowed:
+        ## a. enough space will be allocated (max.year is larger than
+        ## last year of any series)
+        ## b. the extra col may contain a stop marker (non-standard location)
+        idx.bad <- which(n.per.row > full.per.row + 1)
         n.bad <- length(idx.bad)
         if (n.bad > 0) {
             warn.fmt <- ngettext(n.bad,
@@ -38,7 +42,7 @@
         series.ids <- unique(series)
         nseries <- length(series.ids)
         series.index <- match(series, series.ids)
-        min.year <- (min(decade.yr) %/% 10) * 10
+        min.year <- min(decade.yr)
         max.year <- ((max(decade.yr)+10) %/% 10) * 10
         span <- max.year - min.year + 1
         val.count <- matrix(0, span, nseries)
@@ -250,7 +254,7 @@
                          domain="R-dplR"),
                 nseries))
 
-    min.year <- (min(decade.yr) %/% 10) * 10
+    min.year <- min(decade.yr)
     max.year <- ((max(decade.yr)+10) %/% 10) * 10
     span <- max.year - min.year + 1
 

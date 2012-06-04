@@ -5,10 +5,11 @@ test.read.tucson <- function() {
     tf <- tempfile()
     fh <- file(tf, "wt")
     on.exit(unlink(tf))
-    writeLines("TEST1A  1734  1230   456   789    12    34    56     7", fh)
+    writeLines("TEST1A  1734  1230   456   789    12    34    56     7     6",
+               fh)
     close(fh)
     checkException(read.tucson(tf),
-                   msg="Values on a line must not cross a decade border (test 1)")
+                   msg="Max one extra value per is allowed per row (test 1)")
 
     ## Precision 0.01
     tf2 <- tempfile()

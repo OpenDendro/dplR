@@ -42,7 +42,7 @@
         max.year <- ((max(decade.yr)+10) %/% 10) * 10
         span <- max.year - min.year + 1
         val.count <- matrix(0, span, nseries)
-        for (i in nrow(dat)) {
+        for (i in seq_along(series)) {
             this.col <- series.index[i]
             these.rows <- seq(from = decade.yr[i] - min.year + 1, by = 1,
                               length.out = n.per.row[i])
@@ -61,6 +61,8 @@
     con <- file(fname, encoding = encoding)
     on.exit(close(con))
     goodLines <- readLines(con)
+    close(con)
+    on.exit()
     ## Strip empty lines (caused by CR CR LF endings etc.)
     goodLines <- goodLines[nzchar(goodLines)]
     ## Remove comment lines (print them?)
@@ -71,7 +73,7 @@
     ## faster than making a textConnection to 'goodLines'.
     tf <- tempfile()
     tfcon <- file(tf, encoding="UTF-8")
-    on.exit(try(close(tfcon), silent=TRUE), add=TRUE)
+    on.exit(close(tfcon))
     on.exit(unlink(tf), add=TRUE)
     writeLines(goodLines, tf)
     ## New connection for reading from the temp file
@@ -105,10 +107,15 @@
                 is.head <- TRUE
             } else {
                 datacheck <- datacheck[seq_len(idx.good[n.good])]
-                datacheck <- suppressWarnings(as.numeric(datacheck))
-                if (is.null(datacheck) || any(is.na(datacheck)) ||
-                    any(round(datacheck) != datacheck)) {
+                if (any(grepl("[[:alpha:]]", datacheck))) {
                     is.head <- TRUE
+                } else {
+                    datacheck <- suppressWarnings(as.numeric(datacheck))
+                    if (is.null(datacheck) ||
+                        any(!is.na(datacheck) &
+                            round(datacheck) != datacheck)) {
+                        is.head <- TRUE
+                    }
                 }
             }
         }
@@ -117,11 +124,14 @@
                                    split="[[:space:]]+")[[1]]
             n.parts <- length(hdr1.split)
             if (n.parts >= 3 && n.parts <= 13) {
-                yrdatacheck <-
-                    suppressWarnings(as.numeric(hdr1.split[2:n.parts]))
-                if (!(is.null(yrdatacheck) || any(is.na(yrdatacheck)) ||
-                      any(round(yrdatacheck) != yrdatacheck))) {
-                    is.head <- FALSE
+                hdr1.split <- hdr1.split[2:n.parts]
+                if (!any(grepl("[[:alpha:]]", hdr1.split))) {
+                    yrdatacheck <- suppressWarnings(as.numeric(hdr1.split))
+                    if (!(is.null(yrdatacheck) ||
+                          any(!is.na(yrdatacheck) &
+                              round(yrdatacheck) != yrdatacheck))) {
+                        is.head <- FALSE
+                    }
                 }
             }
         }
@@ -139,48 +149,60 @@
     }
 
     skip.lines <- ifelse(is.head, 3, 0)
-    ## Using a connection instead of a file name in read.fwf and
-    ## read.table allows the function to support different encodings.
-    if (long) {
-        ## Reading 11 years per decade allows nonstandard use of stop
-        ## marker at the end of a line that already has 10
-        ## measurements.  Such files exist in ITRDB.
-        fields <- c(7, 5, rep(6, 11))
-    } else {
-        fields <- c(8, 4, rep(6, 11))
+    data1 <- readLines(tfcon, n=skip.lines + 1)
+    if (length(data1) < skip.lines + 1) {
+        stop("file is empty") # except for possible header
     }
-    ## First, try fixed width columns as in Tucson "standard"
-    dat <-
-        tryCatch(read.fwf(tfcon, widths=fields, skip=skip.lines,
-                          comment.char="", strip.white=TRUE,
-                          blank.lines.skip=FALSE,
-                          colClasses=c("character", rep("integer", 11),
-                          "character")),
-                 error = function(...) {
-                     ## If predefined column classes fail
-                     ## (e.g. missing values marked with "."), convert
-                     ## types manually
-                     tfcon <- file(tf, encoding="UTF-8")
-                     tmp <- read.fwf(tfcon, widths=fields, skip=skip.lines,
-                                     strip.white=TRUE, blank.lines.skip=FALSE,
-                                     colClasses="character", comment.char="")
-                     for (idx in 2:12) {
-                         asnum <- as.numeric(tmp[[idx]])
-                         if (!identical(round(asnum), asnum)) {
-                             stop("non-integral numbers found")
+    on.exit(unlink(tf))
+    ## Test for presence of tabs
+    if (!grepl("\t", data1[length(data1)])) {
+        ## Using a connection instead of a file name in read.fwf and
+        ## read.table allows the function to support different encodings.
+        if (long) {
+            ## Reading 11 years per decade allows nonstandard use of stop
+            ## marker at the end of a line that already has 10
+            ## measurements.  Such files exist in ITRDB.
+            fields <- c(7, 5, rep(6, 11))
+        } else {
+            fields <- c(8, 4, rep(6, 11))
+        }
+        ## First, try fixed width columns as in Tucson "standard"
+        dat <-
+            tryCatch(read.fwf(tfcon, widths=fields, skip=skip.lines,
+                              comment.char="", strip.white=TRUE,
+                              blank.lines.skip=FALSE,
+                              colClasses=c("character", rep("integer", 11),
+                              "character")),
+                     error = function(...) {
+                         ## If predefined column classes fail
+                         ## (e.g. missing values marked with "."), convert
+                         ## types manually
+                         tfcon <- file(tf, encoding="UTF-8")
+                         tmp <- read.fwf(tfcon, widths=fields, skip=skip.lines,
+                                         strip.white=TRUE, blank.lines.skip=FALSE,
+                                         colClasses="character", comment.char="")
+                         for (idx in 2:12) {
+                             asnum <- as.numeric(tmp[[idx]])
+                             if (!identical(round(asnum), asnum)) {
+                                 stop("non-integral numbers found")
+                             }
+                             tmp[[idx]] <- as.integer(asnum)
                          }
-                         tmp[[idx]] <- as.integer(asnum)
-                     }
-                     tmp
-                 })
-    dat <- dat[!is.na(dat[[2]]), , drop=FALSE] # requires non-NA year
-    series <- dat[[1]]
-    decade.yr <- dat[[2]]
-    x <- as.matrix(dat[3:12])
-    ## Convert values <= 0 (not -9999) to NA
-    x[x <= 0 & x != -9999] <- NA
+                         tmp
+                     })
+        dat <- dat[!is.na(dat[[2]]), , drop=FALSE] # requires non-NA year
+        series <- dat[[1]]
+        decade.yr <- dat[[2]]
+        x <- as.matrix(dat[3:12])
+        ## Convert values <= 0 (not -9999) to NA
+        x[x <= 0 & x != -9999] <- NA
+        fixed.ok <- input.ok(series, decade.yr, x)
+    } else {
+        warning("tabs used, assuming non-standard, tab-delimited file")
+        fixed.ok <- FALSE
+    }
     ## If that fails, try columns separated by white space (non-standard)
-    if (!input.ok(series, decade.yr, x)) {
+    if (!fixed.ok) {
         warning("fixed width failed, trying variable width columns")
         tfcon <- file(tf, encoding="UTF-8")
         ## Number of columns is decided by length(col.names)

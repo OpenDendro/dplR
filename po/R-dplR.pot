@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.5.5\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-06-04 17:09+0300\n"
+"POT-Creation-Date: 2012-06-04 20:36+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -414,7 +414,13 @@ msgstr ""
 msgid "There does not appear to be a header in the rwl file"
 msgstr ""
 
+msgid "file has no data"
+msgstr ""
+
 msgid "non-integral numbers found"
+msgstr ""
+
+msgid "tabs used, assuming non-standard, tab-delimited file"
 msgstr ""
 
 msgid "fixed width failed, trying variable width columns"

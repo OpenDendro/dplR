@@ -155,7 +155,7 @@
     skip.lines <- ifelse(is.head, 3, 0)
     data1 <- readLines(tfcon, n=skip.lines + 1)
     if (length(data1) < skip.lines + 1) {
-        stop("file is empty") # except for possible header
+        stop("file has no data")
     }
     on.exit(unlink(tf))
     ## Test for presence of tabs

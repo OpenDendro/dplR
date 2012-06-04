@@ -266,7 +266,10 @@
         if (this.prec.rproc == 100) {
             ## Convert stop marker (and any other) 999 to NA (precision 0.01)
             rw.mat[rw.mat[, i] == 999, i] <- NA
-        } else if (this.prec.rproc != 1000) {
+        } else if (this.prec.rproc == 1000) {
+            ## Ditto, -9999 to NA (precision 0.001)
+            rw.mat[rw.mat[, i] == -9999, i] <- NA
+        } else {
             stop(gettextf("precision unknown in series %s", series.ids[i],
                           domain="R-dplR"))
         }

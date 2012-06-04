@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.5.5\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-06-04 20:36+0300\n"
+"POT-Creation-Date: 2012-06-04 22:33+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -402,6 +402,12 @@ msgstr ""
 msgid "* variable:"
 msgstr ""
 
+msgid "all rows (last rows excluded) have too few values"
+msgstr ""
+
+msgid "file format problems (or data from the future)"
+msgstr ""
+
 msgid "more than 1 value found for at least 1 pair of ID, year"
 msgstr ""
 
@@ -424,6 +430,9 @@ msgid "tabs used, assuming non-standard, tab-delimited file"
 msgstr ""
 
 msgid "fixed width failed, trying variable width columns"
+msgstr ""
+
+msgid "trying fixed width names, years, variable width data"
 msgstr ""
 
 msgid "failed to read rwl file"

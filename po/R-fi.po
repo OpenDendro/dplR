@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.5.5\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-06-04 20:36+0300\n"
-"PO-Revision-Date: 2012-06-04 20:43+0300\n"
+"POT-Creation-Date: 2012-06-04 22:33+0300\n"
+"PO-Revision-Date: 2012-06-04 22:34+0300\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -418,6 +418,12 @@ msgstr "* laji:"
 msgid "* variable:"
 msgstr "* muuttuja:"
 
+msgid "all rows (last rows excluded) have too few values"
+msgstr "kaikki rivit (paitsi sarjojen viimeiset) sisältävät liian vähän arvoja"
+
+msgid "file format problems (or data from the future)"
+msgstr "ongelmia tiedostomuodossa (tai dataa tulevaisuudesta)"
+
 msgid "more than 1 value found for at least 1 pair of ID, year"
 msgstr "ainakin yhdelle ID–vuosi-parille löytyi useampi kuin yksi arvo"
 
@@ -441,6 +447,10 @@ msgstr "sarkaimia käytetty, oletetaan epästandardi, sarkainerotettu tiedosto"
 
 msgid "fixed width failed, trying variable width columns"
 msgstr "kiinteä sarakeleveys epäonnistui, kokeillaan säätyvää leveyttä"
+
+msgid "trying fixed width names, years, variable width data"
+msgstr ""
+"kokeillaan kiinteän sarakeleveyden nimiä ja vuosia, säätyvän leveyden dataa"
 
 msgid "failed to read rwl file"
 msgstr "tiedoston luku epäonnistui"

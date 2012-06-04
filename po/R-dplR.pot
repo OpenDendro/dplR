@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.5.5\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-05-31 17:20+0300\n"
+"POT-Creation-Date: 2012-06-04 17:09+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -252,13 +252,10 @@ msgstr ""
 msgid "more HEADER blocks than DATA blocks in supported formats"
 msgstr ""
 
-msgid "in series %s:"
-msgstr ""
-
 msgid "number of \"KeyCode\" lines is not 1"
 msgstr ""
 
-msgid "R-dplR"
+msgid "in series %s:"
 msgstr ""
 
 msgid "number of \"DateBegin\" lines is not 1"

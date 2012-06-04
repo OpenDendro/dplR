@@ -38,12 +38,30 @@
                     domain=NA)
             return(FALSE)
         }
-
         series.ids <- unique(series)
         nseries <- length(series.ids)
         series.index <- match(series, series.ids)
+        last.row.of.series <- logical(length(series))
+        for (i in seq_len(nseries)) {
+            idx.these <- which(series.index == i)
+            last.row.of.series[idx.these[which.max(decade.yr[idx.these])]] <-
+                TRUE
+        }
+        flag.bad2 <- n.per.row < full.per.row
+        if (!all(last.row.of.series) && all(flag.bad2[!last.row.of.series])) {
+            warning("all rows (last rows excluded) have too few values")
+            return(FALSE)
+        }
         min.year <- min(decade.yr)
         max.year <- ((max(decade.yr)+10) %/% 10) * 10
+        if (max.year > as.numeric(format(Sys.Date(), "%Y")) + 100) {
+            ## Must do something to stop R from trying to build huge
+            ## data structures if the maximum year is not detected
+            ## correctly.  Not too strict (allow about 100 years past
+            ## today).
+            warning("file format problems (or data from the future)")
+            return(FALSE)
+        }
         span <- max.year - min.year + 1
         val.count <- matrix(0, span, nseries)
         for (i in seq_along(series)) {
@@ -197,9 +215,12 @@
         dat <- dat[!is.na(dat[[2]]), , drop=FALSE] # requires non-NA year
         series <- dat[[1]]
         decade.yr <- dat[[2]]
+        series.fixed <- series
+        decade.fixed <- decade.yr
         x <- as.matrix(dat[3:12])
         ## Convert values <= 0 (not -9999) to NA
         x[x <= 0 & x != -9999] <- NA
+        x.fixed <- x
         fixed.ok <- input.ok(series, decade.yr, x)
     } else {
         warning("tabs used, assuming non-standard, tab-delimited file")
@@ -239,7 +260,20 @@
         x <- as.matrix(dat[3:12])
         x[x <= 0 & x != -9999] <- NA
         if (!input.ok(series, decade.yr, x)) {
-            stop("failed to read rwl file")
+            if (exists("series.fixed", inherits=FALSE) &&
+                exists("decade.fixed", inherits=FALSE) &&
+                exists("x.fixed", inherits=FALSE) &&
+                (any(is.na(x) != is.na(x.fixed)) ||
+                 any(x != x.fixed, na.rm=TRUE))) {
+                series <- series.fixed
+                decade.yr <- decade.fixed
+                warning("trying fixed width names, years, variable width data")
+                if (!input.ok(series, decade.yr, x)) {
+                    stop("failed to read rwl file")
+                }
+            } else {
+                stop("failed to read rwl file")
+            }
         }
     }
     series.ids <- unique(series)

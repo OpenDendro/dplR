@@ -29,13 +29,21 @@
         idx.bad <- which(n.per.row > full.per.row + 1)
         n.bad <- length(idx.bad)
         if (n.bad > 0) {
-            warn.fmt <- ngettext(n.bad,
-                                 "%d row has too many values (decade %s)",
-                                 "%d rows have too many values (decades %s)",
-                                 domain="R-dplR")
-            warning(sprintf(warn.fmt,
-                            n.bad, paste(decade.yr[idx.bad], collapse=", ")),
-                    domain=NA)
+            warn.fmt <-
+                ngettext(n.bad,
+                         "%d row has too many values (ID, decade %s)",
+                         "%d rows have too many values (IDs, decades %s)",
+                         domain="R-dplR")
+            if (n.bad > 5) {
+                idx.bad <- sample(idx.bad, 5)
+                ids.decades <- paste(paste(series[idx.bad], decade.yr[idx.bad],
+                                           sep=", ", collapse="; "),
+                                     "...", sep="; ")
+            } else {
+                ids.decades <- paste(series[idx.bad], decade.yr[idx.bad],
+                                     sep="-", collapse=", ")
+            }
+            warning(sprintf(warn.fmt, n.bad, ids.decades), domain=NA)
             return(FALSE)
         }
         series.ids <- unique(series)
@@ -71,8 +79,26 @@
             val.count[these.rows, this.col] <-
                 val.count[these.rows, this.col] + 1
         }
-        if (any(val.count > 1)) {
-            warning("more than 1 value found for at least 1 pair of ID, year")
+        extra.vals <- which(val.count > 1, arr.ind=TRUE)
+        n.extra <- nrow(extra.vals)
+        if (n.extra > 0) {
+            warn.fmt <-
+                ngettext(n.bad,
+                         "overlap in %d pair of ID, year: %s",
+                         "overlap in %d pairs of ID, year: %s",
+                         domain="R-dplR")
+            if (n.extra > 5) {
+                extra.vals <- extra.vals[sample(n.extra, 5), ]
+                ids.years <- paste(paste(series.ids[extra.vals[, 2]],
+                                         min.year - 1 + extra.vals[, 1],
+                                         sep=", ", collapse="; "),
+                                   "...", sep="; ")
+            } else {
+                ids.years <- paste(series.ids[extra.vals[, 2]],
+                                   min.year - 1 + extra.vals[, 1],
+                                   sep=", ", collapse="; ")
+            }
+            warning(sprintf(warn.fmt, n.extra, ids.years), domain=NA)
             FALSE
         } else {
             TRUE
@@ -200,9 +226,10 @@
                          ## (e.g. missing values marked with "."), convert
                          ## types manually
                          tfcon <- file(tf, encoding="UTF-8")
-                         tmp <- read.fwf(tfcon, widths=fields, skip=skip.lines,
-                                         strip.white=TRUE, blank.lines.skip=FALSE,
-                                         colClasses="character", comment.char="")
+                         tmp <-
+                             read.fwf(tfcon, widths=fields, skip=skip.lines,
+                                      strip.white=TRUE, blank.lines.skip=FALSE,
+                                      colClasses="character", comment.char="")
                          for (idx in 2:12) {
                              asnum <- as.numeric(tmp[[idx]])
                              if (!identical(round(asnum), asnum)) {
@@ -278,20 +305,11 @@
     }
     series.ids <- unique(series)
     nseries <- length(series.ids)
-    seq.series <- seq_len(nseries)
     series.index <- match(series, series.ids)
     extra.col <- dat[[13]]
-
-    cat(sprintf(ngettext(nseries,
-                         "There is %d series\n",
-                         "There are %d series\n",
-                         domain="R-dplR"),
-                nseries))
-
     min.year <- min(decade.yr)
     max.year <- ((max(decade.yr)+10) %/% 10) * 10
     span <- max.year - min.year + 1
-
     rw.vec <- NA*vector(mode="numeric", length=nseries*span)
     scratch <- rep.int(as.integer(min.year-1), nseries)
     prec.rproc <- rep.int(as.integer(1), nseries)
@@ -306,7 +324,8 @@
     ## The operations in the loop depend on the precision of each series.
     ## It's not exactly clear whether the Tucson format allows mixed
     ## precisions in the same file, but we can support that in any case.
-    for (i in seq.series) {
+    prec.unknown <- logical(nseries)
+    for (i in seq_len(nseries)) {
         if (!(prec.rproc[i] %in% c(100, 1000))) {
             these.rows <- which(series.index == i)
             these.decades <- decade.yr[these.rows]
@@ -314,7 +333,8 @@
             if (length(has.stop) == 1 &&
                 which.max(these.decades) == has.stop) {
                 warning(gettextf("bad location of stop marker in series %s",
-                                 series.ids[i], domain="R-dplR"))
+                                 series.ids[i], domain="R-dplR"),
+                        domain=NA)
                 if (extra.col[these.rows[has.stop]] == "999") {
                     prec.rproc[i] <- 100
                 } else {
@@ -330,19 +350,97 @@
             ## Ditto, -9999 to NA (precision 0.001)
             rw.mat[rw.mat[, i] == -9999, i] <- NA
         } else {
-            stop(gettextf("precision unknown in series %s", series.ids[i],
-                          domain="R-dplR"))
+            prec.unknown[i] <- TRUE
         }
         ## Convert to mm
         rw.mat[, i] <- rw.mat[, i] / this.prec.rproc
     }
+    if (all(prec.unknown)) {
+        stop("precision unknown in all series")
+    }
+    ## Accommodate mid-series upper and lower case differences: If a
+    ## series doesn't end with a stop marker, see if the series ID of
+    ## the next row in the file matches when case differences are
+    ## ignored.
+    if (any(prec.unknown)) {
+        upper.ids <- toupper(series.ids)
+        new.united <- TRUE
+        series.united <- 1:ncol(rw.mat)
+        while (new.united) {
+            new.united <- FALSE
+            for (this.series in which(prec.unknown)) {
+                these.rows <- which(series.index == this.series)
+                last.row <- these.rows[length(these.rows)]
+                next.series <- series.united[series.index[last.row + 1]]
+                if (last.row == length(series) ||
+                    upper.ids[this.series] != upper.ids[next.series]) {
+                    new.united <- FALSE
+                    break
+                }
+                last.decade <- decade.yr[last.row]
+                next.decade <- decade.yr[last.row + 1]
+                if (!prec.unknown[next.series] &&
+                    next.decade > last.decade &&
+                    next.decade <= last.decade + 10) {
+                    val.count <- numeric(span)
+                    this.col <- rw.mat[, this.series]
+                    next.col <- rw.mat[, next.series]
+                    flag.this <- !is.na(this.col) & this.col != 0
+                    val.count[flag.this] <- 1
+                    flag.next <- !is.na(next.col) & next.col != 0
+                    val.count[flag.next] <- val.count[flag.next] + 1
+                    if (any(val.count > 1)) {
+                        new.united <- FALSE
+                        break
+                    }
+                    this.prec.rproc <- prec.rproc[next.series]
+                    if (this.prec.rproc == 100) {
+                        this.col[this.col == 999] <- NA
+                    } else if (this.prec.rproc == 1000) {
+                        this.col[this.col == -9999] <- NA
+                    }
+                    this.col <- this.col / this.prec.rproc
+                    rw.mat[flag.this, next.series] <- this.col[flag.this]
+                    series.united[this.series] <- next.series
+                    new.united <- TRUE
+                    prec.unknown[this.series] <- FALSE
+                    warning(gettextf("combining series %s and %s",
+                                     series.ids[this.series],
+                                     series.ids[next.series],
+                                     domain="R-dplR"), domain=NA)
+                }
+            }
+        }
+        prec.unknown <- which(prec.unknown)
+        n.unknown <- length(prec.unknown)
+        if (n.unknown > 0) {
+            stop(sprintf(ngettext(n.unknown,
+                                  "precision unknown in series %s",
+                                  "precision unknown in series %s",
+                                  domain="R-dplR"),
+                         paste0(series.ids[prec.unknown], collapse=", ")),
+                 domain=NA)
+        } else {
+            to.keep <- which(series.united == 1:ncol(rw.mat))
+            rw.mat <- rw.mat[, to.keep, drop=FALSE]
+            nseries <- length(to.keep)
+            series.ids <- series.ids[to.keep]
+            prec.rproc <- prec.rproc[to.keep]
+        }
+    }
+
     the.range <-
         as.matrix(apply(rw.mat, 2, yr.range, yr.vec=min.year:max.year))
     series.min <- the.range[1, ]
     series.max <- the.range[2, ]
     series.min.char <- format(series.min, scientific=FALSE, trim=TRUE)
     series.max.char <- format(series.max, scientific=FALSE, trim=TRUE)
-    seq.series.char <- format(seq.series, scientific=FALSE, trim=TRUE)
+    seq.series.char <- format(seq_len(nseries), scientific=FALSE, trim=TRUE)
+    cat(sprintf(ngettext(nseries,
+                         "There is %d series\n",
+                         "There are %d series\n",
+                         domain="R-dplR"),
+                nseries))
     cat(paste0(format(seq.series.char, width=5), "\t",
                format(series.ids, width=8), "\t",
                format(series.min.char, width=5, justify="right"), "\t",

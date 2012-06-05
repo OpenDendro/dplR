@@ -80,6 +80,11 @@ File: read.tucson.R
 - Fixed a bug that could cause mixing of values from two or more
   measurement series sharing the same ID. Now it is an error if the input
   file contains more than one measurement for any year, ID pair.
+- Accommodate mid-series upper and lower case differences: If a series
+  does not end with a stop marker, see if the series ID of the next row
+  after the last belonging to the series without a stop marker matches
+  when case differences are ignored. If so, interpret these as the same
+  series.
 
 File: write.tucson.R
 --------------------

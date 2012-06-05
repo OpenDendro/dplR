@@ -160,4 +160,19 @@ test.read.tucson <- function() {
                 msg="Row names are correct (test 11b)")
     checkEqualsNumeric(c(12.3, 4.56, 7.89), res.tf11b[[1]],
                        msg="Data are correct (test 11b)")
+
+    ## Mixed case ("Tst12A" does not have a stop marker)
+    tf12 <- tempfile()
+    fh12 <- file(tf12, "wt")
+    on.exit(unlink(tf12), add=TRUE)
+    writeLines(c("Tst12A  1734  1230   456   789    12    34     5",
+                 "TST12A  1740   678   999"), fh12)
+    close(fh12)
+    res.tf12 <- read.tucson(tf12)
+    checkTrue(is.data.frame(res.tf12), msg="Result is a data.frame (test 12)")
+    checkEquals("TST12A", names(res.tf12), msg="Name is correct (test 12)")
+    checkEquals(as.character(1734:1740), row.names(res.tf12),
+                msg="Row names are correct (test 12)")
+    checkEqualsNumeric(c(12.3, 4.56, 7.89, 0.12, 0.34, 0.05, 6.78),
+                       res.tf12[[1]], msg="Data are correct (test 12)")
 }

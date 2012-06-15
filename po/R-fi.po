@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.5.5\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-06-05 17:01+0300\n"
-"PO-Revision-Date: 2012-06-05 17:07+0300\n"
+"POT-Creation-Date: 2012-06-15 18:41+0300\n"
+"PO-Revision-Date: 2012-06-15 18:46+0300\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -180,6 +180,21 @@ msgstr "luku alueen ulkopuolella tai ei kokonaisluku"
 
 msgid "'x1' and 'y1' lengths differ"
 msgstr "’x1’:n ja ’y1’:n pituudet eroavat"
+
+msgid "'rgv.thresh' must range from 0 to 100"
+msgstr "’rgv.thresh’in täytyy olla välillä 0–100"
+
+msgid "'nseries.thresh' must range from 0 to 100"
+msgstr "’nseries.thresh’in täytyy olla välillä 0–100"
+
+msgid "'rwl' must be coercible to a matrix"
+msgstr "’rwl’:n täytyy olla muunnettavissa matrix-muotoon"
+
+msgid "'rwl' must have explicit row names"
+msgstr "’rwl’:ssä pitää olla eksplisiittiset rivinimet"
+
+msgid "'rwl' must have at least 2 rows"
+msgstr "’rwl’:ssä pitää olla vähintään 2 riviä"
 
 msgid "'seg.length' can be at most 1/2 the number of years in 'rwl'"
 msgstr "’seg.length’ voi olla enintään puolet ’rwl’:n vuosien määrästä"

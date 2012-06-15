@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.5.5\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-06-05 17:01+0300\n"
+"POT-Creation-Date: 2012-06-15 18:41+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -172,6 +172,21 @@ msgid "number out of range or not an integer"
 msgstr ""
 
 msgid "'x1' and 'y1' lengths differ"
+msgstr ""
+
+msgid "'rgv.thresh' must range from 0 to 100"
+msgstr ""
+
+msgid "'nseries.thresh' must range from 0 to 100"
+msgstr ""
+
+msgid "'rwl' must be coercible to a matrix"
+msgstr ""
+
+msgid "'rwl' must have explicit row names"
+msgstr ""
+
+msgid "'rwl' must have at least 2 rows"
 msgstr ""
 
 msgid "'seg.length' can be at most 1/2 the number of years in 'rwl'"

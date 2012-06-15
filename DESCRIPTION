@@ -3,13 +3,13 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.5.5
-Date: 2012-06-05
+Date: 2012-06-15
 Authors@R: c(person(c("Andrew", "G."), "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "cph")), person("Franco", "Biondi",
-        role = c("aut", "cph")), person("Fares", "Qeadan", role =
-        c("aut", "cph")), person("Christian", "Zang", role = c("aut",
-        "cph")))
+        role = c("aut", "cph")), person("Pierre", "Mérian", role =
+        c("aut", "cph")), person("Fares", "Qeadan", role = c("aut",
+        "cph")), person("Christian", "Zang", role = c("aut", "cph")))
 Depends: R (>= 2.15.0)
 Imports: graphics, grDevices, grid, stats, utils, digest (>= 0.2.3),
         lattice (>= 0.13-6), stringr (>= 0.4), XML (>= 2.1-0)

@@ -2,8 +2,11 @@ pointer <- function(rwl, rgv.thresh=10, nseries.thresh=75,
                     round.decimals=2) {
     stopifnot(is.numeric(rgv.thresh), length(rgv.thresh) == 1,
               is.finite(rgv.thresh))
-    if (rgv.thresh < 0 || rgv.thresh > 100) {
-        stop("'rgv.thresh' must range from 0 to 100")
+    if (rgv.thresh < 0) {
+        stop("'rgv.thresh' must be > 0")
+    }
+    if (rgv.thresh >= 100) {
+        warning("'rgv.thresh' > 100 is unusual.")
     }
     stopifnot(is.numeric(nseries.thresh), length(nseries.thresh) == 1,
               is.finite(nseries.thresh))

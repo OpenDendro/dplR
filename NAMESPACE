@@ -23,8 +23,8 @@ importFrom(XML, xmlEventParse)
 
 export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, cms,
        combine.rwl, corr.rwl.seg, corr.series.seg, crn.plot, detrend,
-       detrend.series, ffcsaps, gini.coef, glk, hanning, i.detrend,
-       i.detrend.series, morlet, po.to.wc, pointer, powt, rcs,
+       detrend.series, ffcsaps, fill.internal.NA, gini.coef, glk, hanning, 
+       i.detrend, i.detrend.series, morlet, po.to.wc, pointer, powt, rcs,
        read.compact, read.crn, read.fh, read.ids, read.rwl,
        read.tridas, read.tucson, rwi.stats, rwi.stats.legacy,
        rwi.stats.running, rwl.stats, sea, seg.plot, sens1, sens2,

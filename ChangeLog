@@ -25,12 +25,18 @@ File: corr.rwl.seg.R
 - stops with a clear error message if 'rwl' has too few rows for the given
   'seg.length' and 'bin.floor' combination
 
+File: fill.internal.NA.R
+---------------
+
+- New function fill.internal.NA() fills NA values internal to a series.
+  Written by Andy Bunn and Mikko Korpela. Help page added as well.
+
 File: pointer.R
 ---------------
 
 - New function pointer() calculates pointer years from a group of
   ring-width series.  Written by Pierre Mérian, adapted for dplR and
-  improved by Andy Bunn and Mikko Korpela.
+  improved by Andy Bunn and Mikko Korpela. Help page added as well.
 
 File: rcs.R
 -----------

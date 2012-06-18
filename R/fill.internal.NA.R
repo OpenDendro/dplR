@@ -1,46 +1,71 @@
-fill.internal.NA <- function(x,fill="Mean"){
-    fillInternalNA.series <- function(x,fill=0){
+fill.internal.NA <- function(x, fill=c("Mean", "Spline", "Linear")){
+    fillInternalNA.series <- function(x, fill=0){
         n <- length(x)
         x.ok <- which(!is.na(x))
-        # find first and last
-        first.ok <- x.ok[1]
-        if(first.ok==1) early.na <- 1
-        else early.na <- 1:c(first.ok-1)
-        last.ok <- x.ok[length(x.ok)]
-        if(last.ok==n) late.na <- n
-        else late.na <- c(last.ok+1):n
-        # mask - won't trigger on internal NA
-        mask <- c(early.na,late.na)
-        x2 <- x[-mask]
-        # fill internal NA
-        if(any(is.na(x2))){
-            # fill internal NA with user supplied value
-            if(is.numeric(fill)){
-                x2[is.na(x2)] <- fill
-            }
-            # fill internal NA with series mean
-            if(fill=='Mean'){
-                x2[is.na(x2)] <- mean(x2,na.rm=T)
-            }
-            # fill internal NA with spline
-            if(fill=='Spline'){
-                x2.spl <- spline(x=1:length(x2),y=x2,xout=1:length(x2))
-                x2.na <- which(is.na(x2))
-                x2[x2.na] <- x2.spl$y[x2.na]
-            }
-            if(fill=='Linear'){
-                x2.aprx <- approx(x=1:length(x2),y=x2,xout=1:length(x2))
-                x2.na <- which(is.na(x2))
-                x2[x2.na] <- x2.aprx$y[x2.na]
-            }
-            # repad x
-            x[-mask] <- x2
+        n.ok <- length(x.ok)
+        if (n.ok == 0) {
+            return(x)
         }
-        x
+        ## find first and last
+        first.ok <- x.ok[1]
+        if (first.ok == 1) {
+            early.na <- 1
+        } else {
+            early.na <- 1:(first.ok - 1)
+        }
+        last.ok <- x.ok[n.ok]
+        if (last.ok == n) {
+            late.na <- n
+        } else {
+            late.na <- (last.ok + 1):n
+        }
+        ## mask - won't trigger on internal NA
+        mask <- c(early.na, late.na)
+        x2 <- x[-mask]
+        ## fill internal NA
+        x2.na <- is.na(x2)
+        if (any(x2.na)) {
+            if (is.numeric(fill)) {
+                ## fill internal NA with user supplied value
+                x2[x2.na] <- fill
+            } else if (fill == "Mean") {
+                ## fill internal NA with series mean
+                x2[x2.na] <- mean(x2[!x2.na])
+            } else if (fill == "Spline") {
+                ## fill internal NA with spline
+                good.x <- which(!x2.na)
+                good.y <- x2[good.x]
+                bad.x <- which(x2.na)
+                x2.spl <- spline(x=good.x, y=good.y, xout=bad.x)
+                x2[bad.x] <- x2.spl$y
+            } else {
+                ## fill internal NA with linear interpolation
+                good.x <- which(!x2.na)
+                good.y <- x2[good.x]
+                bad.x <- which(x2.na)
+                x2.aprx <- approx(x=good.x, y=good.y, xout=bad.x)
+                x2[bad.x] <- x2.aprx$y
+            }
+            ## repad x
+            x3 <- x
+            x3[-mask] <- x2
+            x3
+        } else {
+            x
+        }
     }
-    y <- apply(x,2,fillInternalNA.series,fill=fill)
+    if (is.numeric(fill)) {
+        if (length(fill) == 1) {
+            fill2 <- fill[1]
+        } else {
+            stop("'fill' must be a single number or character string")
+        }
+    } else {
+        fill2 <- match.arg(fill)
+    }
+    y <- apply(x, 2, fillInternalNA.series, fill=fill2)
     y <- as.data.frame(y)
-    rownames(y) <- rownames(x)
-    colnames(y) <- colnames(x)
+    row.names(y) <- rownames(x)
+    names(y) <- colnames(x)
     y
 }

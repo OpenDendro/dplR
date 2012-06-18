@@ -8,11 +8,11 @@
   \code{\link{read.rwl}}.
 }
 \usage{
-fill.internal.NA(x, fill = "Mean")
+fill.internal.NA(x, fill = c("Mean", "Spline", "Linear"))
 }
 \arguments{
   \item{x}{a \code{data.frame} of ring widths with
-    \code{rownames(\var{x})} containing years and \code{colnames(\var{x})}
+    \code{row.names(\var{x})} containing years and \code{names(\var{x})}
     containing each series \acronym{ID} such as produced by
     \code{\link{read.rwl}}}
   \item{fill}{a \code{numeric} value (e.g., \code{0}) or a \code{character} string of
@@ -52,27 +52,27 @@ fill.internal.NA(x, fill = "Mean")
 \seealso{ \code{\link{spline}}, \code{\link{approx}}
 }
 \examples{
-foo <- data.frame(x1=c(rnorm(5),NA,NA,rnorm(3)),
-                x2=c(rnorm(10)),
-                x3=c(NA,NA,rnorm(3),NA,rnorm(4)),
-                x4=c(NA,NA,rnorm(3),NA,rnorm(3),NA),
-                x5=c(NA,NA,rnorm(8)),
-                x6=c(NA,rnorm(9)),
-                x7=c(NA,rnorm(5),NA,rnorm(3)),
-                x8=c(rnorm(8),NA,NA),
-                x9=c(rnorm(5),NA,rnorm(3),NA))
-rownames(foo) <- 1901:1910
+foo <- data.frame(x1=c(rnorm(5), NA, NA, rnorm(3)),
+                  x2=c(rnorm(10)),
+                  x3=c(NA, NA, rnorm(3), NA, rnorm(4)),
+                  x4=c(NA, NA, rnorm(3), NA, rnorm(3), NA),
+                  x5=c(NA, NA, rnorm(8)),
+                  x6=c(NA, rnorm(9)),
+                  x7=c(NA, rnorm(5), NA, rnorm(3)),
+                  x8=c(rnorm(8), NA, NA),
+                  x9=c(rnorm(5), NA, rnorm(3), NA))
+row.names(foo) <- 1901:1910
 
-fill.internal.NA(foo,fill=0)
+fill.internal.NA(foo, fill=0)
 
-bar <- fill.internal.NA(foo,fill='Spline')
-baz <- fill.internal.NA(foo,fill='Linear')
+bar <- fill.internal.NA(foo, fill="Spline")
+baz <- fill.internal.NA(foo, fill="Linear")
 
-# note differences in method Spline vs. Linear
-yrs <- as.numeric(rownames(foo))
-plot(yrs,foo$x7,type='b',lwd=3)
-lines(yrs,bar$x7,col='red',lwd=2)
-lines(yrs,baz$x7,col='green',lwd=1)
+## note differences in method "Spline" vs. "Linear"
+yrs <- as.numeric(row.names(foo))
+plot(yrs, foo$x7, type="b", lwd=3)
+lines(yrs, bar$x7, col="red", lwd=2)
+lines(yrs, baz$x7, col="green", lwd=1)
 
 }
 \keyword{ manip }

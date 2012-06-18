@@ -21,7 +21,7 @@ importFrom(utils, head, installed.packages, read.fwf, tail)
 
 importFrom(XML, xmlEventParse)
 
-export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, cms,
+export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, common.interval, cms,
        combine.rwl, corr.rwl.seg, corr.series.seg, crn.plot, detrend,
        detrend.series, ffcsaps, fill.internal.NA, gini.coef, glk,
        hanning, i.detrend, i.detrend.series, morlet, po.to.wc,

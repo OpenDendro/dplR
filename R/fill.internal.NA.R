@@ -1,30 +1,20 @@
 fill.internal.NA <- function(x, fill=c("Mean", "Spline", "Linear")){
     fillInternalNA.series <- function(x, fill=0){
         n <- length(x)
-        x.ok <- which(!is.na(x))
+        x.na <- is.na(x)
+        x.ok <- which(!x.na)
         n.ok <- length(x.ok)
-        if (n.ok == 0) {
+        if (n.ok <= 1 || n.ok == n) {
             return(x)
         }
         ## find first and last
         first.ok <- x.ok[1]
-        if (first.ok == 1) {
-            early.na <- 1
-        } else {
-            early.na <- 1:(first.ok - 1)
-        }
         last.ok <- x.ok[n.ok]
-        if (last.ok == n) {
-            late.na <- n
-        } else {
-            late.na <- (last.ok + 1):n
-        }
-        ## mask - won't trigger on internal NA
-        mask <- c(early.na, late.na)
-        x2 <- x[-mask]
+        first.to.last <- first.ok:last.ok
+        x2 <- x[first.to.last]
+        x2.na <- x.na[first.to.last]
         ## fill internal NA
-        x2.na <- is.na(x2)
-        if (any(x2.na)) {
+        if (length(x2) > n.ok) {
             if (is.numeric(fill)) {
                 ## fill internal NA with user supplied value
                 x2[x2.na] <- fill
@@ -48,7 +38,7 @@ fill.internal.NA <- function(x, fill=c("Mean", "Spline", "Linear")){
             }
             ## repad x
             x3 <- x
-            x3[-mask] <- x2
+            x3[first.to.last] <- x2
             x3
         } else {
             x

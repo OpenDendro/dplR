@@ -23,11 +23,11 @@ pointer(rwl, rgv.thresh = 10, nseries.thresh = 75, round.decimals = 2)
   \item{rwl}{ a \code{data.frame} with ring-width series as columns and
     years as rows such as that produced by \code{\link{read.rwl}}. }
   
-  \item{rgv.thresh}{ a \code{numeric} giving the minimum absolute
-    relative radial growth variation (in percentage) above which the
-    growth change from the year \code{\var{t}-1} to \code{\var{t}} is
-    considered as significant.  This number ranges from 1 to 100.
-    Defaults to 10. }
+  \item{rgv.thresh}{ a \code{numeric} giving the minimum absolute relative 
+  radial growth variation (in percentage) above which the growth change from 
+  the year \emph{t-1} to \emph{t} is considered as significant. Must be
+  > 0. Values > 100 are possible but highly unusual. See references.
+  Defaults to 10. }
   
   \item{nseries.thresh}{ a \code{numeric} giving the minimum percentage
     of series displaying significant relative radial growth variations

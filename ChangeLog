@@ -1,5 +1,10 @@
 * CHANGES IN dplR VERSION 1.5.5
 
+File: NAMESPACE
+---------------
+
+- Exporting new functions
+
 Various .R files:
 -----------------
 
@@ -17,13 +22,6 @@ Files: corr.rwl.seg.R, seg.plot.R, rwl.stats.R, spag.plot.R
 
 - Support for input of length 1
 
-File: common.interval.R
-------------------------
-
-- New function common.interval() trims a rwl object to a common interval
-  using one of three methods. Contributed by a user Filipe Campelo (fcampelo@ci.uc.pt).
-  This is his first contribution. Add to author list after he confirms the changes made by
-  AGB.
 
 File: corr.rwl.seg.R
 --------------------

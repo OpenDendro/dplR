@@ -1,39 +1,36 @@
 fill.internal.NA <- function(x, fill=c("Mean", "Spline", "Linear")){
     fillInternalNA.series <- function(x, fill=0){
-        n <- length(x)
         x.na <- is.na(x)
         x.ok <- which(!x.na)
         n.ok <- length(x.ok)
-        if (n.ok <= 1 || n.ok == n) {
+        if (n.ok <= 1) {
             return(x)
         }
         ## find first and last
         first.ok <- x.ok[1]
         last.ok <- x.ok[n.ok]
-        first.to.last <- first.ok:last.ok
-        x2 <- x[first.to.last]
-        x2.na <- x.na[first.to.last]
         ## fill internal NA
-        if (length(x2) > n.ok) {
-            if (is.numeric(fill)) {
-                ## fill internal NA with user supplied value
-                x2[x2.na] <- fill
-            } else if (fill == "Mean") {
+        if (last.ok - first.ok + 1 > n.ok) {
+            first.to.last <- first.ok:last.ok
+            x2 <- x[first.to.last]
+            x2.na <- x.na[first.to.last]
+            if (fill == "Mean") {
                 ## fill internal NA with series mean
                 x2[x2.na] <- mean(x2[!x2.na])
-            } else if (fill == "Spline") {
-                ## fill internal NA with spline
-                good.x <- which(!x2.na)
-                good.y <- x2[good.x]
-                bad.x <- which(x2.na)
-                x2.spl <- spline(x=good.x, y=good.y, xout=bad.x)
-                x2[bad.x] <- x2.spl$y
+            } else if (is.numeric(fill)) {
+                ## fill internal NA with user supplied value
+                x2[x2.na] <- fill
             } else {
-                ## fill internal NA with linear interpolation
                 good.x <- which(!x2.na)
                 good.y <- x2[good.x]
                 bad.x <- which(x2.na)
-                x2.aprx <- approx(x=good.x, y=good.y, xout=bad.x)
+                if (fill == "Spline") {
+                    ## fill internal NA with spline
+                    x2.aprx <- spline(x=good.x, y=good.y, xout=bad.x)
+                } else {
+                    ## fill internal NA with linear interpolation
+                    x2.aprx <- approx(x=good.x, y=good.y, xout=bad.x)
+                }
                 x2[bad.x] <- x2.aprx$y
             }
             ## repad x
@@ -44,6 +41,12 @@ fill.internal.NA <- function(x, fill=c("Mean", "Spline", "Linear")){
             x
         }
     }
+    if (!is.data.frame(x)) {
+        stop("'x' must be a data.frame")
+    }
+    if (!all(vapply(x, is.numeric, FALSE, USE.NAMES=FALSE))) {
+        stop("'x' must have numeric columns")
+    }
     if (is.numeric(fill)) {
         if (length(fill) == 1) {
             fill2 <- fill[1]
@@ -53,9 +56,10 @@ fill.internal.NA <- function(x, fill=c("Mean", "Spline", "Linear")){
     } else {
         fill2 <- match.arg(fill)
     }
-    y <- apply(x, 2, fillInternalNA.series, fill=fill2)
+    y <- vapply(x, fillInternalNA.series, numeric(nrow(x)), fill=fill2)
+    dim(y) <- dim(x)
     y <- as.data.frame(y)
-    row.names(y) <- rownames(x)
-    names(y) <- colnames(x)
+    row.names(y) <- row.names(x)
+    names(y) <- names(x)
     y
 }

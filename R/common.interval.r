@@ -1,30 +1,21 @@
 ## optimum.interval and common.interval functions
 optimum.interval <- function(rwl) {
-    ####
-    SubSet <- function(x, first.year, last.year) {
-        if (last.year < first.year) {
-            temp <- first.year
-            first.year <- last.year
-            last.year <- temp
-        }
-        yrs <- as.integer(row.names(x))
-        subset(x, yrs >= first.year & yrs <= last.year)
-    }
-    ####
-
     rwl.output <- na.omit(rwl)
     output <- ncol(rwl.output) * nrow(rwl.output)
-    tmp. <- apply(rwl, 1, function(y) sum(!is.na(y)))
+    tmp <- rowSums(!is.na(rwl))
+    yrs <- as.numeric(row.names(rwl))
 
-    for (i in max(tmp.):5) {
-        tmp <- tmp.
-        tmp[tmp > i] <- i
-        common.range <- range(as.integer(names(tmp)[tmp %in% i]))
-        rwl.common <- SubSet(rwl, common.range[1], common.range[2])
+    ## Notes from Mikko:
+    ## - What if max(tmp) < 5?
+    ## - What kind of magic number is 5?
+    for (i in max(tmp):5) {
+        common.range <- range(yrs[tmp >= i])
+        rwl.common <- subset(rwl,
+                             yrs >= common.range[1] & yrs <= common.range[2])
         if (i * nrow(rwl.common) < output) {
             break
         }
-        rwl.common <- rwl.common[!is.na(apply(rwl.common, 2, na.rm=TRUE, mean))]
+        rwl.common <- rwl.common[!is.na(apply(rwl.common, 2, mean, na.rm=TRUE))]
         rwl.common <- as.data.frame(t(na.omit(t(rwl.common))))
         opt <- ncol(rwl.common) * nrow(rwl.common)
         if (opt > output) {
@@ -54,13 +45,19 @@ common.interval <- function(rwl, type=c("maximum", "optimum", "common"),
     series.range <- vapply(rwl, yr.range, numeric(2),
                            yr = as.numeric(row.names(rwl)))
     dim(series.range) <- c(2, length(rwl))
-    to.keep <- series.range[2, ] > max(series.range[1, ])
+    first.year <- series.range[1, ]
+    to.keep <- series.range[2, ] > max(first.year)
     rwl <- rwl[to.keep]
     series.range <- series.range[, to.keep, drop=FALSE]
 
     if (type2 == "common") {
         rwl.output <- na.omit(rwl)
     } else if (type2 == "optimum") {
+        ## Notes from Mikko:
+        ## - What function does this aim to optimize? Manual says it
+        ##   maximizes both the common time span and the number of
+        ##   series. This is ambiguous / impossible.
+        ## - Is the desired solution reached?
         rwl.output <- optimum.interval(rwl)
     } else if (type2 == "maximum") {
         ## to sort series [span]
@@ -68,6 +65,11 @@ common.interval <- function(rwl, type=c("maximum", "optimum", "common"),
         to.keep <- rep(TRUE, length(span.order))
         n <- 0
         rwl.output <- rwl
+        ## Notes from Mikko:
+        ## - Why 2, not 1, in length(span.order) - 2?
+        ## - Manual says this maximizes the common time span. How is
+        ##   it defined?
+        ## - Is the desired solution reached?
         for (i in seq_len(max(0, length(span.order) - 2))) {
             to.keep[span.order[i]] <- FALSE
             rwl.short <- rwl[to.keep]
@@ -84,7 +86,6 @@ common.interval <- function(rwl, type=c("maximum", "optimum", "common"),
     if (make.plot) {
         ## original rwl
         yr <- as.numeric(row.names(rwl.orig))
-        first.year <- as.matrix(apply(rwl.orig, 2, yr.range, yr.vec = yr))[1, ]
         neworder <- order(first.year, decreasing = FALSE)
         segs <- rwl.orig[neworder]
         n.col <- ncol(segs)

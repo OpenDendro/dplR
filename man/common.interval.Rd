@@ -6,7 +6,8 @@
   such as that  produced by \code{\link{read.rwl}}.
 }
 \usage{
-common.interval(rwl,type=c("maximum","optimum", "common"),make.plot=FALSE)
+common.interval(rwl, type=c("maximum", "optimum", "common"),
+                make.plot=FALSE)
 }
 \arguments{
   \item{rwl}{a \code{data.frame} of ring widths with
@@ -33,14 +34,14 @@ common.interval(rwl,type=c("maximum","optimum", "common"),make.plot=FALSE)
 
 \examples{
 data(co021)
-co021.o <- common.interval(co021, type="o",make.plot=TRUE)
-co021.c <- common.interval(co021, type="c",make.plot=TRUE)
-co021.m <- common.interval(co021, type="m",make.plot=TRUE)
+co021.o <- common.interval(co021, type="o", make.plot=TRUE)
+co021.c <- common.interval(co021, type="c", make.plot=TRUE)
+co021.m <- common.interval(co021, type="m", make.plot=TRUE)
 
 dim(co021)
 dim(co021.o) # most series and years
 dim(co021.c) # most series
-dim(co021.m) #most years
+dim(co021.m) # most years
 
 }
 \keyword{ manip }

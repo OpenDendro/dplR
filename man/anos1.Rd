@@ -16,6 +16,7 @@
 \references{
   Zang, C. (2010) Growth reaction of temperate forest tree species to
   summer drought -- a multispecies tree-ring network
-  approach. PhD-Thesis, Technische Universität München.
+  approach. PhD-Thesis, Technische \enc{Universität}{Universitaet}
+  \enc{München}{Muenchen}.
 }
 \keyword{datasets}

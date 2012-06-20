@@ -26,7 +26,7 @@ License: \tab \acronym{GPL}\cr
 \author{
   Andy Bunn \email{andy.bunn@wwu.edu} with major additions from Mikko
   Korpela and other significant contributions from Franco Biondi, Pierre
-  Mérian, Fares Qeadan and Christian Zang
+  \enc{Mérian}{Merian}, Fares Qeadan and Christian Zang
 }
 \references{
   Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of

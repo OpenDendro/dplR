@@ -23,11 +23,11 @@ pointer(rwl, rgv.thresh = 10, nseries.thresh = 75, round.decimals = 2)
   \item{rwl}{ a \code{data.frame} with ring-width series as columns and
     years as rows such as that produced by \code{\link{read.rwl}}. }
   
-  \item{rgv.thresh}{ a \code{numeric} giving the minimum absolute relative 
-  radial growth variation (in percentage) above which the growth change from 
-  the year \emph{t-1} to \emph{t} is considered as significant. Must be
-  > 0. Values > 100 are possible but highly unusual. See references.
-  Defaults to 10. }
+  \item{rgv.thresh}{ a \code{numeric} giving the minimum absolute
+    relative radial growth variation (in percentage) above which the
+    growth change from the year \emph{t-1} to \emph{t} is considered as
+    significant. Must be > 0. Values > 100 are possible but highly
+    unusual. See references.  Defaults to 10. }
   
   \item{nseries.thresh}{ a \code{numeric} giving the minimum percentage
     of series displaying significant relative radial growth variations
@@ -58,7 +58,8 @@ pointer(rwl, rgv.thresh = 10, nseries.thresh = 75, round.decimals = 2)
   present an absolute relative radial growth variation higher than 10\%.
   
   Users unfamiliar with the Becker algorithm should refer to Becker et
-  al. (1994) and Mérian and Lebourgeois (2011) for further details.
+  al. (1994) and \enc{Mérian}{Merian} and Lebourgeois (2011) for further
+  details.
   
 }
 
@@ -91,18 +92,19 @@ pointer(rwl, rgv.thresh = 10, nseries.thresh = 75, round.decimals = 2)
 
 \references{ 
 
-  Becker, M., Nieminen, T. M. and Gérémia, F. (1994) Short-term
-  variations and long-term changes in oak productivity in Northeastern
-  France – the role of climate and atmospheric CO2. \emph{Annals of
-  Forest Science} 51(5):477–492
+  Becker, M., Nieminen, T. M. and \enc{Gérémia}{Geremia}, F. (1994)
+  Short-term variations and long-term changes in oak productivity in
+  Northeastern France – the role of climate and atmospheric
+  CO2. \emph{Annals of Forest Science} 51(5):477–492
 
-  Mérian, P. and Lebourgeois, F. (2011) Size-mediated climate-growth
-  relationships in temperate forests: a multi-species
+  \enc{Mérian}{Merian}, P. and Lebourgeois, F. (2011) Size-mediated
+  climate-growth relationships in temperate forests: a multi-species
   analysis. \emph{Forest Ecology and Management} 261(8):1382–1391
   
 }
 
-\author{ Pierre Mérian. Improved by Mikko Korpela and Andy Bunn. }
+\author{ Pierre \enc{Mérian}{Merian}. Improved by Mikko Korpela and Andy
+  Bunn. }
 
 \seealso{ \code{\link{skel.plot}} }
 

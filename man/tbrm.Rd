@@ -46,7 +46,7 @@ tbrm(x, C = 9)
 
   Shewchuk, J. R. (1997) Adaptive Precision Floating-Point Arithmetic
   and Fast Robust Geometric Predicates.  \emph{Discrete and
-  Computational Geometry}, 18(3):305--363. Springer.
+  Computational Geometry}, 18(3):305\enc{–}{--}363. Springer.
 
 }
 \author{ Mikko Korpela }

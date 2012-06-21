@@ -337,7 +337,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 
 \value{ None. Invoked for side effect (file is written).  }
 
-\references{ TRiDaS - The Tree Ring Data Standard,
+\references{ TRiDaS \enc{–}{--} The Tree Ring Data Standard,
   \url{http://www.tridas.org/} }
 
 \author{ Mikko Korpela }

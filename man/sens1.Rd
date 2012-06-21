@@ -23,7 +23,7 @@
 \references{
 
   Biondi, F. and Qeadan, F. (2008) Inequality in Paleorecords.
-  \emph{Ecology}, 89(4):1056--1067.
+  \emph{Ecology}, 89(4):1056\enc{–}{--}1067.
 
   Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
   Dendrochronology: Applications in the Environmental Sciences}.

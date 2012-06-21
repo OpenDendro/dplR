@@ -35,7 +35,7 @@ morlet(y1, x1 = seq_along(y1), p2 = NULL, dj = 0.25, siglvl = 0.95)
 \references{
   Torrence, C. and Compo, G. P. (1998) A practical guide to wavelet
   analysis.  \emph{Bulletin of the American Meteorological Society},
-  79:61--78.
+  79(1):61\enc{–}{--}78.
 }
 
 \note{ This is a port of Torrence's \acronym{IDL} code available at

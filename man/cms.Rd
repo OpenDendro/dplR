@@ -28,7 +28,7 @@ cms(rwl, po, c.hat.t = FALSE, c.hat.i = FALSE)
 \references{
   Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring
   standardization: Defining the biological trend from expected basal
-  area increment.  \emph{Tree-Ring Research}, 64(2):81--96.
+  area increment.  \emph{Tree-Ring Research}, 64(2):81\enc{–}{--}96.
 }
 \note{ DendroLab website: \url{http://dendrolab.org/} }
 \author{

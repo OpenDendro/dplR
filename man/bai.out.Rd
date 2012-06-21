@@ -19,9 +19,9 @@ This converts ring-width series (mm) to ring-area series (mm squared) (aka basal
 \value{
   A \code{data.frame} containing the ring areas for each series with column names, row names and dimensions of \code{\var{rwl}}.
 }
-\references{ Biondi, F. (1999) Comparing tree-ring chronologies and repeated timber inventories as forest monitoring tools.  \emph{Ecological Applications}, 9(1):216--227.
+\references{ Biondi, F. (1999) Comparing tree-ring chronologies and repeated timber inventories as forest monitoring tools.  \emph{Ecological Applications}, 9(1):216\enc{–}{--}227.
 
-Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring standardization: Defining the biological trend from expected basal area increment.  \emph{Tree-Ring Research}, 64(2):81--96.
+Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring standardization: Defining the biological trend from expected basal area increment.  \emph{Tree-Ring Research}, 64(2):81\enc{–}{--}96.
 }
 \note{ DendroLab website: \url{http://dendrolab.org/} }
 \author{ Code by Andy Bunn based on work from DendroLab, University of

@@ -2,11 +2,12 @@
 
 \alias{glk}
 
-\title{ Calculate Gleichlaeufigkeit }
+\title{ Calculate \enc{Gleichläufigkeit}{Gleichlaeufigkeit} }
 
 \description{
-  This function calculates the matrix of Gleichlaeufigkeit for a given set
-  of tree-ring records.
+  This function calculates the matrix of
+  \enc{Gleichläufigkeit}{Gleichlaeufigkeit} for a given set of tree-ring
+  records.
 }
 
 \usage{
@@ -19,19 +20,21 @@ glk(x)
 }
 
 \details{
-  Gleichlaeufigkeit is a classical agreement test based on sign tests
-  (Eckstein and Bauch, 1969). This function implements Gleichlaeufigkeit
-  as the pairwise comparison of all records in data set, and thus
-  returns a matrix whose upper triangle reports the Gleichlaeufigkeit of
-  each possible combination of records. The global Gleichlaeufigkeit can
-  be calculated as \code{mean(glk(\var{x}), na.rm = TRUE)}.
+  \enc{Gleichläufigkeit}{Gleichlaeufigkeit} is a classical agreement
+  test based on sign tests (Eckstein and Bauch, 1969). This function
+  implements \enc{Gleichläufigkeit}{Gleichlaeufigkeit} as the pairwise
+  comparison of all records in data set, and thus returns a matrix whose
+  upper triangle reports the \enc{Gleichläufigkeit}{Gleichlaeufigkeit}
+  of each possible combination of records. The global
+  \enc{Gleichläufigkeit}{Gleichlaeufigkeit} can be calculated as
+  \code{mean(glk(\var{x}), na.rm = TRUE)}.
 }
 
 \value{
-  A \code{matrix} with the Gleichlaeufigkeit for all possible
-  combinations of records. If two curves have less than 3 years of
-  overlap, Gleichlaeufigkeit cannot be computed, and \code{NA} is
-  returned.
+  A \code{matrix} with the \enc{Gleichläufigkeit}{Gleichlaeufigkeit} for
+  all possible combinations of records. If two curves have less than 3
+  years of overlap, \enc{Gleichläufigkeit}{Gleichlaeufigkeit} cannot be
+  computed, and \code{NA} is returned.
 }
 
 \author{ Christian Zang.  Patched and improved by Mikko Korpela. }
@@ -40,7 +43,7 @@ glk(x)
   Eckstein, D., Bauch J. (1969) Beitrag zur Rationalisierung eines
   dendrochronologischen Verfahrens und zur Analyse seiner
   Aussagesicherheit.  \emph{Forstwissenschaftliches Centralblatt},
-  88:230--250.
+  88(1):230\enc{–}{--}250.
 
   Schweingruber, F. H. (1988) \emph{Tree rings: basics and applications
     of dendrochronology}.  Kluwer Academic Publishers, Dordrecht,

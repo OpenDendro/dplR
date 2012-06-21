@@ -94,12 +94,13 @@ pointer(rwl, rgv.thresh = 10, nseries.thresh = 75, round.decimals = 2)
 
   Becker, M., Nieminen, T. M. and \enc{Gérémia}{Geremia}, F. (1994)
   Short-term variations and long-term changes in oak productivity in
-  Northeastern France – the role of climate and atmospheric
-  CO2. \emph{Annals of Forest Science} 51(5):477–492
+  Northeastern France \enc{–}{--} the role of climate and atmospheric
+  CO2. \emph{Annals of Forest Science}, 51(5):477\enc{–}{--}492.
 
   \enc{Mérian}{Merian}, P. and Lebourgeois, F. (2011) Size-mediated
   climate-growth relationships in temperate forests: a multi-species
-  analysis. \emph{Forest Ecology and Management} 261(8):1382–1391
+  analysis. \emph{Forest Ecology and Management},
+  261(8):1382\enc{–}{--}1391.
   
 }
 

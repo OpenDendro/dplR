@@ -29,7 +29,7 @@ powt(rwl)
 \references{
   Edward R. Cook and Kenneth Peters (1997) Calculating unbiased
   tree-ring indices for the study of climatic and environmental
-  change. The Holocene 7:361-370.
+  change. \emph{The Holocene}, 7(3):361\enc{–}{--}370.
 }
 \seealso{\code{\link{rcs}}
 }

@@ -55,7 +55,7 @@ wavelet.plot(wave.list,
 \references{
   Torrence, C. and Compo, G. P. (1998) A practical guide to wavelet
   analysis.  \emph{Bulletin of the American Meteorological Society},
-  79:61--78.
+  79(1):61\enc{–}{--}78.
 }
 \note{ The function \code{morlet} is a port of Torrence's
   \acronym{IDL} code available at

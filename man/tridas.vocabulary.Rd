@@ -64,7 +64,8 @@ tridas.vocabulary(category = c("dating type", "measuring method",
 
 }
 \references{
-  TRiDaS - The Tree Ring Data Standard, \url{http://www.tridas.org/}
+  TRiDaS \enc{–}{--} The Tree Ring Data Standard,
+  \url{http://www.tridas.org/}
 }
 \author{
   Mikko Korpela

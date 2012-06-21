@@ -15,7 +15,7 @@
   \code{\link{read.ids}} is \code{c(5, 2, 1)}.}
 \references{
   Zang, C. (2010) Growth reaction of temperate forest tree species to
-  summer drought -- a multispecies tree-ring network
+  summer drought \enc{–}{--} a multispecies tree-ring network
   approach. PhD-Thesis, Technische \enc{Universität}{Universitaet}
   \enc{München}{Muenchen}.
 }

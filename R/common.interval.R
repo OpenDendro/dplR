@@ -135,11 +135,15 @@ common.interval <- function(rwl, type=c("maximum", "optimum", "common"),
             }
         }
 
+        sub.str1 <- paste('Original: ',ncol(rwl.orig),' series, ',nrow(rwl.orig),' years',sep='')
+        sub.str2 <- paste('Common Interval (type=',type2,'): ',ncol(rwl.output),' series, ',nrow(rwl.output),' years',sep='')
+        sub.str <- paste(sub.str1,'\n',sub.str2)
         op <- par(no.readonly = TRUE)
         on.exit(par(op))
-        par(mar = c(4, 5, 2, 2) + 0.1, mgp = c(1.25, 0.25, 0), tcl = 0.25)
+        par(mar = c(5, 5, 2, 2) + 0.1, mgp = c(1.25, 0.25, 0), tcl = 0.25)
         plot(yr, segs[[1]], type = "n", ylim = c(1, n.col), axes = FALSE,
              ylab = "", xlab = gettext("Year", domain = "R-dplR"))
+        mtext(text=sub.str,side=1,line=3)
         apply(segs, 2, lines, x = yr, lwd = 2, col="grey")
         apply(segs2, 2, lines, x = yr, lwd = 2, col="black")
         axis(2, at = seq.col, labels = names(segs), srt = 45, tick = FALSE,

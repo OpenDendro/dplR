@@ -1,6 +1,18 @@
 * CHANGES IN dplR VERSION 1.5.6
 
-None yet.
+File: NAMESPACE
+---------------
+- Exporting new function common.interval()
+
+File: common.interval.R
+------------------------
+
+- New function common.interval() trims a rwl object to a common interval
+  using one of three methods. Contributed by a user Filipe Campelo (fcampelo@ci.uc.pt).
+  This is his first contribution. Need to add to author list.
+
+
+* CHANGES IN dplR VERSION 1.5.5
 
 File: NAMESPACE
 ---------------

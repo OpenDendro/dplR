@@ -6,8 +6,8 @@
   such as that  produced by \code{\link{read.rwl}}.
 }
 \usage{
-common.interval(rwl, type=c("maximum", "optimum", "common"),
-                make.plot=FALSE)
+common.interval(rwl, type=c("series", "years", "both"),
+                make.plot=TRUE)
 }
 \arguments{
   \item{rwl}{a \code{data.frame} of ring widths with
@@ -15,33 +15,31 @@ common.interval(rwl, type=c("maximum", "optimum", "common"),
     containing each series \acronym{ID} such as produced by
     \code{\link{read.rwl}}}
   \item{type}{a \code{character} string of
-    \code{"maximum"}, \code{"optimum"}, or \code{"common"}. Argument
+    \code{"series"}, \code{"years"}, or \code{"both"}. Argument
     matching is performed. }
   \item{make.plot}{a \code{logical} indicating if a plot should be drawn. }
 }
 \details{
-  This trims an \code{rwl} object to a common interval that maximizes
-  the common time span (\code{type="maximum"}), the number of series
-  (\code{type="common"}), or both (\code{type="optimum"}) A modified
+  This trims an \code{rwl} object to a common interval that maximizes the number of series (\code{type="series"}),the number of years (\code{type="years"}),or both (\code{type="both"}). A modified
   \code{\link{seg.plot}} can be drawn as well. 
 }
 \value{
   A \code{data.frame} with \code{colnames(\var{x})} and
   \code{rownames(\var{x})}.
 }
-\author{ Filipe Campelo. Patched and improved by Andy Bunn and  Mikko Korpela. }
+\author{ Filipe Campelo, Andy Bunn and  Mikko Korpela. }
 \seealso{ \code{\link{seg.plot}} }
 
 \examples{
 data(co021)
-co021.o <- common.interval(co021, type="o", make.plot=TRUE)
-co021.c <- common.interval(co021, type="c", make.plot=TRUE)
-co021.m <- common.interval(co021, type="m", make.plot=TRUE)
+co021.s <- common.interval(co021, type="series", make.plot=TRUE)
+co021.y <- common.interval(co021, type="years", make.plot=TRUE)
+co021.b <- common.interval(co021, type="both", make.plot=TRUE)
 
 dim(co021)
-dim(co021.o) # most series and years
-dim(co021.c) # most series
-dim(co021.m) # most years
+dim(co021.s) # the highest number of series (33 series x 288 years = 9504 years)
+dim(co021.y) # the highest number of years (27 series x 458 years = 12366 years)
+dim(co021.b) # both [?] (28 series x 435 years = 12180 years)
 
 }
 \keyword{ manip }

@@ -127,7 +127,7 @@ common.interval <- function(rwl, type=c("series", "years", "both"),
             gettextf("Common Interval (type='%s'): %d series x %d years = %d",
                      type2, ncol(rwl.output), nrow(rwl.output),
                      ncol(rwl.output) * nrow(rwl.output), domain="R-dplR")
-        sub.str <- paste(sub.str1, '\n', sub.str2)
+        sub.str <- paste(sub.str1, sub.str2, sep='\n')
         op <- par(no.readonly = TRUE)
         on.exit(par(op))
         par(mar = c(5, 5, 2, 2) + 0.1, mgp = c(1.25, 0.25, 0), tcl = 0.25)

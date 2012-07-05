@@ -57,6 +57,7 @@ common.interval <- function(rwl, type=c("series", "years", "both"),
     yrs <- as.numeric(row.names(rwl))
     output <- 0
     opt <- 0
+    rwl.output <- as.data.frame(matrix(0, 0, 0))
 
     ## to get sample depth
     if (ncol(rwl) > 0) {

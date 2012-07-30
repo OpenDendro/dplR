@@ -180,7 +180,7 @@
         ## Pad to name.width
         rwl.df.name <- ifelse(rwl.df.width < name.width,
                               format(rwl.df.name, width=name.width,
-                                     justify="right"),
+                                     justify="left"),
                               rwl.df.name)
 
         for (i in seq_len(n.decades)) {

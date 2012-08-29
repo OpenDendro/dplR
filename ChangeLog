@@ -15,7 +15,7 @@ File: common.interval.R
 
 - New function common.interval() trims a rwl object to a common interval
   using one of three methods. Contributed by a user Filipe Campelo (fcampelo@ci.uc.pt).
-  This is his first contribution. Need to add to author list.
+  This is his first contribution. Added to author list in DESCRIPTION.
 
 File: corr.rwl.seg.R
 --------------------

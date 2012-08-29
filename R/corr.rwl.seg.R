@@ -245,18 +245,18 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             for (i in seq_len(nseries)) {
                 y.deviation <- y.deviation + 1
                 ## whole segs
-                xx <- segs.mat[i, ]
+                xx <- c(segs.mat[i, 1], segs.mat[i, 2] + 1)
                 xx <- c(xx, rev(xx))
                 yy <- c(i, i, y.deviation, y.deviation)
                 polygon(xx, yy, col=col.pal[3], border=NA)
                 ## complete segs
-                xx <- com.segs.mat[i, ]
+                xx <- c(com.segs.mat[i, 1], com.segs.mat[i, 2] + 1)
                 xx <- c(xx, rev(xx))
                 polygon(xx, yy, col=col.pal[2], border=NA)
                 ## flags
                 flag.segs.mat <- yr.ranges(flag.segs[, i], yrs)
                 for (j in seq_len(nrow(flag.segs.mat))) {
-                    xx <- flag.segs.mat[j, ]
+                    xx <- c(flag.segs.mat[j, 1], flag.segs.mat[j, 2] + 1)
                     xx <- c(xx, rev(xx))
                     polygon(xx, yy, col=col.pal[1], border=NA)
                 }
@@ -272,7 +272,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         ## finish up plotting
         odd.seq <- seq(from=1, to=nsegs, by=2)
         even.seq <- seq(from=2, to=nsegs, by=2)
-        cnames.segs <- names(segs)
+        cnames.segs <- colnames(segs)
         axis(2, at=odd.seq,
              labels=cnames.segs[odd.seq], srt=45,
              tick=FALSE, las=2, cex.axis=label.cex)

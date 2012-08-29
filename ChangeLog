@@ -17,6 +17,11 @@ File: common.interval.R
   using one of three methods. Contributed by a user Filipe Campelo (fcampelo@ci.uc.pt).
   This is his first contribution. Need to add to author list.
 
+File: corr.rwl.seg.R
+--------------------
+
+- Bug fix: series names were not shown (numbers were shown instead)
+- Bug fix: there were off-by-one errors in the length of the bars
 
 * CHANGES IN dplR VERSION 1.5.5
 

@@ -11,8 +11,8 @@ Authors@R: c(person(c("Andrew", "G."), "Bunn", role = c("aut", "cph",
         c("aut", "cph")), person("Pierre", "Mérian", role = c("aut", 
         "cph")), person("Fares", "Qeadan", role = c("aut", "cph")), 
         person("Christian", "Zang", role = c("aut", "cph")))
-Author: Andrew G. Bunn [aut, cph, cre, trl], Mikko Korpela [aut, cph], Franco Biondi [aut, cph], Filipe Campelo [aut, cph], Pierre Mérian [aut, cph], Fares Qeadan [aut, cph], Christian Zang [aut, cph]
-Maintainer: Andrew G. Bunn <andrew.bunn@wwu.edu>
+Author: Andy Bunn [aut, cph, cre, trl], Mikko Korpela [aut, cph], Franco Biondi [aut, cph], Filipe Campelo [aut, cph], Pierre Mérian [aut, cph], Fares Qeadan [aut, cph], Christian Zang [aut, cph]
+Maintainer: Andy Bunn <andy.bunn@wwu.edu>
 Depends: R (>= 2.15.0)
 Imports: graphics, grDevices, grid, stats, utils, digest (>= 0.2.3),
         lattice (>= 0.13-6), stringr (>= 0.4), XML (>= 2.1-0)

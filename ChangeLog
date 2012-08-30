@@ -23,6 +23,12 @@ File: corr.rwl.seg.R
 - Bug fix: series names were not shown (numbers were shown instead)
 - Bug fix: there were off-by-one errors in the length of the bars
 
+File: DESCRIPTION
+---------------
+- Changed author and maintainer to Andy Bunn from Andrew G. Bunn to keep parity between 
+  the names and the email address AGB uses to submit to CRAN. This was made at the
+  request of Kurt Hornik at CRAN
+
 * CHANGES IN dplR VERSION 1.5.5
 
 File: NAMESPACE

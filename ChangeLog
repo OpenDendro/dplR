@@ -22,6 +22,8 @@ File: corr.rwl.seg.R
 
 - Bug fix: series names were not shown (numbers were shown instead)
 - Bug fix: there were off-by-one errors in the length of the bars
+- New feature: allow the master series to be built from a second set of
+  tree ring series by using a data.frame 'master' argument
 
 File: DESCRIPTION
 ---------------

@@ -8,7 +8,12 @@
 corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
              prewhiten = TRUE, pcrit = 0.05, biweight = TRUE,
              make.plot = TRUE, label.cex = 1, floor.plus1 = FALSE,
-             master = NULL, master.yrs = as.numeric(names(master)),
+             master = NULL,
+             master.yrs = as.numeric(if (is.null(dim(master))) {
+                              names(master)
+                          } else {
+                              rownames(master)
+                          }),
              \dots)
 }
 \arguments{
@@ -35,34 +40,41 @@ corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   \item{floor.plus1}{ \code{logical} flag.  If \code{TRUE}, one year is
     added to the base location of the first segment (e.g., 1601, 1701,
     1801 \acronym{AD}). }
-  \item{master}{ a \code{numeric} vector.  If not \code{NULL}, the
-    function uses this as the master chronology.  If \code{NULL}, a
-    number of master chronologies, one for each series in
-    \code{\var{rwl}}, is built from \code{\var{rwl}} using the
-    leave-one-out principle. }
+  \item{master}{ \code{NULL}, a \code{numeric} \code{vector} or a
+    \code{matrix}-like object of \code{numeric} values, including a
+    \code{data.frame}.  If \code{NULL}, a number of master chronologies,
+    one for each series in \code{\var{rwl}}, is built from
+    \code{\var{rwl}} using the leave-one-out principle.  If a
+    \code{vector}, the function uses this as the master chronology.  If
+    a \code{matrix} or \code{data.frame}, this object is used for
+    building the master chronology (no leave-one-out). }
   \item{master.yrs}{ a \code{numeric} vector giving the years of
-    \code{\var{series}}.  Defaults to
-    \code{as.numeric(names(\var{master}))}. }
+    \code{\var{series}}.  Defaults to \code{names} or \code{rownames} of 
+    \code{\var{master}} coerced to \code{numeric} type. }
   \item{\dots}{ other arguments passed to plot. }
 }
 \details{
+
   This function calculates correlation serially between each tree-ring
   series and a master chronology built from all the other series in the
   \code{\var{rwl}} object (leave-one-out principle).  Optionally, the
-  user may give a \code{\var{master}} chronology as an argument.  In the
-  latter case, the same master chronology is used for all the series in
-  the \code{\var{rwl}} object.  Correlations are done for each segment
-  of the series where segments are lagged by half the segment length
-  (e.g., 100-year segments would be overlapped by 50-years).  The first
-  segment is placed according to \code{\var{bin.floor}}.  The minimum
-  bin year is calculated as
+  user may give a \code{\var{master}} chronology (a \code{vector}) as an
+  argument.  In the latter case, the same master chronology is used for
+  all the series in the \code{\var{rwl}} object.  The user can also
+  choose to give a \code{\var{master}} \code{data.frame} (series as
+  columns, years as rows), from which a single master chronology is
+  built.
+
+  Correlations are done for each segment of the series where segments
+  are lagged by half the segment length (e.g., 100-year segments would
+  be overlapped by 50-years).  The first segment is placed according to
+  \code{\var{bin.floor}}.  The minimum bin year is calculated as
   \code{ceiling(\var{min.yr}/\var{bin.floor})*\var{bin.floor}} where
   \code{\var{min.yr}} is the first year in either the \code{\var{rwl}}
   object or the user-specified \code{\var{master}} chronology, whichever
   is smaller.  For example if the first year is 626 and
-  \code{\var{bin.floor}} is 100 then the first bin would start in
-  700.  If \code{\var{bin.floor}} is 10 then the first bin would start in
-  630.
+  \code{\var{bin.floor}} is 100 then the first bin would start in 700.
+  If \code{\var{bin.floor}} is 10 then the first bin would start in 630.
 
   Correlations are calculated for the first segment, then the second
   segment and so on.  Correlations are only calculated for segments with

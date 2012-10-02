@@ -2,7 +2,12 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                          prewhiten = TRUE, pcrit=0.05, biweight=TRUE,
                          make.plot = TRUE, label.cex=1,
                          floor.plus1 = FALSE, master = NULL,
-                         master.yrs = as.numeric(names(master)), ...) {
+                         master.yrs = as.numeric(if (is.null(dim(master))) {
+                             names(master)
+                         } else {
+                             rownames(master)
+                         }),
+                         ...) {
 
     ## helper function
     yr.range <- function(x, yr.vec=as.numeric(names(x))) {
@@ -42,20 +47,52 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                        nrow = max.yr - min.yr + 1,
                        ncol = nseries,
                        dimnames = list(as.character(yrs), cnames))
-        rwl.tmp <- as.matrix(rwl)
-        for (rname in row.names(rwl)) {
-            rwl2[rname, ] <- rwl.tmp[rname, ]
-        }
+        rwl2[row.names(rwl), ] <- as.matrix(rwl)
         rwl2 <- as.data.frame(rwl2)
     }
 
     ## Pad rwl and master (if present) to same number of years
     if (!is.null(master)) {
+        master.dim <- dim(master)
         min.master.yr <- min(master.yrs)
         max.master.yr <- max(master.yrs)
-        master2 <- rep(NA_real_, max.master.yr - min.master.yr + 1)
-        names(master2) <- min.master.yr : max.master.yr
-        master2[as.character(master.yrs)] <- master
+
+        if (!is.null(master.dim) && length(master.dim) == 2 &&
+            master.dim[2] > 1) {
+            ## A. master is a data.frame or a matrix.  Normalize and
+            ## compute master chronology as a mean of series
+            ## (columns).
+
+            ## Ensure that master has consecutive years in increasing order
+            if (!all(diff(master.yrs) == 1)) {
+                char.yrs <- as.character(min.master.yr : max.master.yr)
+                master.inc <- matrix(NA_real_,
+                                     nrow = max.master.yr - min.master.yr + 1,
+                                     ncol = master.dim[2],
+                                     dimnames = list(char.yrs,
+                                     colnames(master)))
+                master.inc[rownames(master), ] <- as.matrix(master)
+            } else {
+                master.inc <- master
+            }
+
+            ## normalize all series (columns in master matrix)
+            tmp <- normalize1(master.inc, n, prewhiten)
+            master.norm <- tmp$master[, tmp$idx.good, drop=FALSE]
+
+            ## compute master series by normal mean or robust mean
+            if (!biweight) {
+                master2 <- apply(master.norm, 1, exactmean)
+            } else {
+                master2 <- apply(master.norm, 1, tbrm, C=9)
+            }
+        } else {
+            ## B. master is a vector
+            master2 <- rep(NA_real_, max.master.yr - min.master.yr + 1)
+            names(master2) <- as.character(min.master.yr : max.master.yr)
+            master2[as.character(master.yrs)] <- master
+        }
+
         if (min.master.yr < min.yr) {
             n.pad <- min.yr - min.master.yr
             padding <- matrix(NA_real_, n.pad, nseries)
@@ -129,16 +166,10 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             master.norm <- rwi[, idx.good & idx.noti, drop=FALSE]
 
             ## compute master series by normal mean or robust mean
-            master2 <- vector(mode="numeric", length=nyrs)
             if (!biweight) {
-                for (j in seq_len(nyrs)) {
-                    master2[j] <- exactmean(master.norm[j, ])
-                }
+                master2 <- apply(master.norm, 1, exactmean)
             } else {
-                ## surprisingly, for loop is faster than apply
-                for (j in seq_len(nyrs)) {
-                    master2[j] <- tbrm(master.norm[j, ], C=9)
-                }
+                master2 <- apply(master.norm, 1, tbrm, C=9)
             }
         }
         series <- rwi[, i]

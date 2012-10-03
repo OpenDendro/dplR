@@ -26,9 +26,19 @@ File: corr.rwl.seg.R
   tree ring series by using a data.frame 'master' argument
 - Replaced some for loops with cleaner vectorized operations or apply().
 
+File: sea.R
+-----------
+
+- Extra input checks (e.g. x must have explicit, non-automatic row-names)
+- Some matrices now have the correct type (numeric instead of logical)
+  right from the beginning
+- Small optimization: a temporary matrix is completely overwritten on
+  every round of a loop, so no need to reinitialize
+- Braces always used in if (else) constructs
+
 File: DESCRIPTION
----------------
-- Changed author and maintainer to Andy Bunn from Andrew G. Bunn to keep parity between 
+-----------------
+- Changed author and maintainer to Andy Bunn from Andrew G. Bunn to keep parity between
   the names and the email address AGB uses to submit to CRAN. This was made at the
   request of Kurt Hornik at CRAN
 

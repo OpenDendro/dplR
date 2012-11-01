@@ -36,7 +36,7 @@ ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
 \references{
   Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
   Dendrochronology: Applications in the Environmental Sciences}.
-  Springer.  \acronym{ISBN-13}: 978-0792305866.
+  Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
 }
 \note{ DendroLab website: \url{http://dendrolab.org/} }
 \author{

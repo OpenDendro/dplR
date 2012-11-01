@@ -21,7 +21,7 @@ hanning(x, n = 7)
 \references{
   Oppenheim, A. V., Schafer, R. W. and Buck, J. R. (1999) \emph{
     Discrete-Time Signal Processing (2nd Edition)}.  Prentice-Hall.
-  \acronym{ISBN-13}: 978-0137549207.
+  \acronym{ISBN-13}: 978-0-13-754920-7.
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link[stats]{filter} } }

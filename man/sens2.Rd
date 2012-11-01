@@ -27,10 +27,10 @@
 
   Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
   Dendrochronology: Applications in the Environmental Sciences}.
-  Springer.  \acronym{ISBN-13}: 978-0792305866.
+  Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
 
   Fritts, H. C. (2001) \emph{Tree Rings and Climate}.  Blackburn.
-  \acronym{ISBN-13}: 978-1930665392.
+  \acronym{ISBN-13}: 978-1-930665-39-2.
   
 }
 \author{ Mikko Korpela, based on original by Andy Bunn }

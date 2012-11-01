@@ -1,3 +1,23 @@
+* CHANGES IN dplR VERSION 1.5.7
+
+File: corr.rwl.seg.R
+--------------------
+
+- New feature: allow the master series to be built from a second set of
+  tree ring series by using a data.frame 'master' argument
+- Replaced some for loops with cleaner vectorized operations or apply().
+
+File: sea.R
+-----------
+
+- Extra input checks (e.g. x must have explicit, non-automatic row-names)
+- Some matrices now have the correct type (numeric instead of logical)
+  right from the beginning
+- Small optimization: a temporary matrix is completely overwritten on
+  every round of a loop, so no need to reinitialize
+- Braces always used in if (else) constructs
+
+
 * CHANGES IN dplR VERSION 1.5.6
 
 File: write.tucson.R
@@ -22,19 +42,6 @@ File: corr.rwl.seg.R
 
 - Bug fix: series names were not shown (numbers were shown instead)
 - Bug fix: there were off-by-one errors in the length of the bars
-- New feature: allow the master series to be built from a second set of
-  tree ring series by using a data.frame 'master' argument
-- Replaced some for loops with cleaner vectorized operations or apply().
-
-File: sea.R
------------
-
-- Extra input checks (e.g. x must have explicit, non-automatic row-names)
-- Some matrices now have the correct type (numeric instead of logical)
-  right from the beginning
-- Small optimization: a temporary matrix is completely overwritten on
-  every round of a loop, so no need to reinitialize
-- Braces always used in if (else) constructs
 
 File: DESCRIPTION
 -----------------

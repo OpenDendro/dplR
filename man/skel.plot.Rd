@@ -62,7 +62,7 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9,
 
   Stokes, M. A. and Smiley, T. L. (1968) \emph{An Introduction to
     Tree-Ring Dating}.  The University of Arizona Press.
-  \acronym{ISBN-13}: 978-0816516803.
+  \acronym{ISBN-13}: 978-0-8165-1680-3.
   
   Sheppard, P. R. (2002) Crossdating Tree Rings Using Skeleton Plotting.
   \url{http://www.ltrr.arizona.edu/skeletonplot/introcrossdate.htm}

@@ -26,7 +26,7 @@ gini.coef(x)
 
   Handcock. M. S. and Morris, M. (1999) \emph{Relative Distribution
     Methods in the Social Sciences}.  Springer-Verlag.  \acronym{ISBN}:
-  0387987789.
+  0-387-98778-9.
 }
 \author{ Mikko Korpela, based on original by Andy Bunn }
 \seealso{ \code{\link{rwl.stats}} }

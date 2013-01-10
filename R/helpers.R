@@ -256,7 +256,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
                     suffix.count <- count.base(suffix.count, n.an)
                     proposed <-
                         compose.name(unique.cut[i],alphanumeric,suffix.count,limit)
-                    if (nzchar(proposed)) {
+                    if (!nzchar(proposed)) {
                         warning("could not remap a name: some series will be missing")
                         still.looking <- FALSE
                         ## F for Fail...

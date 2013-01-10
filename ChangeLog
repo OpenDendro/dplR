@@ -7,6 +7,13 @@ File: corr.rwl.seg.R
   tree ring series by using a data.frame 'master' argument
 - Replaced some for loops with cleaner vectorized operations or apply().
 
+File: helpers.R
+---------------
+
+- Fixed a bug in fix.names(), related to creating unique short names.
+  The bug affected read.tridas(), write.compact(), write.tridas() and
+  write.tucson() but probably manifested itself quite rarely.
+
 File: sea.R
 -----------
 

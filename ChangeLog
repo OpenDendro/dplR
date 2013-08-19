@@ -30,6 +30,11 @@ File: sea.R
   every round of a loop, so no need to reinitialize
 - Braces always used in if (else) constructs
 
+Files: redfit.R, redfit.c
+-------------------------
+
+- New function redfit() based on REDFIT by Schulz and Mudelsee
+
 
 * CHANGES IN dplR VERSION 1.5.6
 

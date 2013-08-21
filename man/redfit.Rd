@@ -208,6 +208,25 @@ redfit(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
   \code{\link{print.redfit}}
 }
 \examples{data(ca533)
+# I'd like the first example to be a simple run with an ar1 dataset
+# will fuss around with this some. I think a dedicated plot function
+nyrs <- 100
+phi <- 0.7
+sigma <- 0.3
+sigma0 <-(1 - phi^2)*sigma^2
+sigma0 <- sqrt(sigma0)
+x.ar <- arima.sim(list(ar=phi),n = nyrs, sd = sigma0)+1
+x.ar[x.ar<=0] <- 0.001
+
+redf <- redfit(x.ar, nsim=1000)
+plot(redf[["freq"]], redf[["gxxc"]],
+  ylim=range(redf[["ci99"]],redf[["gxxc"]]),
+  type='n')
+grid()
+lines(redf[["freq"]], redf[["gxxc"]])
+lines(redf[["freq"]], redf[["ci99"]],col='red')
+
+# second example with tree-ring data
 t <- as.numeric(row.names(ca533))
 x <- ca533[[2]]
 idx <- which(!is.na(x))

@@ -207,17 +207,29 @@ redfit(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
 \seealso{
   \code{\link{print.redfit}}
 }
-\examples{data(ca533)
+\examples{
 # I'd like the first example to be a simple run with an ar1 dataset
 # will fuss around with this some. I think a dedicated plot function
+# here is a 100-yr series with ar1 of phi and
+# std of sigma. this should not have any peaks above the CI
 nyrs <- 100
+yrs <- 1:nyrs
+
 phi <- 0.7
 sigma <- 0.3
-sigma0 <-(1 - phi^2)*sigma^2
-sigma0 <- sqrt(sigma0)
+sigma0 <-sqrt((1 - phi^2)*sigma^2)
 x.ar <- arima.sim(list(ar=phi),n = nyrs, sd = sigma0)+1
 x.ar[x.ar<=0] <- 0.001
+# now let's add in a 10-yr sin wave
+per <- 10
+amp <- 0.4
+wav <- amp * sin(2*pi*1/per*yrs)
+x10.ar <- x.ar+wav
 
+plot(yrs,x10.ar,type='l')
+lines(yrs,x.ar,col='red')
+
+# the first should not show a peak and the second should
 redf <- redfit(x.ar, nsim=1000)
 plot(redf[["freq"]], redf[["gxxc"]],
   ylim=range(redf[["ci99"]],redf[["gxxc"]]),
@@ -226,7 +238,17 @@ grid()
 lines(redf[["freq"]], redf[["gxxc"]])
 lines(redf[["freq"]], redf[["ci99"]],col='red')
 
+redf10 <- redfit(x10.ar, nsim=1000)
+plot(redf10[["freq"]], redf10[["gxxc"]],
+  ylim=range(redf10[["ci99"]],redf10[["gxxc"]]),
+  type='n')
+grid()
+lines(redf10[["freq"]], redf10[["gxxc"]])
+lines(redf10[["freq"]], redf10[["ci99"]],col='red')
+
+
 # second example with tree-ring data
+data(ca533)
 t <- as.numeric(row.names(ca533))
 x <- ca533[[2]]
 idx <- which(!is.na(x))

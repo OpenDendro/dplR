@@ -6,7 +6,7 @@ wavelet.plot <-
              key.cols = rev(rainbow(length(wavelet.levels)-1)),
              key.lab = parse(text = paste0("\"", gettext("Power"), "\"^2")),
              add.spline = FALSE, f = 0.5, nyrs = NULL,
-             crn.col = "black", crn.lwd = 1,
+             crn.col = "black", crn.lwd = 1,coi.col='black',
              crn.ylim = range(wave.list$y)*1.1, side.by.side = FALSE)
 {
 
@@ -100,7 +100,7 @@ wavelet.plot <-
         }
         if (add.coi) {
             polygon(yr.vec.xx, coi2.yy, density=c(10, 20),
-                    angle=c(-45, 45), col="black")
+                    angle=c(-45, 45), col=coi.col)
         }
         axis(1)
         axis(3)
@@ -169,7 +169,7 @@ wavelet.plot <-
         }
         if (add.coi) {
             polygon(yr.vec.xx, coi2.yy, density=c(10, 20),
-                    angle=c(-45, 45), col="black")
+                    angle=c(-45, 45), col=coi.col)
         }
         axis(1)
         axis(2, at = ytick, labels = ytickv)

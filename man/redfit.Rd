@@ -208,52 +208,89 @@ redfit(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
   \code{\link{print.redfit}}
 }
 \examples{
-# I'd like the first example to be a simple run with an ar1 dataset
-# will fuss around with this some. I think a dedicated plot function
-# here is a 100-yr series with ar1 of phi and
-# std of sigma. this should not have any peaks above the CI
-nyrs <- 100
+# Create a simulated tree-ring width series that has a red-noise
+# background and an embedded signal.
+set.seed(123)
+nyrs <- 500
 yrs <- 1:nyrs
 
+# Here is an ar1 time series with a mean of 2mm,
+# an ar1 of phi, and sd of sigma
 phi <- 0.7
 sigma <- 0.3
 sigma0 <-sqrt((1 - phi^2)*sigma^2)
-x.ar <- arima.sim(list(ar=phi),n = nyrs, sd = sigma0)+1
-x.ar[x.ar<=0] <- 0.001
-# now let's add in a 10-yr sin wave
+x <- arima.sim(list(ar=phi),n = nyrs, sd = sigma0)+2
+
+# Here is a sine wave at f=0.1 to add in with an amplitude
+# equal to half the sd of the red noise background
 per <- 10
-amp <- 0.4
+amp <- sigma0/2
 wav <- amp * sin(2*pi*1/per*yrs)
-x10.ar <- x.ar+wav
 
-plot(yrs,x10.ar,type='l')
-lines(yrs,x.ar,col='red')
+# Add them together so we have signal and noise
+x <- x+wav
 
-# the first should not show a peak and the second should
-redf <- redfit(x.ar, nsim=1000)
-plot(redf[["freq"]], redf[["gxxc"]],
-  ylim=range(redf[["ci99"]],redf[["gxxc"]]),
-  type='n')
+# Here is the redfit spec
+redf.x <- redfit(x, nsim=500)
+
+op <- par(no.readonly = TRUE) # Save to reset on exit
+par(tcl=0.5,mar=rep(2.2,4),mgp=c(1.1,0.1,0))
+
+plot(redf.x[["freq"]], redf.x[["gxxc"]],
+     ylim=range(redf.x[["ci99"]],redf.x[["gxxc"]]),
+     type='n',ylab='Spectrum (dB)',xlab='Frequency (1/yr)',axes=F)
 grid()
-lines(redf[["freq"]], redf[["gxxc"]])
-lines(redf[["freq"]], redf[["ci99"]],col='red')
+lines(redf.x[["freq"]], redf.x[["gxxc"]],col='#1B9E77')
+lines(redf.x[["freq"]], redf.x[["ci99"]],col='#D95F02')
+lines(redf.x[["freq"]], redf.x[["ci95"]],col='#7570B3')
+lines(redf.x[["freq"]], redf.x[["ci90"]],col='#E7298A')
+freqs <- pretty(redf.x[["freq"]])
+pers <- round(1/freqs,2)
+axis(1,at=freqs,labels=TRUE)
+axis(3,at=freqs,labels=pers)
+mtext(text='Period (yr)',side=3,line=1.1)
+axis(2);axis(4)
+legend('topright',c('x','CI99','CI95','CI90'),lwd=2,
+       col=c('#1B9E77','#D95F02', '#7570B3', '#E7298A'),
+       bg='white')
+box()
 
-redf10 <- redfit(x10.ar, nsim=1000)
-plot(redf10[["freq"]], redf10[["gxxc"]],
-  ylim=range(redf10[["ci99"]],redf10[["gxxc"]]),
-  type='n')
+# Second example with tree-ring data
+# Note the long-term low-freq signal in the data. E.g.,
+# crn.plot(cana157)
+
+data(cana157)
+yrs <- as.numeric(rownames(cana157))
+x <- cana157[,1]
+
+redf.x <- redfit(x, nsim=1000)
+
+plot(yrs,x,type='n',axes=F,xlab='Time',ylab='Ring Width (mm)')
 grid()
-lines(redf10[["freq"]], redf10[["gxxc"]])
-lines(redf10[["freq"]], redf10[["ci99"]],col='red')
+lines(yrs,x)
+axis(1);axis(2);axis(3);axis(4);
+box()
 
+plot(redf.x[["freq"]], redf.x[["gxxc"]],
+     ylim=range(redf.x[["ci99"]],redf.x[["gxxc"]]),
+     type='n',ylab='Spectrum (dB)',xlab='Frequency (1/yr)',axes=F)
+grid()
+lines(redf.x[["freq"]], redf.x[["gxxc"]],col='#1B9E77')
+lines(redf.x[["freq"]], redf.x[["ci99"]],col='#D95F02')
+lines(redf.x[["freq"]], redf.x[["ci95"]],col='#7570B3')
+lines(redf.x[["freq"]], redf.x[["ci90"]],col='#E7298A')
+freqs <- pretty(redf.x[["freq"]])
+pers <- round(1/freqs,2)
+axis(1,at=freqs,labels=TRUE)
+axis(3,at=freqs,labels=pers)
+mtext(text='Period (yr)',side=3,line=1.1)
+axis(2);axis(4)
+legend('topright',c('x','CI99','CI95','CI90'),lwd=2,
+       col=c('#1B9E77','#D95F02', '#7570B3', '#E7298A'),
+       bg='white')
+box()
+par(op)
 
-# second example with tree-ring data
-data(ca533)
-t <- as.numeric(row.names(ca533))
-x <- ca533[[2]]
-idx <- which(!is.na(x))
-redf <- redfit(x[idx], t[idx], "time", nsim = 100)
-plot(redf[["freq"]], redf[["gxxc"]])
 }
 \keyword{ ts }
 \keyword{ htest }

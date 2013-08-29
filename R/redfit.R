@@ -108,7 +108,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     MIN_POINTS <- 2
     WIN_NAMES <- c("rectangular", "welch i", "hanning",
                    "triangular", "blackman-harris")
-    ## 21 is the lower limit of nsim where !anyDuplicated(c(idx80,
+    ## dplR: 21 is the lower limit of nsim where !anyDuplicated(c(idx80,
     ## idx90, idx95, idx99)) is TRUE.  (Also, none of the indices is
     ## 0.)  For more reliable results, a much greated value is
     ## recommended.
@@ -139,7 +139,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
                       NSIM_LIMIT, domain = "R-dplR"),
              domain = NA)
     }
-    ## iwin can be a number or a string. iwin2 is a number %in% 0:4
+    ## dplR: iwin can be a number or a string. iwin2 is a number %in% 0:4
     if (is.numeric(iwin)) {
         if (length(iwin) != 1 || !(iwin %in% 0:4)) {
             stop("numeric 'iwin' must be 0, 1, 2, 3 or 4")
@@ -189,7 +189,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
         t <- t[idx]
         x <- x[idx]
     }
-    ## The rest of the function assumes that t is age, not time
+    ## dplR: The rest of the function assumes that t is age, not time
     if (tType2 == "time") {
         t <- -rev(t)
         x <- rev(x)
@@ -368,7 +368,7 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
     ##                     3: Parzen (Triangular)
     ##                     4: Blackman-Harris 3-Term
     winbw <- function(iwin, df, ofac) {
-        ## NOTE: bw could be defined with greated precision
+        ## dplR NOTE: bw could be defined with greated precision
         bw <- c(1.21, 1.59, 2.00, 1.78, 2.26)
         df * ofac * bw[iwin + 1]
     }
@@ -376,12 +376,12 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
     ## and n50 overlapping segments (Harris, 1978).
     ## dplR: Computed more precise values for c50.
     getdof <- function(iwin, n50) {
-        ## Rectangular, Welch, Hanning, Triangular, Blackman-Harris
+        ## dplR: Rectangular, Welch, Hanning, Triangular, Blackman-Harris
         c50 <- c(0.5, 0.34375, 1 / 6, 0.25, 0.0955489871755)
         c2 <- 2 * c50[iwin + 1]^2
         2 * n50 / (1 + c2 - c2 / n50)
     }
-    ## Automatically adds prefix (for example "# " from REDFIT) and
+    ## dplR: Automatically adds prefix (for example "# " from REDFIT) and
     ## newline (if newline = TRUE) to output.
     precat <- function(..., newline = TRUE, sep = "") {
         cat(prefix)
@@ -589,7 +589,7 @@ redfitInitArrays <- function(t, x, params) {
 }
 
 redfitSetdim <- function(min.nseg, t, np, ofac, hifac, n50, verbose, ...) {
-    ## Formula for nseg from the original Fortran version:
+    ## dplR: Formula for nseg from the original Fortran version:
     ## Integer division (or truncation, or "floor").
     ## nseg <- (2 * np) %/% (n50 + 1)
     ## New version: rounding instead of truncation, order of operations changed.
@@ -601,14 +601,14 @@ redfitSetdim <- function(min.nseg, t, np, ofac, hifac, n50, verbose, ...) {
     if (n50 == 1) {
         segskip <- 0
     } else {
-        ## (ideal, not rounded) difference between starting indices of
+        ## dplR: (ideal, not rounded) difference between starting indices of
         ## consecutive segments
         segskip <- (np - nseg) / (n50 - 1)
         if (segskip < 1) {
             stop("too many segments: overlap of more than nseg - 1 points")
         }
     }
-    ## It seems that avgdt, fnyq, etc. were somewhat off in the
+    ## dplR: It seems that avgdt, fnyq, etc. were somewhat off in the
     ## original Fortran version because it would not use all of the
     ## data (t[np]) with some combinations of np and n50.
     avgdt <- (t[np] - t[1]) / (np - 1)          # avg. sampling interval
@@ -634,7 +634,7 @@ redfitSetdim <- function(min.nseg, t, np, ofac, hifac, n50, verbose, ...) {
     for (k in which(nzchar(argnames))) {
         res[[argnames[k]]] <- args[[k]]
     }
-    ## Convert integers (if any) to numeric
+    ## dplR: Convert integers (if any) to numeric
     for (k in seq_along(res)) {
         elem <- res[[k]]
         if (is.integer(elem)) {

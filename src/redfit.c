@@ -35,6 +35,7 @@ void ftfix(const double *xx, const double *tsamp, const size_t nxx,
 	   double *ftrx, double *ftix);
 SEXP makear1(SEXP t, SEXP np, SEXP tau);
 
+/* dplR: Find the start of a segment. */
 /* Formula from the original Fortran version:
  * If nseg is even, the overlap is exactly 50 % every time.
  * If nseg is odd, an overlap of 50 % is impossible, and the actual
@@ -58,7 +59,8 @@ static R_INLINE double segfirst(double k, double segskip,
     return fmax(0.0, fmin(np - nseg, round(k * segskip)));
 }
 
-/* Indices for segments of nseg points each with approximately 50 %
+/* dplR:
+ * Indices for segments of nseg points each with approximately 50 %
  * overlap for consecutive values of k. segskip is the (ideal, not
  * rounded) difference between starting points of consecutive
  * segments.  np (number of points) is used for a safety check, only.
@@ -120,7 +122,7 @@ void rmtrend(SEXP x, SEXP y, SEXP lmfit) {
     y_data = REAL(y);
     if (!mismatch) {
 	rdualsptr = REAL(rduals);
-	/* Copy residuals over y */
+	/* dplR: Copy residuals over y */
 	for (i = 0; i < n; i++) {
 	    y_data[i] = rdualsptr[i];
 	}

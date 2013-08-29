@@ -211,10 +211,9 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     fnyq <- params[["fnyq"]]
     nfreq <- params[["nfreq"]]
     df <- params[["df"]]
-    ofac <- params[["ofac"]]
     segskip <- params[["segskip"]]
     freq <- seq(from = 0, to = fnyq, length.out = nfreq)
-    ia <- redfitInitArrays(t, x, freq, params)
+    ia <- redfitInitArrays(t, freq, params)
     ## determine autospectrum of input data
     dn50 <- as.numeric(n50)
     cbindfun <- match.fun("cbind")
@@ -565,7 +564,7 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
     invisible(x)
 }
 
-redfitInitArrays <- function(t, x, freq, params) {
+redfitInitArrays <- function(t, freq, params) {
     np <- params[["np"]]
     nseg <- params[["nseg"]]
     nfreqM1 <- length(freq) - 1
@@ -612,7 +611,6 @@ redfitSetdim <- function(min.nseg, t, ofac, hifac, n50, verbose, ...) {
     ## original Fortran version because it would not use all of the
     ## data (t[np]) with some combinations of np and n50.
     avgdt <- (t[np] - t[1]) / (np - 1)          # avg. sampling interval
-    tp <- avgdt * nseg                          # average period of a segment
     fnyq <- hifac / (2 * avgdt)                 # average Nyquist freq.
     nfreq <- floor(hifac * ofac * nseg / 2 + 1) # f[1] == f0; f[nfreq] == fNyq
     df <- fnyq / (nfreq - 1)                    # freq. spacing
@@ -719,7 +717,6 @@ redfitWinwgt <- function(t, iwin) {
 
 ## dplR: was gettau, converted to return rho only
 redfitGetrho <- function(t, x, n50, nseg, segskip) {
-    rhosum <- 0
     np <- as.numeric(length(x))
     nseg2 <- as.numeric(nseg)
     segskip2 <- as.numeric(segskip)

@@ -203,7 +203,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
         difft <- rep.int(1.0, np)
     }
     ## dplR: Setup
-    params <- redfitSetdim(MIN_POINTS, t, np, ofac, hifac, n50, verbose,
+    params <- redfitSetdim(MIN_POINTS, t, ofac, hifac, n50, verbose,
                            iwin = iwin2, nsim = nsim, mctest = mctest,
                            rhopre = rhopre)
     avgdt <- params[["avgdt"]]
@@ -226,7 +226,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     varx <- df * sum(gxx)
     ## dplR: estimate lag-1 autocorrelation coefficient unless prescribed
     if (is.null(rhopre) || rhopre < 0) {
-        rho <- redfitGetrho(t, x, np, n50, nseg, avgdt, segskip)
+        rho <- redfitGetrho(t, x, n50, nseg, segskip)
     } else {
         rho <- rhopre
     }
@@ -587,7 +587,8 @@ redfitInitArrays <- function(t, x, freq, params) {
     list(ww = ww, tsin = tsin, tcos = tcos, wtau = wtau)
 }
 
-redfitSetdim <- function(min.nseg, t, np, ofac, hifac, n50, verbose, ...) {
+redfitSetdim <- function(min.nseg, t, ofac, hifac, n50, verbose, ...) {
+    np <- length(t)
     ## dplR: Formula for nseg from the original Fortran version:
     ## Integer division (or truncation, or "floor").
     ## nseg <- (2 * np) %/% (n50 + 1)
@@ -717,15 +718,15 @@ redfitWinwgt <- function(t, iwin) {
 }
 
 ## dplR: was gettau, converted to return rho only
-redfitGetrho <- function(t, x, np, n50, nseg, avgdt, segskip) {
+redfitGetrho <- function(t, x, n50, nseg, segskip) {
     rhosum <- 0
-    np2 <- as.numeric(np)
+    np <- as.numeric(length(x))
     nseg2 <- as.numeric(nseg)
     segskip2 <- as.numeric(segskip)
     rhovec <- numeric(n50)
     for (i in as.numeric(seq_len(n50))) {
 	## copy data of (i+1)'th segment into workspace
-	iseg <- .Call(dplR.seg50, i, nseg2, segskip2, np2)
+	iseg <- .Call(dplR.seg50, i, nseg2, segskip2, np)
         twk <- t[iseg]
         xwk <- x[iseg]
 	## detrend data

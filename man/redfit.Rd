@@ -161,8 +161,6 @@ redfit(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
       
       \item{df }{ difference between consecutive frequencies.  }
       
-      \item{wz }{ difference between consecutive angular frequencies.  }
-      
       \item{fnyq }{ average Nyquist frequency.  }
       
       \item{n50 }{ value of the \code{\var{n50}} argument.  }
@@ -218,41 +216,42 @@ yrs <- 1:nyrs
 # an ar1 of phi, and sd of sigma
 phi <- 0.7
 sigma <- 0.3
-sigma0 <-sqrt((1 - phi^2)*sigma^2)
-x <- arima.sim(list(ar=phi),n = nyrs, sd = sigma0)+2
+sigma0 <- sqrt((1 - phi^2) * sigma^2)
+x <- arima.sim(list(ar = phi), n = nyrs, sd = sigma0) + 2
 
 # Here is a sine wave at f=0.1 to add in with an amplitude
 # equal to half the sd of the red noise background
 per <- 10
-amp <- sigma0/2
-wav <- amp * sin(2*pi*1/per*yrs)
+amp <- sigma0 / 2
+wav <- amp * sin(2 * pi / per * yrs)
 
 # Add them together so we have signal and noise
-x <- x+wav
+x <- x + wav
 
 # Here is the redfit spec
-redf.x <- redfit(x, nsim=500)
+redf.x <- redfit(x, nsim = 500)
 
 op <- par(no.readonly = TRUE) # Save to reset on exit
-par(tcl=0.5,mar=rep(2.2,4),mgp=c(1.1,0.1,0))
+par(tcl = 0.5, mar = rep(2.2, 4), mgp = c(1.1, 0.1, 0))
 
 plot(redf.x[["freq"]], redf.x[["gxxc"]],
-     ylim=range(redf.x[["ci99"]],redf.x[["gxxc"]]),
-     type='n',ylab='Spectrum (dB)',xlab='Frequency (1/yr)',axes=F)
+     ylim = range(redf.x[["ci99"]], redf.x[["gxxc"]]),
+     type = "n", ylab = "Spectrum (dB)", xlab = "Frequency (1/yr)",
+     axes = FALSE)
 grid()
-lines(redf.x[["freq"]], redf.x[["gxxc"]],col='#1B9E77')
-lines(redf.x[["freq"]], redf.x[["ci99"]],col='#D95F02')
-lines(redf.x[["freq"]], redf.x[["ci95"]],col='#7570B3')
-lines(redf.x[["freq"]], redf.x[["ci90"]],col='#E7298A')
+lines(redf.x[["freq"]], redf.x[["gxxc"]], col = "#1B9E77")
+lines(redf.x[["freq"]], redf.x[["ci99"]], col = "#D95F02")
+lines(redf.x[["freq"]], redf.x[["ci95"]], col = "#7570B3")
+lines(redf.x[["freq"]], redf.x[["ci90"]], col = "#E7298A")
 freqs <- pretty(redf.x[["freq"]])
-pers <- round(1/freqs,2)
-axis(1,at=freqs,labels=TRUE)
-axis(3,at=freqs,labels=pers)
-mtext(text='Period (yr)',side=3,line=1.1)
-axis(2);axis(4)
-legend('topright',c('x','CI99','CI95','CI90'),lwd=2,
-       col=c('#1B9E77','#D95F02', '#7570B3', '#E7298A'),
-       bg='white')
+pers <- round(1 / freqs, 2)
+axis(1, at = freqs, labels = TRUE)
+axis(3, at = freqs, labels = pers)
+mtext(text = "Period (yr)", side = 3, line = 1.1)
+axis(2); axis(4)
+legend("topright", c("x", "CI99", "CI95", "CI90"), lwd = 2,
+       col = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A"),
+       bg = "white")
 box()
 
 # Second example with tree-ring data
@@ -261,33 +260,35 @@ box()
 
 data(cana157)
 yrs <- as.numeric(rownames(cana157))
-x <- cana157[,1]
+x <- cana157[, 1]
 
-redf.x <- redfit(x, nsim=1000)
+redf.x <- redfit(x, nsim = 1000)
 
-plot(yrs,x,type='n',axes=F,xlab='Time',ylab='Ring Width (mm)')
+plot(yrs, x, type = "n", axes = FALSE,
+     xlab = "Time", ylab = "Ring Width (mm)")
 grid()
-lines(yrs,x)
-axis(1);axis(2);axis(3);axis(4);
+lines(yrs, x)
+axis(1); axis(2); axis(3); axis(4)
 box()
 
 plot(redf.x[["freq"]], redf.x[["gxxc"]],
-     ylim=range(redf.x[["ci99"]],redf.x[["gxxc"]]),
-     type='n',ylab='Spectrum (dB)',xlab='Frequency (1/yr)',axes=F)
+     ylim = range(redf.x[["ci99"]], redf.x[["gxxc"]]),
+     type = "n", ylab = "Spectrum (dB)", xlab = "Frequency (1/yr)",
+     axes = FALSE)
 grid()
-lines(redf.x[["freq"]], redf.x[["gxxc"]],col='#1B9E77')
-lines(redf.x[["freq"]], redf.x[["ci99"]],col='#D95F02')
-lines(redf.x[["freq"]], redf.x[["ci95"]],col='#7570B3')
-lines(redf.x[["freq"]], redf.x[["ci90"]],col='#E7298A')
+lines(redf.x[["freq"]], redf.x[["gxxc"]], col = "#1B9E77")
+lines(redf.x[["freq"]], redf.x[["ci99"]], col = "#D95F02")
+lines(redf.x[["freq"]], redf.x[["ci95"]], col = "#7570B3")
+lines(redf.x[["freq"]], redf.x[["ci90"]], col = "#E7298A")
 freqs <- pretty(redf.x[["freq"]])
-pers <- round(1/freqs,2)
-axis(1,at=freqs,labels=TRUE)
-axis(3,at=freqs,labels=pers)
-mtext(text='Period (yr)',side=3,line=1.1)
-axis(2);axis(4)
-legend('topright',c('x','CI99','CI95','CI90'),lwd=2,
-       col=c('#1B9E77','#D95F02', '#7570B3', '#E7298A'),
-       bg='white')
+pers <- round(1 / freqs, 2)
+axis(1, at = freqs, labels = TRUE)
+axis(3, at = freqs, labels = pers)
+mtext(text = "Period (yr)", side = 3, line = 1.1)
+axis(2); axis(4)
+legend("topright", c("x", "CI99", "CI95", "CI90"), lwd = 2,
+       col = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A"),
+       bg = "white")
 box()
 par(op)
 

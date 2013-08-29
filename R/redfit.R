@@ -211,20 +211,19 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     fnyq <- params[["fnyq"]]
     nfreq <- params[["nfreq"]]
     df <- params[["df"]]
-    wz <- params[["wz"]]
     ofac <- params[["ofac"]]
     segskip <- params[["segskip"]]
-    ia <- redfitInitArrays(t, x, params)
+    freq <- seq(from = 0, to = fnyq, length.out = nfreq)
+    ia <- redfitInitArrays(t, x, freq, params)
     ## determine autospectrum of input data
     dn50 <- as.numeric(n50)
     cbindfun <- match.fun("cbind")
     lmfitfun <- tryCatch(match.fun(".lm.fit"),
                          error = function(...) match.fun("lm.fit"))
     gxx <- .Call(dplR.spectr, t, x, np, ia[[1]], ia[[2]], ia[[3]], ia[[4]],
-                 nseg, nfreq, avgdt, wz, dn50, segskip, cbindfun, lmfitfun)
-    freq <- seq(from = 0, by = 1, length.out = nfreq) * df
+                 nseg, nfreq, avgdt, freq, dn50, segskip, cbindfun, lmfitfun)
     ## estimate data variance from autospectrum
-    varx <- freq[2] * sum(gxx)           # NB: freq[2] = df
+    varx <- df * sum(gxx)
     ## dplR: estimate lag-1 autocorrelation coefficient unless prescribed
     if (is.null(rhopre) || rhopre < 0) {
         rho <- redfitGetrho(t, x, np, n50, nseg, avgdt, segskip)
@@ -246,9 +245,9 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
             grr[, i] <-
                 .Call(dplR.spectr, t, .Call(dplR.makear1, difft, np, tau), np,
                       ia[[1]], ia[[2]], ia[[3]], ia[[4]], nseg, nfreq, avgdt,
-                      wz, dn50, segskip, cbindfun, lmfitfun)
+                      freq, dn50, segskip, cbindfun, lmfitfun)
             ## scale and sum red-noise spectra
-            varr1 <- freq[2] * sum(grr[, i]) # NB: freq[2] = df
+            varr1 <- df * sum(grr[, i])
             grr[, i] <- varx / varr1 * grr[, i]
         }
         grrsum <- rowSums(grr)
@@ -261,9 +260,9 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
             ## setup AR(1) time series and estimate its spectrum
             grr <- .Call(dplR.spectr, t, .Call(dplR.makear1, difft, np, tau),
                          np, ia[[1]], ia[[2]], ia[[3]], ia[[4]], nseg, nfreq,
-                         avgdt, wz, dn50, segskip, cbindfun, lmfitfun)
+                         avgdt, freq, dn50, segskip, cbindfun, lmfitfun)
             ## scale and sum red-noise spectra
-            varr1 <- freq[2] * sum(grr)      # NB: freq[2] = df
+            varr1 <- df * sum(grr)
             grr <- varx / varr1 * grr
             grrsum <- grrsum + grr
         }
@@ -272,13 +271,14 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     ## determine average red-noise spectrum; scale average again to
     ## make sure that roundoff errors do not affect the scaling
     grravg <- grrsum / nsim
-    varr2 <- freq[2] * sum(grravg)
+    varr2 <- df * sum(grravg)
     grravg <- varx / varr2 * grravg
     rhosq <- rho * rho
     ## set theoretical spectrum (e.g., Mann and Lees, 1996, Eq. 4)
     ## make area equal to that of the input time series
-    gredth <- (1 - rhosq) / (1 + rhosq - 2 * rho * cos(pi / fnyq * freq))
-    varr3 <- freq[2] * sum(gredth)
+    gredth <- (1 - rhosq) /
+        (1 + rhosq - 2 * rho * cos(seq(from = 0, to = pi, length.out = nfreq)))
+    varr3 <- df * sum(gredth)
     gredth <- varx / varr3 * gredth
     ## determine correction factor
     corr <- grravg / gredth
@@ -565,21 +565,20 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
     invisible(x)
 }
 
-redfitInitArrays <- function(t, x, params) {
+redfitInitArrays <- function(t, x, freq, params) {
     np <- params[["np"]]
     nseg <- params[["nseg"]]
-    nfreq <- params[["nfreq"]]
+    nfreqM1 <- length(freq) - 1
     n50 <- params[["n50"]]
     iwin <- params[["iwin"]]
-    wz <- params[["wz"]]
     segskip <- params[["segskip"]]
     ww <- matrix(NA_real_, nseg, n50)
-    tsin <- array(NA_real_, c(nseg, nfreq - 1, n50))
-    tcos <- array(NA_real_, c(nseg, nfreq - 1, n50))
-    wtau <- matrix(NA_real_, nfreq - 1, n50)
+    tsin <- array(NA_real_, c(nseg, nfreqM1, n50))
+    tcos <- array(NA_real_, c(nseg, nfreqM1, n50))
+    wtau <- matrix(NA_real_, nfreqM1, n50)
     for (i in as.numeric(seq_len(n50))) {
         twk <- t[.Call(dplR.seg50, i, nseg, segskip, np)]
-        tr <- redfitTrig(twk, nseg, wz, nfreq)
+        tr <- redfitTrig(twk, freq)
         ww[, i] <- redfitWinwgt(twk, iwin)
         wtau[, i] <- tr[[3]]
         tsin[, , i] <- tr[[1]]
@@ -616,7 +615,6 @@ redfitSetdim <- function(min.nseg, t, np, ofac, hifac, n50, verbose, ...) {
     fnyq <- hifac / (2 * avgdt)                 # average Nyquist freq.
     nfreq <- floor(hifac * ofac * nseg / 2 + 1) # f[1] == f0; f[nfreq] == fNyq
     df <- fnyq / (nfreq - 1)                    # freq. spacing
-    wz <- 2 * pi * fnyq / (nfreq - 1)           # omega == 2*pi*f
     if (verbose) {
         cat("    N = ", np, "\n", sep="")
         cat(" t[1] = ", t[1], "\n", sep="")
@@ -627,7 +625,7 @@ redfitSetdim <- function(min.nseg, t, np, ofac, hifac, n50, verbose, ...) {
     }
     ## dplR: ditched nout (nout == nfreq)
     res <- list(np = np, nseg = nseg, nfreq = nfreq, avgdt = avgdt, df = df,
-                wz = wz, fnyq = fnyq, n50 = n50, ofac = ofac, hifac = hifac,
+                fnyq = fnyq, n50 = n50, ofac = ofac, hifac = hifac,
                 segskip = segskip)
     args <- list(...)
     argnames <- names(args)
@@ -644,19 +642,21 @@ redfitSetdim <- function(min.nseg, t, np, ofac, hifac, n50, verbose, ...) {
     res
 }
 
-redfitTrig <- function(tsamp, nn, wz, nfreq) {
+redfitTrig <- function(tsamp, freq) {
     tol1 <- 1.0e-4
-    nfreqM1 <- nfreq - 1
+    nfreqM1 <- length(freq) - 1
+    nn <- length(tsamp)
     tcos <- matrix(NA_real_, nn, nfreqM1)
     tsin <- matrix(NA_real_, nn, nfreqM1)
     wtau <- numeric(nfreqM1)
+    wfac <- 2 * pi # omega == 2*pi*f
     ## start frequency loop
     ## dplR: In the original Fortran code, the variables ww (not used
     ## in this function), wtau, tsin and tcos have unused elements
     ## (one extra frequency).  The unused elements have now been
     ## dropped.
     for (k in seq_len(nfreqM1)) {
-	wrun <- k * wz
+	wrun <- wfac * freq[k + 1]
 	## calc. tau
         arg2 <- wrun * tsamp
         arg1 <- arg2 + arg2

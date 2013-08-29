@@ -26,10 +26,10 @@
 SEXP seg50(SEXP k, SEXP nseg, SEXP segskip, SEXP np);
 void rmtrend(SEXP x, SEXP y, SEXP lmfit);
 SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
-	    SEXP nseg, SEXP nfreq, SEXP avgdt, SEXP wz, SEXP n50,
+	    SEXP nseg, SEXP nfreq, SEXP avgdt, SEXP freq, SEXP n50,
 	    SEXP segskip, SEXP cbind, SEXP lmfit);
 void ftfix(const double *xx, const double *tsamp, const size_t nxx,
-	   const double wz, const size_t nfreq, const long double si,
+	   const double *freq, const size_t nfreq, const long double si,
 	   const size_t lfreq, const double tzero, const double *tcos,
 	   const double *tsin, const double *wtau, const long double sumbysqrt,
 	   double *ftrx, double *ftix);
@@ -142,16 +142,16 @@ void rmtrend(SEXP x, SEXP y, SEXP lmfit) {
 /* dplR: Returns the spectrum of x(t), a vector of length nfreq.
  */
 SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
-	    SEXP nseg, SEXP nfreq, SEXP avgdt, SEXP wz, SEXP n50,
+	    SEXP nseg, SEXP nfreq, SEXP avgdt, SEXP freq, SEXP n50,
 	    SEXP segskip, SEXP cbind, SEXP lmfit) {
     SEXP gxx, twk, xwk, ftrx, ftix, tmp, cbindcall;
-    double wz_val, dnseg, sqrt_nseg, segskip_val, scal, np_val;
+    double dnseg, sqrt_nseg, segskip_val, scal, np_val;
     long double sumx;
     size_t i, j, nseg_val, nfreq_val, n50_val, segstart;
     size_t sincos_skip, wtau_skip;
     size_t wwidx = 0;
     double *t_data, *x_data, *ww_data, *tsin_data, *tcos_data, *wtau_data;
-    double *gxx_data, *twk_data, *xwk_data, *ftrx_data, *ftix_data;
+    double *gxx_data, *twk_data, *xwk_data, *ftrx_data, *ftix_data, *freq_data;
     const long double si = 1.0;
     const double tzero = 0.0;
     const size_t lfreq = 0;
@@ -161,7 +161,6 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
     nseg_val = (size_t) dnseg;
     nfreq_val = (size_t) *REAL(nfreq);
     np_val = *REAL(np);
-    wz_val = *REAL(wz);
     n50_val = (size_t) *REAL(n50);
     segskip_val = *REAL(segskip);
     t_data = REAL(t);
@@ -170,6 +169,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
     tsin_data = REAL(tsin);
     tcos_data = REAL(tcos);
     wtau_data = REAL(wtau);
+    freq_data = REAL(freq);
     PROTECT(gxx = allocVector(REALSXP, nfreq_val));
     PROTECT_WITH_INDEX(twk = allocVector(REALSXP, nseg_val), &pidx);
 
@@ -220,7 +220,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
 	    sumx += xwk_data[j];
 	}
         /* Lomb–Scargle Fourier transform */
-	ftfix(xwk_data, twk_data, nseg_val, wz_val, nfreq_val, si,
+	ftfix(xwk_data, twk_data, nseg_val, freq_data, nfreq_val, si,
 	      lfreq, tzero, tcos_data, tsin_data, wtau_data,
 	      sumx / (long double) sqrt_nseg, ftrx_data, ftix_data);
 	/* dplR: adjust tsin, tcos, wtau for next segment */
@@ -263,7 +263,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
  * index corresponding to nxx runs faster.
  */
 void ftfix(const double *xx, const double *tsamp, const size_t nxx,
-	   const double wz, const size_t nfreq, const long double si,
+	   const double *freq, const size_t nfreq, const long double si,
 	   const size_t lfreq, const double tzero, const double *tcos,
 	   const double *tsin, const double *wtau, const long double sumbysqrt,
 	   double *ftrx, double *ftix) {
@@ -284,7 +284,7 @@ void ftfix(const double *xx, const double *tsamp, const size_t nxx,
     ftix[0] = 0.0;
     /* start frequency loop */
     for (ii = 1; ii < nfreq; ii++) {
-	wrun = (double) ii * wz;
+	wrun = M_2PI * freq[ii]; /* omega = 2 * pi * freq */
     	wtnew = wtau[ii - 1];
     	/* summations over the sample */
     	cross = 0.0;

@@ -85,7 +85,7 @@ SEXP seg50(SEXP k, SEXP nseg, SEXP segskip, SEXP np) {
     return(seg);
 }
 
-/* dplR: y <- lm.fit(x, y)[["residuals"]]
+/* dplR: y <- lmfit(x, y)[["residuals"]]
  */
 void rmtrend(SEXP x, SEXP y, SEXP lmfit) {
     SEXP tmp, lmcall, lmres, lmnames, rduals;
@@ -189,7 +189,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
     /* dplR: twk_data points to the non-constant column; the constant
      * column will not be altered */
     twk_data = REAL(twk) + nseg_val;
-    
+
     PROTECT(xwk = allocVector(REALSXP, nseg_val));
     /* dplR: unused halves of ftrx and ftix were removed */
     PROTECT(ftrx = allocVector(REALSXP, nfreq_val));
@@ -276,7 +276,7 @@ void ftfix(const double *xx, const double *tsamp, const size_t nxx,
     double complex work;
     size_t i, ii, iput;
     size_t idx = 0;
-    
+
     const2 = si * const1;
     const3 = (double)(const2 * sumbysqrt);
     /* initialize for zero frequency */
@@ -338,7 +338,7 @@ void ftfix(const double *xx, const double *tsamp, const size_t nxx,
  * of length 'np - 1'.
  */
 SEXP makear1(SEXP difft, SEXP np, SEXP tau) {
-    double sigma, dt, tau_val, np_val;
+    double dt, tau_val, np_val;
     double *difft_data, *red_data;
     SEXP red;
     size_t i;
@@ -352,8 +352,8 @@ SEXP makear1(SEXP difft, SEXP np, SEXP tau) {
     red_data[0] = norm_rand();
     for (i = 1; i < np_val; i++) {
 	dt = difft_data[i - 1];
-	sigma = sqrt(1.0 - exp(-2.0 * dt / tau_val));
-	red_data[i] = exp(-dt / tau_val) * red_data[i-1] + sigma * norm_rand();
+	red_data[i] = exp(-dt / tau_val) * red_data[i-1] +
+	    sqrt(1.0 - exp(-2.0 * dt / tau_val)) * norm_rand();
     }
     PutRNGstate();
     UNPROTECT(1);

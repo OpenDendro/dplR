@@ -29,7 +29,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
 	    SEXP nseg, SEXP nfreq, SEXP avgdt, SEXP freq, SEXP n50,
 	    SEXP segskip, SEXP cbind, SEXP lmfit);
 void ftfix(const double *xx, const double *tsamp, const size_t nxx,
-	   const double *freq, const size_t nfreq, const long double si,
+	   const double *freq, const size_t nfreq, const double si,
 	   const size_t lfreq, const double tzero, const double *tcos,
 	   const double *tsin, const double *wtau, const long double sumbysqrt,
 	   double *ftrx, double *ftix);
@@ -145,14 +145,14 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
 	    SEXP nseg, SEXP nfreq, SEXP avgdt, SEXP freq, SEXP n50,
 	    SEXP segskip, SEXP cbind, SEXP lmfit) {
     SEXP gxx, twk, xwk, ftrx, ftix, tmp, cbindcall;
-    double dnseg, sqrt_nseg, segskip_val, scal, np_val;
-    long double sumx;
+    double dnseg, segskip_val, scal, np_val;
+    long double sumx, sqrt_nseg;
     size_t i, j, nseg_val, nfreq_val, n50_val, segstart;
     size_t sincos_skip, wtau_skip;
     size_t wwidx = 0;
     double *t_data, *x_data, *ww_data, *tsin_data, *tcos_data, *wtau_data;
     double *gxx_data, *twk_data, *xwk_data, *ftrx_data, *ftix_data, *freq_data;
-    const long double si = 1.0;
+    const double si = 1.0;
     const double tzero = 0.0;
     const size_t lfreq = 0;
     PROTECT_INDEX pidx;
@@ -198,7 +198,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
     xwk_data = REAL(xwk);
     ftrx_data = REAL(ftrx);
     ftix_data = REAL(ftix);
-    sqrt_nseg = (long double) sqrt(dnseg);
+    sqrt_nseg = sqrtl((long double) dnseg);
     wtau_skip = nfreq_val - 1;
     sincos_skip = wtau_skip * nseg_val;
     for (i = 0; i < nfreq_val; i++) {
@@ -214,7 +214,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
 	/* detrend data */
 	rmtrend(twk, xwk, lmfit);
         /* apply window to data */
-	sumx = 0.0;
+	sumx = 0.0L;
 	for (j = 0; j < nseg_val; j++) {
 	    xwk_data[j] *= ww_data[wwidx++];
 	    sumx += xwk_data[j];
@@ -222,7 +222,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
         /* Lomb–Scargle Fourier transform */
 	ftfix(xwk_data, twk_data, nseg_val, freq_data, nfreq_val, si,
 	      lfreq, tzero, tcos_data, tsin_data, wtau_data,
-	      sumx / (long double) sqrt_nseg, ftrx_data, ftix_data);
+	      sumx / sqrt_nseg, ftrx_data, ftix_data);
 	/* dplR: adjust tsin, tcos, wtau for next segment */
 	tsin_data += sincos_skip;
 	tcos_data += sincos_skip;
@@ -263,14 +263,14 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
  * index corresponding to nxx runs faster.
  */
 void ftfix(const double *xx, const double *tsamp, const size_t nxx,
-	   const double *freq, const size_t nfreq, const long double si,
+	   const double *freq, const size_t nfreq, const double si,
 	   const size_t lfreq, const double tzero, const double *tcos,
 	   const double *tsin, const double *wtau, const long double sumbysqrt,
 	   double *ftrx, double *ftix) {
-    const double tol1 = 1.0e-4;
+    const double_t tol1 = 1.0e-4;
     const double tol2 = 1.0e-8;
-    const long double const1 = M_SQRT1_2;
-    long double const2;
+    const double_t const1 = M_SQRT1_2;
+    double_t const2;
     double const3, ftrd, ftid, phase, wtnew, tmpsin, tmpcos, wrun;
     long double cross, sumr, sumi, scos2, ssin2;
     double complex work;
@@ -287,11 +287,11 @@ void ftfix(const double *xx, const double *tsamp, const size_t nxx,
 	wrun = M_2PI * freq[ii]; /* omega = 2 * pi * freq */
     	wtnew = wtau[ii - 1];
     	/* summations over the sample */
-    	cross = 0.0;
-    	scos2 = 0.0;
-    	ssin2 = 0.0;
-    	sumr = 0.0;
-    	sumi = 0.0;
+    	cross = 0.0L;
+    	scos2 = 0.0L;
+    	ssin2 = 0.0L;
+    	sumr = 0.0L;
+    	sumi = 0.0L;
     	for (i = 0; i < nxx; i++) {
     	    tmpsin = tsin[idx];
     	    tmpcos = tcos[idx];
@@ -306,7 +306,7 @@ void ftfix(const double *xx, const double *tsamp, const size_t nxx,
     	if (ssin2 <= tol1) {
     	    ftid = (fabs((double)cross) > tol2) ? 0.0 : const3;
     	} else {
-    	    ftid = const2 * sumi / sqrt(ssin2);
+    	    ftid = const2 * (double_t)sumi / sqrt((double)ssin2);
     	}
     	phase = wtnew - wrun * tzero;
 	/* dplR: C99 complex numbers */

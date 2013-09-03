@@ -212,19 +212,24 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     nfreq <- params[["nfreq"]]
     df <- params[["df"]]
     segskip <- params[["segskip"]]
+    dn50 <- params[["n50"]]
     freq <- seq(from = 0, to = fnyq, length.out = nfreq)
-    ia <- redfitInitArrays(t, freq, params)
+    tr <- redfitTrig(t, freq, nseg, dn50, segskip)
+    ww <- matrix(NA_real_, nseg, dn50)
+    for (i in as.numeric(seq_len(dn50))) {
+        twk <- t[.Call(dplR.seg50, i, nseg, segskip, np)]
+        ww[, i] <- redfitWinwgt(twk, iwin2)
+    }
     ## determine autospectrum of input data
-    dn50 <- as.numeric(n50)
     lmfitfun <- tryCatch(match.fun(".lm.fit"),
                          error = function(...) match.fun("lm.fit"))
-    gxx <- .Call(dplR.spectr, t, x, np, ia[[1]], ia[[2]], ia[[3]], ia[[4]],
+    gxx <- .Call(dplR.spectr, t, x, np, ww, tr[[1]], tr[[2]], tr[[3]],
                  nseg, nfreq, avgdt, freq, dn50, segskip, lmfitfun)
     ## estimate data variance from autospectrum
     varx <- df * sum(gxx)
     ## dplR: estimate lag-1 autocorrelation coefficient unless prescribed
     if (is.null(rhopre) || rhopre < 0) {
-        rho <- redfitGetrho(t, x, n50, nseg, segskip)
+        rho <- redfitGetrho(t, x, dn50, nseg, segskip, lmfitfun)
     } else {
         rho <- rhopre
     }
@@ -242,7 +247,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
             ## setup AR(1) time series and estimate its spectrum
             grr[, i] <-
                 .Call(dplR.spectr, t, .Call(dplR.makear1, difft, np, tau), np,
-                      ia[[1]], ia[[2]], ia[[3]], ia[[4]], nseg, nfreq, avgdt,
+                      ww, tr[[1]], tr[[2]], tr[[3]], nseg, nfreq, avgdt,
                       freq, dn50, segskip, lmfitfun)
             ## scale and sum red-noise spectra
             varr1 <- df * sum(grr[, i])
@@ -257,7 +262,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
             }
             ## setup AR(1) time series and estimate its spectrum
             grr <- .Call(dplR.spectr, t, .Call(dplR.makear1, difft, np, tau),
-                         np, ia[[1]], ia[[2]], ia[[3]], ia[[4]], nseg, nfreq,
+                         np, ww, tr[[1]], tr[[2]], tr[[3]], nseg, nfreq,
                          avgdt, freq, dn50, segskip, lmfitfun)
             ## scale and sum red-noise spectra
             varr1 <- df * sum(grr)
@@ -563,28 +568,6 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
     invisible(x)
 }
 
-redfitInitArrays <- function(t, freq, params) {
-    np <- params[["np"]]
-    nseg <- params[["nseg"]]
-    nfreqM1 <- length(freq) - 1
-    n50 <- params[["n50"]]
-    iwin <- params[["iwin"]]
-    segskip <- params[["segskip"]]
-    ww <- matrix(NA_real_, nseg, n50)
-    tsin <- array(NA_real_, c(nseg, nfreqM1, n50))
-    tcos <- array(NA_real_, c(nseg, nfreqM1, n50))
-    wtau <- matrix(NA_real_, nfreqM1, n50)
-    for (i in as.numeric(seq_len(n50))) {
-        twk <- t[.Call(dplR.seg50, i, nseg, segskip, np)]
-        tr <- redfitTrig(twk, freq)
-        ww[, i] <- redfitWinwgt(twk, iwin)
-        wtau[, i] <- tr[[3]]
-        tsin[, , i] <- tr[[1]]
-        tcos[, , i] <- tr[[2]]
-    }
-    list(ww = ww, tsin = tsin, tcos = tcos, wtau = wtau)
-}
-
 redfitSetdim <- function(min.nseg, t, ofac, hifac, n50, verbose, ...) {
     np <- length(t)
     ## dplR: Formula for nseg from the original Fortran version:
@@ -640,41 +623,46 @@ redfitSetdim <- function(min.nseg, t, ofac, hifac, n50, verbose, ...) {
     res
 }
 
-redfitTrig <- function(tsamp, freq) {
+redfitTrig <- function(t, freq, nseg, n50, segskip) {
+    np <- as.numeric(length(t))
     tol1 <- 1.0e-4
     nfreqM1 <- length(freq) - 1
-    nn <- length(tsamp)
-    tcos <- matrix(NA_real_, nn, nfreqM1)
-    tsin <- matrix(NA_real_, nn, nfreqM1)
-    wtau <- numeric(nfreqM1)
+    tsin <- array(NA_real_, c(nseg, nfreqM1, n50))
+    tcos <- array(NA_real_, c(nseg, nfreqM1, n50))
+    wtau <- matrix(NA_real_, nfreqM1, n50)
     wfac <- 2 * pi # omega == 2*pi*f
-    ## start frequency loop
-    ## dplR: In the original Fortran code, the variables ww (not used
-    ## in this function), wtau, tsin and tcos have unused elements
-    ## (one extra frequency).  The unused elements have now been
-    ## dropped.
-    for (k in seq_len(nfreqM1)) {
-	wrun <- wfac * freq[k + 1]
-	## calc. tau
-        arg2 <- wrun * tsamp
-        arg1 <- arg2 + arg2
-        tc <- cos(arg1)
-        ts <- sin(arg1)
-        csum <- sum(tc)
-        ssum <- sum(ts)
-        sumtc <- sum(tsamp * tc)
-        sumts <- sum(tsamp * ts)
-	if (abs(ssum) > tol1 || abs(csum) > tol1) {
-	    watan <- atan2(ssum, csum)
-	} else {
-	    watan <- atan2(-sumtc, sumts)
-	}
-	wtnew <- 0.5 * watan
-	wtau[k] <- wtnew
-	## summations over the sample
-        arg2 <- arg2 - wtnew
-        tcos[, k] <- cos(arg2)
-        tsin[, k] <- sin(arg2)
+    ## start segment loop
+    for (j in as.numeric(seq_len(n50))) {
+        tsamp <- t[.Call(dplR.seg50, j, nseg, segskip, np)]
+        ## start frequency loop
+        ## dplR: In the original Fortran code, the variables ww (not used
+        ## in this function), wtau, tsin and tcos have unused elements
+        ## (one extra frequency).  The unused elements have now been
+        ## dropped.
+        for (k in seq_len(nfreqM1)) {
+            wrun <- wfac * freq[k + 1]
+            ## calc. tau
+            arg2 <- wrun * tsamp
+            arg1 <- arg2 + arg2
+            tc <- cos(arg1)
+            ts <- sin(arg1)
+            csum <- sum(tc)
+            ssum <- sum(ts)
+            sumtc <- sum(tsamp * tc)
+            sumts <- sum(tsamp * ts)
+            if (abs(ssum) > tol1 || abs(csum) > tol1) {
+                watan <- atan2(ssum, csum)
+            } else {
+                watan <- atan2(-sumtc, sumts)
+            }
+            wtnew <- 0.5 * watan
+            wtau[k, j] <- wtnew
+            ## summations over the sample
+            ## dplR: Summations can be found above, but these are not...
+            arg2 <- arg2 - wtnew
+            tcos[, k, j] <- cos(arg2)
+            tsin[, k, j] <- sin(arg2)
+        }
     }
     list(tsin = tsin, tcos = tcos, wtau = wtau)
 }
@@ -715,23 +703,24 @@ redfitWinwgt <- function(t, iwin) {
 }
 
 ## dplR: was gettau, converted to return rho only
-redfitGetrho <- function(t, x, n50, nseg, segskip) {
+redfitGetrho <- function(t, x, n50, nseg, segskip, lmfitfun) {
     np <- as.numeric(length(x))
     nseg2 <- as.numeric(nseg)
     segskip2 <- as.numeric(segskip)
     rhovec <- numeric(n50)
+    twkM <- matrix(1, nseg2, 2)
     for (i in as.numeric(seq_len(n50))) {
 	## copy data of (i+1)'th segment into workspace
 	iseg <- .Call(dplR.seg50, i, nseg2, segskip2, np)
         twk <- t[iseg]
+        twkM[, 2] <- twk
         xwk <- x[iseg]
 	## detrend data
-	xwk <- as.vector(residuals(lm(xwk ~ twk)))
+        xwk <- do.call(lmfitfun, list(twkM, xwk))[["residuals"]]
 	## estimate and sum rho for each segment
 	rho <- redfitTauest(twk, xwk)
 	## bias correction for rho (Kendall & Stuart, 1967; Vol. 3))
-	rho <- (rho * (nseg2 - 1) + 1) / (nseg2 - 4)
-        rhovec[i] <- rho
+	rhovec[i] <- (rho * (nseg2 - 1) + 1) / (nseg2 - 4)
     }
     ## average rho
     mean(rhovec)

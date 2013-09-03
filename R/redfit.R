@@ -216,11 +216,10 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     ia <- redfitInitArrays(t, freq, params)
     ## determine autospectrum of input data
     dn50 <- as.numeric(n50)
-    cbindfun <- match.fun("cbind")
     lmfitfun <- tryCatch(match.fun(".lm.fit"),
                          error = function(...) match.fun("lm.fit"))
     gxx <- .Call(dplR.spectr, t, x, np, ia[[1]], ia[[2]], ia[[3]], ia[[4]],
-                 nseg, nfreq, avgdt, freq, dn50, segskip, cbindfun, lmfitfun)
+                 nseg, nfreq, avgdt, freq, dn50, segskip, lmfitfun)
     ## estimate data variance from autospectrum
     varx <- df * sum(gxx)
     ## dplR: estimate lag-1 autocorrelation coefficient unless prescribed
@@ -244,7 +243,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
             grr[, i] <-
                 .Call(dplR.spectr, t, .Call(dplR.makear1, difft, np, tau), np,
                       ia[[1]], ia[[2]], ia[[3]], ia[[4]], nseg, nfreq, avgdt,
-                      freq, dn50, segskip, cbindfun, lmfitfun)
+                      freq, dn50, segskip, lmfitfun)
             ## scale and sum red-noise spectra
             varr1 <- df * sum(grr[, i])
             grr[, i] <- varx / varr1 * grr[, i]
@@ -259,7 +258,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
             ## setup AR(1) time series and estimate its spectrum
             grr <- .Call(dplR.spectr, t, .Call(dplR.makear1, difft, np, tau),
                          np, ia[[1]], ia[[2]], ia[[3]], ia[[4]], nseg, nfreq,
-                         avgdt, freq, dn50, segskip, cbindfun, lmfitfun)
+                         avgdt, freq, dn50, segskip, lmfitfun)
             ## scale and sum red-noise spectra
             varr1 <- df * sum(grr)
             grr <- varx / varr1 * grr

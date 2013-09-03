@@ -24,10 +24,10 @@
 #include <complex.h>
 
 SEXP seg50(SEXP k, SEXP nseg, SEXP segskip, SEXP np);
-void rmtrend(SEXP x, SEXP y, SEXP lmfit);
+void rmtrend(SEXP x, SEXP y, SEXP lengthfun, SEXP lmfit);
 SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
 	    SEXP nseg, SEXP nfreq, SEXP avgdt, SEXP freq, SEXP n50,
-	    SEXP segskip, SEXP cbind, SEXP lmfit);
+	    SEXP segskip, SEXP lmfit);
 void ftfix(const double *xx, const double *tsamp, const size_t nxx,
 	   const double *freq, const size_t nfreq, const double si,
 	   const size_t lfreq, const double tzero, const double *tcos,
@@ -87,11 +87,13 @@ SEXP seg50(SEXP k, SEXP nseg, SEXP segskip, SEXP np) {
 
 /* dplR: y <- lmfit(x, y)[["residuals"]]
  */
-void rmtrend(SEXP x, SEXP y, SEXP lmfit) {
+void rmtrend(SEXP x, SEXP y, SEXP lengthfun, SEXP lmfit) {
     SEXP tmp, lmcall, lmres, lmnames, rduals;
+    SEXP sn, ncall;
+    PROTECT_INDEX ipx;
     double *rdualsptr, *y_data;
-    int i, nameslength;
-    int n = 0;
+    size_t i, nameslength;
+    size_t n = 0;
     Rboolean found = FALSE;
     Rboolean mismatch = TRUE;
 
@@ -105,7 +107,14 @@ void rmtrend(SEXP x, SEXP y, SEXP lmfit) {
 
     /* dplR: get residuals from the list given by lm.fit(x, y) */
     lmnames = getAttrib(lmres, R_NamesSymbol);
-    nameslength = length(lmnames);
+    PROTECT(tmp = ncall = allocList(2));
+    SET_TYPEOF(ncall, LANGSXP);
+    SETCAR(tmp, lengthfun); tmp = CDR(tmp);
+    SETCAR(tmp, lmnames);
+    PROTECT_WITH_INDEX(sn = eval(ncall, R_GlobalEnv), &ipx);
+    REPROTECT(sn = coerceVector(sn, REALSXP), ipx);
+    nameslength = (size_t) *REAL(sn);
+    UNPROTECT(2);
     for (i = 0; i < nameslength; i++) {
 	if (strcmp(CHAR(STRING_ELT(lmnames, i)), "residuals") == 0) {
 	    rduals = VECTOR_ELT(lmres, i);
@@ -115,10 +124,24 @@ void rmtrend(SEXP x, SEXP y, SEXP lmfit) {
 	}
     }
 
+    /* dplR: compare length of y with length of residuals */
+    PROTECT(tmp = ncall = allocList(2));
+    SET_TYPEOF(ncall, LANGSXP);
+    SETCAR(tmp, lengthfun); tmp = CDR(tmp);
+    SETCAR(tmp, y);
+    PROTECT_WITH_INDEX(sn = eval(ncall, R_GlobalEnv), &ipx);
+    REPROTECT(sn = coerceVector(sn, REALSXP), ipx);
+    n = (size_t) *REAL(sn);
+    UNPROTECT(1);
     if (found) {
-	n = length(rduals);
-	mismatch = n != length(y);
+	SETCAR(tmp, rduals);
+	PROTECT_WITH_INDEX(sn = eval(ncall, R_GlobalEnv), &ipx);
+	REPROTECT(sn = coerceVector(sn, REALSXP), ipx);
+	mismatch = n != (size_t) *REAL(sn);
+	UNPROTECT(1);
     }
+    UNPROTECT(1);
+
     y_data = REAL(y);
     if (!mismatch) {
 	rdualsptr = REAL(rduals);
@@ -127,7 +150,6 @@ void rmtrend(SEXP x, SEXP y, SEXP lmfit) {
 	    y_data[i] = rdualsptr[i];
 	}
     } else {
-	n = length(y);
 	for (i = 0; i < n; i++) {
 	    y_data[i] = NA_REAL;
 	}
@@ -143,8 +165,8 @@ void rmtrend(SEXP x, SEXP y, SEXP lmfit) {
  */
 SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
 	    SEXP nseg, SEXP nfreq, SEXP avgdt, SEXP freq, SEXP n50,
-	    SEXP segskip, SEXP cbind, SEXP lmfit) {
-    SEXP gxx, twk, xwk, ftrx, ftix, tmp, cbindcall;
+	    SEXP segskip, SEXP lmfit) {
+    SEXP gxx, twk, xwk, ftrx, ftix, tmp, cbindcall, lengthfun;
     double dnseg, segskip_val, scal, np_val;
     long double sumx, sqrt_nseg;
     size_t i, j, nseg_val, nfreq_val, n50_val, segstart;
@@ -182,7 +204,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
      * though.*/
     PROTECT(tmp = cbindcall = allocList(3));
     SET_TYPEOF(cbindcall, LANGSXP);
-    SETCAR(tmp, cbind); tmp = CDR(tmp);
+    SETCAR(tmp, install("cbind")); tmp = CDR(tmp);
     SETCAR(tmp, ScalarReal(1.0)); tmp = CDR(tmp);
     SETCAR(tmp, twk);
     REPROTECT(twk = eval(cbindcall, R_GlobalEnv), pidx);
@@ -204,6 +226,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
     for (i = 0; i < nfreq_val; i++) {
 	gxx_data[i] = 0.0;
     }
+    lengthfun = install("length");
     for (i = 0; i < n50_val; i++) {
 	/* copy data of i'th segment into workspace */
 	segstart = (size_t) segfirst((double) i, segskip_val, np_val, dnseg);
@@ -212,7 +235,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
 	    xwk_data[j] = x_data[segstart + j];
 	}
 	/* detrend data */
-	rmtrend(twk, xwk, lmfit);
+	rmtrend(twk, xwk, lengthfun, lmfit);
         /* apply window to data */
 	sumx = 0.0L;
 	for (j = 0; j < nseg_val; j++) {

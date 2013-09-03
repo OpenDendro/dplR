@@ -22,6 +22,7 @@
 #include <Rinternals.h>
 #include <Rmath.h>
 #include <complex.h>
+#include <string.h>
 
 SEXP seg50(SEXP k, SEXP nseg, SEXP segskip, SEXP np);
 void rmtrend(SEXP x, SEXP y, SEXP lengthfun, SEXP lmfit);
@@ -91,7 +92,7 @@ void rmtrend(SEXP x, SEXP y, SEXP lengthfun, SEXP lmfit) {
     SEXP tmp, lmcall, lmres, lmnames, rduals;
     SEXP sn, ncall;
     PROTECT_INDEX ipx;
-    double *rdualsptr, *y_data;
+    double *y_data;
     size_t i, nameslength;
     size_t n = 0;
     Rboolean found = FALSE;
@@ -144,11 +145,8 @@ void rmtrend(SEXP x, SEXP y, SEXP lengthfun, SEXP lmfit) {
 
     y_data = REAL(y);
     if (!mismatch) {
-	rdualsptr = REAL(rduals);
 	/* dplR: Copy residuals over y */
-	for (i = 0; i < n; i++) {
-	    y_data[i] = rdualsptr[i];
-	}
+	memcpy(y_data, REAL(rduals), n * sizeof(double));
     } else {
 	for (i = 0; i < n; i++) {
 	    y_data[i] = NA_REAL;
@@ -169,7 +167,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
     SEXP gxx, twk, xwk, ftrx, ftix, tmp, cbindcall, lengthfun;
     double dnseg, segskip_val, scal, np_val;
     long double sumx, sqrt_nseg;
-    size_t i, j, nseg_val, nfreq_val, n50_val, segstart;
+    size_t i, j, nseg_val, nfreq_val, n50_val, segstart, ncopy;
     size_t sincos_skip, wtau_skip;
     size_t wwidx = 0;
     double *t_data, *x_data, *ww_data, *tsin_data, *tcos_data, *wtau_data;
@@ -227,13 +225,12 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
 	gxx_data[i] = 0.0;
     }
     lengthfun = install("length");
+    ncopy = nseg_val * sizeof(double);
     for (i = 0; i < n50_val; i++) {
 	/* copy data of i'th segment into workspace */
 	segstart = (size_t) segfirst((double) i, segskip_val, np_val, dnseg);
-	for (j = 0; j < nseg_val; j++) {
-	    twk_data[j] = t_data[segstart + j];
-	    xwk_data[j] = x_data[segstart + j];
-	}
+	memcpy(twk_data, t_data + segstart, ncopy);
+	memcpy(xwk_data, x_data + segstart, ncopy);
 	/* detrend data */
 	rmtrend(twk, xwk, lengthfun, lmfit);
         /* apply window to data */

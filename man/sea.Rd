@@ -58,7 +58,8 @@ sea(x, key, lag = 5, resample = 1000)
   
 }
 
-\examples{data(cana157)
+\examples{library(graphics)
+data(cana157)
 event.years <- c(1631, 1742, 1845)
 cana157.sea <- sea(cana157, event.years)
 foo <- cana157.sea$se.unscaled

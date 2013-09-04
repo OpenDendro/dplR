@@ -26,7 +26,8 @@ hanning(x, n = 7)
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link[stats]{filter} } }
 
-\examples{data(ca533)
+\examples{library(graphics)
+data(ca533)
 yrs <- as.numeric(rownames(ca533))
 y <- ca533[, 1]
 not.na <- !is.na(y)

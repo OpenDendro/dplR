@@ -37,7 +37,8 @@ cms(rwl, po, c.hat.t = FALSE, c.hat.i = FALSE)
   dplR by Andy Bunn. Patched and improved by Mikko Korpela.
 }
 \seealso{ \code{\link{detrend}}, \code{\link{chron}}, \code{\link{rcs}} }
-\examples{data(gp.rwl)
+\examples{library(graphics)
+data(gp.rwl)
 data(gp.po)
 gp.rwi <- cms(rwl = gp.rwl, po = gp.po)
 gp.crn <- chron(gp.rwi)

@@ -227,6 +227,8 @@ redfit(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
 \examples{
 # Create a simulated tree-ring width series that has a red-noise
 # background and an embedded signal.
+library(graphics)
+library(stats)
 set.seed(123)
 nyrs <- 500
 yrs <- 1:nyrs

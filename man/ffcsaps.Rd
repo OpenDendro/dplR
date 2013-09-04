@@ -49,6 +49,7 @@ ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
 
 \examples{
 \dontrun{
+library(graphics)
 ## Use series CAM011 from the Campito dataset
 data(ca533)
 series <- ca533[, "CAM011"]

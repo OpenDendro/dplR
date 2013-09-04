@@ -203,6 +203,7 @@ rwi.stats.running(ca533.rwi, ca533.ids)
 rwi.stats(ca533.rwi, ca533.ids)        # i.e. running.window = FALSE
 rwi.stats.legacy(ca533.rwi, ca533.ids) # rwi.stats prior to dplR 1.5.3
 \dontrun{
+library(graphics)
 ## Plot the chronology showing a potential cutoff year based on eps
 ca533.rwi <- detrend(rwl = ca533, method = "Spline") # detrend again
 ca533.crn <- chron(ca533.rwi)

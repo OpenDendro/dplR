@@ -3,6 +3,8 @@
              method = c("Spline", "ModNegExp", "Mean"),
              nyrs = NULL, f = 0.5, pos.slope = FALSE)
 {
+    stopifnot(identical(make.plot, TRUE) || identical(make.plot, FALSE),
+              identical(pos.slope, FALSE) || identical(pos.slope, TRUE))
     known.methods <- c("Spline", "ModNegExp", "Mean")
     method2 <- match.arg(arg = method,
                          choices = known.methods,

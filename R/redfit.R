@@ -153,27 +153,35 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     } else {
         stop("'iwin' must be numeric or character")
     }
-    x <- as.numeric(x)
-    np <- as.numeric(length(x))
+    if (is.double(x)) {
+        x2 <- x
+    } else {
+        x2 <- as.numeric(x)
+    }
+    np <- as.numeric(length(x2))
     tGiven <- !missing(t)
     if (tGiven) {
-        t <- as.numeric(t)
-        if (length(t) != np) {
+        if (is.double(t)) {
+            t2 <- t
+        } else {
+            t2 <- as.numeric(t)
+        }
+        if (length(t2) != np) {
             stop("lengths of 't' and 'x' must match")
         }
     } else {
-        t <- as.numeric(seq_len(np))
+        t2 <- as.numeric(seq_len(np))
     }
-    naidx <- is.na(x)
+    naidx <- is.na(x2)
     if (tGiven) {
-        naidx <- naidx | is.na(t)
+        naidx <- naidx | is.na(t2)
     }
     if (any(naidx)) {
         goodidx <- which(!naidx)
-        t <- t[goodidx]
-        x <- x[goodidx]
+        t2 <- t2[goodidx]
+        x2 <- x2[goodidx]
         nporig <- np
-        np <- as.numeric(length(x))
+        np <- as.numeric(length(x2))
         nna <- nporig - np
         warning(sprintf(ngettext(nna,
                                  "%.0f NA value removed",
@@ -185,17 +193,17 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
                       np, MIN_POINTS, domain = "R-dplR"), domain = NA)
     }
     if (tGiven && !txOrdered) {
-        idx <- order(t)
-        t <- t[idx]
-        x <- x[idx]
+        idx <- order(t2)
+        t2 <- t2[idx]
+        x2 <- x2[idx]
     }
-    ## dplR: The rest of the function assumes that t is age, not time
+    ## dplR: The rest of the function assumes that t2 is age, not time
     if (tType2 == "time") {
-        t <- -rev(t)
-        x <- rev(x)
+        t2 <- -rev(t2)
+        x2 <- rev(x2)
     }
     if (tGiven) {
-        difft <- diff(t)
+        difft <- diff(t2)
         if (!txOrdered && any(difft == 0)) {
             stop("duplicated values in 't'")
         }
@@ -203,7 +211,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
         difft <- rep.int(1.0, np)
     }
     ## dplR: Setup
-    params <- redfitSetdim(MIN_POINTS, t, ofac, hifac, n50, verbose,
+    params <- redfitSetdim(MIN_POINTS, t2, ofac, hifac, n50, verbose,
                            iwin = iwin2, nsim = nsim, mctest = mctest,
                            rhopre = rhopre)
     avgdt <- params[["avgdt"]]
@@ -214,22 +222,22 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     segskip <- params[["segskip"]]
     dn50 <- params[["n50"]]
     freq <- seq(from = 0, to = fnyq, length.out = nfreq)
-    tr <- redfitTrig(t, freq, nseg, dn50, segskip)
+    tr <- redfitTrig(t2, freq, nseg, dn50, segskip)
     ww <- matrix(NA_real_, nseg, dn50)
     for (i in as.numeric(seq_len(dn50))) {
-        twk <- t[.Call(dplR.seg50, i, nseg, segskip, np)]
+        twk <- t2[.Call(dplR.seg50, i, nseg, segskip, np)]
         ww[, i] <- redfitWinwgt(twk, iwin2)
     }
     ## determine autospectrum of input data
     lmfitfun <- tryCatch(match.fun(".lm.fit"),
                          error = function(...) match.fun("lm.fit"))
-    gxx <- .Call(dplR.spectr, t, x, np, ww, tr[[1]], tr[[2]], tr[[3]],
+    gxx <- .Call(dplR.spectr, t2, x2, np, ww, tr[[1]], tr[[2]], tr[[3]],
                  nseg, nfreq, avgdt, freq, dn50, segskip, lmfitfun)
     ## estimate data variance from autospectrum
     varx <- df * sum(gxx)
     ## dplR: estimate lag-1 autocorrelation coefficient unless prescribed
     if (is.null(rhopre) || rhopre < 0) {
-        rho <- redfitGetrho(t, x, dn50, nseg, segskip, lmfitfun)
+        rho <- redfitGetrho(t2, x2, dn50, nseg, segskip, lmfitfun)
     } else {
         rho <- rhopre
     }
@@ -246,7 +254,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
             }
             ## setup AR(1) time series and estimate its spectrum
             grr[, i] <-
-                .Call(dplR.spectr, t, .Call(dplR.makear1, difft, np, tau), np,
+                .Call(dplR.spectr, t2, .Call(dplR.makear1, difft, np, tau), np,
                       ww, tr[[1]], tr[[2]], tr[[3]], nseg, nfreq, avgdt,
                       freq, dn50, segskip, lmfitfun)
             ## scale and sum red-noise spectra
@@ -261,7 +269,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
                 cat("ISim = ", i, "\n", sep="")
             }
             ## setup AR(1) time series and estimate its spectrum
-            grr <- .Call(dplR.spectr, t, .Call(dplR.makear1, difft, np, tau),
+            grr <- .Call(dplR.spectr, t2, .Call(dplR.makear1, difft, np, tau),
                          np, ww, tr[[1]], tr[[2]], tr[[3]], nseg, nfreq,
                          avgdt, freq, dn50, segskip, lmfitfun)
             ## scale and sum red-noise spectra

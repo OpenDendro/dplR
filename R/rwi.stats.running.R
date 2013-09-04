@@ -328,14 +328,15 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
     ## Iterate over all windows
     if (running.window &&
         !inherits(try(suppressWarnings(req.fe <-
-                                       require(foreach, quietly=TRUE)),
+                                       requireNamespace("foreach",
+                                                        quietly=TRUE)),
                       silent = TRUE),
                   "try-error") && req.fe) {
         compos.stats <-
-            foreach(s.idx=window.start, .combine="rbind",
-                    .packages="dplR") %dopar% {
-                        loop.body(s.idx)
-                    }
+            foreach::"%dopar%"(foreach::foreach(s.idx=window.start,
+                                                .combine="rbind",
+                                                .packages="dplR"),
+                               loop.body(s.idx))
     } else {
         compos.stats <- NULL
         for (s.idx in window.start) {

@@ -311,16 +311,34 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
         ci99 <- NULL
     }
 
-
     ## Test equality of theoretical AR1 and estimated spectrum using a
-    ## runs test (Bendat and Piersol, 1986, p. 95).
-    rcnt <- 1 + sum(diff(sign(gxxc - gredth)) != 0)
+    ## runs test (Bendat and Piersol, 1986, p. 95). The empirical
+    ## equations for calculating critical values for 5-% significance
+    ## were derived from the tabulated critical values in B&P.
+    if (iwin2 == 0 && ofac == 1 && dn50 == 1) {
+        rcnt <- 1 + sum(diff(sign(gxxc - gredth)) != 0)
+        ## dplR: NOTE! Integer division is used in REDFIT.  This should be
+        ## checked (by finding a copy of Bendat and Piersol).  For now, we
+        ## can assume that real(nout/2) was supposed to be real(nout)/2.
+        ## sqrtHalfNfreq <- sqrt(nfreq %/% 2)
+        sqrtHalfNfreq <- sqrt(nfreq / 2)
+        ## dplR: NOTE! Is round() the right function to use? Maybe floor()
+        ## for the lower limit and ceiling for the higher limit?
+        rcritlo <- round((-0.79557086 + 1.0088719 * sqrtHalfNfreq)^2)
+        rcrithi <- round(( 0.75751462 + 0.9955133 * sqrtHalfNfreq)^2)
+    } else {
+        rcnt <- NULL
+        rcritlo <- NULL
+        rcrithi <- NULL
+    }
 
     ## dplR: Elements of the list returned from this function:
     ##  varx      data variance estimated from spectrum
     ##  rho       average autocorrelation coefficient (estimated or prescribed)
     ##  tau       average tau, tau == -avgdt / log(rho)
     ##  rcnt      runs count, test of equality of theoretical and data spectrum
+    ##  rcritlo   critical low value for rcnt
+    ##  rcrithi   critical high value for rcnt
     ##  freq      frequency vector
     ##  gxx       autospectrum of input data
     ##  gxxc      corrected autospectrum of input data
@@ -331,10 +349,10 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     ##  ci90      90% false-alarm level from MC
     ##  ci95      95% false-alarm level from MC
     ##  ci99      99% false-alarm level from MC
-    ##  call      dplR: how the function was called
-    ##  params    dplR: parameters dependent on the command line arguments
-    ##  vers      dplR: version of dplR containing the function
-    ##  seed      dplR: if not NULL, value used for set.seed(seed)
+    ##  call      how the function was called
+    ##  params    parameters dependent on the command line arguments
+    ##  vers      version of dplR containing the function
+    ##  seed      if not NULL, value used for set.seed(seed)
     dplrNS <- tryCatch(getNamespace("dplR"), error = function(...) NULL)
     if (!is.null(dplrNS) && exists("redfit", dplrNS) &&
         identical(match.fun(as.list(cl)[[1]]), get("redfit", dplrNS))) {
@@ -343,6 +361,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
         vers <- NULL
     }
     res <- list(varx = varx, rho = rho, tau = tau, rcnt = rcnt,
+                rcritlo = rcritlo, rcrithi = rcrithi,
                 freq = freq, gxx = gxx, gxxc = gxxc, grravg = grravg,
                 gredth = gredth, corr = corr,
                 ci80 = ci80, ci90 = ci90, ci95 = ci95, ci99 = ci99,
@@ -396,11 +415,7 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
     params <- x[["params"]]
     iwin <- params[["iwin"]]
     n50 <- params[["n50"]]
-    nseg <- params[["nseg"]]
-    ofac <- params[["ofac"]]
-    rhopre <- params[["rhopre"]]
     mctest <- params[["mctest"]]
-    nfreq <- params[["nfreq"]]
     gredth <- x[["gredth"]]
 
     ## scaling factors for red noise from chi^2 distribution
@@ -412,27 +427,6 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
     fac90 <- qchisq(0.90, dof) / dof
     fac95 <- qchisq(0.95, dof) / dof
     fac99 <- qchisq(0.99, dof) / dof
-
-    ## critical false alarm level after Thomson (1990)
-    ## dplR: modified from original REDFIT code to accommodate for
-    ## lower / upper tail difference
-    alphacrit <- (nseg - 1) / nseg
-    faccrit <- qchisq(alphacrit, dof) / dof
-
-    ## Test equality of theoretical AR1 and estimated spectrum using a
-    ## runs test (Bendat and Piersol, 1986, p. 95). The empirical
-    ## equations for calculating critical values for 5-% significance
-    ## were derived from the tabulated critical values in B&P.
-    ##
-    ## dplR: NOTE! Integer division is used in REDFIT.  This should be
-    ## checked (by finding a copy of Bendat and Piersol).  For now, we
-    ## can assume that real(nout/2) was supposed to be real(nout)/2.
-    ## sqrtHalfNfreq <- sqrt(nfreq %/% 2)
-    sqrtHalfNfreq <- sqrt(nfreq / 2)
-    ## dplR: NOTE! Is round() the right function to use? Maybe floor()
-    ## for the lower limit and ceiling for the higher limit?
-    rcritlo <- round((-0.79557086 + 1.0088719 * sqrtHalfNfreq)^2)
-    rcrithi <- round(( 0.75751462 + 0.9955133 * sqrtHalfNfreq)^2)
 
     if (csv.out || do.table) {
         dframe <- c(x[c("freq", "gxx", "gxxc", "gredth", "grravg", "corr")],
@@ -449,6 +443,16 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
     }
     if (!csv.out) {
         ## dplR: print miscellaneous information AND if (do.table) print(dframe)
+        nseg <- params[["nseg"]]
+        ofac <- params[["ofac"]]
+        rhopre <- params[["rhopre"]]
+
+        ## critical false alarm level after Thomson (1990)
+        ## dplR: modified from original REDFIT code to accommodate for
+        ## lower / upper tail difference
+        alphacrit <- (nseg - 1) / nseg
+        faccrit <- qchisq(alphacrit, dof) / dof
+
         precat("redfit()", newline = FALSE)
         vers <- x[["vers"]]
         if (!is.null(vers)) {
@@ -513,13 +517,16 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
                         domain = "R-dplR")
         precat(gtxt)
         precat(rep.int("-", nchar(gtxt)))
-        if (iwin == 0 && ofac == 1 && n50 == 1) {
+        rcnt <- x[["rcnt"]]
+        if (!is.null(rcnt)) {
             gtxt <- gettext("5-% acceptance region:", domain = "R-dplR")
             precat(gtxt, newline = FALSE)
-            cat(" rcritlo = ", format(rcritlo, digits = digits), "\n", sep = "")
+            cat(" rcritlo = ", format(x[["rcritlo"]], digits = digits), "\n",
+                sep = "")
             precat(rep.int(" ", nchar(gtxt)), newline = FALSE)
-            cat(" rcrithi = ", format(rcrithi, digits = digits), "\n", sep = "")
-            precat("r_test = ", format(x[["rcnt"]], digits = digits))
+            cat(" rcrithi = ", format(x[["rcrithi"]], digits = digits), "\n",
+                sep = "")
+            precat("r_test = ", format(rcnt, digits = digits))
         } else {
             if (iwin != 0) {
                 precat(gettext("Test requires iwin = 0", domain = "R-dplR"))

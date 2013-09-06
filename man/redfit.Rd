@@ -282,15 +282,7 @@ box()
 data(cana157)
 yrs <- as.numeric(rownames(cana157))
 x <- cana157[, 1]
-
 redf.x <- redfit(x, nsim = 1000)
-
-plot(yrs, x, type = "n", axes = FALSE,
-     xlab = "Time", ylab = "Ring Width (mm)")
-grid()
-lines(yrs, x)
-axis(1); axis(2); axis(3); axis(4)
-box()
 
 plot(redf.x[["freq"]], redf.x[["gxxc"]],
      ylim = range(redf.x[["ci99"]], redf.x[["gxxc"]]),

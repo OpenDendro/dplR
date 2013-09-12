@@ -229,7 +229,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
         ww[, i] <- redfitWinwgt(twk, iwin2)
     }
     ## determine autospectrum of input data
-    lmfitfun <- tryCatch(match.fun(".lm.fit"),
+    lmfitfun <- tryCatch(match.fun("lm.fit"),
                          error = function(...) match.fun("lm.fit"))
     gxx <- .Call(dplR.spectr, t2, x2, np, ww, tr[[1]], tr[[2]], tr[[3]],
                  nseg, nfreq, avgdt, freq, dn50, segskip, lmfitfun)
@@ -330,8 +330,8 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
         ## can assume that real(nout/2) was supposed to be real(nout)/2.
         ## sqrtHalfNfreq <- sqrt(nfreq %/% 2)
         sqrtHalfNfreq <- sqrt(nfreq / 2)
-        ## dplR: NOTE! Is round() the right function to use? Maybe floor()
-        ## for the lower limit and ceiling for the higher limit?
+        ## dplR: NOTE! Is round() the right function to use? Maybe ceiling
+        ## for the lower limit and floor for the higher limit?
         rcritlo <- round((-0.79557086 + 1.0088719 * sqrtHalfNfreq)^2)
         rcrithi <- round(( 0.75751462 + 0.9955133 * sqrtHalfNfreq)^2)
     } else {

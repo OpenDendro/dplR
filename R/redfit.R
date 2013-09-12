@@ -806,7 +806,8 @@ redfitTauest <- function(t, x) {
         ## determine rho, corresponding to tau
         exp(-dt / tau)
     } else {
-        NaN
+        ## dplR: fail early
+        stop("error in tau estimation")
     }
 }
 

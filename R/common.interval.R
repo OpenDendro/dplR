@@ -8,39 +8,64 @@ common.interval <- function(rwl, type=c("series", "years", "both"),
     if (!all(vapply(rwl, is.numeric, FALSE, USE.NAMES=FALSE))) {
         stop("'rwl' must have numeric columns")
     }
+    rnames <- row.names(rwl)
+    if (is.null(rnames)) {
+        stop("'rwl' must have row names")
+    }
+    yrs <- as.numeric(rnames)
+    if (!is.numeric(yrs) || any(is.na(yrs)) || any(round(yrs) != yrs)) {
+        stop("row names of 'rwl' must be interpretable as years")
+    }
 
     check.flags(make.plot)
     type2 <- match.arg(type, c("series", "years", "both"))
 
     ## rm.short is a function to remove short series and keep the
-    ## series with overlap
-    rm.short <- function(rwl, flag=FALSE) {
+    ## series with overlaps
+    rm.short <- function(rwl, yrs, rwlNotNA, row.idx, flag=FALSE) {
         n <- 0
-        rwl <- rwl[!vapply(rwl, function(x) all(is.na(x)), TRUE)]
-        series.range <- vapply(rwl, yr.range, numeric(2),
-                               yr = as.numeric(row.names(rwl)))
+        anyNotNA <- apply(rwlNotNA, 2, any)
+        which.good <- which(anyNotNA)
+        nCol.orig <- length(which.good)
+        series.range <- matrix(NA_real_, 2, nCol.orig)
+        for (k in seq_len(nCol.orig)) {
+            series.range[, k] <- yr.range(rwl[[which.good[k]]][row.idx],
+                                          yr.vec = yrs)
+        }
+        span.order <-
+            which.good[sort.list(series.range[2, ] - series.range[1, ])]
+        nRow.orig <- nrow(rwlNotNA)
+        keep.col <- logical(length(rwl))
+        keep.col[which.good] <- TRUE
+        keep.col.output <- keep.col
+        dontkeep.row <- rep.int(TRUE, nRow.orig)
+        keep.row.output <- rep.int(FALSE, nRow.orig)
+        nRow <- 0
+        nRow.output <- 0
+        nCol.output <- nCol.orig
+        nCol <- nCol.orig
 
-        span.order <- order(series.range[2, ] - series.range[1, ])
-        to.keep <- rep(TRUE, length(span.order))
-
-        rwl.output <- rwl
-
-        for (i in seq(0, max(0, length(span.order) - 2))) {
-            if(i > 0) {
-                to.keep[span.order[i]] <- FALSE
+        for (i in seq(0, max(0, nCol.orig - 2))) {
+            if (i > 0) {
+                keep.col[span.order[i]] <- FALSE
+                nCol <- nCol - 1
+                if (nCol * nRow.orig < n) {
+                    ## to break if it is not possible to improve the
+                    ## common interval
+                    break
+                }
             }
-            rwl.short <- rwl[to.keep]
-            if (ncol(rwl.short) * nrow(rwl.short) < n) {
-                ## to break if it is not possible to improve the
-                ## common interval
-                break
-            }
-            rwl.short <- na.omit(rwl.short)
-            n.years <- ncol(rwl.short) * nrow(rwl.short)
+            tmp <- apply(rwlNotNA[dontkeep.row, keep.col, drop = FALSE], 1, all)
+            dontkeep.row[dontkeep.row] <- !tmp
+            nRow <- nRow + sum(tmp)
+            n.years <- nCol * nRow
             ## to keep the rwl if has more years
             if (n.years > n) {
                 n <- n.years
-                rwl.output <- rwl.short
+                keep.col.output <- keep.col
+                keep.row.output <- !dontkeep.row
+                nCol.output <- nCol
+                nRow.output <- nRow
                 if (flag) {
                     ## to give the common interval with the highest
                     ## sample depth for the case of
@@ -49,101 +74,179 @@ common.interval <- function(rwl, type=c("series", "years", "both"),
                 }
             }
         }
-        rwl.output
+        list(nRow.output, nCol.output, keep.row.output, keep.col.output)
     }
 
 ###########
-    rwl.orig <- rwl
-    yrs <- as.numeric(row.names(rwl))
+    nCol.rwl <- length(rwl)
+    nRow.rwl <- nrow(rwl)
+    yrs.ordered <- all(diff(yrs) >= 0)
+    if (!yrs.ordered) {
+        order.yrs <- sort.list(yrs)
+    }
     output <- 0
     opt <- 0
-    rwl.output <- as.data.frame(matrix(0, 0, 0))
+    keep.row.output <- numeric(0)
+    keep.col.output <- logical(nCol.rwl)
+    nCol.output <- 0
+    nRow.output <- 0
+    nCol <- 0
+    nRow <- 0
+    rwlNotNA <- !is.na(rwl)
 
     ## to get sample depth
-    if (ncol(rwl) > 0) {
-        tmp <- rowSums(!is.na(rwl))
+    if (nCol.rwl > 0) {
+        samp.depth <- rowSums(rwlNotNA)
     } else {
-        tmp <- rep(0, nrow(rwl)) # R bug number 14959
+        ## Workaround for R bug number 14959.  Fixed in R >= 2.15.2.
+        samp.depth <- 0
     }
 
-    for (i in dec(max(tmp), 2)) { # dec() forces a decreasing sequence
-        tmp[tmp > i] <- i
-        common.range <- range(as.integer(names(tmp)[tmp %in% i]))
-        rwl.common <- subset(rwl,
-                             yrs >= common.range[1] & yrs <= common.range[2])
-        if (i * nrow(rwl.common) < output){
+    type.series <- type2 == "series"
+    type.years <- type2 == "years"
+    for (i in dec(max(samp.depth), 2)) { # dec() forces a decreasing sequence
+        if (yrs.ordered) {
+            tmp <- which(samp.depth >= i)
+            row.idx <- tmp[1]:tmp[length(tmp)]
+        } else {
+            common.range <- range(yrs[samp.depth >= i])
+            row.idx <- which(yrs >= common.range[1] & yrs <= common.range[2])
+        }
+        nRow <- length(row.idx)
+        if (i * nRow < output) {
             break
         }
-        if (type2 == "series") {
-            rwl.output <- rm.short(rwl.common, flag=TRUE)
+        if (type.series) {
+            tmp <- rm.short(rwl, yrs[row.idx],
+                            rwlNotNA[row.idx, , drop = FALSE], row.idx,
+                            flag = TRUE)
+            nRow.output <- tmp[[1]]
+            nCol.output <- tmp[[2]]
+            keep.row.output <- row.idx[tmp[[3]]]
+            keep.col.output <- tmp[[4]]
             break
-        } else if (type2 == "years") {
-            rwl.common <- rm.short(rwl.common)
-            opt <- ncol(rwl.common) * nrow(rwl.common)
-        } else if (type2 == "both") {
-            rwl.common <- rwl.common[!vapply(rwl.common,
-                                             function(x) any(is.na(x)),
-                                             TRUE)]
-            opt <- ncol(rwl.common) * nrow(rwl.common)
+        } else if (type.years) {
+            tmp <- rm.short(rwl, yrs[row.idx],
+                            rwlNotNA[row.idx, , drop = FALSE], row.idx)
+            nRow <- tmp[[1]]
+            nCol <- tmp[[2]]
+            keep.row <- tmp[[3]]
+            keep.col <- tmp[[4]]
+        } else { # type2 == "both"
+            keep.col <- apply(rwlNotNA[row.idx, , drop = FALSE], 2, all)
+            nCol <- sum(keep.col)
         }
-        if(opt > output) {
+        opt <- nRow * nCol
+        if (opt > output) {
             output <- opt
-            rwl.output <- rwl.common
+            nRow.output <- nRow
+            nCol.output <- nCol
+            if (type.years) {
+                keep.row.output <- row.idx[keep.row]
+            } else {
+                keep.row.output <- row.idx
+            }
+            keep.col.output <- keep.col
         }
     }
 
     if (make.plot) {
-        ## original rwl
-        series.range <- vapply(rwl.orig, yr.range, numeric(2),
-                               yr = as.numeric(row.names(rwl)))
-        ## ensure that series.range is a matrix
-        dim(series.range) <- c(2, length(rwl))
-        first.year <- series.range[1, ]
-        yr <- as.numeric(row.names(rwl.orig))
-
-        neworder <- order(first.year, decreasing = FALSE)
-        segs <- rwl.orig[neworder]
-        n.col <- ncol(segs)
-        seq.col <- seq_len(n.col)
-        for (i in seq.col) {
-            segs[[i]][!is.na(segs[[i]])] <- i
-        }
-
-        ## common.rwl
-        yr2 <- as.numeric(row.names(rwl.output))
-        segs2 <- segs
-        for (j in seq_len(ncol(segs2))) {
-            if (names(segs)[j] %in% colnames(rwl.output)) {
-                ## get correct vector
-                segs2[!(yr %in% yr2), j] <- NA
-            } else {
-                segs2[, j] <- NA
-            }
-        }
-
-        sub.str1 <- gettextf("Original: %d series, %d years",
-                             ncol(rwl.orig), nrow(rwl.orig), domain="R-dplR")
-        sub.str2 <-
-            gettextf("Common Interval (type='%s'): %d series x %d years = %d",
-                     type2, ncol(rwl.output), nrow(rwl.output),
-                     ncol(rwl.output) * nrow(rwl.output), domain="R-dplR")
-        sub.str <- paste(sub.str1, sub.str2, sep='\n')
         op <- par(no.readonly = TRUE)
         on.exit(par(op))
         par(mar = c(5, 5, 2, 2) + 0.1, mgp = c(1.25, 0.25, 0), tcl = 0.25)
-        plot(yr, segs[[1]], type = "n", ylim = c(1, n.col), axes = FALSE,
-             ylab = "", xlab = gettext("Year", domain = "R-dplR"))
-        mtext(text=sub.str, side=1, line=3)
-        apply(segs, 2, lines, x = yr, lwd = 2, col="grey")
-        apply(segs2, 2, lines, x = yr, lwd = 2, col="black")
-        axis(2, at = seq.col, labels = names(segs), srt = 45, tick = FALSE,
-             las = 2)
-        axis(1)
-        range.output <- range(as.numeric(rownames(rwl.output)))
-        abline(v=range.output, lty="dashed")
-        axis(3, at=range.output, labels=range.output, tcl=-0.25)
+        if (nRow.rwl > 0 && nCol.rwl > 0) {
+            ## original rwl
+            series.range <- vapply(rwl, yr.range, numeric(2), yr.vec = yrs)
+            ## ensure that series.range is a matrix
+            dim(series.range) <- c(2, length(rwl))
+            first.year <- series.range[1, ]
+
+            neworder <- sort.list(first.year, na.last = TRUE)
+            rwl.first <- first.year[neworder[1]]
+            if (is.na(rwl.first)) {
+                if (yrs.ordered) {
+                    rwl.first <- yrs[1]
+                    rwl.last <- yrs[nRow.rwl]
+                } else {
+                    rwl.first <- min(yrs)
+                    rwl.last <- max(yrs)
+                }
+            } else {
+                rwl.last <- max(series.range[2, ], na.rm = TRUE)
+            }
+            plot(1, 1, type = "n", xlim = c(rwl.first, rwl.last + 1),
+                 ylim = c(1, nCol.rwl), axes = FALSE, ylab = "",
+                 xlab = gettext("Year", domain = "R-dplR"))
+            rwl.seq <- seq(from = rwl.first, to = rwl.last + 1, by = 0.5)
+            n.rwl.seq <- length(rwl.seq)
+            rwl.everyother <- seq(from = 2, by = 2, length.out = nRow.rwl)
+        } else {
+            plot(1, 1, type = "n", axes = FALSE, ylab = "", xlab = "")
+        }
+        sub.str1 <- gettextf("Original: %d series, %d years",
+                             nCol.rwl, nRow.rwl, domain="R-dplR")
+        sub.str2 <-
+            gettextf("Common Interval (type='%s'): %d series x %d years = %d",
+                     type2, nCol.output, nRow.output,
+                     nCol.output * nRow.output, domain="R-dplR")
+        sub.str <- paste(sub.str1, sub.str2, sep="\n")
+        mtext(text = sub.str, side = 1, line = 3)
+        ## common.rwl
+        yrs2 <- yrs[keep.row.output]
+        any.common <- length(yrs2) > 0
+        if (any.common) {
+            common.first <- min(yrs2)
+            common.last <- max(yrs2)
+            common.seq <- seq(from = common.first,
+                              to = common.last + 1, by = 0.5)
+            n.common.seq <- length(common.seq)
+            common.everyother <- seq(from = 2, by = 2, length.out = nRow.output)
+        }
+        if (!yrs.ordered) {
+            order.yrs <- sort.list(yrs)
+            order.yrs2 <- sort.list(yrs2)
+        }
+        for (i in seq_len(nCol.rwl)) {
+            this.col <- neworder[i]
+            seg <- rwl[[this.col]]
+            seg[rwlNotNA[, this.col]] <- i
+            if (yrs.ordered) {
+                seg.ordered <- seg
+            } else {
+                seg.ordered <- seg[order.yrs]
+            }
+            seg.fill <- rep.int(i, n.rwl.seq)
+            seg.fill[rwl.everyother] <- seg.ordered
+            lines(rwl.seq, seg.fill, lwd = 2, col = "grey")
+            if (keep.col.output[this.col]) {
+                seg2 <- seg[keep.row.output]
+                if (!yrs.ordered) {
+                    seg2 <- seg2[order.yrs2]
+                }
+                seg2.fill <- rep.int(i, n.common.seq)
+                seg2.fill[common.everyother] <- seg2
+                lines(common.seq, seg2.fill, lwd = 2, col = "black")
+            }
+        }
+        if (nCol.rwl > 0) {
+            axis(2, at = seq_len(nCol.rwl), labels = names(rwl)[neworder],
+                 srt = 45, tick = FALSE, las = 2)
+        }
+        if (nRow.rwl > 0) {
+            axis(1)
+        }
+        if (any.common) {
+            common.at <- c(common.first, common.last + 1)
+            common.labels <- as.character(c(common.first, common.last))
+            abline(v = common.at, lty = "dashed")
+            axis(3, at = common.at, labels = common.labels, tcl = -0.25)
+        }
         box()
     }
 
-    rwl.output
+    if (nRow.output < nRow.rwl || nCol.output < nCol.rwl) {
+        rwl[keep.row.output, keep.col.output, drop = FALSE]
+    } else {
+        rwl
+    }
 }

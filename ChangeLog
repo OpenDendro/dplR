@@ -6,6 +6,14 @@ Various .R files
 - Check that length of vector does not overflow integer datatype
   before use of .C()
 
+File: common.interval.R
+-----------------------
+
+- Optimizations (for example, less subsetting of the 'rwl' data.frame)
+- Better handling of corner cases (zero dimensions etc.)
+- In the plot (make.plot = TRUE), length of lines was adjusted:
+  First year a, last year b is 'b - a + 1' years, not 'b - a' years
+
 File: corr.rwl.seg.R
 --------------------
 

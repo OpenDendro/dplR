@@ -324,7 +324,9 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     ## equations for calculating critical values for 5-% significance
     ## were derived from the tabulated critical values in B&P.
     if (iwin2 == 0 && ofac == 1 && dn50 == 1) {
-        rcnt <- 1 + sum(diff(sign(gxxc - gredth)) != 0)
+        spectrcomp <- rep.int(0, nfreq)
+        spectrcomp[gxxc - gredth >= 0] <- 1
+        rcnt <- 1 + sum(diff(spectrcomp) != 0)
         ## dplR: NOTE! Integer division is used in REDFIT.  This should be
         ## checked (by finding a copy of Bendat and Piersol).  For now, we
         ## can assume that real(nout/2) was supposed to be real(nout)/2.

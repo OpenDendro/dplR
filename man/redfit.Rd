@@ -227,7 +227,7 @@ redfit(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
 
 }
 \author{
-  Mikko Korpela
+  Mikko Korpela.  Examples by Andy Bunn.
 }
 \seealso{
   \code{\link{print.redfit}}

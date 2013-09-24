@@ -3,15 +3,17 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.5.7
-Date: 2013-09-04
+Date: 2013-09-24
 Authors@R: c(person(c("Andrew", "G."), "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andrew.bunn@wwu.edu"), person("Mikko",
-        "Korpela", role = "aut"), person("Franco", "Biondi",
+        "Korpela", role = c("aut", "trl")), person("Franco", "Biondi",
         role = c("aut", "cph")), person("Filipe", "Campelo", role = 
         c("aut", "cph")), person("Pierre", "Mérian", role = c("aut", 
-        "cph")), person("Fares", "Qeadan", role = c("aut", "cph")), 
-        person("Christian", "Zang", role = c("aut", "cph")))
-Author: Andy Bunn [aut, cph, cre, trl], Mikko Korpela [aut], Franco Biondi [aut, cph], Filipe Campelo [aut, cph], Pierre Mérian [aut, cph], Fares Qeadan [aut, cph], Christian Zang [aut, cph]
+        "cph")), person("Manfred", "Mudelsee", role = "aut"),
+        person("Fares", "Qeadan", role = c("aut", "cph")),
+        person("Michael", "Schulz", role = "aut"), person("Christian",
+        "Zang", role = c("aut", "cph")))
+Author: Andy Bunn [aut, cph, cre, trl], Mikko Korpela [aut, trl], Franco Biondi [aut, cph], Filipe Campelo [aut, cph], Pierre Mérian [aut, cph], Manfred Mudelsee [aut], Fares Qeadan [aut, cph], Michael Schulz [aut], Christian Zang [aut, cph]
 Copyright: Authors and Aalto University (for work of M. Korpela)
 Maintainer: Andy Bunn <andy.bunn@wwu.edu>
 Depends: R (>= 2.15.0)

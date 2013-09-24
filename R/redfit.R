@@ -319,23 +319,227 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
         ci99 <- NULL
     }
 
-    ## Test equality of theoretical AR1 and estimated spectrum using a
-    ## runs test (Bendat and Piersol, 1986, p. 95). The empirical
-    ## equations for calculating critical values for 5-% significance
-    ## were derived from the tabulated critical values in B&P.
     if (iwin2 == 0 && ofac == 1 && dn50 == 1) {
         spectrcomp <- rep.int(0, nfreq)
         spectrcomp[gxxc - gredth >= 0] <- 1
         rcnt <- 1 + sum(diff(spectrcomp) != 0)
-        ## dplR: NOTE! Integer division is used in REDFIT.  This should be
-        ## checked (by finding a copy of Bendat and Piersol).  For now, we
-        ## can assume that real(nout/2) was supposed to be real(nout)/2.
-        ## sqrtHalfNfreq <- sqrt(nfreq %/% 2)
-        sqrtHalfNfreq <- sqrt(nfreq / 2)
-        ## dplR: NOTE! Is round() the right function to use? Maybe ceiling
-        ## for the lower limit and floor for the higher limit?
-        rcritlo <- round((-0.79557086 + 1.0088719 * sqrtHalfNfreq)^2)
-        rcrithi <- round(( 0.75751462 + 0.9955133 * sqrtHalfNfreq)^2)
+
+        ## dplR: Old formulas for rcritlo, rcrithi (REDFIT).
+        ## ## Test equality of theoretical AR1 and estimated spectrum
+        ## ## using a runs test (Bendat and Piersol, 1986, p. 95). The
+        ## ## empirical equations for calculating critical values for
+        ## ## 5-% significance were derived from the tabulated
+        ## ## critical values in B&P.  dplR: NOTE! Integer division is
+        ## ## used in REDFIT.  We can assume that real(nout/2) was
+        ## ## supposed to be real(nout)/2.
+        ## ## sqrtHalfNfreq <- sqrt(nfreq %/% 2)
+        ## sqrtHalfNfreq <- sqrt(nfreq / 2)
+        ## rcritlo <- round((-0.79557086 + 1.0088719 * sqrtHalfNfreq)^2)
+        ## rcrithi <- round(( 0.75751462 + 0.9955133 * sqrtHalfNfreq)^2)
+
+        ## dplR: Updated formulas for rcritlo, rcrithi.
+        ##
+        ## The REDFIT formulas seem to be very, very inexact, with
+        ## either definition of sqrtHalfNfreq.  For example, the width
+        ## of the acceptance region increases, then decreases (*), and
+        ## goes to <= 0 at nfreq >= 27144 (original sqrtHalfNfreq) or
+        ## at nfreq >= 27144 || nfreq %in% seq(from = 27051, by = 2,
+        ## to = 27143) (updated sqrtHalfNfreq).  Another example:
+        ## rcritlo is 0 (impossible number of runs) at some small
+        ## values of nfreq.
+        ##
+        ## (*) The increase and decrease are general trends, but there
+        ## are local fluctuations against the trend.
+        ##
+        ## About the new formulas:
+        ##
+        ## Exact values were computed up to nfreq == 16000.  For nfreq
+        ## > 16000, a normal approximation is used.  For nfreq <=
+        ## 16000, the acceptance region obtained using the normal
+        ## approximation differs from the exact acceptance region at
+        ## 52 values of nfreq (diffIdx).  The problem at hand
+        ## (comparison of two spectra) is analogous to studying the
+        ## number of runs of heads and tails with nfreq tosses of a
+        ## fair coin (p == 0.5).
+        ##
+        ## The sequence of acceptance region widths is non-decreasing
+        ## for both odd and even nfreq, individually.  However,
+        ## because of the symmetric distribution, if rcritlo increases
+        ## by 1 going from nfreq to nfreq + 1, rcrithi does not
+        ## change, and the change in the width is -1.
+        ##
+        ## Reference: Bradley, J. V. (1968) Distribution-Free
+        ## Statistical Tests. Prentice-Hall. p. 253--254, 259--263.
+        ##
+        ## Code for computing the exact rcritlo, rcrithi can be found
+        ## below.  It was used for obtaining 'diffIdx' and the
+        ## corrections +1 and -1.  Requires the "gmp" package
+        ## (arbitrary precision numbers).  Runs very slowly for large
+        ## values of n.
+        ##
+        ## library(gmp)
+        ## runprobZ <- function(k, n) {
+        ##     invhalfpowM1 <- as.bigz(2)^(n - 1)
+        ##     if (k %% 2 == 0) {
+        ##         ## even number of runs
+        ##         r <- k / 2
+        ##         n1 <- seq(from = r, by = 1, to = n - r)
+        ##         nn1 <- length(n1)
+        ##         halfn1 <- nn1 %/% 2
+        ##         if (nn1 %% 2 == 1) {
+        ##             probsum <- chooseZ(n1[halfn1 + 1] - 1, r - 1)
+        ##             probsum <- probsum * probsum
+        ##         } else {
+        ##             probsum <- 0
+        ##         }
+        ##         lown1 <- n1[seq_len(halfn1)]
+        ##         if (length(lown1) > 0) {
+        ##             lown2 <- n - lown1
+        ##             probsum <- probsum + 2 * sum(chooseZ(lown1 - 1, r - 1) *
+        ##                                          chooseZ(lown2 - 1, r - 1))
+        ##         }
+        ##         probsum / invhalfpowM1
+        ##     } else if (k == 1) {
+        ##         ## one run
+        ##         as.bigq(2)^(1 - n)
+        ##     } else {
+        ##         ## odd number of runs
+        ##         r <- (k - 1) / 2
+        ##         n1 <- seq(from = r + 1, by = 1, to = n - r)
+        ##         n2 <- n - n1
+        ##         probsum <- sum(chooseZ(n1 - 1, r) * chooseZ(n2 - 1, r - 1))
+        ##         probsum / invhalfpowM1
+        ##     }
+        ## }
+        ## newcrit <- function(n, crit = 0.05, verbose = FALSE) {
+        ##     stopifnot(is.numeric(n), length(n) >= 1, is.finite(n),
+        ##               round(n) == n, n > 0, is.numeric(crit),
+        ##               length(crit) == 1, is.finite(crit), crit < 1)
+        ##     verbose2 <- isTRUE(verbose)
+        ##     halfcrit <- crit / 2
+        ##     nn <- length(n)
+        ##     res <- matrix(NA_real_, 2, nn)
+        ##     for (j in seq_len(nn)) {
+        ##         thisn <- n[j]
+        ##         if (verbose2) {
+        ##             cat("n = ", thisn, " (", j, " / ", nn, ")\n", sep = "")
+        ##         }
+        ##         halfn <- thisn %/% 2
+        ##         oddn <- thisn %% 2
+        ##         complength <- halfn + oddn
+        ##         lowaccept <- NA_real_
+        ##         if (oddn == 1) {
+        ##             csum <- (as.bigq(1) - runprobZ(complength, thisn)) / 2
+        ##             if (as.numeric(csum) <= halfcrit) {
+        ##                 lowaccept <- complength
+        ##             } else {
+        ##                 for (k in seq(from = complength - 1, by = -1,
+        ##                               length.out = complength - 1)) {
+        ##                     csum <- csum - runprobZ(k, thisn)
+        ##                     if (csum <= halfcrit) {
+        ##                         lowaccept <- k
+        ##                         break
+        ##                     }
+        ##                 }
+        ##             }
+        ##         } else {
+        ##             csum <- as.bigq(1, 2)
+        ##             for (k in seq(from = complength, by = -1,
+        ##                           length.out = complength)) {
+        ##                 csum <- csum - runprobZ(k, thisn)
+        ##                 if (csum <= halfcrit) {
+        ##                     lowaccept <- k
+        ##                     break
+        ##                 }
+        ##             }
+        ##         }
+        ##         highaccept <- thisn - lowaccept + 1
+        ##         res[, j] <- c(lowaccept, highaccept)
+        ##     }
+        ##     drop(res)
+        ## }
+
+        ## dplR: Empirical mean and standard deviation (variance) of
+        ## the number of runs distribution, and code for computing
+        ## them.
+        ## library(gmp)
+        ## runtableZ <- function(n) {
+        ##     stopifnot(is.numeric(n), length(n) == 1,
+        ##               is.finite(n), round(n) == n, n > 0)
+        ##     halfn <- n %/% 2
+        ##     oddn <- n %% 2
+        ##     res <- numeric(n)
+        ##     invhalfpowM1 <- as.bigz(2)^(n - 1)
+        ##     ## Symmetric distribution. Compute first half only.
+        ##     complength <- halfn + oddn
+        ##     evenlength <- complength %/% 2
+        ##     oddlength <- evenlength + complength %% 2 - 1
+        ##     ## one run
+        ##     res[1] <- 0.5^(n - 1)
+        ##     ## odd number of runs (>= 3)
+        ##     oddseq <- seq(from = 3, by = 2, length.out = oddlength)
+        ##     for (k in oddseq) {
+        ##         r <- (k - 1) / 2
+        ##         n1 <- seq(from = r + 1, by = 1, to = n - r)
+        ##         n2 <- n - n1
+        ##         probsum <- sum(chooseZ(n1 - 1, r) * chooseZ(n2 - 1, r - 1))
+        ##         res[k] <- as.numeric(probsum / invhalfpowM1)
+        ##     }
+        ##     ## even number of runs
+        ##     evenseq <- seq(from = 2, by = 2, length.out = evenlength)
+        ##     for (k in evenseq) {
+        ##         r <- k / 2
+        ##         n1 <- seq(from = r, by = 1, to = n - r)
+        ##         nn1 <- length(n1)
+        ##         halfn1 <- nn1 %/% 2
+        ##         if (nn1 %% 2 == 1) {
+        ##             probsum <- chooseZ(n1[halfn1 + 1] - 1, r - 1)
+        ##             probsum <- probsum * probsum
+        ##         } else {
+        ##             probsum <- 0
+        ##         }
+        ##         leftn1 <- n1[seq_len(halfn1)]
+        ##         if (length(leftn1) > 0) {
+        ##             leftn2 <- n - leftn1
+        ##             probsum <- probsum + 2 * sum(chooseZ(leftn1 - 1, r - 1) *
+        ##                                          chooseZ(leftn2 - 1, r - 1))
+        ##         }
+        ##         res[k] <- as.numeric(probsum / invhalfpowM1)
+        ##     }
+        ##     ## Last half is mirror image of first half
+        ##     res[seq(from = n, by = -1, length.out = halfn)] <-
+        ##         res[seq_len(halfn)]
+        ##     res / sum(res)
+        ## }
+        ## meanvar <- function(n, crit = 0.05) {
+        ##     nn <- length(n)
+        ##     res <- matrix(NA_real_, 2, nn)
+        ##     for (k in seq_len(nn)) {
+        ##         thisn <- n[k]
+        ##         rtable <- runtableZ(thisn)
+        ##         nseq <- 1:thisn
+        ##         res[1, k] <- sum(rtable * nseq)
+        ##         res[2, k] <- sum(rtable * (nseq - res[1, k])^2)
+        ##     }
+        ##     drop(res)
+        ## }
+        nMean <- 0.5 * nfreq + 0.5
+        nSd <- sqrt(0.25 * nfreq - 0.25)
+
+        diffIdx <-
+            c(18, 45, 68, 95, 139, 191, 268, 302, 397, 439,
+              552, 652, 847, 1002, 1101, 1709, 1838, 2063, 2110, 2157,
+              2763, 2926, 3325, 3504, 3626, 3750, 3876, 4004, 4134,
+              4333, 4816, 4887, 5031, 5550, 6095, 6500, 6749, 7613,
+              8624, 8719, 9202, 10414, 10941, 11048, 11591, 13415,
+              13772, 14500, 14623, 14871, 15627, 15883)
+        diffMatch <- match(nfreq, diffIdx)
+        rcritlo <- floor(qnorm(0.025, mean = nMean, sd = nSd) + 0.5)
+        rcrithi <- floor(qnorm(0.975, mean = nMean, sd = nSd) + 0.5)
+        if (!is.na(diffMatch)) {
+            rcritlo <- rcritlo + 1
+            rcrithi <- rcrithi - 1
+        }
     } else {
         rcnt <- NULL
         rcritlo <- NULL

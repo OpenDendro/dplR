@@ -87,9 +87,12 @@ redfit(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     between \code{redfit} and REDFIT with respect to the number of
     points per segment and the overlap of consecutive segments.
 
-    \item The critical values of the runs test may differ between
-    \code{redfit} and REDFIT due to a different interpretation of the
-    related equations.
+    \item The critical values of the runs test differ between
+    \code{redfit} and REDFIT.  The equations in REDFIT are flawed,
+    particularly when the number of frequencies is large.  For example,
+    the lower limit of the acceptance region exceeds the upper limit
+    when the number of frequencies exceeds a threshold, which is clearly
+    wrong.
     
   }
 }
@@ -111,20 +114,25 @@ redfit(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
   \item{rcnt }{ a \code{numeric} value giving the number of runs in a
     statistical test studying the difference between a theoretical AR1
     spectrum and the bias-corrected spectrum estimated from the data.
-    Requires that \code{\var{iwin} == 0} (\code{"rectangular"}),
+    Null hypothesis: the two spectra \dQuote{agree}, i.e. the
+    probability of either being larger than the other is 0.5 at every
+    point.  Requires that \code{\var{iwin} == 0} (\code{"rectangular"}),
     \code{\var{ofac} == 1} and \code{\var{n50} == 1}.  Otherwise the
-    test is not performed and \var{rcnt} is \code{NULL}.  See Bendat and
-    Piersol, p. 95. }
+    test is not performed and \var{rcnt} is \code{NULL}.  See Bradley,
+    p. 253\enc{–}{--}254, 259\enc{–}{--}263 (probability \var{p} equals
+    0.5).  }
 
   \item{rcritlo }{ a \code{numeric} critical low value for
-    \code{\var{rcnt}}.  Approximately 2.5 percent of the null
-    distribution lies below this value (TO BE CHECKED).  Is \code{NULL}
-    when \code{\var{rcnt}} is \code{NULL}. }
+    \code{\var{rcnt}}, i.e. the lowest value for accepting the null
+    hyphothesis.  Approximately 2.5 percent of the null distribution
+    lies below this value.  Is \code{NULL} when \code{\var{rcnt}} is
+    \code{NULL}. }
 
-  \item{rcritlo }{ a \code{numeric} critical high value for
-    \code{\var{rcnt}}.  Approximately 2.5 percent of the null
-    distribution lies above this value (TO BE CHECKED).  Is \code{NULL}
-    when \code{\var{rcnt}} is \code{NULL}.}
+  \item{rcrithi }{ a \code{numeric} critical high value for
+    \code{\var{rcnt}}, i.e. the highest value for accepting the null
+    hyphothesis.  Approximately 2.5 percent of the null distribution
+    lies above this value.  Is \code{NULL} when \code{\var{rcnt}} is
+    \code{NULL}.}
 
   \item{freq }{ the frequencies used.  A \code{numeric} vector.  The
     other numeric vectors have the same length, i.e. one value for each
@@ -210,8 +218,8 @@ redfit(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
   \href{http://www.ncdc.noaa.gov/paleo/softlib/redfit/redfit.html}{REDFIT},
   which is in the public domain.
 
-  Bendat, J. S. and Piersol, A. G. (1986) \emph{Random Data: Analysis
-  and Measurement Procedures.} Wiley. \acronym{ISBN}: 0-471-04000-2.
+  Bradley, J. V. (1968) \emph{Distribution-Free Statistical
+    Tests}. Prentice-Hall.
   
   Schulz, M. and Mudelsee, M. (2002) REDFIT: estimating red-noise
   spectra directly from unevenly spaced paleoclimatic time series.

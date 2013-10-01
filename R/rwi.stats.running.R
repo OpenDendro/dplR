@@ -82,8 +82,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
         cat(gettext("note that there is no error checking on column lengths if filtering is not performed\n",
                     domain="R-dplR"))
     }
-    rwi <- tmp$master
-    rwi2 <- as.matrix(rwi)
+    rwi2 <- as.matrix(tmp$master)
     n.cores <- ncol(rwi2)
 
     zero.flag <- rwi2 == 0

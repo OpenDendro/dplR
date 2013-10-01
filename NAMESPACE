@@ -7,6 +7,8 @@ import(graphics, stats)
 
 importFrom(digest, digest)
 
+importFrom(gmp, as.bigq, as.bigz, chooseZ, is.bigq)
+
 importFrom(grDevices, rainbow)
 
 importFrom(grid, gpar, grid.lines, grid.newpage, grid.polygon,
@@ -19,7 +21,7 @@ importFrom(lattice, panel.abline, panel.dotplot, panel.segments,
 importFrom(stringr, str_pad, str_trim)
 
 importFrom(utils, head, installed.packages, read.fwf, tail,
-           packageVersion)
+           packageVersion, write.table)
 
 importFrom(XML, xmlEventParse)
 
@@ -29,7 +31,7 @@ export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, cms,
        gini.coef, glk, hanning, i.detrend, i.detrend.series, morlet,
        po.to.wc, pointer, powt, print.redfit, rcs, read.compact,
        read.crn, read.fh, read.ids, read.rwl, read.tridas,
-       read.tucson, redfit, rwi.stats, rwi.stats.legacy,
+       read.tucson, redfit, runcrit, rwi.stats, rwi.stats.legacy,
        rwi.stats.running, rwl.stats, sea, seg.plot, sens1, sens2,
        series.rwl.plot, skel.plot, spag.plot, strip.rwl, tbrm,
        tridas.vocabulary, uuid.gen, wavelet.plot, wc.to.po,

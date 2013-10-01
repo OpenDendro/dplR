@@ -1,5 +1,16 @@
 * CHANGES IN dplR VERSION 1.5.7
 
+File: DESCRIPTION
+-----------------
+
+- Import gmp (>= 0.5-2)
+
+File: NAMESPACE
+---------------
+
+- New imports from gmp and utils
+- Export redfit() and runcrit()
+
 Various .R files
 ----------------
 
@@ -41,7 +52,8 @@ File: sea.R
 Files: redfit.R, redfit.c
 -------------------------
 
-- New function redfit() based on REDFIT by Schulz and Mudelsee
+- New function redfit() based on REDFIT by Schulz and Mudelsee.  Also
+  another exported function runcrit().
 
 
 * CHANGES IN dplR VERSION 1.5.6

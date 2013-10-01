@@ -1,5 +1,6 @@
 \name{redfit}
 \alias{redfit}
+\alias{runcrit}
 \title{
   Red-Noise Spectra of Time-Series
 }
@@ -8,8 +9,12 @@
 }
 \usage{
 redfit(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
-       ofac = 4, hifac = 1, n50 = 3, rhopre = NULL, iwin = 2,
-       txOrdered = FALSE, verbose = FALSE, seed = NULL)
+       ofac = 4, hifac = 1, n50 = 3, rhopre = NULL,
+       p = c(0.10, 0.05, 0.02), iwin = 2,
+       txOrdered = FALSE, verbose = FALSE, seed = NULL,
+       maxTime = 10, nLimit = 10000)
+
+runcrit(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000)
 }
 \arguments{
 
@@ -42,6 +47,10 @@ redfit(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
   \item{rhopre}{ a \code{numeric} value giving the prescribed
     autocorrelation coefficient.  If \code{NULL} or negative, the
     autocorrelation coefficient will be estimated from the data. }
+
+  \item{p}{ a \code{numeric} or \code{\link{bigq}} vector of
+    significance levels for a statistical test considering the number of
+    runs in a sequence.  See \sQuote{Details}. }
   
   \item{iwin}{ the type of window used for scaling the values of each
     segment of data.  A \code{numeric} value or one of
@@ -54,8 +63,11 @@ redfit(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
   \item{txOrdered}{ a \code{logical} flag.  If \code{TRUE}, it is
     assumed that \code{\var{t}} is in ascending order without
     duplicates.  If \code{FALSE} (the default), \code{\var{t}} will be
-    sorted and checked for duplicates, and \code{\var{x}} reordered
-    accordingly.  }
+    sorted and \code{\var{x}} reordered accordingly.  Values of
+    \code{\var{x}} at identical values of \code{\var{t}} are averaged.
+    If duplicates are found, the non-duplicated \code{\var{t}} and
+    averaged \code{\var{x}} will be included in the return value of the
+    function.  }
 
   \item{verbose}{ a \code{logical} flag.  If \code{TRUE}, the function
     prints some information while operating.  }
@@ -64,42 +76,85 @@ redfit(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     the function.  The value is also recorded in the list returned.  If
     not \code{NULL}, this can be used for reproducible results.  }
 
+  \item{maxTime}{ a \code{numeric} value giving the approximate maximum
+    time in seconds to use for computing the exact acceptance regions of
+    the number of runs test.  See also \code{\var{nLimit}}. }
+
+  \item{nLimit}{ a \code{numeric} value giving the maximum
+    \code{\var{n}} for which \code{runcrit} will try to compute an exact
+    solution to the acceptance regions of the number of runs test.
+    Precomputed solutions may exist for larger \code{\var{n}}).  This
+    limit is in place because a part of the exact solution always needs
+    to be computed in order to roughly estimate the total time and
+    whether it would exceed \code{\var{maxTime}}.  If
+    \code{\var{nLimit}} is very large, \code{\var{maxTime}} may be
+    (greatly) exceeded while computing the aforementioned part of the
+    exact solution. }
+
+  \item{n}{ an integral value giving the length of the sequence in the
+    number of runs test. }
+
 }
 
 \details{
 
-  The function computes the spectrum of a possibly unevenly sampled
-  time-series by using the Lomb-Scargle Fourier transform.  The spectrum
-  is bias-corrected using spectra computed from simulated AR1 series and
-  the theoretical AR1 spectrum.
+  Function \code{redfit} computes the spectrum of a possibly unevenly
+  sampled time-series by using the Lomb-Scargle Fourier transform.  The
+  spectrum is bias-corrected using spectra computed from simulated AR1
+  series and the theoretical AR1 spectrum.
 
   The function duplicates the functionality of program REDFIT by Schulz
   and Mudelsee.  See the manual of that program for more information.
   The results of this function should be very close to REDFIT.  However,
-  small changes have been made:
+  some changes have been made:
 
   \itemize{
 
     \item More precision is used in some constants and computations.
 
-    \item All the data is used: the last segment always contains the
+    \item All the data are used: the last segment always contains the
     last pair of (\var{t}, \var{x}).  There may be small differences
     between \code{redfit} and REDFIT with respect to the number of
     points per segment and the overlap of consecutive segments.
 
-    \item The critical values of the runs test differ between
-    \code{redfit} and REDFIT.  The equations in REDFIT are flawed,
-    particularly when the number of frequencies is large.  For example,
-    the lower limit of the acceptance region exceeds the upper limit
-    when the number of frequencies exceeds a threshold, which is clearly
-    wrong.
-    
+    \item The critical values of the runs test (see the description of
+    \code{runcrit} below) differ between \code{redfit} and REDFIT.  The
+    approximate equations in REDFIT produce values quite far off from
+    the exact values when the number of frequencies is large.
+
+    \item The user can select the significance levels of the runs test.
+
   }
+
+  Function \code{runcrit} computes the limits of the acceptance region
+  of a number of runs test: assuming a sequence of \code{\var{n}} i.i.d.
+  discrete random variables with two possible values \var{a} and \var{b}
+  of equal probability (0.5), we are examining the distribution of the
+  number of runs.  A run is an uninterrupted sequence of only \var{a} or
+  only \var{b}.  The minimum number of runs is 1 (a sequence with only
+  \var{a} or only \var{b}) while the maximum number is \code{\var{n}}
+  (alternating \var{a} and \var{b}).  See Bradley, p. 253\enc{–}{--}254,
+  259\enc{–}{--}263.  The function is also called from \code{redfit};
+  see \code{\var{rcnt}} in \sQuote{Value} for the interpretation.  In
+  this case the arguments \code{\var{p}}, \code{\var{maxTime}} and
+  \code{\var{nLimit}} are passed from \code{redfit} to \code{runcrit},
+  and \code{\var{n}} is the number of output frequencies.
+
+  The results of \code{runcrit} have been essentially precomputed for
+  some values of \code{\var{p}} and \code{\var{n}}.  If a precomputed
+  result is not found and \code{\var{n}} is not too large
+  (\code{\var{nLimit}}, \code{\var{maxTime}}), the exact results are
+  computed on-demand.  Otherwise, the normal distribution is used for
+  approximation.
+
 }
 
 \value{
 
-  Returns a \code{list} with the following elements:
+  Function \code{runcrit} returns a \code{list} containing
+  \code{\var{rcritlo}}, \code{\var{rcrithi}} and \code{\var{rcritexact}}
+  (see below). Function \code{redfit} returns a \code{list} with the
+  following elements:
 
   \item{varx }{ variance of \code{\var{x}} estimated from its spectrum.
     A \code{numeric} value. }
@@ -111,28 +166,32 @@ redfit(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
   \item{tau }{ the time scale of an AR1 process corresponding to
     \code{\var{rho}}. A \code{numeric} value.  }
 
-  \item{rcnt }{ a \code{numeric} value giving the number of runs in a
-    statistical test studying the difference between a theoretical AR1
-    spectrum and the bias-corrected spectrum estimated from the data.
-    Null hypothesis: the two spectra \dQuote{agree}, i.e. the
+  \item{rcnt }{ a \code{numeric} value giving the number of runs to be
+    used for a statistical test studying the difference between a
+    theoretical AR1 spectrum and the bias-corrected spectrum estimated
+    from the data.  Null hypothesis: the two spectra agree, i.e. the
     probability of either being larger than the other is 0.5 at every
     point.  Requires that \code{\var{iwin} == 0} (\code{"rectangular"}),
     \code{\var{ofac} == 1} and \code{\var{n50} == 1}.  Otherwise the
-    test is not performed and \var{rcnt} is \code{NULL}.  See Bradley,
-    p. 253\enc{–}{--}254, 259\enc{–}{--}263 (probability \var{p} equals
-    0.5).  }
+    test is not performed and \var{rcnt} is \code{NULL}.  }
 
-  \item{rcritlo }{ a \code{numeric} critical low value for
-    \code{\var{rcnt}}, i.e. the lowest value for accepting the null
-    hyphothesis.  Approximately 2.5 percent of the null distribution
-    lies below this value.  Is \code{NULL} when \code{\var{rcnt}} is
+  \item{rcritlo }{ a \code{numeric} vector of critical low values for
+    the number of runs, i.e. the lowest value for accepting the null
+    hyphothesis at each level of significance \code{\var{p}}.  When
+    returned from \code{redfit}, \code{NULL} when \code{\var{rcnt}} is
     \code{NULL}. }
 
-  \item{rcrithi }{ a \code{numeric} critical high value for
-    \code{\var{rcnt}}, i.e. the highest value for accepting the null
-    hyphothesis.  Approximately 2.5 percent of the null distribution
-    lies above this value.  Is \code{NULL} when \code{\var{rcnt}} is
-    \code{NULL}.}
+  \item{rcrithi }{ a \code{numeric} vector of critical high values for
+    the number of runs, i.e. the highest value for accepting the null
+    hyphothesis at each level of significance \code{\var{p}}.  When
+    returned from \code{redfit}, \code{NULL} when \code{\var{rcnt}} is
+    \code{NULL}. }
+  
+  \item{rcritexact }{ a \code{logical} vector specifying whether each
+    pair of \code{\var{rcritlo}} and \code{\var{rcrithi}} are exact
+    values (\code{TRUE}) or approximated from a normal distribution
+    (\code{FALSE}).  When returned from \code{redfit}, \code{NULL} when
+    \code{\var{rcnt}} is \code{NULL}. }
 
   \item{freq }{ the frequencies used.  A \code{numeric} vector.  The
     other numeric vectors have the same length, i.e. one value for each
@@ -211,12 +270,21 @@ redfit(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
 
   \item{seed }{ value of the \code{\var{seed}} argument.  }
 
+  \item{t }{ if duplicated values of \code{\var{t}} are given, the
+    non-duplicated \code{numeric} time or age vector (see
+    \code{\var{tType}}) is returned here.  Otherwise \code{NULL}.  See
+    \code{\var{txOrdered}}. }
+
+  \item{x }{ if duplicated values of \code{\var{t}} are given, the
+    averaged \code{numeric} data vector is returned here.  Otherwise
+    \code{NULL}. }
+
 }
 \references{
 
-  This function is based on the Fortran program
-  \href{http://www.ncdc.noaa.gov/paleo/softlib/redfit/redfit.html}{REDFIT},
-  which is in the public domain.
+  Function \code{redfit} is based on the Fortran program
+  \href{http://www.geo.uni-bremen.de/geomod/staff/mschulz/}{REDFIT}
+  (version 3.8e), which is in the public domain.
 
   Bradley, J. V. (1968) \emph{Distribution-Free Statistical
     Tests}. Prentice-Hall.
@@ -291,6 +359,10 @@ data(cana157)
 yrs <- as.numeric(rownames(cana157))
 x <- cana157[, 1]
 redf.x <- redfit(x, nsim = 1000)
+
+# Acceptance region of number of runs test
+# (not useful with default arguments of redfit())
+runcrit(length(redf.x[["freq"]]))
 
 plot(redf.x[["freq"]], redf.x[["gxxc"]],
      ylim = range(redf.x[["ci99"]], redf.x[["gxxc"]]),

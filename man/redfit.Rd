@@ -302,7 +302,8 @@ runcrit(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000)
 }
 \examples{
 # Create a simulated tree-ring width series that has a red-noise
-# background and an embedded signal.
+# background ar1=phi and sd=sigma and an embedded signal with 
+# a period of 10 and an amplitude of have the rednoise sd.
 library(graphics)
 library(stats)
 set.seed(123)

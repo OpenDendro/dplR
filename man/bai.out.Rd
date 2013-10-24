@@ -29,6 +29,7 @@ Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring standardi
 \seealso{ \code{\link{bai.in}} }
 \examples{
 \dontrun{
+library(graphics)
 ## Toy
 n <- 100
 ## Make three fake tree-ring series to show that these funcs work on rwl objects

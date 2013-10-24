@@ -3,6 +3,8 @@
              method = c("Spline", "ModNegExp", "Mean"),
              nyrs = NULL, f = 0.5, pos.slope = FALSE)
 {
+    stopifnot(identical(make.plot, TRUE) || identical(make.plot, FALSE),
+              identical(pos.slope, FALSE) || identical(pos.slope, TRUE))
     known.methods <- c("Spline", "ModNegExp", "Mean")
     method2 <- match.arg(arg = method,
                          choices = known.methods,
@@ -37,11 +39,14 @@
         ModNegExp <- try(nec.func(y2), silent=TRUE)
         if(class(ModNegExp)=="try-error") {
             ## Straight line via linear regression
-            tm <- seq_along(y2)
-            lm1 <- lm(y2 ~ tm)
-            ModNegExp <- predict(lm1)
-            if(coef(lm1)[2] > 0 && !pos.slope)
+            tm <- cbind(1, seq_along(y2))
+            lm1 <- lm.fit(tm, y2)
+            coefs <- lm1[["coefficients"]]
+            if (all(is.finite(coefs)) && (coefs[2] <= 0 || pos.slope)) {
+                ModNegExp <- drop(tm %*% coefs)
+            } else {
                 ModNegExp <- rep(mean(y2), length(y2))
+            }
         }
         resids$ModNegExp <- y2 / ModNegExp
         do.mne <- TRUE

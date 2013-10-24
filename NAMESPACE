@@ -1,10 +1,13 @@
-useDynLib(dplR, dplR.gini=gini, dplR.mean=exactmean,
-          dplR.rcompact=rcompact, dplR.sens1=sens1, dplR.sens2=sens2,
-          dplR.tbrm=tbrm, rwl.readloop=readloop)
+useDynLib(dplR, dplR.gini=gini, dplR.makear1=makear1,
+          dplR.mean=exactmean, dplR.rcompact=rcompact,
+          dplR.seg50=seg50, dplR.sens1=sens1, dplR.sens2=sens2,
+          dplR.spectr=spectr, dplR.tbrm=tbrm, rwl.readloop=readloop)
 
 import(graphics, stats)
 
 importFrom(digest, digest)
+
+importFrom(gmp, as.bigq, as.bigz, chooseZ, is.bigq)
 
 importFrom(grDevices, rainbow)
 
@@ -17,7 +20,8 @@ importFrom(lattice, panel.abline, panel.dotplot, panel.segments,
 
 importFrom(stringr, str_pad, str_trim)
 
-importFrom(utils, head, installed.packages, read.fwf, tail)
+importFrom(utils, head, installed.packages, read.fwf, tail,
+           packageVersion, write.table)
 
 importFrom(XML, xmlEventParse)
 
@@ -25,10 +29,13 @@ export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, cms,
        combine.rwl, common.interval, corr.rwl.seg, corr.series.seg,
        crn.plot, detrend, detrend.series, ffcsaps, fill.internal.NA,
        gini.coef, glk, hanning, i.detrend, i.detrend.series, morlet,
-       po.to.wc, pointer, powt, rcs, read.compact, read.crn, read.fh,
-       read.ids, read.rwl, read.tridas, read.tucson, rwi.stats,
-       rwi.stats.legacy, rwi.stats.running, rwl.stats, sea, seg.plot,
-       sens1, sens2, series.rwl.plot, skel.plot, spag.plot, strip.rwl,
-       tbrm, tridas.vocabulary, uuid.gen, wavelet.plot, wc.to.po,
+       po.to.wc, pointer, powt, print.redfit, rcs, read.compact,
+       read.crn, read.fh, read.ids, read.rwl, read.tridas,
+       read.tucson, redfit, runcrit, rwi.stats, rwi.stats.legacy,
+       rwi.stats.running, rwl.stats, sea, seg.plot, sens1, sens2,
+       series.rwl.plot, skel.plot, spag.plot, strip.rwl, tbrm,
+       tridas.vocabulary, uuid.gen, wavelet.plot, wc.to.po,
        write.compact, write.crn, write.rwl, write.tridas,
        write.tucson)
+
+S3method(print, redfit)

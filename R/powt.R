@@ -28,8 +28,8 @@ powt <- function(rwl) {
         runn.M <- (drop.1 + drop.n) / 2
         runn.S <- abs(drop.1 - drop.n)
         runn.S[runn.S == 0] <- prec         # add minimal difference
-        mod <- lm(log(runn.S) ~ log(runn.M))
-        b <- coef(mod)[2]
+        mod <- lm.fit(cbind(1, log(runn.M)), log(runn.S))
+        b <- mod[["coefficients"]][2]
         1 - b
     }
     transf <- function(x) {

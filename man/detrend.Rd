@@ -65,6 +65,7 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 
 \dontrun{
+library(grDevices)
 ## Detrend using all methods. Returns a list
 ca533.rwi <- detrend(rwl = ca533)
 ## Save a pdf of all series

@@ -82,8 +82,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
         cat(gettext("note that there is no error checking on column lengths if filtering is not performed\n",
                     domain="R-dplR"))
     }
-    rwi <- tmp$master
-    rwi2 <- as.matrix(rwi)
+    rwi2 <- as.matrix(tmp$master)
     n.cores <- ncol(rwi2)
 
     zero.flag <- rwi2 == 0
@@ -328,14 +327,15 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
     ## Iterate over all windows
     if (running.window &&
         !inherits(try(suppressWarnings(req.fe <-
-                                       require(foreach, quietly=TRUE)),
+                                       requireNamespace("foreach",
+                                                        quietly=TRUE)),
                       silent = TRUE),
                   "try-error") && req.fe) {
         compos.stats <-
-            foreach(s.idx=window.start, .combine="rbind",
-                    .packages="dplR") %dopar% {
-                        loop.body(s.idx)
-                    }
+            foreach::"%dopar%"(foreach::foreach(s.idx=window.start,
+                                                .combine="rbind",
+                                                .packages="dplR"),
+                               loop.body(s.idx))
     } else {
         compos.stats <- NULL
         for (s.idx in window.start) {

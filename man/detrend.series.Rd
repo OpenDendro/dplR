@@ -88,7 +88,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{detrend}} }
-\examples{
+\examples{library(stats)
 ## Using a plausible representation of a tree-ring series
 gt <- 0.5 * exp (-0.05 * 1:200) + 0.2
 noise <- c(arima.sim(model = list(ar = 0.7), n = 200, mean = 1, sd = 0.5))

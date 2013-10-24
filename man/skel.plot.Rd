@@ -74,7 +74,8 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9,
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{  \code{\link{Devices}}, \code{\link{hanning}}  }
 
-\examples{data(co021)
+\examples{library(grDevices)
+data(co021)
 x <- co021[,33]
 x.yrs <- as.numeric(rownames(co021))
 x.name <- colnames(co021)[33]

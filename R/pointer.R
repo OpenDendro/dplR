@@ -26,7 +26,6 @@ pointer <- function(rwl, rgv.thresh=10, nseries.thresh=75,
     if (nyrs < 2) {
         stop("'rwl' must have at least 2 rows")
     }
-    nseries <- ncol(rwl2)
     gv <- rwl2[-1, , drop=FALSE] / rwl2[-nyrs, , drop=FALSE]
     out <- matrix(NA_real_, nrow=nyrs - 1, ncol=7)
     colnames(out) <- c("Year", "Nb.series", "Perc.pos", "Perc.neg",

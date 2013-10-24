@@ -52,6 +52,7 @@ fill.internal.NA(x, fill = c("Mean", "Spline", "Linear"))
 \seealso{ \code{\link{spline}}, \code{\link{approx}}
 }
 \examples{
+library(graphics)
 foo <- data.frame(x1=c(rnorm(5), NA, NA, rnorm(3)),
                   x2=c(rnorm(10)),
                   x3=c(NA, NA, rnorm(3), NA, rnorm(4)),

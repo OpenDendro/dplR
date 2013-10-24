@@ -1,10 +1,29 @@
 * CHANGES IN dplR VERSION 1.5.7
 
+File: DESCRIPTION
+-----------------
+
+- Import gmp (>= 0.5-2)
+
+File: NAMESPACE
+---------------
+
+- New imports from gmp and utils
+- Export redfit() and runcrit()
+
 Various .R files
 ----------------
 
 - Check that length of vector does not overflow integer datatype
   before use of .C()
+
+File: common.interval.R
+-----------------------
+
+- Optimizations (for example, less subsetting of the 'rwl' data.frame)
+- Better handling of corner cases (zero dimensions etc.)
+- In the plot (make.plot = TRUE), length of lines was adjusted:
+  First year a, last year b is 'b - a + 1' years, not 'b - a' years
 
 File: corr.rwl.seg.R
 --------------------
@@ -29,6 +48,12 @@ File: sea.R
 - Small optimization: a temporary matrix is completely overwritten on
   every round of a loop, so no need to reinitialize
 - Braces always used in if (else) constructs
+
+Files: redfit.R, redfit.c
+-------------------------
+
+- New function redfit() based on REDFIT by Schulz and Mudelsee.  Also
+  another exported function runcrit().
 
 
 * CHANGES IN dplR VERSION 1.5.6

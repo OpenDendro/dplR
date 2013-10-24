@@ -14,7 +14,7 @@ wavelet.plot(wave.list,
              key.cols = rev(rainbow(length(wavelet.levels)-1)),
              key.lab = parse(text=paste0("\"", gettext("Power"), "\"^2")),
              add.spline = FALSE, f = 0.5, nyrs = NULL,
-             crn.col = "black", crn.lwd = 1,
+             crn.col = "black", crn.lwd = 1,coi.col='black',
              crn.ylim = range(wave.list$y)*1.1, side.by.side = FALSE)
 }
 \arguments{
@@ -30,12 +30,12 @@ wavelet.plot(wave.list,
   \item{key.lab}{Label for key.}
   \item{add.spline}{A \code{logical} flag. Add a spline to the
     time-series plot using \code{\link{ffcsaps}}?. }
-  \item{nyrs}{ A number giving the rigidity of the smoothing spline, defaults to
-    0.33 of series length if nyrs is \code{NULL}. }
+  \item{nyrs}{ A number giving the rigidity of the smoothing spline, defaults to 0.33 of series length if nyrs is \code{NULL}. }
   \item{f}{ A number between 0 and 1 giving the frequency response or
     wavelength cutoff for the smoothing spline. Defaults to 0.5. }
   \item{crn.col}{Line color for the time-series plot.}
   \item{crn.lwd}{Line width for the time-series plot.}
+  \item{coi.col}{Color for the COI if \code{add.coi} is \code{TRUE}.}
   \item{crn.ylim}{Axis limits for the time-series plot.}
   \item{side.by.side}{A \code{logical} flag. Plots will be in one row if
     \code{TRUE}. }

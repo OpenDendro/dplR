@@ -65,7 +65,8 @@ series.rwl.plot(rwl, series, series.yrs = as.numeric(names(series)),
   \code{\link{corr.rwl.seg}}, \code{\link{corr.series.seg}},
   \code{\link{ccf.series.rwl}}
 }
-\examples{data(co021)
+\examples{library(utils)
+data(co021)
 dat <- co021
 flagged <- dat$"646244"
 names(flagged) <- rownames(dat)

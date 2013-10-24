@@ -14,24 +14,29 @@
     if(!make.plot &&
        ("Spline" %in% method2 || "ModNegExp" %in% method2) &&
        !inherits(try(suppressWarnings(req.it <-
-                                      require(iterators, quietly=TRUE)),
+                                      requireNamespace("iterators",
+                                                       quietly=TRUE)),
                      silent = TRUE),
                  "try-error") && req.it &&
        !inherits(try(suppressWarnings(req.fe <-
-                                      require(foreach, quietly=TRUE)),
+                                      requireNamespace("foreach",
+                                                       quietly=TRUE)),
                      silent = TRUE),
                  "try-error") && req.fe){
-        it.rwl <- iter(rwl, by = "col")
+        it.rwl <- iterators::iter(rwl, by = "col")
         ## a way to get rid of "no visible binding" NOTE in R CMD check
         rwl.i <- NULL
-        out <- foreach(rwl.i=it.rwl, .packages="dplR") %dopar% {
-            fits <- detrend.series(rwl.i, make.plot=FALSE,
-                                   method=method2, nyrs=nyrs, f=f,
-                                   pos.slope=pos.slope)
-            if(is.data.frame(fits))
-                row.names(fits) <- rn
-            fits
-        }
+        out <- foreach::"%dopar%"(foreach::foreach(rwl.i=it.rwl,
+                                                   .packages="dplR"),
+                              {
+                                  fits <- detrend.series(rwl.i, make.plot=FALSE,
+                                                         method=method2,
+                                                         nyrs=nyrs, f=f,
+                                                         pos.slope=pos.slope)
+                                  if(is.data.frame(fits))
+                                      row.names(fits) <- rn
+                                  fits
+                              })
     } else{
         out <- list()
         for(i in seq_len(ncol(rwl))){

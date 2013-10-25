@@ -16,6 +16,7 @@ Various .R files
 
 - Check that length of vector does not overflow integer datatype
   before use of .C()
+- Avoid possible name clashes when using foreach with parallel backends
 
 File: common.interval.R
 -----------------------
@@ -38,6 +39,11 @@ File: helpers.R
 - Fixed a bug in fix.names(), related to creating unique short names.
   The bug affected read.tridas(), write.compact(), write.tridas() and
   write.tucson() but probably manifested itself quite rarely.
+
+File: rwi.stats.running.R
+-------------------------
+
+- Speedup by using rep.int() instead of rep()
 
 File: sea.R
 -----------

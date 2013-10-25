@@ -25,7 +25,7 @@ cor.with.limit <- function(limit, x, y) {
 ### Computes the correlation coefficients between different columns of x.
 cor.with.limit.upper <- function(limit, x) {
     n.x <- ncol(x) # caller makes sure that n.x >= 2
-    r.vec <- rep(NA_real_, n.x * (n.x - 1) / 2)
+    r.vec <- rep.int(NA_real_, n.x * (n.x - 1) / 2)
     good.x <- !is.na(x)
     k <- 0
     for (i in seq_len(n.x - 1)) {
@@ -96,7 +96,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
 
     ## If 'ids' is NULL then assume one core per tree
     if (is.null(ids)) {
-        ids3 <- data.frame(tree=seq_len(n.cores), core=rep(1, n.cores))
+        ids3 <- data.frame(tree=seq_len(n.cores), core=rep.int(1, n.cores))
         rwi3 <- rwi2
     } else {
         ## Make error checks here
@@ -195,7 +195,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
                 min(min.offset + window.advance - 1, n.years - window.length)
             offsets <- min.offset:max.offset
             n.offsets <- length(offsets)
-            n.data <- rep(NA_real_, n.offsets)
+            n.data <- rep.int(NA_real_, n.offsets)
             for (i in seq_len(n.offsets)) {
                 offset <- offsets[i]
                 n.windows.minusone <-
@@ -237,13 +237,12 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
         ## Sum of all correlations among different cores (between trees)
         rsum.bt <- 0
         n.bt <- 0
-        good.flag <- rep(FALSE, n.trees)
+        good.flag <- rep.int(FALSE, n.trees)
         for (i in seq_len(n.trees - 1)) {
             i.data <- rwi3[year.idx, cores.of.tree[[i]], drop=FALSE]
             for (j in (i + 1):n.trees) {
                 j.data <- rwi3[year.idx, cores.of.tree[[j]], drop=FALSE]
-                bt.r.mat <- dplR:::cor.with.limit(min.corr.overlap,
-                                                  i.data, j.data)
+                bt.r.mat <- cor.with.limit(min.corr.overlap, i.data, j.data)
                 bt.r.mat <- bt.r.mat[!is.na(bt.r.mat)]
                 n.bt.temp <- length(bt.r.mat)
                 if (n.bt.temp > 0) {
@@ -258,15 +257,14 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
         good.trees <- which(good.flag)
         rsum.wt <- 0
         n.wt <- 0
-        n.cores.tree <- rep(NA_real_, n.trees)
+        n.cores.tree <- rep.int(NA_real_, n.trees)
         for (i in good.trees) {
             these.cores <- cores.of.tree[[i]]
             if (length(these.cores)==1) { # make simple case fast
                 n.cores.tree[i] <- 1
             } else {
                 these.data <- rwi3[year.idx, these.cores, drop=FALSE]
-                wt.r.vec <-
-                    dplR:::cor.with.limit.upper(min.corr.overlap, these.data)
+                wt.r.vec <- cor.with.limit.upper(min.corr.overlap, these.data)
                 wt.r.vec <- wt.r.vec[!is.na(wt.r.vec)]
                 n.wt.temp <- length(wt.r.vec)
                 if (n.wt.temp > 0) {
@@ -331,10 +329,17 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
                                                         quietly=TRUE)),
                       silent = TRUE),
                   "try-error") && req.fe) {
+
+        exportFun <- c("<-", "+", "-", "floor", ":", "rep.int", "for",
+                       "seq_len", "[", "[[", "cor.with.limit", "!",
+                       "is.na", "length", "if", ">", "sum", "c",
+                       "[<-", "which", "==", "cor.with.limit.upper",
+                       "sqrt", "*", "/", "(", "{", "mean")
+
         compos.stats <-
             foreach::"%dopar%"(foreach::foreach(s.idx=window.start,
                                                 .combine="rbind",
-                                                .packages="dplR"),
+                                                .export=exportFun),
                                loop.body(s.idx))
     } else {
         compos.stats <- NULL

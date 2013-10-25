@@ -3,7 +3,7 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.5.7
-Date: 2013-10-12
+Date: 2013-10-25
 Authors@R: c(person(c("Andrew", "G."), "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andrew.bunn@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "trl")), person("Franco", "Biondi",

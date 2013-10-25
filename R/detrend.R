@@ -26,8 +26,12 @@
         it.rwl <- iterators::iter(rwl, by = "col")
         ## a way to get rid of "no visible binding" NOTE in R CMD check
         rwl.i <- NULL
+
+        exportFun <- c("detrend.series", "is.data.frame",
+                       "row.names<-", "<-", "if")
+
         out <- foreach::"%dopar%"(foreach::foreach(rwl.i=it.rwl,
-                                                   .packages="dplR"),
+                                                   .export=exportFun),
                               {
                                   fits <- detrend.series(rwl.i, make.plot=FALSE,
                                                          method=method2,

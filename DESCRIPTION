@@ -4,8 +4,8 @@ Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.5.7
 Date: 2013-10-25
-Authors@R: c(person(c("Andrew", "G."), "Bunn", role = c("aut", "cph",
-        "cre", "trl"), email = "andrew.bunn@wwu.edu"), person("Mikko",
+Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
+        "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "trl")), person("Franco", "Biondi",
         role = c("aut", "cph")), person("Filipe", "Campelo", role = 
         c("aut", "cph")), person("Pierre", "Mérian", role = c("aut", 

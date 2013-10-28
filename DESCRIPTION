@@ -24,6 +24,6 @@ Suggests: foreach, iterators, RUnit (>= 0.4.25)
 Description: This package contains functions for performing tree-ring
         analyses, IO, and graphics.
 LazyData: no
-License: GPL
+License: GPL (>= 2)
 URL: http://www.wwu.edu/huxley/treering/dplR.shtml,
         http://R-Forge.R-project.org/projects/dplr/

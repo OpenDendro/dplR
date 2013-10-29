@@ -541,7 +541,7 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
     ##                     3: Parzen (Triangular)
     ##                     4: Blackman-Harris 3-Term
     winbw <- function(iwin, df, ofac) {
-        ## dplR NOTE: bw could be defined with greated precision
+        ## dplR NOTE: bw could be defined with greater precision
         bw <- c(1.21, 1.59, 2.00, 1.78, 2.26)
         df * ofac * bw[iwin + 1]
     }

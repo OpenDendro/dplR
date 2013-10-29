@@ -551,8 +551,8 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
     getdof <- function(iwin, n50) {
         ## dplR: Rectangular, Welch, Hanning, Triangular, Blackman-Harris
         c50 <- c(0.5, 0.34375, 1 / 6, 0.25, 0.0955489871755)
-        c2 <- 2 * c50[iwin + 1]^2
-        2 * n50 / (1 + c2 - c2 / n50)
+        c2 <- c50[iwin + 1]^2
+        n50 / (0.5 + c2 - c2 / n50)
     }
     ## dplR: Automatically adds prefix (for example "# " from REDFIT) and
     ## newline (if newline = TRUE) to output.

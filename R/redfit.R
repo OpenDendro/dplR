@@ -550,8 +550,11 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
     ## dplR: Computed more precise values for c50.
     getdof <- function(iwin, n50) {
         ## dplR: Rectangular, Welch, Hanning, Triangular, Blackman-Harris
-        c50 <- c(0.5, 0.34375, 1 / 6, 0.25, 0.0955489871755)
-        c2 <- c50[iwin + 1]^2
+        ## c50 <- c(0.5, 0.34375, 1 / 6, 0.25, 0.0955489871755)
+        ## c2 <- c50[iwin + 1]^2
+        ## dplR: Precomputed squared c50. Note: (1/6)^2 == 1/36
+        c2 <- c(0.25, 0.1181640625, 0.0277777777777778,
+                0.0625, 0.00912960895026386)[iwin + 1]
         n50 / (0.5 + c2 - c2 / n50)
     }
     ## dplR: Automatically adds prefix (for example "# " from REDFIT) and

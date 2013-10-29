@@ -353,7 +353,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
             varr1 <- df * sum(grr[, i])
             grr[, i] <- varx / varr1 * grr[, i]
         }
-        grrsum <- rowSums(grr)
+        grrsum <- .rowSums(grr, nfreq, nsim)
     } else {
         grrsum <- numeric(nfreq)
         for (i in seq_len(nsim)) {

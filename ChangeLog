@@ -6,6 +6,7 @@ File: redfit.R
 - Use slightly faster .rowSums() instead of rowSums()
 - Simplified arithmetic expressions in getdof(): no multiplying by 2
 - Precomputed squared numbers in getdof()
+- Small optimizations in redfitWinwgt()
 
 * CHANGES IN dplR VERSION 1.5.7
 

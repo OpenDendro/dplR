@@ -132,7 +132,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     if (!is.null(seed)) {
         set.seed(seed)
     }
-    MIN_POINTS <- 2
+    MIN_POINTS <- 3 # with 2 points, some windows have just 1 non-zero point
     WIN_NAMES <- c("rectangular", "welch i", "hanning",
                    "triangular", "blackman-harris")
     ## dplR: 21 is the lower limit of nsim where !anyDuplicated(c(idx80,
@@ -521,6 +521,160 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     res
 }
 
+## Determine 6dB bandwidth from OFAC corrected fundamental frequency.
+## Note that the bandwidth for the Blackman-Harris taper is higher than
+## reported by Harris (1978, cf. Nuttall, 1981)}
+##
+## window type (iwin)  0: Rectangular
+##                     1: Welch 1
+##                     2: Hanning
+##                     3: Parzen (Triangular)
+##                     4: Blackman-Harris 3-Term
+redfitWinbw <- function(iwin, df, ofac, nseg) {
+
+    ## dplR: bw has been computed with higher precision.  We also
+    ## have results for short windows which shows the aliasing
+    ## caused by sampling.  FFT() from package "fftw" and fft()
+    ## were used.  Note that the results are for uniformly sampled
+    ## windows.  For some reason, the asymptotic (approaching
+    ## continuous time) bandwidths of the triangular and
+    ## Blackman-Harris (defined by Nuttall) windows slightly
+    ## differ from the bandwidths used by REDFIT (below, commented
+    ## out): now 1.77 instead of 1.78 and 2.27 instead of 2.26,
+    ## respectively.
+
+    ## bw <- c(1.21, 1.59, 2.00, 1.78, 2.26)
+
+    approxX <-
+        switch(iwin + 1,
+               ## 1 (Rectangular)
+               c(2:49, 51, 52, 54, 55, 57, 60, 62, 65, 68, 72, 77,
+                 82, 89, 99, 104),
+               ## 2 (Welch)
+               c(3:84, 86:89, 91, 92, 94, 95, 97, 99, 100, 102,
+                 104, 106, 109, 111, 114, 117, 120, 123, 127, 131,
+                 135, 140, 146, 152, 155, 489),
+               ## 3 (Hanning)
+               3,
+               ## 4 (Triangular)
+               c(3, 5:137, 171:219),
+               ## 5 (Blackman-Harris)
+               c(3:11, 13, 15, 18, 19))
+
+    approxY <-
+        switch(iwin + 1,
+               ## 1 (Rectangular), results agree with exact formula
+               ## given by Harris
+               c(1.33333333333333, 1.258708,  1.2351995, 1.2247266,
+                 1.2191411,        1.215808,  1.213658,  1.212190,
+                 1.211143,         1.210370,  1.209784,  1.209327,
+                 1.208966,         1.208674,  1.208436,  1.208238,
+                 1.208073,         1.207933,  1.207813,  1.2077106,
+                 1.20762,          1.207544,  1.207476,  1.207416,
+                 1.2073622,        1.207315,  1.207272,  1.207234,
+                 1.207200,         1.207168,  1.207140,  1.2071144,
+                 1.207091,         1.2070694, 1.207050,  1.2070315,
+                 1.207015,         1.206999,  1.2069849, 1.20697,
+                 1.206959,         1.206948,  1.206937,  1.2069270,
+                 1.206918,         1.206909,  1.206901,  1.20689,
+                 1.2068788,        1.20687,   1.206860,  1.20685,
+                 1.20684,          1.20683,   1.20682,   1.20681,
+                 1.20680,          1.20679,   1.20678,   1.20677,
+                 1.20676,          1.20675,   1.2067),
+               ## 2 (Welch)
+               c(2.00000000000000, 1.78680,   1.70821,   1.66954,
+                 1.64744,          1.63354,   1.62421,   1.617630,
+                 1.61281,          1.60918,   1.60636,   1.60414,
+                 1.60236,          1.60090,   1.59969,   1.59869,
+                 1.59784,          1.59711,   1.59649,   1.59595,
+                 1.59548,          1.59506,   1.59470,   1.59438,
+                 1.59409,          1.59383,   1.59360,   1.59339,
+                 1.59321,          1.59304,   1.59288,   1.59274,
+                 1.592608,         1.592489,  1.59238,   1.59228,
+                 1.59219,          1.592099,  1.59202,   1.59194,
+                 1.59188,          1.59181,   1.591750,  1.59169,
+                 1.59164,          1.59159,   1.59154,   1.59150,
+                 1.59146,          1.59142,   1.59138,   1.591349,
+                 1.59132,          1.59129,   1.59126,   1.591228,
+                 1.59120,          1.59118,   1.59115,   1.59113,
+                 1.59111,          1.591087,  1.59107,   1.59105,
+                 1.59103,          1.59101,   1.590996,  1.59098,
+                 1.590965,         1.590951,  1.59094,   1.59092,
+                 1.59091,          1.59090,   1.59089,   1.5908750,
+                 1.59086,          1.59085,   1.59084,   1.59083,
+                 1.590824,         1.59081,   1.59080,   1.59079,
+                 1.59078,          1.59077,   1.59076,   1.59075,
+                 1.59074,          1.59073,   1.59072,   1.59071,
+                 1.59070,          1.59069,   1.59068,   1.59067,
+                 1.59066,          1.59065,   1.59064,   1.59063,
+                 1.59062,          1.59061,   1.59060,   1.59059,
+                 1.59058,          1.59057,   1.59056,   1.59055,
+                 1.5905,           1.5904),
+               ## 3 (Hanning)
+               2.000,
+               ## 4 (Triangular), results agree with exact formula
+               ## given by Harris (for even number of points)
+               c(2.0000,   1.84975,   1.86328,  1.81083,  1.82157,
+                 1.79521,  1.80317,   1.78740,  1.79341,  1.78294,
+                 1.78760,  1.78015,   1.78385,  1.77829,  1.78130,
+                 1.77699,  1.77948,   1.776045, 1.77814,  1.775335,
+                 1.77712,  1.774789,  1.77633,  1.77436,  1.77570,
+                 1.77402,  1.77519,   1.77374,  1.774780, 1.77351,
+                 1.77444,  1.77332,   1.77415,  1.77316,  1.77391,
+                 1.77302,  1.77370,   1.77290,  1.77352,  1.77280,
+                 1.77337,  1.77271,   1.77323,  1.772635, 1.77311,
+                 1.77257,  1.77301,   1.77251,  1.77292,  1.77245,
+                 1.77284,  1.77241,   1.77276,  1.77236,  1.77270,
+                 1.77232,  1.772636,  1.77229,  1.77258,  1.77226,
+                 1.77253,  1.77223,   1.77249,  1.77220,  1.77245,
+                 1.77218,  1.77241,   1.772158, 1.772376, 1.77214,
+                 1.77234,  1.77212,   1.77232,  1.77210,  1.77229,
+                 1.77209,  1.77226,   1.77207,  1.77224,  1.77206,
+                 1.77222,  1.77205,   1.77220,  1.77203,  1.77218,
+                 1.77202,  1.77216,   1.77201,  1.77215,  1.77200,
+                 1.77213,  1.77199,   1.77212,  1.771985, 1.77210,
+                 1.771977, 1.77209,   1.77197,  1.77208,  1.77196,
+                 1.77207,  1.77196,   1.77206,  1.77195,  1.77205,
+                 1.77194,  1.7720387, 1.77194,  1.77203,  1.77193,
+                 1.772021, 1.77193,   1.77201,  1.77192,  1.77201,
+                 1.771918, 1.77200,   1.77191,  1.77199,  1.77191,
+                 1.771985, 1.77191,   1.77198,  1.77190,  1.77197,
+                 1.77190,  1.77197,   1.771895, 1.77196,  1.77189,
+                 1.77196,  1.77189,   1.77195,  1.7719,   1.771850,
+                 1.77189,  1.77185,   1.77189,  1.771847, 1.77188,
+                 1.77185,  1.77188,   1.77184,  1.77188,  1.77184,
+                 1.77188,  1.77184,   1.77188,  1.77184,  1.77187,
+                 1.77184,  1.77187,   1.77184,  1.77187,  1.771837,
+                 1.77187,  1.771836,  1.77187,  1.771835, 1.77187,
+                 1.77183,  1.77186,   1.77183,  1.77186,  1.77183,
+                 1.77186,  1.77183,   1.77186,  1.77183,  1.77186,
+                 1.77183,  1.77186,   1.77183,  1.77186,  1.77183,
+                 1.77185,  1.771827,  1.77185,  1.77183,  1.77185,
+                 1.77183,  1.77185,   1.7718),
+               ## 5 (Blackman-Harris)
+               c(1.9860952, 2.271338, 2.267059, 2.267229,
+                 2.267416,  2.267511, 2.26755,  2.267572,
+                 2.26758,   2.26757,  2.26756,  2.267552,
+                 2.2675))
+
+    ## df * ofac * bw[iwin + 1]
+    df * ofac * approx(approxX, approxY, nseg,
+                       method = "constant", rule = c(1, 2), f = 0)[["y"]]
+}
+
+## Effective number of degrees of freedom for the selected window
+## and n50 overlapping segments (Harris, 1978).
+## dplR: Computed more precise values for c50.
+redfitGetdof <- function(iwin, n50) {
+    ## dplR: Rectangular, Welch, Hanning, Triangular, Blackman-Harris
+    ## c50 <- c(0.5, 0.34375, 1 / 6, 0.25, 0.0955489871755)
+    ## c2 <- c50[iwin + 1]^2
+    ## dplR: Precomputed squared c50. Note: (1/6)^2 == 1/36
+    c2 <- c(0.25, 0.1181640625, 0.0277777777777778,
+            0.0625, 0.00912960895026386)[iwin + 1]
+    n50 / (0.5 + c2 - c2 / n50)
+}
+
 ## dplR: print.redfit() is a separate function for printing the
 ## results of redfit(), with an output format very close to that in
 ## the original REDFIT.
@@ -531,32 +685,7 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
     }
     stopifnot(identical(csv.out, TRUE) || identical(csv.out, FALSE))
     stopifnot(identical(do.table, TRUE) || identical(do.table, FALSE))
-    ## Determine 6dB bandwidth from OFAC corrected fundamental frequency.
-    ## Note that the bandwidth for the Blackman-Harris taper is higher than
-    ## reported by Harris (1978, cf. Nuttall, 1981)}
-    ##
-    ## window type (iwin)  0: Rectangular
-    ##                     1: Welch 1
-    ##                     2: Hanning
-    ##                     3: Parzen (Triangular)
-    ##                     4: Blackman-Harris 3-Term
-    winbw <- function(iwin, df, ofac) {
-        ## dplR NOTE: bw could be defined with greater precision
-        bw <- c(1.21, 1.59, 2.00, 1.78, 2.26)
-        df * ofac * bw[iwin + 1]
-    }
-    ## Effective number of degrees of freedom for the selected window
-    ## and n50 overlapping segments (Harris, 1978).
-    ## dplR: Computed more precise values for c50.
-    getdof <- function(iwin, n50) {
-        ## dplR: Rectangular, Welch, Hanning, Triangular, Blackman-Harris
-        ## c50 <- c(0.5, 0.34375, 1 / 6, 0.25, 0.0955489871755)
-        ## c2 <- c50[iwin + 1]^2
-        ## dplR: Precomputed squared c50. Note: (1/6)^2 == 1/36
-        c2 <- c(0.25, 0.1181640625, 0.0277777777777778,
-                0.0625, 0.00912960895026386)[iwin + 1]
-        n50 / (0.5 + c2 - c2 / n50)
-    }
+
     ## dplR: Automatically adds prefix (for example "# " from REDFIT) and
     ## newline (if newline = TRUE) to output.
     precat <- function(..., newline = TRUE, sep = "") {
@@ -573,7 +702,7 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
     gredth <- x[["gredth"]]
 
     ## scaling factors for red noise from chi^2 distribution
-    dof <- getdof(iwin, n50)
+    dof <- redfitGetdof(iwin, n50)
     ## dplR: getchi2() in the original Fortran version uses upper tail
     ## probabilities. qchisq() uses lower tail probabilities unless
     ## lower.tail = FALSE.
@@ -657,7 +786,7 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
                         format(dof, digits = digits),
                         domain = "R-dplR"))
         precat(gettextf("6-dB Bandwidth = %s",
-                        format(winbw(iwin, params[["df"]], ofac),
+                        format(redfitWinbw(iwin, params[["df"]], ofac, nseg),
                                digits = digits),
                         domain = "R-dplR"))
         precat(gettextf("Critical false-alarm level (Thomson, 1990) = %s",
@@ -1371,25 +1500,35 @@ redfitTrig <- function(t, freq, nseg, n50, segskip) {
 ##                     2: Hanning
 ##                     3: Parzen (Triangular)
 ##                     4: Blackman-Harris 3-Term
+## dplR: Fixed the Welch, Hann(ing), Triangular and Blacman-Harris (by
+## Nuttall) windows to be DFT-even. The old definitions have been
+## commented out.
 redfitWinwgt <- function(t, iwin) {
     nseg <- length(t)
     ## useful factor for various windows
     fac1 <- nseg / 2 - 0.5
     fac2 <- 1 / (fac1 + 1)
     tlen <- t[nseg] - t[1]
+    tlenFull <- nseg * tlen / (nseg - 1)
+    tPeak <- t[nseg] - tlenFull / 2
     if (iwin == 0) {        # rectangle
         ww <- rep.int(1, nseg)
     } else if (iwin == 1) { # welch I
-        ww <- (nseg / tlen * (t - t[1]) - fac1) * fac2
+        ## ww <- (nseg / tlen * (t - t[1]) - fac1) * fac2
+        ww <- abs(t - tPeak) / (t[nseg] - tPeak)
         ww <- 1 - ww * ww
     } else if (iwin == 2) { # hanning
-        fac3 <- nseg - 1
-        ww <- 1 - cos(2 * pi / fac3 * nseg / tlen * (t - t[1]))
+        ## fac3 <- nseg - 1
+        ## ww <- 1 - cos(2 * pi / fac3 * nseg / tlen * (t - t[1]))
+        ww <- 1 - cos(2 * pi / nseg * (1 + (nseg - 1) / tlen * (t - t[1])))
     } else if (iwin == 3) { # triangular
-        ww <- 1 - abs((nseg / tlen * (t - t[1]) - fac1) * fac2)
+        ## ww <- 1 - abs((nseg / tlen * (t - t[1]) - fac1) * fac2)
+        ww <- 1 - abs(t - tPeak) / (t[nseg] - tPeak)
     } else {                # blackman-harris
-        fac4 <- 2 * pi / (nseg - 1)
-        jeff <- nseg / tlen * (t - t[1])
+        ## fac4 <- 2 * pi / (nseg - 1)
+        ## jeff <- nseg / tlen * (t - t[1])
+        fac4 <- 2 * pi / nseg
+        jeff <- 1 + (nseg - 1) / tlen * (t - t[1])
         ww <- 0.4243801 - 0.4973406 * cos(fac4 * jeff) +
             0.0782793 * cos(fac4 * 2.0 * jeff)
     }

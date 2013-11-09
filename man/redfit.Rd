@@ -124,6 +124,10 @@ runcrit(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000)
 
     \item The user can select the significance levels of the runs test.
 
+    \item Most of the window functions have been adjusted.
+
+    \item 6 dB bandwidths have been computed for discrete-time windows.
+
   }
 
   Function \code{runcrit} computes the limits of the acceptance region

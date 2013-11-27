@@ -8,7 +8,8 @@
 \usage{
 detrend.series(y, y.name = "", make.plot = TRUE,
                method = c("Spline", "ModNegExp", "Mean"),
-               nyrs = NULL, f = 0.5, pos.slope = FALSE)
+               nyrs = NULL, f = 0.5, pos.slope = FALSE,
+               constrain.modnegexp = c("never", "when.fail", "always"))
 }
 \arguments{
 
@@ -35,6 +36,16 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   \item{pos.slope}{ a \code{logical} flag. Will allow for a positive
     slope to be used in method \code{"ModNegExp"}. If \code{FALSE} the
     line will be horizontal. }
+
+  \item{constrain.modnegexp}{ a \code{character} string which controls
+    the constraints of the \code{"ModNegExp"} model.  The value is an
+    answer to the question: When should the parameters of the modified
+    negative exponential function be constrained?  The options are
+    \code{"never"}: do not constrain (the default), \code{"when.fail"}:
+    only compute the constrained solution if the unconstrained fit
+    contains other than positive values, and \code{"always"}: return the
+    constrained solution, even if the unconstrained one would have been
+    valid.  See \sQuote{Details}. }
   
 }
 \details{
@@ -57,16 +68,25 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   stand effects.
 
   The \code{"ModNegExp"} approach attempts to fit a classic nonlinear
-  model of biological growth of the form \code{\var{Y} ~ \var{a} *
-  exp(\var{b} * 1:length(\var{Y})) + \var{k}} using
-  \code{\link{nls}}. See Fritts (2001) for details about the
-  parameters. If a nonlinear model cannot be fit then a linear model is
-  fit.  That linear model can have a positive slope unless
-  \code{\var{pos.slope}} is \code{FALSE} in which case method
+  model of biological growth of the form \eqn{f(t) = a e^{b t} + k}{f(t)
+  = a exp(b t) + k}, where the argument of the function is time, using
+  \code{\link{nls}}.  See Fritts (2001) for details about the
+  parameters.  Option \code{\var{constrain.modnegexp}} gives a
+  possibility to constrain the parameters of the modified negative
+  exponential function.  If the constraints are enabled, the nonlinear
+  optimization algorithm is instructed to keep the parameters in the
+  following ranges: \eqn{a \ge 0}{a >= 0}, \eqn{b \le 0}{b <= 0} and
+  \eqn{k \ge 0}{k >= 0}.  If a suitable nonlinear model cannot be fit
+  (function is non-decreasing or some values are not positive) then a
+  linear model is fit.  That linear model can have a positive slope
+  unless \code{\var{pos.slope}} is \code{FALSE} in which case method
   \code{"Mean"} is used.
 
   The \code{"Mean"} approach fits a horizontal line using the mean of
-  the series.
+  the series.  This method is the fallback solution in cases where the
+  \code{"Spline"} or the linear fit (also a fallback solution itself)
+  contains zeros or negative values, which would lead to invalid
+  ring-width indices.
 
   These methods are chosen because they are commonly used in
   dendrochronology.  It is, of course, up to the user to determine the
@@ -86,7 +106,8 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   Fritts, H. C. (2001) \emph{Tree Rings and Climate}.
   Blackburn.  \acronym{ISBN-13}: 978-1-930665-39-2.
 }
-\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
+\author{ Andy Bunn. Patched and improved by Mikko Korpela. A bug fix
+  related to negative output values is based on work by Jacob Cecile. }
 \seealso{ \code{\link{detrend}} }
 \examples{library(stats)
 ## Using a plausible representation of a tree-ring series

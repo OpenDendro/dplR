@@ -29,7 +29,8 @@ License: \tab \acronym{GPL}\cr
   Campelo, Pierre \enc{Mérian}{Merian}, Fares Qeadan and Christian
   Zang.  Function \code{\link{redfit}} is an improved translation of
   program REDFIT which is original work of Manfred Mudelsee and Michael
-  Schulz.
+  Schulz.  Jacob Cecile contributed a bug fix to
+  \code{\link{detrend.series}}.
 }
 \references{
   Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of

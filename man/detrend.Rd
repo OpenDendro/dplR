@@ -8,7 +8,8 @@
 \usage{
 detrend(rwl, y.name = names(rwl), make.plot = FALSE,
         method = c("Spline", "ModNegExp", "Mean"), nyrs = NULL,
-        f = 0.5, pos.slope = FALSE)
+        f = 0.5, pos.slope = FALSE,
+        constrain.modnegexp = c("never", "when.fail", "always"))
 }
 \arguments{
 
@@ -38,6 +39,9 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
     slope to be used in method \code{"ModNegExp"}. If \code{FALSE} the
     line will be horizontal. }
   
+  \item{constrain.modnegexp}{ a \code{character} string which controls
+    the constraints of the \code{"ModNegExp"} model. }
+
 }
 \details{
   See \code{\link{detrend.series}} for details on detrending

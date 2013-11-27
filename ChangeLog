@@ -1,5 +1,24 @@
 * CHANGES IN dplR VERSION 1.5.8
 
+File: DESCRIPTION
+
+- Added Jacob Cecile as a contributor
+
+File: detrend.R
+---------------
+
+- Adjusted for the changes in detrend.series(),
+  i.e. added the argument constrain.modnegexp.
+
+File: detrend.series.R
+----------------------
+
+- Fixed a bug where RWI could go negative. Thanks to Jacob Cecile for
+  reporting the bug and contributing a proposed solution.
+- A new argument: constrain.modnegexp.  It is now possible to constrain
+  the modified negative exponential function to non-negative values at
+  infinity.
+
 File: redfit.R
 --------------
 

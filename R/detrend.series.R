@@ -1,11 +1,13 @@
 `detrend.series` <-
     function(y, y.name = "", make.plot = TRUE,
              method = c("Spline", "ModNegExp", "Mean"),
-             nyrs = NULL, f = 0.5, pos.slope = FALSE)
+             nyrs = NULL, f = 0.5, pos.slope = FALSE,
+             constrain.modnegexp = c("never", "when.fail", "always"))
 {
     stopifnot(identical(make.plot, TRUE) || identical(make.plot, FALSE),
               identical(pos.slope, FALSE) || identical(pos.slope, TRUE))
     known.methods <- c("Spline", "ModNegExp", "Mean")
+    constrain2 <- match.arg(constrain.modnegexp)
     method2 <- match.arg(arg = method,
                          choices = known.methods,
                          several.ok = TRUE)
@@ -24,27 +26,54 @@
 
     if("ModNegExp" %in% method2){
         ## Nec or lm
-        nec.func <- function(Y) {
+        nec.func <- function(Y, constrain) {
             a <- mean(Y[seq_len(floor(length(Y) * 0.1))])
             b <- -0.01
             k <- mean(Y[floor(length(Y) * 0.9):length(Y)])
-            nec <- nls(formula = Y ~ a * exp(b * seq_along(Y)) + k,
-                       start = list(a=a, b=b, k=k))
-            if(coef(nec)[2] >= 0) stop()
-            fits <- predict(nec)
-            if(fits[1] < fits[length(fits)]) stop()
-            if(fits[length(fits)] < 0) stop()
+            nlsForm <- Y ~ a * exp(b * seq_along(Y)) + k
+            nlsStart <- list(a=a, b=b, k=k)
+            checked <- FALSE
+            if (constrain == "never") {
+                nec <- nls(formula = nlsForm, start = nlsStart)
+            } else if (constrain == "always") {
+                nec <- nls(formula = nlsForm, start = nlsStart,
+                           lower = c(a=0, b=-Inf, k=0),
+                           upper = c(a=Inf, b=0, k=Inf),
+                           algorithm = "port")
+            } else {
+                nec <- nls(formula = nlsForm, start = nlsStart)
+                if(coef(nec)[2] >= 0) stop()
+                fits <- predict(nec)
+                if(fits[1] < fits[length(fits)]) stop()
+                if(fits[length(fits)] > 0) {
+                    checked <- TRUE
+                } else {
+                    nec <- nls(formula = nlsForm, start = nlsStart,
+                               lower = c(a=0, b=-Inf, k=0),
+                               upper = c(a=Inf, b=0, k=Inf),
+                               algorithm = "port")
+                }
+            }
+            if (!checked) {
+                if(coef(nec)[2] >= 0) stop()
+                fits <- predict(nec)
+                if(fits[1] < fits[length(fits)]) stop()
+                if(fits[length(fits)] <= 0) stop()
+            }
             fits
         }
-        ModNegExp <- try(nec.func(y2), silent=TRUE)
+        ModNegExp <- try(nec.func(y2, constrain2), silent=TRUE)
         if(class(ModNegExp)=="try-error") {
             ## Straight line via linear regression
             tm <- cbind(1, seq_along(y2))
             lm1 <- lm.fit(tm, y2)
             coefs <- lm1[["coefficients"]]
+            ModNegExp <- NULL
             if (all(is.finite(coefs)) && (coefs[2] <= 0 || pos.slope)) {
                 ModNegExp <- drop(tm %*% coefs)
-            } else {
+            }
+            if (is.null(ModNegExp) ||
+                ModNegExp[1] <= 0 || ModNegExp[length(y2)] <= 0) {
                 ModNegExp <- rep(mean(y2), length(y2))
             }
         }
@@ -64,6 +93,9 @@
         else
             nyrs2 <- nyrs
         Spline <- ffcsaps(y=y2, x=seq_along(y2), nyrs=nyrs2, f=f)
+        if (any(Spline <= 0)) {
+            Spline <- rep(mean(y2), length(y2))
+        }
         resids$Spline <- y2 / Spline
         do.spline <- TRUE
     } else {

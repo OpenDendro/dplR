@@ -51,7 +51,11 @@ tbrm(x, C = 9)
 }
 \author{ Mikko Korpela }
 \seealso{ \code{\link{chron}} }
-\examples{tbrm(rnorm(100))
+\examples{
+
+foo <- rnorm(100)
+tbrm(foo)
+mean(foo)
 
 ## Compare
 data(co021)

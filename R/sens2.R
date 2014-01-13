@@ -4,5 +4,5 @@
     n <- as.integer(length(y))
     stopifnot(!is.na(n))
     .C(dplR.sens2,
-       y, n, result=NaN, NAOK=TRUE, DUP=FALSE)$result
+       y, n, result=NaN*double(1L), NAOK=TRUE, DUP=FALSE)$result
 }

@@ -4,43 +4,16 @@ File: tbrm.Rd
 ---------------
 - Improved (slightly) the trbm() examples.
 
+Files: exactmean.R, gini.coef.R, sens1.R, sens2.R, tbrm.R
+---------------------------------------------------------
 
-File: tbrm.R
----------------
+- Changed calls to .C (where we use DUP = FALSE) so that the
+  binding of NaN will not change, fixing multiple instances of a bug
+  in dplR code revealed by changes in recent R development versions.
+  We were accidentally breaking CRAN's "malicious or anti-social"
+  policy. Thanks to Professor Brian D. Ripley for reporting.
 
-- Changed tbrm call to .C so that it doesn't
-  break CRAN's anti-social policy. Email from
-  BDR details error.
-  Begin quote from Ripley:
-  The error is in your function tbrm:
-  
-  > tbrm
-  function (x, C = 9)
-  {
-       y <- as.double(x[!is.na(x)])
-       n <- as.integer(length(y))
-       stopifnot(!is.na(n))
-       .C(dplR.tbrm,
-          y, n, as.double(C), result = NaN, NAOK = TRUE, DUP = FALSE)$result
-  }
-  
-  That .C call changes its arguments: see the warnings in ?.C .  In this
-  case it changes the binding of NaN.
-  
-  You could remove DUP = FALSE (these days it is not helping) or use
-  
-  > tbrm
-  function (x, C = 9)
-  {
-       y <- as.double(x[!is.na(x)])
-       n <- as.integer(length(y))
-       stopifnot(!is.na(n))
-       .C(dplR.tbrm, y, n, as.double(C), result = double(1L), NAOK = TRUE,
-           DUP = FALSE)$result
-  }
-  End quote from Ripley
-  This change was made and R CMD check --as-cran passes fine.
-
+  Now R CMD check --as-cran passes fine.
 
 File: DESCRIPTION
 

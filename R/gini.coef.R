@@ -4,5 +4,5 @@
     n <- as.integer(length(y))
     stopifnot(!is.na(n))
     .C(dplR.gini,
-       y, n, result=NaN, NAOK=TRUE, DUP=FALSE)$result
+       y, n, result=double(1L), NAOK=TRUE, DUP=FALSE)$result
 }

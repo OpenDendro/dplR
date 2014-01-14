@@ -2,8 +2,7 @@
     function(y, y.name = "", make.plot = TRUE,
              method = c("Spline", "ModNegExp", "Mean"),
              nyrs = NULL, f = 0.5, pos.slope = FALSE,
-             constrain.modnegexp = "never")
-             #constrain.modnegexp = c("never", "when.fail", "always"))
+             constrain.modnegexp = c("never", "when.fail", "always"))
 {
     stopifnot(identical(make.plot, TRUE) || identical(make.plot, FALSE),
               identical(pos.slope, FALSE) || identical(pos.slope, TRUE))
@@ -61,11 +60,11 @@
                 if(fits[1] < fits[length(fits)]) stop()
                 if(fits[length(fits)] <= 0) stop()
             }
-            # put in a check on fits here and warn if negative? 
+            # put in a check on fits here and warn if negative?
             fits
         }
         ModNegExp <- try(nec.func(y2, constrain2), silent=TRUE)
-        
+
         if(class(ModNegExp)=="try-error") {
             ## Straight line via linear regression
             tm <- cbind(1, seq_along(y2))

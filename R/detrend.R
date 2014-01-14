@@ -2,8 +2,7 @@
     function(rwl, y.name = names(rwl), make.plot = FALSE,
              method=c("Spline", "ModNegExp", "Mean"),
              nyrs = NULL, f = 0.5, pos.slope = FALSE,
-             constrain.modnegexp = "never")
-             #constrain.modnegexp = c("never", "when.fail", "always"))
+             constrain.modnegexp = c("never", "when.fail", "always"))
 {
     stopifnot(identical(make.plot, TRUE) || identical(make.plot, FALSE),
               identical(pos.slope, FALSE) || identical(pos.slope, TRUE))

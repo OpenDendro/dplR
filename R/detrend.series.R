@@ -2,7 +2,8 @@
     function(y, y.name = "", make.plot = TRUE,
              method = c("Spline", "ModNegExp", "Mean"),
              nyrs = NULL, f = 0.5, pos.slope = FALSE,
-             constrain.modnegexp = c("never", "when.fail", "always"))
+             constrain.modnegexp = "never")
+             #constrain.modnegexp = c("never", "when.fail", "always"))
 {
     stopifnot(identical(make.plot, TRUE) || identical(make.plot, FALSE),
               identical(pos.slope, FALSE) || identical(pos.slope, TRUE))
@@ -167,6 +168,5 @@
     resids2 <- resids2[, method2]
     ## Make sure names (years) are included if there is only one method
     if(!is.data.frame(resids2)) names(resids2) <- names(y)
-
     resids2
 }

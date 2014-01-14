@@ -76,7 +76,11 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   exponential function.  If the constraints are enabled, the nonlinear
   optimization algorithm is instructed to keep the parameters in the
   following ranges: \eqn{a \ge 0}{a >= 0}, \eqn{b \le 0}{b <= 0} and
-  \eqn{k \ge 0}{k >= 0}.  If a suitable nonlinear model cannot be fit
+  \eqn{k \ge 0}{k >= 0}. The default is to not constrain the parameters
+  (\code{\var{constrain.modnegexp} = "never"}) for  \code{\link{nls}} but
+  warn the user when the parameters go out of range.
+  
+  If a suitable nonlinear model cannot be fit
   (function is non-decreasing or some values are not positive) then a
   linear model is fit.  That linear model can have a positive slope
   unless \code{\var{pos.slope}} is \code{FALSE} in which case method

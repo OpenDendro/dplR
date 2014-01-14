@@ -40,7 +40,8 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
     line will be horizontal. }
   
   \item{constrain.modnegexp}{ a \code{character} string which controls
-    the constraints of the \code{"ModNegExp"} model. }
+    the constraints of the \code{"ModNegExp"} model. See 
+    \code{\link{detrend.series}} for further details. }
 
 }
 \details{

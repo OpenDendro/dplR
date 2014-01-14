@@ -19,6 +19,7 @@
         stop("'NA's are not allowed in the middle of the series")
     }
     y2 <- y[good.y]
+    nY2 <- length(y2)
     ## Recode any zero values to 0.001
     y2[y2 == 0] <- 0.001
 
@@ -27,12 +28,14 @@
     if("ModNegExp" %in% method2){
         ## Nec or lm
         nec.func <- function(Y, constrain) {
-            a <- mean(Y[seq_len(floor(length(Y) * 0.1))])
+            nY <- length(Y)
+            a <- mean(Y[seq_len(max(1, floor(nY * 0.1)))])
             b <- -0.01
-            k <- mean(Y[floor(length(Y) * 0.9):length(Y)])
-            nlsForm <- Y ~ a * exp(b * seq_along(Y)) + k
+            k <- mean(Y[floor(nY * 0.9):nY])
+            nlsForm <- Y ~ a * exp(b * seq_len(nY)) + k
             nlsStart <- list(a=a, b=b, k=k)
             checked <- FALSE
+            ## Note: nls() may signal an error
             if (constrain == "never") {
                 nec <- nls(formula = nlsForm, start = nlsStart)
             } else if (constrain == "always") {
@@ -42,10 +45,12 @@
                            algorithm = "port")
             } else {
                 nec <- nls(formula = nlsForm, start = nlsStart)
-                if(coef(nec)[2] >= 0) stop()
+                coefs <- coef(nec)
+                if (coefs[1] <= 0 || coefs[2] >= 0) {
+                    stop()
+                }
                 fits <- predict(nec)
-                if(fits[1] < fits[length(fits)]) stop()
-                if(fits[length(fits)] > 0) {
+                if (fits[nY] > 0) {
                     checked <- TRUE
                 } else {
                     nec <- nls(formula = nlsForm, start = nlsStart,
@@ -55,28 +60,43 @@
                 }
             }
             if (!checked) {
-                if(coef(nec)[2] >= 0) stop()
+                coefs <- coef(nec)
+                if (coefs[1] <= 0 || coefs[2] >= 0) {
+                    stop()
+                }
                 fits <- predict(nec)
-                if(fits[1] < fits[length(fits)]) stop()
-                if(fits[length(fits)] <= 0) stop()
+                if (fits[nY] <= 0) {
+                    ## This error is a special case that needs to be
+                    ## detected (if only for giving a warning).  Any
+                    ## smarter way to implement this?
+                    return(NULL)
+                }
             }
-            # put in a check on fits here and warn if negative?
             fits
         }
         ModNegExp <- try(nec.func(y2, constrain2), silent=TRUE)
+        mneNotPositive <- is.null(ModNegExp)
 
-        if(class(ModNegExp)=="try-error") {
+        if (mneNotPositive || class(ModNegExp) == "try-error") {
             ## Straight line via linear regression
-            tm <- cbind(1, seq_along(y2))
+            if (mneNotPositive) {
+                warning("ModNegExp fit is not all positive, see constrain.modnegexp")
+            }
+            tm <- cbind(1, seq_len(nY2))
             lm1 <- lm.fit(tm, y2)
             coefs <- lm1[["coefficients"]]
-            ModNegExp <- NULL
             if (all(is.finite(coefs)) && (coefs[2] <= 0 || pos.slope)) {
                 ModNegExp <- drop(tm %*% coefs)
+                useMean <- !isTRUE(ModNegExp[1] > 0 &&
+                                   ModNegExp[nY2] > 0)
+                if (useMean) {
+                    warning("Linear fit (backup of ModNegExp) is not all positive")
+                }
+            } else {
+                useMean <- TRUE
             }
-            if (is.null(ModNegExp) ||
-                ModNegExp[1] <= 0 || ModNegExp[length(y2)] <= 0) {
-                ModNegExp <- rep(mean(y2), length(y2))
+            if (useMean) {
+                ModNegExp <- rep.int(mean(y2), nY2)
             }
         }
         resids$ModNegExp <- y2 / ModNegExp
@@ -91,12 +111,13 @@
         ## 50%, or 0.50, at a wavelength of 67%n years if nyrs and f
         ## are NULL
         if(is.null(nyrs))
-            nyrs2 <- floor(length(y2) * 0.67)
+            nyrs2 <- floor(nY2 * 0.67)
         else
             nyrs2 <- nyrs
-        Spline <- ffcsaps(y=y2, x=seq_along(y2), nyrs=nyrs2, f=f)
+        Spline <- ffcsaps(y=y2, x=seq_len(nY2), nyrs=nyrs2, f=f)
         if (any(Spline <= 0)) {
-            Spline <- rep(mean(y2), length(y2))
+            warning("Spline fit is not all positive")
+            Spline <- rep.int(mean(y2), nY2)
         }
         resids$Spline <- y2 / Spline
         do.spline <- TRUE
@@ -106,7 +127,7 @@
 
     if("Mean" %in% method2){
         ## Fit a horiz line
-        Mean <- rep(mean(y2), length(y2))
+        Mean <- rep.int(mean(y2), nY2)
         resids$Mean <- y2 / Mean
         do.mean <- TRUE
     } else {
@@ -122,8 +143,8 @@
         n.rows <- 1 + ncol(resids)
         mat <- matrix(seq_len(n.rows), n.rows, 1)
         layout(mat,
-               widths=rep(0.5, ncol(mat)),
-               heights=rep(1, nrow(mat)))
+               widths=rep.int(0.5, ncol(mat)),
+               heights=rep.int(1, nrow(mat)))
 
         plot(y2, type="l", ylab="mm",
              xlab=gettext("Age (Yrs)", domain="R-dplR"),

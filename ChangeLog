@@ -33,6 +33,9 @@ File: detrend.series.R
 - A new argument: constrain.modnegexp.  It is now possible to constrain
   the modified negative exponential function to non-negative values at
   infinity.
+- Warn if fit is not all positive (backup methods will be used)
+- Use simpler but equivalent rules for checking validity of ModNegExp fit
+- Small optimizations (rep.int; save and reuse length of input)
 
 File: redfit.R
 --------------

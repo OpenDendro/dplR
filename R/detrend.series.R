@@ -80,7 +80,7 @@
         if (mneNotPositive || class(ModNegExp) == "try-error") {
             ## Straight line via linear regression
             if (mneNotPositive) {
-                warning("ModNegExp fit is not all positive, see constrain.modnegexp")
+                warning("Fits from ModNegExp are not all positive, see constrain.modnegexp argument in detrend.series")
             }
             tm <- cbind(1, seq_len(nY2))
             lm1 <- lm.fit(tm, y2)

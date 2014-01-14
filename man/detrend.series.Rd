@@ -93,9 +93,13 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   ring-width indices.
 
   These methods are chosen because they are commonly used in
-  dendrochronology.  It is, of course, up to the user to determine the
-  best detrending method for their data. See the references below for
-  further details on detrending.
+  dendrochronology. There is a rich literature on detrending
+  and many researchers are particularly skeptical of the use of the 
+  classic nonlinear model of biological growth (\eqn{f(t) = a e^{b t} + k}{f(t)
+  = a exp(b t) + k}) for detrending. It is, of course, up to the 
+  user to determine the best detrending method for their data. 
+  
+  See the references below for further details on detrending. 
 }
 \value{
   If several methods are used, returns a \code{data.frame} containing

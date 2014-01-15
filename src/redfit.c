@@ -2,7 +2,7 @@
  * ftfix and makear1 are based on program REDFIT. See redfit.R.
  * Author of the dplR version is Mikko Korpela.
  *
- * Copyright (C) 2013 Aalto University
+ * Copyright (C) 2013-2014 Aalto University
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as

@@ -53,7 +53,13 @@ File: redfit.R
   be DFT-even
 - Computed more precise values for the 6 dB bandwidths of each window,
   also for short windows.  Uniform sampling was assumed.
-- Two internal functions moved to top level, previously inside print.redfit()
+- Two internal functions moved to top level, previously inside
+  print.redfit()
+
+File: tbrm.R
+------------
+
+- Check that C has length 1
 
 * CHANGES IN dplR VERSION 1.5.7
 

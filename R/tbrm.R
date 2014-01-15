@@ -2,7 +2,8 @@
 {
     y <- as.double(x[!is.na(x)])
     n <- as.integer(length(y))
-    stopifnot(!is.na(n))
-    .C(dplR.tbrm, y, n, as.double(C), result = double(1L), NAOK = TRUE,
+    C2 <- as.double(C)
+    stopifnot(!is.na(n), length(C2) == 1)
+    .C(dplR.tbrm, y, n, C2, result = double(1L), NAOK = TRUE,
        DUP = FALSE)$result
 }

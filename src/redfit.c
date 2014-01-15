@@ -104,7 +104,7 @@ void rmtrend(SEXP x, SEXP y, SEXP lengthfun, SEXP lmfit) {
     SETCAR(tmp, lmfit); tmp = CDR(tmp);
     SETCAR(tmp, x); tmp = CDR(tmp);
     SETCAR(tmp, y);
-    PROTECT(lmres = eval(lmcall, R_GlobalEnv));
+    PROTECT(lmres = eval(lmcall, R_EmptyEnv));
 
     /* dplR: get residuals from the list given by lm.fit(x, y) */
     lmnames = getAttrib(lmres, R_NamesSymbol);
@@ -112,7 +112,7 @@ void rmtrend(SEXP x, SEXP y, SEXP lengthfun, SEXP lmfit) {
     SET_TYPEOF(ncall, LANGSXP);
     SETCAR(tmp, lengthfun); tmp = CDR(tmp);
     SETCAR(tmp, lmnames);
-    PROTECT_WITH_INDEX(sn = eval(ncall, R_GlobalEnv), &ipx);
+    PROTECT_WITH_INDEX(sn = eval(ncall, R_BaseEnv), &ipx);
     REPROTECT(sn = coerceVector(sn, REALSXP), ipx);
     nameslength = (size_t) *REAL(sn);
     UNPROTECT(2);
@@ -130,13 +130,13 @@ void rmtrend(SEXP x, SEXP y, SEXP lengthfun, SEXP lmfit) {
     SET_TYPEOF(ncall, LANGSXP);
     SETCAR(tmp, lengthfun); tmp = CDR(tmp);
     SETCAR(tmp, y);
-    PROTECT_WITH_INDEX(sn = eval(ncall, R_GlobalEnv), &ipx);
+    PROTECT_WITH_INDEX(sn = eval(ncall, R_BaseEnv), &ipx);
     REPROTECT(sn = coerceVector(sn, REALSXP), ipx);
     n = (size_t) *REAL(sn);
     UNPROTECT(1);
     if (found) {
 	SETCAR(tmp, rduals);
-	PROTECT_WITH_INDEX(sn = eval(ncall, R_GlobalEnv), &ipx);
+	PROTECT_WITH_INDEX(sn = eval(ncall, R_BaseEnv), &ipx);
 	REPROTECT(sn = coerceVector(sn, REALSXP), ipx);
 	mismatch = n != (size_t) *REAL(sn);
 	UNPROTECT(1);
@@ -205,7 +205,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
     SETCAR(tmp, install("cbind")); tmp = CDR(tmp);
     SETCAR(tmp, ScalarReal(1.0)); tmp = CDR(tmp);
     SETCAR(tmp, twk);
-    REPROTECT(twk = eval(cbindcall, R_GlobalEnv), pidx);
+    REPROTECT(twk = eval(cbindcall, R_BaseEnv), pidx);
     /* dplR: twk_data points to the non-constant column; the constant
      * column will not be altered */
     twk_data = REAL(twk) + nseg_val;

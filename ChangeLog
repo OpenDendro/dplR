@@ -37,6 +37,12 @@ File: detrend.series.R
 - Use simpler but equivalent rules for checking validity of ModNegExp fit
 - Small optimizations (rep.int; save and reuse length of input)
 
+File: redfit.c
+--------------
+
+- Avoid possibly buggy behavior in the unlikely case that cbind()
+  or length() have been redefined by the user
+
 File: redfit.R
 --------------
 

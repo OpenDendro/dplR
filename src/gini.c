@@ -1,68 +1,51 @@
-#include <R.h>
 #include <stddef.h>
+#include <limits.h>
+#include "dplR.h"
 #include "exactsum.h"
 
 /* Written by Mikko Korpela */
-void gini(double *x_const, int *n_ptr, double *result){
-    int i;
-    double *x;
-    dplr_double sum1, sum2;
-    listnode tmp1, tmp2, *tmp_p;
-    int n = *n_ptr;
+SEXP gini(SEXP x){
+    SEXP ans;
+    double *x_const, *x2;
+    dplr_double sum;
+    listnode tmp;
+    size_t i, n;
+    n = dplRlength(x);
+    ans = PROTECT(allocVector(REALSXP, 1));
 
     if(n < 2){
-	*result = 0.0f;
-	return;
+	REAL(ans)[0] = 0.0f;
+	UNPROTECT(1);
+	return ans;
     }
 
+    /* Note: x must be a numeric vector */
+    x_const = REAL(x);
     /* Sort the numbers */
-    x = (double *) R_alloc(n, sizeof(double));
+    x2 = (double *) R_alloc(n, sizeof(double));
     for(i = 0; i < n; i++)
-	x[i] = x_const[i];
-    R_qsort(x, 1, n);
+	x2[i] = x_const[i];
+#ifdef DPLR_RGEQ3
+    R_qsort(x2, 1, n);
+#else
+    /* In R < 3.0.0, n will not be larger than INT_MAX, and R_qsort
+     * takes int indices */
+    R_qsort(x2, 1, (int)n);
+#endif
 
-    /* Setup for grow_exp */
-    tmp1.next = NULL;
-    tmp1.data = x[0];
-    tmp1.valid = TRUE;
+    /* Setup for cumsum, msum */
+    tmp.next = NULL;
 
-    /* Cumulative sum */
-    for(i = 1; i < n; i++){
-	grow_exp(&tmp1, x[i]);
-	tmp_p = &tmp1;
-	sum1 = 0.0f;
-	while(tmp_p != NULL && tmp_p->valid == TRUE){
-	    sum1 += tmp_p->data;
-	    tmp_p = tmp_p->next;
-	}
-	x[i] = sum1;
-    }
+    /* Cumulative sum (overwrites x2) */
+    sum = cumsum(x2, n, &tmp);
 
-    /* Setup for grow_exp */
-    if(tmp1.next != NULL)
-	tmp1.next->valid = FALSE;
-    tmp2.next = NULL;
-
-    /* Gini */
-    tmp1.data = (dplr_double)x[n-1] * (n-1);
-    tmp2.data = x[0];
-    tmp2.valid = TRUE;
-    grow_exp(&tmp2, x[0]);
-    for(i = 1; i < n-1; i++){
-	grow_exp(&tmp1, (dplr_double)x[i] * i);
-	grow_exp(&tmp2, (dplr_double)x[i] * (i+2));
-    }
-    sum1 = 0.0f;
-    tmp_p = &tmp1;
-    while(tmp_p != NULL && tmp_p->valid == TRUE){
-	sum1 += tmp_p->data;
-	tmp_p = tmp_p->next;
-    }
-    sum2 = 0.0f;
-    tmp_p = &tmp2;
-    while(tmp_p != NULL && tmp_p->valid == TRUE){
-	sum2 += tmp_p->data;
-	tmp_p = tmp_p->next;
-    }
-    *result = (sum1-sum2) / ((dplr_double)x[n-1]*n);
+    /* Gini. The following reformulation highlights the "maximum
+     * inequality" gini coefficient of 1 - 1/n (assuming no negative
+     * samples):
+     *
+     * 1 - 1/n - 2 * msum(x2, n - 1, &tmp) / (sum * n)
+     */
+    REAL(ans)[0] = (sum * (n - 1) - 2 * msum(x2, n - 1, &tmp)) / (sum * n);
+    UNPROTECT(1);
+    return ans;
 }

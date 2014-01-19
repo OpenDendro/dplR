@@ -19,7 +19,6 @@
  */
 
 #include "dplR.h"
-#include <Rinternals.h>
 #include <Rmath.h>
 #include <complex.h>
 #include <string.h>

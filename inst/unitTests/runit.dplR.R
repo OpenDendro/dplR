@@ -461,11 +461,34 @@ test.ffcsaps <- function() {
 
 test.gini.coef <- function() {
     ## Setup
-    SAMP.SIZE <- 1000
+    MAX.SIZE <- 1000
+    NTIMES <- 10
+    samp <- sample(seq.int(2, MAX.SIZE), max(0, min(NTIMES, MAX.SIZE - 1)))
     ## Test
-    checkEquals(0, gini.coef(rep(42, SAMP.SIZE)),
+    coefs <- vapply(samp,
+                    function(x) {
+                        foo <- numeric(x)
+                        n <- sample(x - 1, 1)
+                        nonzeros <- sample(x, n)
+                        val <- runif(1, 1, 100)
+
+                        foo[nonzeros[1]] <- val
+                        a <- gini.coef(foo)
+
+                        foo[nonzeros] <- val
+                        b <- gini.coef(foo)
+
+                        foo[] <- val
+                        c <- gini.coef(foo)
+
+                        c(a, b, c, n)
+                    }, numeric(4))
+    checkEquals(1 - 1 / samp, coefs[1, ],
+                msg="Winner takes all: 1 - 1/n")
+    checkEquals(1 - coefs[4, ] / samp, coefs[2, ],
+                msg="k (random) equal winners, others get 0: 1 - k/n")
+    checkEquals(numeric(length(samp)), coefs[3, ],
                 msg="Gini coefficient of a set with total equality is 0")
-    ## Needs more tests
 }
 
 test.glk <- function() {

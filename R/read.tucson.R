@@ -305,20 +305,30 @@
     }
     series.ids <- unique(series)
     nseries <- length(series.ids)
-    series.index <- match(series, series.ids)
+    ## At this time match does not support long vectors in the second
+    ## argument and always returns integers, but let's check the
+    ## result anyway.
+    series.index <- tryCatch(as.integer(match(series, series.ids)),
+                             warning = conditionMessage,
+                             error = conditionMessage)
+    if (!is.integer(series.index)) {
+        stop(gettextf("series.index must be integer: %s",
+                      paste(as.character(series.index), collapse = ", "),
+                      domain = "R-dplR"))
+    }
     extra.col <- dat[[13]]
-    min.year <- min(decade.yr)
-    max.year <- ((max(decade.yr)+10) %/% 10) * 10
-    span <- max.year - min.year + 1
-    rw.vec <- NA*vector(mode="numeric", length=nseries*span)
-    scratch <- rep.int(as.integer(min.year-1), nseries)
-    prec.rproc <- rep.int(as.integer(1), nseries)
 
-    .C(rwl.readloop, series.index, decade.yr, as.vector(x),
-       nrow(x), ncol(x), as.integer(min.year), rw.vec,
-       as.integer(span), as.integer(nseries), scratch, prec.rproc,
-       NAOK=TRUE, DUP=FALSE)
-    rw.mat <- matrix(rw.vec, ncol=nseries, nrow=span)
+    res <- .Call(rwl.readloop, series.index, decade.yr, x)
+    rw.mat <- res[[1]]
+    min.year <- res[[2]]
+    prec.rproc <- res[[3]]
+    span <- nrow(rw.mat)
+    if (span == 0) {
+        rw.df <- as.data.frame(rw.mat)
+        names(rw.df) <- as.character(series.ids)
+        return(rw.df)
+    }
+    max.year <- min.year + (span - 1)
     rownames(rw.mat) <- min.year:max.year
 
     ## The operations in the loop depend on the precision of each series.

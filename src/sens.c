@@ -1,19 +1,25 @@
-#include <R.h>
 #include <stddef.h>
+#include "dplR.h"
 #include "exactsum.h"
 
 /* Written by Mikko Korpela */
-void sens2(double *x_const, int *n_ptr, double *result){
-    int i;
+SEXP sens2(SEXP x){
+    SEXP ans;
+    size_t i, n;
     double previous, this, next;
+    double *x_const;
     dplr_double sum1, sum2;
     listnode tmp, *tmp_p;
-    int n = *n_ptr;
+    n = dplRlength(x);
+    ans = PROTECT(allocVector(REALSXP, 1));
 
     if(n < 2){
-	*result = R_NaN;
-	return;
+	REAL(ans)[0] = R_NaN;
+	UNPROTECT(1);
+	return ans;
     }
+    /* Note: x must be a numeric vector */
+    x_const = REAL(x);
 
     /* Setup for grow_exp and msum */
     tmp.next = NULL;
@@ -70,20 +76,28 @@ void sens2(double *x_const, int *n_ptr, double *result){
     }
 
     sum2 = msum(x_const, n, &tmp);
-    *result = sum1/(sum2-sum2/n);
+    REAL(ans)[0] = sum1/(sum2-sum2/n);
+    UNPROTECT(1);
+    return ans;
 }
 
 /* Written by Mikko Korpela */
-void sens1(double *x_const, int *n_ptr, double *result){
-    int i;
+SEXP sens1(SEXP x){
+    SEXP ans;
+    size_t i, n;
     dplr_double sum, previous, this, term;
+    double *x_const;
     listnode tmp, *tmp_p;
-    int n = *n_ptr;
+    n = dplRlength(x);
+    ans = PROTECT(allocVector(REALSXP, 1));
 
     if(n < 2){
-	*result = R_NaN;
-	return;
+	REAL(ans)[0] = R_NaN;
+	UNPROTECT(1);
+	return ans;
     }
+    /* Note: x must be a numeric vector */
+    x_const = REAL(x);
 
     /* Setup for grow_exp */
     tmp.next = NULL;
@@ -105,5 +119,7 @@ void sens1(double *x_const, int *n_ptr, double *result){
 	tmp_p = tmp_p->next;
     }
 
-    *result = (sum+sum)/(n-1);
+    REAL(ans)[0] = (sum+sum)/(n-1);
+    UNPROTECT(1);
+    return ans;
 }

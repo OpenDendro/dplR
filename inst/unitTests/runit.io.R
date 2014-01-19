@@ -175,4 +175,14 @@ test.read.tucson <- function() {
                 msg="Row names are correct (test 12)")
     checkEqualsNumeric(c(12.3, 4.56, 7.89, 0.12, 0.34, 0.05, 6.78),
                        res.tf12[[1]], msg="Data are correct (test 12)")
+
+    ## File has no data (invalid file)
+    tf13 <- tempfile()
+    fh13 <- file(tf13, "wt")
+    on.exit(unlink(tf13))
+    writeLines("TST13A  1734", fh13)
+    close(fh13)
+    checkEquals(0, nrow(read.tucson(tf13, header = FALSE)),
+                msg="Detect when file has no measurement data (test 13)")
+
 }

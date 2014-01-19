@@ -100,7 +100,10 @@ typedef struct liststruct listnode;
   array, because the list usually only has a handful of elements.
   Output: the sum of the numbers
 */
-dplr_double msum(double *array, int n, listnode *expansion);
+dplr_double msum(double *array, size_t n, listnode *expansion);
+
+/* Cumulative sum, overwrites array */
+dplr_double cumsum(double *array, size_t n, listnode *expansion);
 
 /* Add number a to the sum represented by expansion */
 void grow_exp(listnode *expansion, dplr_double a);

@@ -1,65 +1,79 @@
-#include <R.h>
+#include <limits.h>
 #include <stddef.h>
+#include "dplR.h"
 #include "exactsum.h"
 
 /* Tukey's Biweight Robust Mean (tbrm).
-   When called directly, there must be no NAs in 'x_const'.
-   This function only alters the argument 'result'
-   => DUP=FALSE is safe (and the fastest, preferred way).
+   There must be no NAs in 'x'.
    
    Input:
-   - x_const Array of numbers to be summarized by tbrm
-   - n_ptr   Pointer to the length of the array
-   - C_ptr   Pointer to parameter C which adjusts the scaling of the data
-   - result  Pointer to storage location of the result.
-   Output: No return value. The tbrm is written to *result.
+   - x   Array of numbers to be summarized by tbrm (double)
+   - C   Parameter C which adjusts the scaling of the data (double, length 1)
+   Output: numeric vector of length 1
 
    Written by Mikko Korpela.
 */
-void tbrm(double *x_const, int *n_ptr, double *C_ptr, double *result){
+SEXP tbrm(SEXP x, SEXP C){
+    SEXP ans, C2;
     Rboolean n_odd;
-    int i, half, my_count;
-    double this_val, min_val, div_const, x_med, this_wt;
-    double *x, *abs_x_dev, *wt, *wtx;
+    int i, half, my_count, n;
+    size_t nlong;
+    double C_val, this_val, min_val, div_const, x_med, this_wt;
+    double *x2, *abs_x_dev, *wt, *wtx, *x_p;
     listnode tmp;
-    int n = *n_ptr;
-    double C = *C_ptr;
+    nlong = dplRlength(x);
 
+    /* Long vectors not supported (limitation of rPsort) */
+    if (nlong > INT_MAX) {
+	error(_("long vectors not supported"));
+    }
+    C2 = PROTECT(coerceVector(C, REALSXP));
+    if (length(C2) != 1) {
+	UNPROTECT(1);
+	error(_("length of 'C' must be 1"));
+    }
+    C_val = REAL(C2)[0];
+    UNPROTECT(1);
+    n = (int) nlong;
+    ans = PROTECT(allocVector(REALSXP, 1));
     /* Avoid complexity and possible crash in case of empty input
      * vector */
     if(n == 0){
-	*result = R_NaN;
-	return;
+	REAL(ans)[0] = R_NaN;
+	UNPROTECT(1);
+	return ans;
     }
+    /* Note: x must be a numeric vector */
+    x_p = REAL(x);
 
-    /* x is a copy of the argument array x_const (the data) */
-    x = (double *) R_alloc(n, sizeof(double));
+    /* x2 is a copy of the data part of argument x */
+    x2 = (double *) R_alloc(n, sizeof(double));
     for(i = 0; i < n; i++)
-	x[i] = x_const[i];
+	x2[i] = x_p[i];
 
     /* Median of x */
     if((n & 0x1) == 1){ /* n is odd */
 	half = ((unsigned int)n) >> 1;
-	rPsort(x, n, half); /* Partial sort: */
-	x_med = x[half];    /* element at position half is correct.*/
+	rPsort(x2, n, half); /* Partial sort: */
+	x_med = x2[half];    /* element at position half is correct.*/
 	n_odd = TRUE;
     } else { /* n is even */
 	half = ((unsigned int)n) >> 1;
-	rPsort(x, n, half-1);       /* Elements at positions half-1 */
-	min_val = x[half];
+	rPsort(x2, n, half-1);       /* Elements at positions half-1 */
+	min_val = x2[half];
 	for(i = half+1; i < n; i++){/* and half */ 
-	    this_val = x[i];        /* (minimum in the */
+	    this_val = x2[i];        /* (minimum in the */
 	    if(this_val < min_val)  /* "larger than" side) */
 		min_val = this_val;
 	}
-	x_med = (x[half-1]+min_val)/2.0f; 
+	x_med = (x2[half-1]+min_val)/2.0f; 
 	n_odd = FALSE;
     }
 
     /* abs(x - median(x)) */
     abs_x_dev = (double *) R_alloc(n, sizeof(double));
     for(i = 0; i < n; i++){
-	this_val = x[i]-x_med;
+	this_val = x2[i]-x_med;
 	abs_x_dev[i] = this_val<0 ? -this_val : this_val;
     }
 
@@ -77,24 +91,24 @@ void tbrm(double *x_const, int *n_ptr, double *C_ptr, double *result){
 	}
 	div_const = (abs_x_dev[half-1]+min_val)/2.0f;
     }
-    /* This is a normalization constant (well, constant over x[i]) */
-    div_const = div_const * C + 1e-6;
+    /* This is a normalization constant (well, constant over x2[i]) */
+    div_const = div_const * C_val + 1e-6;
 
-    /* Number of values x[i] with non-zero weights */
+    /* Number of values x2[i] with non-zero weights */
     my_count = 0;
 
     /* Recycling memory, i.e. renaming the same space */
     wt = abs_x_dev;
-    wtx = x; /* Have to be careful not to overwrite too soon */
+    wtx = x2; /* Have to be careful not to overwrite too soon */
 
     /* Weights (wt) and weighted data (wtx) */
     for(i = 0; i < n; i++){
-	this_wt = (x[i]-x_med) / div_const;
+	this_wt = (x2[i]-x_med) / div_const;
 	if(this_wt >= -1.0f && this_wt <= 1.0f){ /* absolute value <= 1 */
 	    this_wt = 1.0f - this_wt * this_wt;
 	    this_wt *= this_wt;
 	    wt[my_count] = this_wt;
-	    wtx[my_count++] = this_wt * x[i];
+	    wtx[my_count++] = this_wt * x2[i];
 	}
     }
 
@@ -102,14 +116,15 @@ void tbrm(double *x_const, int *n_ptr, double *C_ptr, double *result){
        Sum of my_count values. No more, no less.
        The tails of the arrays are now garbage, not harmlessly zero. */
     if(my_count == 1){ /* Avoid call to sum function in border case */
-	*result = wtx[0] / wt[0];
+	REAL(ans)[0] = wtx[0] / wt[0];
     } else if(my_count > 0){
 	/* Setup for msum. */
 	tmp.next = NULL;
 	/* Not the usual 'sum of data divided by sum of ones' */
-	*result = msum(wtx, my_count, &tmp) / msum(wt, my_count, &tmp);
+	REAL(ans)[0] = msum(wtx, my_count, &tmp) / msum(wt, my_count, &tmp);
     } else{ /* Nothing to sum */
-	*result = R_NaN;
+	REAL(ans)[0] = R_NaN;
     }
-    return;
+    UNPROTECT(1);
+    return ans;
 }

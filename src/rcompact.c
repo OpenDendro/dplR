@@ -1,5 +1,4 @@
 #include "dplR.h"
-#include <Rinternals.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>

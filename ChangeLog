@@ -1,3 +1,48 @@
+* CHANGES IN dplR VERSION 1.5.9
+
+Files: dplR.h, rcompact.c, redfit.c
+-----------------------------------
+
+- Restructured header inclusions
+- dplR.h declares new function dplRlength (internal use)
+
+File: dplR.c
+------------
+
+- New file for general C functions internally used by dplR
+
+Files: exactmean.c, exactmean.R, gini.c, gini.coef.R,
+readloop.c, read.tucson.R, sens.c, sens1.R, sens2.R, tbrm.c, tbrm.R
+-------------------------------------------------------------------
+
+- Use .Call() instead of .C() for interfacing with C code
+- The C functions need less support (arguments, argument checking) from
+  the calling R function
+
+Files: exactsum.c, exactsum.h
+-----------------------------
+
+- Reuse of code between function by using the C preprocessor
+- New (internal to dplR C code) function cumsum (cumulative sum,
+  overwrites input array)
+- size_t n
+
+File: gini.c
+------------
+
+- Simplified expression for gini coefficent reduces number of
+  arithmetic operations performed
+- Fewer calls to other functions (use of the new cumulative sum function)
+
+File: readloop.c
+----------------
+
+- Fixed buggy handling of malformed Tucson format series that have
+  no data and no stop marker. Previously, this hypothetical case
+  could have caused a read from a location just outside the array
+  bounds. However, in most cases that would probably not have been a
+  problem.
+
 * CHANGES IN dplR VERSION 1.5.8
 
 File: tbrm.Rd

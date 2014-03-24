@@ -170,6 +170,9 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
         bad.rows <- which(apply(is.na(rwi3), 1, any))
         rwi3[bad.rows, ] <- NA
         good.rows <- setdiff(good.rows, bad.rows)
+        period.common <- TRUE
+    } else {
+        period.common <- FALSE
     }
 
     if (length(good.rows) < min.corr.overlap) {
@@ -291,11 +294,18 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
             rbar.bt <- rsum.bt / n.bt
         }
 
-        ## Number of trees averaged over the years in the window.
-        ## We keep this number separate of the correlation estimates,
-        ## i.e. the data from some tree / year may contribute to n
-        ## without taking part in the correlation estimates.
-        n <- mean(n.trees.by.year[year.idx], na.rm=TRUE)
+        if (period.common) {
+            ## If period is "common", we are only looking at the rows
+            ## with no missing values.
+            n <- n.trees
+        } else {
+            ## Number of trees averaged over the years in the window.
+            ## We keep this number separate of the correlation
+            ## estimates, i.e. the data from some tree / year may
+            ## contribute to n without taking part in the correlation
+            ## estimates.
+            n <- mean(n.trees.by.year[year.idx], na.rm=TRUE)
+        }
 
         ## Expressed population signal
         if (n.wt == 0) {

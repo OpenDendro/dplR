@@ -43,6 +43,16 @@ File: readloop.c
   bounds. However, in most cases that would probably not have been a
   problem.
 
+File: rwi.stats.running.R
+-------------------------
+
+- Bug fix: when using period = "common" in rwi.stats() or
+  rwi.stats.running(), the number of trees 'n' used in EPS and shown
+  in the return value is now the total number of trees in the
+  data.frame, taking into account the fact that rows with any
+  missing values are effectively dropped.  Thanks to Donald Zhao for
+  reporting.
+
 * CHANGES IN dplR VERSION 1.5.8
 
 File: tbrm.Rd

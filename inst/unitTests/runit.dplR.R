@@ -590,6 +590,20 @@ test.read.ids <- function() {
                 msg="Reordered input is handled correctly")
 }
 
+test.rwi.stats <- function() {
+    ## Setup
+    v.1 <- 1 + runif(300)
+    range.1 <- 51:400
+    rnames.1 <- as.character(range.1)
+    df.1 <- data.frame(col1 = c(v.1, rep(NA, 50)),
+                       col2 = c(rep(NA, 25), v.1, rep(NA, 25)),
+                       col3 = c(rep(NA, 50), v.1),
+                       row.names = rnames.1)
+    ## Test
+    checkEquals(3, rwi.stats(df.1, period="common")[["n"]])
+    ## Needs more tests
+}
+
 test.sens1 <- function() {
     ## Setup
     SAMP.SIZE <- 1000

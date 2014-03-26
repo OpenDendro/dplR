@@ -238,7 +238,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
 	    xwk_data[j] *= ww_data[wwidx++];
 	    sumx += xwk_data[j];
 	}
-        /* Lomb–Scargle Fourier transform */
+        /* Lomb-Scargle Fourier transform */
 	ftfix(xwk_data, twk_data, nseg_val, freq_data, nfreq_val, si,
 	      lfreq, tzero, tcos_data, tsin_data, wtau_data,
 	      sumx / sqrt_nseg, ftrx_data, ftix_data);

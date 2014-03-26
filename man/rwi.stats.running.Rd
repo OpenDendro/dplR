@@ -226,13 +226,14 @@ rwi.stats.legacy(gp.rwi, gp.ids) # rwi.stats prior to dplR 1.5.3
   abline(h = 1, lwd = 1.5)
   lines(yrs, gp.crn[, 1], col = "grey50")
   lines(yrs, ffcsaps(gp.crn[, 1], nyrs = 32), col = "red", lwd = 2)
+  axis(1);axis(2);axis(3);
   par(new = TRUE)
-  
   ## Second plot is the chronology after the cut off only
   plot(bar$yrs, bar$eps, type = "b", xlab = "", ylab = "", axes = FALSE,
        pch = 20, col = "blue")
-  axis(1);axis(2);axis(3);axis(4,at = pretty(foo$eps))
-  mtext("EPS", side = 4, line = 1.25)
+  axis(4,at = pretty(foo$eps))
+  mtext("EPS", side = 4, line = 1.1)
+  axis(4,at = pretty(foo$eps))
   box()
   yr.mask <- yrs > max(bar$yrs[bar$eps<eps.cut], na.rm = TRUE)
   plot(yrs[yr.mask], gp.crn[yr.mask, 1], type = "n",

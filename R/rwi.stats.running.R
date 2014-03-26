@@ -319,7 +319,8 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
         ## EPS is on page 146 of C&K.
         ## In our interpretation of EPS, we use the average number of trees.
         eps <- n * rbar.eff / ((n - 1) * rbar.eff + 1)
-        ## SNR is on page 109 of Hughes et al. 2011
+        ## SNR is on page 109 of Cook and Pederson (2011).
+        ## See help file for ref.
         snr <- n * rbar.eff / (1-rbar.eff)
 
         if (running.window) {

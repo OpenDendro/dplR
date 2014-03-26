@@ -124,7 +124,9 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
   Some of the statistics are specific to dendrochronology (e.g., the
   effective number of cores or the expressed population signal).  Users
   unfamiliar with these should see Cook and Kairiukstis (1990) and
-  Fritts (2001) for further details.
+  Fritts (2001) for further details for computational details on the
+  output. The singal-to-noise ratio is calculated following Cook and 
+  Pederson (2011).
 
   If desired, the \code{\var{rwi}} can be filtered in the same manner
   as the family of cross-dating functions using \code{\var{prewhiten}} and
@@ -183,8 +185,10 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
     Dendrochronology: Applications in the Environmental Sciences}.
   Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
 
+  Cook, E. R. and Pederson, N. (2011) \emph{Uncertainty, Emergence, and Statistics in Dendrochronology} In M.K. Hughes, T.W. Swetnam, and H.F. Diaz (Eds.), \emph{Dendroclimatology}(77-112), \acronym{ISBN-13}: 978-1-4020-4010-8.
+
   Fritts, H. C. (2001) \emph{Tree Rings and Climate}.  Blackburn.
-  \acronym{ISBN-13}: 978-1-930665-39-2.
+    \acronym{ISBN-13}: 978-1-930665-39-2.
   
 }
 \note{
@@ -216,8 +220,8 @@ rwi.stats.legacy(gp.rwi, gp.ids) # rwi.stats prior to dplR 1.5.3
   bar <- data.frame(yrs = c(min(yrs), foo$mid.year, max(yrs)),
                     eps = c(NA, foo$eps, NA))
   par(mar = c(2, 2, 2, 2), mgp = c(1.1, 0.1, 0), tcl = 0.25,
-      mfcol = c(2, 1))
-  plot(yrs, gp.crn[, 1], type = "n", xlab = "Years", ylab = "RWI",
+      mfcol = c(2, 1),xaxs='i')
+  plot(yrs, gp.crn[, 1], type = "n", xlab = "Year", ylab = "RWI",
        axes=FALSE)
   xx <- c(500, 500, max(bar$yrs[bar$eps < eps.cut], na.rm = TRUE),
           max(bar$yrs[bar$eps < eps.cut], na.rm = TRUE))
@@ -228,16 +232,17 @@ rwi.stats.legacy(gp.rwi, gp.ids) # rwi.stats prior to dplR 1.5.3
   lines(yrs, ffcsaps(gp.crn[, 1], nyrs = 32), col = "red", lwd = 2)
   axis(1);axis(2);axis(3);
   par(new = TRUE)
-  ## Second plot is the chronology after the cut off only
+  ## Add EPS
   plot(bar$yrs, bar$eps, type = "b", xlab = "", ylab = "", axes = FALSE,
        pch = 20, col = "blue")
   axis(4,at = pretty(foo$eps))
   mtext("EPS", side = 4, line = 1.1)
   axis(4,at = pretty(foo$eps))
   box()
+  ## Second plot is the chronology after the cut off only
   yr.mask <- yrs > max(bar$yrs[bar$eps<eps.cut], na.rm = TRUE)
   plot(yrs[yr.mask], gp.crn[yr.mask, 1], type = "n",
-       xlab = "Years", ylab = "RWI",axes=FALSE)
+       xlab = "Year", ylab = "RWI",axes=FALSE)
   abline(h = 1, lwd = 1.5)
   lines(yrs[yr.mask], gp.crn[yr.mask, 1], col = "grey50")
   lines(yrs[yr.mask], ffcsaps(gp.crn[yr.mask, 1], nyrs = 32),

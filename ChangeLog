@@ -5,7 +5,16 @@ File: rwi.stats.running.R
 
 - Added signal-to-noise ratio as an output. Followed pg 109 in
   Cook's chapter in Hughes et al. 2011.
-
+- New outputs 'n.cores' and 'n.trees' show the total number of cores and
+  trees in the window, respectively.  At least one non-missing value is
+  required for a core and tree to be counted.
+- When using period = "common" in rwi.stats() or
+  rwi.stats.running(), the number of trees 'n' in the return value
+  is now 0 instead of the full number in case there are no complete
+  cases in the running window.
+- 'c.eff' in the return value is now 0 if no correlations were
+  computed
+- Optimizations
 
 * CHANGES IN dplR VERSION 1.5.9
 

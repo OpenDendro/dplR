@@ -150,13 +150,24 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
     \code{running.window} is \code{FALSE} or called as
     \code{rwi.stats} or \code{rwi.stats.legacy}.}
 
-  \item{n.tot}{total number of correlations computed}
+  \item{n.cores}{the number of cores}
+
+  \item{n.trees}{the number of trees}
+  
+  \item{n}{the average number of trees (for each year, a tree needs at
+    least one non-\code{NA} core in order to be counted).  Not returned
+    in the results of \code{rwi.stats.legacy}}
+  
+  \item{n.tot}{total number of correlations calculated as \code{
+      \var{n.wt} + \var{n.bt}}. Equal to \code{\var{n.cores} * 
+      (\var{n.cores}-1)/2} if there is overlap between all samples }
 
   \item{n.wt}{number of within-tree correlations computed}
 
   \item{n.bt}{number of between-tree correlations computed}
 
-  \item{rbar.tot}{the mean of all correlation between different cores}
+  \item{rbar.tot}{the mean of all the correlations between different 
+      cores}
 
   \item{rbar.wt}{the mean of the correlations between series from the
     same tree over all trees}
@@ -170,14 +181,12 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
   \item{rbar.eff}{the effective signal calculated as \code{
       \var{rbar.bt} / (\var{rbar.wt} + (1-\var{rbar.wt}) / \var{c.eff}) }}
 
-  \item{eps}{the expressed population signal}
+  \item{eps}{the expressed population signal calculated using the average
+      number of trees as \code{\var{n} * \var{rbar.eff} / ((\var{n} - 1) *
+      \var{rbar.eff} + 1)} }
 
-  \item{snr}{the signal to noise ratio}
-
-  \item{n}{the average number of trees (for each year, a tree needs at
-    least one non-\code{NA} core in order to be counted).  Not returned
-    in the results of \code{rwi.stats.legacy}.}
-  
+  \item{snr}{the signal to noise ratio calculated using the average
+      number of trees as \code{\var{n} * \var{rbar.eff} / (1-\var{rbar.eff})} }
 }
 \references{
 
@@ -206,13 +215,19 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
 data(gp.po)
 gp.rwi <- cms(rwl = gp.rwl, po = gp.po)
 gp.ids <- read.ids(gp.rwl, stc = c(0, 2, 1))
+# On a running window
 rwi.stats.running(gp.rwi, gp.ids)
-rwi.stats(gp.rwi, gp.ids)        # i.e. running.window = FALSE
+## With no running window (i.e. running.window = FALSE)
+rwi.stats(gp.rwi, gp.ids)
+## Restrict to common overlap (in this case 1899 to 1987)
+rwi.stats(gp.rwi, gp.ids, period="common")
 rwi.stats.legacy(gp.rwi, gp.ids) # rwi.stats prior to dplR 1.5.3
+
 \dontrun{
   library(graphics)
-  ## Plot the chronology showing a potential cutoff year based on eps
-  eps.cut <- 0.92 # arbitrary
+  def.par <- par(no.readonly=TRUE)
+  ## Plot the chronology showing a potential cutoff year based on EPS
+  eps.cut <- 0.92 # An arbitrary EPS cutoff for demonstration
   gp.crn <- chron(gp.rwi)
   ## Running stats on the rwi with an window
   foo <- rwi.stats.running(gp.rwi, gp.ids, window.length = 80)
@@ -240,15 +255,20 @@ rwi.stats.legacy(gp.rwi, gp.ids) # rwi.stats prior to dplR 1.5.3
   axis(4,at = pretty(foo$eps))
   box()
   ## Second plot is the chronology after the cut off only
+  ## Chronology is rebuilt using just years after cutoff but
+  ## that difference is essentially nil.
   yr.mask <- yrs > max(bar$yrs[bar$eps<eps.cut], na.rm = TRUE)
-  plot(yrs[yr.mask], gp.crn[yr.mask, 1], type = "n",
+  yrs2 <- yrs[yr.mask]
+  gp.crn2 <- chron(gp.rwi[yr.mask,])
+  plot(yrs2, gp.crn2[, 1], type = "n",
        xlab = "Year", ylab = "RWI",axes=FALSE)
   abline(h = 1, lwd = 1.5)
-  lines(yrs[yr.mask], gp.crn[yr.mask, 1], col = "grey50")
-  lines(yrs[yr.mask], ffcsaps(gp.crn[yr.mask, 1], nyrs = 32),
+  lines(yrs2, gp.crn2[, 1], col = "grey50")
+  lines(yrs2, ffcsaps(gp.crn2[, 1], nyrs = 32),
         col = "red", lwd = 2)
   axis(1);axis(2);axis(3);axis(4)
   box()
+  par(def.par)
 }
 }
 \keyword{ misc }

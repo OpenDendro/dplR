@@ -325,13 +325,15 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
 
         if (running.window) {
             c(start.year = start.year, mid.year = mid.year, end.year = end.year,
+              n.cores = n.cores, n.trees = n.trees, n = n,
               n.tot = n.tot, n.wt = n.wt, n.bt = n.bt, rbar.tot = rbar.tot,
               rbar.wt = rbar.wt, rbar.bt = rbar.bt, c.eff = c.eff,
-              rbar.eff = rbar.eff, eps = eps, snr = snr, n = n)
+              rbar.eff = rbar.eff, eps = eps, snr = snr)
         } else {
-            c(n.tot = n.tot, n.wt = n.wt, n.bt = n.bt, rbar.tot = rbar.tot,
+            c(n.cores = n.cores, n.trees = n.trees, n = n,
+              n.tot = n.tot, n.wt = n.wt, n.bt = n.bt, rbar.tot = rbar.tot,
               rbar.wt = rbar.wt, rbar.bt = rbar.bt, c.eff = c.eff,
-              rbar.eff = rbar.eff, eps = eps, snr = snr, n = n)
+              rbar.eff = rbar.eff, eps = eps, snr = snr)
         }
     }
 

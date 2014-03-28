@@ -72,10 +72,8 @@
     }
     par(new=TRUE)
     plot(yr.vec, spl, type="n",axes=FALSE,xlab='',ylab='')
-    if(!is.null(abline.pos)) {
-      abline(h=abline.pos,lwd=abline.lwd,
-             lty=abline.lty,col=abline.col)
-    }
+    abline(h=abline.pos,lwd=abline.lwd,
+           lty=abline.lty,col=abline.col)
     lines(yr.vec, spl, col=crn.line.col,lwd=crn.lwd)
     tmp <- na.omit(spl)
     if(add.spline) {
@@ -84,6 +82,10 @@
       spl[!is.na(spl)] <- ffcsaps(y=tmp, x=seq_along(tmp), nyrs=nyrs2, f=f)
       lines(yr.vec, spl, col=spline.line.col, lwd=spline.lwd)
     }
-    axis(1);axis(2);axis(3);box()
+    axis(1)
+    axis(2)
+    axis(3)
+    if(!sd.exist) axis(4)
+    box()
   }
 }

@@ -1,40 +1,89 @@
-`crn.plot` <- function(crn, add.spline=FALSE, nyrs=NULL, f=0.5, ...){
-    if(!is.data.frame(crn)) stop("'crn' must be a data.frame")
+`chron.plot` <- function(crn, add.spline=FALSE, nyrs=NULL, f=0.5,
+                         crn.line.col='grey50',spline.line.col='red',
+                         samp.depth.col='grey90',
+                         samp.depth.border.col='grey80',
+                         crn.lwd=1,spline.lwd=1.5,
+                         abline.pos=1,abline.col='black',
+                         abline.lty=1,abline.lwd=1,
+                         xlab='Year',ylab='RWI'){
+  args <- list()
+  args[["crn"]] <- crn
+  args[["add.spline"]] <- add.spline
+  args[["nyrs"]] <- nyrs
+  args[["f"]] <- f
+  args[["crn.line.col"]] <- crn.line.col
+  args[["spline.line.col"]] <- spline.line.col
+  args[["samp.depth.col"]] <- samp.depth.col
+  args[["samp.depth.border.col"]] <- samp.depth.border.col
+  args[["crn.lwd"]] <- crn.lwd
+  args[["spline.lwd"]] <- spline.lwd
+  args[["abline.pos"]] <- abline.pos
+  args[["abline.col"]] <- abline.col
+  args[["abline.lty"]] <- abline.lty
+  args[["abline.lwd"]] <- abline.lwd
+  args[["xlab"]] <- xlab
+  args[["ylab"]] <- ylab  
+  do.call(crn.plot, args)
+}
 
-    op <- par(no.readonly=TRUE) # Save par
-    on.exit(par(op))            # Reset par on exit
-    par(mar=c(3, 3, 3, 3), mgp=c(1.25, 0.25, 0), tcl=0.25)
-
-    yr.vec <- as.numeric(row.names(crn))
-    crn.names <- names(crn)
-    nCrn <- ncol(crn)
-    ## Check to see if the crn has sample depth
-    sd.exist <- crn.names[nCrn] == "samp.depth"
+`crn.plot` <- function(crn, add.spline=FALSE, nyrs=NULL, f=0.5,
+                       crn.line.col='grey50',spline.line.col='red',
+                       samp.depth.col='grey90',
+                       samp.depth.border.col='grey80',
+                       crn.lwd=1,spline.lwd=1.5,
+                       abline.pos=1,abline.col='black',
+                       abline.lty=1,abline.lwd=1,
+                       xlab='Year',ylab='RWI'){
+  if(!is.data.frame(crn)) stop("'crn' must be a data.frame")
+  
+  op <- par(no.readonly=TRUE) # Save par
+  on.exit(par(op))            # Reset par on exit
+  par(mar=c(3, 3, 3, 3), mgp=c(1.1, 0.1, 0), 
+      tcl=0.5, xaxs='i')
+  
+  yr.vec <- as.numeric(row.names(crn))
+  crn.names <- names(crn)
+  nCrn <- ncol(crn)
+  ## Check to see if the crn has sample depth
+  sd.exist <- crn.names[nCrn] == "samp.depth"
+  if(sd.exist) {
+    samp.depth <- crn[[nCrn]]
+    nCrn <- nCrn-1
+  }
+  if(nCrn > 1) layout(matrix(seq_len(nCrn), nrow=nCrn, ncol=1))
+  # strike these?
+#  text.years <- gettext("Years", domain="R-dplR")
+#  text.rwi <- gettext("RWI", domain="R-dplR")
+  text.samp <- gettext("Sample Depth", domain="R-dplR")
+  nyrs2 <- nyrs
+  for(i in seq_len(nCrn)){
+    spl <- crn[[i]]
+    plot(yr.vec, spl, type="n",axes=FALSE,
+         xlab=xlab, ylab=ylab, main=crn.names[i])
     if(sd.exist) {
-        samp.depth <- crn[[nCrn]]
-        nCrn <- nCrn-1
+      par(new=TRUE)
+      plot(yr.vec, samp.depth, type="n",
+           xlab="", ylab="", axes=FALSE)
+      xx <- c(yr.vec,max(yr.vec,na.rm=TRUE),min(yr.vec,na.rm=TRUE))
+      yy <- c(samp.depth, 0, 0)
+      polygon(xx,yy,col=samp.depth.col,border=samp.depth.border.col)
+      axis(4, at=pretty(samp.depth))
+      mtext(text.samp, side=4, line=1.25)          
     }
-    if(nCrn > 1) layout(matrix(seq_len(nCrn), nrow=nCrn, ncol=1))
-    text.years <- gettext("Years", domain="R-dplR")
-    text.rwi <- gettext("RWI", domain="R-dplR")
-    text.samp <- gettext("Sample Depth", domain="R-dplR")
-    nyrs2 <- nyrs
-    for(i in seq_len(nCrn)){
-        spl <- crn[[i]]
-        plot(yr.vec, spl, type="l",
-             xlab=text.years, ylab=text.rwi, main=crn.names[i], ...)
-        tmp <- na.omit(spl)
-        ## Only possibly NULL in the first round of the for loop
-        if(is.null(nyrs2)) nyrs2 <- length(tmp)*0.33
-        spl[!is.na(spl)] <- ffcsaps(y=tmp, x=seq_along(tmp), nyrs=nyrs2, f=f)
-        if(add.spline) lines(yr.vec, spl, col="red", lwd=2)
-        abline(h=1)
-        if(sd.exist) {
-            par(new=TRUE)
-            plot(yr.vec, samp.depth, type="l", lty="dashed",
-                 xlab="", ylab="", axes=FALSE)
-            axis(4, at=pretty(samp.depth))
-            mtext(text.samp, side=4, line=1.25)
-        }
+    par(new=TRUE)
+    plot(yr.vec, spl, type="n",axes=FALSE,xlab='',ylab='')
+    if(!is.null(abline.pos)) {
+      abline(h=abline.pos,lwd=abline.lwd,
+             lty=abline.lty,col=abline.col)
     }
+    lines(yr.vec, spl, col=crn.line.col,lwd=crn.lwd)
+    tmp <- na.omit(spl)
+    if(add.spline) {
+      ## Only possibly NULL in the first round of the for loop
+      if(is.null(nyrs2)) nyrs2 <- length(tmp)*0.33
+      spl[!is.na(spl)] <- ffcsaps(y=tmp, x=seq_along(tmp), nyrs=nyrs2, f=f)
+      lines(yr.vec, spl, col=spline.line.col, lwd=spline.lwd)
+    }
+    axis(1);axis(2);axis(3);box()
+  }
 }

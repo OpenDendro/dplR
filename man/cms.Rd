@@ -42,7 +42,7 @@ data(gp.rwl)
 data(gp.po)
 gp.rwi <- cms(rwl = gp.rwl, po = gp.po)
 gp.crn <- chron(gp.rwi)
-crn.plot(gp.crn, add.spline = TRUE, ylim = c(0, 2.5))
+crn.plot(gp.crn, add.spline = TRUE)
 ## c.hat
 gp.rwi <- cms(rwl = gp.rwl, po = gp.po, c.hat.t = TRUE, c.hat.i = TRUE)
 dotchart(gp.rwi$c.hat.i, ylab = "Series", xlab = expression(hat(c)[i]))

@@ -1,5 +1,18 @@
 * CHANGES IN dplR VERSION 1.6.0
 
+File: NAMESPACE
+-------------------------
+- Added chron.plot to export list
+
+File: crn.plot.R
+-------------------------
+- Added several new plotting options to give users more control of plot
+- Aliased crn.plot to chron.plot to be consistent with the chron() function.
+  It was confusing to use bar <- chon(foo) but not be able to use
+  chron.plot(bar). It would be nice to make chron an S3method to thus be
+  able to just do plot(bar) I suppose.
+- Help revised considerably
+
 File: rwi.stats.running.R
 -------------------------
 

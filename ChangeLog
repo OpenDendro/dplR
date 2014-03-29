@@ -3,6 +3,20 @@
 File: NAMESPACE
 -------------------------
 - Added chron.plot to export list.
+- Added rwl.plot as an S3Method.
+
+File: rwl.plot.R
+-------------------------
+- New wrapper to plot rwl objects. This is setting the
+  stage for having plot, summary, etc. methods for rwl
+  objects. There are still several things to work on. Like
+  setting the class() of rwl data objects via read.rwl (and in 
+  the onboard data sets). And will this class change break any 
+  existing functions?
+
+File: spag.plot.R
+-------------------------
+- Cosmetic changes to plot.
 
 File: seg.plot.R
 -------------------------

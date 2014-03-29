@@ -2,7 +2,11 @@
 
 File: NAMESPACE
 -------------------------
-- Added chron.plot to export list
+- Added chron.plot to export list.
+
+File: seg.plot.R
+-------------------------
+- Cosmetic changes to plot.
 
 File: crn.plot.R
 -------------------------

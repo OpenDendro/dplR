@@ -13,14 +13,21 @@
     for (i in seq.col) {
         segs[[i]][!is.na(segs[[i]])] <- i
     }
+    segs.axis2 <- names(segs)
+    segs.axis4 <- names(segs)
+    segs.axis2[seq(1,n.col,by=2)] <- NA
+    segs.axis4[seq(2,n.col,by=2)] <- NA
     op <- par(no.readonly=TRUE) # Save par
     on.exit(par(op))            # Reset par on exit
-    par(mar=c(4, 5, 2, 2) + 0.1, mgp=c(1.25, 0.25, 0), tcl=0.25)
+    par(mar=c(2, 5, 2, 5) + 0.1, mgp=c(1.1, 0.1, 0), tcl=0.5,
+        xaxs="i")
     plot(yr, segs[[1]], type="n", ylim=c(0, n.col), axes=FALSE,
          ylab="", xlab=gettext("Year", domain="R-dplR"), ...)
-    apply(segs, 2, lines, x=yr, lwd=2)
-    axis(2, at=seq.col, labels=names(segs), srt=45, tick=FALSE, las=2)
+    abline(h=seq.col,lwd=1,col="grey")
+    apply(segs, 2, lines, x=yr, lwd=4,lend=2)
+    axis(2, at=seq.col, labels=segs.axis2, srt=45, tick=FALSE, las=2)
+    axis(4, at=seq.col, labels=segs.axis4, srt=45, tick=FALSE, las=2)
     axis(1)
+    axis(3)
     box()
 }
-

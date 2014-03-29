@@ -26,7 +26,7 @@
   Andy Bunn
 }
 \seealso{
-  \code{\link{rwl}}
+  \code{\link{read.rwl}}
 }
 \examples{data(ca533)
 class(ca533) <- c(class(ca533),'rwl')

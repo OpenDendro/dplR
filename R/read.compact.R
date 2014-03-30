@@ -33,5 +33,6 @@ read.compact <- function(fname)
 
     rw.df <- as.data.frame(rw.mat)
     names(rw.df) <- series.ids
+    class(rw.df) <- c("rwl", "data.frame")
     rw.df
 }

@@ -484,5 +484,6 @@
     }
     rw.df <- as.data.frame(apply(rw.mat, 2, fix.internal.na))
     names(rw.df) <- as.character(series.ids)
+    class(rw.df) <- c("rwl", "data.frame")
     rw.df
 }

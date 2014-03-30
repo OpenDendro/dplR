@@ -1,5 +1,37 @@
 * CHANGES IN dplR VERSION 1.6.0
 
+File: read.compact.R
+-------------------------
+- Added class "rwl" to output object.
+
+File: read.fh.R
+-------------------------
+- Added class "rwl" to output object.
+
+File: read.tridas.R
+-------------------------
+- Added class "rwl" to output object $results.
+
+File: read.tucson.R
+-------------------------
+- Added class "rwl" to output object.
+
+File: anos1.rda
+-------------------------
+- Added class "rwl" to object.
+
+File: ca533.rda
+-------------------------
+- Added class "rwl" to object.
+
+File: co021.rda
+-------------------------
+- Added class "rwl" to object.
+
+File: gp.rwl.rda
+-------------------------
+- Added class "rwl" to object.
+
 File: NAMESPACE
 -------------------------
 - Added chron.plot to export list.

@@ -2599,5 +2599,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                        saxVersion = 2,
                        validate = FALSE,
                        useDotNames = TRUE)
-    h$get.results()
+    res <- h$get.results()
+    class(res$measurements) <- c("rwl", "data.frame")
+    res
 }

@@ -27,8 +27,8 @@ spag.plot(rwl, zfac = 1, \dots)
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{seg.plot}} }
-\examples{data(ca533)
-spag.plot(ca533, main = "Campito Mountain")
-spag.plot(ca533, zfac = 2, main = "Campito Mountain")
+\examples{data(co021)
+spag.plot(co021)
+spag.plot(co021, zfac = 2)
 }
 \keyword{ hplot }

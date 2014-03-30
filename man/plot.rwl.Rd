@@ -28,11 +28,9 @@
 \seealso{
   \code{\link{read.rwl}}
 }
-\examples{data(ca533)
-## to use as S3Method the class of rwl must be set:
-class(ca533) <- c('rwl','data.frame')
-plot(ca533,plot.type=c('seg'))
-plot(ca533,plot.type=c('spag'))
-plot(ca533,plot.type=c('spag'),zfac=2)
+\examples{data(co021)
+plot(co021,plot.type=c('seg'))
+plot(co021,plot.type=c('spag'))
+plot(co021,plot.type=c('spag'),zfac=2)
 }
-\keyword{ plot }
+\keyword{ hplot }

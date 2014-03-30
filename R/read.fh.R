@@ -320,5 +320,6 @@ read.fh <- function(fname) {
                         domain="R-dplR"))
         }
     }
+    class(rwl) <- c("rwl", "data.frame")
     rwl
 }

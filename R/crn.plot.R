@@ -1,46 +1,19 @@
-`chron.plot` <- function(crn, add.spline=FALSE, nyrs=NULL, f=0.5,
-                         crn.line.col='grey50',spline.line.col='red',
-                         samp.depth.col='grey90',
-                         samp.depth.border.col='grey80',
-                         crn.lwd=1,spline.lwd=1.5,
-                         abline.pos=1,abline.col='black',
-                         abline.lty=1,abline.lwd=1,
-                         xlab='Year',ylab='RWI'){
-  args <- list()
-  args[["crn"]] <- crn
-  args[["add.spline"]] <- add.spline
-  args[["nyrs"]] <- nyrs
-  args[["f"]] <- f
-  args[["crn.line.col"]] <- crn.line.col
-  args[["spline.line.col"]] <- spline.line.col
-  args[["samp.depth.col"]] <- samp.depth.col
-  args[["samp.depth.border.col"]] <- samp.depth.border.col
-  args[["crn.lwd"]] <- crn.lwd
-  args[["spline.lwd"]] <- spline.lwd
-  args[["abline.pos"]] <- abline.pos
-  args[["abline.col"]] <- abline.col
-  args[["abline.lty"]] <- abline.lty
-  args[["abline.lwd"]] <- abline.lwd
-  args[["xlab"]] <- xlab
-  args[["ylab"]] <- ylab  
-  do.call(crn.plot, args)
-}
-
-`crn.plot` <- function(crn, add.spline=FALSE, nyrs=NULL, f=0.5,
-                       crn.line.col='grey50',spline.line.col='red',
-                       samp.depth.col='grey90',
-                       samp.depth.border.col='grey80',
-                       crn.lwd=1,spline.lwd=1.5,
-                       abline.pos=1,abline.col='black',
-                       abline.lty=1,abline.lwd=1,
-                       xlab='Year',ylab='RWI'){
+`chron.plot` <- `crn.plot` <- function(crn, add.spline=FALSE, nyrs=NULL, f=0.5,
+                                       crn.line.col='grey50',
+                                       spline.line.col='red',
+                                       samp.depth.col='grey90',
+                                       samp.depth.border.col='grey80',
+                                       crn.lwd=1, spline.lwd=1.5,
+                                       abline.pos=1, abline.col='black',
+                                       abline.lty=1, abline.lwd=1,
+                                       xlab='Year', ylab='RWI') {
   if(!is.data.frame(crn)) stop("'crn' must be a data.frame")
-  
+
   op <- par(no.readonly=TRUE) # Save par
   on.exit(par(op))            # Reset par on exit
-  par(mar=c(3, 3, 3, 3), mgp=c(1.1, 0.1, 0), 
+  par(mar=c(3, 3, 3, 3), mgp=c(1.1, 0.1, 0),
       tcl=0.5, xaxs='i')
-  
+
   yr.vec <- as.numeric(row.names(crn))
   crn.names <- names(crn)
   nCrn <- ncol(crn)
@@ -68,7 +41,7 @@
       yy <- c(samp.depth, 0, 0)
       polygon(xx,yy,col=samp.depth.col,border=samp.depth.border.col)
       axis(4, at=pretty(samp.depth))
-      mtext(text.samp, side=4, line=1.25)          
+      mtext(text.samp, side=4, line=1.25)
     }
     par(new=TRUE)
     plot(yr.vec, spl, type="n",axes=FALSE,xlab='',ylab='')

@@ -1586,6 +1586,7 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                                  ## ... fixing the col numbers
                                  remark.data.col[idx.adjust] <<- l
                              }
+                             class(this.df) <- c("rwl", "data.frame")
                              res.df[[length.res]] <<- this.df
                              res.ids[[length.res]] <<- data.frame(i.i.s)
                              res.titles[[length.res]] <<- data.frame(t.i.s)
@@ -2599,7 +2600,5 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                        saxVersion = 2,
                        validate = FALSE,
                        useDotNames = TRUE)
-    res <- h$get.results()
-    class(res$measurements) <- c("rwl", "data.frame")
-    res
+    h$get.results()
 }

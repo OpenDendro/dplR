@@ -1,5 +1,18 @@
 * CHANGES IN dplR VERSION 1.6.0
 
+File: NAMESPACE
+-------------------------
+- Added chron.plot to export list.
+- Added rho.series to export list.
+- Added rwl.plot as an S3Method.
+
+File: series.rho.R
+-------------------------
+- New function series.rho. This needs more work.
+  E.g., speed up via apply()? And need to integrate
+  into rwl.stats WITHOUT any new arguments being
+  added to rwl.stats. I like that function clean.
+
 File: read.compact.R
 -------------------------
 - Added class "rwl" to output object.
@@ -32,10 +45,6 @@ File: gp.rwl.rda
 -------------------------
 - Added class "rwl" to object.
 
-File: NAMESPACE
--------------------------
-- Added chron.plot to export list.
-- Added rwl.plot as an S3Method.
 
 File: rwl.plot.R
 -------------------------

@@ -1506,7 +1506,7 @@ redfitTrig <- function(t, freq, nseg, n50, segskip) {
 redfitWinwgt <- function(t, iwin) {
     nseg <- length(t)
     ## useful factor for various windows
-    fac1 <- nseg / 2 - 0.5
+    ## fac1 <- nseg / 2 - 0.5
     ## fac2 <- 1 / (fac1 + 1)
     tlen <- t[nseg] - t[1]
     tlenFull <- nseg * tlen / (nseg - 1)

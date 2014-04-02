@@ -9,15 +9,6 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                          }),
                          ...) {
 
-    ## helper function
-    yr.range <- function(x, yr.vec=as.numeric(names(x))) {
-        if (any(mask <- !is.na(x))) {
-            range(yr.vec[mask])
-        } else {
-            c(NA, NA)
-        }
-    }
-
     ## run error checks
     qa.xdate(rwl, seg.length, n, bin.floor)
 

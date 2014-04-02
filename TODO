@@ -1,0 +1,16 @@
+
+* Dummy item
+   This is a sample item.
+
+- Sub-item
+   Any number of sub-items can be added.
+
+o [mvkorpel] Another dummy item
+   This one shows how to mark a to-do item as assigned to somebody.
+   By default, this seems to show the user's login name.  The notation
+   is from todoo.el, an Emacs mode for editing TODO files.  Using the
+   mode, it is easy to reorder and hide / show items.  Also in the
+   mode, headings of items and sub-items are automatically
+   highlighted.  It should be easy enough to adhere to the format even
+   if the text editor does not support it.
+

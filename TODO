@@ -1,3 +1,14 @@
+* Decide when to use class('rwl') in functions dealing with rwl objects.
+  Other than the plot S3Method for rwl, are there cases when having that class
+  would be useful. E.g., in error checking?
+
+* Add 'prewhiten' as a detrending method.
+  It would be nice to have a prewhitening option to detrend.series
+  (and therefore dentrend) that returns white noise 
+  This could be as easy as:
+    y <- detrend.series(x, method="Mean")
+    y <- ar.func(y)
+    return(y)
 
 * Dummy item
    This is a sample item.

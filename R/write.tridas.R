@@ -1063,4 +1063,5 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
         }
     }
     doc.closeTag() # </project>
+    fname
 }

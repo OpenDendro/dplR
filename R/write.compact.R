@@ -102,4 +102,5 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
             cat(line.str, line.term, file=rwl.out, sep="")
         }
     }
+    fname
 }

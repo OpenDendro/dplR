@@ -32,7 +32,7 @@ write.rwl(rwl.df, fname, format = c("tucson", "compact", "tridas"), \dots)
   write operation.
 }
 \value{
-  None. Invoked for side effect (file is written).
+  \code{\var{fname}}
 }
 \author{ Mikko Korpela }
 \seealso{ \code{\link{write.crn}}, \code{\link{write.tucson}},
@@ -46,7 +46,9 @@ co021.hdr <- list(site.id = "CO021",
                   spp = "DOUGLAS FIR", elev = 2103, lat = 3712,
                   long = -10830, first.yr = 1400, last.yr = 1963,
                   lead.invs = "E. SCHULMAN", comp.date = "")
-write.rwl(rwl.df = co021, fname = "tmp.rwl", format = "tucson",
-          header = co021.hdr, append = FALSE, prec = 0.001)
+fname <- write.rwl(rwl.df = co021, fname = tempfile(fileext=".rwl"),
+                   format = "tucson", header = co021.hdr,
+                   append = FALSE, prec = 0.001)
+unlink(fname) # remove the file
 }
 \keyword{ IO }

@@ -129,4 +129,5 @@
         dec.str <- c(hdr, dec.str)
     }
     cat(dec.str, file = fname, sep = "\n", append=append)
+    fname
 }

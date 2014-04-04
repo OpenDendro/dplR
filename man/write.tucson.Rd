@@ -93,8 +93,8 @@ write.tucson(rwl.df, fname, header = NULL, append = FALSE,
   incompatibility with other software.
 }
 \value{
-  None. Invoked for side effect (file is written).
- }
+  \code{\var{fname}}
+}
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{write.crn}}, \code{\link{read.tucson}},
   \code{\link{write.rwl}}, \code{\link{write.compact}},
@@ -107,7 +107,8 @@ co021.hdr <- list(site.id = "CO021",
                   spp = "DOUGLAS FIR", elev = "2103M", lat = 3712,
                   long = -10830, first.yr = 1400, last.yr = 1963,
                   lead.invs = "E. SCHULMAN", comp.date = "")
-write.tucson(rwl.df = co021, fname = "tmp.rwl", header = co021.hdr,
-             append = FALSE, prec = 0.001)
+fname <- write.tucson(rwl.df = co021, fname = tempfile(fileext=".rwl"),
+                      header = co021.hdr, append = FALSE, prec = 0.001)
+unlink(fname) # remove the file
 }
 \keyword{ IO }

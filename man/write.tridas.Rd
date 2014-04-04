@@ -335,7 +335,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 
 }
 
-\value{ None. Invoked for side effect (file is written).  }
+\value{ \code{\var{fname}} }
 
 \references{ TRiDaS \enc{–}{--} The Tree Ring Data Standard,
   \url{http://www.tridas.org/} }
@@ -363,11 +363,13 @@ write.tridas(rwl.df = co021, fname = "tmp1.xml", prec = 0.01,
 data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)
-write.tridas(crn = ca533.crn, fname = "tmp2.xml",
+fname <- write.tridas(crn = ca533.crn,
+    fname = tempfile(fileext=".xml"),
     taxon = "Pinus longaeva D.K. Bailey",
     project.info =
         list(investigator = "Donald A. Graybill, V.C. LaMarche, Jr.",
              title = "Campito Mountain", category = "",
              period = "", type = "unknown"))
+unlink(fname) # remove the file
 }
 \keyword{ IO }

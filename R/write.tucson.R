@@ -242,4 +242,5 @@
                 file = rwl.out, sep="")
         }
     }
+    fname
 }

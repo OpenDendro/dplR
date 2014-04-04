@@ -47,14 +47,16 @@ write.compact(rwl.df, fname, append = FALSE, prec = 0.01,
   list of the renamings (see Arguments).
 }
 \value{
-  None. Invoked for side effect (file is written).
- }
+  \code{\var{fname}}
+}
 \author{ Mikko Korpela, based on write.tucson by Andy Bunn }
 \seealso{ \code{\link{write.rwl}}, \code{\link{write.tucson}},
   \code{\link{write.tridas}}, \code{\link{read.compact}}
 }
 \examples{data(co021)
-write.compact(rwl.df = co021, fname = "tmp.rwl", append = FALSE,
-              prec = 0.001)
+fname <- write.compact(rwl.df = co021,
+                       fname = tempfile(fileext=".rwl"),
+                       append = FALSE, prec = 0.001)
+unlink(fname) # remove the file
 }
 \keyword{ IO }

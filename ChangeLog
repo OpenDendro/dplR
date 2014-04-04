@@ -69,8 +69,8 @@ File: rwl.plot.R
 - New wrapper to plot rwl objects. This is setting the
   stage for having plot, summary, etc. methods for rwl
   objects. There are still several things to work on. Like
-  setting the class() of rwl data objects via read.rwl (and in 
-  the onboard data sets). And will this class change break any 
+  setting the class() of rwl data objects via read.rwl (and in
+  the onboard data sets). And will this class change break any
   existing functions?
 
 File: spag.plot.R
@@ -105,6 +105,16 @@ File: rwi.stats.running.R
 - 'c.eff' in the return value is now 0 if no correlations were
   computed
 - Optimizations
+
+Files: write.compact.R, write.crn.R,
+write.rwl.R, write.tridas.R, write.tucson.R
+-------------------------------------------
+
+- The write.* functions now return the name of the output file.
+  Previously it was documented that there was no return value.
+- Examples in the corresponding .Rd files were modified to use
+  tempfile()s instead of writing to the working directory, which was
+  potentially harmful.
 
 * CHANGES IN dplR VERSION 1.5.9
 

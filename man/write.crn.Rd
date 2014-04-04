@@ -70,15 +70,15 @@ write.crn(crn, fname, header = NULL, append = FALSE)
   than crn files in terms of usefulness on the \acronym{ITRDB}.
 }
 \value{
-  None. Invoked for side effect (file is written).
- }
+  \code{\var{fname}}
+}
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{chron}}, \code{\link{read.crn}}
 }
 \examples{data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM")
-write.crn(ca533.crn, "tmp.crn")
+fname1 <- write.crn(ca533.crn, tempfile(fileext=".crn"))
 ## Put the standard and residual chronologies in a single file
 ## with ITRDB header info on top. Not reccomended.
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)
@@ -88,7 +88,9 @@ ca533.hdr <- list(site.id = "CAM", site.name = "Campito Mountain",
                   long = -11813, first.yr = 626, last.yr = 1983,
                   lead.invs = "Donald A. Graybill, V.C. LaMarche, Jr.",
                   comp.date = "Nov1983")
-write.crn(ca533.crn[, -2], "tmp.crn", header = ca533.hdr)
-write.crn(ca533.crn[, -1], "tmp.crn", append = TRUE)
+fname2 <- write.crn(ca533.crn[, -2], tempfile(fileext=".crn"),
+                    header = ca533.hdr)
+write.crn(ca533.crn[, -1], fname2, append = TRUE)
+unlink(c(fname1, fname2)) # remove the files
 }
 \keyword{ IO }

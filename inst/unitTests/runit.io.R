@@ -179,7 +179,7 @@ test.read.tucson <- function() {
     ## File has no data (invalid file)
     tf13 <- tempfile()
     fh13 <- file(tf13, "wt")
-    on.exit(unlink(tf13))
+    on.exit(unlink(tf13), add=TRUE)
     writeLines("TST13A  1734", fh13)
     close(fh13)
     checkEquals(0, nrow(read.tucson(tf13, header = FALSE)),

@@ -1,50 +1,56 @@
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
 %\VignetteIndexEntry{Introduction to dplR}
 \documentclass[a4paper,10pt]{article}
-\usepackage{dplR} % dplR settings
+\usepackage{dplR} % dplR settings - simple now - could do something more interesting
 
-\title{dplR: an introduction} 
+\title{An introduction to dplR} 
 \author{Andy Bunn}
 
 \date{\footnotesize{$ $Processed with dplR \Sexpr{packageDescription("dplR", field="Version")}
 in \Sexpr{R.version.string} on \today}}
 
-%% need no \usepackage{Sweave}
 \begin{document}
-\SweaveOpts{concordance=TRUE}
+\bibliographystyle{jss}
 
+\SweaveOpts{concordance=TRUE}
 \SweaveOpts{strip.white=true}
-<<echo=false>>=
-par(mfrow=c(1,1))
-options(width=72)
-figset <- function() par(mar=c(4,4,1,1)+.1)
-options(SweaveHooks = list(fig = figset))
-options("prompt" = "> ", "continue" = "  ")
-@
 
 \maketitle
 \begin{abstract}
-This document describes basic features of dplR including detrending
-ring widths, building chronologies, and calcualting descriptive 
-statistics.
+This document describes basic features of dplR including the detrending
+and standardization of ring-width data, building chronologies, and calcualting descriptive 
+statistics. A range of simple plots are also presented. Stasistical cross dating 
+is presented in a seperate vignette.
 \end{abstract}
 \tableofcontents
 
 \vspace{3ex}
-\noindent \pkg{dplR} is a package for dendrochronologists.  This
+\noindent dplR is a package for dendrochronologists.  This
 documents gives just a brief introduction of some of the most commonly
-used functions in \pkg{dplR}. There is more detailed information available
-in the literature (Bunn papers here).
+used functions in dplR. There is more detailed information available
+in the help files and in the literature including \cite{Bunn2008} and 
+\cite{Bunn2010}.
+\newpage
+
+\section{Introduction}
+
+\section{Working with Ring-Width Data}
+\subsection{Reading Data}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. In id purus est. Aenean pretium augue non mauris adipiscing, quis suscipit mi porta. Aliquam tempor purus a ante vulputate malesuada. Nam bibendum massa leo. Suspendisse cursus dignissim tincidunt. Aliquam erat lectus, eleifend eu faucibus sed, dignissim in tortor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Maecenas tempor ante elit, sit amet pretium felis vulputate iaculis. Ut fringilla pharetra faucibus.
+
+
+\subsection{Describing and Plotting Ring-Width Data}
+orem ipsum dolor sit amet, consectetur adipiscing elit. Sed semper.
 
 \section{Detrending}
 
 The dplR package contains most standard detrending methods including
 detrending via splines, curve fitting, and so on. There are also methods for 
-detrending that are less commonly used but preferred by some. In this chapter I describe
+detrending that are less commonly used but preferred by some. In this section I describe
 functions detrend and rcs and cms.
 
 \subsection{Common Detrending Methods}
-Detrending an rwl object with a modified engative exponential is done like this:
+Detrending an rwl object with a modified negative exponential is done like this:
   
 <<>>=
 library(dplR)
@@ -57,8 +63,46 @@ the same dimensions as the rwl object ca533:
 dim(ca533)
 dim(ca533.rwi)
 @
-Got it? Good. 
 
+\subsection{Other Detrending Methods}
+E.g., RCS and CMS.
+
+\section{Descriptive Statisitcs}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eget.
+
+\section{Building a Mean Value Chronology}
+Let's make a chronology and plot it. First we make a chronology
+<<>>=
+ca533.crn <- chron(ca533.rwi, prefix = "CAM")
+@
+And we can plot it.
+<<a>>=
+chron.plot(ca533.crn)
+@
+\begin{figure}
+<<fig=true,echo=false>>=
+<<a>>
+@
+\caption{Default chronology plot.}
+\label{fig:chron.plot}
+\end{figure}
+
+We can add options like a smoothing spline.
+<<a>>=
+chron.plot(ca533.crn,add.spline=TRUE,nyrs=20)
+@
+\begin{figure}
+<<fig=true,echo=false>>=
+<<a>>
+@
+\caption{A chronology plot with a 20-year smoothing spline added.}
+\label{fig:chron.plot.spline}
+\end{figure}
+
+\section{Prospectus}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce pharetra.
+
+\bibliography{dplR}
 
 
 \end{document}

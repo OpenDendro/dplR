@@ -4,7 +4,7 @@
 \usepackage{dplR} % dplR settings - simple now - could do something more interesting
 
 \title{An introduction to dplR} 
-\author{Andy Bunn}
+\author{Andy Bunn and Mikko Korpela}
 
 \date{\footnotesize{$ $Processed with dplR \Sexpr{packageDescription("dplR", field="Version")}
 in \Sexpr{R.version.string} on \today}}
@@ -16,10 +16,11 @@ in \Sexpr{R.version.string} on \today}}
 \SweaveOpts{strip.white=true}
 
 \maketitle
+
 \begin{abstract}
-This document describes basic features of dplR including the detrending
-and standardization of ring-width data, building chronologies, and calcualting descriptive 
-statistics. A range of simple plots are also presented. Stasistical cross dating 
+This document describes basic features of dplR including reading and working with ring-width
+data. Detrending and standardization of ring-width data, building chronologies, and calcualting 
+descriptive statistics. A range of simple plots are also presented. Stasistical cross dating 
 is presented in a seperate vignette.
 \end{abstract}
 \tableofcontents
@@ -36,11 +37,49 @@ in the help files and in the literature including \cite{Bunn2008} and
 
 \section{Working with Ring-Width Data}
 \subsection{Reading Data}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. In id purus est. Aenean pretium augue non mauris adipiscing, quis suscipit mi porta. Aliquam tempor purus a ante vulputate malesuada. Nam bibendum massa leo. Suspendisse cursus dignissim tincidunt. Aliquam erat lectus, eleifend eu faucibus sed, dignissim in tortor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Maecenas tempor ante elit, sit amet pretium felis vulputate iaculis. Ut fringilla pharetra faucibus.
+There are, alas, many different ways that tree-ring data are digitally stored. These range in 
+sophistication from the simple 
+\href{http://www.ncdc.noaa.gov/paleo/treeinfo.html#formats}{Tucson} (decadal) format file of 
+ring widths to the more complex \href{http://www.tridas.org/}{TRiDaS format}. We generally
+refer to these as rwl objects for "ring width lenth" but there is no reason these can't be
+other types of tree-ring data (e.g., density).
 
+The workhorse function for getting tree-ring data into R is dplR's read.rwl function. This 
+function reads files in "tucson", "compact", "tridas", "heidelberg" formats. The onboard 
+rwl datasets in dplR (i.e., co021, ca533, gp.rwl) were all imported into R using this function.
+
+These objects are structured very simply as a data.frame with the series in columns and the years as rows. The series IDs are the column names and the years are the row names (both 
+stored as characters).
+
+<<>>=
+library(dplR)
+data(ca533)
+dim(ca533) # 1358 years and 34 series
+colnames(ca533) # the series IDs
+head(rownames(ca533)) # the first few years
+class(ca533) # note that this is an "rwl" class as well as a data.frame
+@
 
 \subsection{Describing and Plotting Ring-Width Data}
-orem ipsum dolor sit amet, consectetur adipiscing elit. Sed semper.
+One a rwl dataset has been read into R, there are a variety of ways to describe and visualize
+it. For instance, we can plot an rwl object by showing either the segments arranged over time
+as straight lines or as a "spaghetti plot".
+
+<<a>>=
+plot(ca533,plot.type=c('spag'))
+@
+\begin{figure}[htbp]
+<<fig=true,echo=false>>=
+<<a>>
+@
+\caption{A spaghetti plot of ca533.}
+\label{fig:rwl.plot}
+\end{figure}
+
+We can also look at common (and not-so common) descriptive statistics of an rwl object.
+<<a>>=
+rwl.stats(ca533)
+@
 
 \section{Detrending}
 
@@ -53,8 +92,6 @@ functions detrend and rcs and cms.
 Detrending an rwl object with a modified negative exponential is done like this:
   
 <<>>=
-library(dplR)
-data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 @
 This saves the results in ca533.rwi which is a data.frame with
@@ -79,7 +116,7 @@ And we can plot it.
 <<a>>=
 chron.plot(ca533.crn)
 @
-\begin{figure}
+\begin{figure}[htbp]
 <<fig=true,echo=false>>=
 <<a>>
 @

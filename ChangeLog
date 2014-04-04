@@ -1,5 +1,17 @@
 * CHANGES IN dplR VERSION 1.6.0
 
+Folder: vignettes
+-------------------------
+- Added a vignettes folder
+
+File: dplR.sty
+-------------------------
+- Copied the sty file from vegan for the time being
+
+File: intro-dplR.Rnw
+-------------------------
+- Began a vignette to intriduce dplR
+
 File: NAMESPACE
 -------------------------
 - Added chron.plot to export list.

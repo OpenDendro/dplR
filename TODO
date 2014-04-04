@@ -1,3 +1,5 @@
+* Actually write the first intro vignette!
+
 * Decide when to use class('rwl') in functions dealing with rwl objects.
   Other than the plot S3Method for rwl, are there cases when having that class
   would be useful. E.g., in error checking?

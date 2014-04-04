@@ -1,0 +1,64 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%\VignetteIndexEntry{Introduction to dplR}
+\documentclass[a4paper,10pt]{article}
+\usepackage{dplR} % dplR settings
+
+\title{dplR: an introduction} 
+\author{Andy Bunn}
+
+\date{\footnotesize{$ $Processed with dplR \Sexpr{packageDescription("dplR", field="Version")}
+in \Sexpr{R.version.string} on \today}}
+
+%% need no \usepackage{Sweave}
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\SweaveOpts{strip.white=true}
+<<echo=false>>=
+par(mfrow=c(1,1))
+options(width=72)
+figset <- function() par(mar=c(4,4,1,1)+.1)
+options(SweaveHooks = list(fig = figset))
+options("prompt" = "> ", "continue" = "  ")
+@
+
+\maketitle
+\begin{abstract}
+This document describes basic features of dplR including detrending
+ring widths, building chronologies, and calcualting descriptive 
+statistics.
+\end{abstract}
+\tableofcontents
+
+\vspace{3ex}
+\noindent \pkg{dplR} is a package for dendrochronologists.  This
+documents gives just a brief introduction of some of the most commonly
+used functions in \pkg{dplR}. There is more detailed information available
+in the literature (Bunn papers here).
+
+\section{Detrending}
+
+The dplR package contains most standard detrending methods including
+detrending via splines, curve fitting, and so on. There are also methods for 
+detrending that are less commonly used but preferred by some. In this chapter I describe
+functions detrend and rcs and cms.
+
+\subsection{Common Detrending Methods}
+Detrending an rwl object with a modified engative exponential is done like this:
+  
+<<>>=
+library(dplR)
+data(ca533)
+ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
+@
+This saves the results in ca533.rwi which is a data.frame with
+the same dimensions as the rwl object ca533:
+<<>>=
+dim(ca533)
+dim(ca533.rwi)
+@
+Got it? Good. 
+
+
+
+\end{document}

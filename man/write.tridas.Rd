@@ -351,7 +351,8 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 
 \examples{## Write raw ring widths
 data(co021)
-write.tridas(rwl.df = co021, fname = "tmp1.xml", prec = 0.01,
+fname1 <- write.tridas(rwl.df = co021,
+    fname = tempfile(fileext=".xml"), prec = 0.01,
     site.info = list(title = "Schulman old tree no. 1, Mesa Verde",
                      type = "unknown"),
     taxon = "Pseudotsuga menziesii var. menziesii (Mirb.) Franco",
@@ -363,13 +364,13 @@ write.tridas(rwl.df = co021, fname = "tmp1.xml", prec = 0.01,
 data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)
-fname <- write.tridas(crn = ca533.crn,
+fname2 <- write.tridas(crn = ca533.crn,
     fname = tempfile(fileext=".xml"),
     taxon = "Pinus longaeva D.K. Bailey",
     project.info =
         list(investigator = "Donald A. Graybill, V.C. LaMarche, Jr.",
              title = "Campito Mountain", category = "",
              period = "", type = "unknown"))
-unlink(fname) # remove the file
+unlink(c(fname1, fname2)) # remove the files
 }
 \keyword{ IO }

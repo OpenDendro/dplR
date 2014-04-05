@@ -1,16 +1,20 @@
 * CHANGES IN dplR VERSION 1.6.0
 
+File: TODO
+-------------------------
+- Added a TODO list. This is exciting.
+
 Folder: vignettes
 -------------------------
 - Added a vignettes folder
 
 File: dplR.sty
 -------------------------
-- Copied the sty file from vegan for the time being
+- Very basic sty file
 
 File: intro-dplR.Rnw
 -------------------------
-- Began a vignette to intriduce dplR
+- A vignette to intriduce dplR
 
 File: NAMESPACE
 -------------------------
@@ -20,7 +24,6 @@ File: NAMESPACE
 
 File: corr.rwl.seg.R
 --------------------
-
 - Removed yr.range() function in favor of yr.range() in helpers.R.
   They are identical for all practical purposes.
 

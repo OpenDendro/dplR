@@ -1,12 +1,13 @@
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
 %\VignetteIndexEntry{An introduction to dplR}
-\documentclass[a4paper,12pt]{article}
-\usepackage{dplR} % dplR settings - simple now - could do something more interesting
+\documentclass[a4paper,11pt]{article}
+\usepackage{dplR} % dplR settings - needs some work
 
 \title{An introduction to dplR} 
 \author{Andy Bunn and Mikko Korpela}
 
-\date{\footnotesize{$ $Processed with dplR \Sexpr{packageDescription("dplR", field="Version")}
+\date{\footnotesize{$ $Processed with dplR 
+\Sexpr{packageDescription("dplR", field="Version")}
 in \Sexpr{R.version.string} on \today}}
 
 \begin{document}
@@ -18,42 +19,50 @@ in \Sexpr{R.version.string} on \today}}
 \maketitle
 
 \begin{abstract}
-This document describes basic features of dplR including reading and working with ring-width
-data, detrending and standardization of ring-width data, building chronologies, and calculating 
-descriptive statistics. A range of simple plots are also presented. Statistical cross dating 
-is presented in a separate vignette.
+This document describes basic features of dplR including reading and working 
+with ring-width data, detrending and standardization of ring-width data, 
+building chronologies, and calculating descriptive statistics. A range of 
+simple plots are also presented.
 \end{abstract}
 \tableofcontents
 
 \newpage
 
 \section{Introduction}
-The Dendrochronology Program Library in R (dplR) is a package for dendrochronologists.
-This documents gives just a brief introduction of some of the most commonly
-used functions in dplR. There is more detailed information available
-in the help files and in the literature including \cite{Bunn2008} and 
+The Dendrochronology Program Library in R (dplR) is a package for 
+dendrochronologists. This documents gives just a brief introduction of some 
+of the most commonly used functions in dplR. There is more detailed information 
+available in the help files and in the literature including \cite{Bunn2008} and 
 \cite{Bunn2010}. 
 
-In this vignette, we will walk through the most basic activities of working with tree-ring
-data in roughly the order that a dendrochronologist might follow. E.g., reading data,
-detrending, chronology building, and doing preliminary exploratory data analysis via
-descriptive statistics.
+In this vignette, we will walk through the most basic activities of working 
+with tree-ring data in roughly the order that a dendrochronologist might 
+follow. E.g., reading data, detrending, chronology building, and doing 
+preliminary exploratory data analysis via descriptive statistics.
 
 \section{Working with Ring-Width Data}
 \subsection{Reading Data}
-There are, alas, many different ways that tree-ring data are digitally stored. These range in 
-sophistication from the simple 
-\href{http://www.ncdc.noaa.gov/paleo/treeinfo.html#formats}{Tucson} (decadal) format file of 
-ring widths to the more complex \href{http://www.tridas.org/}{TRiDaS format}. We generally
-refer to these as rwl objects for ``ring width lenth'' but there is no reason these can't be
+There are, alas, many different ways that tree-ring data are digitally stored. 
+These range in sophistication from the simple 
+\href{http://www.ncdc.noaa.gov/paleo/treeinfo.html#formats}{Tucson} (decadal) 
+format file of ring widths to the more complex 
+\href{http://www.tridas.org/}{TRiDaS format}. We generally refer to these as 
+rwl objects for ``ring width length'' but there is no reason these can't be
 other types of tree-ring data (e.g., density).
 
-The workhorse function for getting tree-ring data into R is dplR's read.rwl function. This 
-function reads files in ``tucson'', ``compact'', ``tridas'', ``heidelberg'' formats. The onboard 
-rwl data sets in dplR (i.e., co021, ca533, gp.rwl) were all imported into R using this function.
+The workhorse function for getting tree-ring data into R is dplR's read.rwl 
+function. This function reads files in ``tucson'', ``compact'', ``tridas'', 
+``heidelberg'' formats. The onboard rwl data sets in dplR (i.e., co021, ca533, 
+gp.rwl) were all imported into R using this function.
 
-These objects are structured very simply as a data.frame with the series in columns and the years as rows. The series IDs are the column names and the years are the row names (both 
-stored as characters). For instance, using one of the onboard data sets (ca533):
+Throughout this vignette we will use the onboard data set ca533 which gives the 
+raw ring widths for bristlecone pine \emph{Pinus longaeva} at Campito Mountain 
+in California, USA. There are 34 series spanning over 1300 years. 
+
+These objects are structured very simply as a data.frame with the series in 
+columns and the years as rows. The series IDs are the column names and the 
+years are the row names (both stored as characters). For instance, using the 
+Campito Mountain ring widths:
 
 <<>>=
 library(dplR)
@@ -65,9 +74,10 @@ class(ca533) # note that this is an "rwl" class as well as a data.frame
 @
 
 \subsection{Describing and Plotting Ring-Width Data}
-One a rwl data set has been read into R, there are a variety of ways to describe and visualize
-it. For instance, we can plot an rwl object by showing either the segments arranged over time
-as straight lines or as a ``spaghetti plot''.
+One a rwl data set has been read into R, there are a variety of ways to 
+describe and visualize those data. For instance, we can plot an rwl object by 
+showing either the segments arranged over time as straight lines or as a 
+``spaghetti plot''.
 
 <<a>>=
 plot(ca533,plot.type=c('spag'))
@@ -76,15 +86,16 @@ plot(ca533,plot.type=c('spag'))
 <<fig=true,echo=false>>=
 <<a>>
 @
-\caption{A spaghetti plot of ca533.}
+\caption{A spaghetti plot of Campito Mountain ring widths.}
 \label{fig:rwl.plot}
 \end{figure}
 
 \section{Detrending}
-
-Analysts typically (but not always) detrend a rwl data set to create an ring-width index
-(rwi) object. The dplR package contains most standard detrending methods including
-detrending via splines, fitting a negative exponential curve, and so on. There are also methods for detrending that are less commonly used like regional curve standardization. 
+Analysts typically (but not always) detrend a rwl data set to create a 
+ring-width index (rwi) object. The dplR package contains most standard 
+detrending methods including detrending via splines, fitting negative 
+exponential curves, and so on. There are also methods for detrending that are 
+less commonly used like regional curve standardization. 
 
 \textbf{By the way, if this is all new to you - you should stop reading this
 vignette and proceed immediately to a good primer on dendrochronology like 
@@ -138,7 +149,7 @@ colMeans(ca533.rwi,na.rm=TRUE)
 
 An alternative method in detrend is to standardize with the ``Spline'' approach.
 This method uses an spline where the frequency response is 0.50 at a wavelength 
-of 0.67 * “series length in years”, unless specified differently using nyrs 
+of 0.67 * series length unless specified differently using nyrs 
 and f in the function ffcsaps. This attempts to remove the low frequency 
 variability that is due to biological or stand effects. Rather than detrend the
 entire ca533 rwl object, we'll illustrate the spline method by detrending a 
@@ -147,7 +158,8 @@ single series using the detrend.series function.
 <<a>>=
 series <- ca533[, "CAM011"] # extract the series
 names(series) <- rownames(ca533) # give it years as rownames
-series.rwi <- detrend.series(y = series, y.name = "CAM011",method="Spline")
+series.rwi <- detrend.series(y = series, y.name = "CAM011",
+                             method="Spline")
 @
 \begin{figure}[htbp]
 <<fig=true,echo=false>>=
@@ -162,7 +174,11 @@ exponential curve to one series and a spline to another. This can be done via
 the i.detrend and i.detrend.series functions. See their help pages for details.
 
 \subsection{Other Detrending Methods}
-E.g., RCS and CMS.
+There are other detrending methods that are less commonly used but have 
+distinct theoretical advantages. These include regional curve standardization
+(function rcs), C-Method Standardization (function cms), and converting 
+measurements of ring widths to basal area increment (functions bai.in and 
+bai.out). 
 
 \section{Descriptive Statistics}
 Either before or after standardization, it would be natural to want to look at
@@ -174,28 +190,61 @@ series in ca533.
 rwl.stats(ca533)[1:5,]
 @
 
-These are common summary statistics like mean, median, etc. but also statistics that are more specific to dendrochronlogy like the first-order autocorrelation (ar1) and mean sensitivity (sens1 and sens 2) which are actually terrible statistics that should rarely, if ever, be used \citep{Bunn2013}. 
+These are common summary statistics like mean, median, etc. but also statistics 
+that are more specific to dendrochronlogy like the first-order autocorrelation 
+(ar1) and mean sensitivity (sens1 and sens 2) which are actually terrible 
+statistics that should rarely, if ever, be used \citep{Bunn2013}.
 
+It's also easy in dplR to compute commonly used descriptive statistics that 
+describe the correlation between series (both within and between tree 
+correlations) as well as the expressed population signal and signal-to-noise
+ratio a data set. These are done in dplR using the rwi.stats function 
+so-named because these statistics are typically (but not always) carried out
+on detrended and standardized ring-width indices. If a data set has more than
+one core taken per tree this can be used in the calculations:
+
+<<>>=
+ca533.ids <- read.ids(ca533, stc = c(3, 2, 3))
+rwi.stats(ca533.rwi, ca533.ids, prewhiten=TRUE)
+@
+
+There is (at least) one other way of looking at the average interseries 
+correlation of a dataset. The series.rho function in dplR gives a measure of
+average interseries correlation that is different than the rbar measurements
+from rwi.stats. In this function, correlations are calculated serially between 
+each tree-ring series and a master chronology built from all the other series 
+in the rwl object (leave-one-out principle). The average of those correlations
+is sometimes called the ``overall interseries correlation.''
+
+<<>>=
+ca533.rho <- series.rho(ca533.rwi, prewhiten=TRUE)
+head(ca533.rho)
+mean(ca533.rho[,1])
+@
+
+Again. if these concepts are unknown to you statistically look at some of the
+canonical works in dendrochronology like \cite{Cook1990} and \cite{Fritts2001}
+as well as more recent works like \cite{Hughes2011}.
 
 
 \section{Building a Mean Value Chronology}
-Let's make a chronology and plot it. First we make a chronology
+After detrending, a user will typically build a chronology by averaging across
+the years of the rwi object. In dplR the function for doing this is chron which
+by default uses Tukey's biweight robust mean which is a a robust average that 
+is unaffected by outliers.
 <<>>=
 ca533.crn <- chron(ca533.rwi, prefix = "CAM")
 @
-And we can plot it.
-<<a>>=
-chron.plot(ca533.crn)
+This object has the same number of rows as the rwi object that was used as the 
+input and two columns. The fist gives the chronology and the second the 
+sample depth (the number of series available in that year).
+<<>>=
+dim(ca533.rwi)
+dim(ca533.crn)
 @
-\begin{figure}[htbp]
-<<fig=true,echo=false>>=
-<<a>>
-@
-\caption{Default chronology plot.}
-\label{fig:chron.plot}
-\end{figure}
-
-We can add options like a smoothing spline.
+The chronology can be plotted using the chron.plot function which has many 
+arguments for customization. Here we'll just make a simple plot of the 
+chronology with a smoothing spline added.
 <<a>>=
 chron.plot(ca533.crn,add.spline=TRUE,nyrs=20)
 @
@@ -203,14 +252,76 @@ chron.plot(ca533.crn,add.spline=TRUE,nyrs=20)
 <<fig=true,echo=false>>=
 <<a>>
 @
-\caption{A chronology plot with a 20-year smoothing spline added.}
+\caption{Campito Mountain chronology with 20-year smoothing spline.}
 \label{fig:chron.plot.spline}
 \end{figure}
 
+In general this vignette aims to give a very cursory overview of basic tasks 
+that most dendrochronologists will want to be aware of. Know that we are just
+scratching the surface of what dplR is capable of. As a very small example, 
+here is a way that a user might decide to truncate a chronology based on the
+expressed population signal.
+<<a>>=
+def.par <- par(no.readonly=TRUE)
+eps.cut <- 0.85 # An arbitrary EPS cutoff for demonstration
+## Plot the chronology showing a potential cutoff year based on EPS
+## Running stats on the rwi with an window
+foo <- rwi.stats.running(ca533.rwi, ca533.ids, window.length = 80)
+yrs <- as.numeric(rownames(ca533.crn))
+bar <- data.frame(yrs = c(min(yrs), foo$mid.year, max(yrs)),
+                  eps = c(NA, foo$eps, NA))
+par(mar = c(2, 2, 2, 2), mgp = c(1.1, 0.1, 0), tcl = 0.25,
+    mfcol = c(2, 1),xaxs='i')
+plot(yrs, ca533.crn[, 1], type = "n", xlab = "Year", ylab = "RWI",
+     axes=FALSE)
+xx <- c(500, 500, max(bar$yrs[bar$eps < eps.cut], na.rm = TRUE),
+        max(bar$yrs[bar$eps < eps.cut], na.rm = TRUE))
+yy <- c(-1, 3, 3, -1)
+polygon(xx, yy, col = "grey80")
+abline(h = 1, lwd = 1.5)
+lines(yrs, ca533.crn[, 1], col = "grey50")
+lines(yrs, ffcsaps(ca533.crn[, 1], nyrs = 32), col = "red", lwd = 2)
+axis(1);axis(2);axis(3);
+par(new = TRUE)
+## Add EPS
+plot(bar$yrs, bar$eps, type = "b", xlab = "", ylab = "", axes = FALSE,
+     pch = 20, col = "blue")
+axis(4,at = pretty(foo$eps))
+mtext("EPS", side = 4, line = 1.1)
+axis(4,at = pretty(foo$eps))
+box()
+## Second plot is the chronology after the cut off only
+## Chronology is rebuilt using just years after cutoff but
+## that difference is essentially nil.
+yr.mask <- yrs > max(bar$yrs[bar$eps<eps.cut], na.rm = TRUE)
+yrs2 <- yrs[yr.mask]
+ca533.crn2 <- chron(ca533.rwi[yr.mask,])
+plot(yrs2, ca533.crn2[, 1], type = "n",
+     xlab = "Year", ylab = "RWI",axes=FALSE)
+abline(h = 1, lwd = 1.5)
+lines(yrs2, ca533.crn2[, 1], col = "grey50")
+lines(yrs2, ffcsaps(ca533.crn2[, 1], nyrs = 32),
+      col = "red", lwd = 2)
+axis(1);axis(2);axis(3);axis(4)
+box()
+par(def.par)
+@
+\begin{figure}
+<<fig=true,echo=false>>=
+<<a>>
+@
+\caption{Campito Mountain chronology EPS cutoff.}
+\label{fig:chron.plot.eps}
+\end{figure}
+
 \section{Prospectus}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce pharetra.
+We hope that this vignette helps users cover introductory data handling and
+processing using dplR and R. As we noted above we are just providing a short
+introduction as to what is possible in dplR. There are many other functions in 
+dplR that will help user's analyze tree rings. These include a host of 
+functions for statistical cross dating as well as spectral and wavelet 
+analysis. We will cover those in future vignettes. 
 
 \bibliography{dplR}
-
 
 \end{document}

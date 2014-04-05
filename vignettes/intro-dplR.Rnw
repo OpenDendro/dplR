@@ -1,6 +1,6 @@
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
-%\VignetteIndexEntry{Introduction to dplR}
-\documentclass[a4paper,10pt]{article}
+%\VignetteIndexEntry{An introduction to dplR}
+\documentclass[a4paper,12pt]{article}
 \usepackage{dplR} % dplR settings - simple now - could do something more interesting
 
 \title{An introduction to dplR} 
@@ -19,21 +19,25 @@ in \Sexpr{R.version.string} on \today}}
 
 \begin{abstract}
 This document describes basic features of dplR including reading and working with ring-width
-data. Detrending and standardization of ring-width data, building chronologies, and calcualting 
-descriptive statistics. A range of simple plots are also presented. Stasistical cross dating 
-is presented in a seperate vignette.
+data, detrending and standardization of ring-width data, building chronologies, and calculating 
+descriptive statistics. A range of simple plots are also presented. Statistical cross dating 
+is presented in a separate vignette.
 \end{abstract}
 \tableofcontents
 
-\vspace{3ex}
-\noindent dplR is a package for dendrochronologists.  This
-documents gives just a brief introduction of some of the most commonly
-used functions in dplR. There is more detailed information available
-in the help files and in the literature including \cite{Bunn2008} and 
-\cite{Bunn2010}.
 \newpage
 
 \section{Introduction}
+The Dendrochronology Program Library in R (dplR) is a package for dendrochronologists.
+This documents gives just a brief introduction of some of the most commonly
+used functions in dplR. There is more detailed information available
+in the help files and in the literature including \cite{Bunn2008} and 
+\cite{Bunn2010}. 
+
+In this vignette, we will walk through the most basic activities of working with tree-ring
+data in roughly the order that a dendrochronologist might follow. E.g., reading data,
+detrending, chronology building, and doing preliminary exploratory data analysis via
+descriptive statistics.
 
 \section{Working with Ring-Width Data}
 \subsection{Reading Data}
@@ -41,19 +45,19 @@ There are, alas, many different ways that tree-ring data are digitally stored. T
 sophistication from the simple 
 \href{http://www.ncdc.noaa.gov/paleo/treeinfo.html#formats}{Tucson} (decadal) format file of 
 ring widths to the more complex \href{http://www.tridas.org/}{TRiDaS format}. We generally
-refer to these as rwl objects for "ring width lenth" but there is no reason these can't be
+refer to these as rwl objects for ``ring width lenth'' but there is no reason these can't be
 other types of tree-ring data (e.g., density).
 
 The workhorse function for getting tree-ring data into R is dplR's read.rwl function. This 
-function reads files in "tucson", "compact", "tridas", "heidelberg" formats. The onboard 
-rwl datasets in dplR (i.e., co021, ca533, gp.rwl) were all imported into R using this function.
+function reads files in ``tucson'', ``compact'', ``tridas'', ``heidelberg'' formats. The onboard 
+rwl data sets in dplR (i.e., co021, ca533, gp.rwl) were all imported into R using this function.
 
 These objects are structured very simply as a data.frame with the series in columns and the years as rows. The series IDs are the column names and the years are the row names (both 
-stored as characters).
+stored as characters). For instance, using one of the onboard data sets (ca533):
 
 <<>>=
 library(dplR)
-data(ca533)
+data(ca533) # the reult of ca533 <- read.rwl('ca533')
 dim(ca533) # 1358 years and 34 series
 colnames(ca533) # the series IDs
 head(rownames(ca533)) # the first few years
@@ -61,9 +65,9 @@ class(ca533) # note that this is an "rwl" class as well as a data.frame
 @
 
 \subsection{Describing and Plotting Ring-Width Data}
-One a rwl dataset has been read into R, there are a variety of ways to describe and visualize
+One a rwl data set has been read into R, there are a variety of ways to describe and visualize
 it. For instance, we can plot an rwl object by showing either the segments arranged over time
-as straight lines or as a "spaghetti plot".
+as straight lines or as a ``spaghetti plot''.
 
 <<a>>=
 plot(ca533,plot.type=c('spag'))
@@ -76,36 +80,103 @@ plot(ca533,plot.type=c('spag'))
 \label{fig:rwl.plot}
 \end{figure}
 
-We can also look at common (and not-so common) descriptive statistics of an rwl object.
-<<a>>=
-rwl.stats(ca533)
-@
-
 \section{Detrending}
 
-The dplR package contains most standard detrending methods including
-detrending via splines, curve fitting, and so on. There are also methods for 
-detrending that are less commonly used but preferred by some. In this section I describe
-functions detrend and rcs and cms.
+Analysts typically (but not always) detrend a rwl data set to create an ring-width index
+(rwi) object. The dplR package contains most standard detrending methods including
+detrending via splines, fitting a negative exponential curve, and so on. There are also methods for detrending that are less commonly used like regional curve standardization. 
+
+\textbf{By the way, if this is all new to you - you should stop reading this
+vignette and proceed immediately to a good primer on dendrochronology like 
+\cite{Fritts2001}. This vignette is not intended to teach you about how to do 
+tree-ring analysis. It's intended to teach you how to use the package.}
+
+A rwi object has the same basic properties as the rwl obejct from which it is 
+made. I.e., it has the same number of rows and columns, the same names, and so 
+on. The differnce is that each series has a mean of one (each series is 
+indexed). As read.rwl is the primary function for getting data into R, detrend
+is the primary function for standardizing rwl objects.
 
 \subsection{Common Detrending Methods}
-Detrending an rwl object with a modified negative exponential is done like this:
-  
+As any dendrochronologists will tell you, detrending is a dark art. In dplR we 
+have implemented some of the standard tools for detrending but all have 
+drawbacks. In all of the detrend methods, the detrending is the estimation and 
+removal of the tree's natural biological growth trend. The standardization is 
+done by dividing each series by the growth trend to produce units in the 
+dimensionless ring-width index (RWI).
+
+We'll discuss detrending via fitting a nonlinear function using
+nls (the ``ModNegExp'' method of detrend) and detrending via cubic smoothing
+spline (the ``Spline'' method of detrend). Much of the text that follows is
+from the help page of detrend.
+
+Probably the most common method for detrending is what is often 
+called the ``conservative'' approach of attempting to fit a negative exponential 
+curve to a series In the dplR implementation the ``ModNegExp'' method of detrend
+attempts to fit a classic nonlinear model of biological growth of the form 
+f(t) = a exp(b t) + k, where the argument of the function is time, using nls. 
+See \cite{Fritts2001} for details about the parameters. If a suitable 
+nonlinear model cannot be fit (function is non-decreasing or some values are 
+not positive) then a linear model is fit. That linear model can have a positive 
+slope unless pos.slope is FALSE in which case the series is standardized by its
+mean (method ``Mean'' in detrend).
+
+For instance every series in the ca533 object can be detrended at once via:  
 <<>>=
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 @
 This saves the results in ca533.rwi which is a data.frame with
-the same dimensions as the rwl object ca533:
+the same dimensions as the rwl object ca533 and each series standardized as we
+can see via the summary output for each.
 <<>>=
 dim(ca533)
 dim(ca533.rwi)
+names(ca533)
+names(ca533.rwi)
+colMeans(ca533.rwi,na.rm=TRUE)
 @
+
+An alternative method in detrend is to standardize with the ``Spline'' approach.
+This method uses an spline where the frequency response is 0.50 at a wavelength 
+of 0.67 * “series length in years”, unless specified differently using nyrs 
+and f in the function ffcsaps. This attempts to remove the low frequency 
+variability that is due to biological or stand effects. Rather than detrend the
+entire ca533 rwl object, we'll illustrate the spline method by detrending a 
+single series using the detrend.series function.
+
+<<a>>=
+series <- ca533[, "CAM011"] # extract the series
+names(series) <- rownames(ca533) # give it years as rownames
+series.rwi <- detrend.series(y = series, y.name = "CAM011",method="Spline")
+@
+\begin{figure}[htbp]
+<<fig=true,echo=false>>=
+<<a>>
+@
+\caption{Detrending a series via a spline.}
+\label{fig:spline.detrend}
+\end{figure}
+
+Often, a user will want to interactively detrend each series and fit a negative
+exponential curve to one series and a spline to another. This can be done via
+the i.detrend and i.detrend.series functions. See their help pages for details.
 
 \subsection{Other Detrending Methods}
 E.g., RCS and CMS.
 
-\section{Descriptive Statisitcs}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eget.
+\section{Descriptive Statistics}
+Either before or after standardization, it would be natural to want to look at
+some common (and not-so common) descriptive statistics of an rwl object. The
+rwl.stats function is typically used on raw ring widths (the rwl object) and 
+produces summary statistics. Here are summary statistics on the first five
+series in ca533.
+<<a>>=
+rwl.stats(ca533)[1:5,]
+@
+
+These are common summary statistics like mean, median, etc. but also statistics that are more specific to dendrochronlogy like the first-order autocorrelation (ar1) and mean sensitivity (sens1 and sens 2) which are actually terrible statistics that should rarely, if ever, be used \citep{Bunn2013}. 
+
+
 
 \section{Building a Mean Value Chronology}
 Let's make a chronology and plot it. First we make a chronology

@@ -1,8 +1,11 @@
+o [mvkorpel] Fix the sty file so that Sweave code adheres to the margins.
+
+* Make an S3 summary method for rwl objects that calls rwl.stats.
+
 * Improve the help file for series.rho.
 
-o [mvkorpel] Write a MAKEFILE for vignettes that removes any of the temp files that get
-  produced when typesetting the vignette pdf?
-
+o [mvkorpel] Write a MAKEFILE for vignettes that removes any of the temp files 
+  that get produced when typesetting the vignette pdf? The tex files, etc.
 * Actually write the first intro vignette!
 
 * Decide when to use class('rwl') in functions dealing with rwl objects.

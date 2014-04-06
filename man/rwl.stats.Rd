@@ -1,20 +1,27 @@
 \name{rwl.stats}
 \alias{rwl.stats}
-\title{ Calculate Descriptive Statistics on Ring-Width Series }
+\alias{summary.rwl}
+\title{ Calculate Descriptive Summary Statistics on Ring-Width Series }
 \description{
-  This function calculates descriptive statistics on a \code{data.frame}
+  This function calculates descriptive statistics on a \code{rwl} object
   of raw or detrended ring-width series.
 }
 \usage{
-rwl.stats(rwl)
+rwl.stats(object)
+
+\method{summary}{rwl}(object,...)
+
 }
 \arguments{
-  \item{rwl}{ a \code{data.frame} with (usually) raw ring-width series
+  \item{object}{ a \code{rwl} object with (usually) raw ring-width series
   as columns and years as rows such as that produced by
   \code{\link{read.rwl}}.  It is sometimes desirable to run this on
-  detrended (e.g., rwi) data particularly for the sensitivity measures
-  (\code{\link{sens1}}, \code{\link{sens2}}, \code{\link{gini.coef}}). }
+  detrended (e.g., rwi) data. }
+
+  \item{\dots}{ Additional arguemnts for summary.default. Does this have
+  to be here? If this item is not included, R CMD check gives a warning. }
 }
+
 \details{
   This calculates a variety of descriptive statistics commonly used in
   dendrochronology (see below). Users unfamiliar with these should see
@@ -44,5 +51,6 @@ rwl.stats(rwl)
 \seealso{ \code{\link{rwi.stats}}, \code{\link{read.rwl}} }
 \examples{data(ca533)
 rwl.stats(ca533)
+summary(ca533)
 }
 \keyword{ misc }

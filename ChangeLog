@@ -4,6 +4,18 @@ File: TODO
 -------------------------
 - Added a TODO list. This is exciting.
 
+File: NAMESPACE
+-------------------------
+- Added chron.plot to export list.
+- Added rho.series to export list.
+- Added plot.rwl as an S3Method.
+- Added summary.rwl as an S3Method.
+
+File: rwl.stats
+-------------------------
+- Added an S3 summary method for rwl objects so that summary(an rwl object)
+  calls rwl.stats()
+
 Folder: vignettes
 -------------------------
 - Added a vignettes folder
@@ -16,12 +28,6 @@ File: intro-dplR.Rnw
 -------------------------
 - A vignette to intriduce dplR
 
-File: NAMESPACE
--------------------------
-- Added chron.plot to export list.
-- Added rho.series to export list.
-- Added plot.rwl as an S3Method.
-
 File: corr.rwl.seg.R
 --------------------
 - Removed yr.range() function in favor of yr.range() in helpers.R.
@@ -29,10 +35,7 @@ File: corr.rwl.seg.R
 
 File: series.rho.R
 -------------------------
-- New function series.rho. This needs more work.
-  E.g., speed up via apply()? And need to integrate
-  into rwl.stats WITHOUT any new arguments being
-  added to rwl.stats. I like that function clean.
+- New function series.rho.
 
 File: read.compact.R
 -------------------------
@@ -69,12 +72,7 @@ File: gp.rwl.rda
 
 File: rwl.plot.R
 -------------------------
-- New wrapper to plot rwl objects. This is setting the
-  stage for having plot, summary, etc. methods for rwl
-  objects. There are still several things to work on. Like
-  setting the class() of rwl data objects via read.rwl (and in
-  the onboard data sets). And will this class change break any
-  existing functions?
+- New wrapper to plot rwl objects.
 
 File: spag.plot.R
 -------------------------

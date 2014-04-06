@@ -1,3 +1,8 @@
+o [mvkorpel] Look at Rd page for rwl.stats. Is there a way to not include
+  dots as an argument to summary.rwl? The function rwl.stats() doesn't use
+  dots. But I can't leave them out of the \usage section or R CMD check 
+  complains.
+
 o [mvkorpel] Fix the sty file so that Sweave code adheres to the margins. And
   what is the best way to make the figure widths take up the text width?
   In addition to my many other failings, I'm not great at LaTeX!
@@ -7,13 +12,11 @@ o [mvkorpel] Write a MAKEFILE for vignettes that removes any of the temp files
   I've been compiling the vignettes in Rstudio which leaves a lot of junk
   behind when it's done.
 
-* Make an S3 summary method for rwl objects that calls rwl.stats.
-
 * Improve the help file for series.rho.
 
 * Decide when to use class('rwl') in functions dealing with rwl objects.
-  Other than the plot S3Method for rwl, are there cases when having that class
-  would be useful. E.g., in error checking?
+  Other than the plot and summary S3Method for rwl, are there cases when 
+  having that class would be useful. E.g., in error checking?
 
 - Consider the benefits and drawbacks of creating classes for chonologies. 
   One benefit would be an S3 plot method for chronologies.

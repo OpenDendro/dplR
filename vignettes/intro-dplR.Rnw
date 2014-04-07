@@ -16,6 +16,9 @@ in \Sexpr{R.version.string} on \today}}
 \setkeys{Gin}{width=1.0\textwidth} % figure width
 \SweaveOpts{concordance=TRUE}
 \SweaveOpts{strip.white=true}
+<<echo=false>>=
+options(width=62) # width of paper (number of characters)
+@ 
 
 \maketitle
 

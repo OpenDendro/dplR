@@ -1,4 +1,6 @@
-series.rho <- function(rwl, n=NULL, prewhiten=TRUE, biweight=TRUE) {
+interseries.cor <- function(rwl, n=NULL, prewhiten=TRUE, biweight=TRUE, 
+                       method = c("spearman", "pearson","kendall")) {
+    method <- match.arg(method)
     nseries <- length(rwl)
     rho <- numeric(nseries)
     p.val <- numeric(nseries)
@@ -10,7 +12,7 @@ series.rho <- function(rwl, n=NULL, prewhiten=TRUE, biweight=TRUE) {
     master <- tmp[["master"]]
     for (i in seq_len(nseries)) {
         tmp2 <- cor.test(series[, i], master[, i],
-                         method = "spearman", alternative = "greater")
+                         method = method)
         rho[i] <- tmp2[["estimate"]]
         p.val[i] <- tmp2[["p.value"]]
     }

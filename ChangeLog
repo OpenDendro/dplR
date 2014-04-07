@@ -7,7 +7,7 @@ File: TODO
 File: NAMESPACE
 -------------------------
 - Added chron.plot to export list.
-- Added rho.series to export list.
+- Added interseries.cor to export list.
 - Added plot.rwl as an S3Method.
 - Added summary.rwl as an S3Method.
 
@@ -41,9 +41,9 @@ File: corr.rwl.seg.R
 - Removed yr.range() function in favor of yr.range() in helpers.R.
   They are identical for all practical purposes.
 
-File: series.rho.R
+File: interseries.cor.R
 -------------------------
-- New function series.rho.
+- New function interseries.cor.
 
 File: read.compact.R
 -------------------------

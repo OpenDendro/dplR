@@ -1,11 +1,13 @@
-\name{series.rho}
-\alias{series.rho}
-\title{ Calculate an individual indidual series correlation against a master chronology in an rwl object  }
+\name{interseries.cor}
+\alias{interseries.cor}
+\title{ Calculate an indidual series correlation against a master chronology 
+  in an rwl object  }
 \description{
   This function calculates the correlation between a series and a master chronology
 }
 \usage{
-  series.rho(rwl,n=NULL,prewhiten=TRUE,biweight=TRUE)
+  interseries.cor(rwl,n=NULL,prewhiten=TRUE,biweight=TRUE,
+    method = c("spearman", "pearson","kendall"))
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as
@@ -16,7 +18,10 @@
   \item{prewhiten}{ \code{logical} flag.  If \code{TRUE} each series is
     whitened using \code{\link{ar}}. }
   \item{biweight}{ \code{logical} flag.  If \code{TRUE} then a robust
-    mean is calculated using \code{\link{tbrm}}. }
+    mean is calculated using \code{\link{tbrm}}.}
+  \item{method}{Can either "pearson", "kendall", or "spearman" which indicates
+    the correlation coefficient is to be used. Defaults to "spearman." See 
+    \code{\link{cor.test}}. }
 }
 \details{
   This function calculates correlation serially between each tree-ring
@@ -50,12 +55,12 @@
 \author{ Andy Bunn, patched and improved by Mikko Korpela  }
 \seealso{ \code{\link{rwl.stats}}, \code{\link{rwi.stats}} }
 \examples{data(gp.rwl)
-foo <- series.rho(gp.rwl)
+foo <- interseries.cor(gp.rwl)
 # compare to: 
-# corr.rwl.seg(rwl=gp.rwl)$overall
+# corr.rwl.seg(rwl=gp.rwl,make.plot=FALSE)$overall
 
 # two measures of interseries correlation
-# compare series.rho to rbar from rwi.stats
+# compare interseries.cor to rbar from rwi.stats
 gp.ids <- read.ids(gp.rwl, stc = c(0, 2, 1))
 bar <- rwi.stats(gp.rwl, gp.ids, prewhiten=TRUE)
 bar$rbar.eff

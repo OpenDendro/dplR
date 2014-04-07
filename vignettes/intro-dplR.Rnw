@@ -155,8 +155,8 @@ colMeans(ca533.rwi, na.rm=TRUE)
 
 An alternative method in detrend is to standardize with the ``Spline'' approach.
 This method uses a spline as the growth model where the frequency response 
-is 0.50 at a wavelength of 0.67 * series length (unless specified differently by the
-user. This attempts to remove the low frequency 
+is 0.50 at a wavelength of 0.67 * series length (unless specified differently by 
+the user). This attempts to remove the low frequency 
 variability that is due to biological or stand effects. Rather than detrend the
 entire ca533 rwl object, we'll illustrate the spline method by detrending a 
 single series using the detrend.series function, which produces a plot by
@@ -217,24 +217,25 @@ rwi.stats(ca533.rwi, ca533.ids, prewhiten=TRUE)
 @
 
 There is (at least) one other way of looking at the average interseries 
-correlation of a dataset. The series.rho function in dplR gives a measure of
+correlation of a dataset. The interseries.cor function in dplR gives a measure of
 average interseries correlation that is different than the rbar measurements
 from rwi.stats. In this function, correlations are calculated serially between 
 each tree-ring series and a master chronology built from all the other series 
 in the rwl object (leave-one-out principle). The average of those correlations
 is sometimes called the ``overall interseries correlation.'' This number is
-typically higher than rbar
+typically higher than rbar. We are showing just the first five series and the 
+mean for all series here:
 
 <<>>=
-ca533.rho <- series.rho(ca533.rwi, prewhiten=TRUE)
-head(ca533.rho)
+ca533.rho <- interseries.cor(ca533.rwi, prewhiten=TRUE,
+                             method="spearman")
+ca533.rho[1:5,]
 mean(ca533.rho[, 1])
 @
 
 Again. if these concepts are unknown to you statistically look at some of the
 canonical works in dendrochronology like \cite{Cook1990} and \cite{Fritts2001}
 as well as more recent works like \cite{Hughes2011}.
-
 
 \section{Building a Mean Value Chronology}
 After detrending, a user will typically build a chronology by averaging across

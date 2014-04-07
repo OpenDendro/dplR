@@ -76,7 +76,7 @@ data(ca533) # the result of ca533 <- read.rwl('ca533.rwl')
 dim(ca533) # 1358 years and 34 series
 colnames(ca533) # the series IDs
 head(rownames(ca533)) # the first few years
-class(ca533) # note that this is an "rwl" class as well as a data.frame
+class(ca533) # note "rwl" class as well as "data.frame"
 @
 
 \subsection{Describing and Plotting Ring-Width Data}
@@ -86,7 +86,7 @@ showing either the segments arranged over time as straight lines or as a
 ``spaghetti plot.''
 
 <<a, fig=TRUE>>=
-plot(ca533,plot.type=c('spag'))
+plot(ca533, plot.type=c('spag'))
 @
 \begin{figure}[htbp]
 \centering
@@ -148,7 +148,7 @@ dim(ca533)
 dim(ca533.rwi)
 names(ca533)
 names(ca533.rwi)
-colMeans(ca533.rwi,na.rm=TRUE)
+colMeans(ca533.rwi, na.rm=TRUE)
 @
 
 An alternative method in detrend is to standardize with the ``Spline'' approach.
@@ -191,7 +191,7 @@ rwl.stats function is typically used on raw ring widths (the rwl object) and
 produces summary statistics. Here are summary statistics on the first five
 series in ca533.
 <<>>=
-rwl.stats(ca533)[1:5,]
+rwl.stats(ca533)[1:5, ]
 @
 
 These are common summary statistics like mean, median, etc. but also statistics 
@@ -226,7 +226,7 @@ typically higher than rbar
 <<>>=
 ca533.rho <- series.rho(ca533.rwi, prewhiten=TRUE)
 head(ca533.rho)
-mean(ca533.rho[,1])
+mean(ca533.rho[, 1])
 @
 
 Again. if these concepts are unknown to you statistically look at some of the
@@ -254,7 +254,7 @@ The chronology can be plotted using the chron.plot function which has many
 arguments for customization. Here we'll just make a simple plot of the 
 chronology with a smoothing spline added.
 <<c, fig=TRUE>>=
-chron.plot(ca533.crn,add.spline=TRUE,nyrs=20)
+chron.plot(ca533.crn, add.spline=TRUE, nyrs=20)
 @
 \begin{figure}
 \centering
@@ -271,45 +271,48 @@ expressed population signal.
 <<d, fig=TRUE>>=
 def.par <- par(no.readonly=TRUE)
 eps.cut <- 0.85 # An arbitrary EPS cutoff for demonstration
-## Plot the chronology showing a potential cutoff year based on EPS
-## Running stats on the rwi with an window
-foo <- rwi.stats.running(ca533.rwi, ca533.ids, window.length = 80)
+## Plot the chronology showing a potential cutoff year
+## based on EPS. Running stats on the rwi with a window.
+foo <- rwi.stats.running(ca533.rwi, ca533.ids,
+                         window.length = 80)
 yrs <- as.numeric(rownames(ca533.crn))
 bar <- data.frame(yrs = c(min(yrs), foo$mid.year, max(yrs)),
                   eps = c(NA, foo$eps, NA))
 par(mar = c(2, 2, 2, 2), mgp = c(1.1, 0.1, 0), tcl = 0.25,
-    mfcol = c(2, 1),xaxs='i')
-plot(yrs, ca533.crn[, 1], type = "n", xlab = "Year", ylab = "RWI",
-     axes=FALSE)
-xx <- c(500, 500, max(bar$yrs[bar$eps < eps.cut], na.rm = TRUE),
+    mfcol = c(2, 1), xaxs='i')
+plot(yrs, ca533.crn[, 1], type = "n", xlab = "Year",
+     ylab = "RWI", axes=FALSE)
+xx <- c(500, 500,
+        max(bar$yrs[bar$eps < eps.cut], na.rm = TRUE),
         max(bar$yrs[bar$eps < eps.cut], na.rm = TRUE))
 yy <- c(-1, 3, 3, -1)
 polygon(xx, yy, col = "grey80")
 abline(h = 1, lwd = 1.5)
 lines(yrs, ca533.crn[, 1], col = "grey50")
-lines(yrs, ffcsaps(ca533.crn[, 1], nyrs = 32), col = "red", lwd = 2)
+lines(yrs, ffcsaps(ca533.crn[, 1], nyrs = 32), col = "red",
+      lwd = 2)
 axis(1);axis(2);axis(3);
 par(new = TRUE)
 ## Add EPS
-plot(bar$yrs, bar$eps, type = "b", xlab = "", ylab = "", axes = FALSE,
-     pch = 20, col = "blue")
-axis(4,at = pretty(foo$eps))
+plot(bar$yrs, bar$eps, type = "b", xlab = "", ylab = "",
+     axes = FALSE, pch = 20, col = "blue")
+axis(4, at = pretty(foo$eps))
 mtext("EPS", side = 4, line = 1.1)
-axis(4,at = pretty(foo$eps))
+axis(4, at = pretty(foo$eps))
 box()
 ## Second plot is the chronology after the cut off only
 ## Chronology is rebuilt using just years after cutoff but
 ## that difference is essentially nil.
 yr.mask <- yrs > max(bar$yrs[bar$eps<eps.cut], na.rm = TRUE)
 yrs2 <- yrs[yr.mask]
-ca533.crn2 <- chron(ca533.rwi[yr.mask,])
+ca533.crn2 <- chron(ca533.rwi[yr.mask, ])
 plot(yrs2, ca533.crn2[, 1], type = "n",
-     xlab = "Year", ylab = "RWI",axes=FALSE)
+     xlab = "Year", ylab = "RWI", axes=FALSE)
 abline(h = 1, lwd = 1.5)
 lines(yrs2, ca533.crn2[, 1], col = "grey50")
 lines(yrs2, ffcsaps(ca533.crn2[, 1], nyrs = 32),
       col = "red", lwd = 2)
-axis(1);axis(2);axis(3);axis(4)
+axis(1); axis(2); axis(3); axis(4)
 box()
 par(def.par)
 @

@@ -4,10 +4,6 @@
 *  In detrend(method=“ModNegExp”) there should be a verbose option that writes 
    how each series was handled including the parameters of the model.
 
-o [mvkorpel] Fix the sty file so that Sweave code adheres to the margins. And
-  what is the best way to make the figure widths take up the text width?
-  In addition to my many other failings, I'm not great at LaTeX!
-
 o [mvkorpel] Write a MAKEFILE for vignettes that removes any of the temp files 
   that get produced when typesetting the vignette pdf? The tex files, etc.
   I've been compiling the vignettes in Rstudio which leaves a lot of junk

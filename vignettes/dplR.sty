@@ -9,3 +9,11 @@
 \usepackage[round]{natbib}
 \usepackage{hyperref}
 \usepackage{sidecap}
+\AtBeginDocument{
+  \hypersetup{
+    pdftitle = {\@title},
+    pdfsubject = {Dendrochronology Program Library in R},
+    pdfkeywords = {dendrochronology, dplR, R},
+    pdflang = {en}
+  }
+}

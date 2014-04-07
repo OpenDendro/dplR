@@ -4,8 +4,10 @@
 \usepackage{dplR} % dplR settings - needs some work
 
 \title{An introduction to dplR} 
-\author{Andy Bunn and Mikko Korpela}
-
+\author{Andy Bunn \and Mikko Korpela}
+\hypersetup{
+  pdfauthor = {Andy Bunn; Mikko Korpela},
+}
 \date{\footnotesize{$ $Processed with dplR 
 \Sexpr{packageDescription("dplR", field="Version")}
 in \Sexpr{R.version.string} on \today}}

@@ -86,7 +86,7 @@ showing either the segments arranged over time as straight lines or as a
 ``spaghetti plot.''
 
 <<a, fig=TRUE>>=
-plot(ca533, plot.type=c('spag'))
+plot(ca533, plot.type="spag")
 @
 \begin{figure}[htbp]
 \centering
@@ -297,7 +297,6 @@ plot(bar$yrs, bar$eps, type = "b", xlab = "", ylab = "",
      axes = FALSE, pch = 20, col = "blue")
 axis(4, at = pretty(foo$eps))
 mtext("EPS", side = 4, line = 1.1)
-axis(4, at = pretty(foo$eps))
 box()
 ## Second plot is the chronology after the cut off only
 ## Chronology is rebuilt using just years after cutoff but

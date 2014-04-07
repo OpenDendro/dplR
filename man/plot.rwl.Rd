@@ -29,8 +29,8 @@
   \code{\link{read.rwl}}
 }
 \examples{data(co021)
-plot(co021,plot.type=c('seg'))
-plot(co021,plot.type=c('spag'))
-plot(co021,plot.type=c('spag'),zfac=2)
+plot(co021, plot.type="seg")
+plot(co021, plot.type="spag")
+plot(co021, plot.type="spag", zfac=2)
 }
 \keyword{ hplot }

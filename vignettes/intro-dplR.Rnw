@@ -16,6 +16,7 @@ in \Sexpr{R.version.string} on \today}}
 \setkeys{Gin}{width=1.0\textwidth} % figure width
 \SweaveOpts{concordance=TRUE}
 \SweaveOpts{strip.white=true}
+\SweaveOpts{include=FALSE}
 <<echo=false>>=
 options(width=62) # width of paper (number of characters)
 @ 
@@ -84,14 +85,12 @@ describe and visualize those data. For instance, we can plot an rwl object by
 showing either the segments arranged over time as straight lines or as a 
 ``spaghetti plot.''
 
-<<a>>=
+<<a, fig=TRUE>>=
 plot(ca533,plot.type=c('spag'))
 @
 \begin{figure}[htbp]
 \centering
-<<fig=true,echo=false>>=
-<<a>>
-@
+\includegraphics{intro-dplR-a}
 \caption{A spaghetti plot of Campito Mountain ring widths.}
 \label{fig:rwl.plot}
 \end{figure}
@@ -161,7 +160,7 @@ entire ca533 rwl object, we'll illustrate the spline method by detrending a
 single series using the detrend.series function, which produces a plot by
 default.
 
-<<a>>=
+<<b, fig=TRUE>>=
 series <- ca533[, "CAM011"] # extract the series
 names(series) <- rownames(ca533) # give it years as rownames
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
@@ -169,9 +168,7 @@ series.rwi <- detrend.series(y = series, y.name = "CAM011",
 @
 \begin{figure}[htbp]
 \centering
-<<fig=true,echo=false>>=
-<<a>>
-@
+\includegraphics{intro-dplR-b}
 \caption{Detrending a series via a spline.}
 \label{fig:spline.detrend}
 \end{figure}
@@ -193,7 +190,7 @@ some common (and not-so common) descriptive statistics of an rwl object. The
 rwl.stats function is typically used on raw ring widths (the rwl object) and 
 produces summary statistics. Here are summary statistics on the first five
 series in ca533.
-<<a>>=
+<<>>=
 rwl.stats(ca533)[1:5,]
 @
 
@@ -256,14 +253,12 @@ dim(ca533.crn)
 The chronology can be plotted using the chron.plot function which has many 
 arguments for customization. Here we'll just make a simple plot of the 
 chronology with a smoothing spline added.
-<<a>>=
+<<c, fig=TRUE>>=
 chron.plot(ca533.crn,add.spline=TRUE,nyrs=20)
 @
 \begin{figure}
 \centering
-<<fig=true,echo=false>>=
-<<a>>
-@
+\includegraphics{intro-dplR-c}
 \caption{Campito Mountain chronology with 20-year smoothing spline.}
 \label{fig:chron.plot.spline}
 \end{figure}
@@ -273,7 +268,7 @@ that most dendrochronologists will want to be aware of. Know that we are just
 scratching the surface of what dplR is capable of. As a small example, 
 here is a way that a user might decide to truncate a chronology based on the
 expressed population signal.
-<<a>>=
+<<d, fig=TRUE>>=
 def.par <- par(no.readonly=TRUE)
 eps.cut <- 0.85 # An arbitrary EPS cutoff for demonstration
 ## Plot the chronology showing a potential cutoff year based on EPS
@@ -320,9 +315,7 @@ par(def.par)
 @
 \begin{figure}
 \centering
-<<fig=true,echo=false>>=
-<<a>>
-@
+\includegraphics{intro-dplR-d}
 \caption{Campito Mountain chronology using an EPS cutoff.}
 \label{fig:chron.plot.eps}
 \end{figure}

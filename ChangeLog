@@ -11,6 +11,14 @@ File: NAMESPACE
 - Added plot.rwl as an S3Method.
 - Added summary.rwl as an S3Method.
 
+File: powt.R
+------------
+
+- Originally, the transformed series were rescaled to their
+  original mean and variance, which can lead to negative values for
+  the (supposedly) raw tree-ring data.  This is not necessary, and
+  has been removed now.
+
 File: rwl.stats
 -------------------------
 - Added an S3 summary method for rwl objects so that summary(an rwl object)

@@ -34,15 +34,11 @@ powt <- function(rwl) {
     }
     transf <- function(x) {
         Xt <- x
-        sdx <- sd(x, na.rm = TRUE)
-        meanx <- mean(x, na.rm = TRUE)
         X.nna <- which(!is.na(x))
         X <- na.omit(x)
         p <- fit.lm(X)
         X2 <- X^p
-        X2sc <- scale(X2)
-        X2resc <- (X2sc * sdx) + meanx
-        Xt[X.nna] <- X2resc
+        Xt[X.nna] <- X2
         Xt
     }
     prec <- getprec(rwl)

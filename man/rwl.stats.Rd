@@ -9,24 +9,32 @@
 \usage{
 rwl.stats(object)
 
-\method{summary}{rwl}(object,...)
+\method{summary}{rwl}(object, ...)
 
 }
 \arguments{
+
   \item{object}{ a \code{rwl} object with (usually) raw ring-width series
   as columns and years as rows such as that produced by
   \code{\link{read.rwl}}.  It is sometimes desirable to run this on
   detrended (e.g., rwi) data. }
 
-  \item{\dots}{ Additional arguemnts for summary.default. Does this have
-  to be here? If this item is not included, R CMD check gives a warning. }
+  \item{\dots}{ Additional arguments from the generic function.  These
+    are silently ignored. }
+
 }
 
 \details{
+
   This calculates a variety of descriptive statistics commonly used in
   dendrochronology (see below). Users unfamiliar with these should see
   Cook and Kairiukstis (1990) and Fritts (2001) for further details.
+
+  The \code{\link{summary}} method for class \code{"rwl"} is a wrapper
+  for \code{rwl.stats}.
+  
 }
+
 \value{
   A \code{data.frame} containing descriptive stats on each
   \code{"series"}. These are the first and last year of the series as

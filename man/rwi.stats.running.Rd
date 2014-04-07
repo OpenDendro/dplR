@@ -235,38 +235,38 @@ rwi.stats.legacy(gp.rwi, gp.ids) # rwi.stats prior to dplR 1.5.3
   bar <- data.frame(yrs = c(min(yrs), foo$mid.year, max(yrs)),
                     eps = c(NA, foo$eps, NA))
   par(mar = c(2, 2, 2, 2), mgp = c(1.1, 0.1, 0), tcl = 0.25,
-      mfcol = c(2, 1),xaxs='i')
-  plot(yrs, gp.crn[, 1], type = "n", xlab = "Year", ylab = "RWI",
-       axes=FALSE)
-  xx <- c(500, 500, max(bar$yrs[bar$eps < eps.cut], na.rm = TRUE),
-          max(bar$yrs[bar$eps < eps.cut], na.rm = TRUE))
+      mfcol = c(2, 1), xaxs='i')
+  plot(yrs, gp.crn[, 1], type = "n", xlab = "Year",
+       ylab = "RWI", axes=FALSE)
+  cutoff <- max(bar$yrs[bar$eps < eps.cut], na.rm = TRUE)
+  xx <- c(500, 500, cutoff, cutoff)
   yy <- c(-1, 3, 3, -1)
   polygon(xx, yy, col = "grey80")
   abline(h = 1, lwd = 1.5)
   lines(yrs, gp.crn[, 1], col = "grey50")
   lines(yrs, ffcsaps(gp.crn[, 1], nyrs = 32), col = "red", lwd = 2)
-  axis(1);axis(2);axis(3);
+  axis(1); axis(2); axis(3);
   par(new = TRUE)
   ## Add EPS
-  plot(bar$yrs, bar$eps, type = "b", xlab = "", ylab = "", axes = FALSE,
-       pch = 20, col = "blue")
-  axis(4,at = pretty(foo$eps))
+  plot(bar$yrs, bar$eps, type = "b", xlab = "", ylab = "",
+       axes = FALSE, pch = 20, col = "blue")
+  axis(4, at = pretty(foo$eps))
   mtext("EPS", side = 4, line = 1.1)
-  axis(4,at = pretty(foo$eps))
+  axis(4, at = pretty(foo$eps))
   box()
   ## Second plot is the chronology after the cut off only
   ## Chronology is rebuilt using just years after cutoff but
   ## that difference is essentially nil.
-  yr.mask <- yrs > max(bar$yrs[bar$eps<eps.cut], na.rm = TRUE)
+  yr.mask <- yrs > cutoff
   yrs2 <- yrs[yr.mask]
-  gp.crn2 <- chron(gp.rwi[yr.mask,])
+  gp.crn2 <- chron(gp.rwi[yr.mask, ])
   plot(yrs2, gp.crn2[, 1], type = "n",
-       xlab = "Year", ylab = "RWI",axes=FALSE)
+       xlab = "Year", ylab = "RWI", axes=FALSE)
   abline(h = 1, lwd = 1.5)
   lines(yrs2, gp.crn2[, 1], col = "grey50")
   lines(yrs2, ffcsaps(gp.crn2[, 1], nyrs = 32),
         col = "red", lwd = 2)
-  axis(1);axis(2);axis(3);axis(4)
+  axis(1); axis(2); axis(3); axis(4)
   box()
   par(def.par)
 }

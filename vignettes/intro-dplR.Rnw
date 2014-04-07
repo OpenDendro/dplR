@@ -13,6 +13,7 @@ in \Sexpr{R.version.string} on \today}}
 \begin{document}
 \bibliographystyle{jss}
 
+\setkeys{Gin}{width=1.0\textwidth} % figure width
 \SweaveOpts{concordance=TRUE}
 \SweaveOpts{strip.white=true}
 
@@ -84,6 +85,7 @@ showing either the segments arranged over time as straight lines or as a
 plot(ca533,plot.type=c('spag'))
 @
 \begin{figure}[htbp]
+\centering
 <<fig=true,echo=false>>=
 <<a>>
 @
@@ -163,6 +165,7 @@ series.rwi <- detrend.series(y = series, y.name = "CAM011",
                              method="Spline")
 @
 \begin{figure}[htbp]
+\centering
 <<fig=true,echo=false>>=
 <<a>>
 @
@@ -254,6 +257,7 @@ chronology with a smoothing spline added.
 chron.plot(ca533.crn,add.spline=TRUE,nyrs=20)
 @
 \begin{figure}
+\centering
 <<fig=true,echo=false>>=
 <<a>>
 @
@@ -312,6 +316,7 @@ box()
 par(def.par)
 @
 \begin{figure}
+\centering
 <<fig=true,echo=false>>=
 <<a>>
 @

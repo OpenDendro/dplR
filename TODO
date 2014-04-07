@@ -1,3 +1,9 @@
+*  In rwi.stats and any place a correlation is calculated, offer an argument to
+   to specify which correlation method (e.g., spearman).
+
+*  In detrend(method=“ModNegExp”) there should be a verbose option that writes 
+   how each series was handled including the parameters of the model.
+
 o [mvkorpel] Look at Rd page for rwl.stats. Is there a way to not include
   dots as an argument to summary.rwl? The function rwl.stats() doesn't use
   dots. But I can't leave them out of the \usage section or R CMD check 

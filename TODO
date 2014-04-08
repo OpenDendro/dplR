@@ -42,8 +42,3 @@
     y <- ar.func(y)
     return(y)
 
-o [andybunn] Clarify "each series has a mean of one" in the vignette.
-  Expected value (probability and statistics) vs. arithmetic mean of a
-  discrete set of numbers.  This is of the first kind.  Andy: as a
-  native English speaker, I'm sure you can formulate this better.
-

@@ -2,7 +2,7 @@
 
 File: TODO
 -------------------------
-- Added a TODO list. This is exciting.
+- Added a TODO list that follows the todo.ell format.
 
 File: NAMESPACE
 -------------------------
@@ -13,7 +13,6 @@ File: NAMESPACE
 
 File: powt.R
 ------------
-
 - Originally, the transformed series were rescaled to their
   original mean and variance, which can lead to negative values for
   the (supposedly) raw tree-ring data.  This is not necessary, and

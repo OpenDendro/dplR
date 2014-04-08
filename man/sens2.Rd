@@ -14,9 +14,9 @@
 \details{
   This calculates mean sensitivity according to Eq. 2 in Biondi and
   Qeadan (2008).  This is a measure of sensitivity in dendrochronology
-  that is typically used in the presence of a trend.  Users unfamiliar
-  with sensitivity in tree-ring data should see Cook and Kairiukstis
-  (1990) and Fritts (2001) for further details.
+  that is typically used in the presence of a trend.  However, note 
+  that that mean sensitivity is not a robust statitic and should rarely, 
+  if ever, be used (Bunn et al. 2013).
 }
 \value{ the mean sensitivity.
 }
@@ -25,12 +25,9 @@
   Biondi, F. and Qeadan, F. (2008) Inequality in Paleorecords.
   \emph{Ecology}, 89(4):1056\enc{–}{--}1067.
 
-  Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
-  Dendrochronology: Applications in the Environmental Sciences}.
-  Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
-
-  Fritts, H. C. (2001) \emph{Tree Rings and Climate}.  Blackburn.
-  \acronym{ISBN-13}: 978-1-930665-39-2.
+  Bunn. A.G., Jansma E., Korpela M., Westfall R.D., and Baldwin J. (2013) 
+  Using simulations and data to evaluate mean sensitivity (zeta) as a useful 
+  statistic in dendrochronology Dendrochronologia 31 250–4.
   
 }
 \author{ Mikko Korpela, based on original by Andy Bunn }

@@ -1,15 +1,31 @@
 *  In rwi.stats and any place a correlation is calculated, offer an argument to
-   to specify which correlation method (e.g., spearman). Note that I implemented
-   this in interseries.cor - but will have to do this throughout. The default
-   should be spearman.
+   to specify which correlation method (e.g., spearman). Note that this is 
+   implemented in interseries.cor - but will have to do this throughout. 
+   The default should be spearman.
 
 *  In detrend(method=“ModNegExp”) there should be a verbose option that writes 
    how each series was handled including the parameters of the model.
 
-o [mvkorpel] Write a MAKEFILE for vignettes that removes any of the temp files 
-  that get produced when typesetting the vignette pdf? The tex files, etc.
-  I've been compiling the vignettes in Rstudio which leaves a lot of junk
-  behind when it's done.
+* Should there be a makefile for vignettes that removes 
+  the temp files that get produced when typesetting the vignette pdf? 
+  (the tex files and intermediate pdfs, etc.) I've been compiling the 
+  vignettes in Rstudio which leaves a lot of junk
+  behind when it's done. I made this makefile for my use. I'm not sure if 
+  this should sit in the pkg directory or just be for my use. Thoughts?
+      output = .output
+      rnwfile = intro-dplR
+      
+      all:
+        R CMD Sweave $(rnwfile).Rnw
+      	-mkdir $(output)
+      	-cp *.sty $(output)
+      	-cp *.bib $(output)
+      	-mv *.tex *.pdf *.pdf $(output)
+      	cd $(output); R CMD texi2pdf $(rnwfile).tex 
+      
+      clean:
+      	-rm $(output)/*
+      	-rmdir $(output)
 
 * Decide when to use class('rwl') in functions dealing with rwl objects.
   Other than the plot and summary S3Method for rwl, are there cases when 
@@ -26,18 +42,4 @@ o [mvkorpel] Write a MAKEFILE for vignettes that removes any of the temp files
     y <- ar.func(y)
     return(y)
 
-* Dummy item
-   This is a sample item.
-
-- Sub-item
-   Any number of sub-items can be added.
-
-o [mvkorpel] Another dummy item
-   This one shows how to mark a to-do item as assigned to somebody.
-   By default, this seems to show the user's login name.  The notation
-   is from todoo.el, an Emacs mode for editing TODO files.  Using the
-   mode, it is easy to reorder and hide / show items.  Also in the
-   mode, headings of items and sub-items are automatically
-   highlighted.  It should be easy enough to adhere to the format even
-   if the text editor does not support it.
 

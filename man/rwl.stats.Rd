@@ -44,8 +44,15 @@ rwl.stats(object)
   two measures of sensitivity, the Gini coefficient, and first order
   autocorrelation (\code{"skew"}, \code{"\link{sens1}"},
   \code{"\link{sens2}"}, \code{"\link{gini.coef}"}, \code{"ar1"}).
+  
+  Note that that mean sensitivity is not a robust statitic that should rarely,
+  if ever, be used (Bunn et al. 2013).
 }
 \references{
+
+  Bunn. A.G., Jansma E., Korpela M., Westfall R.D., and Baldwin J. (2013) 
+  Using simulations and data to evaluate mean sensitivity (zeta) as a useful 
+  statistic in dendrochronology Dendrochronologia 31 250–4.
 
   Cook, E. R. and Kairiukstis, L.A. (1990) \emph{Methods of
   Dendrochronology: Applications in the Environmental Sciences}.

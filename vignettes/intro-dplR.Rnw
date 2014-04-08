@@ -2,7 +2,8 @@
 %\VignetteIndexEntry{An introduction to dplR}
 \documentclass[a4paper,11pt]{article}
 \usepackage{dplR} % dplR settings - needs some work
-
+\usepackage[utf8]{inputenx} % R CMD build wants this here, not in dplR.sty
+\input{ix-utf8enc.dfu} % more characters supported
 \title{An introduction to dplR} 
 \author{Andy Bunn \and Mikko Korpela}
 \hypersetup{
@@ -21,6 +22,8 @@ in \Sexpr{R.version.string} on \today}}
 \SweaveOpts{include=FALSE}
 <<echo=false>>=
 options(width=62) # width of paper (number of characters)
+options(useFancyQuotes=FALSE) # fancy quotes not included in fixed-width font?
+Sys.setenv(LANGUAGE="en") # no translations to languages other than English
 @ 
 
 \maketitle

@@ -112,14 +112,14 @@ vignette and proceed immediately to a good primer on dendrochronology like
 \cite{Fritts2001}. This vignette is not intended to teach you about how to do 
 tree-ring analysis. It's intended to teach you how to use the package.}
 
-A rwi object has the same basic properties as the rwl obejct from which it is 
+A rwi object has the same basic properties as the rwl object from which it is 
 made. I.e., it has the same number of rows and columns, the same names, and so 
 on. The difference is that each series has a mean of one (each series is 
 indexed). As read.rwl is the primary function for getting data into R, detrend
 is the primary function for standardizing rwl objects.
 
 \subsection{Common Detrending Methods}
-As any dendrochronologists will tell you, detrending is a dark art. In dplR we 
+As any dendrochronologist will tell you, detrending is a dark art. In dplR we 
 have implemented some of the standard tools for detrending but all have 
 drawbacks. In all of the detrend methods, the detrending is the estimation and 
 removal of the tree's natural biological growth trend. The standardization is 
@@ -200,7 +200,7 @@ rwl.stats(ca533)[1:5, ]
 @
 
 These are common summary statistics like mean, median, etc. but also statistics 
-that are more specific to dendrochronlogy like the first-order autocorrelation 
+that are more specific to dendrochronology like the first-order autocorrelation 
 (ar1) and mean sensitivity (sens1 and sens 2). We'd be remiss if we didn't here 
 mention that mean sensitivity is a actually terrible statistic that should rarely, 
 if ever, be used \citep{Bunn2013}.
@@ -304,7 +304,7 @@ plot(bar$yrs, bar$eps, type = "b", xlab = "", ylab = "",
 axis(4, at = pretty(foo$eps))
 mtext("EPS", side = 4, line = 1.1)
 box()
-## Second plot is the chronology after the cut off only
+## Second plot is the chronology after the cutoff only
 ## Chronology is rebuilt using just years after cutoff but
 ## that difference is essentially nil.
 yr.mask <- yrs > cutoff

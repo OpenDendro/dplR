@@ -253,7 +253,7 @@ rwi.stats.legacy(gp.rwi, gp.ids) # rwi.stats prior to dplR 1.5.3
   axis(4, at = pretty(foo$eps))
   mtext("EPS", side = 4, line = 1.1)
   box()
-  ## Second plot is the chronology after the cut off only
+  ## Second plot is the chronology after the cutoff only
   ## Chronology is rebuilt using just years after cutoff but
   ## that difference is essentially nil.
   yr.mask <- yrs > cutoff

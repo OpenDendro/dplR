@@ -11,6 +11,10 @@ File: NAMESPACE
 - Added plot.rwl as an S3Method.
 - Added summary.rwl as an S3Method.
 
+File: detrend.R and detrend.series.R
+------------
+- Added an Ar detrend method.
+
 File: powt.R
 ------------
 - Originally, the transformed series were rescaled to their

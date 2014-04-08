@@ -1,12 +1,12 @@
 `detrend` <-
     function(rwl, y.name = names(rwl), make.plot = FALSE,
-             method=c("Spline", "ModNegExp", "Mean"),
+             method=c("Spline", "ModNegExp", "Mean", "Ar"),
              nyrs = NULL, f = 0.5, pos.slope = FALSE,
              constrain.modnegexp = c("never", "when.fail", "always"))
 {
     stopifnot(identical(make.plot, TRUE) || identical(make.plot, FALSE),
               identical(pos.slope, FALSE) || identical(pos.slope, TRUE))
-    known.methods <- c("Spline", "ModNegExp", "Mean")
+    known.methods <- c("Spline", "ModNegExp", "Mean", "Ar")
     constrain2 <- match.arg(constrain.modnegexp)
     method2 <- match.arg(arg = method,
                          choices = known.methods,

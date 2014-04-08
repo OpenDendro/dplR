@@ -1,12 +1,12 @@
 `detrend.series` <-
     function(y, y.name = "", make.plot = TRUE,
-             method = c("Spline", "ModNegExp", "Mean"),
+             method = c("Spline", "ModNegExp", "Mean", "Ar"),
              nyrs = NULL, f = 0.5, pos.slope = FALSE,
              constrain.modnegexp = c("never", "when.fail", "always"))
 {
     stopifnot(identical(make.plot, TRUE) || identical(make.plot, FALSE),
               identical(pos.slope, FALSE) || identical(pos.slope, TRUE))
-    known.methods <- c("Spline", "ModNegExp", "Mean")
+    known.methods <- c("Spline", "ModNegExp", "Mean", "Ar")
     constrain2 <- match.arg(constrain.modnegexp)
     method2 <- match.arg(arg = method,
                          choices = known.methods,
@@ -133,7 +133,15 @@
     } else {
         do.mean <- FALSE
     }
-
+    if("Ar" %in% method2){
+      ## Fit an ar model - aka prewhiten
+      Ar <- ar.func(y2)
+      resids$Ar <- Ar / mean(Ar,na.rm=TRUE)
+      do.ar <- TRUE
+    } else {
+      do.ar <- FALSE
+    }
+    
     resids <- data.frame(resids)
 
     if(make.plot){
@@ -152,7 +160,8 @@
         if(do.spline) lines(Spline, col="green", lwd=2)
         if(do.mne) lines(ModNegExp, col="red", lwd=2)
         if(do.mean) lines(Mean, col="blue", lwd=2)
-
+        if(do.ar) lines(Ar, col="purple", lwd=2)
+        
         if(do.spline){
             plot(resids$Spline, type="l", col="green",
                  main=gettext("Spline", domain="R-dplR"),
@@ -176,6 +185,13 @@
                  xlab=gettext("Age (Yrs)", domain="R-dplR"),
                  ylab=gettext("RWI", domain="R-dplR"))
             abline(h=1)
+        }
+        if(do.ar){
+          plot(resids$Ar, type="l", col="purple",
+               main=gettext("Ar", domain="R-dplR"),
+               xlab=gettext("Age (Yrs)", domain="R-dplR"),
+               ylab=gettext("RWI", domain="R-dplR"))
+          abline(h=1)
         }
     }
 

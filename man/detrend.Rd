@@ -7,7 +7,7 @@
 }
 \usage{
 detrend(rwl, y.name = names(rwl), make.plot = FALSE,
-        method = c("Spline", "ModNegExp", "Mean"), nyrs = NULL,
+        method = c("Spline", "ModNegExp", "Mean", "Ar"), nyrs = NULL,
         f = 0.5, pos.slope = FALSE,
         constrain.modnegexp = c("never", "when.fail", "always"))
 }
@@ -25,7 +25,7 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   
   \item{method}{ a \code{character} vector to determine the detrending
     methods. See details below. Possible values are all subsets of
-    \code{c("Spline", "ModNegExp", "Mean")}. Defaults to using all the
+    \code{c("Spline", "ModNegExp", "Mean", "Ar")}. Defaults to using all the
     available methods.}
   
   \item{nyrs}{ a number giving the rigidity of the smoothing spline,

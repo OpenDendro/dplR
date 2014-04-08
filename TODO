@@ -34,11 +34,9 @@
 - Consider the benefits and drawbacks of creating classes for chonologies. 
   One benefit would be an S3 plot method for chronologies.
 
-* Add 'prewhiten' as a detrending method.
+* Continue work on "Ar" as a detrending method.
   It would be nice to have a prewhitening option to detrend.series
-  (and therefore dentrend) that returns white noise 
-  This could be as easy as:
-    y <- detrend.series(x, method="Mean")
-    y <- ar.func(y)
-    return(y)
+  (and therefore dentrend) that returns white noise. This has been started but
+  needs more work. The help files have not been worked on beyond adding Ar as
+  a method.
 

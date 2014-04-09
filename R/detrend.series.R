@@ -136,8 +136,15 @@
     if("Ar" %in% method2){
       ## Fit an ar model - aka prewhiten
       Ar <- ar.func(y2)
-      # this will propogate NA to rwi as a result of detrending. 
-      # Other methods don't. Problem?
+      # This will propogate NA to rwi as a result of detrending. 
+      # Other methods don't. Problem when interacting with other
+      # methods?
+      # Also, this can (and does!) produce negative RWI values.
+      # See example using CAM011. Thus:
+      if (any(Ar <= 0, na.rm = TRUE)) {
+        warning("Ar fit is not all positive")
+        Ar[Ar<0] <- 0
+      }
       resids$Ar <- Ar / mean(Ar,na.rm=TRUE)
       do.ar <- TRUE
     } else {
@@ -149,9 +156,22 @@
     if(make.plot){
         op <- par(no.readonly=TRUE)
         on.exit(par(op))
-        par(mar=c(2.5, 2.5, 2.5, 0.5) + 0.1, mgp=c(1.5, 0.5, 0))
-        n.rows <- 1 + ncol(resids)
-        mat <- matrix(seq_len(n.rows), n.rows, 1)
+        par(mar=c(2.1, 2.1, 2.1, 2.1), mgp=c(1.1, 0.1, 0),
+            tcl=0.5, xaxs='i')
+        n.plots <- 1 + ncol(resids) 
+        if(n.plots == 5){
+          mat <- matrix(c(1,1,2,3,4,5), nrow=3, ncol=2,byrow=TRUE)
+        }
+        if(n.plots == 4){
+          mat <- matrix(c(1,2,3,4), nrow=2, ncol=2,byrow=TRUE)
+        }
+        if(n.plots == 3){
+          mat <- matrix(c(1,1,2,3), nrow=2, ncol=2,byrow=TRUE)
+        }
+        if(n.plots == 2){
+          mat <- matrix(c(1,2), nrow=2, ncol=1,byrow=TRUE)
+        }
+
         layout(mat,
                widths=rep.int(0.5, ncol(mat)),
                heights=rep.int(1, nrow(mat)))
@@ -159,7 +179,6 @@
         plot(y2, type="l", ylab="mm",
              xlab=gettext("Age (Yrs)", domain="R-dplR"),
              main=gettextf("Raw Series %s", y.name, domain="R-dplR"))
-        if(do.ar) lines(Ar, col="purple", lwd=2)
         if(do.spline) lines(Spline, col="green", lwd=2)
         if(do.mne) lines(ModNegExp, col="red", lwd=2)
         if(do.mean) lines(Mean, col="blue", lwd=2)
@@ -190,10 +209,11 @@
         }
         if(do.ar){
           plot(resids$Ar, type="l", col="purple",
-               main=gettext("Ar", domain="R-dplR"),
+               main=gettextf("Ar", domain="R-dplR"),
                xlab=gettext("Age (Yrs)", domain="R-dplR"),
                ylab=gettext("RWI", domain="R-dplR"))
           abline(h=1)
+          mtext(text="Not plotted with raw series",side=3,line=-1)
         }
     }
 

@@ -133,6 +133,22 @@ series.rwi <- detrend.series(y = series, y.name = "Foo")
 data(ca533)
 series <- ca533[, "CAM011"]
 names(series) <- rownames(ca533)
+# defaults to all four methods
 series.rwi <- detrend.series(y = series, y.name = "CAM011")
+# see plot with three methods
+series.rwi <- detrend.series(y = series, y.name = "CAM011",
+                             method=c("Spline", "ModNegExp","Mean"))
+# see plot with two methods
+# interesting to note difference from ~200 to 250 years 
+# in terms of what happens to low frequency growth
+series.rwi <- detrend.series(y = series, y.name = "CAM011",
+                             method=c("Spline", "ModNegExp"))
+# see plot with just one method
+series.rwi <- detrend.series(y = series, y.name = "CAM011",
+                             method="Spline")
+# note that method "Ar" doesn't get plotted in first panel
+# since this approach doesn't approximate a growth curve.
+series.rwi <- detrend.series(y = series, y.name = "CAM011",
+                             method="Ar")
 }
 \keyword{ manip }

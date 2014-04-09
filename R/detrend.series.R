@@ -136,6 +136,8 @@
     if("Ar" %in% method2){
       ## Fit an ar model - aka prewhiten
       Ar <- ar.func(y2)
+      # this will propogate NA to rwi as a result of detrending. 
+      # Other methods don't. Problem?
       resids$Ar <- Ar / mean(Ar,na.rm=TRUE)
       do.ar <- TRUE
     } else {

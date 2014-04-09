@@ -92,6 +92,12 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   contains zeros or negative values, which would lead to invalid
   ring-width indices.
 
+  The \code{"Ar"} approach is also known as prewhitening where the detrended 
+  series is the residuals of an \code{\link{ar}} model divided by the
+  mean of those residuals to yield a series with white noise and a mean of one.
+  This method removes all the but the high frequency variation in the series
+  and should only be used as such.
+  
   These methods are chosen because they are commonly used in
   dendrochronology. There is a rich literature on detrending
   and many researchers are particularly skeptical of the use of the 

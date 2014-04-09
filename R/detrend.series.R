@@ -213,7 +213,7 @@
                xlab=gettext("Age (Yrs)", domain="R-dplR"),
                ylab=gettext("RWI", domain="R-dplR"))
           abline(h=1)
-          mtext(text="Not plotted with raw series",side=3,line=-1)
+          mtext(text="Ar residuals are not plotted with raw series",side=3,line=-1)
         }
     }
 

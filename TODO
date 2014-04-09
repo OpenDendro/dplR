@@ -6,27 +6,6 @@
 *  In detrend(method=“ModNegExp”) there should be a verbose option that writes 
    how each series was handled including the parameters of the model.
 
-* Should there be a makefile for vignettes that removes 
-  the temp files that get produced when typesetting the vignette pdf? 
-  (the tex files and intermediate pdfs, etc.) I've been compiling the 
-  vignettes in Rstudio which leaves a lot of junk
-  behind when it's done. I made this makefile for my use. I'm not sure if 
-  this should sit in the pkg directory or just be for my use. Thoughts?
-      output = .output
-      rnwfile = intro-dplR
-      
-      all:
-        R CMD Sweave $(rnwfile).Rnw
-      	-mkdir $(output)
-      	-cp *.sty $(output)
-      	-cp *.bib $(output)
-      	-mv *.tex *.pdf *.pdf $(output)
-      	cd $(output); R CMD texi2pdf $(rnwfile).tex 
-      
-      clean:
-      	-rm $(output)/*
-      	-rmdir $(output)
-
 * Decide when to use class('rwl') in functions dealing with rwl objects.
   Other than the plot and summary S3Method for rwl, are there cases when 
   having that class would be useful. E.g., in error checking?
@@ -34,9 +13,5 @@
 - Consider the benefits and drawbacks of creating classes for chonologies. 
   One benefit would be an S3 plot method for chronologies.
 
-* Continue work on "Ar" as a detrending method.
-  It would be nice to have a prewhitening option to detrend.series
-  (and therefore dentrend) that returns white noise. This has been started but
-  needs more work. The help files have not been worked on beyond adding Ar as
-  a method.
+- Consider the benefits and drawbacks of creating classes for rwi. 
 

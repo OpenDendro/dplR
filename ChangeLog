@@ -13,7 +13,7 @@ File: NAMESPACE
 
 File: detrend.R and detrend.series.R
 ------------
-- Added an Ar detrend method.
+- Added an Ar detrend method. Revised plotting in detrend.series
 
 File: powt.R
 ------------
@@ -24,8 +24,8 @@ File: powt.R
 
 File: rwl.stats
 -------------------------
-- Added an S3 summary method for rwl objects so that summary(an rwl object)
-  calls rwl.stats()
+- Added an S3 summary method for rwl objects so that summary(foo.rwl)
+  calls rwl.stats(foo.rwl)
 
 Folder: vignettes
 -------------------------

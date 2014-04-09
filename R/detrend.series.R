@@ -157,10 +157,10 @@
         plot(y2, type="l", ylab="mm",
              xlab=gettext("Age (Yrs)", domain="R-dplR"),
              main=gettextf("Raw Series %s", y.name, domain="R-dplR"))
+        if(do.ar) lines(Ar, col="purple", lwd=2)
         if(do.spline) lines(Spline, col="green", lwd=2)
         if(do.mne) lines(ModNegExp, col="red", lwd=2)
         if(do.mean) lines(Mean, col="blue", lwd=2)
-        if(do.ar) lines(Ar, col="purple", lwd=2)
         
         if(do.spline){
             plot(resids$Spline, type="l", col="green",

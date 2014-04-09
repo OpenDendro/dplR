@@ -1,2 +1,3 @@
-dplR-Ex\.R
-svn.*\.tmp
+^dplR-Ex\.R$
+^(.*/)?svn.*\.tmp$
+^(.*/)?\..+$

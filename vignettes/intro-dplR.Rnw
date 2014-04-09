@@ -161,7 +161,7 @@ colMeans(ca533.rwi, na.rm=TRUE)
 
 An alternative method in detrend is to standardize with the ``Spline'' approach.
 This method uses a spline as the growth model where the frequency response 
-is 0.50 at a wavelength of 0.67 * series length (unless specified differently by 
+is 0.50 at a wavelength of \(0.67 \times \text{series length}\) (unless specified differently by 
 the user). This attempts to remove the low frequency 
 variability that is due to biological or stand effects. Rather than detrend the
 entire ca533 rwl object, we'll illustrate the spline method by detrending a 

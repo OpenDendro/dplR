@@ -8,10 +8,8 @@
 
 * Decide when to use class('rwl') in functions dealing with rwl objects.
   Other than the plot and summary S3Method for rwl, are there cases when 
-  having that class would be useful. E.g., in error checking?
+  having that class would be useful. E.g., in error checking? Same for 
+  class('crn'). There is a plot method now. What else?
 
-- Consider the benefits and drawbacks of creating classes for chonologies. 
-  One benefit would be an S3 plot method for chronologies.
-
-- Consider the benefits and drawbacks of creating classes for rwi. 
+- Related: Consider the benefits and drawbacks of creating classes for rwi. 
 

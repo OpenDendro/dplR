@@ -137,5 +137,6 @@
         crn.mat[, seq.series] <- crn.mat[, seq.series] / 1000
         crn.df <- as.data.frame(crn.mat)
     }
+    class(crn.df) <- c("crn", "data.frame")
     crn.df
 }

@@ -1,4 +1,6 @@
-`chron.plot` <- `crn.plot` <- function(crn, add.spline=FALSE, nyrs=NULL, f=0.5,
+`plot.crn` <- function(x, ...){ crn.plot(x, ...) }
+
+`crn.plot` <- function(x, add.spline=FALSE, nyrs=NULL, f=0.5,
                                        crn.line.col='grey50',
                                        spline.line.col='red',
                                        samp.depth.col='grey90',
@@ -6,7 +8,8 @@
                                        crn.lwd=1, spline.lwd=1.5,
                                        abline.pos=1, abline.col='black',
                                        abline.lty=1, abline.lwd=1,
-                                       xlab='Year', ylab='RWI') {
+                                       ...) {
+  crn <- x
   if(!is.data.frame(crn)) stop("'crn' must be a data.frame")
 
   op <- par(no.readonly=TRUE) # Save par
@@ -32,7 +35,7 @@
   for(i in seq_len(nCrn)){
     spl <- crn[[i]]
     plot(yr.vec, spl, type="n",axes=FALSE,
-         xlab=xlab, ylab=ylab, main=crn.names[i])
+         main=crn.names[i],...)
     if(sd.exist) {
       par(new=TRUE)
       plot(yr.vec, samp.depth, type="n",
@@ -44,7 +47,7 @@
       mtext(text.samp, side=4, line=1.25)
     }
     par(new=TRUE)
-    plot(yr.vec, spl, type="n",axes=FALSE,xlab='',ylab='')
+    plot(yr.vec, spl, type="n",axes=FALSE,xlab="",ylab="")
     abline(h=abline.pos,lwd=abline.lwd,
            lty=abline.lty,col=abline.col)
     lines(yr.vec, spl, col=crn.line.col,lwd=crn.lwd)

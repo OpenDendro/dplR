@@ -270,17 +270,17 @@ dim(ca533.rwi)
 dim(ca533.crn)
 @
 
-The chronology can be plotted using the \code{chron.plot} function which 
+The chronology can be plotted using the \code{crn.plot} function which 
 has many arguments for customization. Here we'll just make a simple plot of the 
 chronology with a smoothing spline added.
 <<c, fig=TRUE>>=
-chron.plot(ca533.crn, add.spline=TRUE, nyrs=20)
+crn.plot(ca533.crn, add.spline=TRUE, nyrs=20)
 @
 \begin{figure}
 \centering
 \includegraphics{intro-dplR-c}
 \caption{Campito Mountain chronology with 20-year smoothing spline.}
-\label{fig:chron.plot.spline}
+\label{fig:crn.plot.spline}
 \end{figure}
 
 In general this vignette aims to give a very cursory overview of basic tasks 
@@ -338,7 +338,7 @@ par(def.par)
 \centering
 \includegraphics{intro-dplR-d}
 \caption{Campito Mountain chronology using an EPS cutoff.}
-\label{fig:chron.plot.eps}
+\label{fig:crn.plot.eps}
 \end{figure}
 
 \section{Prospectus}

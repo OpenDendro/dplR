@@ -36,8 +36,10 @@ export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, cms,
        series.rwl.plot, skel.plot, spag.plot, strip.rwl, tbrm,
        tridas.vocabulary, uuid.gen, wavelet.plot, wc.to.po,
        write.compact, write.crn, write.rwl, write.tridas,
-       write.tucson, chron.plot, plot.rwl, interseries.cor, summary.rwl)
+       write.tucson, plot.rwl, interseries.cor, summary.rwl,
+       plot.crn)
 
 S3method(print, redfit)
 S3method(plot, rwl)
+S3method(plot, crn)
 S3method(summary, rwl)

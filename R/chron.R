@@ -28,5 +28,6 @@
         names(out) <- c(paste0(prefix.str, "std"), "samp.depth")
     }
     row.names(out) <- row.names(x)
+    class(out) <- c("crn", "data.frame")
     out
 }

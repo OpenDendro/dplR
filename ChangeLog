@@ -9,7 +9,24 @@ File: NAMESPACE
 - Added chron.plot to export list.
 - Added interseries.cor to export list.
 - Added plot.rwl as an S3Method.
+- Added plot.crn as an S3Method.
 - Added summary.rwl as an S3Method.
+
+File: crn.plot.R
+-------------------------
+- Added several new plotting options to give users more control of plot
+- Aliased crn.plot to plot.crn so it can be used as an S3 plot method.
+  Thus a user can now to bar <- chon(foo); plot(bar) 
+- Help revised considerably
+
+
+File: read.crn.R
+-------------------------
+- Added class "crn" to output object.
+
+File: cana157.rda
+-------------------------
+- Added class "crn" to object.
 
 File: detrend.R and detrend.series.R
 ------------
@@ -92,15 +109,6 @@ File: spag.plot.R
 File: seg.plot.R
 -------------------------
 - Cosmetic changes to plot.
-
-File: crn.plot.R
--------------------------
-- Added several new plotting options to give users more control of plot
-- Aliased crn.plot to chron.plot to be consistent with the chron() function.
-  It was confusing to use bar <- chon(foo) but not be able to use
-  chron.plot(bar). It would be nice to make chron an S3method to thus be
-  able to just do plot(bar) I suppose.
-- Help revised considerably
 
 File: rwi.stats.running.R
 -------------------------

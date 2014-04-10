@@ -1,34 +1,27 @@
 \name{crn.plot}
+\alias{plot.crn}
 \alias{crn.plot}
-\alias{chron.plot}
 \title{ Plot a Tree-Ring Chronology }
 \description{
   This function makes a default plot of a tree-ring chronology from a
   \code{data.frame} of the type produced by \code{\link{chron}}.
 }
 \usage{
-chron.plot(crn, add.spline = FALSE, nyrs = NULL, f = 0.5, 
-           crn.line.col='grey50',spline.line.col='red',
-           samp.depth.col='grey90',
-           samp.depth.border.col='grey80',
-           crn.lwd=1,spline.lwd=1.5,
-           abline.pos=1,abline.col='black',
-           abline.lty=1,abline.lwd=1,
-           xlab='Year',ylab='RWI')
-
-crn.plot(crn, add.spline = FALSE, nyrs = NULL, f = 0.5, 
+crn.plot(x, add.spline = FALSE, nyrs = NULL, f = 0.5, 
          crn.line.col='grey50',spline.line.col='red',
          samp.depth.col='grey90',
          samp.depth.border.col='grey80',
          crn.lwd=1,spline.lwd=1.5,
          abline.pos=1,abline.col='black',
-         abline.lty=1,abline.lwd=1,
-         xlab='Year',ylab='RWI')
+         abline.lty=1,abline.lwd=1,...)
+
+\method{plot}{crn}(x, ...)
+
 }
 \arguments{
-  \item{crn}{ a \code{data.frame} as produced by
+  \item{x}{ a \code{data.frame} as produced by
     \code{\link{chron}}. The \code{data.frame} should have the years in
-    \code{rownames(\var{crn})}, the chronologies in the columns.
+    \code{rownames(\var{x})}, the chronologies in the columns.
     Optionally, the last column can contain the sample depth named
     \code{"samp.depth"}. }
   \item{add.spline}{ a \code{logical} flag. Will add a line with a
@@ -38,20 +31,20 @@ crn.plot(crn, add.spline = FALSE, nyrs = NULL, f = 0.5,
     \code{\var{nyrs}} is \code{NULL}. }
   \item{f}{ a number between 0 and 1 giving the frequency response or
     wavelength cutoff. Defaults to 0.5. }
-  \item{crn.line.col}{ color for the crn line }
+  \item{crn.line.col}{ color for the x line }
   \item{spline.line.col}{ color for the spline (if added) }
   \item{samp.depth.col}{ color for the sample depth polygon (if present) }
   \item{samp.depth.border.col}{ border color for the sample depth 
         polygon (if present)}
-  \item{crn.lwd}{ line width for the crn line}
+  \item{crn.lwd}{ line width for the x line}
   \item{spline.lwd}{ line width for the spline (if added) }
   \item{abline.pos}{ position for a refernce abline on the y-axis. 
         No line added if NULL }
   \item{abline.col}{ color for the reference abline (if added) }
   \item{abline.lty}{ line type the reference abline (if added) }
   \item{abline.lwd}{ line width for the reference abline (if added)}
-  \item{xlab}{ label for x-axis }
-  \item{ylab}{ label for y-axis }
+  \item{\dots}{ Additional arguments from the generic function to pass to 
+        \code{\link{plot}}. }
 }
 \details{
   This makes a simple plot of one or more tree-ring chronologies.
@@ -63,14 +56,14 @@ crn.plot(crn, add.spline = FALSE, nyrs = NULL, f = 0.5,
 \seealso{ \code{\link{chron}}
 }
 \examples{data(cana157)
-crn.plot(cana157)
-chron.plot(cana157)
+crn.plot(cana157,xlab='Year',ylab='RWI')
+plot(cana157,xlab='Year',ylab='RWI')
 # with added spline
-chron.plot(cana157,add.spline=TRUE, nyrs=32)
+crn.plot(cana157,add.spline=TRUE, nyrs=32, xlab='Year',ylab='RWI')
 ## Without sample depth
 cana157.mod <- cana157
 cana157.mod$samp.depth <- NULL
-crn.plot(cana157.mod, add.spline = TRUE)
+crn.plot(cana157.mod, add.spline = TRUE, xlab='Year',ylab='RWI')
 ## With multiple chronologies
 data(gp.rwl)
 data(gp.po)
@@ -80,7 +73,7 @@ crn.plot(gp.crn, add.spline = TRUE)
 \dontrun{
   # not pretty - but illustrates the coloring options
   my.cols <- c("#3182BD","#9ECAE1","#DEEBF7","#31A354","#A1D99B","#E5F5E0")
-  chron.plot(cana157,add.spline=TRUE,nyrs=32,
+  crn.plot(cana157,add.spline=TRUE,nyrs=32,
              crn.line.col=my.cols[5],
              spline.line.col=my.cols[4],
              samp.depth.col=my.cols[3],
@@ -91,7 +84,7 @@ crn.plot(gp.crn, add.spline = TRUE)
   # a raw ring-width chronology
   data(ca533)
   ca533.raw.crn <- chron(ca533, prefix = "CAM")
-  chron.plot(ca533.raw.crn,abline.pos=NULL,ylab='mm')  
+  crn.plot(ca533.raw.crn,abline.pos=NULL,ylab='mm')  
 }
 }
 \keyword{ hplot }

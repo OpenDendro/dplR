@@ -13,3 +13,13 @@
 
 - Related: Consider the benefits and drawbacks of creating classes for rwi. 
 
+o [andybunn] Keep old argument names for backward compatibility?
+   Users may call the affected functions with named arguments.  The
+   (wrapper) method for the generic function must use the argument
+   name of the generic, but the actual function, familiar to users of
+   previous versions of dplR, should arguably use the old name.
+   
+- crn.plot (plot.crn): crn vs x
+
+- rwl.stats (summary.rwl): rwl vs object
+

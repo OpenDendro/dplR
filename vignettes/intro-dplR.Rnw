@@ -62,9 +62,9 @@ format file of ring widths to the more complex
 other types of tree-ring data (e.g., density).
 
 The workhorse function for getting tree-ring data into R is dplR's 
-\code{read.rwl} function. This function reads files in ``tucson'', 
-``compact'', ``tridas'', and ``heidelberg'' formats. The onboard \code{rwl} data 
-sets in dplR (i.e., co021, ca533, gp.rwl) were all imported into R 
+\code{read.rwl} function. This function reads files in \code{"tucson"}, 
+\code{"compact"}, \code{"tridas"}, and \code{"heidelberg"} formats. The onboard \code{rwl} data 
+sets in dplR (i.e., \code{co021}, \code{ca533}, \code{gp.rwl}) were all imported into R 
 using this function.
 
 Throughout this vignette we will use the onboard data set  \code{ca533} 
@@ -72,7 +72,7 @@ which gives the raw ring widths for bristlecone pine \emph{Pinus longaeva} at
 Campito Mountain in California, USA. There are 34 series spanning over 1358 
 years. 
 
-These objects are structured very simply as a data.frame with the series in 
+These objects are structured very simply as a \code{data.frame} with the series in 
 columns and the years as rows. The series IDs are the column names and the 
 years are the row names (both stored as characters). For instance, using the 
 Campito Mountain ring widths:
@@ -87,11 +87,11 @@ class(ca533) # note "rwl" class as well as "data.frame"
 @
 
 \subsection{Describing and Plotting Ring-Width Data}
-One a \code{rwl} data set has been read into R, there are a variety of ways to 
+Once a \code{rwl} data set has been read into R, there are a variety of ways to 
 describe and visualize those data. For instance, we can plot an \code{rwl} 
 object by showing either the segments arranged over time as straight lines or 
 as a ``spaghetti plot.'' The \code{rwl} objects have a generic S3 method for
-\code{plot} and \code{summary}.
+\code{plot} and \code{summary}. See Figure~\ref{fig:rwl.plot}.
 
 <<a, fig=TRUE>>=
 plot(ca533, plot.type="spag")
@@ -119,7 +119,7 @@ A rwi object has the same basic properties as the \code{rwl} object from which i
 made. I.e., it has the same number of rows and columns, the same names, and so 
 on. The difference is that each series has been standardized by dividing the
 ringwidths against a growth model (e.g., a stiff spline, a negative 
-expontential, etc.). This give each series a mean of one (thus referred to 
+exponential, etc.). This gives each series a mean of one (thus referred to 
 as ``indexed'') and allows a chronology to be built (next section). As 
 \code{read.rwl} is the primary function for getting data into R, 
 \code{detrend} is the primary function for standardizing \code{rwl} 
@@ -135,27 +135,27 @@ done by dividing each series by the growth trend to produce units in the
 dimensionless ring-width index (RWI).
 
 We'll discuss detrending via fitting a nonlinear function using
-\code{nls} (the ``ModNegExp'' method of \code{detrend}) and detrending 
-via cubic smoothing spline (the ``Spline'' method of detrend). Much of the 
+\code{nls} (the \code{"ModNegExp"} method of \code{detrend}) and detrending 
+via cubic smoothing spline (the \code{"Spline"} method of \code{detrend}). Much of the 
 text that follows is modified from the help page of \code{detrend}.
 
 Probably the most common method for detrending is what is often 
 called the ``conservative'' approach of attempting to fit a negative exponential 
-curve to a series In the dplR implementation the ``ModNegExp'' method of detrend
+curve to a series. In the dplR implementation the \code{"ModNegExp"} method of \code{detrend}
 attempts to fit a classic nonlinear model of biological growth of the form 
-f(t) = a exp(b t) + k, where the argument of the function is time, using 
+\(f(t) = a \exp(b t) + k\), where the argument of the function is time, using 
 \code{nls}. See \cite{Fritts2001} for details about the parameters. If a 
 suitable nonlinear model cannot be fit (function is non-decreasing or some 
 values are not positive) then a linear model is fit using \code{lm}. That 
-linear model can have a positive slope unless pos.slope is FALSE in which 
-case the series is standardized by its mean (method ``Mean'' in 
+linear model can have a positive slope unless \code{pos.slope} is \code{FALSE} in which 
+case the series is standardized by its mean (method \code{"Mean"} in 
 \code{detrend}).
 
-For instance every series in the ca533 object can be detrended at once via:  
+For instance every series in the \code{ca533} object can be detrended at once via:  
 <<>>=
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 @
-This saves the results in ca533.rwi which is a \code{data.frame} with
+This saves the results in \code{ca533.rwi} which is a \code{data.frame} with
 the same dimensions as the \code{rwl} object \code{ca533} and each series 
 standardized.
 <<>>=
@@ -166,14 +166,14 @@ names(ca533.rwi)
 colMeans(ca533.rwi, na.rm=TRUE)
 @
 
-An alternative method in detrend is to standardize with the ``Spline'' approach.
+An alternative method in \code{detrend} is to standardize with the \code{"Spline"} approach.
 This method uses a spline as the growth model where the frequency response 
 is 0.50 at a wavelength of \(0.67 \times \text{series length}\) (unless specified differently by 
 the user). This attempts to remove the low frequency 
 variability that is due to biological or stand effects. Rather than detrend the
-entire ca533 rwl object, we'll illustrate the spline method by detrending a 
-single series using the detrend.series function, which produces a plot by
-default.
+entire \code{ca533} \code{rwl} object, we'll illustrate the spline method by detrending a 
+single series using the \code{detrend.series} function, which produces a plot by
+default. See Figure~\ref{fig:spline.detrend}.
 
 <<b, fig=TRUE>>=
 series <- ca533[, "CAM011"] # extract the series
@@ -213,8 +213,8 @@ rwl.stats(ca533)[1:5, ]
 
 These are common summary statistics like mean, median, etc. but also statistics 
 that are more specific to dendrochronology like the first-order autocorrelation 
-(ar1) and mean sensitivity (sens1 and sens 2). We'd be remiss if we didn't here 
-mention that mean sensitivity is a actually terrible statistic that should 
+(\code{ar1}) and mean sensitivity (\code{sens1} and \code{sens2}). We'd be remiss if we didn't here 
+mention that mean sensitivity is actually a terrible statistic that should 
 rarely, if ever, be used \citep{Bunn2013}.
 
 It's also easy in dplR to compute commonly used descriptive statistics that 
@@ -240,7 +240,7 @@ correlations are calculated serially between each tree-ring series and a
 master chronology built from all the other series in the \code{rwl} object 
 (leave-one-out principle). The average of those correlations
 is sometimes called the ``overall interseries correlation.'' This number is
-typically higher than rbar. We are showing just the first five series and the 
+typically higher than \code{rbar.tot}. We are showing just the first five series and the 
 mean for all series here:
 
 <<>>=
@@ -250,7 +250,7 @@ ca533.rho[1:5,]
 mean(ca533.rho[, 1])
 @
 
-Again. if these concepts are unknown to you statistically look at some of the
+Again, if these concepts are unknown to you statistically look at some of the
 canonical works in dendrochronology like \cite{Cook1990} and \cite{Fritts2001}
 as well as more recent works like \cite{Hughes2011}.
 
@@ -263,7 +263,7 @@ that is unaffected by outliers).
 ca533.crn <- chron(ca533.rwi, prefix = "CAM")
 @
 This object has the same number of rows as the rwi object that was used as the 
-input and two columns. The fist gives the chronology and the second the 
+input and two columns. The first gives the chronology and the second the 
 sample depth (the number of series available in that year).
 <<>>=
 dim(ca533.rwi)
@@ -272,7 +272,7 @@ dim(ca533.crn)
 
 The chronology can be plotted using the \code{crn.plot} function which 
 has many arguments for customization. Here we'll just make a simple plot of the 
-chronology with a smoothing spline added.
+chronology with a smoothing spline added. See Figure~\ref{fig:crn.plot.spline}.
 <<c, fig=TRUE>>=
 crn.plot(ca533.crn, add.spline=TRUE, nyrs=20)
 @
@@ -287,7 +287,7 @@ In general this vignette aims to give a very cursory overview of basic tasks
 that most dendrochronologists will want to be aware of. Know that we are just
 scratching the surface of what dplR is capable of. As a small example, 
 here is a way that a user might decide to truncate a chronology based on the
-expressed population signal.
+expressed population signal. See Figure~\ref{fig:crn.plot.eps}.
 <<d, fig=TRUE>>=
 def.par <- par(no.readonly=TRUE)
 eps.cut <- 0.85 # An arbitrary EPS cutoff for demonstration
@@ -345,7 +345,7 @@ par(def.par)
 We hope that this vignette helps users cover introductory data handling and
 processing using dplR and R. As we noted above we are just providing a short
 introduction as to what is possible in dplR. There are many other functions in 
-dplR that will help user's analyze tree rings. These include a host of 
+dplR that will help users analyze tree rings. These include a host of 
 functions for statistical cross dating as well as spectral and wavelet 
 analysis. We will cover those in future vignettes. 
 

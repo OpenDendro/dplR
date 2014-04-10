@@ -23,3 +23,14 @@ o [andybunn] Keep old argument names for backward compatibility?
 
 - rwl.stats (summary.rwl): rwl vs object
 
+o [andybunn] Vignette: Which article, a or an, for rwl? Now both are used.
+   Is rwl read as "ring width length", so should it be "a"?
+
+o [andybunn] Vignette: Check that rbar.tot is correct.
+   In "This number is typically higher than rbar.tot", there used to
+   be rbar instead of rbar.tot. I (Mikko) tried to be more explicit
+   about which number should be compared. Please check that this makes
+   sense.
+
+o [andybunn] Vignette: Use either "dataset" or "data set" exclusively.
+   The former is used more often in .Rd files of the package.

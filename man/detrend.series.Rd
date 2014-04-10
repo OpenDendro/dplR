@@ -95,7 +95,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   The \code{"Ar"} approach is also known as prewhitening where the detrended 
   series is the residuals of an \code{\link{ar}} model divided by the
   mean of those residuals to yield a series with white noise and a mean of one.
-  This method removes all the but the high frequency variation in the series
+  This method removes all but the high frequency variation in the series
   and should only be used as such.
   
   These methods are chosen because they are commonly used in

@@ -3,9 +3,9 @@
 \alias{anos1}
 \title{Rothenburg Tree Ring Widths}
 \description{
-  This dataset gives the raw ring widths for Norway spruce \emph{Picea
+  This data set gives the raw ring widths for Norway spruce \emph{Picea
   abies} at Rothenburg ob der Tauber, Bavaria, Germany.  There are 20
-  series from 10 trees.  Dataset was created using
+  series from 10 trees.  Data set was created using
   \code{\link{read.rwl}} and saved to an .rda file using
   \code{\link[base]{save}}.
 }

@@ -129,7 +129,7 @@ gt <- 0.5 * exp (-0.05 * 1:200) + 0.2
 noise <- c(arima.sim(model = list(ar = 0.7), n = 200, mean = 1, sd = 0.5))
 series <- gt * noise
 series.rwi <- detrend.series(y = series, y.name = "Foo")
-## Use series CAM011 from the Campito dataset
+## Use series CAM011 from the Campito data set
 data(ca533)
 series <- ca533[, "CAM011"]
 names(series) <- rownames(ca533)

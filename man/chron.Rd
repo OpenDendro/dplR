@@ -40,11 +40,12 @@ chron(x, prefix = "xxx", biweight = TRUE, prewhiten = FALSE)
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{read.rwl}}, \code{\link{detrend}},
-  \code{\link{ar}}, \code{\link{chron}}
+  \code{\link{ar}}, \code{\link{crn.plot}}
 }
 \examples{data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM")
+plot(ca533.crn,xlab="Year",ylab="RWI")
 ## With residual chron
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)
 }

@@ -3,8 +3,8 @@
 \alias{gp.d2pith}
 \title{ Ponderosa Pine Distance to Pith Corresponding to \code{\link{gp.rwl}} }
 \description{
-  This dataset gives the distance to pith for each series (in mm) that
-  matches the ring widths for \code{\link{gp.rwl}} - a dataset of
+  This data set gives the distance to pith for each series (in mm) that
+  matches the ring widths for \code{\link{gp.rwl}} - a data set of
   ponderosa pine (\emph{Pinus ponderosa}) from the Gus Pearson Natural
   Area (\acronym{GPNA}) in northern Arizona, \acronym{USA}. Data are
   further described by Biondi and Qeadan (2008) and references therein.

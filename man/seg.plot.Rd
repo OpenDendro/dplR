@@ -14,7 +14,7 @@ seg.plot(rwl, \dots)
 }
 \details{
   This makes a simple plot of the length of each series in a tree-ring
-  dataset.
+  data set.
 }
 \value{
   None. This function is invoked for its side effect, which is to

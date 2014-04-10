@@ -88,7 +88,7 @@ class(ca533) # note "rwl" class as well as "data.frame"
 
 \subsection{Describing and Plotting Ring-Width Data}
 Once a \code{rwl} data set has been read into R, there are a variety of ways to 
-describe and visualize those data. For instance, we can plot an \code{rwl} 
+describe and visualize those data. For instance, we can plot a \code{rwl} 
 object by showing either the segments arranged over time as straight lines or 
 as a ``spaghetti plot.'' The \code{rwl} objects have a generic S3 method for
 \code{plot} and \code{summary}. See Figure~\ref{fig:rwl.plot}.
@@ -203,7 +203,7 @@ information.
 
 \section{Descriptive Statistics}
 Either before or after standardization, it would be natural to want to look at
-some common (and not-so common) descriptive statistics of an \code{rwl} object. The
+some common (and not-so common) descriptive statistics of a \code{rwl} object. The
 \code{rwl.stats} function is typically used on raw ring widths 
 (the \code{rwl} object) and produces summary statistics. Here are summary 
 statistics on the first five series in \code{ca533}.
@@ -233,15 +233,15 @@ rwi.stats(ca533.rwi, ca533.ids, prewhiten=TRUE)
 @
 
 There is (at least) one other way of looking at the average interseries 
-correlation of a dataset. The \code{interseries.cor} function in dplR 
+correlation of a data set. The \code{interseries.cor} function in dplR 
 gives a measure of average interseries correlation that is different than 
 the rbar measurements from \code{rwi.stats}. In this function, 
 correlations are calculated serially between each tree-ring series and a 
 master chronology built from all the other series in the \code{rwl} object 
 (leave-one-out principle). The average of those correlations
 is sometimes called the ``overall interseries correlation.'' This number is
-typically higher than \code{rbar.tot}. We are showing just the first five series and the 
-mean for all series here:
+typically higher than \code{rbar.tot}. We are showing just the first five series 
+and the mean for all series here:
 
 <<>>=
 ca533.rho <- interseries.cor(ca533.rwi, prewhiten=TRUE,

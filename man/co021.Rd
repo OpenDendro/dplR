@@ -3,9 +3,9 @@
 \alias{co021}
 \title{Schulman Old Tree No. 1, Mesa Verde}
 \description{
-  This dataset gives the raw ring widths for Douglas fir
+  This data set gives the raw ring widths for Douglas fir
   \emph{Pseudotsuga menziesii} at Mesa Verde in Colorado, \acronym{USA}.
-  There are 35 series.  Dataset was created using \code{\link{read.rwl}}
+  There are 35 series.  Data set was created using \code{\link{read.rwl}}
   and saved to an .rda file using \code{\link{save}}.
 }
 \usage{data(co021)}

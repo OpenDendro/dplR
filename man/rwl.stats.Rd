@@ -7,14 +7,14 @@
   of raw or detrended ring-width series.
 }
 \usage{
-rwl.stats(object)
+rwl.stats(rwl)
 
 \method{summary}{rwl}(object, ...)
 
 }
 \arguments{
 
-  \item{object}{ a \code{rwl} object with (usually) raw ring-width series
+  \item{rwl, object}{ a \code{rwl} object with (usually) raw ring-width series
   as columns and years as rows such as that produced by
   \code{\link{read.rwl}}.  It is sometimes desirable to run this on
   detrended (e.g., rwi) data. }

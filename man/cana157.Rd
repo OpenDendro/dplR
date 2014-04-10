@@ -3,9 +3,9 @@
 \alias{cana157}
 \title{Twisted Tree Heartrot Hill Standard Chronology}
 \description{
-  This dataset gives the standard chronology for white spruce
+  This data set gives the standard chronology for white spruce
   \emph{Picea glauca} at Twisted Tree Heartrot Hill in Yukon,
-  Canada.  Dataset was created using \code{\link{read.crn}} and saved to
+  Canada.  Data set was created using \code{\link{read.crn}} and saved to
   an .rda file using \code{\link{save}}.
 }
 \usage{data(cana157)}

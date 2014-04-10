@@ -50,7 +50,7 @@ ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
 \examples{
 \dontrun{
 library(graphics)
-## Use series CAM011 from the Campito dataset
+## Use series CAM011 from the Campito data set
 data(ca533)
 series <- ca533[, "CAM011"]
 series <- series[!is.na(series)]
@@ -59,7 +59,7 @@ lines(ffcsaps(series, nyrs = 32), col = "red", lwd = 2)
 lines(ffcsaps(series, nyrs = 64), col = "green", lwd = 2)
 lines(ffcsaps(series, nyrs = 128), col = "blue", lwd = 2)
 }
-## Use first series from the Mesa Verde dataset
+## Use first series from the Mesa Verde data set
 data(co021)
 series <- co021[, 1]
 series <- series[!is.na(series)]

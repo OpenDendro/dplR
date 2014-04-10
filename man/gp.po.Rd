@@ -3,8 +3,8 @@
 \alias{gp.po}
 \title{ Ponderosa Pine Pith Offsets Corresponding to \code{\link{gp.rwl}} }
 \description{
-  This dataset gives the pith offsets that match the ring widths for
-  \code{\link{gp.rwl}} - a dataset of ponderosa pine (\emph{Pinus
+  This data set gives the pith offsets that match the ring widths for
+  \code{\link{gp.rwl}} - a data set of ponderosa pine (\emph{Pinus
   ponderosa}) from the Gus Pearson Natural Area (\acronym{GPNA}) in
   northern Arizona, \acronym{USA}. Data are further described by Biondi
   and Qeadan (2008) and references therein.

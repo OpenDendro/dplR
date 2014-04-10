@@ -3,9 +3,9 @@
 \alias{ca533}
 \title{Campito Mountain Tree Ring Widths}
 \description{
-  This dataset gives the raw ring widths for bristlecone pine
+  This data set gives the raw ring widths for bristlecone pine
   \emph{Pinus longaeva} at Campito Mountain in California,
-  \acronym{USA}.  There are 34 series.  Dataset was created using
+  \acronym{USA}.  There are 34 series.  Data set was created using
   \code{\link{read.rwl}} and saved to an .rda file using
   \code{\link{save}}.
 }

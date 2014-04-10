@@ -1,10 +1,21 @@
+*  Write more vignettes:
+-  Crossdating
+-  Spectral and wavelets
+-  Advanced chronology building (strip.rwl, etc.)
+
 *  In rwi.stats and any place a correlation is calculated, offer an argument to
    to specify which correlation method (e.g., spearman). Note that this is 
    implemented in interseries.cor - but will have to do this throughout. 
    The default should be spearman.
 
-*  In detrend(method=“ModNegExp”) there should be a verbose option that writes 
-   how each series was handled including the parameters of the model.
+*  In detrend.series there should be a verbose option that writes 
+   how a series is handled including the parameters of the model.
+- Things to keep track of (not in order): 
+    1. Number of zero values and where they are are (what years). 
+    2. What method is being used
+    3. For the method the relevant parameters. E.g., at params of an nls model,
+       ar coef, etc.
+    4. What else?
 
 * Decide when to use class('rwl') in functions dealing with rwl objects.
   Other than the plot and summary S3Method for rwl, are there cases when 

@@ -9,7 +9,8 @@
 detrend(rwl, y.name = names(rwl), make.plot = FALSE,
         method = c("Spline", "ModNegExp", "Mean", "Ar"), nyrs = NULL,
         f = 0.5, pos.slope = FALSE,
-        constrain.modnegexp = c("never", "when.fail", "always"))
+        constrain.modnegexp = c("never", "when.fail", "always"),
+        verbose=FALSE)
 }
 \arguments{
 
@@ -42,6 +43,8 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   \item{constrain.modnegexp}{ a \code{character} string which controls
     the constraints of the \code{"ModNegExp"} model. See 
     \code{\link{detrend.series}} for further details. }
+    
+  \item{verbose}{ logical. Write out details? }
 
 }
 \details{

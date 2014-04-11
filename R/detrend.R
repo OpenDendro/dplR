@@ -2,7 +2,8 @@
     function(rwl, y.name = names(rwl), make.plot = FALSE,
              method=c("Spline", "ModNegExp", "Mean", "Ar"),
              nyrs = NULL, f = 0.5, pos.slope = FALSE,
-             constrain.modnegexp = c("never", "when.fail", "always"))
+             constrain.modnegexp = c("never", "when.fail", "always"),
+             verbose=FALSE)
 {
     stopifnot(identical(make.plot, TRUE) || identical(make.plot, FALSE),
               identical(pos.slope, FALSE) || identical(pos.slope, TRUE))
@@ -42,7 +43,8 @@
                                                          nyrs=nyrs, f=f,
                                                          pos.slope=pos.slope,
                                                          constrain.modnegexp=
-                                                         constrain2)
+                                                         constrain2,
+                                                         verbose=verbose)
                                   if(is.data.frame(fits))
                                       row.names(fits) <- rn
                                   fits
@@ -54,7 +56,8 @@
                                    make.plot=make.plot,
                                    method=method2, nyrs=nyrs, f=f,
                                    pos.slope=pos.slope,
-                                   constrain.modnegexp=constrain2)
+                                   constrain.modnegexp=constrain2,
+                                   verbose=verbose)
             if(is.data.frame(fits))
                 row.names(fits) <- rn
             out[[i]] <- fits

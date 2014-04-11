@@ -9,7 +9,8 @@
 detrend.series(y, y.name = "", make.plot = TRUE,
                method = c("Spline", "ModNegExp", "Mean", "Ar"),
                nyrs = NULL, f = 0.5, pos.slope = FALSE,
-               constrain.modnegexp = c("never", "when.fail", "always"))
+               constrain.modnegexp = c("never", "when.fail", "always"),
+               verbose=FALSE)
 }
 \arguments{
 
@@ -47,6 +48,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
     constrained solution, even if the unconstrained one would have been
     valid.  See \sQuote{Details}. }
   
+  \item{verbose}{ logical. Write out details? }
 }
 \details{
   This detrends and standardizes a tree-ring series. The detrending is

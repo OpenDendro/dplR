@@ -2,7 +2,8 @@
     function(y, y.name = "", make.plot = TRUE,
              method = c("Spline", "ModNegExp", "Mean", "Ar"),
              nyrs = NULL, f = 0.5, pos.slope = FALSE,
-             constrain.modnegexp = c("never", "when.fail", "always"))
+             constrain.modnegexp = c("never", "when.fail", "always"),
+             verbose=FALSE)
 {
     stopifnot(identical(make.plot, TRUE) || identical(make.plot, FALSE),
               identical(pos.slope, FALSE) || identical(pos.slope, TRUE))
@@ -11,6 +12,25 @@
     method2 <- match.arg(arg = method,
                          choices = known.methods,
                          several.ok = TRUE)
+    
+ 
+    
+    if(verbose){
+      nyrs.tmp <- ifelse(test=is.null(nyrs),yes="NULL",nyrs)
+      cat("\nVerbose output: ", y.name,
+          "\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "\n Options:", 
+          "\n make.plot =", make.plot,
+          "\n method(s) =", paste(deparse(method2), sep = "\n", 
+                                  collapse = "\n"),
+          "\n nyrs =", nyrs.tmp,
+          "\n f =", f,
+          "\n pos.slope =", pos.slope,
+          "\n constrain.modnegexp =", constrain2,
+          "\n verbose =", verbose,
+          "\n")
+    }  
+    
     ## Remove NA from the data (they will be reinserted later)
     good.y <- which(!is.na(y))
     if(length(good.y) == 0) {
@@ -21,6 +41,14 @@
     y2 <- y[good.y]
     nY2 <- length(y2)
     ## Recode any zero values to 0.001
+    if(verbose) {
+      cat("\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+      if(any(y2==0)){
+        cat("\n Zeros in series:")
+        cat("\n ", names(y2)[y2==0])        
+      }
+      else cat("Zeros in series: 0 \n")
+    }
     y2[y2 == 0] <- 0.001
 
     resids <- list()
@@ -101,6 +129,11 @@
         }
         resids$ModNegExp <- y2 / ModNegExp
         do.mne <- TRUE
+        if(verbose) {
+          cat("\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+              "\n Detrend by ModNegExp.",
+              "\n How on earth to extract what we need?\n")
+        }
     } else {
         do.mne <- FALSE
     }
@@ -114,6 +147,12 @@
             nyrs2 <- floor(nY2 * 0.67)
         else
             nyrs2 <- nyrs
+        if(verbose) {
+          cat("\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+              "\n Detrend by spline.",
+              "\n Spline parameters",
+              "\n nyrs =", nyrs2," f =", f)
+        }  
         Spline <- ffcsaps(y=y2, x=seq_len(nY2), nyrs=nyrs2, f=f)
         if (any(Spline <= 0)) {
             warning("Spline fit is not all positive")
@@ -128,6 +167,11 @@
     if("Mean" %in% method2){
         ## Fit a horiz line
         Mean <- rep.int(mean(y2), nY2)
+        if(verbose) {
+          cat("\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+              "\n Detrend by mean.",
+              "\n Mean =",mean(y2))
+        }
         resids$Mean <- y2 / Mean
         do.mean <- TRUE
     } else {
@@ -135,6 +179,12 @@
     }
     if("Ar" %in% method2){
       ## Fit an ar model - aka prewhiten
+      if(verbose) {
+        ar.tmp <- ar(y2)
+        cat("\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+            "\n Detrend by prewhitening.")
+        print(ar.tmp)
+      }
       Ar <- ar.func(y2)
       # This will propogate NA to rwi as a result of detrending. 
       # Other methods don't. Problem when interacting with other

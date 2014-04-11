@@ -31,6 +31,7 @@ File: cana157.rda
 File: detrend.R and detrend.series.R
 ------------
 - Added an Ar detrend method. Revised plotting in detrend.series
+- Added a verbose option to write out parameters used in detrending
 
 File: powt.R
 ------------

@@ -1,12 +1,18 @@
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage[T1]{fontenc}
-\usepackage[english]{babel}
-\usepackage{booktabs}
-\usepackage{Sweave}
-\usepackage[round]{natbib}
-\usepackage{hyperref}
-\usepackage{sidecap}
+% This file is part of dplR: Dendrochronology Program Library in R.
+% Written by Andy Bunn and Mikko Korpela.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{dplR}[2014/04/11 Package for dplR vignettes]
+
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[english]{babel}[2000/01/28]
+\RequirePackage{booktabs}
+\RequirePackage{Sweave}
+\RequirePackage[round]{natbib}
+\RequirePackage{hyperref}
+\RequirePackage{sidecap}
+
 \AtBeginDocument{
   \hypersetup{
     pdftitle = {\@title},
@@ -14,5 +20,8 @@
     pdfkeywords = {dendrochronology, dplR, R},
   }
 }
-% \hyphenrules requires the babel package
+
+% \hyphenrules requires the babel package (>= 3.7e, 2000/01/28)
 \newcommand*{\code}[1]{\texttt{\hyphenrules{nohyphenation}#1}}
+
+\endinput

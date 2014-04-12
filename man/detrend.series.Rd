@@ -10,7 +10,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
                method = c("Spline", "ModNegExp", "Mean", "Ar"),
                nyrs = NULL, f = 0.5, pos.slope = FALSE,
                constrain.modnegexp = c("never", "when.fail", "always"),
-               verbose=FALSE)
+               verbose=FALSE, return.info=FALSE)
 }
 \arguments{
 
@@ -48,7 +48,12 @@ detrend.series(y, y.name = "", make.plot = TRUE,
     constrained solution, even if the unconstrained one would have been
     valid.  See \sQuote{Details}. }
   
-  \item{verbose}{ logical. Write out details? }
+  \item{verbose}{ a \code{logical} flag.  Write out details? }
+
+  \item{return.info}{ a \code{logical} flag.  If \code{TRUE}, details
+    about models and data will be added to the return value.  See
+    \sQuote{Value}. }
+  
 }
 \details{
   This detrends and standardizes a tree-ring series. The detrending is
@@ -110,9 +115,69 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   See the references below for further details on detrending. 
 }
 \value{
+
   If several methods are used, returns a \code{data.frame} containing
-  the detrended series (\code{\var{y}}) according to the methods
-  used. If only one method is selected, returns a vector.
+  the detrended series (\code{\var{y}}) according to the methods used.
+  The columns are named and ordered to match \code{\var{method}}. If
+  only one method is selected, returns a vector.
+
+  If \code{\var{return.info}} is \code{TRUE}, the return value is a
+  \code{list} with three parts:
+
+  \item{series}{ the main result described above (\code{data.frame} or
+    vector) }
+
+  \item{model.info}{ Information about the models corresponding to each
+    output series.  Whereas \code{\var{series}} may return a vector,
+    \code{\var{model.info}} is always a list where each top level
+    element corresponds to one selected method.  Also these elements are
+    named and arranged according to the methods selected.  Each element
+    is a list with some of the following sub-elements, depending on
+    which detrending method was actually used:
+
+    \describe{
+
+      \item{n.zeros}{ See \code{"data.info"} below.  Always present. }
+
+      \item{zero.years}{ See \code{"data.info"}.  Always present. }
+
+      \item{method}{ The method actually used for detrending.  One of
+	\code{"Mean"}, \code{"Line"}, \code{"ModNegExp"},
+	\code{"Spline"} or \code{"Ar"}.  Always present. }
+
+      \item{mean}{ Mean of the input series, missing values removed.
+	Only for method \code{"Mean"}. }
+
+      \item{coefs}{ Coefficients of the model.  Methods \code{"Line"}
+	and \code{"ModNegExp"}.}
+
+      \item{formula}{ The \code{"ModNegExp"} \code{\link{formula}}. }
+
+      \item{is.constrained}{ A \code{logical} flag indicating whether
+	the parameters of the \code{"ModNegExp"} model were
+	constrained. Only interesting when argument
+	\code{\var{constrain.modnegexp}} is set to \code{"when.fail"}. }
+
+      \item{nyrs}{ The value of \code{\var{nyrs}} used for
+	\code{\link{ffcsaps}}.  Only for method \code{"Spline"}. }
+
+      \item{order}{ The order of the autoregressive model, selected by
+	AIC (Akaike information criterion).  Only for method
+	\code{"Ar"}. }
+
+      \item{ar}{ The autoregressive coefficients used by method
+	\code{"Ar"}.  A \code{numeric} vector ordered by increasing
+	lag. }
+
+    }
+    
+  }
+
+  \item{data.info}{ Information about the input series: number
+    (\code{"n.zeros"}) and location (\code{"zero.years"}) of zero
+    values.  If the locations are in a \code{character} vector, they are
+    years.  Otherwise they are indices to the input series. }
+
 }
 \references{
   Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of

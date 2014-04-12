@@ -16,7 +16,7 @@
         stop("'rwl' must be a data.frame")
     rn <- row.names(rwl)
 
-    if(!make.plot &&
+    if(!make.plot && !verbose &&
        ("Spline" %in% method2 || "ModNegExp" %in% method2) &&
        !inherits(try(suppressWarnings(req.it <-
                                       requireNamespace("iterators",

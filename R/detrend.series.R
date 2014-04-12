@@ -19,7 +19,7 @@
       nyrs.tmp <- ifelse(test=is.null(nyrs),yes="NULL",nyrs)
       cat("\nVerbose output: ", y.name,
           "\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
-          "\n Options:", 
+          "\n Options", 
           "\n make.plot =", make.plot,
           "\n method(s) =", paste(deparse(method2), sep = "\n", 
                                   collapse = "\n"),
@@ -47,7 +47,7 @@
         cat("\n Zeros in series:")
         cat("\n ", names(y2)[y2==0])        
       }
-      else cat("Zeros in series: 0 \n")
+      else cat("\n Zeros in series: 0 \n")
     }
     y2[y2 == 0] <- 0.001
 
@@ -104,16 +104,35 @@
         }
         ModNegExp <- try(nec.func(y2, constrain2), silent=TRUE)
         mneNotPositive <- is.null(ModNegExp)
-
+        if(verbose) {
+          cat("\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+              "\n Detrend by ModNegExp.",
+              "\n Trying to fit nls model...")
+          if(class(ModNegExp) != "try-error"){
+            cat("\n nls fit but nec.func doesn't return coefs. just fits!")
+            cat("\n nls coefs",
+                "\n a: goes here",
+                "\n b: goes here",
+                "\n k: goes here",
+                "\n") 
+          }
+        }
+        
         if (mneNotPositive || class(ModNegExp) == "try-error") {
-            ## Straight line via linear regression
-            if (mneNotPositive) {
-                warning("Fits from ModNegExp are not all positive, see constrain.modnegexp argument in detrend.series")
-            }
-            tm <- cbind(1, seq_len(nY2))
-            lm1 <- lm.fit(tm, y2)
-            coefs <- lm1[["coefficients"]]
-            if (all(is.finite(coefs)) && (coefs[2] <= 0 || pos.slope)) {
+          if(verbose) { cat("\n nls failed...fitting linear model...") }
+          ## Straight line via linear regression
+          if (mneNotPositive) {
+              warning("Fits from ModNegExp are not all positive, see constrain.modnegexp argument in detrend.series")
+          }
+          tm <- cbind(1, seq_len(nY2))
+          lm1 <- lm.fit(tm, y2)
+          coefs <- lm1[["coefficients"]]
+          if(verbose) { 
+            cat("\n linear model fit",
+                "\n Intercept: ", round(coefs[1],4),
+                "\n Slope: ", round(coefs[2],4)) 
+          }
+          if (all(is.finite(coefs)) && (coefs[2] <= 0 || pos.slope)) {
                 ModNegExp <- drop(tm %*% coefs)
                 useMean <- !isTRUE(ModNegExp[1] > 0 &&
                                    ModNegExp[nY2] > 0)
@@ -124,16 +143,15 @@
                 useMean <- TRUE
             }
             if (useMean) {
+                if(verbose) { cat("\n lm has a positive slope",
+                                  "\n pos.slope = FALSE", 
+                                  "\n Detrend by mean.",
+                                  "\n Mean =",mean(y2)) }
                 ModNegExp <- rep.int(mean(y2), nY2)
             }
         }
         resids$ModNegExp <- y2 / ModNegExp
         do.mne <- TRUE
-        if(verbose) {
-          cat("\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
-              "\n Detrend by ModNegExp.",
-              "\n How on earth to extract what we need?\n")
-        }
     } else {
         do.mne <- FALSE
     }

@@ -193,15 +193,15 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 \examples{library(stats)
 ## Using a plausible representation of a tree-ring series
 gt <- 0.5 * exp (-0.05 * 1:200) + 0.2
-noise <- c(arima.sim(model = list(ar = 0.7), n = 200, mean = 1, sd = 0.5))
+noise <- c(arima.sim(model = list(ar = 0.7), n = 200, sd = 0.5))+2
 series <- gt * noise
-series.rwi <- detrend.series(y = series, y.name = "Foo")
+series.rwi <- detrend.series(y = series, y.name = "Foo", verbose=TRUE)
 ## Use series CAM011 from the Campito data set
 data(ca533)
 series <- ca533[, "CAM011"]
 names(series) <- rownames(ca533)
 # defaults to all four methods
-series.rwi <- detrend.series(y = series, y.name = "CAM011")
+series.rwi <- detrend.series(y = series, y.name = "CAM011", verbose=TRUE)
 # see plot with three methods
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
                              method=c("Spline", "ModNegExp","Mean"))

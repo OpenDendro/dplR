@@ -4,9 +4,10 @@ o[mvkorpel]  Mikko, I started working on the verbose option for detrend.series.
 -  What is the best way to extract the parameters with ModNegExp?
 -  In detrend() the call to detrend.series doesn't appear to pass the names
    in to detrend.series when dopar is invoked. Is that right?
+-  Also note that i.detrend will need fixing too for verbose mode.
 
-*  Write more vignettes:
--  Crossdating
+o[andybunn]  Write more vignettes:
+-  Crossdating (started)
 -  Spectral and wavelets
 -  Advanced chronology building (strip.rwl, etc.)
 
@@ -14,6 +15,9 @@ o[mvkorpel]  Mikko, I started working on the verbose option for detrend.series.
    to specify which correlation method (e.g., spearman). Note that this is 
    implemented in interseries.cor - but will have to do this throughout. 
    The default should be spearman.
+-   Did this in rwi.stats, corr.rwl.seg, and corr.series.seg but the 
+    output names still have "rho" in them. Change?
+-   This can't be easily implemented in ccf.series.rwl
 
 * Decide when to use class('rwl') in functions dealing with rwl objects.
   Other than the plot and summary S3Method for rwl, are there cases when 

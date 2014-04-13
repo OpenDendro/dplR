@@ -8,7 +8,9 @@
 \usage{
 corr.series.seg(rwl, series, series.yrs = as.numeric(names(series)),
                 seg.length = 50, bin.floor = 100, n = NULL,
-                prewhiten = TRUE, biweight = TRUE, pcrit = 0.05,
+                prewhiten = TRUE, biweight = TRUE, 
+                method = c("spearman", "pearson","kendall"),
+                pcrit = 0.05,
                 make.plot = TRUE, floor.plus1 = FALSE, \dots)
 }
 \arguments{
@@ -30,6 +32,9 @@ corr.series.seg(rwl, series, series.yrs = as.numeric(names(series)),
     whitened using \code{\link{ar}}. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}}. }
+  \item{method}{Can either "pearson", "kendall", or "spearman" which indicates
+    the correlation coefficient is to be used. Defaults to "spearman." See 
+    \code{\link{cor.test}}. }
   \item{pcrit}{ a number between 0 and 1 giving the critical value for
     the correlation test. }
   \item{make.plot}{ \code{logical} flag indicating whether to make a

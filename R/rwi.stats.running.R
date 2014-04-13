@@ -2,7 +2,7 @@
 
 ### Computes the correlation coefficients between columns of x and y.
 ### Requires "limit" overlapping values in each pair.
-cor.with.limit <- function(limit, x, y) {
+cor.with.limit <- function(limit, x, y, method) {
     n.x <- ncol(x) # caller makes sure that n.x
     n.y <- ncol(y) # and n.y >= 1
     r.mat <- matrix(NA_real_, n.x, n.y)
@@ -15,7 +15,8 @@ cor.with.limit <- function(limit, x, y) {
             good.both <- which(good.x & good.y)
             n.good <- length(good.both)
             if (n.good >= limit && n.good > 0) {
-                r.mat[i, j] <- cor(this.x[good.both], this.y[good.both])
+                r.mat[i, j] <- cor(this.x[good.both], this.y[good.both],
+                                   method = method)
             }
         }
     }
@@ -23,7 +24,7 @@ cor.with.limit <- function(limit, x, y) {
 }
 
 ### Computes the correlation coefficients between different columns of x.
-cor.with.limit.upper <- function(limit, x) {
+cor.with.limit.upper <- function(limit, x, method) {
     n.x <- ncol(x) # caller makes sure that n.x >= 2
     r.vec <- rep.int(NA_real_, n.x * (n.x - 1) / 2)
     good.x <- !is.na(x)
@@ -34,24 +35,29 @@ cor.with.limit.upper <- function(limit, x) {
             k <- k + 1
             good.both <- which(good.i & good.x[, j])
             if (length(good.both) >= limit) {
-                r.vec[k] <- cor(x[good.both, i], x[good.both, j])
+                r.vec[k] <- cor(x[good.both, i], x[good.both, j],
+                                method = method)
             }
         }
     }
     r.vec
 }
 
-rwi.stats <- function(rwi, ids=NULL, period=c("max", "common"), ...) {
+rwi.stats <- function(rwi, ids=NULL, period=c("max", "common"), 
+                      method = c("spearman", "pearson", "kendall"),
+                      ...) {
     args <- list(...)
     args[["rwi"]] <- rwi
     args[["ids"]] <- ids
     args[["period"]] <- period
+    args[["method"]] <- method
     args[["running.window"]] <- FALSE
     do.call(rwi.stats.running, args)
 }
 
 ### Main function, exported to user
 rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
+                              method = c("spearman", "pearson", "kendall"),
                               prewhiten=FALSE,n=NULL,
                               running.window=TRUE,
                               window.length=min(50, nrow(rwi)),
@@ -61,7 +67,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
                               round.decimals=3,
                               zero.is.missing=TRUE) {
     period2 <- match.arg(period)
-
+    method <- match.arg(method)
     if (running.window) {
         if (window.length < 3) {
             stop("minimum 'window.length' is 3")
@@ -248,7 +254,8 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
             i.data <- rwi3[year.idx, cores.of.tree[[i]], drop=FALSE]
             for (j in (i + 1):n.trees) {
                 j.data <- rwi3[year.idx, cores.of.tree[[j]], drop=FALSE]
-                bt.r.mat <- cor.with.limit(min.corr.overlap, i.data, j.data)
+                bt.r.mat <- cor.with.limit(min.corr.overlap, i.data, j.data,
+                                           method=method)
                 bt.r.mat <- bt.r.mat[!is.na(bt.r.mat)]
                 n.bt.temp <- length(bt.r.mat)
                 if (n.bt.temp > 0) {
@@ -270,7 +277,8 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
                 n.cores.tree[i] <- 1
             } else {
                 these.data <- rwi3[year.idx, these.cores, drop=FALSE]
-                wt.r.vec <- cor.with.limit.upper(min.corr.overlap, these.data)
+                wt.r.vec <- cor.with.limit.upper(min.corr.overlap, these.data,
+                                                 method=method)
                 wt.r.vec <- wt.r.vec[!is.na(wt.r.vec)]
                 n.wt.temp <- length(wt.r.vec)
                 if (n.wt.temp > 0) {

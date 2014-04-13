@@ -1,0 +1,172 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%\VignetteIndexEntry{Crossdating in dplR}
+\documentclass[a4paper,11pt]{article}
+\usepackage{dplR} % dplR settings - needs some work
+\usepackage[utf8]{inputenx} % R CMD build wants this here, not in dplR.sty
+\input{ix-utf8enc.dfu} % more characters supported
+\title{Crossdating in dplR} 
+\author{Andy Bunn \and Mikko Korpela}
+\hypersetup{
+  pdfauthor = {Andy Bunn; Mikko Korpela},
+}
+\date{\footnotesize{$ $Processed with dplR 
+\Sexpr{packageDescription("dplR", field="Version")}
+in \Sexpr{R.version.string} on \today}}
+
+\begin{document}
+\bibliographystyle{jss}
+
+\setkeys{Gin}{width=1.0\textwidth} % figure width
+\SweaveOpts{concordance=TRUE}
+\SweaveOpts{strip.white=true}
+\SweaveOpts{include=FALSE}
+<<echo=false>>=
+options(width=62) # width of paper (number of characters)
+options(useFancyQuotes=FALSE) # fancy quotes not included in fixed-width font?
+Sys.setenv(LANGUAGE="en") # no translations to languages other than English
+@ 
+
+\maketitle
+
+\begin{abstract}
+Foo
+\end{abstract}
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+\subsection{What's Covered}
+The Dendrochronology Program Library in R (dplR) is a package for 
+dendrochronologists to handle data processing and analysis. This 
+document gives an introduction of some of the crossdating functions in 
+dplR. This vignette is essentially a rehashing of \cite{Bunn2010}. Please
+cite that paper if you use dplR for crossdating. There is more detailed 
+information on all these functions in the help files. 
+
+\subsection{Citing dplR and R}
+The creation of dplR is an act of love. We enjoy writing this software and 
+helping users. However, neither of us is among the idle rich. Alas. We have
+jobs and occassionally have to answer to our beters. There is a nifty 
+\code{citation} function in R that gives you information on how to best 
+cite R and, in many cases, its packages. We ask that you please cite dplR 
+and R appropraitely in your work. This way when our department chairs and 
+deans accuse us of being dilletantes we can point to the use of dplR as a 
+partial excuse.
+
+<<>>=
+citation()
+citation("dplR")
+@
+
+\section{Ruining a Perfectly Good Data Set}
+
+Throughout this vignette we will use the onboard data set \code{co021} 
+which gives the raw ring widths for Douglas fir \emph{Pseudotsuga menziesii} 
+at Mesa Verde in Colorado, USA. There are 35 series spanning 788 years. 
+
+We'll rename the \code{co021} object to \code{dat} because we are going to 
+mess around with it and it seems like good practice to rename it. It is a 
+beautifully sensitive series with long segment lengths, high standard 
+deviation (relative to ring widths), large first-order autocorrelation, 
+and a high mean interseries correlation ($\mathrm{r}\approx 0.84$). The data are
+plotted in Figure~\ref{fig:rwl.plot}.
+<<a, fig=TRUE>>=
+library(dplR)
+data(co021)
+dat <- co021
+dat.sum <- summary(dat)
+mean(dat.sum$year)
+mean(dat.sum$stdev)
+mean(dat.sum$median)
+mean(dat.sum$ar1)
+mean(interseries.cor(dat)[,1])
+plot(dat, plot.type="spag")
+@
+\begin{figure}[htbp]
+\centering
+\includegraphics{xdate-dplR-a}
+\caption{A spaghetti plot of the Mesa Verde ring widths.}
+\label{fig:rwl.plot}
+\end{figure}
+
+\textbf{By the way, if this is all new to you - you should stop reading this
+and proceed immediately to a good primer on dendrochronology like 
+\cite{Fritts2001}. This vignette is not intended to teach you about how to do 
+tree-ring analysis. It's intended to teach you how to use the package.}
+
+To demonstrate how crossdating works in dplR, we will take this perfectly 
+lovely data set and corrupt the dating of one of the series. By doing so we 
+will be able to reenact one of the most common tasks of the dendrochronologist:
+tracking down a misdated core. Here we will take the "641143" core and remove
+one of the years of growth. This simulates a missing ring in the series. We'll 
+pick a random year in the core to give us a bit of a challenge in finding it.
+
+<<>>=
+# create a missing ring by deleting a random year of
+# growth in a random series
+set.seed(4576)
+i <- sample(x=1:nrow(dat),size=1) # 709
+j <- sample(x=1:ncol(dat),size=1) # 12 "643114"
+tmp <- dat[,j]
+tmp <- c(NA,tmp[-i])
+dat[,j] <- tmp
+@
+We've now deleted the ith observation from the jth core while making sure that 
+\code{dat} still has the appropriate numbers of rows. By sticking the NA at the
+start of the series it is as if we missed a ring while measuring.
+
+\section{Crossdating}
+\subsection{Assessing the Dating of a Data Set}
+The primary function for looking the crossdating of a tree-ring data set in 
+dplR is \code{corr.rwl.seg}. This function looks at the correlation between 
+each tree-ring series and a master chronology built from all the other series 
+in the rwl object (leave-one-out principle). These correlations are calculated
+on overlapping segments (e.g., 50-year segments would be overlapped by 
+25-years). By default, each of the series is filtered to remove low-frequency
+variation prior to the correlation analysis. The help file has abundant 
+details. Here will will look at overlapping 60 year segments. A plot is 
+produced by default with \code{corr.rwl.seg} (Figure~\ref{fig:corr.rwl.plot})
+<<b, fig=TRUE>>=
+rwl.60 <- corr.rwl.seg(dat,seg.length=60,pcrit=0.01)
+@
+\begin{figure}[htbp]
+\centering
+\includegraphics{xdate-dplR-b}
+\caption{xdate 1. Color define.}
+\label{fig:corr.rwl.plot}
+\end{figure}
+
+The low correlation between series "643114" and the master indicates a dating 
+problem )Figure~\ref{fig:corr.rwl.plot} indicates that one of the series in \code{dat}
+is misdated 
+Let's take closer look at the problem child.
+
+<<>>=
+# take the misdated series and remove it
+# from the rwl object
+flagged=dat$'641143'
+names(flagged)=rownames(dat)
+dat$'641143'=NULL
+seg.100=corr.series.seg(rwl=dat,series=flagged,seg.length=100)
+@
+And the cross func.
+
+<<>>=
+# figure 3
+ccf.100=ccf.series.rwl(rwl=dat,series=flagged,seg.length=100)
+# figure 4
+win=1390:1600
+dat.yrs=as.numeric(rownames(dat))
+dat.trunc=dat[dat.yrs%in%win,]
+flagged.yrs=as.numeric(names(flagged))
+flagged.trunc=flagged[flagged.yrs%in%win]
+names(flagged.trunc)=rownames(dat.trunc)
+ccf.30=ccf.series.rwl(rwl=dat.trunc,series=flagged.trunc, seg.length=30)
+@
+
+
+
+\bibliography{dplR}
+
+\end{document}

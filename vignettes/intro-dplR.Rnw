@@ -29,34 +29,52 @@ Sys.setenv(LANGUAGE="en") # no translations to languages other than English
 \maketitle
 
 \begin{abstract}
-This document describes basic features of dplR including reading and working 
-with ring-width data, detrending and standardization of ring-width data, 
-building chronologies, and calculating descriptive statistics. A few
-simple plots are also presented.
+This document describes basic features of dplR by following the inital steps 
+that an analyst might follow when working with a new tree-ring data set. The 
+vignette starts with reading in ring widths and plotting them. We describe
+a few of the available methods for detrending and then show how to extract
+basic descriptive statistics. We show how to build a and plot simple 
+mean-value chronology. We also show how to build a chronology 
+using the expressed population signal from the detrended ring widths as an
+example of how more complicated analysis can be done using dplR.
 \end{abstract}
 \tableofcontents
 
 \newpage
 
 \section{Introduction}
+\subsection{What's Covered}
 The Dendrochronology Program Library in R (dplR) is a package for 
 dendrochronologists to handle data processing and analysis. This 
 document gives just a brief introduction of some of the most commonly 
 used functions in dplR. There is more detailed information 
-available in the help files and in the literature including \cite{Bunn2008} 
-and \cite{Bunn2010}. 
+available in the help files and in the literature \citep{Bunn2008, Bunn2010}. 
 
 In this vignette, we will walk through the most basic activities of working 
 with tree-ring data in roughly the order that a user might follow. E.g., 
 reading data, detrending, chronology building, and doing preliminary 
 exploratory data analysis via descriptive statistics.
 
+\subsection{Citing dplR and R}
+The creation of dplR is an act of love. We enjoy writing this software and 
+helping users. However, neither of us is among the idle rich. Alas. We have
+jobs and occassionally have to answer to our beters. There is a nifty 
+\code{citation} function in R that gives you information on how to best 
+cite R and, in many cases, its packages. We ask that you please cite dplR 
+and R appropraitely in your work. This way when our department chairs and 
+deans accuse us of being dilletantes we can point to the use of dplR as a 
+partial excuse.
+<<>>=
+citation()
+citation("dplR")
+@
+
 \section{Working with Ring-Width Data}
 \subsection{Reading Data}
 There are, alas, many different ways that tree-ring data are digitally stored. 
-These range in sophistication from the simple commonly used
-\href{http://www.ncdc.noaa.gov/paleo/treeinfo.html#formats}{Tucson} (decadal) 
-format file of ring widths to the more complex 
+These range in sophistication from the simple (and commonly used)
+\href{http://www.ncdc.noaa.gov/paleo/treeinfo.html#formats}{Tucson/decadal}
+format file of ring widths to the more complex (but richer)
 \href{http://www.tridas.org/}{TRiDaS format}. We generally refer to these as 
 \code{rwl} objects for ``ring width length'' but there is no reason these can't be
 other types of tree-ring data (e.g., density).
@@ -69,7 +87,7 @@ using this function.
 
 Throughout this vignette we will use the onboard data set  \code{ca533} 
 which gives the raw ring widths for bristlecone pine \emph{Pinus longaeva} at 
-Campito Mountain in California, USA. There are 34 series spanning over 1358 
+Campito Mountain in California, USA. There are 34 series spanning 1358 
 years. 
 
 These objects are structured very simply as a \code{data.frame} with the series in 
@@ -99,7 +117,7 @@ plot(ca533, plot.type="spag")
 \begin{figure}[htbp]
 \centering
 \includegraphics{intro-dplR-a}
-\caption{A spaghetti plot of Campito Mountain ring widths.}
+\caption{A spaghetti plot of the Campito Mountain ring widths.}
 \label{fig:rwl.plot}
 \end{figure}
 
@@ -118,7 +136,7 @@ tree-ring analysis. It's intended to teach you how to use the package.}
 A rwi object has the same basic properties as the \code{rwl} object from which it is 
 made. I.e., it has the same number of rows and columns, the same names, and so 
 on. The difference is that each series has been standardized by dividing the
-ringwidths against a growth model (e.g., a stiff spline, a negative 
+ring widths against a growth model (e.g., a stiff spline, a negative 
 exponential, etc.). This gives each series a mean of one (thus referred to 
 as ``indexed'') and allows a chronology to be built (next section). As 
 \code{read.rwl} is the primary function for getting data into R, 
@@ -129,14 +147,10 @@ objects (but see \code{cms}, \code{rcs}, \code{bai.in}, and
 \subsection{Common Detrending Methods}
 As any dendrochronologist will tell you, detrending is a dark art. In dplR we 
 have implemented some of the standard tools for detrending but all have 
-drawbacks. In all of the detrend methods, the detrending is the estimation and 
-removal of the tree's natural biological growth trend. The standardization is 
-done by dividing each series by the growth trend to produce units in the 
-dimensionless ring-width index (RWI).
-
-We'll discuss detrending via fitting a nonlinear function using
-\code{nls} (the \code{"ModNegExp"} method of \code{detrend}) and detrending 
-via cubic smoothing spline (the \code{"Spline"} method of \code{detrend}). Much of the 
+drawbacks. In all of the methods, the detrending is the estimation and 
+removal of the low frequency variability that is due to biological or stand 
+effects. The standardization is done by dividing each series by the growth 
+trend to produce units in the dimensionless ring-width index (RWI). Much of the 
 text that follows is modified from the help page of \code{detrend}.
 
 Probably the most common method for detrending is what is often 
@@ -166,26 +180,28 @@ names(ca533.rwi)
 colMeans(ca533.rwi, na.rm=TRUE)
 @
 
-An alternative method in \code{detrend} is to standardize with the \code{"Spline"} approach.
-This method uses a spline as the growth model where the frequency response 
-is 0.50 at a wavelength of \(0.67 \times \text{series length}\) (unless specified differently by 
-the user). This attempts to remove the low frequency 
-variability that is due to biological or stand effects. Rather than detrend the
-entire \code{ca533} \code{rwl} object, we'll illustrate the spline method by detrending a 
-single series using the \code{detrend.series} function, which produces a plot by
-default. See Figure~\ref{fig:spline.detrend}.
+When \code{detrend} is run on an \code{rwl} object the function loops through 
+each series. It does this by calling a different function 
+(\code{detrend.series}) for each column in the \code{rwl} object. 
+But, a user can also call \code{detrend.series} and it's useful to do so here 
+for educational purposes.
+
+Let's detrend a single series and apply more than one detrending method when we
+call it. We'll also call \code{detrend.series} using the verbose mode so that
+we can see the parameters applied for each method. The \code{detrend.series} 
+function, produces a plot by default. See Figure~\ref{fig:detrend.series}.
 
 <<b, fig=TRUE>>=
 series <- ca533[, "CAM011"] # extract the series
 names(series) <- rownames(ca533) # give it years as rownames
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
-                             method="Spline")
+                             verbose=TRUE)
 @
 \begin{figure}[htbp]
 \centering
 \includegraphics{intro-dplR-b}
-\caption{Detrending a series via a spline.}
-\label{fig:spline.detrend}
+\caption{Detrending a single series via mutiple methods.}
+\label{fig:detrend.series}
 \end{figure}
 
 Often, a user will want to interactively detrend each series and fit a negative
@@ -222,7 +238,7 @@ describe the correlation between series (both within and between tree
 correlations) as well as the expressed population signal and signal-to-noise
 ratio for a data set. These are done in dplR using the \code{rwi.stats} 
 function so-named because these statistics are typically (but not always) 
-carried out on detrended and standardized ring-width indices. If a data set 
+carried out on detrended and standardized ring widths (rwi). If a data set 
 has more than one core taken per tree this information can be used in the 
 calculations to calculate within vs. between tree correlation. The function
 \code{read.ids} is used to identify which trees have multiple cores. 
@@ -270,11 +286,12 @@ dim(ca533.rwi)
 dim(ca533.crn)
 @
 
-The chronology can be plotted using the \code{crn.plot} function which 
-has many arguments for customization. Here we'll just make a simple plot of the 
-chronology with a smoothing spline added. See Figure~\ref{fig:crn.plot.spline}.
+An object produced by \code{chron} has a generic S3 moethod for plotting 
+which calls the \code{crn.plot} function (which has many arguments for 
+customization). Here we'll just make a simple plot of the chronology with 
+a smoothing spline added. See Figure~\ref{fig:crn.plot.spline}.
 <<c, fig=TRUE>>=
-crn.plot(ca533.crn, add.spline=TRUE, nyrs=20)
+plot(ca533.crn, add.spline=TRUE, nyrs=20)
 @
 \begin{figure}
 \centering
@@ -283,6 +300,7 @@ crn.plot(ca533.crn, add.spline=TRUE, nyrs=20)
 \label{fig:crn.plot.spline}
 \end{figure}
 
+\section{Prospectus}
 In general this vignette aims to give a very cursory overview of basic tasks 
 that most dendrochronologists will want to be aware of. Know that we are just
 scratching the surface of what dplR is capable of. As a small example, 
@@ -341,7 +359,6 @@ par(def.par)
 \label{fig:crn.plot.eps}
 \end{figure}
 
-\section{Prospectus}
 We hope that this vignette helps users cover introductory data handling and
 processing using dplR and R. As we noted above we are just providing a short
 introduction as to what is possible in dplR. There are many other functions in 

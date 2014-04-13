@@ -7,7 +7,7 @@
 }
 \usage{
   interseries.cor(rwl,n=NULL,prewhiten=TRUE,biweight=TRUE,
-    method = c("spearman", "pearson","kendall"))
+    method = c("spearman", "pearson", "kendall"))
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as
@@ -43,13 +43,14 @@
   detrending can be seen with \code{\link{series.rwl.plot}}.
 
   This function produces the same output of the "overall" portion of 
-  \code{\link{corr.rwl.seg}}. The mean rho value given is sometimes referred to as
-  the "overall interseries correlation"" or the "COFECHA interseries 
-  correlation." This output differs from the \code{rbar} statistics given by
-  \code{\link{rwi.stats}} in that \code{rbar} is the average pairwise correlation between 
-  series where this is the correlation between a series and a master chronology.
+  \code{\link{corr.rwl.seg}}. The mean correlation value given is sometimes 
+  referred to as the "overall interseries correlation"" or the "COFECHA 
+  interseries correlation." This output differs from the \code{rbar} 
+  statistics given by \code{\link{rwi.stats}} in that \code{rbar} is 
+  the average pairwise correlation between series where this is the 
+  correlation between a series and a master chronology.
 }
-\value{ a \code{data.frame} with rho values and p-values given from
+\value{ a \code{data.frame} with correlation values and p-values given from
 \code{\link{cor.test}}
 }
 \author{ Andy Bunn, patched and improved by Mikko Korpela  }
@@ -58,6 +59,8 @@
 foo <- interseries.cor(gp.rwl)
 # compare to: 
 # corr.rwl.seg(rwl=gp.rwl,make.plot=FALSE)$overall
+# using pearson's r
+foo <- interseries.cor(gp.rwl,method="pearson")
 
 # two measures of interseries correlation
 # compare interseries.cor to rbar from rwi.stats

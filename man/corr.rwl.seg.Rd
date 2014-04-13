@@ -7,6 +7,7 @@
 \usage{
 corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
              prewhiten = TRUE, pcrit = 0.05, biweight = TRUE,
+             method = c("spearman", "pearson","kendall"),
              make.plot = TRUE, label.cex = 1, floor.plus1 = FALSE,
              master = NULL,
              master.yrs = as.numeric(if (is.null(dim(master))) {
@@ -33,6 +34,9 @@ corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
     the correlation test. }
   \item{biweight}{ \code{logical} flag.  If \code{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}}. }
+  \item{method}{Can either "pearson", "kendall", or "spearman" which indicates
+    the correlation coefficient is to be used. Defaults to "spearman." See 
+    \code{\link{cor.test}}. }
   \item{make.plot}{ \code{logical flag} indicating whether to make a
     plot. }
   \item{label.cex}{ \code{numeric} scalar for the series labels on the

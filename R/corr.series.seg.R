@@ -1,9 +1,11 @@
 corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
                             seg.length=50, bin.floor=100, n=NULL,
                             prewhiten = TRUE, biweight=TRUE,
+                            method = c("spearman", "pearson", "kendall"),
                             pcrit=0.05, make.plot = TRUE,
                             floor.plus1 = FALSE, ...) {
 
+    method <- match.arg(method)
     ## run error checks
     qa.xdate(rwl, seg.length, n, bin.floor)
 
@@ -92,7 +94,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
             bin.cor <- NA
             bin.pval <- NA
         } else {
-            tmp <- cor.test(series2[mask], master[mask], method = "spearman",
+            tmp <- cor.test(series2[mask], master[mask], method = method,
                             alternative = "greater")
             bin.cor <- tmp$estimate
             bin.pval <- tmp$p.val
@@ -101,7 +103,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
         res.pval[j] <- bin.pval
     }
     ## overall correlation
-    tmp <- cor.test(series2, master, method = "spearman",
+    tmp <- cor.test(series2, master, method = method,
                     alternative = "greater")
     overall.cor[1] <- tmp$estimate
     overall.cor[2] <- tmp$p.val

@@ -12,6 +12,7 @@
 }
 \usage{
 rwi.stats.running(rwi, ids = NULL, period = c("max", "common"),
+                  method = c("spearman", "pearson","kendall"),
                   prewhiten=FALSE,n=NULL,
                   running.window = TRUE,
                   window.length = min(50, nrow(rwi)),
@@ -21,7 +22,8 @@ rwi.stats.running(rwi, ids = NULL, period = c("max", "common"),
                   round.decimals = 3,
                   zero.is.missing = TRUE)
 
-rwi.stats(rwi, ids=NULL, period=c("max", "common"), \dots)
+rwi.stats(rwi, ids=NULL, period=c("max", "common"), 
+          method = c("spearman", "pearson","kendall"), \dots)
 
 rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
 }
@@ -42,6 +44,9 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
     complete observations over the period common to all cores (i.e. rows
     common to all samples) or the maximum pairwise overlap. Defaults
     to \code{"max"}. }
+  \item{method}{Can either "pearson", "kendall", or "spearman" which indicates
+    the correlation coefficient is to be used. Defaults to "spearman." See 
+    \code{\link{cor}}. }
   \item{n}{ \code{NULL} or an integral value giving the filter length
     for the \code{\link{hanning}} filter used for removal of low
     frequency variation. }

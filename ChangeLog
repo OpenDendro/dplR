@@ -31,7 +31,8 @@ File: cana157.rda
 File: detrend.R and detrend.series.R
 ------------
 - Added an Ar detrend method. Revised plotting in detrend.series
-- Added a verbose option to write out parameters used in detrending
+- Added a verbose option to print out parameters used in detrending
+- Added a return.info option to write a list of parameters used in detrending
 
 File: powt.R
 ------------
@@ -57,11 +58,17 @@ File: intro-dplR.Rnw
 -------------------------
 - A vignette to intriduce dplR
 
+File: corr.series.seg.R
+--------------------
+- Added method argument to specify method for cor.test(). Defauts to
+  "spearman."
+
 File: corr.rwl.seg.R
 --------------------
 - Removed yr.range() function in favor of yr.range() in helpers.R.
   They are identical for all practical purposes.
-
+- Added method argument to specify method for cor.test(). Defauts to
+  "spearman."
 File: interseries.cor.R
 -------------------------
 - New function interseries.cor.
@@ -125,6 +132,7 @@ File: rwi.stats.running.R
   cases in the running window.
 - 'c.eff' in the return value is now 0 if no correlations were
   computed
+- Added a method argument to change the type of correlation method performed.
 - Optimizations
 
 Files: write.compact.R, write.crn.R,

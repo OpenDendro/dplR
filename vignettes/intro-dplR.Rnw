@@ -29,7 +29,7 @@ Sys.setenv(LANGUAGE="en") # no translations to languages other than English
 \maketitle
 
 \begin{abstract}
-This document describes basic features of dplR by following the inital steps 
+This document describes basic features of dplR by following the initial steps 
 that an analyst might follow when working with a new tree-ring data set. The 
 vignette starts with reading in ring widths and plotting them. We describe
 a few of the available methods for detrending and then show how to extract
@@ -58,11 +58,11 @@ exploratory data analysis via descriptive statistics.
 \subsection{Citing dplR and R}
 The creation of dplR is an act of love. We enjoy writing this software and 
 helping users. However, neither of us is among the idle rich. Alas. We have
-jobs and occassionally have to answer to our beters. There is a nifty 
+jobs and occasionally have to answer to our betters. There is a nifty 
 \code{citation} function in R that gives you information on how to best 
 cite R and, in many cases, its packages. We ask that you please cite dplR 
-and R appropraitely in your work. This way when our department chairs and 
-deans accuse us of being dilletantes we can point to the use of dplR as a 
+and R appropriately in your work. This way when our department chairs and 
+deans accuse us of being dilettantes we can point to the use of dplR as a 
 partial excuse.
 <<>>=
 citation()
@@ -229,7 +229,8 @@ rwl.stats(ca533)[1:5, ]
 
 These are common summary statistics like mean, median, etc. but also statistics 
 that are more specific to dendrochronology like the first-order autocorrelation 
-(\code{ar1}) and mean sensitivity (\code{sens1} and \code{sens2}). We'd be remiss if we didn't here 
+(\code{ar1}) and mean sensitivity (\code{sens1} and \code{sens2}). 
+We'd be remiss if we didn't here 
 mention that mean sensitivity is actually a terrible statistic that should 
 rarely, if ever, be used \citep{Bunn2013}.
 

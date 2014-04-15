@@ -11,6 +11,11 @@ File: NAMESPACE
 - Added plot.rwl as an S3Method.
 - Added plot.crn as an S3Method.
 - Added summary.rwl as an S3Method.
+- Added insert and delete.ring functions.
+
+File: insert.ring.R
+-------------------------
+- insert.ring and delete.ring functions for editing rw vectors. Very simple.
 
 File: crn.plot.R
 -------------------------

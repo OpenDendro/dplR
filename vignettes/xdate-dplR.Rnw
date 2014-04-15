@@ -29,7 +29,11 @@ Sys.setenv(LANGUAGE="en") # no translations to languages other than English
 \maketitle
 
 \begin{abstract}
-Foo
+In this vignette we cover basic crossdating techniques in dplR by deliberately
+misdating one of the series in a well-dated set of ring widths and tracking
+down the dating error. As with any dating enterprise, statistical 
+crossdating is merely a tool and users should always rely on the wood to
+accurately date tree-ring data.
 \end{abstract}
 \tableofcontents
 
@@ -47,11 +51,11 @@ information on all these functions in the help files.
 \subsection{Citing dplR and R}
 The creation of dplR is an act of love. We enjoy writing this software and 
 helping users. However, neither of us is among the idle rich. Alas. We have
-jobs and occassionally have to answer to our beters. There is a nifty 
+jobs and occasionally have to answer to our betters. There is a nifty 
 \code{citation} function in R that gives you information on how to best 
 cite R and, in many cases, its packages. We ask that you please cite dplR 
-and R appropraitely in your work. This way when our department chairs and 
-deans accuse us of being dilletantes we can point to the use of dplR as a 
+and R appropriately in your work. This way when our department chairs and 
+deans accuse us of being dilettantes we can point to the use of dplR as a 
 partial excuse.
 
 <<>>=
@@ -90,15 +94,10 @@ plot(dat, plot.type="spag")
 \label{fig:rwl.plot}
 \end{figure}
 
-\textbf{By the way, if this is all new to you - you should stop reading this
-and proceed immediately to a good primer on dendrochronology like 
-\cite{Fritts2001}. This vignette is not intended to teach you about how to do 
-tree-ring analysis. It's intended to teach you how to use the package.}
-
 To demonstrate how crossdating works in dplR, we will take this perfectly 
 lovely data set and corrupt the dating of one of the series. By doing so we 
 will be able to reenact one of the most common tasks of the dendrochronologist:
-tracking down a misdated core. Here we will take the "641143" core and remove
+tracking down a misdated core. Here we will take a random series and remove
 one of the years of growth. This simulates a missing ring in the series. We'll 
 pick a random year in the core to give us a bit of a challenge in finding it.
 
@@ -117,7 +116,7 @@ We've now deleted the ith observation from the jth core while making sure that
 start of the series it is as if we missed a ring while measuring.
 
 \section{Crossdating}
-\subsection{Assessing the Dating of a Data Set}
+\subsection{Assessing the Dating}
 The primary function for looking the crossdating of a tree-ring data set in 
 dplR is \code{corr.rwl.seg}. This function looks at the correlation between 
 each tree-ring series and a master chronology built from all the other series 
@@ -126,46 +125,133 @@ on overlapping segments (e.g., 50-year segments would be overlapped by
 25-years). By default, each of the series is filtered to remove low-frequency
 variation prior to the correlation analysis. The help file has abundant 
 details. Here will will look at overlapping 60 year segments. A plot is 
-produced by default with \code{corr.rwl.seg} (Figure~\ref{fig:corr.rwl.plot})
+produced by default with \code{corr.rwl.seg} (Figure~\ref{fig:corr.rwl.plot}).
 <<b, fig=TRUE>>=
 rwl.60 <- corr.rwl.seg(dat,seg.length=60,pcrit=0.01)
 @
 \begin{figure}[htbp]
 \centering
 \includegraphics{xdate-dplR-b}
-\caption{xdate 1. Color define.}
+\caption{Each 60-year segment of each series in the  modified Mesa 
+Verde data set is shown and colored by its correlation with the master. 
+Each series is represented by two courses of lines with the bottom course 
+adhering to the bottom axis timeline and the top course matching the upper 
+axis timeline (60-year segments lagged by 30 years). Segments are colored 
+according to the strength of the correlation between that segment and the 
+master chronology. Blue correlates well (p-values less or equal to the 
+user-set critical value) while potential dating problems are indicated 
+by the red segments (p-values greater than the user-set critical value). 
+Green lines show segments that do not completely overlap the time period 
+and thus have no correlations calculated. Our modified data set indicates
+one series with dating problems.}
 \label{fig:corr.rwl.plot}
 \end{figure}
 
 The low correlation between series "643114" and the master indicates a dating 
-problem )Figure~\ref{fig:corr.rwl.plot} indicates that one of the series in \code{dat}
-is misdated 
-Let's take closer look at the problem child.
+problem (Figure~\ref{fig:corr.rwl.plot}). Now that we suspect a dating problem,
+let's take closer look at this problem child 
+(Figure~\ref{fig:corr.seg.plot}).
 
-<<>>=
+<<c, fig=TRUE>>=
 # take the misdated series and remove it
 # from the rwl object
-flagged=dat$'641143'
-names(flagged)=rownames(dat)
-dat$'641143'=NULL
-seg.100=corr.series.seg(rwl=dat,series=flagged,seg.length=100)
+flagged <- dat$"643114"
+names(flagged) <- rownames(dat)
+dat$"643114" <- NULL
+# look at this series with a running correlation
+seg.60 <- corr.series.seg(rwl=dat,series=flagged,seg.length=60)
 @
-And the cross func.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{xdate-dplR-c}
+\caption{Correlations between series 643114 and the master chronology are 
+shown with horizontal lines according to the specified segments 
+(60-year segments lagged by 30 years). A centered running correlation with a 
+length of 60 years complements the segment correlations. The user-specified 
+critical level is show with a dashed line. Series 643114 begins to lose 
+correlation with the master at the end of the 19th century.}
+\label{fig:corr.seg.plot}
+\end{figure}
+
+This figure strongly indicates that the dating in the series \code{flagged}
+begins to deteriorate between 1850 and 1910. We can create a window of years
+to look more closely at this time period and compute a cross-correlation 
+function to look at lagged correlations to see if we can spot the dating
+problem (Figure~\ref{fig:ccf.plot}).
 
 <<>>=
-# figure 3
-ccf.100=ccf.series.rwl(rwl=dat,series=flagged,seg.length=100)
-# figure 4
-win=1390:1600
-dat.yrs=as.numeric(rownames(dat))
-dat.trunc=dat[dat.yrs%in%win,]
-flagged.yrs=as.numeric(names(flagged))
-flagged.trunc=flagged[flagged.yrs%in%win]
-names(flagged.trunc)=rownames(dat.trunc)
-ccf.30=ccf.series.rwl(rwl=dat.trunc,series=flagged.trunc, seg.length=30)
+win <- 1800:1960
+dat.yrs <- as.numeric(rownames(dat))
+dat.trunc <- dat[dat.yrs%in%win,]
+flagged.yrs <- as.numeric(names(flagged))
+flagged.trunc <- flagged[flagged.yrs%in%win]
+names(flagged.trunc) <- rownames(dat.trunc)
 @
 
+<<d, fig=TRUE>>=
+ccf.30 <- ccf.series.rwl(rwl=dat.trunc,series=flagged.trunc, 
+                         seg.length=30,bin.floor=50)
+@
 
+\begin{figure}[htbp]
+\centering
+\includegraphics{xdate-dplR-d}
+\caption{Cross-correlations between the flagged series and the master 
+chronology are shown for each segment (30-year segments lagged by 15 years). 
+The series correlates well at lag 0 until the 1865-1894 bin and then at 
+lag -1 prior to 1865.}
+\label{fig:ccf.plot}
+\end{figure}
+
+Figure~\ref{fig:ccf.plot} shows that 1865 to 1894 is the misdated part of 
+this series. Using a smaller time window and shorter correlation segments we
+can try to further isolate the switch from correlation at lag 0 to lag -1.
+We'll, of course, have to be very careful about using such short segments
+for correlation and be ready to adjust our expectations accordingly. 
+Fortunately, in this case the trees are so exquisitely sensitive that we can
+look at 20-year segments with some confidence as in Figure~\ref{fig:ccf.plot2}.
+
+<<e, fig=TRUE>>=
+win <- 1850:1900
+dat.trunc <- dat[dat.yrs%in%win,]
+flagged.trunc <- flagged[flagged.yrs%in%win]
+names(flagged.trunc) <- rownames(dat.trunc)
+ccf.20 <- ccf.series.rwl(rwl=dat.trunc,series=flagged.trunc,
+                         seg.length=20,bin.floor=0)
+@
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{xdate-dplR-d}
+\caption{Cross-correlations between the flagged series and the master 
+chronology at 20-year segments lagged by 10 years).}
+\label{fig:ccf.plot2}
+\end{figure}
+
+By 1879 the correlation between \code{flagged} and the master solidly at 
+lag -1 (Figure~\ref{fig:ccf.plot2}). The 1870 to 1889 correlation is marginal 
+while the dating at 1880-1899 seems accurate. This strongly suggests that 
+the dating error is between 1879 and 1889. At this point the analyst would
+go to the wood and take a good look at the core and see what they could
+find out. There are more heroic efforts that one could go to to figure out
+exactly where the dating problem might be but nothing ever takes the place of
+looking at the sample! 
+
+We have strong inference now that series 643114 is misdated somewhere in a ten
+year period around 1885. We have still not revealed whether this is correct
+or not. Let's look at the values for i and j and see how we did:
+<<>>=
+j
+colnames(co021)[j]
+i
+rownames(co021)[i]
+@
+
+\textbf{By the way, if this is all new to you - you should 
+proceed immediately to a good primer on dendrochronology like 
+\cite{Fritts2001}. This vignette is not intended to teach you about how to do 
+tree-ring analysis. It's intended to teach you how to use the package.}
 
 \bibliography{dplR}
 

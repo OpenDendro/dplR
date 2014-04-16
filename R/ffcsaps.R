@@ -124,7 +124,7 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     mplier <- 6 - 6 / p.inv # slightly more accurate than 6*(1-1/p.inv)
     ## forR*p is faster than forR/p.inv, and a quick test didn't
     ## show any difference in the final spline
-    u <- solve(mplier * (forR2 %*% t(forR2)) + forR * p,
+    u <- solve(mplier * tcrossprod(forR2) + forR * p,
                diff(diff(yi) / diff.xi))
     yi <- yi - mplier * diff(c(0, diff(c(0, u, 0)) / diff.xi, 0))
     test0 <- xi[-c(1, n)]

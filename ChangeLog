@@ -13,6 +13,12 @@ File: NAMESPACE
 - Added summary.rwl as an S3Method.
 - Added insert and delete.ring functions.
 
+File: ffcsaps.R
+---------------
+
+- Small optimization: using "usually slightly faster"
+  'tcrossprod(x)' instead of 'x %*% t(x)'
+
 File: insert.ring.R
 -------------------------
 - insert.ring and delete.ring functions for editing rw vectors. Very simple.

@@ -114,7 +114,7 @@ as a ``spaghetti plot.'' The \code{rwl} objects have a generic S3 method for
 <<a, fig=TRUE>>=
 plot(ca533, plot.type="spag")
 @
-\begin{figure}[htbp]
+\begin{figure}[h]
 \centering
 \includegraphics{intro-dplR-a}
 \caption{A spaghetti plot of the Campito Mountain ring widths.}
@@ -122,10 +122,10 @@ plot(ca533, plot.type="spag")
 \end{figure}
 
 \section{Detrending}
-Analysts typically (but not always) detrend a \code{rwl} data set to create a 
-ring-width index (rwi) object. The dplR package contains most standard 
-detrending methods including detrending via splines, fitting negative 
-exponential curves, and so on. There are also dplR functions for 
+Analysts typically (but not always) detrend a \code{rwl} data set to create 
+an object containing ring-width index (rwi) values. The dplR package contains 
+most standard detrending methods including detrending via splines, fitting 
+negative exponential curves, and so on. There are also dplR functions for 
 less commonly used detrending methods like regional curve standardization. 
 
 \textbf{By the way, if this is all new to you - you should stop reading this
@@ -187,9 +187,9 @@ But, a user can also call \code{detrend.series} and it's useful to do so here
 for educational purposes.
 
 Let's detrend a single series and apply more than one detrending method when we
-call it. We'll also call \code{detrend.series} using the verbose mode so that
+call it. We'll call \code{detrend.series} using the verbose mode so that
 we can see the parameters applied for each method. The \code{detrend.series} 
-function, produces a plot by default. See Figure~\ref{fig:detrend.series}.
+function, produces a plot by default (Figure~\ref{fig:detrend.series}).
 
 <<b, fig=TRUE>>=
 series <- ca533[, "CAM011"] # extract the series
@@ -197,7 +197,7 @@ names(series) <- rownames(ca533) # give it years as rownames
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
                              verbose=TRUE)
 @
-\begin{figure}[htbp]
+\begin{figure}[h]
 \centering
 \includegraphics{intro-dplR-b}
 \caption{Detrending a single series via mutiple methods.}
@@ -294,7 +294,7 @@ a smoothing spline added. See Figure~\ref{fig:crn.plot.spline}.
 <<c, fig=TRUE>>=
 plot(ca533.crn, add.spline=TRUE, nyrs=20)
 @
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics{intro-dplR-c}
 \caption{Campito Mountain chronology with 20-year smoothing spline.}
@@ -353,7 +353,7 @@ axis(1); axis(2); axis(3); axis(4)
 box()
 par(def.par)
 @
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics{intro-dplR-d}
 \caption{Campito Mountain chronology using an EPS cutoff.}

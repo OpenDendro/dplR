@@ -1,3 +1,19 @@
+o[mvkorpel] In the crossdating functions that take foo(rwl,series) it would be nice to
+  have the user be able to use a series name or index instead of the rwl object
+  instead of subsetting the rwl object itself. For instance, right now to use
+  the ccf crossdating function a user does this:
+    data(co021)
+    dat <- co021
+    flagged <- dat$"641143"
+    names(flagged) <- rownames(dat)
+    dat$"641143" <- NULL
+    ccf.100 <- ccf.series.rwl(rwl = dat, series = flagged, seg.length = 100)
+
+  It would be better if they could just do this:
+    ccf.100 <- ccf.series.rwl(rwl = dat, series = "641143", seg.length = 100)
+  Or this:
+    ccf.100 <- ccf.series.rwl(rwl = dat, series.index = 4, seg.length = 100)
+
 o[mvkorpel]  Mikko, I started working on the verbose option for detrend.series. 
    There are some things to take care of in there that you can likely do
    better than I can.
@@ -7,17 +23,12 @@ o[mvkorpel]  Mikko, I started working on the verbose option for detrend.series.
 -  Also note that i.detrend will need fixing too for verbose mode.
 
 o[andybunn]  Write more vignettes:
--  Crossdating (started)
 -  Spectral and wavelets
 -  Advanced chronology building (strip.rwl, etc.)
 
-*  In rwi.stats and any place a correlation is calculated, offer an argument to
-   to specify which correlation method (e.g., spearman). Note that this is 
-   implemented in interseries.cor - but will have to do this throughout. 
-   The default should be spearman.
--   Did this in rwi.stats, corr.rwl.seg, and corr.series.seg but the 
-    output names still have "rho" in them. Change?
--   This can't be easily implemented in ccf.series.rwl
+*  Move the relative growth calculation in skel plot to its own function
+   called skel.calc. I want to make better use of skeleton plotting and the 
+   curent plot (while pretty) is not especially useful.
 
 * Decide when to use class('rwl') in functions dealing with rwl objects.
   Other than the plot and summary S3Method for rwl, are there cases when 

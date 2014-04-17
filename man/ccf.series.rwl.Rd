@@ -49,8 +49,16 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
   \code{\link{ccf}} at overlapping segments set by
   \code{\var{seg.length}}. For instance, with \code{\var{lag.max}} set
   to 5, cross-correlations would be calculated at for each segment with
-  the master lagged at \code{\var{k} = -5:5} years.  The function is
-  typically invoked to produce a plot.
+  the master lagged at \code{\var{k} = -5:5} years.  
+  
+  The cross correlations are calculated calling
+  \code{\link{ccf}} as 
+  \code{ccf(x=series, y=master, lag.max=lag.max, plot=FALSE)}. Note that
+  prior to dplR version 1.60, the \code{master} was set as \code{x} and 
+  the \code{series} as \code{y}. This was changed to be more in line with 
+  user expectations so that a missing ring in a series produces a positive
+  lag in the plot rather than a negative lag. This structure of this call
+  does put the plots at odds with Figure 3 in Bunn (2010) which is unfortunate.
 
   Correlations are calculated for the first segment, then the
   second segment and so on. Correlations are only calculated for segments with
@@ -82,6 +90,9 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{corr.rwl.seg}}, \code{\link{corr.series.seg}},
   \code{\link{skel.plot}}, \code{\link{series.rwl.plot}}
+}
+\references{ Bunn AG (2010). Statistical and visual crossdating 
+  in R using the dplR library. Dendrochronologia, 28(4): 251-258.
 }
 \examples{
 data(co021)

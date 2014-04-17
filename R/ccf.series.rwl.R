@@ -76,7 +76,8 @@ ccf.series.rwl <- function(rwl, series,
             bin.ccf <- NA
         }
         else {
-            tmp <- ccf(master[mask], series2[mask], lag.max=lag.max, plot=FALSE)
+            tmp <- ccf(series2[mask], master[mask], lag.max=lag.max, 
+                       plot=FALSE)
             bin.ccf <- as.vector(tmp$acf)
         }
         res.cor[, j] <- bin.ccf

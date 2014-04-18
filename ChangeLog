@@ -25,6 +25,9 @@ File: ccf.series.rwl.R
 - Switched the order of x and y in the call to ccf(). This makes a great deal
   more logical sense now as a missing ring shows up with a positive lag rather
   than a negative lag.
+- New convenience feature: if the length of 'series' is 1, it is
+  interpreted as a column index to 'rwl', and the corresponding
+  series is left out of the master chronology.
 
 File: ffcsaps.R
 ---------------

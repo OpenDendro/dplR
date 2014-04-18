@@ -1,39 +1,32 @@
-o[mvkorpel] In the crossdating functions that take foo(rwl,series) it would be nice to
-  have the user be able to use a series name or index instead of the rwl object
-  instead of subsetting the rwl object itself. For instance, right now to use
-  the ccf crossdating function a user does this:
-    data(co021)
-    dat <- co021
-    flagged <- dat$"641143"
-    names(flagged) <- rownames(dat)
-    dat$"641143" <- NULL
-    ccf.100 <- ccf.series.rwl(rwl = dat, series = flagged, seg.length = 100)
+*  Think about how to make better use of the skeleton plotting concept.
+   I want to make better use of skeleton plotting and the curent plot 
+   (while pretty) is not especially useful. That is why I made the 
+   skel.ccf.plot function. That function is very useful for crossdating in R
+   while skel.plot is useful only when the plots are printed (and then only
+   to folks who are trained in interpreting them). Should we deprecate the
+   existing skel.plot function and make it skel.plot.legacy? I'd prefer to
+   replace it with something like skel.ccf.plot but without the ccf plots.
+   But, that plot (and skel.ccf.plot) should be able to take an rwl object
+   or a crn obejct to calculate the master. This will take some thought.
+-  Regardless: Move the relative growth calculation in skel plot to its own function
+   called skel.calc
+_  skel.calc would be called by skel.ccf.plotm skel.plot.legacy, etc.
 
-  It would be better if they could just do this:
-    ccf.100 <- ccf.series.rwl(rwl = dat, series = "641143", seg.length = 100)
-  Or this:
-    ccf.100 <- ccf.series.rwl(rwl = dat, series.index = 4, seg.length = 100)
+o[mvkorpel]  Finish the verbose option for detrend.series and it's bretheren
+   (e.g., detrend, i.detrend.series, i.detrend). Better yet, should we 
+   depricate the i.detrend functions and have "interactive" be an argument
+   to detrend?
 
-o[mvkorpel]  Mikko, I started working on the verbose option for detrend.series. 
-   There are some things to take care of in there that you can likely do
-   better than I can.
--  What is the best way to extract the parameters with ModNegExp?
--  In detrend() the call to detrend.series doesn't appear to pass the names
-   in to detrend.series when dopar is invoked. Is that right?
--  Also note that i.detrend will need fixing too for verbose mode.
+o[mvkorpel] Should we use class('rwl) as a way of error checking? 
+   E.g.,when a function has "rwl" as an argument should there be a check:
+      if (!inherits(rwl, "rwl")) {
+          stop('use only with "rwl" objects')
+- Related: We should have functions is.rwl() and as.rwl() 
 
 o[andybunn]  Write more vignettes:
 -  Spectral and wavelets
 -  Advanced chronology building (strip.rwl, etc.)
 
-*  Move the relative growth calculation in skel plot to its own function
-   called skel.calc. I want to make better use of skeleton plotting and the 
-   curent plot (while pretty) is not especially useful.
--  Complete work on new skel.ccf function.
 
-* Decide when to use class('rwl') in functions dealing with rwl objects.
-  Other than the plot and summary S3Method for rwl, are there cases when 
-  having that class would be useful. E.g., in error checking? Same for 
-  class('crn'). There is a plot method now. What else?
 
-- Related: Consider the benefits and drawbacks of creating classes for rwi. 
+

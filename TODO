@@ -29,6 +29,7 @@ o[andybunn]  Write more vignettes:
 *  Move the relative growth calculation in skel plot to its own function
    called skel.calc. I want to make better use of skeleton plotting and the 
    curent plot (while pretty) is not especially useful.
+-  Complete work on new skel.ccf function.
 
 * Decide when to use class('rwl') in functions dealing with rwl objects.
   Other than the plot and summary S3Method for rwl, are there cases when 

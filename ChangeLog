@@ -13,6 +13,12 @@ File: NAMESPACE
 - Added summary.rwl as an S3Method.
 - Added insert and delete.ring functions.
 
+File: skel.ccf.R
+---------------
+
+- New and amitious plotting function to help cross date with skeleton plot
+  and cross correlation plots. This still needs work!
+
 File: ccf.series.rwl.R
 ---------------
 

@@ -13,7 +13,8 @@ importFrom(grDevices, rainbow)
 
 importFrom(grid, gpar, grid.lines, grid.newpage, grid.polygon,
            grid.segments, grid.text, pushViewport, seekViewport, unit,
-           viewport, vpList, vpTree)
+           viewport, vpList, vpTree, plotViewport, grid.grill, upViewport,
+           grid.points, popViewport, grid.rect)
 
 importFrom(lattice, panel.abline, panel.dotplot, panel.segments,
            trellis.par.set, xyplot)
@@ -37,7 +38,7 @@ export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, cms,
        tridas.vocabulary, uuid.gen, wavelet.plot, wc.to.po,
        write.compact, write.crn, write.rwl, write.tridas,
        write.tucson, plot.rwl, interseries.cor, summary.rwl,
-       plot.crn, insert.ring, delete.ring)
+       plot.crn, insert.ring, delete.ring, skel.ccf)
 
 S3method(print, redfit)
 S3method(plot, rwl)

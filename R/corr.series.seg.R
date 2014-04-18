@@ -6,8 +6,14 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
                             floor.plus1 = FALSE, ...) {
 
     method <- match.arg(method)
+
+    ## Handle different types of 'series'
+    tmp <- pick.rwl.series(rwl, series, series.yrs)
+    rwl2 <- tmp[[1]]
+    series2 <- tmp[[2]]
+
     ## run error checks
-    qa.xdate(rwl, seg.length, n, bin.floor)
+    qa.xdate(rwl2, seg.length, n, bin.floor)
 
     ## turn off warnings for this function
     ## The sig test for spearman's rho often produces warnings.
@@ -18,9 +24,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     seg.lag <- seg.length / 2
 
     ## Normalize.
-    series2 <- series
-    names(series2) <- series.yrs
-    tmp <- normalize.xdate(rwl, series2, n, prewhiten, biweight)
+    tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight)
     master <- tmp$master
 
     ## trim master so there are no NaN like dividing when

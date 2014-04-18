@@ -109,12 +109,17 @@ names(flagged) <- rownames(dat)
 dat$"641143" <- NULL
 ccf.100 <- ccf.series.rwl(rwl = dat, series = flagged, seg.length = 100)
 \dontrun{
+flagged2 <- co021$"641143"
+names(flagged2) <- rownames(dat)
+ccf.100.1 <- ccf.series.rwl(rwl = dat, seg.length = 100,
+                            series = flagged2)
 ## Select series by name or column position
 ccf.100.2 <- ccf.series.rwl(rwl = co021, seg.length = 100,
                             series = "641143")
 ccf.100.3 <- ccf.series.rwl(rwl = co021, seg.length = 100,
                             series = which(colnames(co021) == "641143"))
-identical(ccf.100.2, ccf.100.3)
+identical(ccf.100.1, ccf.100.2) # TRUE
+identical(ccf.100.2, ccf.100.3) # TRUE
 }
 }
 \keyword{ manip }

@@ -290,3 +290,45 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
     }
     y
 }
+
+### Handle different types of 'series'.
+###
+### If series is a character or numeric vector of length 1, it is
+### interpreted as a column index to rwl.  In this case, the
+### corresponding column is also dropped from rwl.
+###
+### Returns list(rwl, series, series.yrs), where series is equipped
+### with names indicating years.
+###
+### Intended to be used by ccf.series.rwl(), corr.series.seg(), ...
+pick.rwl.series <- function(rwl, series, series.yrs) {
+    if (length(series) == 1) {
+        if (is.character(series)) {
+            seriesIdx <- logical(ncol(rwl))
+            seriesIdx[colnames(rwl) == series] <- TRUE
+            nMatch <- sum(seriesIdx)
+            if (nMatch == 0) {
+                stop("'series' not found in 'rwl'")
+            } else if (nMatch != 1) {
+                stop("duplicate column names, multiple matches")
+            }
+            rwl2 <- rwl[, !seriesIdx, drop = FALSE]
+            series2 <- rwl[, seriesIdx]
+        } else if (is.numeric(series) && is.finite(series) &&
+                   series >=1 && series < ncol(rwl) + 1) {
+            rwl2 <- rwl[, -series, drop = FALSE]
+            series2 <- rwl[, series]
+        } else {
+            stop("'series' of length 1 must be a column index to 'rwl'")
+        }
+        rNames <- rownames(rwl)
+        names(series2) <- rNames
+        series.yrs2 <- as.numeric(rNames)
+    } else {
+        rwl2 <- rwl
+        series2 <- series
+        names(series2) <- as.character(series.yrs)
+        series.yrs2 <- series.yrs
+    }
+    list(rwl = rwl2, series = series2, series.yrs = series.yrs2)
+}

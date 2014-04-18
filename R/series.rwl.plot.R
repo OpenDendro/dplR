@@ -3,8 +3,14 @@ series.rwl.plot <-
              seg.length=100, bin.floor=100, n=NULL, prewhiten = TRUE,
              biweight=TRUE, floor.plus1 = FALSE) {
 
+    ## Handle different types of 'series'
+    tmp <- pick.rwl.series(rwl, series, series.yrs)
+    rwl2 <- tmp[[1]]
+    series2 <- tmp[[2]]
+    series.yrs0 <- tmp[[3]][!is.na(series2)]
+
     ## run error checks
-    qa.xdate(rwl, seg.length, n, bin.floor)
+    qa.xdate(rwl2, seg.length, n, bin.floor)
 
     ## turn off warnings for this function
     ## The sig test for spearman's rho often produces warnings.
@@ -14,13 +20,10 @@ series.rwl.plot <-
 
     seg.lag <- seg.length / 2
 
-    series.yrs0 <- series.yrs[!is.na(series)]
-    mask <- !apply(as.matrix(is.na(rwl)), 1, all)
-    yrs0 <- as.numeric(row.names(rwl))[mask]
+    mask <- !apply(as.matrix(is.na(rwl2)), 1, all)
+    yrs0 <- as.numeric(row.names(rwl2))[mask]
     ## Normalize.
-    series2 <- series
-    names(series2) <- series.yrs
-    tmp <- normalize.xdate(rwl, series2, n, prewhiten, biweight)
+    tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight)
     master <- tmp$master
 
     ## trim master so there are no NaN like dividing when

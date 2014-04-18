@@ -5,40 +5,18 @@ ccf.series.rwl <- function(rwl, series,
                            pcrit = 0.05, lag.max = 5, make.plot = TRUE,
                            floor.plus1 = FALSE, ...) {
 
+    ## Handle different types of 'series'
+    tmp <- pick.rwl.series(rwl, series, series.yrs)
+    rwl2 <- tmp[[1]]
+    series2 <- tmp[[2]]
+
     ## run error checks
-    qa.xdate(rwl, seg.length, n, bin.floor)
+    qa.xdate(rwl2, seg.length, n, bin.floor)
     if (lag.max > seg.length) {
         stop("'lag.max' > 'seg.length'")
     }
     seg.lag <- seg.length / 2
 
-    ## Handle different types of 'series'
-    if (length(series) == 1) {
-        if (is.character(series)) {
-            seriesIdx <- logical(ncol(rwl))
-            seriesIdx[colnames(rwl) == series] <- TRUE
-            nMatch <- sum(seriesIdx)
-            if (nMatch == 0) {
-                stop("'series' not found in 'rwl'")
-            } else if (nMatch != 1) {
-                stop("duplicate column names, multiple matches")
-            }
-            rwl2 <- rwl[, !seriesIdx, drop = FALSE]
-            series2 <- rwl[, seriesIdx]
-            names(series2) <- rownames(rwl)
-        } else if (is.numeric(series) && is.finite(series) &&
-                   series >=1 && series < ncol(rwl) + 1) {
-            rwl2 <- rwl[, -series, drop = FALSE]
-            series2 <- rwl[, series]
-            names(series2) <- rownames(rwl)
-        } else {
-            stop("'series' of length 1 must be a column index to 'rwl'")
-        }
-    } else {
-        rwl2 <- rwl
-        series2 <- series
-        names(series2) <- series.yrs
-    }
     ## Normalize.
     tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight)
     master <- tmp$master

@@ -14,10 +14,15 @@ series.rwl.plot(rwl, series, series.yrs = as.numeric(names(series)),
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
     such as that produced by \code{\link{read.rwl}}. }
-  \item{series}{ a \code{numeric} vector. Usually a tree-ring series. }
+  \item{series}{ a \code{numeric} or \code{character} vector.  Usually a
+    tree-ring series.  If the length of the value is 1, the
+    corresponding column of \code{\var{rwl}} is selected (by name or
+    position) as the series and ignored when building the master
+    chronology.  Otherwise, the value must be \code{numeric}. }
   \item{series.yrs}{ a \code{numeric} vector giving the years of
     \code{\var{series}}.  Defaults to
-    \code{as.numeric(names(\var{series}))}. }
+    \code{as.numeric(names(\var{series}))}.  Ignored if
+    \code{\var{series}} is an index to a column of \code{\var{rwl}}. }
   \item{seg.length}{ an even integral value giving length of segments in
     years (e.g., 20, 50, 100 years). }
   \item{bin.floor}{ a non-negative integral value giving the base for
@@ -67,16 +72,12 @@ series.rwl.plot(rwl, series, series.yrs = as.numeric(names(series)),
 }
 \examples{library(utils)
 data(co021)
-dat <- co021
-flagged <- dat$"646244"
-names(flagged) <- rownames(dat)
-dat$"646107" <- NULL
-foo <- series.rwl.plot(rwl = dat, series = flagged, seg.length = 100,
+foo <- series.rwl.plot(rwl = co021, series = "646244", seg.length = 100,
                        n = 5)
 ## note effect of n on first year in the series
-foo <- series.rwl.plot(rwl = dat, series = flagged, seg.length = 100,
+foo <- series.rwl.plot(rwl = co021, series = "646244", seg.length = 100,
                        n = 13, prewhiten = FALSE)
-bar <- series.rwl.plot(rwl = dat, series = flagged, seg.length = 100,
+bar <- series.rwl.plot(rwl = co021, series = "646244", seg.length = 100,
                        n = 7, prewhiten = FALSE)
 head(foo$series)
 head(bar$series)

@@ -84,7 +84,7 @@
     y2[y2 == 0] <- 0.001
 
     resids <- list()
-    stats <- list()
+    modelStats <- list()
 
     if("ModNegExp" %in% method2){
         ## Nec or lm
@@ -222,7 +222,7 @@
             mneStats <- NULL
         }
         resids$ModNegExp <- y2 / ModNegExp
-        stats$ModNegExp <- mneStats
+        modelStats$ModNegExp <- mneStats
         do.mne <- TRUE
     } else {
         do.mne <- FALSE
@@ -254,7 +254,7 @@
             splineStats <- list(method = "Spline", nyrs = nyrs2)
         }
         resids$Spline <- y2 / Spline
-        stats$Spline <- splineStats
+        modelStats$Spline <- splineStats
         do.spline <- TRUE
     } else {
         do.spline <- FALSE
@@ -272,7 +272,7 @@
         }
         meanStats <- list(method = "Mean", mean = theMean)
         resids$Mean <- y2 / Mean
-        stats$Mean <- meanStats
+        modelStats$Mean <- meanStats
         do.mean <- TRUE
     } else {
         do.mean <- FALSE
@@ -298,7 +298,7 @@
         Ar[Ar<0] <- 0
       }
       resids$Ar <- Ar / mean(Ar,na.rm=TRUE)
-      stats$Ar <- arStats
+      modelStats$Ar <- arStats
       do.ar <- TRUE
     } else {
       do.ar <- FALSE
@@ -308,11 +308,12 @@
     if (verbose || return.info) {
         zero.years <- lapply(resids, zeroFun)
         n.zeros <- lapply(zero.years, nFun)
-        stats <- mapply(c, stats, n.zeros, zero.years)
+        modelStats <- mapply(c, modelStats, n.zeros, zero.years,
+                             SIMPLIFY = FALSE)
         if (verbose) {
             n.zeros2 <- unlist(n.zeros, use.names = FALSE)
             zeroFlag <- n.zeros2 > 0
-            methodNames <- names(stats)
+            methodNames <- names(modelStats)
             if (any(zeroFlag)) {
                 cat("", sepLine, sep = "\n")
                 for (i in which(zeroFlag)) {
@@ -398,7 +399,7 @@
     if(!is.data.frame(resids2)) names(resids2) <- names(y)
     if (return.info) {
         list(series = resids2,
-             model.info = stats[method2], data.info = dataStats)
+             model.info = modelStats[method2], data.info = dataStats)
     } else {
         resids2
     }

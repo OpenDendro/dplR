@@ -21,7 +21,10 @@
   }
 }
 
+% Dummy definition for checking that \code has not been defined
+\newcommand*{\code}[1]{Dummy}
 % \hyphenrules requires the babel package (>= 3.7e, 2000/01/28)
-\newcommand*{\code}[1]{\texttt{\hyphenrules{nohyphenation}#1}}
+% \hyphenrules is fragile, needs protection
+\DeclareRobustCommand*{\code}[1]{\texttt{\hyphenrules{nohyphenation}#1}}
 
 \endinput

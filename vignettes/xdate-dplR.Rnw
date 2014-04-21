@@ -245,7 +245,7 @@ just this. Here we make a skeleton plot from the 80-year period around the
 suspected dating error (1885):
 
 <<f, fig=TRUE>>=
-skel.ccf.plot(rwl=dat,series="643114",win.start=1865, win.width=40)
+xskel.ccf.plot(rwl=dat,series="643114",win.start=1865, win.width=40)
 
 @
 

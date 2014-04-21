@@ -1,16 +1,10 @@
-*  Think about how to make better use of the skeleton plotting concept.
-   I want to make better use of skeleton plotting and the curent plot 
-   (while pretty) is not especially useful. That is why I made the 
-   skel.ccf.plot function. That function is very useful for crossdating in R
-   while skel.plot is useful only when the plots are printed (and then only
-   to folks who are trained in interpreting them). Should we deprecate the
-   existing skel.plot function and make it skel.plot.legacy? I'd prefer to
-   replace it with something like skel.ccf.plot but without the ccf plots.
-   But, that plot (and skel.ccf.plot) should be able to take an rwl object
-   or a crn obejct to calculate the master. This will take some thought.
--  Regardless: Move the relative growth calculation in skel plot to its own function
-   called skel.calc
-_  skel.calc would be called by skel.ccf.plotm skel.plot.legacy, etc.
+o[andybunn]  xskel.cff.plot is a renamed version of skel.cff.plot which has been taken 
+   out of the package. I think. The x preface is to denote its use
+   in crossdating. This function needs to have checks built in that will allow
+   it to be used on rwl and crn objects (for the master).
+-  The relative growth calculation in for this plot has been moved to
+   its own function called xskel.calc in helpers.R
+_  I will make a version without the ccf plots as well "xskel.plot."
 
 o[mvkorpel]  Finish the verbose option for detrend.series and it's bretheren
    (e.g., detrend, i.detrend.series, i.detrend). Better yet, should we 

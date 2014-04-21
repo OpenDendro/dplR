@@ -1,11 +1,11 @@
-\name{skel.ccf.plot}
-\alias{skel.ccf.plot}
+\name{xskel.ccf.plot}
+\alias{xskel.ccf.plot}
 \title{ Skeleton Plot with Cross Correlation }
 \description{
   ...
 }
 \usage{
-skel.ccf.plot(rwl,series,series.yrs = as.numeric(names(series)),
+xskel.ccf.plot(rwl,series,series.yrs = as.numeric(names(series)),
                        win.start, win.width=50, n = NULL, prewhiten = TRUE, 
                        biweight = TRUE)
 
@@ -71,9 +71,9 @@ bad.series <- dat$"641143"
 names(bad.series) <- rownames(dat)
 bad.series <- delete.ring(bad.series,year=1825)
 # good match
-skel.ccf.plot(rwl=dat,series=bad.series,win.start=1900,win.width=50)
+xskel.ccf.plot(rwl=dat,series=bad.series,win.start=1900,win.width=50)
 # overlap missing ring
-skel.ccf.plot(rwl=dat,series=bad.series,win.start=1800,win.width=50)
+xskel.ccf.plot(rwl=dat,series=bad.series,win.start=1800,win.width=50)
 }
 
 \keyword{ hplot }

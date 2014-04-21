@@ -1,4 +1,4 @@
-skel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
+xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
          win.start, win.width=50, n = NULL, prewhiten = TRUE, 
          biweight = TRUE) {      
   # check to see that win.width is even
@@ -49,10 +49,10 @@ skel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
   
   
   # skeleton
-  master.skel <- skel.plot(master,yr.vec=master.yrs,dat.out=TRUE,plot=FALSE)
+  master.skel <- cbind(master.yrs,xskel.calc(master))
   master.skel <- master.skel[master.skel[,1]%in%yrs,]
   master.yrs.sig <- master.skel[!is.na(master.skel[,2]),1]
-  series.skel <- skel.plot(series,yr.vec=series.yrs,dat.out=TRUE,plot=FALSE)
+  series.skel <- cbind(series.yrs,xskel.calc(series))
   series.skel <- series.skel[series.skel[,1]%in%yrs,]
   series.yrs.sig <- series.skel[!is.na(series.skel[,2]),1]
   

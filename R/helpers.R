@@ -332,3 +332,28 @@ pick.rwl.series <- function(rwl, series, series.yrs) {
     }
     list(rwl = rwl2, series = series2, series.yrs = series.yrs2)
 }
+# does the skeleton calculation
+xskel.calc <- function(x,filt.weight=9,skel.thresh=3){
+  x.dt <- hanning(x, filt.weight)
+  n <- length(x)
+  y <- rep(NA, n)
+  ## calc rel growth
+  n.diff <- n - 1
+  idx <- 2:n.diff
+  temp.diff <- diff(x)
+  y[idx] <- rowMeans(cbind(temp.diff[-n.diff], -temp.diff[-1])) / x.dt[idx]
+  y[y > 0] <- NA
+  ## rescale from 0 to 10
+  na.flag <- is.na(y)
+  if(all(na.flag))
+    y.range <- c(NA, NA)
+  else
+    y.range <- range(y[!na.flag])
+  newrange <- c(10, 1)
+  mult.scalar <-
+    (newrange[2] - newrange[1]) / (y.range[2] - y.range[1])
+  y <- newrange[1] + (y - y.range[1]) * mult.scalar
+  y[y < skel.thresh] <- NA
+  y <- ceiling(y)
+  y
+}

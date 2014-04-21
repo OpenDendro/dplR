@@ -1,13 +1,13 @@
-\name{xskel.ccf.plot}
-\alias{xskel.ccf.plot}
-\title{ Skeleton Plot for Series and Master with Cross Correlation }
+\name{xskel.plot}
+\alias{xskel.plot}
+\title{ Skeleton Plot for Series and Master }
 \description{
   ...
 }
 \usage{
-xskel.ccf.plot(rwl,series,series.yrs = as.numeric(names(series)),
-                       win.start, win.width=50, n = NULL, prewhiten = TRUE, 
-                       biweight = TRUE)
+xskel.plot(rwl,series,series.yrs = as.numeric(names(series)),
+                       win.start, win.end=win.start+100, n = NULL, 
+                       prewhiten = TRUE, biweight = TRUE)
 
 }
 \arguments{
@@ -22,7 +22,7 @@ xskel.ccf.plot(rwl,series,series.yrs = as.numeric(names(series)),
     \code{\var{series}}.  Defaults to
     \code{as.numeric(names(\var{series}))}. }
   \item{win.start}{ year to start window }
-  \item{win.width}{ an even integral value } 
+  \item{win.end}{ year to end window } 
   \item{n}{ \code{NULL} or an integral value giving the filter length for the
     \code{\link{hanning}} filter used for removal of low frequency
     variation. }
@@ -71,9 +71,9 @@ bad.series <- dat$"641143"
 names(bad.series) <- rownames(dat)
 bad.series <- delete.ring(bad.series,year=1825)
 # good match
-xskel.ccf.plot(rwl=dat,series=bad.series,win.start=1900,win.width=50)
+xskel.plot(rwl=dat,series=bad.series,win.start=1850)
 # overlap missing ring
-xskel.ccf.plot(rwl=dat,series=bad.series,win.start=1800,win.width=50)
+xskel.plot(rwl=dat,series=bad.series,win.start=1800)
 }
 
 \keyword{ hplot }

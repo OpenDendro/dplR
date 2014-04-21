@@ -117,10 +117,16 @@ ccf.series.rwl <- function(rwl, series,
                        panel.abline(v=lag.vec, lty="solid", col="gray")
                        panel.abline(h=0, v=0, lwd=2)
                        panel.abline(h=sig, lwd=2, lty="dashed")
-                       col <- ifelse(y > 0, "#E41A1C", "#377EB8")
+                       #col <- ifelse(y > 0, "#E41A1C", "#377EB8")
+                       col <- ifelse(y > 0, "darkred", "darkblue")
+                       bg <- ifelse(y > 0, "lightsalmon", "lightblue")
                        ## segments, dots for all r
-                       panel.segments(x1=x, y1=0, x2=x, y2=y, col=col, lwd=2)
-                       panel.dotplot(x, y, col = col, ...)
+                       #panel.segments(x1=x, y1=0, x2=x, y2=y, col=col, lwd=2)
+                       #panel.dotplot(x, y, col = col, ...)
+                       panel.segments(x1=x, y1=0, x2=x, y2=y, 
+                                      col=col, lwd=2)
+                       panel.dotplot(x, y, col = col, fill=bg,
+                                     pch=21,...)
                    }, ...)
         trellis.par.set(strip.background = list(col = "transparent"),
                         warn = FALSE)

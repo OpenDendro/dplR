@@ -192,16 +192,16 @@ xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
   
   # text  
   grid.text(master.yrs.sig, x=unit(master.yrs.sig,"native"), 
-            y = unit(-12, "native"), rot = 90,
+            y = unit(0, "npc"), rot = 90,just="right",
             gp=gpar(fontsize=12))
   grid.text(series.yrs.sig, x=unit(series.yrs.sig,"native"), 
-            y = unit(12, "native"), rot = 90,
+            y = unit(1, "npc"), rot = 90,just="left",
             gp= gpar(fontsize = 12))
-  grid.text("Master",x=unit(min(yrs)-1,"native"),
-            y=unit(-10,"native"),just = "left",rot=90,
+  grid.text("Master",x=unit(0,"npc"),
+            y=unit(0,"npc"),hjust = 0,vjust = 0,rot=90,
             gp= gpar(fontsize = 12))
-  grid.text("Series",x=unit(min(yrs)-1,"native"),
-            y=unit(10,"native"),just = "right",rot=90,
+  grid.text("Series",x=unit(0,"npc"),
+            y=unit(1,"npc"),hjust=1,vjust=0,rot=90,
             gp= gpar(fontsize = 12))
   
   upViewport(3) # back to bnd

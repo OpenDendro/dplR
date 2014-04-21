@@ -13,10 +13,10 @@ File: NAMESPACE
 - Added summary.rwl as an S3Method.
 - Added insert and delete.ring functions.
 
-File: skel.ccf.plot.R
+File: xskel.ccf.plot.R and xskel.plot.R and 
 ---------------
 
-- New and amitious plotting function to help cross date with skeleton plot
+- New plotting functions to help crossdate with skeleton plot
   and cross correlation plots.
 
 File: ccf.series.rwl.R
@@ -25,6 +25,7 @@ File: ccf.series.rwl.R
 - Switched the order of x and y in the call to ccf(). This makes a great deal
   more logical sense now as a missing ring shows up with a positive lag rather
   than a negative lag.
+- Changed color scheme a bit to look less harsh
 
 Files: ccf.series.rwl.R, corr.series.seg.R, series.rwl.plot.R
 -------------------------------------------------------------

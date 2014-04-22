@@ -73,7 +73,7 @@ at Mesa Verde in Colorado, USA. There are 35 series spanning 788 years.
 It is a beautifully sensitive series with long segment lengths, high standard 
 deviation (relative to ring widths), large first-order autocorrelation, 
 and a high mean interseries correlation ($\mathrm{r}\approx 0.84$). The data are
-plotted in Figure~\ref{fig:rwl.plot}.
+plotted in Figure~\ref{fig:rwl}.
 <<a, fig=TRUE>>=
 library(dplR)
 data(co021)
@@ -89,7 +89,7 @@ plot(co021, plot.type="spag")
 \centering
 \includegraphics{timeseries-dplR-a}
 \caption{A spaghetti plot of the Mesa Verde ring widths.}
-\label{fig:rwl.plot}
+\label{fig:rwl}
 \end{figure}
 
 \textbf{By the way, if this is all new to you - you should 
@@ -126,26 +126,47 @@ pacf(dat)
 \centering
 \includegraphics{timeseries-dplR-c}
 \caption{ACF and PACF plots of the Mesa Verde chronology.}
-\label{fig:crn.plot}
+\label{fig:acf.plot}
 \end{figure}
 The ACF function indicates significant autocorrelation out to a lag of
 about 10 years (which is not uncommon in tree-ring data) while the PACF plot
 suggests that the persitence after lag 4 is due to the propagation of the 
-autocorrelation at earlier lags. And one could very well argue that the 
-best model here is an AR(2) model given the marginal significance of
-the PACF value at lags 3 and 4. But, you can get three opinions by asking
-one statistician to look a time series. But we digress.
+autocorrelation at earlier lags (Figure~\ref{fig:acf.plot}). And one could 
+very well argue that the best model here is an AR(2) model given the 
+marginal significance of the PACF value at lags 3 and 4. After all, you can get 
+three opinions by asking one statistician to look a time series. But we digress.
 
 We now have the first bit of solid information about the time-series 
 properties of these data, it looks like they fits and AR(4) model. 
 But, R being R, there are many other ways to check this.
 The easiest way to to use the \code{ar} function which fits an autoregressive 
-and selects the order by AIC.
+and selects the order by AIC. We can do the same sort of automatically fitting
+an ARMA model using the \code{auto.arima} function in the library
+\code{forecast}.
 <<>>=
 dat.ar <- ar(dat)
 dat.ar
+require(forecast)
+dat.arima <- auto.arima(dat,ic="bic")
 @
-Indeed, \code{ar} produces an AR(4) model. 
+Indeed, \code{ar} produces an AR(4) model. Yet, auto.arima went for an 
+ARMA(1,1) model - or an ARIMA(1,0,1). The parsimony priciple certainyl likes 
+a nice simple ARMA(1,1) model! Note that we could look at the residuals
+(just the first few), model coefficients, etc. quite easily. And indeed the 
+residials are quite clean as we'd expect Figure~\ref{fig:acf.resid}.
+<<d, fig=TRUE>>=
+summary(dat.arima)
+head(residuals(dat.arima))
+coef(dat.arima)
+acf(residuals(dat.arima))
+@
+\begin{figure}[h]
+\centering
+\includegraphics{timeseries-dplR-d}
+\caption{ACF plot of the ARIMA(1,1) residuals.}
+\label{fig:acf.resid}
+\end{figure}
+
 \bibliography{dplR}
 
 \end{document}

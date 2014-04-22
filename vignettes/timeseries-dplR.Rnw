@@ -1,0 +1,151 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%\VignetteIndexEntry{Time Series Analysis in dplR}
+\documentclass[a4paper,11pt]{article}
+\usepackage{dplR} % dplR settings - needs some work
+\usepackage[utf8]{inputenx} % R CMD build wants this here, not in dplR.sty
+\input{ix-utf8enc.dfu} % more characters supported
+\title{Time Series Analysis in dplR} 
+\author{Andy Bunn \and Mikko Korpela}
+\hypersetup{
+  pdfauthor = {Andy Bunn; Mikko Korpela},
+}
+\date{\footnotesize{$ $Processed with dplR 
+\Sexpr{packageDescription("dplR", field="Version")}
+in \Sexpr{R.version.string} on \today}}
+
+\begin{document}
+\bibliographystyle{jss}
+
+\setkeys{Gin}{width=1.0\textwidth} % figure width
+\SweaveOpts{concordance=TRUE}
+\SweaveOpts{strip.white=true}
+\SweaveOpts{include=FALSE}
+<<echo=false>>=
+options(width=62) # width of paper (number of characters)
+options(useFancyQuotes=FALSE) # fancy quotes not included in fixed-width font?
+Sys.setenv(LANGUAGE="en") # no translations to languages other than English
+@ 
+
+\maketitle
+
+\begin{abstract}
+In this vignette we cover some of the basic time series tools in dplR 
+(and in R to a much lesser extent). These include spectral analysis 
+using redfit and wavelets. We also discuss fitting AR, ARMA, and
+GARCH models.
+\end{abstract}
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+\subsection{What's Covered}
+The Dendrochronology Program Library in R (dplR) is a package for 
+dendrochronologists to handle data processing and analysis. This 
+document gives an introduction of some of the functions dealing with
+time series in dplR. This vignette does not purport to be any sort of
+authority on time series analysis at all! There are many wonderful 
+R-centric books on time series analysis that can tell you about the theory
+and practice of working with temporal data. For heaven's sake, don't rely on
+this document!
+
+\subsection{Citing dplR and R}
+The creation of dplR is an act of love. We enjoy writing this software and 
+helping users. However, neither of us is among the idle rich. Alas. We have
+jobs and occasionally have to answer to our betters. There is a nifty 
+\code{citation} function in R that gives you information on how to best 
+cite R and, in many cases, its packages. We ask that you please cite dplR 
+and R appropriately in your work. This way when our department chairs and 
+deans accuse us of being dilettantes we can point to the use of dplR as a 
+partial excuse.
+
+<<>>=
+citation()
+citation("dplR")
+@
+
+\section{Data Sets}
+
+Throughout this vignette we will use the onboard data set \code{co021} 
+which gives the raw ring widths for Douglas fir \emph{Pseudotsuga menziesii} 
+at Mesa Verde in Colorado, USA. There are 35 series spanning 788 years. 
+
+It is a beautifully sensitive series with long segment lengths, high standard 
+deviation (relative to ring widths), large first-order autocorrelation, 
+and a high mean interseries correlation ($\mathrm{r}\approx 0.84$). The data are
+plotted in Figure~\ref{fig:rwl.plot}.
+<<a, fig=TRUE>>=
+library(dplR)
+data(co021)
+co021.sum <- summary(co021)
+mean(co021.sum$year)
+mean(co021.sum$stdev)
+mean(co021.sum$median)
+mean(co021.sum$ar1)
+mean(interseries.cor(co021)[,1])
+plot(co021, plot.type="spag")
+@
+\begin{figure}[h]
+\centering
+\includegraphics{timeseries-dplR-a}
+\caption{A spaghetti plot of the Mesa Verde ring widths.}
+\label{fig:rwl.plot}
+\end{figure}
+
+\textbf{By the way, if this is all new to you - you should 
+proceed immediately to a good primer on dendrochronology like 
+\cite{Fritts2001}. This vignette is not intended to teach you about how to do 
+tree-ring analysis. It's intended to teach you how to use the package.}
+
+Let's make a mean-value chronology of the \code{co021} data after detrending
+each series with a frequency response of 50\% at a wavelength of 2/3 of
+each series's length. The chronology is plotted in Figure~\ref{fig:crn.plot}.
+<<b, fig=TRUE>>=
+co021.rwi <- detrend(co021,method="Spline")
+co021.crn <- chron(co021.rwi,prefix="MES")
+plot(co021.crn,add.spline=TRUE,nyrs=64)
+@
+\begin{figure}[h]
+\centering
+\includegraphics{timeseries-dplR-b}
+\caption{The Mesa Verde chronology.}
+\label{fig:crn.plot}
+\end{figure}
+
+The \code{co021.crn} obejct has two columns, the first giving the chronology
+and the second the sample depth during that year. We'll start our analysis
+on the chronology by looking at its autocorrelation structure using R's 
+\code{acf} and \code{pacf} functions.
+<<c, fig=TRUE>>=
+dat <- co021.crn[,1]
+par(mfcol=c(1,2))
+acf(dat)
+pacf(dat)
+@
+\begin{figure}[h]
+\centering
+\includegraphics{timeseries-dplR-c}
+\caption{ACF and PACF plots of the Mesa Verde chronology.}
+\label{fig:crn.plot}
+\end{figure}
+The ACF function indicates significant autocorrelation out to a lag of
+about 10 years (which is not uncommon in tree-ring data) while the PACF plot
+suggests that the persitence after lag 4 is due to the propagation of the 
+autocorrelation at earlier lags. And one could very well argue that the 
+best model here is an AR(2) model given the marginal significance of
+the PACF value at lags 3 and 4. But, you can get three opinions by asking
+one statistician to look a time series. But we digress.
+
+We now have the first bit of solid information about the time-series 
+properties of these data, it looks like they fits and AR(4) model. 
+But, R being R, there are many other ways to check this.
+The easiest way to to use the \code{ar} function which fits an autoregressive 
+and selects the order by AIC.
+<<>>=
+dat.ar <- ar(dat)
+dat.ar
+@
+Indeed, \code{ar} produces an AR(4) model. 
+\bibliography{dplR}
+
+\end{document}

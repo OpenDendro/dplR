@@ -1,3 +1,17 @@
+*  At the moment, in the crossdating functions where a user wants to compare a 
+   series to a master chrnology we calculate the master from a rwl object.
+   The pick.rwl.series function was a great improvement to the former method
+   of having to pass in a rwl and a series argument. One further addition
+   will be to add in a crn as either the master (or the series?). I'm not sure
+   about the best way to do this as of yet. It might be that changing the name
+   of the argument from rwl to just "data" might be the best option and handle
+   data differntly based on its class.
+
+
+*  Calculate the NET index that was proposed by Esper, J., Neuwirth, B. 
+   and Treydte, K.S. 2001 A new parameter to evaluate temporal signal 
+   strength of tree-ring chronologies. Dendrochronologia, 19 (1), 93-102.
+
 o[andybunn]  xskel.cff.plot is a renamed version of skel.cff.plot which has been taken 
    out of the package. I think. The x preface is to denote its use
    in crossdating. This function needs to have checks built in that will allow

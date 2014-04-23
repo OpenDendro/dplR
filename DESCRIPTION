@@ -3,7 +3,7 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.6.0
-Date: 2014-04-21
+Date: 2014-04-23
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "trl")), person("Franco", "Biondi",
@@ -21,7 +21,7 @@ Depends: R (>= 2.15.0)
 Imports: gmp (>= 0.5-2), graphics, grDevices, grid, stats, utils,
         digest (>= 0.2.3), lattice (>= 0.13-6), stringr (>= 0.4), XML
         (>= 2.1-0)
-Suggests: foreach, iterators, RUnit (>= 0.4.25)
+Suggests: foreach, forecast, iterators, RUnit (>= 0.4.25)
 Description: This package contains functions for performing tree-ring
         analyses, IO, and graphics.
 LazyData: no

@@ -20,7 +20,7 @@ in \Sexpr{R.version.string} on \today}}
 \SweaveOpts{concordance=TRUE}
 \SweaveOpts{strip.white=true}
 \SweaveOpts{include=FALSE}
-<<echo=false>>=
+<<echo=FALSE,results=hide>>=
 options(width=62) # width of paper (number of characters)
 options(useFancyQuotes=FALSE) # fancy quotes not included in fixed-width font?
 Sys.setenv(LANGUAGE="en") # no translations to languages other than English
@@ -82,7 +82,7 @@ mean(co021.sum$year)
 mean(co021.sum$stdev)
 mean(co021.sum$median)
 mean(co021.sum$ar1)
-mean(interseries.cor(co021)[,1])
+mean(interseries.cor(co021)[, 1])
 plot(co021, plot.type="spag")
 @
 \begin{figure}[h]
@@ -92,7 +92,7 @@ plot(co021, plot.type="spag")
 \label{fig:rwl}
 \end{figure}
 
-\textbf{By the way, if this is all new to you - you should 
+\textbf{By the way, if this is all new to you -- you should 
 proceed immediately to a good primer on dendrochronology like 
 \cite{Fritts2001}. This vignette is not intended to teach you about how to do 
 tree-ring analysis. It's intended to teach you how to use the package.}
@@ -101,9 +101,9 @@ Let's make a mean-value chronology of the \code{co021} data after detrending
 each series with a frequency response of 50\% at a wavelength of 2/3 of
 each series's length. The chronology is plotted in Figure~\ref{fig:crn.plot}.
 <<b, fig=TRUE>>=
-co021.rwi <- detrend(co021,method="Spline")
-co021.crn <- chron(co021.rwi,prefix="MES")
-plot(co021.crn,add.spline=TRUE,nyrs=64)
+co021.rwi <- detrend(co021, method="Spline")
+co021.crn <- chron(co021.rwi, prefix="MES")
+plot(co021.crn, add.spline=TRUE, nyrs=64)
 @
 \begin{figure}[h]
 \centering
@@ -112,13 +112,13 @@ plot(co021.crn,add.spline=TRUE,nyrs=64)
 \label{fig:crn.plot}
 \end{figure}
 
-The \code{co021.crn} obejct has two columns, the first giving the chronology
+The \code{co021.crn} object has two columns, the first giving the chronology
 and the second the sample depth during that year. We'll start our analysis
 on the chronology by looking at its autocorrelation structure using R's 
 \code{acf} and \code{pacf} functions.
 <<c, fig=TRUE>>=
-dat <- co021.crn[,1]
-par(mfcol=c(1,2))
+dat <- co021.crn[, 1]
+par(mfcol=c(1, 2))
 acf(dat)
 pacf(dat)
 @
@@ -130,42 +130,56 @@ pacf(dat)
 \end{figure}
 The ACF function indicates significant autocorrelation out to a lag of
 about 10 years (which is not uncommon in tree-ring data) while the PACF plot
-suggests that the persitence after lag 4 is due to the propagation of the 
+suggests that the persistence after lag 4 is due to the propagation of the 
 autocorrelation at earlier lags (Figure~\ref{fig:acf.plot}). And one could 
 very well argue that the best model here is an AR(2) model given the 
 marginal significance of the PACF value at lags 3 and 4. After all, you can get 
 three opinions by asking one statistician to look a time series. But we digress.
 
 We now have the first bit of solid information about the time-series 
-properties of these data, it looks like they fits and AR(4) model. 
+properties of these data, it looks like they fit an AR(4) model. 
 But, R being R, there are many other ways to check this.
-The easiest way to to use the \code{ar} function which fits an autoregressive 
-and selects the order by AIC. We can do the same sort of automatically fitting
-an ARMA model using the \code{auto.arima} function in the library
-\code{forecast}.
+The easiest way is to use the \code{ar} function which fits an autoregressive 
+model and selects the order by AIC.
 <<>>=
 dat.ar <- ar(dat)
 dat.ar
-require(forecast)
-dat.arima <- auto.arima(dat,ic="bic")
-@
-Indeed, \code{ar} produces an AR(4) model. Yet, auto.arima went for an 
-ARMA(1,1) model - or an ARIMA(1,0,1). The parsimony priciple certainyl likes 
-a nice simple ARMA(1,1) model! Note that we could look at the residuals
-(just the first few), model coefficients, etc. quite easily. And indeed the 
-residials are quite clean as we'd expect Figure~\ref{fig:acf.resid}.
+@ 
+Indeed, \code{ar} produces an AR(4) model.
+We can do the same sort of analysis by automatically fitting
+an ARMA model using the \code{auto.arima} function in the package
+\code{"forecast"}.
+\newif\ifforecastUsable% Define boolean variable
+<<echo=FALSE,results=tex>>=
+## Test if forecast can be loaded
+if (require("forecast", character.only = TRUE)) {
+    cat("\\forecastUsabletrue\n\n")# output to LaTeX
+}
+@ 
+\ifforecastUsable% Conditional: If "forecast" is available
 <<d, fig=TRUE>>=
-summary(dat.arima)
-head(residuals(dat.arima))
-coef(dat.arima)
-acf(residuals(dat.arima))
+if (require("forecast", character.only = TRUE)) {
+    dat.arima <- auto.arima(dat, ic="bic")
+    summary(dat.arima)
+    head(residuals(dat.arima))
+    coef(dat.arima)
+    acf(residuals(dat.arima))
+}
 @
 \begin{figure}[h]
-\centering
-\includegraphics{timeseries-dplR-d}
-\caption{ACF plot of the ARIMA(1,1) residuals.}
-\label{fig:acf.resid}
+  \centering
+  \includegraphics{timeseries-dplR-d}
+  \caption{ACF plot of the ARIMA(1,1) residuals.}
+  \label{fig:acf.resid}
 \end{figure}
+Instead of an AR(4) model, \code{auto.arima} went for an 
+ARMA(1,1) model -- or an ARIMA(1,0,1). The parsimony principle certainly likes 
+a nice simple ARMA(1,1) model! Note that we could look at the residuals
+(just the first few), model coefficients, etc. quite easily. And indeed the 
+residuals are quite clean as we'd expect (Figure~\ref{fig:acf.resid}).
+\else% If "forecast" is not available
+An example was dropped because \code{"forecast"} is not available.
+\fi% End of conditional
 
 \bibliography{dplR}
 

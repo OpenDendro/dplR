@@ -20,7 +20,7 @@ in \Sexpr{R.version.string} on \today}}
 \SweaveOpts{concordance=TRUE}
 \SweaveOpts{strip.white=true}
 \SweaveOpts{include=FALSE}
-<<echo=false>>=
+<<echo=FALSE,results=hide>>=
 options(width=62) # width of paper (number of characters)
 options(useFancyQuotes=FALSE) # fancy quotes not included in fixed-width font?
 Sys.setenv(LANGUAGE="en") # no translations to languages other than English
@@ -128,7 +128,7 @@ most standard detrending methods including detrending via splines, fitting
 negative exponential curves, and so on. There are also dplR functions for 
 less commonly used detrending methods like regional curve standardization. 
 
-\textbf{By the way, if this is all new to you - you should stop reading this
+\textbf{By the way, if this is all new to you -- you should stop reading this
 vignette and proceed immediately to a good primer on dendrochronology like 
 \cite{Fritts2001}. This vignette is not intended to teach you about how to do 
 tree-ring analysis. It's intended to teach you how to use the package.}
@@ -263,7 +263,7 @@ and the mean for all series here:
 <<>>=
 ca533.rho <- interseries.cor(ca533.rwi, prewhiten=TRUE,
                              method="spearman")
-ca533.rho[1:5,]
+ca533.rho[1:5, ]
 mean(ca533.rho[, 1])
 @
 

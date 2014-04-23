@@ -40,7 +40,7 @@ accurately date tree-ring data.
 \newpage
 
 \section{Introduction}
-\subsection{What's Covered}
+\subsection{What Is Covered}
 The Dendrochronology Program Library in R (dplR) is a package for 
 dendrochronologists to handle data processing and analysis. This 
 document gives an introduction of some of the crossdating functions in 
@@ -69,7 +69,7 @@ Throughout this vignette we will use the onboard data set \code{co021}
 which gives the raw ring widths for Douglas fir \emph{Pseudotsuga menziesii} 
 at Mesa Verde in Colorado, USA. There are 35 series spanning 788 years. 
 
-We'll rename the \code{co021} object to \code{dat} because we are going to 
+We will rename the \code{co021} object to \code{dat} because we are going to 
 mess around with it and it seems like good practice to rename it. It is a 
 beautifully sensitive series with long segment lengths, high standard 
 deviation (relative to ring widths), large first-order autocorrelation, 
@@ -97,13 +97,13 @@ plot(dat, plot.type="spag")
 \textbf{By the way, if this is all new to you -- you should 
 proceed immediately to a good primer on dendrochronology like 
 \cite{Fritts2001}. This vignette is not intended to teach you about how to do 
-tree-ring analysis. It's intended to teach you how to use the package.}
+tree-ring analysis. It is intended to teach you how to use the package.}
 
 To demonstrate how crossdating works in dplR, we will take this perfectly 
 lovely data set and corrupt the dating of one of the series. By doing so we 
 will be able to reenact one of the most common tasks of the dendrochronologist:
 tracking down a misdated core. Here we will take a random series and remove
-one of the years of growth. This simulates a missing ring in the series. We'll 
+one of the years of growth. This simulates a missing ring in the series. We will 
 pick a random year in the core to give us a bit of a challenge in finding it.
 
 <<>>=
@@ -117,7 +117,7 @@ tmp <- dat[, j]
 tmp <- c(NA, tmp[-i])
 dat[, j] <- tmp
 @
-We've now deleted the $i^{th}$ observation from the $j^{th}$ core while making sure that 
+We have now deleted the $i^{th}$ observation from the $j^{th}$ core while making sure that 
 \code{dat} still has the appropriate numbers of rows. By sticking the NA at the
 start of the series it is as if we missed a ring while measuring.
 
@@ -156,7 +156,7 @@ Our modified data set indicates one series with dating problems.}
 
 The low correlation between series \code{643114} and the master indicates a dating 
 problem (Figure~\ref{fig:corr.rwl.plot}). Now that we suspect a dating problem,
-let's take closer look at this problem child. Figure~\ref{fig:corr.seg.plot}
+let us take a closer look at this problem child. Figure~\ref{fig:corr.seg.plot}
 shows that series \code{643114} begins to lose correlation with the master at the 
 end of the 19th century.
 
@@ -214,7 +214,7 @@ unfortunate.}
 
 Using a smaller time window and shorter correlation segments we
 can try to further isolate the switch from correlation at lag 0 to lag +1.
-We'll, of course, have to be very careful about using such short segments
+We will, of course, have to be very careful about using such short segments
 for correlation and be ready to adjust our expectations accordingly. 
 Fortunately, in this case the trees are so exquisitely sensitive that we can
 look at 20-year segments with some confidence as in Figure~\ref{fig:ccf.plot2}.
@@ -275,7 +275,7 @@ but nothing ever takes the place of looking at the sample!
 
 We have strong inference now that series \code{643114} is misdated somewhere in a ten
 year period around 1885. We have still not revealed whether this is correct
-or not. Let's look at the values for \code{i} and \code{j} and see how we did:
+or not. Let us look at the values for \code{i} and \code{j} and see how we did:
 <<>>=
 j
 colnames(co021)[j]

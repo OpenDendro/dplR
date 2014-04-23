@@ -39,14 +39,14 @@ GARCH models.
 \newpage
 
 \section{Introduction}
-\subsection{What's Covered}
+\subsection{What Is Covered}
 The Dendrochronology Program Library in R (dplR) is a package for 
 dendrochronologists to handle data processing and analysis. This 
 document gives an introduction of some of the functions dealing with
 time series in dplR. This vignette does not purport to be any sort of
 authority on time series analysis at all! There are many wonderful 
 R-centric books on time series analysis that can tell you about the theory
-and practice of working with temporal data. For heaven's sake, don't rely on
+and practice of working with temporal data. For heaven's sake, do not rely on
 this document!
 
 \subsection{Citing dplR and R}
@@ -95,9 +95,9 @@ plot(co021, plot.type="spag")
 \textbf{By the way, if this is all new to you -- you should 
 proceed immediately to a good primer on dendrochronology like 
 \cite{Fritts2001}. This vignette is not intended to teach you about how to do 
-tree-ring analysis. It's intended to teach you how to use the package.}
+tree-ring analysis. It is intended to teach you how to use the package.}
 
-Let's make a mean-value chronology of the \code{co021} data after detrending
+Let us make a mean-value chronology of the \code{co021} data after detrending
 each series with a frequency response of 50\% at a wavelength of 2/3 of
 each series's length. The chronology is plotted in Figure~\ref{fig:crn.plot}.
 <<b, fig=TRUE>>=
@@ -113,7 +113,7 @@ plot(co021.crn, add.spline=TRUE, nyrs=64)
 \end{figure}
 
 The \code{co021.crn} object has two columns, the first giving the chronology
-and the second the sample depth during that year. We'll start our analysis
+and the second the sample depth during that year. We will start our analysis
 on the chronology by looking at its autocorrelation structure using R's 
 \code{acf} and \code{pacf} functions.
 <<c, fig=TRUE>>=
@@ -176,7 +176,7 @@ Instead of an AR(4) model, \code{auto.arima} went for an
 ARMA(1,1) model -- or an ARIMA(1,0,1). The parsimony principle certainly likes 
 a nice simple ARMA(1,1) model! Note that we could look at the residuals
 (just the first few), model coefficients, etc. quite easily. And indeed the 
-residuals are quite clean as we'd expect (Figure~\ref{fig:acf.resid}).
+residuals are quite clean as we would expect (Figure~\ref{fig:acf.resid}).
 \else% If "forecast" is not available
 An example was dropped because \code{"forecast"} is not available.
 \fi% End of conditional

@@ -33,7 +33,7 @@ This document describes basic features of dplR by following the initial steps
 that an analyst might follow when working with a new tree-ring data set. The 
 vignette starts with reading in ring widths and plotting them. We describe
 a few of the available methods for detrending and then show how to extract
-basic descriptive statistics. We show how to build a and plot simple 
+basic descriptive statistics. We show how to build and plot a simple 
 mean-value chronology. We also show how to build a chronology 
 using the expressed population signal from the detrended ring widths as an
 example of how more complicated analysis can be done using dplR.
@@ -43,7 +43,7 @@ example of how more complicated analysis can be done using dplR.
 \newpage
 
 \section{Introduction}
-\subsection{What's Covered}
+\subsection{What Is Covered}
 The Dendrochronology Program Library in R (dplR) is a package for 
 dendrochronologists to handle data processing and analysis. This 
 document gives just a brief introduction of some of the most commonly 
@@ -76,7 +76,7 @@ These range in sophistication from the simple (and commonly used)
 \href{http://www.ncdc.noaa.gov/paleo/treeinfo.html#formats}{Tucson/decadal}
 format file of ring widths to the more complex (but richer)
 \href{http://www.tridas.org/}{TRiDaS format}. We generally refer to these as 
-\code{rwl} objects for ``ring width length'' but there is no reason these can't be
+\code{rwl} objects for ``ring width length'' but there is no reason these cannot be
 other types of tree-ring data (e.g., density).
 
 The workhorse function for getting tree-ring data into R is dplR's 
@@ -131,7 +131,7 @@ less commonly used detrending methods like regional curve standardization.
 \textbf{By the way, if this is all new to you -- you should stop reading this
 vignette and proceed immediately to a good primer on dendrochronology like 
 \cite{Fritts2001}. This vignette is not intended to teach you about how to do 
-tree-ring analysis. It's intended to teach you how to use the package.}
+tree-ring analysis. It is intended to teach you how to use the package.}
 
 A rwi object has the same basic properties as the \code{rwl} object from which it is 
 made. I.e., it has the same number of rows and columns, the same names, and so 
@@ -183,13 +183,13 @@ colMeans(ca533.rwi, na.rm=TRUE)
 When \code{detrend} is run on an \code{rwl} object the function loops through 
 each series. It does this by calling a different function 
 (\code{detrend.series}) for each column in the \code{rwl} object. 
-But, a user can also call \code{detrend.series} and it's useful to do so here 
+But, a user can also call \code{detrend.series} and it is useful to do so here 
 for educational purposes.
 
-Let's detrend a single series and apply more than one detrending method when we
-call it. We'll call \code{detrend.series} using the verbose mode so that
+Let us detrend a single series and apply more than one detrending method when we
+call it. We will call \code{detrend.series} using the verbose mode so that
 we can see the parameters applied for each method. The \code{detrend.series} 
-function, produces a plot by default (Figure~\ref{fig:detrend.series}).
+function produces a plot by default (Figure~\ref{fig:detrend.series}).
 
 <<b, fig=TRUE>>=
 series <- ca533[, "CAM011"] # extract the series
@@ -218,7 +218,7 @@ and converting measurements of ring widths to basal area increment (functions
 information.
 
 \section{Descriptive Statistics}
-Either before or after standardization, it would be natural to want to look at
+Either before or after standardization, it is natural to want to look at
 some common (and not-so common) descriptive statistics of a \code{rwl} object. The
 \code{rwl.stats} function is typically used on raw ring widths 
 (the \code{rwl} object) and produces summary statistics. Here are summary 
@@ -230,11 +230,11 @@ rwl.stats(ca533)[1:5, ]
 These are common summary statistics like mean, median, etc. but also statistics 
 that are more specific to dendrochronology like the first-order autocorrelation 
 (\code{ar1}) and mean sensitivity (\code{sens1} and \code{sens2}). 
-We'd be remiss if we didn't here 
+We would be remiss if we did not here 
 mention that mean sensitivity is actually a terrible statistic that should 
 rarely, if ever, be used \citep{Bunn2013}.
 
-It's also easy in dplR to compute commonly used descriptive statistics that 
+It is also easy in dplR to compute commonly used descriptive statistics that 
 describe the correlation between series (both within and between tree 
 correlations) as well as the expressed population signal and signal-to-noise
 ratio for a data set. These are done in dplR using the \code{rwi.stats} 
@@ -251,7 +251,7 @@ rwi.stats(ca533.rwi, ca533.ids, prewhiten=TRUE)
 
 There is (at least) one other way of looking at the average interseries 
 correlation of a data set. The \code{interseries.cor} function in dplR 
-gives a measure of average interseries correlation that is different than 
+gives a measure of average interseries correlation that is different from 
 the rbar measurements from \code{rwi.stats}. In this function, 
 correlations are calculated serially between each tree-ring series and a 
 master chronology built from all the other series in the \code{rwl} object 
@@ -289,7 +289,7 @@ dim(ca533.crn)
 
 An object produced by \code{chron} has a generic S3 moethod for plotting 
 which calls the \code{crn.plot} function (which has many arguments for 
-customization). Here we'll just make a simple plot of the chronology with 
+customization). Here we will just make a simple plot of the chronology with 
 a smoothing spline added. See Figure~\ref{fig:crn.plot.spline}.
 <<c, fig=TRUE>>=
 plot(ca533.crn, add.spline=TRUE, nyrs=20)

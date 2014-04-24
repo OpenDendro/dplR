@@ -88,8 +88,11 @@ skel.plot(x, yr.vec = x.yrs, sname = x.name, master = TRUE)
 y <- co021[, 11]
 y.yrs <- as.numeric(rownames(co021))
 y.name <- colnames(co021)[11]
+
 ## send to postscript - 3 pages total
-postscript("xdating.examp.ps")
+fname1 <- tempfile(fileext=".ps")
+print(fname1) # tempfile used for PS output
+postscript(fname1)
 ## "Master series" with correct calendar dates
 skel.plot(x, yr.vec = x.yrs, sname = x.name, master = TRUE)
 ## Undated series, try to align with last plot
@@ -98,12 +101,18 @@ skel.plot(y)
 skel.plot(y, yr.vec = y.yrs, sname = y.name)
 dev.off()
 
+unlink(fname1) # remove the PS file
+
 ## alternatively send to pdf
-pdf("xdating.examp.pdf", width = 10, height = 7.5, paper = "USr")
+fname2 <- tempfile(fileext=".pdf")
+print(fname2) # tempfile used for PDF output
+pdf(fname2, width = 10, height = 7.5, paper = "USr")
 skel.plot(x, yr.vec = x.yrs, sname = x.name, master = TRUE)
 skel.plot(y)
 skel.plot(y, yr.vec = y.yrs, sname = y.name)
 dev.off()
+
+unlink(fname2) # remove the PDF file
 }
 }
 \keyword{ hplot }

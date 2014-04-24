@@ -359,6 +359,7 @@ fname1 <- write.tridas(rwl.df = co021,
     project.info = list(investigator = "E. Schulman",
                         title = "", category = "",
                         period = "", type = "unknown"))
+print(fname1) # tempfile used for output
 
 ## Write mean value chronology of detrended ring widths
 data(ca533)
@@ -371,6 +372,8 @@ fname2 <- write.tridas(crn = ca533.crn,
         list(investigator = "Donald A. Graybill, V.C. LaMarche, Jr.",
              title = "Campito Mountain", category = "",
              period = "", type = "unknown"))
+print(fname2) # tempfile used for output
+
 unlink(c(fname1, fname2)) # remove the files
 }
 \keyword{ IO }

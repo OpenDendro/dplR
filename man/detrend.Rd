@@ -98,10 +98,14 @@ library(grDevices)
 ## Detrend using all methods. Returns a list
 ca533.rwi <- detrend(rwl = ca533)
 ## Save a pdf of all series
-pdf("foo.pdf")
+fname <- tempfile(fileext=".pdf")
+print(fname) # tempfile used for output
+pdf(fname)
 ca533.rwi <- detrend(rwl = ca533, method = c("Spline", "ModNegExp"),
                      make.plot = TRUE)
 dev.off()
+
+unlink(fname) # remove the file
 }
 }
 \keyword{ manip }

@@ -49,6 +49,8 @@ co021.hdr <- list(site.id = "CO021",
 fname <- write.rwl(rwl.df = co021, fname = tempfile(fileext=".rwl"),
                    format = "tucson", header = co021.hdr,
                    append = FALSE, prec = 0.001)
+print(fname) # tempfile used for output
+
 unlink(fname) # remove the file
 }
 \keyword{ IO }

@@ -57,6 +57,8 @@ write.compact(rwl.df, fname, append = FALSE, prec = 0.01,
 fname <- write.compact(rwl.df = co021,
                        fname = tempfile(fileext=".rwl"),
                        append = FALSE, prec = 0.001)
+print(fname) # tempfile used for output
+
 unlink(fname) # remove the file
 }
 \keyword{ IO }

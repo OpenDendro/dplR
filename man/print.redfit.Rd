@@ -75,9 +75,11 @@ idx <- which(!is.na(x))
 redf <- redfit(x[idx], t[idx], "time",
                nsim = 100, iwin = 0, ofac = 1, n50 = 1)
 print(redf)
-f <- tempfile(fileext=".csv")
-print(redf, csv.out = TRUE, file = f)
-redftable <- read.csv(f)
-unlink(f) # remove the file
+fname <- tempfile(fileext=".csv")
+print(fname) # tempfile used for output
+print(redf, csv.out = TRUE, file = fname)
+redftable <- read.csv(fname)
+
+unlink(fname) # remove the file
 }
 \keyword{ print }

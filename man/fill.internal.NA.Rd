@@ -34,7 +34,7 @@ fill.internal.NA(x, fill = c("Mean", "Spline", "Linear"))
   caution. For instance, some users code missing rings as \code{NA}
   instead of \code{0}. And missing values (i.e., \code{NA}) are
   sometimes present in maximum latewood density data when the rings are
-  small. A common, but not reccomended, practice is to leave stretches
+  small. A common, but not recommended, practice is to leave stretches
   of \code{NA} values in places where it has been impossible to
   accurately measure rings (perhaps because of a break in the core). It
   is often better to treat that core as two separate series (e.g., "01A"

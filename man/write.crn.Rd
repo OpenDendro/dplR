@@ -79,8 +79,10 @@ write.crn(crn, fname, header = NULL, append = FALSE)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM")
 fname1 <- write.crn(ca533.crn, tempfile(fileext=".crn"))
+print(fname1) # tempfile used for output
+
 ## Put the standard and residual chronologies in a single file
-## with ITRDB header info on top. Not reccomended.
+## with ITRDB header info on top. Not recommended.
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)
 ca533.hdr <- list(site.id = "CAM", site.name = "Campito Mountain",
                   spp.code = "PILO", state.country = "California",
@@ -91,6 +93,8 @@ ca533.hdr <- list(site.id = "CAM", site.name = "Campito Mountain",
 fname2 <- write.crn(ca533.crn[, -2], tempfile(fileext=".crn"),
                     header = ca533.hdr)
 write.crn(ca533.crn[, -1], fname2, append = TRUE)
+print(fname2) # tempfile used for output
+
 unlink(c(fname1, fname2)) # remove the files
 }
 \keyword{ IO }

@@ -43,7 +43,7 @@ example of how more complicated analysis can be done using dplR.
 \newpage
 
 \section{Introduction}
-\subsection{What Is Covered}
+\subsection{What is Covered}
 The Dendrochronology Program Library in R (dplR) is a package for 
 dendrochronologists to handle data processing and analysis. This 
 document gives just a brief introduction of some of the most commonly 

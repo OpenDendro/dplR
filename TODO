@@ -32,7 +32,6 @@ o[mvkorpel] Should we use class('rwl) as a way of error checking?
 - Related: We should have functions is.rwl() and as.rwl() 
 
 o[andybunn]  Write more vignettes:
--  Spectral and wavelets
 -  Advanced chronology building (strip.rwl, etc.)
 
 

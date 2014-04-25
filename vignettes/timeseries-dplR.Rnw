@@ -230,7 +230,7 @@ are plotted in Figure~\ref{fig:redfit}.
 
 Another popular way to visualize a tree-ring chronology in the frequency 
 domain is through a continuous wavelet transform. In dplR, there is are
-functions for calculalting the transform via \code{wavelet} and plotting
+functions for calculating the transform via \code{wavelet} and plotting
 the result via \code{wavelet.plot}.
 
 <<e, fig=TRUE>>=
@@ -249,6 +249,71 @@ The wavelet plot (Figure~\ref{fig:wavelet}) shows a similar story as the
 plot from \code{redfit} in Figure~\ref{fig:redfit} with significant 
 variation at interannual to multidecadal scales.
 
+A final common task we'll mention in this vignette is extracting
+specific frequency components from a time series to look at different 
+aspects of say, high vs low frequency growth. One approach to doing 
+this is to use wavelets again but here we will decompose a time series
+into its constituent voices using the \code{mra} function in the package
+\code{"waveslim"}.
+\newif\ifwaveslimUsable% Define boolean variable
+<<echo=FALSE,results=tex>>=
+## Test if waveslim can be loaded
+if (require("waveslim", character.only = TRUE)) {
+    cat("\\waveslimUsabletrue\n\n")# output to LaTeX
+}
+@ 
+\ifwaveslimUsable% Conditional: If "waveslim" is available
+<<f, fig=TRUE>>=
+if (require("waveslim", character.only = TRUE)) {
+  nYrs <- length(yrs)
+  nPwrs2 <- trunc(log(nYrs)/log(2)) - 1
+  dat.mra <- mra(dat, wf = "la8", J = nPwrs2, method = "modwt",
+                    boundary = "periodic")
+  YrsLabels <- paste(2^(1:nPwrs2),"yrs",sep="")
+  
+  par(mar=c(3,2,2,2),mgp=c(1.25,0.25,0),tcl=0.25,tck=0.0125,
+      xaxs="i",yaxs="i")
+  plot(yrs,rep(1,nYrs),type="n", axes=FALSE, ylab="",xlab="",
+       ylim=c(-3,38))
+  title(main="Multiresolution decomposition of dat",line=0.75)
+  axis(side=1)
+  mtext("Years",side=1,line = 1.25)
+  Offset <- 0
+  for(i in nPwrs2:1){
+    x <- scale(dat.mra[[i]]) + Offset
+    lines(yrs,x)
+    abline(h=Offset,lty="dashed")
+    mtext(names(dat.mra)[[i]],side=2,at=Offset,line = 0)
+    mtext(YrsLabels[i],side=4,at=Offset,line = 0)
+    Offset <- Offset+5
+  }
+  box()
+  par(op) #reset par
+}
+@
+\begin{figure}[h]
+  \centering
+  \includegraphics{timeseries-dplR-f}
+  \caption{Multiresolution analysis of the Mesa Verde chronology}
+  \label{fig:mra}
+\end{figure}
+
+In Figure~\ref{fig:mra} the Mesa Verde chronology is shown via an additive 
+decomposition for each power of 2 from $2^1$ to $2^8$. Note that each voice
+is scaled to itself by dividing by its standard deviation in order to present
+them on the same y-axis. If the \code{scale} function were to be removed
+(and we leave that as an exercise to the reader) the variations between voices
+would be greatly reduced. Note the similarity in Figures~\ref{fig:wavelet} 
+and~\ref{fig:mra} for the variation in the 64-year band around the year 1600
+and the lower frequncy variation at 128 years around the year 1400.
+\else% If "waveslim" is not available
+An example was dropped because \code{"waveslim"} is not available.
+\fi% End of conditional
+
+\section{Conclusion}
+There are dozens of packages in R that to do time series analysis. Here, 
+we've tried to give just a few examples of doing work with dplR while
+showing you how you might harness the awesome power of R.
 \bibliography{dplR}
 
 \end{document}

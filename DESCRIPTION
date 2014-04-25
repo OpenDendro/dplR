@@ -21,7 +21,7 @@ Depends: R (>= 2.15.0)
 Imports: gmp (>= 0.5-2), graphics, grDevices, grid, stats, utils,
         digest (>= 0.2.3), lattice (>= 0.13-6), stringr (>= 0.4), XML
         (>= 2.1-0)
-Suggests: foreach, forecast, iterators, RUnit (>= 0.4.25)
+Suggests: foreach, forecast, iterators, RUnit (>= 0.4.25), waveslim
 Description: This package contains functions for performing tree-ring
         analyses, IO, and graphics.
 LazyData: no

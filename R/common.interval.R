@@ -162,19 +162,21 @@ common.interval <- function(rwl, type=c("series", "years", "both"),
             first.year <- series.range[1, ]
 
             neworder <- sort.list(first.year, na.last = TRUE)
-            rwl.first <- first.year[neworder[1]]
-            if (is.na(rwl.first)) {
-                if (yrs.ordered) {
-                    rwl.first <- yrs[1]
-                    rwl.last <- yrs[nRow.rwl]
-                } else {
-                    rwl.first <- min(yrs)
-                    rwl.last <- max(yrs)
-                }
+            if (yrs.ordered) {
+                rwl.first <- yrs[1]
+                rwl.last <- yrs[nRow.rwl]
             } else {
-                rwl.last <- max(series.range[2, ], na.rm = TRUE)
+                rwl.first <- min(yrs)
+                rwl.last <- max(yrs)
             }
-            plot(1, 1, type = "n", xlim = c(rwl.first, rwl.last + 1),
+            plot.first <- first.year[neworder[1]]
+            if (is.na(plot.first)) {
+                plot.first <- rwl.first
+                plot.last <- rwl.last
+            } else {
+                plot.last <- max(series.range[2, ], na.rm = TRUE)
+            }
+            plot(1, 1, type = "n", xlim = c(plot.first, plot.last + 1),
                  ylim = c(1, nCol.rwl), axes = FALSE, ylab = "",
                  xlab = gettext("Year", domain = "R-dplR"))
             rwl.seq <- seq(from = rwl.first, to = rwl.last + 1, by = 0.5)

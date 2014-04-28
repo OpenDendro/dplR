@@ -1,5 +1,11 @@
 * CHANGES IN dplR VERSION 1.6.1
 
+File: common.interval.R
+-----------------------
+
+- Bug fix: make.plot=TRUE threw an error when input data.frame had leading
+  or trailing all-NA rows
+
 * CHANGES IN dplR VERSION 1.6.0
 
 File: TODO

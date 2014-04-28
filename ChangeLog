@@ -86,9 +86,21 @@ File: dplR.sty
 -------------------------
 - Very basic sty file
 
+File: dplR.bib
+-------------------------
+- Refs for vignettes
+
 File: intro-dplR.Rnw
 -------------------------
-- A vignette to intriduce dplR
+- A vignette to introduce dplR
+
+File: xdate-dplR.Rnw
+-------------------------
+- A vignette for cross-dating
+
+File: timeseries-dplR.Rnw
+-------------------------
+- A vignette for time series stuff. Very basic!
 
 File: corr.series.seg.R
 --------------------

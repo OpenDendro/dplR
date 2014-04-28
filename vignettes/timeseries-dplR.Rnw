@@ -271,7 +271,7 @@ if (require("waveslim", character.only = TRUE)) {
                     boundary = "periodic")
   YrsLabels <- paste(2^(1:nPwrs2),"yrs",sep="")
   
-  par(mar=c(3,2,2,2),mgp=c(1.25,0.25,0),tcl=0.25,tck=0.0125,
+  par(mar=c(3,2,2,2),mgp=c(1.25,0.25,0),tcl=0.5,
       xaxs="i",yaxs="i")
   plot(yrs,rep(1,nYrs),type="n", axes=FALSE, ylab="",xlab="",
        ylim=c(-3,38))
@@ -309,6 +309,38 @@ and the lower frequncy variation at 128 years around the year 1400.
 \else% If "waveslim" is not available
 An example was dropped because \code{"waveslim"} is not available.
 \fi% End of conditional
+
+The pioneering work of Ed Cook -- e.g. \cite{cook1990} -- has left an enduring 
+mark on nearly every aspect of quantitative dendrochrnology. One such mark
+that we already alluded to above is the use of smoothing splines to detrend
+and filter tree-ring data. So, we'll close with an example of how one
+can visualise an individual tree-rins series using splines 
+(Figure~\ref{fig:spl}).
+
+<<g, fig=TRUE>>=
+par(mar=rep(2.5,4),mgp=c(1.2,0.25,0),tcl=0.5,
+    xaxs="i",yaxs="i")
+plot(yrs,dat,type="n",xlab="Year",ylab="RWI",axes=FALSE)
+grid(col="black",lwd=0.5)
+abline(h=1)
+lines(yrs,dat,col="grey",lwd=1)
+my.cols <- c("#A6611A","#DFC27D","#80CDC1","#018571")
+lines(yrs,ffcsaps(dat,nyrs=256),col=my.cols[1],lwd=3)
+lines(yrs,ffcsaps(dat,nyrs=128),col=my.cols[2],lwd=2)
+lines(yrs,ffcsaps(dat,nyrs=64),col=my.cols[3],lwd=2)
+lines(yrs,ffcsaps(dat,nyrs=32),col=my.cols[4],lwd=2)
+legend("topright", c("dat", "256yrs", "128yrs", "64yrs", "32yrs"), 
+       lwd = 2, col = c("grey",my.cols),bg = "white")
+axis(1);axis(2);axis(3);axis(4)
+box()
+par(op)
+@
+\begin{figure}[g]
+  \centering
+  \includegraphics{timeseries-dplR-g}
+  \caption{The Mesa Verde chronology plotted with a variety of splines}
+  \label{fig:spl}
+\end{figure}
 
 \section{Conclusion}
 There are dozens of packages in R that to do time series analysis. Here, 

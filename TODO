@@ -1,9 +1,3 @@
-* Bug in common interval:
-    data(co021)
-    x <- common.interval(co021[,1:5],type="s",make.plot=T)
-    x <- common.interval(co021[,-c(1:5)],type="s",make.plot=T)
-    x <- common.interval(co021[,1:5],type="s",make.plot=F)
-
 *  At the moment, in the crossdating functions where a user wants to compare a 
    series to a master chrnology we calculate the master from a rwl object.
    The pick.rwl.series function was a great improvement to the former method

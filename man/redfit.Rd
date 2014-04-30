@@ -333,6 +333,10 @@ x <- x + wav
 # Here is the redfit spec
 redf.x <- redfit(x, nsim = 500)
 
+# Acceptance region of number of runs test
+# (not useful with default arguments of redfit())
+runcrit(length(redf.x[["freq"]]))
+
 op <- par(no.readonly = TRUE) # Save to reset on exit
 par(tcl = 0.5, mar = rep(2.2, 4), mgp = c(1.1, 0.1, 0))
 
@@ -356,6 +360,7 @@ legend("topright", c("x", "CI99", "CI95", "CI90"), lwd = 2,
        bg = "white")
 box()
 
+\dontrun{
 # Second example with tree-ring data
 # Note the long-term low-freq signal in the data. E.g.,
 # crn.plot(cana157)
@@ -364,10 +369,6 @@ data(cana157)
 yrs <- as.numeric(rownames(cana157))
 x <- cana157[, 1]
 redf.x <- redfit(x, nsim = 1000)
-
-# Acceptance region of number of runs test
-# (not useful with default arguments of redfit())
-runcrit(length(redf.x[["freq"]]))
 
 plot(redf.x[["freq"]], redf.x[["gxxc"]],
      ylim = range(redf.x[["ci99"]], redf.x[["gxxc"]]),
@@ -389,7 +390,7 @@ legend("topright", c("x", "CI99", "CI95", "CI90"), lwd = 2,
        bg = "white")
 box()
 par(op)
-
+}
 }
 \keyword{ ts }
 \keyword{ htest }

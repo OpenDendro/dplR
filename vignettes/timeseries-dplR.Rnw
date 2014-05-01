@@ -31,8 +31,7 @@ Sys.setenv(LANGUAGE="en") # no translations to languages other than English
 \begin{abstract}
 In this vignette we cover some of the basic time series tools in dplR 
 (and in R to a much lesser extent). These include spectral analysis 
-using redfit and wavelets. We also discuss fitting AR, ARMA, and
-GARCH models.
+using redfit and wavelets. We also discuss fitting AR and ARMA.
 \end{abstract}
 \tableofcontents
 

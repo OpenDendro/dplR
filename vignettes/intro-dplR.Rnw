@@ -224,7 +224,7 @@ some common (and not-so common) descriptive statistics of a \code{rwl} object. T
 (the \code{rwl} object) and produces summary statistics. Here are summary 
 statistics on the first five series in \code{ca533}.
 <<>>=
-rwl.stats(ca533)[1:5, ]
+rwl.stats(ca533[1:5])
 @
 
 These are common summary statistics like mean, median, etc. but also statistics 

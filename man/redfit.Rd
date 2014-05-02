@@ -310,6 +310,8 @@ runcrit(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000)
 # a period of 10 and an amplitude of have the rednoise sd.
 library(graphics)
 library(stats)
+runif(1)
+rs <- .Random.seed
 set.seed(123)
 nyrs <- 500
 yrs <- 1:nyrs
@@ -391,6 +393,7 @@ legend("topright", c("x", "CI99", "CI95", "CI90"), lwd = 2,
 box()
 par(op)
 }
+.Random.seed <- rs
 }
 \keyword{ ts }
 \keyword{ htest }

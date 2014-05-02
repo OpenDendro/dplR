@@ -31,7 +31,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
 void ftfix(const double *xx, const double *tsamp, const size_t nxx,
 	   const double *freq, const size_t nfreq, const double si,
 	   const size_t lfreq, const double tzero, const double *tcos,
-	   const double *tsin, const double *wtau, const long double sumbysqrt,
+	   const double *tsin, const double *wtau, const dplr_ldouble sumbysqrt,
 	   double *ftrx, double *ftix);
 SEXP makear1(SEXP t, SEXP np, SEXP tau);
 
@@ -165,7 +165,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
 	    SEXP segskip, SEXP lmfit) {
     SEXP gxx, twk, xwk, ftrx, ftix, tmp, cbindcall, lengthfun;
     double dnseg, segskip_val, scal, np_val;
-    long double sumx, sqrt_nseg;
+    dplr_ldouble sumx, sqrt_nseg;
     size_t i, j, nseg_val, nfreq_val, n50_val, segstart, ncopy;
     size_t sincos_skip, wtau_skip;
     size_t wwidx = 0;
@@ -217,7 +217,11 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
     xwk_data = REAL(xwk);
     ftrx_data = REAL(ftrx);
     ftix_data = REAL(ftix);
+#ifdef DPLR_LONG
     sqrt_nseg = sqrtl((long double) dnseg);
+#else
+    sqrt_nseg = sqrt(dnseg);
+#endif
     wtau_skip = nfreq_val - 1;
     sincos_skip = wtau_skip * nseg_val;
     for (i = 0; i < nfreq_val; i++) {
@@ -233,7 +237,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
 	/* detrend data */
 	rmtrend(twk, xwk, lengthfun, lmfit);
         /* apply window to data */
-	sumx = 0.0L;
+	sumx = 0.0;
 	for (j = 0; j < nseg_val; j++) {
 	    xwk_data[j] *= ww_data[wwidx++];
 	    sumx += xwk_data[j];
@@ -284,14 +288,14 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
 void ftfix(const double *xx, const double *tsamp, const size_t nxx,
 	   const double *freq, const size_t nfreq, const double si,
 	   const size_t lfreq, const double tzero, const double *tcos,
-	   const double *tsin, const double *wtau, const long double sumbysqrt,
+	   const double *tsin, const double *wtau, const dplr_ldouble sumbysqrt,
 	   double *ftrx, double *ftix) {
     const double_t tol1 = 1.0e-4;
     const double tol2 = 1.0e-8;
     const double_t const1 = M_SQRT1_2;
     double_t const2;
     double const3, ftrd, ftid, phase, wtnew, tmpsin, tmpcos, wrun;
-    long double cross, sumr, sumi, scos2, ssin2;
+    dplr_ldouble cross, sumr, sumi, scos2, ssin2;
     double complex work;
     size_t i, ii, iput;
     size_t idx = 0;
@@ -306,11 +310,11 @@ void ftfix(const double *xx, const double *tsamp, const size_t nxx,
 	wrun = M_2PI * freq[ii]; /* omega = 2 * pi * freq */
     	wtnew = wtau[ii - 1];
     	/* summations over the sample */
-    	cross = 0.0L;
-    	scos2 = 0.0L;
-    	ssin2 = 0.0L;
-    	sumr = 0.0L;
-    	sumi = 0.0L;
+    	cross = 0.0;
+    	scos2 = 0.0;
+    	ssin2 = 0.0;
+    	sumr = 0.0;
+    	sumi = 0.0;
     	for (i = 0; i < nxx; i++) {
     	    tmpsin = tsin[idx];
     	    tmpcos = tcos[idx];

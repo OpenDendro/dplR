@@ -6,6 +6,13 @@ File: common.interval.R
 - Bug fix: make.plot=TRUE threw an error when input data.frame had leading
   or trailing all-NA rows
 
+File: redfit.c
+--------------
+
+- Avoid using the long double type in some cases. Hopefully this
+  will speed up otherwise unbearable computation times on some
+  systems.
+
 * CHANGES IN dplR VERSION 1.6.0
 
 File: TODO

@@ -114,7 +114,7 @@ plot(co021.crn, add.spline=TRUE, nyrs=64)
 \section{Characterizing the Data}
 
 Let's start with a quick exploratory data analysis into the time-series
-proThe \code{co021.crn} object has two columns, the first giving the chronology
+process. The \code{co021.crn} object has two columns, the first giving the chronology
 and the second the sample depth during that year. We will start our analysis
 on the chronology by looking at its autocorrelation structure using R's 
 \code{acf} and \code{pacf} functions.

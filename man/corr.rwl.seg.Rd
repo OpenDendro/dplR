@@ -34,9 +34,9 @@ corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
     the correlation test. }
   \item{biweight}{ \code{logical} flag.  If \code{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}}. }
-  \item{method}{Can either "pearson", "kendall", or "spearman" which indicates
-    the correlation coefficient is to be used. Defaults to "spearman." See 
-    \code{\link{cor.test}}. }
+  \item{method}{Can be either \code{"pearson"}, \code{"kendall"}, or
+    \code{"spearman"} which indicates the correlation coefficient to be
+    used. Defaults to \code{"spearman"}. See \code{\link{cor.test}}. }
   \item{make.plot}{ \code{logical flag} indicating whether to make a
     plot. }
   \item{label.cex}{ \code{numeric} scalar for the series labels on the

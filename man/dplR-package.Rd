@@ -13,7 +13,7 @@
 \tabular{ll}{
 Package: \tab dplR\cr
 Type: \tab Package\cr
-License: \tab \acronym{GPL}\cr
+License: \tab \acronym{GPL} (>= 2)\cr
 }
 \emph{Main Functions}
   \describe{

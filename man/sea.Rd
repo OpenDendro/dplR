@@ -51,7 +51,7 @@ sea(x, key, lag = 5, resample = 1000)
 
 \references{
 
-  Lough, J. M., Fritts, H. C. (1987) An assessment of the possible
+  Lough, J. M. and Fritts, H. C. (1987) An assessment of the possible
   effects of volcanic eruptions on North American climate using
   tree-ring data, 1602 to 1900 \acronym{AD}.  \emph{Climatic Change},
   10(3):219\enc{–}{--}239.

@@ -37,9 +37,9 @@ corr.series.seg(rwl, series, series.yrs = as.numeric(names(series)),
     whitened using \code{\link{ar}}. }
   \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}}. }
-  \item{method}{Can either "pearson", "kendall", or "spearman" which indicates
-    the correlation coefficient is to be used. Defaults to "spearman." See 
-    \code{\link{cor.test}}. }
+  \item{method}{Can be either \code{"pearson"}, \code{"kendall"}, or
+    \code{"spearman"} which indicates the correlation coefficient to be
+    used. Defaults to \code{"spearman"}. See \code{\link{cor.test}}. }
   \item{pcrit}{ a number between 0 and 1 giving the critical value for
     the correlation test. }
   \item{make.plot}{ \code{logical} flag indicating whether to make a

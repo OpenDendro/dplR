@@ -83,6 +83,4 @@ strip.rwl(anos1, ids = anos1.ids, verbose = TRUE)
 \author{
   Christian Zang.  Patched and improved by Mikko Korpela.
 }
-\keyword{
-  manip
-}
+\keyword{ manip }

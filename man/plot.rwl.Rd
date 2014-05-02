@@ -1,10 +1,10 @@
 \name{plot.rwl}
 \alias{plot.rwl}
 \title{
-  Plotting rwl objects
+  Plotting Rwl Objects
 }
 \description{
-  Plots rwl objects
+  Plots rwl objects.
 }
 \usage{
 \method{plot}{rwl}(x, plot.type=c("seg","spag"), ...)
@@ -16,7 +16,7 @@
   \item{plot.type}{ Character. Type "seg" calls \code{\link{seg.plot}} 
   while "spag" calls \code{\link{spag.plot}} }
 
-  \item{\dots}{ Additional arguemnts for each \code{type}  }
+  \item{\dots}{ Additional arguments for each \code{type}  }
   
 }
 \value{

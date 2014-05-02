@@ -57,7 +57,7 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
   the master lagged at \code{\var{k} = -5:5} years.  
   
   The cross correlations are calculated calling
-  \code{\link{ccf}} as 
+  \code{\link{ccf}} as \cr
   \code{ccf(x=series, y=master, lag.max=lag.max, plot=FALSE)}. Note that
   prior to dplR version 1.60, the \code{master} was set as \code{x} and 
   the \code{series} as \code{y}. This was changed to be more in line with 
@@ -96,8 +96,9 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
 \seealso{ \code{\link{corr.rwl.seg}}, \code{\link{corr.series.seg}},
   \code{\link{skel.plot}}, \code{\link{series.rwl.plot}}
 }
-\references{ Bunn AG (2010). Statistical and visual crossdating 
-  in R using the dplR library. Dendrochronologia, 28(4): 251-258.
+\references{ Bunn, A. G. (2010) Statistical and visual crossdating 
+  in R using the dplR library. \emph{Dendrochronologia},
+  28(4):251\enc{–}{--}258.
 }
 \examples{
 data(co021)

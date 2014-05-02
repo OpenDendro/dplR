@@ -50,9 +50,10 @@ rwl.stats(rwl)
 }
 \references{
 
-  Bunn. A.G., Jansma E., Korpela M., Westfall R.D., and Baldwin J. (2013) 
-  Using simulations and data to evaluate mean sensitivity (zeta) as a useful 
-  statistic in dendrochronology Dendrochronologia 31 250–4.
+  Bunn, A. G., Jansma, E., Korpela, M., Westfall, R. D., and Baldwin,
+  J. (2013) Using simulations and data to evaluate mean sensitivity
+  (\eqn{\zeta}{zeta}) as a useful statistic in dendrochronology.
+  \emph{Dendrochronologia}, 31(3):250\enc{–}{--}254.
 
   Cook, E. R. and Kairiukstis, L.A. (1990) \emph{Methods of
   Dendrochronology: Applications in the Environmental Sciences}.

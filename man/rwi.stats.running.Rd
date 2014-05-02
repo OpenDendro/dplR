@@ -36,17 +36,16 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
   \item{ids}{ an optional \code{data.frame} with column one named
     \code{"tree"} giving a \code{numeric} \acronym{ID} for each tree and
     column two named \code{"core"} giving a \code{numeric} \acronym{ID}
-    for each core. Defaults to one core per tree as
-    \code{data.frame(tree = 1:ncol(\var{rwi}), core = rep(1,
-      ncol(\var{rwi})))}. }
+    for each core. Defaults to one core per tree as\cr
+    \code{data.frame(tree=1:ncol(\var{rwi}), core=rep(1, ncol(\var{rwi})))}. }
   \item{period}{ a \code{character} string, either \code{"common"} or
     \code{"max"} indicating whether correlations should be limited to
     complete observations over the period common to all cores (i.e. rows
     common to all samples) or the maximum pairwise overlap. Defaults
     to \code{"max"}. }
-  \item{method}{Can either "pearson", "kendall", or "spearman" which indicates
-    the correlation coefficient is to be used. Defaults to "spearman." See 
-    \code{\link{cor}}. }
+  \item{method}{Can be either \code{"pearson"}, \code{"kendall"}, or
+    \code{"spearman"} which indicates the correlation coefficient to be
+    used. Defaults to \code{"spearman"}. See \code{\link{cor}}. }
   \item{n}{ \code{NULL} or an integral value giving the filter length
     for the \code{\link{hanning}} filter used for removal of low
     frequency variation. }
@@ -163,9 +162,11 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
     least one non-\code{NA} core in order to be counted).  Not returned
     in the results of \code{rwi.stats.legacy}}
   
-  \item{n.tot}{total number of correlations calculated as \code{
-      \var{n.wt} + \var{n.bt}}. Equal to \code{\var{n.cores} * 
-      (\var{n.cores}-1)/2} if there is overlap between all samples }
+  \item{n.tot}{total number of correlations calculated as
+    \code{\var{n.wt} + \var{n.bt}}.
+
+    Equal to \code{\var{n.cores} * (\var{n.cores}-1)/2} if there is
+    overlap between all samples }
 
   \item{n.wt}{number of within-tree correlations computed}
 
@@ -183,15 +184,16 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
   \item{c.eff}{the effective number of cores (takes into account the
     number of within-tree correlations in each tree)}
 
-  \item{rbar.eff}{the effective signal calculated as \code{
-      \var{rbar.bt} / (\var{rbar.wt} + (1-\var{rbar.wt}) / \var{c.eff}) }}
+  \item{rbar.eff}{the effective signal calculated as
+    \code{\var{rbar.bt} / (\var{rbar.wt} + (1-\var{rbar.wt}) / \var{c.eff}) }}
 
   \item{eps}{the expressed population signal calculated using the average
-      number of trees as \code{\var{n} * \var{rbar.eff} / ((\var{n} - 1) *
-      \var{rbar.eff} + 1)} }
+    number of trees as\cr
+    \code{\var{n} * \var{rbar.eff} / ((\var{n} - 1) * \var{rbar.eff} + 1)} }
 
   \item{snr}{the signal to noise ratio calculated using the average
-      number of trees as \code{\var{n} * \var{rbar.eff} / (1-\var{rbar.eff})} }
+    number of trees as\cr
+    \code{\var{n} * \var{rbar.eff} / (1-\var{rbar.eff})} }
 }
 \references{
 
@@ -199,7 +201,10 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
     Dendrochronology: Applications in the Environmental Sciences}.
   Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
 
-  Cook, E. R. and Pederson, N. (2011) \emph{Uncertainty, Emergence, and Statistics in Dendrochronology} In M.K. Hughes, T.W. Swetnam, and H.F. Diaz (Eds.), \emph{Dendroclimatology}(77-112), \acronym{ISBN-13}: 978-1-4020-4010-8.
+  Cook, E. R. and Pederson, N. (2011) \emph{Uncertainty, Emergence, and
+  Statistics in Dendrochronology} In M.K. Hughes, T.W. Swetnam, and
+  H.F. Diaz (Eds.), \emph{Dendroclimatology} (77\enc{–}{--}112),
+  \acronym{ISBN-13}: 978-1-4020-4010-8.
 
   Fritts, H. C. (2001) \emph{Tree Rings and Climate}.  Blackburn.
     \acronym{ISBN-13}: 978-1-930665-39-2.

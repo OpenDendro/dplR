@@ -27,7 +27,7 @@ powt(rwl)
   R_t^{1-b}}{R*_t = R_t^(1-b)}.
 }
 \references{
-  Edward R. Cook and Kenneth Peters (1997) Calculating unbiased
+  Cook, E. R. and Peters, K. (1997) Calculating unbiased
   tree-ring indices for the study of climatic and environmental
   change. \emph{The Holocene}, 7(3):361\enc{–}{--}370.
 }

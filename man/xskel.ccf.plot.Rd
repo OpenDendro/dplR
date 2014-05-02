@@ -49,7 +49,7 @@ I.e., if all the black lines occur in the same years the percentage would be
 
 The bottom panels show cross correlations for the first half (left) and second 
 half of the time series using function \code{\link{ccf}} as
-\code{ccf(x=series,y=master,lag.max=5}. 
+\code{ccf(x=series,y=master,lag.max=5)}. 
 
 The plot is built using the \code{\link[grid]{Grid}} package which allows for
 great flexibility in building complicated plots. However, these plots look best

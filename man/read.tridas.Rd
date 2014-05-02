@@ -72,36 +72,38 @@ read.tridas(fname, ids.from.titles = FALSE,
 
   \item{measurements}{A \code{data.frame} or a list of \code{data.frame}s with
     the series in columns and the years as rows.  Contains measurements
-    (\verb{<measurementSeries>}) with known years.  The series
+    (\samp{<measurementSeries>}) with known years.  The series
     \acronym{ID}s are the column names and the years are the row
-    names. The series \acronym{ID}s are derived from \verb{<title>}
+    names. The series \acronym{ID}s are derived from \samp{<title>}
     elements in the input file. Each unique combination of
-    \verb{<project>}, \verb{<object>}, \verb{<unit>}, \verb{<taxon>},
-    and \verb{<variable>} gets a separate \code{data.frame}. }
+    \samp{<project>}, \samp{<object>}, \samp{<unit>}, \samp{<taxon>},
+    and \samp{<variable>} gets a separate \code{data.frame}. }
 
   \item{ids}{A \code{data.frame} or a list of \code{data.frame}s with columns
     named \code{"tree"}, \code{"core"}, \code{"radius"}, and
     \code{"measurement"}, together giving a unique \code{numeric} \acronym{ID}
     for each column of the \code{data.frame}(s) in
-    \code{\var{measurements}}.  If \code{!\var{combine.series} &&
-      (\var{ids.from.titles} || \var{ids.from.identifiers})}, some rows
-    may be non-unique. }
+    \code{\var{measurements}}.
+
+    If \code{!\var{combine.series} && (\var{ids.from.titles} || \var{ids.from.identifiers})}, some rows may be non-unique. }
   
   \item{titles}{A \code{data.frame} or a list of \code{data.frame}s with
     columns named \code{"tree"}, \code{"core"}, \code{"radius"}, and
-    \code{"measurement"}, containing the \verb{<title>} hierarchy of
+    \code{"measurement"}, containing the \samp{<title>} hierarchy of
     each column of the \code{data.frame}(s) in \code{\var{measurements}}. }
   
   \item{wood.completeness}{A \code{data.frame} or a list of \code{data.frame}s
     containing wood completeness information.  Column names are a subset
     of the following, almost self-explanatory set:
     \code{"pith.presence"}, \code{"heartwood.presence"},
-    \code{"sapwood.presence"}, \code{"last.ring.presence"},
-    \code{"last.ring.details"}, \code{"bark.presence"},
+    \code{"sapwood.presence"},\cr
+    \code{"last.ring.presence"}, \code{"last.ring.details"},
+    \code{"bark.presence"},\cr
     \code{"n.sapwood"}, \code{"n.missing.heartwood"},
-    \code{"n.missing.sapwood"}, \code{"missing.heartwood.foundation"},
-    \code{"missing.sapwood.foundation"}, \code{"n.unmeasured.inner"},
-    \code{"n.unmeasured.outer"}. }
+    \code{"n.missing.sapwood"},\cr
+    \code{"missing.heartwood.foundation"},
+    \code{"missing.sapwood.foundation"},\cr
+    \code{"n.unmeasured.inner"}, \code{"n.unmeasured.outer"}. }
   
   \item{unit}{A \code{character} vector giving the unit of the
     measurements. Length equals the number of \code{data.frame}s in
@@ -109,7 +111,7 @@ read.tridas(fname, ids.from.titles = FALSE,
   
   \item{project.id}{A \code{numeric} vector giving the project
     \acronym{ID}, i.e. the position of the corresponding
-    \verb{<project>} element), of the measurements in each
+    \samp{<project>} element), of the measurements in each
     \code{data.frame} in \code{\var{measurements}}.  Length equals the
     number of \code{data.frame}s. }
   
@@ -118,15 +120,15 @@ read.tridas(fname, ids.from.titles = FALSE,
     Length equals the number of \code{data.frame}s. }
 
   \item{site.id}{A \code{data.frame} giving the site \acronym{ID}
-    (position of \verb{<object>} element(s) within a \verb{<project>})
+    (position of \samp{<object>} element(s) within a \samp{<project>})
     of each \code{data.frame} in \code{\var{measurements}}.  May have
-    several columns to reflect the possibly nested \verb{<object>}
+    several columns to reflect the possibly nested \samp{<object>}
     elements. }
   
   \item{site.title}{A \code{data.frame} giving the site
-    (\verb{<object>}) title of each \code{data.frame} in
+    (\samp{<object>}) title of each \code{data.frame} in
     \code{\var{measurements}}.  May have several columns to reflect the
-    possibly nested \verb{<object>} elements. }
+    possibly nested \samp{<object>} elements. }
   
   \item{taxon}{A \code{data.frame} showing the taxonomic name for each
     \code{data.frame} in \code{\var{measurements}}.  Contains some of
@@ -165,7 +167,7 @@ read.tridas(fname, ids.from.titles = FALSE,
 
       \item{titles}{A \code{data.frame} with columns named
 	\code{"tree"}, \code{"core"}, \code{"radius"}, and
-	\code{"measurement"}, containing the \verb{<title>} hierarchy of
+	\code{"measurement"}, containing the \samp{<title>} hierarchy of
 	each measurement series in \code{\var{undated}$\var{data}} }
       
       \item{project.id}{A \code{numeric} vector giving the project
@@ -241,14 +243,14 @@ read.tridas(fname, ids.from.titles = FALSE,
   }
 
   \item{type}{A \code{data.frame} containing the type of various
-    entities, and metadata related to each \verb{type} element.
+    entities, and metadata related to each \samp{type} element.
     Contents are \code{NA} where the metadata is not applicable (e.g.,
-    no \code{\var{tree.id}} when the \verb{type} element refers to a
+    no \code{\var{tree.id}} when the \samp{type} element refers to a
     project). Columns are a subset of the following:
 
     \describe{
 
-      \item{text}{The text of the \verb{type} element}
+      \item{text}{The text of the \samp{type} element}
 
       \item{lang}{The language of the text}
 
@@ -262,8 +264,8 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{project.id}{The \acronym{ID} of the project}
 
       \item{site.id}{One or more columns with this prefix, depending on
-	the maximum depth of the \verb{<object>} hierarchy. Gives the
-	\acronym{ID} of the site where the \verb{<type>} element
+	the maximum depth of the \samp{<object>} hierarchy. Gives the
+	\acronym{ID} of the site where the \samp{<type>} element
 	appeared.}
 
       \item{tree.id}{The \acronym{ID} of the tree}
@@ -275,8 +277,8 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{project.title}{The title of the project}
 
       \item{site.title}{One or more columns with this prefix, depending
-	on the maximum depth of the \verb{<object>} hierarchy. Gives the
-	title of the site where the \verb{<type>} element appeared.}
+	on the maximum depth of the \samp{<object>} hierarchy. Gives the
+	title of the site where the \samp{<type>} element appeared.}
 
       \item{tree.title}{The title of the tree}
 
@@ -288,18 +290,18 @@ read.tridas(fname, ids.from.titles = FALSE,
   }
 
   \item{comments}{A \code{data.frame} containing comments to various
-    entities, and metadata related to each \verb{comments} element.
+    entities, and metadata related to each \samp{comments} element.
     Contents are \code{NA} where the metadata is not applicable. Columns
     are a subset of the following:
 
     \describe{
 
-      \item{text}{The text of the \verb{comments} element}
+      \item{text}{The text of the \samp{comments} element}
 
       \item{project.id}{The \acronym{ID} of the project}
 
       \item{site.id}{One or more columns with this prefix, depending on
-	the maximum depth of the \verb{<object>} hierarchy. Gives the
+	the maximum depth of the \samp{<object>} hierarchy. Gives the
 	\acronym{ID} of the site.}
 
       \item{tree.id}{The \acronym{ID} of the tree}
@@ -315,7 +317,7 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{project.title}{The title of the project}
 
       \item{site.title}{One or more columns with this prefix, depending
-	on the maximum depth of the \verb{<object>} hierarchy. Gives the
+	on the maximum depth of the \samp{<object>} hierarchy. Gives the
 	title of the site.}
 
       \item{tree.title}{The title of the tree}
@@ -332,20 +334,20 @@ read.tridas(fname, ids.from.titles = FALSE,
   }
 
   \item{identifier}{A \code{data.frame} containing identifiers of
-    various entities, and metadata related to each \verb{identifier}
+    various entities, and metadata related to each \samp{identifier}
     element.  Contents are \code{NA} where the metadata is not
     applicable. Columns are a subset of the following:
 
     \describe{
 
-      \item{text}{The text of the \verb{identifier} element}
+      \item{text}{The text of the \samp{identifier} element}
 
       \item{domain}{The domain which the identifier is applicable to}
 
       \item{project.id}{The \acronym{ID} of the project}
 
       \item{site.id}{One or more columns with this prefix, depending on
-	the maximum depth of the \verb{<object>} hierarchy. Gives the
+	the maximum depth of the \samp{<object>} hierarchy. Gives the
 	\acronym{ID} of the site.}
 
       \item{tree.id}{The \acronym{ID} of the tree}
@@ -361,7 +363,7 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{project.title}{The title of the project}
 
       \item{site.title}{One or more columns with this prefix, depending
-	on the maximum depth of the \verb{<object>} hierarchy. Gives the
+	on the maximum depth of the \samp{<object>} hierarchy. Gives the
 	title of the site.}
 
       \item{tree.title}{The title of the tree}
@@ -488,7 +490,7 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{project.id}{The \acronym{ID} of the project}
 
       \item{site.id}{One or more columns with this prefix, depending on
-	the maximum depth of the \verb{<object>} hierarchy. Gives the
+	the maximum depth of the \samp{<object>} hierarchy. Gives the
 	\acronym{ID} of the site.}
 
       \item{tree.id}{The \acronym{ID} of the tree}
@@ -496,7 +498,7 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{project.title}{The title of the project}
 
       \item{site.title}{One or more columns with this prefix, depending
-	on the maximum depth of the \verb{<object>} hierarchy. Gives the
+	on the maximum depth of the \samp{<object>} hierarchy. Gives the
 	title of the site.}
 
       \item{tree.title}{The title of the tree}
@@ -521,7 +523,7 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{project.id}{The \acronym{ID} of the project}
 
       \item{site.id}{One or more columns with this prefix, depending on
-	the maximum depth of the \verb{<object>} hierarchy. Gives the
+	the maximum depth of the \samp{<object>} hierarchy. Gives the
 	\acronym{ID} of the site.}
 
       \item{tree.id}{The \acronym{ID} of the tree}
@@ -529,7 +531,7 @@ read.tridas(fname, ids.from.titles = FALSE,
       \item{project.title}{The title of the project}
 
       \item{site.title}{One or more columns with this prefix, depending on
-	the maximum depth of the \verb{<object>} hierarchy. Gives
+	the maximum depth of the \samp{<object>} hierarchy. Gives
 	the title of the site.}
 
       \item{tree.title}{The title of the tree}

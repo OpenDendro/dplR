@@ -76,9 +76,9 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     radius, and optional column four named \code{"measurement"} giving
     the \code{numeric} \acronym{ID} of the measurement.  If column
     \code{"measurement"} exists, column \code{"radius"} must also exist.
-    Defaults to one core, radius and measurement per tree:
-    \code{data.frame(tree = 1:\var{n.col}, core = rep(1,\var{n.col}),
-    radius = rep(1,\var{n.col}), measurement = rep(1,\var{n.col}))},
+    Defaults to one core, radius and measurement per tree:\preformatted{
+  data.frame(tree=1:n.col, core=rep(1,n.col),
+             radius=rep(1,n.col), measurement=rep(1,n.col))}
     where \code{\var{n.col}} is the number of columns in
     \code{\var{rwl.df}}. }
 
@@ -100,7 +100,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     correct length.  After that, the vectors inside the list are
     recycled to match the number of derived series in each
     \code{data.frame} of \code{\var{crn}}.  The default is to write
-    empty \verb{<type>} elements. }
+    empty \samp{<type>} elements. }
 
   \item{crn.titles}{ optional \code{character} vector or a \code{list}
     of \code{character} vectors giving the titles of the derived series
@@ -113,8 +113,8 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     \code{character} vectors giving the units of the derived series in
     \code{\var{crn}}.  The interpretation is the same as with
     \code{\var{crn.types}}, except that the default is to mark the
-    series as \verb{<unitless>}.  Also \code{NA} means
-    \verb{<unitless>}.  }
+    series as \samp{<unitless>}.  Also \code{NA} means
+    \samp{<unitless>}.  }
 
   \item{tridas.measuring.method}{ \code{character} vector giving the
     measuring method used to acquire each series of \code{\var{rwl.df}}.
@@ -161,14 +161,15 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 	that have not been measured.  Typically used to note when rings
 	are too damaged to measure.  Non-negative integral value.}
 
-      \item{pith.presence}{Whether the pith is present or absent.  Each
-	element must be a partial match with the contents of category
-	\code{"complex presence / absence"} in
+      \item{pith.presence}{Whether the pith is present or absent.
+	Each element must be a partial match with the contents of
+	category \code{"complex presence / absence"} in
 	\code{\link{tridas.vocabulary}}.}
 
       \item{heartwood.presence}{Whether the outer (youngest) heartwood
-	is present and if so whether it is complete.  Category
-	\code{"complex presence / absence"} in
+	is present and if so whether it is complete.
+
+	Category \code{"complex presence / absence"} in
 	\code{\link{tridas.vocabulary}}.}
 
       \item{n.missing.heartwood}{Estimated number of missing heartwood
@@ -179,13 +180,16 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 	what the certainty is.  Free-form string.}
 
       \item{sapwood.presence}{Whether the sapwood is present or not.
+
 	Category \code{"complex presence / absence"}.}
 
       \item{n.sapwood}{Number of sapwood rings measured.  Non-negative
 	integral value.}
 
       \item{last.ring.presence}{Last ring under the bark is present or
-	absent.  Category \code{"presence / absence"}.}
+	absent.
+
+	Category \code{"presence / absence"}.}
 
       \item{last.ring.details}{If the last ring under the bark is
 	present, include information about the completeness of this ring
@@ -198,8 +202,10 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 	estimation of how many sapwood rings are missing was made and
 	what the certainty is.  Free-form string.}
 
-      \item{bark.presence}{Bark is present or absent.  Category
-	\code{"presence / absence"} in \code{\link{tridas.vocabulary}}.}
+      \item{bark.presence}{Bark is present or absent.
+
+	Category \code{"presence / absence"} in
+	\code{\link{tridas.vocabulary}}.}
 
     }
   }
@@ -303,7 +309,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
   }
 
   \item{site.info}{ \code{list} containing information about the site
-    (\verb{<object>}).  Elements are the following, and all are
+    (\samp{<object>}).  Elements are the following, and all are
     \code{character} strings:
 
     \describe{
@@ -319,10 +325,10 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 
   \item{random.identifiers}{ \code{logical} flag.  If \code{TRUE},
     unique random identifiers are created with \code{\link{uuid.gen}}
-    and attached to each \verb{<project>} (one in the file),
-    \verb{object} (site, one in the file), \verb{<element>} (tree),
-    \verb{<sample>} (core), \verb{<radius>}, \verb{<measurementSeries>}
-    (measurement) and \verb{<derivedSeries>} element in the resulting
+    and attached to each \samp{<project>} (one in the file),
+    \samp{object} (site, one in the file), \samp{<element>} (tree),
+    \samp{<sample>} (core), \samp{<radius>}, \samp{<measurementSeries>}
+    (measurement) and \samp{<derivedSeries>} element in the resulting
     TRiDaS file.  }
 
   \item{identifier.domain}{ \code{character} string.  The domain which

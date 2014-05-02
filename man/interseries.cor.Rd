@@ -1,9 +1,9 @@
 \name{interseries.cor}
 \alias{interseries.cor}
-\title{ Calculate an indidual series correlation against a master chronology 
-  in an rwl object  }
+\title{ Individual Series Correlation Against a Master Chronology }
 \description{
-  This function calculates the correlation between a series and a master chronology
+  This function calculates the correlation between a series and a master
+  chronology.
 }
 \usage{
   interseries.cor(rwl,n=NULL,prewhiten=TRUE,biweight=TRUE,
@@ -19,9 +19,9 @@
     whitened using \code{\link{ar}}. }
   \item{biweight}{ \code{logical} flag.  If \code{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}}.}
-  \item{method}{Can either "pearson", "kendall", or "spearman" which indicates
-    the correlation coefficient is to be used. Defaults to "spearman." See 
-    \code{\link{cor.test}}. }
+  \item{method}{Can be either \code{"pearson"}, \code{"kendall"}, or
+    \code{"spearman"} which indicates the correlation coefficient to be
+    used. Defaults to \code{"spearman"}. See \code{\link{cor.test}}. }
 }
 \details{
   This function calculates correlation serially between each tree-ring
@@ -42,10 +42,10 @@
   series length based on the \code{\link{ar}} model fit.  The effects of
   detrending can be seen with \code{\link{series.rwl.plot}}.
 
-  This function produces the same output of the "overall" portion of 
+  This function produces the same output of the \code{\var{overall}} portion of 
   \code{\link{corr.rwl.seg}}. The mean correlation value given is sometimes 
-  referred to as the "overall interseries correlation"" or the "COFECHA 
-  interseries correlation." This output differs from the \code{rbar} 
+  referred to as the \dQuote{overall interseries correlation} or the \dQuote{COFECHA 
+  interseries correlation}. This output differs from the \code{rbar} 
   statistics given by \code{\link{rwi.stats}} in that \code{rbar} is 
   the average pairwise correlation between series where this is the 
   correlation between a series and a master chronology.

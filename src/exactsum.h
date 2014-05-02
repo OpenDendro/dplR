@@ -3,70 +3,9 @@
 #define EXACTSUM_H
 
 #include <R.h>
-
-/* Conditional typedef of dplr_double */
-#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 #include <math.h>
+
 typedef double_t dplr_double;
-/*
-  "C9X also requires that the <math.h> header file define the types
-  float_t and double_t, which are at least as wide as float and
-  double, respectively, and are intended to match the types used to
-  evaluate float and double expressions.  For example, if
-  FLT_EVAL_METHOD is 2, both float_t and double_t are long double."
-
-  From "Differences Among IEEE 754 Implementations" by Doug Priest.
-  Available at http://www.validlab.com/goldberg/addendum.html,
-  referenced on 2010-10-18.
-
-  The use of double_t here is intended to be a portable way to avoid
-  the loss of exactness in the exact summation algorithm due to
-  double-rounding errors caused by the mix of 80-bit internal storage
-  and 64-bit memory storage of doubles on the 32-bit x86 platform (*).
-  This requires a C99 compiler (also required by R >= 2.12.0).  On
-  architectures that evaluate doubles with double precision, double_t
-  should be equivalent to double.  On 32-bit x86 without SSE2 (and
-  math coprocessor in 80-bit mode), double_t should be equivalent to
-  long double.
-
-  (*) Loss of precision because of double-rounding may still occur
-  when the result of the msum function is returned to R.
-*/
-#else
-typedef long double dplr_double;
-/*
-  In case of an old / pre-C99 compiler that does not define double_t,
-  dplr_double is defined as long double.  This is designed for exact
-  computations on 32-bit x86, and also works fine on x86-64 (see
-  Footnote).  On some architectures / compilers, long double may be
-  the same as double.  On architectures where long double does not
-  conform to IEEE floating-point standards, non-exactness of the msum
-  function may result.
-
-  Footnote on the performance of 64-bit vs 80-bit FP math on x86-64
-  =================================================================
-
-  On x86-64, one might guess SSE2 would give a speed gain in cases
-  where 80-bit precision is not really needed, like here.  However,
-  (non-rigorous) tests showed double_t (64-bit) to have a running time
-  penalty compared to long double (80-bit).  The test was to compute
-  exactmean for a uniformly random vector of length 1e8 (once or
-  repeatedly).  In the table, penalty (% of user time) has one
-  significant digit.  R version probably does not matter, because we
-  are dealing with compiled code.
-
-  OS        Processor      R version  Penalty (%)  Notes
-  ---------------------------------------------------------------------
-  Linux     AMD Athlon II  2.12.0               5  -O2 -march=barcelona
-  Linux     Intel Core 2   2.9.2               30
-  Mac OS X  Intel Core 2   2.11.1              20
-
-  Maybe future compilers or processors will fare better with SSE2. In
-  the meantime, the performance penalty of SSE2 is small enough.  The
-  C99 compiler case above uses double_t, which I believe to be the
-  most elegant and portable solution.
-*/
-#endif
 
 /* A linked list for storing dplr_doubles */
 struct liststruct{

@@ -304,16 +304,16 @@ them on the same y-axis. If the \code{scale} function were to be removed
 (and we leave that as an exercise to the reader) the variations between voices
 would be greatly reduced. Note the similarity in Figures~\ref{fig:wavelet} 
 and~\ref{fig:mra} for the variation in the 64-year band around the year 1600
-and the lower frequncy variation at 128 years around the year 1400.
+and the lower frequency variation at 128 years around the year 1400.
 \else% If "waveslim" is not available
 An example was dropped because \code{"waveslim"} is not available.
 \fi% End of conditional
 
 The pioneering work of Ed Cook -- e.g. \cite{cook1990} -- has left an enduring 
-mark on nearly every aspect of quantitative dendrochrnology. One such mark
+mark on nearly every aspect of quantitative dendrochronology. One such mark
 that we already alluded to above is the use of smoothing splines to detrend
 and filter tree-ring data. So, we'll close with an example of how one
-can visualise an individual tree-rins series using splines 
+can visualise an individual tree-ring series using splines 
 (Figure~\ref{fig:spl}).
 
 <<g, fig=TRUE>>=

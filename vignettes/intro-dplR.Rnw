@@ -200,7 +200,7 @@ series.rwi <- detrend.series(y = series, y.name = "CAM011",
 \begin{figure}[h]
 \centering
 \includegraphics{intro-dplR-b}
-\caption{Detrending a single series via mutiple methods.}
+\caption{Detrending a single series via multiple methods.}
 \label{fig:detrend.series}
 \end{figure}
 
@@ -287,7 +287,7 @@ dim(ca533.rwi)
 dim(ca533.crn)
 @
 
-An object produced by \code{chron} has a generic S3 moethod for plotting 
+An object produced by \code{chron} has a generic S3 method for plotting 
 which calls the \code{crn.plot} function (which has many arguments for 
 customization). Here we will just make a simple plot of the chronology with 
 a smoothing spline added. See Figure~\ref{fig:crn.plot.spline}.

@@ -15,7 +15,7 @@
   This calculates mean sensitivity according to Eq. 2 in Biondi and
   Qeadan (2008).  This is a measure of sensitivity in dendrochronology
   that is typically used in the presence of a trend.  However, note 
-  that that mean sensitivity is not a robust statitic and should rarely, 
+  that mean sensitivity is not a robust statistic and should rarely, 
   if ever, be used (Bunn et al. 2013).
 }
 \value{ the mean sensitivity.

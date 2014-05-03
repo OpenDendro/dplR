@@ -9,7 +9,7 @@
   This function calculates pointer years on a \code{data.frame} of
   ring-width series using the Becker algorithm. The pointer years are
   computed with adjustable thresholds of relative radial growth
-  variation and number of series diplaying similar growth pattern
+  variation and number of series displaying similar growth pattern
   (i.e. positive or negative variations).
   
 }
@@ -47,9 +47,9 @@ pointer(rwl, rgv.thresh = 10, nseries.thresh = 75, round.decimals = 2)
   This calculates pointer years from ring-width series for each year
   \code{\var{t}} of the time period covered by the series using the
   Becker algorithm.  This algorithm is based on, first, the calculation
-  of the individual relative radial growth variation by comparision of
+  of the individual relative radial growth variation by comparison of
   ring-width of year \code{\var{t}} to that of year \code{\var{t}-1} for
-  each series, and second, the inter-series comparision of both sign and
+  each series, and second, the inter-series comparison of both sign and
   magnitude of these variations.
   
   For example, if \code{\var{rgv.thresh}} and

@@ -181,13 +181,13 @@ runcrit(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000)
 
   \item{rcritlo }{ a \code{numeric} vector of critical low values for
     the number of runs, i.e. the lowest value for accepting the null
-    hyphothesis at each level of significance \code{\var{p}}.  When
+    hypothesis at each level of significance \code{\var{p}}.  When
     returned from \code{redfit}, \code{NULL} when \code{\var{rcnt}} is
     \code{NULL}. }
 
   \item{rcrithi }{ a \code{numeric} vector of critical high values for
     the number of runs, i.e. the highest value for accepting the null
-    hyphothesis at each level of significance \code{\var{p}}.  When
+    hypothesis at each level of significance \code{\var{p}}.  When
     returned from \code{redfit}, \code{NULL} when \code{\var{rcnt}} is
     \code{NULL}. }
   

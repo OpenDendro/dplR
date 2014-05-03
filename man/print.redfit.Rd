@@ -8,7 +8,7 @@
 }
 \usage{
 \method{print}{redfit}(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
-             prefix = "", row.names = FALSE, file = "", ...)
+      prefix = "", row.names = FALSE, file = "", ...)
 }
 \arguments{
 
@@ -31,7 +31,7 @@
     \code{print.data.frame}.  }
 
   \item{prefix}{ A prefix to be used on every output line except the
-    large informaton table.  REDFIT (see \code{References}) uses
+    large information table.  REDFIT (see \code{References}) uses
     \code{"# "}.  }
 
   \item{row.names}{ A \code{logical} flag enabling or disabling

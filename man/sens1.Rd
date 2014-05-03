@@ -15,7 +15,7 @@
   This calculates mean sensitivity according to Eq. 1 in Biondi and
   Qeadan (2008).  This is the standard measure of sensitivity in
   dendrochronology and is typically calculated on detrended series.
-  However, note that that mean sensitivity is not a robust statitic and 
+  However, note that mean sensitivity is not a robust statistic and 
   should rarely, if ever, be used (Bunn et al. 2013).
 
 }

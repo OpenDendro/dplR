@@ -43,7 +43,7 @@ Similarly, the black lines are a skeleton plot for the master and
 series with the marker years annotated for the master on the bottom axis and 
 series on the top. The text at the top of the figure gives the
 correlation between the series and master (green bars) as well as the percentage 
-of agreement betwen the years of skeleton bars for the series and master. 
+of agreement between the years of skeleton bars for the series and master. 
 I.e., if all the black lines occur in the same years the percentage would be
 100\%. 
 

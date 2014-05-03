@@ -39,7 +39,7 @@ crn.plot(crn, add.spline = FALSE, nyrs = NULL, f = 0.5,
         polygon (if present) }
   \item{crn.lwd}{ line width for the x line }
   \item{spline.lwd}{ line width for the spline (if added) }
-  \item{abline.pos}{ position for a refernce abline on the y-axis. 
+  \item{abline.pos}{ position for a reference abline on the y-axis. 
         No line added if NULL }
   \item{abline.col}{ color for the reference abline (if added) }
   \item{abline.lty}{ line type the reference abline (if added) }

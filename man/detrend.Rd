@@ -90,7 +90,7 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
 \author{ Andy Bunn. Improved by Mikko Korpela. }
 \seealso{ \code{\link{detrend.series}} }
 \examples{data(ca533)
-## Detrend using modified expontential decay. Returns a data.frame
+## Detrend using modified exponential decay. Returns a data.frame
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 
 \dontrun{

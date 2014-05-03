@@ -129,7 +129,7 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
   effective number of cores or the expressed population signal).  Users
   unfamiliar with these should see Cook and Kairiukstis (1990) and
   Fritts (2001) for further details for computational details on the
-  output. The singal-to-noise ratio is calculated following Cook and 
+  output. The signal-to-noise ratio is calculated following Cook and 
   Pederson (2011).
 
   If desired, the \code{\var{rwi}} can be filtered in the same manner

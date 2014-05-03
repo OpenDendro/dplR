@@ -45,7 +45,7 @@ rwl.stats(rwl)
   autocorrelation (\code{"skew"}, \code{"\link{sens1}"},
   \code{"\link{sens2}"}, \code{"\link{gini.coef}"}, \code{"ar1"}).
   
-  Note that that mean sensitivity is not a robust statitic that should rarely,
+  Note that mean sensitivity is not a robust statistic that should rarely,
   if ever, be used (Bunn et al. 2013).
 }
 \references{

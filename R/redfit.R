@@ -247,7 +247,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
                     cat(gettext("Number of duplicates by age,\n",
                                 domain = "R-dplR"), file = stderr())
                 }
-                cat(gettext("'k' duplicates means 'k + 1' total obsevations:\n",
+                cat(gettext("'k' duplicates means 'k + 1' total observations:\n",
                             domain = "R-dplR"), file = stderr())
                 dtable <- table(t2[dupl])
                 if (tTime) {

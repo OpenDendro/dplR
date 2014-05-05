@@ -6,6 +6,11 @@ File: common.interval.R
 - Bug fix: make.plot=TRUE threw an error when input data.frame had leading
   or trailing all-NA rows
 
+File: rcompact.c
+----------------
+
+- Made the C code of read.compact() more resilient to unusual inputs
+
 File: redfit.c
 --------------
 

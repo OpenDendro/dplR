@@ -114,8 +114,10 @@ SEXP rcompact(SEXP filename){
         *id_start, *old_point, *point, *point2, *endp, *tmp_name,
         *tmp_comment;
     int i, j, n, first_yr, last_yr, id_length, exponent,
-	n_repeats, field_width, precision, n_x_w, n_lines, remainder, idx,
+	n_repeats, field_width, n_x_w, n_lines, remainder, idx,
 	this_last, *i_first, *i_last;
+    long int precision;
+    size_t idx2;
     Rboolean n_found, divide;
     long long int read_int;
     double read_double, mplier, *r_mplier, *r_data;
@@ -138,8 +140,8 @@ SEXP rcompact(SEXP filename){
     this = &first;      /* current rwlnode */
     comment_this = &comment_first; /* current commentnode */
     n = 0;              /* number of series */
-    first_yr = INT_MAX; /* the first year in all data */
-    last_yr = INT_MIN;  /* the last year in all data */
+    first_yr = R_INT_MAX; /* the first year in all data */
+    last_yr = R_INT_MIN;  /* the last year in all data */
 
     /* Each round of the loop reads a header line,
      * then the data lines of the corresponding series
@@ -203,7 +205,7 @@ SEXP rcompact(SEXP filename){
 	    error(_("Series %d: Only a number must be found right before 1st '='"),
 		  n+1);
 	}
-	if(read_int > INT_MAX){
+	if(read_int > R_INT_MAX || read_int < R_INT_MIN){
 	    fclose(f);
 	    error(_("Series %d: Number %lld exceeds integer range"),
 		  n+1, read_int);
@@ -248,7 +250,7 @@ SEXP rcompact(SEXP filename){
 	    error(_("Series %d: Only a number must be found after first field, right before 2nd '='"),
 		  n+1);
 	}
-	if(read_int > INT_MAX){
+	if(read_int > R_INT_MAX || read_int < R_INT_MIN){
 	    fclose(f);
 	    error(_("Series %d: Number %lld exceeds integer range"),
 		  n+1, read_int);
@@ -269,10 +271,13 @@ SEXP rcompact(SEXP filename){
 		  n+1, *(found2+1));
 	}
 
+	/* Check for overflow */
+	if(this->first_yr > 1 && this->n - 1 > R_INT_MAX - this->first_yr)
+	    error(_("Series %d: Last year exceeds integer range"), n+1);
 	/* Update global first and last year */
 	if(this->first_yr < first_yr)
 	    first_yr = this->first_yr;
-	this_last = this->first_yr + this->n - 1;
+	this_last = this->first_yr + (this->n - 1);
 	if(this_last > last_yr)
 	    last_yr = this_last;
 
@@ -327,7 +332,7 @@ SEXP rcompact(SEXP filename){
 	/* Require space */
 	if(*point != ' '){
 	    fclose(f);
-	    error(_("Series %d (%s): Space required after alphanumerid ID"),
+	    error(_("Series %d (%s): Space required after alphanumeric ID"),
 		  n+1, this->id);
 	}
 
@@ -416,7 +421,7 @@ SEXP rcompact(SEXP filename){
 		  n+1, this->id, field_width);
 	}
 	point = found_dot+1;
-	precision = (int) strtol(point, &endp, 10);
+	precision = strtol(point, &endp, 10);
 	if(endp == point){
 	    fclose(f);
 	    error(_("Series %d (%s): Number of decimals not found"),
@@ -427,7 +432,7 @@ SEXP rcompact(SEXP filename){
 	    error(_("Series %d (%s): Number of decimals and ')' must be adjacent"),
 		  n+1, this->id);
 	}
-	if(precision != 0){
+	if(precision != 0L){
 	    fclose(f);
 	    error(_("Series %d (%s): No (implied) decimal places allowed in format"),
 		  n+1, this->id);
@@ -564,28 +569,28 @@ SEXP rcompact(SEXP filename){
     r_mplier = REAL(series_mplier);
     r_data = REAL(series_data);
 
-    /* idx is for indexing r_data.
+    /* idx2 is for indexing r_data.
      * The matrix series_data is stored in column-major order: We
-     * proceed one series at a time, simply incrementing idx on each
+     * proceed one series at a time, simply incrementing idx2 on each
      * (carefully planned) write to the array.
      */
-    idx = -1;
+    idx2 = 0;
     this = &first;
     for(i=0; i<n; i++){
-	this_last = this->first_yr + this->n - 1;
+	this_last = this->first_yr + (this->n - 1);
 	SET_STRING_ELT(series_id, i, mkChar(this->id));
 	i_first[i] = this->first_yr;
 	i_last[i] = this_last;
 	r_mplier[i] = this->mplier;
 	/* Add NA to beginning */
 	for(j=0; j < this->first_yr - first_yr; j++)
-	    r_data[++idx] = NA_REAL;
+	    r_data[idx2++] = NA_REAL;
 	/* Add data to middle */
 	for(j=0; j < this->n; j++)
-	    r_data[++idx] = this->data[j];
+	    r_data[idx2++] = this->data[j];
 	/* Add NA to end */
 	for(j=0; j < last_yr - this_last; j++)
-	    r_data[++idx] = NA_REAL;
+	    r_data[idx2++] = NA_REAL;
 	this = this->next;
     }
 

@@ -31,4 +31,7 @@ typedef long double dplr_ldouble;
 /* 64 or 80 bits */
 #endif
 
+#define R_INT_MAX 2147483647
+#define R_INT_MIN -R_INT_MAX
+
 #endif

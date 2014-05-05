@@ -1,13 +1,13 @@
 # Finnish translations for messages in dplR R code
 # Copyright (C) dplR copyright holders
 # This file is distributed under the same license as the dplR package.
-# Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012.
+# Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012, 2014.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.5.5\n"
+"Project-Id-Version: dplR 1.6.1\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-06-15 18:41+0300\n"
-"PO-Revision-Date: 2012-06-15 18:46+0300\n"
+"POT-Creation-Date: 2014-05-05 23:48+0300\n"
+"PO-Revision-Date: 2014-05-05 23:34+0300\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -74,14 +74,29 @@ msgstr ""
 "Ei mitään yhdistettävää. Ole hyvä ja syötä dplR-datastandardien mukaisia "
 "data.frameja."
 
+msgid "'rwl' must have numeric columns"
+msgstr "’rwl’:ssä täytyy olla numeric-tyyppiset sarakkeet"
+
+msgid "'rwl' must have row names"
+msgstr "’rwl’:ssä pitää olla rivinimet"
+
+msgid "row names of 'rwl' must be interpretable as years"
+msgstr "'rwl':n rivinimien täytyy olla tulkittavissa vuosiluvuiksi"
+
+msgid "Year"
+msgstr "Vuosi"
+
+msgid "Original: %d series, %d years"
+msgstr "Alkuperäinen: %d sarjaa, %d vuotta"
+
+msgid "Common Interval (type='%s'): %d series x %d years = %d"
+msgstr "Yhteinen ajanjakso (tyyppi '%s'): %d sarjaa x %d vuotta = %d"
+
 msgid "At least 2 series are needed in 'rwl'"
 msgstr "Vähintään 2 sarjaa tarvitaan ’rwl’:ssä"
 
 msgid "At least 1 series is needed in 'rwl'"
 msgstr "Vähintään 1 sarja tarvitaan ’rwl’:ssä"
-
-msgid "Year"
-msgstr "Vuosi"
 
 msgid "Segments: length=%d,lag=%d"
 msgstr "Segmentit: pituus=%d,viive=%d"
@@ -92,20 +107,93 @@ msgstr "päällekkäisten vuosien määrä on pienempi kuin ’seg.length’"
 msgid "'crn' must be a data.frame"
 msgstr "’crn’:n täytyy olla data.frame"
 
-msgid "Years"
-msgstr "Vuodet"
-
-msgid "RWI"
-msgstr "Indeksi"
-
 msgid "Sample Depth"
 msgstr "Näytteiden määrä"
+
+msgid "Verbose output:"
+msgstr "Lisätuloste:"
+
+msgid "Options"
+msgstr "Valinnat"
 
 msgid "all values are 'NA'"
 msgstr "kaikki arvot ovat ’NA’"
 
 msgid "'NA's are not allowed in the middle of the series"
 msgstr "’NA’‐arvoja ei sallita sarjan keskellä"
+
+msgid "Zero years in input series:"
+msgstr "Nollavuodet syötesarjassa:"
+
+msgid "Zero indices in input series:"
+msgstr "Nollaindeksit syötesarjassa:"
+
+msgid "No zeros in input series."
+msgstr "Ei nollia syötesarjassa."
+
+msgid "Detrend by ModNegExp."
+msgstr "Trendin poisto menetelmällä ModNegExp."
+
+msgid "Trying to fit nls model..."
+msgstr "Yritetään sovittaa nls-mallia..."
+
+msgid "nls failed... fitting linear model..."
+msgstr "nls epäonnistui... sovitetaan lineaarista mallia..."
+
+msgid ""
+"Fits from ModNegExp are not all positive, see constrain.modnegexp argument "
+"in detrend.series"
+msgstr ""
+"ModNegExp-mallin sovite ei ole kokonaan positiivinen, katso constrain."
+"modnegexp-argumentti detrend.series-ohjeessa"
+
+msgid "Linear model fit"
+msgstr "Lineaarisen mallin sovite"
+
+msgid "Intercept: %s"
+msgstr "Vakiotermi: %s"
+
+msgid "Slope: %s"
+msgstr "Kulmakerroin: %s"
+
+msgid "Linear fit (backup of ModNegExp) is not all positive"
+msgstr "Lineaarinen sovite (ModNegExp:in varalla) ei ole kokonaan positiivinen"
+
+msgid "lm has a positive slope"
+msgstr "lineaarisessa mallissa on positiivinen kulmakerroin"
+
+msgid "pos.slope = FALSE"
+msgstr "pos.slope = FALSE"
+
+msgid "Detrend by mean."
+msgstr "Trendin poisto keskiarvolla."
+
+msgid "Mean = %s"
+msgstr "Keskiarvo = %s"
+
+msgid "nls coefs"
+msgstr "nls-kertoimet"
+
+msgid "Detrend by spline."
+msgstr "Trendin poisto splinillä."
+
+msgid "Spline parameters"
+msgstr "Splinin parametrit"
+
+msgid "Spline fit is not all positive"
+msgstr "Splinisovite is ole kokonaan positiivinen"
+
+msgid "Detrend by prewhitening."
+msgstr "Trendin poisto valkaisemalla (prewhitening)."
+
+msgid "Ar fit is not all positive"
+msgstr "Ar-sovite ei ole kokonaan positiivinen"
+
+msgid "Zero years in %s series:"
+msgstr "Nollavuodet %s-sarjassa:"
+
+msgid "Zero indices in %s series:"
+msgstr "Nollaindeksit %s-sarjassa:"
 
 msgid "Age (Yrs)"
 msgstr "Ikä (v)"
@@ -116,11 +204,17 @@ msgstr "Raakasarja %s"
 msgid "Spline"
 msgstr "Splini"
 
+msgid "RWI"
+msgstr "Indeksi"
+
 msgid "Neg. Exp. Curve or Straight Line"
 msgstr "Neg. eksp. käyrä tai Suora"
 
 msgid "Horizontal Line (Mean)"
 msgstr "Vakiosuora (Keskiarvo)"
+
+msgid "Ar"
+msgstr "Ar"
 
 msgid "'y' must be coercible to a numeric vector"
 msgstr "’y’:n täytyy olla muunnettavissa numeric-vektoriksi"
@@ -143,6 +237,15 @@ msgstr "datan abskissojen täytyy olla erilliset"
 msgid "abscissa and ordinate vector must be of the same length"
 msgstr "abskissa- ja ordinaattavektorien täytyy olla samanpituiset"
 
+msgid "'x' must be a data.frame"
+msgstr "’x’:n täytyy olla data.frame"
+
+msgid "'x' must have numeric columns"
+msgstr "’x’:llä täytyy olla numeric-tyyppiset sarakkeet"
+
+msgid "'fill' must be a single number or character string"
+msgstr "’fill’in täytyy olla yksittäinen numero tai merkkijono"
+
 msgid "Intersection of series %d and %d is not contiguous. NA returned."
 msgstr "Sarjojen %d ja %d leikkaus ei ole katkeamaton. Palautetaan NA."
 
@@ -163,6 +266,15 @@ msgstr "duplikaattinimiä läsnä: uudelleennimetään sarjoja"
 msgid "could not remap a name: some series will be missing"
 msgstr "ei voitu kehittää uutta nimeä: joitain sarjoja puuttuu tuloksesta"
 
+msgid "'series' not found in 'rwl'"
+msgstr "'series'issä nimettyä sarjaa ei ole ’rwl’:ssä"
+
+msgid "duplicate column names, multiple matches"
+msgstr "toistuvia sarakenimiä, useita osumia"
+
+msgid "'series' of length 1 must be a column index to 'rwl'"
+msgstr "yhden elementin 'series'-muuttujan täytyy olla sarakeindeksi 'rwl':ään"
+
 msgid "Detrend series %d of %d"
 msgstr "Trendipuhdistetaan sarja %d / %d"
 
@@ -178,11 +290,26 @@ msgstr "Syötä numero"
 msgid "number out of range or not an integer"
 msgstr "luku alueen ulkopuolella tai ei kokonaisluku"
 
+msgid "input data must have consecutive years in increasing order"
+msgstr "syötedatassa täytyy olla peräkkäiset vuodet kasvavassa järjestyksessä"
+
+msgid "invalid 'year': skipping years not allowed"
+msgstr "epäkelpo 'year': vuosien väliin jättäminen ei ole sallittua"
+
+msgid "'year' not present in 'rw.vec.yrs'"
+msgstr "'year' puuttuu 'rw.vec.yrs':stä"
+
 msgid "'x1' and 'y1' lengths differ"
 msgstr "’x1’:n ja ’y1’:n pituudet eroavat"
 
-msgid "'rgv.thresh' must range from 0 to 100"
-msgstr "’rgv.thresh’in täytyy olla välillä 0–100"
+msgid "use only with \"rwl\" objects"
+msgstr "käytä vain \"rwl\"-objektien kanssa"
+
+msgid "'rgv.thresh' must be > 0"
+msgstr "’rgv.thresh’in täytyy olla > 0"
+
+msgid "'rgv.thresh' > 100 is unusual."
+msgstr "'rgv.thresh' > 100 on epätavallinen."
 
 msgid "'nseries.thresh' must range from 0 to 100"
 msgstr "’nseries.thresh’in täytyy olla välillä 0–100"
@@ -467,6 +594,9 @@ msgstr ""
 msgid "failed to read rwl file"
 msgstr "tiedoston luku epäonnistui"
 
+msgid "series.index must be integer: %s"
+msgstr "series.index:in täytyy olla kokonaisluku: %s"
+
 msgid "bad location of stop marker in series %s"
 msgstr "epäkelpo loppumerkin sijainti sarjassa %s"
 
@@ -478,6 +608,153 @@ msgstr "yhdistetään sarjat %s ja %s"
 
 msgid "file has no good data"
 msgstr "tiedostossa ei ole kelvollista dataa"
+
+msgid "oversampling factor 'ofac' must be >= 1"
+msgstr "ylinäytteistyskertoimen 'ofac' täytyy olla >= 1"
+
+msgid "'hifac' must be positive"
+msgstr "’hifac’in täytyy olla positiivinen"
+
+msgid "if 'mctest' is TRUE, 'nsim' must be at least %.0f"
+msgstr "jos 'mctest' on TRUE, 'nsim':in täytyy olla vähintään %.0f"
+
+msgid "numeric 'iwin' must be 0, 1, 2, 3 or 4"
+msgstr "numeerisen 'iwin'-arvon täytyy olla 0, 1, 2, 3 tai 4"
+
+msgid "'iwin' must be numeric or character"
+msgstr "’iwin’in täytyy olla numeerinen tai merkkijonotyyppinen"
+
+msgid "lengths of 't' and 'x' must match"
+msgstr "'t':n ja 'x':n pituuksien täytyy täsmätä"
+
+msgid "too few points (%.0f), at least %.0f needed"
+msgstr "liian vähän pisteitä (%.0f), vähintään %.0f tarvitaan"
+
+msgid "Duplicate times in 't', averaging data"
+msgstr "Toistuvia aikoja 't':ssä, lasketaan keskiarvoja datasta"
+
+msgid "Duplicate ages in 't', averaging data"
+msgstr "Toistuvia ikiä 't':ssä, lasketaan keskiarvoja datasta"
+
+msgid "Number of duplicates by time,"
+msgstr "Toistuvien arvojen lukumäärä ajan mukaan,"
+
+msgid "Number of duplicates by age,"
+msgstr "Toistuvien arvojen lukumäärä iän mukaan,"
+
+msgid "'k' duplicates means 'k + 1' total observations:"
+msgstr "'k' toistuvaa arvoa tarkoittaa 'k + 1' havaintoa yhteensä:"
+
+msgid "redfitGetrho returned rho = %f, forced to zero"
+msgstr "redfitGetrho palautti arvon rho = %f, pakotetaan nollaan"
+
+msgid "use only with \"redfit\" objects"
+msgstr "käytä vain \"redfit\"-objektien kanssa"
+
+msgid "Input:"
+msgstr "Syöte:"
+
+msgid "Initial values:"
+msgstr "Alkuarvot:"
+
+msgid "Data variance (from data spectrum) = %s"
+msgstr "Datan varianssi (datan spektristä) = %s"
+
+msgid "Avg. dt = %s"
+msgstr "Keskimääräinen näytteiden väli (Avg. dt) = %s"
+
+msgid "Results:"
+msgstr "Tulokset:"
+
+msgid "Avg. autocorr. coeff., rho = %s"
+msgstr "Keskimääräinen autokorrelaatiokerroin rho = %s"
+
+msgid "PRESCRIBED avg. autocorr. coeff., rho = %s"
+msgstr "ASETETTU keskimääräinen autokorrelaatiokerroin rho = %s"
+
+msgid "Avg. tau = %s"
+msgstr "Keskimääräinen tau = %s"
+
+msgid "Degrees of freedom = %s"
+msgstr "Vapausasteet = %s"
+
+msgid "6-dB Bandwidth = %s"
+msgstr "6 dB:n kaistanleveys = %s"
+
+msgid "Critical false-alarm level (Thomson, 1990) = %s"
+msgstr "Kriittinen väärän hälytyksen taso (Thomson, 1990) = %s"
+
+msgid "==> corresponding scaling factor for red noise = %s"
+msgstr "==> vastaava skaalauskerroin punaiselle kohinalle = %s"
+
+msgid "Equality of theoretical and data spectrum: Runs test"
+msgstr "Teoreettisen ja datan spektrin sopivuus: Pätkätesti (runs test)"
+
+msgid "%s-%% acceptance region:"
+msgstr "%s %%:n hyväksymisalue:"
+
+msgid "Test requires iwin = 0"
+msgstr "Testi vaatii iwin = 0"
+
+msgid "Test requires ofac = 1"
+msgstr "Testi vaatii ofac = 1"
+
+msgid "Test requires n50 = 1"
+msgstr "Testi vaatii n50 = 1"
+
+msgid "Data Columns:"
+msgstr "Datan Sarakkeet:"
+
+msgid "1: Freq = frequency"
+msgstr "1: Freq = taajuus"
+
+msgid "2: Gxx = spectrum of input data"
+msgstr "2: Gxx = syötedatan spektri"
+
+msgid "3: Gxx_corr = bias-corrected spectrum of input data"
+msgstr "3: Gxx_corr = syötedatan harhakorjattu spektri"
+
+msgid "4: Gred_th = theoretical AR(1) spectrum"
+msgstr "4: Gred_th = teoreettinen AR(1)-spektri"
+
+msgid "5: Gred_avg = average spectrum of Nsim AR(1) time series (uncorrected)"
+msgstr "5: Gred_avg = keskiarvospektri Nsim AR(1)-aikasarjasta (korjaamaton)"
+
+msgid "6: CorrFac = Gxx / Gxx_corr"
+msgstr "6: CorrFac = Gxx / Gxx_corr"
+
+msgid "%.0f: Chi2_%.0fpct = %.0f%% false-alarm level (Chi^2)"
+msgstr "%.0f: Chi2_%.0fpct = %.0f %%:n väärän hälytyksen taso (Chi^2)"
+
+msgid "%.0f: MC_%.0fpct = %.0f%% false-alarm level (MC)"
+msgstr "%.0f: MC_%.0fpct = %.0f %%:n väärän hälytyksen taso (Markov-ketju)"
+
+msgid "timelimit exceeded"
+msgstr "aikaraja ylitetty"
+
+msgid "too few points per segment (%.0f), at least %.0f needed"
+msgstr "liian vähän pisteitä per segmentti (%.0f), vähintään %.0f tarvitaan"
+
+msgid "too many segments: overlap of more than nseg - 1 points"
+msgstr "liian monta segmenttiä: päällekkäisyys enemmän kuin nseg - 1 pistettä"
+
+msgid "rho estimation: <= 0"
+msgstr "rho:n estimointi: <= 0"
+
+msgid "rho estimation: > 1"
+msgstr "rho:n estimointi: > 1"
+
+msgid "estimation problem: LS function has > 1 minima"
+msgstr "estimointiongelma: pienimmän neliösumman funktiolla on > 1 minimi"
+
+msgid "estimation problem: a_min =< 0"
+msgstr "estimointiongelma: a_min =< 0"
+
+msgid "estimation problem: a_min >= 1"
+msgstr "estimointiongelma: a_min >= 1"
+
+msgid "error in tau estimation"
+msgstr "virhe tau:n estimoinnissa"
 
 msgid "'ncol(rwi)' != 'nrow(ids)'"
 msgstr "’ncol(rwi)’ ≠ ’nrow(ids)’"
@@ -537,8 +814,11 @@ msgstr "’first.start’ liian pieni, täytyy olla ≥ 1"
 msgid "'first.start' too large"
 msgstr "’first.start’ liian suuri"
 
-msgid "'x' must be a data.frame"
-msgstr "’x’:n täytyy olla data.frame"
+msgid "'x' must have at least one column"
+msgstr "’x’:ssä pitää olla vähintään yksi sarake"
+
+msgid "'x' must have non-automatic row.names"
+msgstr "’x’:ssä pitää olla ei-automaattiset rivinimet"
 
 msgid "NA result at position %d."
 msgstr "NA-tulos paikassa %d."
@@ -745,6 +1025,18 @@ msgstr "vuosia ennen -9999 (10000 eaa.) ei tueta"
 msgid "years later than 99999 are not possible"
 msgstr "99999:n jälkeiset vuodet eivät ole mahdollisia"
 
+msgid "'win.width' must be even"
+msgstr "’win.width’in täytyy olla parillinen"
+
+msgid "win.width should be < 100 unless your plotting is very wide!"
+msgstr "win.width:in pitäisi olla < 100 ellei kuva ole hyvin leveä!"
+
+msgid "Fix window overlap"
+msgstr "Korjaa ikkunoiden päällekkäisyys"
+
+msgid "These plots get crowded with windows longer than 100 years."
+msgstr "Kuvista tulee ahtaita jos ikkunat ovat pidempiä kuin 100 vuotta"
+
 msgid "There is %d series\n"
 msgid_plural "There are %d series\n"
 msgstr[0] "On %d sarja\n"
@@ -775,3 +1067,11 @@ msgid "precision unknown in series %s"
 msgid_plural "precision unknown in series %s"
 msgstr[0] "tuntematon tarkkuus sarjassa %s"
 msgstr[1] "tuntematon tarkkuus sarjoissa %s"
+
+msgid "%.0f NA value removed"
+msgid_plural "%.0f NA values removed"
+msgstr[0] "%.0f NA-arvo poistettu"
+msgstr[1] "%.0f NA-arvoa poistettu"
+
+#~ msgid "Years"
+#~ msgstr "Vuodet"

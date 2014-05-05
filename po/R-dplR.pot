@@ -1,18 +1,20 @@
 # Translation template for messages in dplR R code
 # Copyright (C) dplR copyright holders
 # This file is distributed under the same license as the dplR package.
-# Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012.
+# Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012, 2014.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.5.5\n"
-"Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2012-06-15 18:41+0300\n"
+"Project-Id-Version: dplR 1.6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-05 23:48+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
 
 
 msgid "'rwl' must be a data.frame"
@@ -69,13 +71,28 @@ msgstr ""
 msgid "Nothing to combine here. Please supply data.frames formatted according to the data standards in dplR."
 msgstr ""
 
+msgid "'rwl' must have numeric columns"
+msgstr ""
+
+msgid "'rwl' must have row names"
+msgstr ""
+
+msgid "row names of 'rwl' must be interpretable as years"
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "Original: %d series, %d years"
+msgstr ""
+
+msgid "Common Interval (type='%s'): %d series x %d years = %d"
+msgstr ""
+
 msgid "At least 2 series are needed in 'rwl'"
 msgstr ""
 
 msgid "At least 1 series is needed in 'rwl'"
-msgstr ""
-
-msgid "Year"
 msgstr ""
 
 msgid "Segments: length=%d,lag=%d"
@@ -87,19 +104,88 @@ msgstr ""
 msgid "'crn' must be a data.frame"
 msgstr ""
 
-msgid "Years"
-msgstr ""
-
-msgid "RWI"
-msgstr ""
-
 msgid "Sample Depth"
+msgstr ""
+
+msgid "Verbose output:"
+msgstr ""
+
+msgid "Options"
 msgstr ""
 
 msgid "all values are 'NA'"
 msgstr ""
 
 msgid "'NA's are not allowed in the middle of the series"
+msgstr ""
+
+msgid "Zero years in input series:"
+msgstr ""
+
+msgid "Zero indices in input series:"
+msgstr ""
+
+msgid "No zeros in input series."
+msgstr ""
+
+msgid "Detrend by ModNegExp."
+msgstr ""
+
+msgid "Trying to fit nls model..."
+msgstr ""
+
+msgid "nls failed... fitting linear model..."
+msgstr ""
+
+msgid "Fits from ModNegExp are not all positive, see constrain.modnegexp argument in detrend.series"
+msgstr ""
+
+msgid "Linear model fit"
+msgstr ""
+
+msgid "Intercept: %s"
+msgstr ""
+
+msgid "Slope: %s"
+msgstr ""
+
+msgid "Linear fit (backup of ModNegExp) is not all positive"
+msgstr ""
+
+msgid "lm has a positive slope"
+msgstr ""
+
+msgid "pos.slope = FALSE"
+msgstr ""
+
+msgid "Detrend by mean."
+msgstr ""
+
+msgid "Mean = %s"
+msgstr ""
+
+msgid "nls coefs"
+msgstr ""
+
+msgid "Detrend by spline."
+msgstr ""
+
+msgid "Spline parameters"
+msgstr ""
+
+msgid "Spline fit is not all positive"
+msgstr ""
+
+msgid "Detrend by prewhitening."
+msgstr ""
+
+msgid "Ar fit is not all positive"
+msgstr ""
+
+msgid "Zero years in %s series:"
+msgstr ""
+
+msgid "Zero indices in %s series:"
 msgstr ""
 
 msgid "Age (Yrs)"
@@ -111,10 +197,16 @@ msgstr ""
 msgid "Spline"
 msgstr ""
 
+msgid "RWI"
+msgstr ""
+
 msgid "Neg. Exp. Curve or Straight Line"
 msgstr ""
 
 msgid "Horizontal Line (Mean)"
+msgstr ""
+
+msgid "Ar"
 msgstr ""
 
 msgid "'y' must be coercible to a numeric vector"
@@ -138,6 +230,15 @@ msgstr ""
 msgid "abscissa and ordinate vector must be of the same length"
 msgstr ""
 
+msgid "'x' must be a data.frame"
+msgstr ""
+
+msgid "'x' must have numeric columns"
+msgstr ""
+
+msgid "'fill' must be a single number or character string"
+msgstr ""
+
 msgid "Intersection of series %d and %d is not contiguous. NA returned."
 msgstr ""
 
@@ -156,6 +257,15 @@ msgstr ""
 msgid "could not remap a name: some series will be missing"
 msgstr ""
 
+msgid "'series' not found in 'rwl'"
+msgstr ""
+
+msgid "duplicate column names, multiple matches"
+msgstr ""
+
+msgid "'series' of length 1 must be a column index to 'rwl'"
+msgstr ""
+
 msgid "Detrend series %d of %d"
 msgstr ""
 
@@ -171,10 +281,25 @@ msgstr ""
 msgid "number out of range or not an integer"
 msgstr ""
 
+msgid "input data must have consecutive years in increasing order"
+msgstr ""
+
+msgid "invalid 'year': skipping years not allowed"
+msgstr ""
+
+msgid "'year' not present in 'rw.vec.yrs'"
+msgstr ""
+
 msgid "'x1' and 'y1' lengths differ"
 msgstr ""
 
-msgid "'rgv.thresh' must range from 0 to 100"
+msgid "use only with \"rwl\" objects"
+msgstr ""
+
+msgid "'rgv.thresh' must be > 0"
+msgstr ""
+
+msgid "'rgv.thresh' > 100 is unusual."
 msgstr ""
 
 msgid "'nseries.thresh' must range from 0 to 100"
@@ -450,6 +575,9 @@ msgstr ""
 msgid "failed to read rwl file"
 msgstr ""
 
+msgid "series.index must be integer: %s"
+msgstr ""
+
 msgid "bad location of stop marker in series %s"
 msgstr ""
 
@@ -460,6 +588,153 @@ msgid "combining series %s and %s"
 msgstr ""
 
 msgid "file has no good data"
+msgstr ""
+
+msgid "oversampling factor 'ofac' must be >= 1"
+msgstr ""
+
+msgid "'hifac' must be positive"
+msgstr ""
+
+msgid "if 'mctest' is TRUE, 'nsim' must be at least %.0f"
+msgstr ""
+
+msgid "numeric 'iwin' must be 0, 1, 2, 3 or 4"
+msgstr ""
+
+msgid "'iwin' must be numeric or character"
+msgstr ""
+
+msgid "lengths of 't' and 'x' must match"
+msgstr ""
+
+msgid "too few points (%.0f), at least %.0f needed"
+msgstr ""
+
+msgid "Duplicate times in 't', averaging data"
+msgstr ""
+
+msgid "Duplicate ages in 't', averaging data"
+msgstr ""
+
+msgid "Number of duplicates by time,"
+msgstr ""
+
+msgid "Number of duplicates by age,"
+msgstr ""
+
+msgid "'k' duplicates means 'k + 1' total observations:"
+msgstr ""
+
+msgid "redfitGetrho returned rho = %f, forced to zero"
+msgstr ""
+
+msgid "use only with \"redfit\" objects"
+msgstr ""
+
+msgid "Input:"
+msgstr ""
+
+msgid "Initial values:"
+msgstr ""
+
+msgid "Data variance (from data spectrum) = %s"
+msgstr ""
+
+msgid "Avg. dt = %s"
+msgstr ""
+
+msgid "Results:"
+msgstr ""
+
+msgid "Avg. autocorr. coeff., rho = %s"
+msgstr ""
+
+msgid "PRESCRIBED avg. autocorr. coeff., rho = %s"
+msgstr ""
+
+msgid "Avg. tau = %s"
+msgstr ""
+
+msgid "Degrees of freedom = %s"
+msgstr ""
+
+msgid "6-dB Bandwidth = %s"
+msgstr ""
+
+msgid "Critical false-alarm level (Thomson, 1990) = %s"
+msgstr ""
+
+msgid "==> corresponding scaling factor for red noise = %s"
+msgstr ""
+
+msgid "Equality of theoretical and data spectrum: Runs test"
+msgstr ""
+
+msgid "%s-%% acceptance region:"
+msgstr ""
+
+msgid "Test requires iwin = 0"
+msgstr ""
+
+msgid "Test requires ofac = 1"
+msgstr ""
+
+msgid "Test requires n50 = 1"
+msgstr ""
+
+msgid "Data Columns:"
+msgstr ""
+
+msgid "1: Freq = frequency"
+msgstr ""
+
+msgid "2: Gxx = spectrum of input data"
+msgstr ""
+
+msgid "3: Gxx_corr = bias-corrected spectrum of input data"
+msgstr ""
+
+msgid "4: Gred_th = theoretical AR(1) spectrum"
+msgstr ""
+
+msgid "5: Gred_avg = average spectrum of Nsim AR(1) time series (uncorrected)"
+msgstr ""
+
+msgid "6: CorrFac = Gxx / Gxx_corr"
+msgstr ""
+
+msgid "%.0f: Chi2_%.0fpct = %.0f%% false-alarm level (Chi^2)"
+msgstr ""
+
+msgid "%.0f: MC_%.0fpct = %.0f%% false-alarm level (MC)"
+msgstr ""
+
+msgid "timelimit exceeded"
+msgstr ""
+
+msgid "too few points per segment (%.0f), at least %.0f needed"
+msgstr ""
+
+msgid "too many segments: overlap of more than nseg - 1 points"
+msgstr ""
+
+msgid "rho estimation: <= 0"
+msgstr ""
+
+msgid "rho estimation: > 1"
+msgstr ""
+
+msgid "estimation problem: LS function has > 1 minima"
+msgstr ""
+
+msgid "estimation problem: a_min =< 0"
+msgstr ""
+
+msgid "estimation problem: a_min >= 1"
+msgstr ""
+
+msgid "error in tau estimation"
 msgstr ""
 
 msgid "'ncol(rwi)' != 'nrow(ids)'"
@@ -510,7 +785,10 @@ msgstr ""
 msgid "'first.start' too large"
 msgstr ""
 
-msgid "'x' must be a data.frame"
+msgid "'x' must have at least one column"
+msgstr ""
+
+msgid "'x' must have non-automatic row.names"
 msgstr ""
 
 msgid "NA result at position %d."
@@ -699,6 +977,18 @@ msgstr ""
 msgid "years later than 99999 are not possible"
 msgstr ""
 
+msgid "'win.width' must be even"
+msgstr ""
+
+msgid "win.width should be < 100 unless your plotting is very wide!"
+msgstr ""
+
+msgid "Fix window overlap"
+msgstr ""
+
+msgid "These plots get crowded with windows longer than 100 years."
+msgstr ""
+
 msgid        "There is %d series\n"
 msgid_plural "There are %d series\n"
 msgstr[0]    ""
@@ -726,5 +1016,10 @@ msgstr[1]    ""
 
 msgid        "precision unknown in series %s"
 msgid_plural "precision unknown in series %s"
+msgstr[0]    ""
+msgstr[1]    ""
+
+msgid        "%.0f NA value removed"
+msgid_plural "%.0f NA values removed"
 msgstr[0]    ""
 msgstr[1]    ""

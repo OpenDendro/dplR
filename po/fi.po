@@ -1,13 +1,13 @@
 # Finnish translations for messages in dplR C code
 # Copyright (C) dplR copyright holders
 # This file is distributed under the same license as the dplR package.
-# Mikko Korpela <mvkorpel@iki.fi>, 2011.
+# Mikko Korpela <mvkorpel@iki.fi>, 2011, 2014.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.4.8\n"
+"Project-Id-Version: dplR 1.6.1\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2011-11-06 18:46+0200\n"
-"PO-Revision-Date: 2011-11-06 18:50+0200\n"
+"POT-Creation-Date: 2014-05-05 23:51+0300\n"
+"PO-Revision-Date: 2014-05-05 23:49+0300\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -16,63 +16,63 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: rcompact.c:137
+#: rcompact.c:138
 #, c-format
 msgid "Could not open file %s for reading"
 msgstr "Ei voitu avata tiedostoa %s luettavaksi"
 
-#: rcompact.c:182
+#: rcompact.c:183
 #, c-format
 msgid "Series %d: Header line is too long (max length %d)"
 msgstr "Sarja %d: Otsakerivi on liian pitkä (maksimipituus %d)"
 
-#: rcompact.c:192
+#: rcompact.c:193
 #, c-format
 msgid "Series %d: No '=' found when header line was expected"
 msgstr "Sarja %d: Ei ’=’-merkkiä oletetulla otsakerivillä"
 
-#: rcompact.c:197
+#: rcompact.c:198
 #, c-format
 msgid "Series %d: No room for number before first '='"
 msgstr "Sarja %d: Ei tilaa luvulle ennen ensimmäistä ’=’-merkkiä"
 
-#: rcompact.c:204
+#: rcompact.c:205
 #, c-format
 msgid "Series %d: Only a number must be found right before 1st '='"
 msgstr ""
 "Sarja %d: Juuri ennen ensimmäistä ’=’-merkkiä täytyy olla luku, ei muuta"
 
-#: rcompact.c:209 rcompact.c:254
+#: rcompact.c:210 rcompact.c:255
 #, c-format
 msgid "Series %d: Number %lld exceeds integer range"
 msgstr "Sarja %d: Luku %lld ylittää kokonaislukualueen"
 
-#: rcompact.c:219 rcompact.c:263
+#: rcompact.c:220 rcompact.c:264
 #, c-format
 msgid "Series %d: Length of series must be at least one (%ld seen)"
 msgstr "Sarja %d: Sarjan pituuden täytyy olla vähintään yksi (%ld nähty)"
 
-#: rcompact.c:227
+#: rcompact.c:228
 #, c-format
 msgid "Series %d: Unknown field id: %c"
 msgstr "Sarja %d: Tuntematon kentän tunniste: %c"
 
-#: rcompact.c:233
+#: rcompact.c:234
 #, c-format
 msgid "Series %d: Space required between N and I fields"
 msgstr "Sarja %d: N- ja I-kenttien välissä täytyy olla tilaa"
 
-#: rcompact.c:240
+#: rcompact.c:241
 #, c-format
 msgid "Series %d: Second '=' missing"
 msgstr "Sarja %d: Toinen ’=’-merkki puuttuu"
 
-#: rcompact.c:244
+#: rcompact.c:245
 #, c-format
 msgid "Series %d: No room for number before second '='"
 msgstr "Sarja %d: Ei tilaa luvulle ennen toista ’=’-merkkiä"
 
-#: rcompact.c:249
+#: rcompact.c:250
 #, c-format
 msgid ""
 "Series %d: Only a number must be found after first field, right before 2nd "
@@ -81,130 +81,135 @@ msgstr ""
 "Sarja %d: Ensimmäisen kentän jälkeen, juuri ennen toista, täytyy olla luku, "
 "ei muuta"
 
-#: rcompact.c:269
+#: rcompact.c:270
 #, c-format
 msgid "Series %d: Unknown or doubled field id: %c"
 msgstr "Sarja %d: Tuntematon tai kahdennettu kentän tunniste: %c"
 
-#: rcompact.c:284
+#: rcompact.c:276
+#, c-format
+msgid "Series %d: Last year exceeds integer range"
+msgstr "Sarja %d: Viimeinen vuosi ylittää kokonaislukualueen"
+
+#: rcompact.c:288
 #, c-format
 msgid "Series %d (%s): Space required before ID"
 msgstr "Sarja %d (%s): Ennen tunnistetta täytyy olla tilaa"
 
-#: rcompact.c:296
+#: rcompact.c:300
 #, c-format
 msgid "Series %d (%s): '~' not found in expected location"
 msgstr "Sarja %d (%s): ’~’-merkkiä ei löytynyt odotetusta paikasta"
 
-#: rcompact.c:314
+#: rcompact.c:318
 #, c-format
 msgid "Series %d: Invalid character in series ID"
 msgstr "Sarja %d: Epäkelpo merkki sarjan tunnisteessa"
 
-#: rcompact.c:325
+#: rcompact.c:329
 #, c-format
 msgid "Series %d: Alphanumeric series ID not found"
 msgstr "Sarja %d: Aakkosnumeerista sarjan tunnistetta ei löytynyt"
 
-#: rcompact.c:331
+#: rcompact.c:335
 #, c-format
-msgid "Series %d (%s): Space required after alphanumerid ID"
+msgid "Series %d (%s): Space required after alphanumeric ID"
 msgstr "Sarja %d (%s): Aakkosnumeerisen tunnisteen jälkeen täytyy olla tilaa"
 
-#: rcompact.c:340
+#: rcompact.c:344
 #, c-format
 msgid "Series %d (%s): Exponent not found"
 msgstr "Sarja %d (%s): Eksponenttia ei löytynyt"
 
-#: rcompact.c:352
+#: rcompact.c:356
 #, c-format
 msgid "Series %d (%s): Exponent has too many characters"
 msgstr "Sarja %d (%s): Eksponentissa on liian monta merkkiä"
 
-#: rcompact.c:357
+#: rcompact.c:361
 #, c-format
 msgid "Series %d (%s): Opening parenthesis required after exponent"
 msgstr "Sarja %d (%s): Eksponentin jälkeen täytyy olla vasen kaarisulje"
 
-#: rcompact.c:364
+#: rcompact.c:368
 #, c-format
 msgid "Series %d (%s): No dot found in number format description"
 msgstr "Sarja %d (%s): Lukumuotoilun kuvauksesta ei löytynyt pistettä"
 
-#: rcompact.c:370
+#: rcompact.c:374
 #, c-format
 msgid "Series %d (%s): No closing parenthesis found"
 msgstr "Sarja %d (%s): Oikeaa kaarisuljetta ei löytynyt"
 
-#: rcompact.c:384
+#: rcompact.c:388
 #, c-format
 msgid "Series %d (%s): Number of values per line not found"
 msgstr "Sarja %d (%s): Rivillä olevien arvojen lukumäärää ei löytynyt"
 
-#: rcompact.c:389
+#: rcompact.c:393
 #, c-format
 msgid "Series %d (%s): At least one value per line is needed"
 msgstr "Sarja %d (%s): Tarvitaan vähintään yksi arvo riviä kohti"
 
-#: rcompact.c:394
+#: rcompact.c:398
 #, c-format
 msgid "Series %d (%s): Number of values per line (%d) > max line length (%d)"
 msgstr ""
 "Sarja %d (%s): Rivillä olevien arvojen lukumäärä (%d) > rivin maksimipituus "
 "(%d)"
 
-#: rcompact.c:399
+#: rcompact.c:403
 #, c-format
 msgid "Series %d (%s): Only 'F' number format is supported"
 msgstr "Sarja %d (%s): Vain ’F’-lukumuotoilua tuetaan"
 
-#: rcompact.c:406
+#: rcompact.c:410
 #, c-format
 msgid "Series %d (%s): Field width not found"
 msgstr "Sarja %d (%s): Kentän leveyttä ei löytynyt"
 
-#: rcompact.c:411
+#: rcompact.c:415
 #, c-format
 msgid "Series %d (%s): Field width and '.' must be adjacent"
 msgstr "Sarja %d (%s): Kentän leveyden ja ’.’-merkin täytyy olla vierekkäin"
 
-#: rcompact.c:416
+#: rcompact.c:420
 #, c-format
 msgid "Series %d (%s): Field width must be at least one (%d seen)"
 msgstr "Sarja %d (%s): Kentän leveyden täytyy olla vähintään yksi (%d nähty)"
 
-#: rcompact.c:423
+#: rcompact.c:427
 #, c-format
 msgid "Series %d (%s): Number of decimals not found"
 msgstr "Sarja %d (%s): Desimaalien lukumäärää ei löytynyt"
 
-#: rcompact.c:428
+#: rcompact.c:432
 #, c-format
 msgid "Series %d (%s): Number of decimals and ')' must be adjacent"
 msgstr ""
 "Sarja %d (%s): Desimaalien lukumäärän ja ’)’-merkin täytyy olla vierekkäin"
 
-#: rcompact.c:433
+#: rcompact.c:437
 #, c-format
 msgid "Series %d (%s): No (implied) decimal places allowed in format"
 msgstr "Sarja %d (%s): Lukumuotoilussa ei sallita (epäsuoria) desimaaleja"
 
-#: rcompact.c:439
+#: rcompact.c:443
 #, c-format
 msgid "Series %d (%s): Required line length %d exceeds the maximum %d"
 msgstr "Sarja %d (%s): Tarvittava rivin pituus %d ylittää maksimin %d"
 
-#: rcompact.c:455 rcompact.c:495
+#: rcompact.c:459 rcompact.c:499
 #, c-format
 msgid "Series %d (%s): Unexpected end of file (%d data lines read)"
 msgstr "Sarja %d (%s): Odottamaton tiedoston lopetus (%d datariviä luettu)"
 
-#: rcompact.c:461 rcompact.c:500
+#: rcompact.c:465 rcompact.c:504
 #, c-format
 msgid "Series %d (%s): Data line %d is too long (max length %d)"
 msgstr "Sarja %d (%s): Datarivi %d on liian pitkä (maksimipituus %d)"
 
-#: rcompact.c:474 rcompact.c:512
+#: rcompact.c:478 rcompact.c:516
 #, c-format
 msgid ""
 "Series %d (%s): Could not read number (data row %d, field %d).\n"
@@ -213,12 +218,44 @@ msgstr ""
 "Sarja %d (%s): Ei voitu lukea lukua (datarivi %d, kenttä %d).\n"
 "Vääränmuotoinen luku tai edellinen rivi liian pitkä."
 
-#: rcompact.c:530
+#: rcompact.c:534
 #, c-format
 msgid "Error reading file %s"
 msgstr "Virhe luettaessa tiedostoa %s"
 
-#: rcompact.c:537
+#: rcompact.c:541
 #, c-format
 msgid "No data found in file %s"
 msgstr "Tiedostosta %s ei löytynyt dataa"
+
+#: readloop.c:18
+msgid "all arguments must be integers"
+msgstr "kaikkien argumenttien täytyy olla kokonaislukuja"
+
+#: readloop.c:25
+msgid "'x' must be a matrix"
+msgstr "'x':n täytyy olla matriisi"
+
+#: readloop.c:31
+msgid "too many columns in 'x'"
+msgstr "'x':ssä on liian monta saraketta"
+
+#: readloop.c:40
+msgid "dimensions of 'x', 'series_index' and 'decade' must match"
+msgstr "'x':n, 'series_index'in ja 'decade'n ulottuvuuksien täytyy täsmätä"
+
+#: readloop.c:53
+msgid "'series_index' must be positive"
+msgstr "'series_index'in täytyy olla positiivinen"
+
+#: readloop.c:91
+msgid "no data found in 'x'"
+msgstr "'x':stä ei löytynyt dataa"
+
+#: tbrm.c:28
+msgid "long vectors not supported"
+msgstr "pitkiä vektoreita ei tueta"
+
+#: tbrm.c:33
+msgid "length of 'C' must be 1"
+msgstr "'C':n pituuden täytyy olla 1"

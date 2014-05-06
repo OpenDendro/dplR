@@ -66,6 +66,8 @@ SEXP readloop(SEXP series_index, SEXP decade, SEXP x) {
 	}
     }
     if (max_year >= min_year) {
+	if (max_year >= 0 && min_year < max_year - R_INT_MAX + 1)
+	    error(_("Number of years exceeds integer range"));
 	span = max_year - min_year + 1;
     } else {
 	min_year = NA_INTEGER;

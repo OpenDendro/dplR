@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.6.1\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-05 23:51+0300\n"
+"Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
+"POT-Creation-Date: 2014-05-06 10:00+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,201 +21,209 @@ msgstr ""
 msgid "Could not open file %s for reading"
 msgstr ""
 
-#: rcompact.c:183
+#: rcompact.c:157
+msgid "Number of comments exceeds integer range"
+msgstr ""
+
+#: rcompact.c:176
+msgid "Number of series exceeds integer range"
+msgstr ""
+
+#: rcompact.c:188
 #, c-format
 msgid "Series %d: Header line is too long (max length %d)"
 msgstr ""
 
-#: rcompact.c:193
+#: rcompact.c:198
 #, c-format
 msgid "Series %d: No '=' found when header line was expected"
 msgstr ""
 
-#: rcompact.c:198
+#: rcompact.c:203
 #, c-format
 msgid "Series %d: No room for number before first '='"
 msgstr ""
 
-#: rcompact.c:205
+#: rcompact.c:210
 #, c-format
 msgid "Series %d: Only a number must be found right before 1st '='"
 msgstr ""
 
-#: rcompact.c:210 rcompact.c:255
+#: rcompact.c:215 rcompact.c:260
 #, c-format
 msgid "Series %d: Number %lld exceeds integer range"
 msgstr ""
 
-#: rcompact.c:220 rcompact.c:264
+#: rcompact.c:225 rcompact.c:269
 #, c-format
 msgid "Series %d: Length of series must be at least one (%ld seen)"
 msgstr ""
 
-#: rcompact.c:228
+#: rcompact.c:233
 #, c-format
 msgid "Series %d: Unknown field id: %c"
 msgstr ""
 
-#: rcompact.c:234
+#: rcompact.c:239
 #, c-format
 msgid "Series %d: Space required between N and I fields"
 msgstr ""
 
-#: rcompact.c:241
+#: rcompact.c:246
 #, c-format
 msgid "Series %d: Second '=' missing"
 msgstr ""
 
-#: rcompact.c:245
+#: rcompact.c:250
 #, c-format
 msgid "Series %d: No room for number before second '='"
 msgstr ""
 
-#: rcompact.c:250
+#: rcompact.c:255
 #, c-format
 msgid ""
 "Series %d: Only a number must be found after first field, right before 2nd "
 "'='"
 msgstr ""
 
-#: rcompact.c:270
+#: rcompact.c:275
 #, c-format
 msgid "Series %d: Unknown or doubled field id: %c"
 msgstr ""
 
-#: rcompact.c:276
+#: rcompact.c:281
 #, c-format
 msgid "Series %d: Last year exceeds integer range"
 msgstr ""
 
-#: rcompact.c:288
+#: rcompact.c:293
 #, c-format
 msgid "Series %d (%s): Space required before ID"
 msgstr ""
 
-#: rcompact.c:300
+#: rcompact.c:305
 #, c-format
 msgid "Series %d (%s): '~' not found in expected location"
 msgstr ""
 
-#: rcompact.c:318
+#: rcompact.c:323
 #, c-format
 msgid "Series %d: Invalid character in series ID"
 msgstr ""
 
-#: rcompact.c:329
+#: rcompact.c:334
 #, c-format
 msgid "Series %d: Alphanumeric series ID not found"
 msgstr ""
 
-#: rcompact.c:335
+#: rcompact.c:340
 #, c-format
 msgid "Series %d (%s): Space required after alphanumeric ID"
 msgstr ""
 
-#: rcompact.c:344
+#: rcompact.c:349
 #, c-format
 msgid "Series %d (%s): Exponent not found"
 msgstr ""
 
-#: rcompact.c:356
+#: rcompact.c:361
 #, c-format
 msgid "Series %d (%s): Exponent has too many characters"
 msgstr ""
 
-#: rcompact.c:361
+#: rcompact.c:366
 #, c-format
 msgid "Series %d (%s): Opening parenthesis required after exponent"
 msgstr ""
 
-#: rcompact.c:368
+#: rcompact.c:373
 #, c-format
 msgid "Series %d (%s): No dot found in number format description"
 msgstr ""
 
-#: rcompact.c:374
+#: rcompact.c:379
 #, c-format
 msgid "Series %d (%s): No closing parenthesis found"
 msgstr ""
 
-#: rcompact.c:388
+#: rcompact.c:393
 #, c-format
 msgid "Series %d (%s): Number of values per line not found"
 msgstr ""
 
-#: rcompact.c:393
+#: rcompact.c:398
 #, c-format
 msgid "Series %d (%s): At least one value per line is needed"
 msgstr ""
 
-#: rcompact.c:398
+#: rcompact.c:403
 #, c-format
 msgid "Series %d (%s): Number of values per line (%d) > max line length (%d)"
 msgstr ""
 
-#: rcompact.c:403
+#: rcompact.c:408
 #, c-format
 msgid "Series %d (%s): Only 'F' number format is supported"
 msgstr ""
 
-#: rcompact.c:410
+#: rcompact.c:415
 #, c-format
 msgid "Series %d (%s): Field width not found"
 msgstr ""
 
-#: rcompact.c:415
+#: rcompact.c:420
 #, c-format
 msgid "Series %d (%s): Field width and '.' must be adjacent"
 msgstr ""
 
-#: rcompact.c:420
+#: rcompact.c:425
 #, c-format
 msgid "Series %d (%s): Field width must be at least one (%d seen)"
 msgstr ""
 
-#: rcompact.c:427
+#: rcompact.c:432
 #, c-format
 msgid "Series %d (%s): Number of decimals not found"
 msgstr ""
 
-#: rcompact.c:432
+#: rcompact.c:437
 #, c-format
 msgid "Series %d (%s): Number of decimals and ')' must be adjacent"
 msgstr ""
 
-#: rcompact.c:437
+#: rcompact.c:442
 #, c-format
 msgid "Series %d (%s): No (implied) decimal places allowed in format"
 msgstr ""
 
-#: rcompact.c:443
+#: rcompact.c:448
 #, c-format
 msgid "Series %d (%s): Required line length %d exceeds the maximum %d"
 msgstr ""
 
-#: rcompact.c:459 rcompact.c:499
+#: rcompact.c:464 rcompact.c:504
 #, c-format
 msgid "Series %d (%s): Unexpected end of file (%d data lines read)"
 msgstr ""
 
-#: rcompact.c:465 rcompact.c:504
+#: rcompact.c:470 rcompact.c:509
 #, c-format
 msgid "Series %d (%s): Data line %d is too long (max length %d)"
 msgstr ""
 
-#: rcompact.c:478 rcompact.c:516
+#: rcompact.c:483 rcompact.c:521
 #, c-format
 msgid ""
 "Series %d (%s): Could not read number (data row %d, field %d).\n"
 "Malformed number or previous line too long."
 msgstr ""
 
-#: rcompact.c:534
+#: rcompact.c:539
 #, c-format
 msgid "Error reading file %s"
 msgstr ""
 
-#: rcompact.c:541
+#: rcompact.c:546
 #, c-format
 msgid "No data found in file %s"
 msgstr ""
@@ -240,7 +248,11 @@ msgstr ""
 msgid "'series_index' must be positive"
 msgstr ""
 
-#: readloop.c:91
+#: readloop.c:70
+msgid "Number of years exceeds integer range"
+msgstr ""
+
+#: readloop.c:93
 msgid "no data found in 'x'"
 msgstr ""
 

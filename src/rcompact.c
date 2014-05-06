@@ -153,6 +153,8 @@ SEXP rcompact(SEXP filename){
 	 */
 	while(strchr(line, '~') == NULL){
 	    if(n_content > 0){ /* Skip empty lines */
+		if(n_comments == R_INT_MAX)
+		    error(_("Number of comments exceeds integer range"));
 		++n_comments;
 		tmp_comment = (char *) R_alloc(n_content+1, sizeof(char));
 		strncpy(tmp_comment, line, n_content);
@@ -169,6 +171,9 @@ SEXP rcompact(SEXP filename){
 	}
 	if(early_eof == TRUE)
 	    break;
+
+	if(n == R_INT_MAX)
+	    error(_("Number of series exceeds integer range"));
 
 	/* A simple check to point out too long header
 	 * lines. Generally, if one line is too long, this function

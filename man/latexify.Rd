@@ -10,10 +10,13 @@
   used together with \samp{\Sexpr} in vignettes.
 }
 \usage{
-latexify(x)
+latexify(x, doublebackslash = TRUE)
 }
 \arguments{
   \item{x}{ a \code{character} vector }
+  \item{doublebackslash}{ a \code{logical} flag.  If \code{TRUE},
+    backslashes in the output are doubled.  It seems that Sweave needs
+    \code{TRUE} and knitr \code{FALSE}. }
 }
 \details{
 
@@ -66,7 +69,7 @@ testStrings <-
       '#various$ \%other^ &characters_ ~escaped"/coded',
       x1,
       x2)
-latexStrings <- latexify(testStrings)
+latexStrings <- latexify(testStrings, doublebackslash = FALSE)
 ## 5th element should be "UTF-8", the rest "unknown"
 Encoding(latexStrings)
 cat(latexStrings, sep="\n")

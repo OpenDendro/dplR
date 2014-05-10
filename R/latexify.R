@@ -18,7 +18,10 @@ latexDate <- function(x = Sys.Date(), ...) {
 ## (newlines, tabs, etc.) will be lost.  Note that the set of
 ## characters actually supported depends on the font, LaTeX engine and
 ## set of packages used.
-latexify <- function(x) {
+##
+## It seems that Sweave needs doublebackslash = TRUE
+## but knitr needs doublebackslash = FALSE.
+latexify <- function(x, doublebackslash=TRUE) {
     y <- as.character(x)
     ## Kludge for converting from "byte" to the current encoding
     ## in a way which preserves the hex notation.
@@ -65,6 +68,9 @@ latexify <- function(x) {
              c("/", "\\\\slash{}"))
     for (subst in substitutions) {
         y <- gsub(subst[1], subst[2], y, perl = TRUE)
+    }
+    if (isTRUE(doublebackslash)) {
+        y <- gsub("\\", "\\\\", y, fixed=TRUE)
     }
     ## gsub() may have changed encodings. Therefore we check them
     ## again.

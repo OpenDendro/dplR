@@ -1,10 +1,20 @@
 * CHANGES IN dplR VERSION 1.6.1
 
+File: NAMESPACE
+---------------
+
+- Added latexify() and latexDate() to export list
+
 File: common.interval.R
 -----------------------
 
 - Bug fix: make.plot=TRUE threw an error when input data.frame had leading
   or trailing all-NA rows
+
+File: latexify.R
+----------------
+
+- New utility functions latexify() and latexDate() for use in vignettes
 
 Files: rcompact.c, readloop.c
 -----------------------------

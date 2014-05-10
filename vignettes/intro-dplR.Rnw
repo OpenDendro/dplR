@@ -6,12 +6,15 @@
 \input{ix-utf8enc.dfu} % more characters supported
 \title{An introduction to dplR} 
 \author{Andy Bunn \and Mikko Korpela}
+<<echo=FALSE,results=hide>>=
+library(dplR) # latexify(), latexDate()
+@ 
 \hypersetup{
   pdfauthor = {Andy Bunn; Mikko Korpela},
 }
-\date{\footnotesize{$ $Processed with dplR 
+\date{\footnotesize Processed with dplR 
 \Sexpr{packageDescription("dplR", field="Version")}
-in \Sexpr{R.version.string} on \today}}
+in \Sexpr{latexify(R.version.string)} on \Sexpr{latexDate()}}
 
 \begin{document}
 \bibliographystyle{jss}

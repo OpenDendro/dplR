@@ -28,7 +28,9 @@ ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
 }
 \details{
   This applies a smoothing spline similar to the spline applied in most
-  dendrochronological software. See references for more information.
+  dendrochronological software.  See references for more information.
+  See \sQuote{Examples} for a pointer to a \acronym{PDF} document
+  including mathematical details about the function.
 }
 \value{
   A filtered vector.
@@ -47,8 +49,13 @@ ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
 
 \seealso{ \code{\link{hanning}}, \code{\link{detrend}} }
 
-\examples{
+\examples{docFile <- system.file("doc", "math-dplR.pdf", package="dplR")
+cat("See the following PDF for mathematical details:\n")
+cat(docFile, sep="\n")
 \dontrun{
+if (interactive() && requireNamespace("Biobase")) {
+    Biobase::openPDF(docFile)
+}
 library(graphics)
 ## Use series CAM011 from the Campito data set
 data(ca533)

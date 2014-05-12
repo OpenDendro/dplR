@@ -5,6 +5,13 @@ File: NAMESPACE
 
 - Added latexify() and latexDate() to export list
 
+File: DESCRIPTION
+-----------------
+
+- New Suggested packages.  These are for document building (see
+  math-dplR.pdf below) and openPDF (math-dplR.pdf is not available through
+  vignette())
+
 File: common.interval.R
 -----------------------
 
@@ -15,6 +22,32 @@ File: latexify.R
 ----------------
 
 - New utility functions latexify() and latexDate() for use in vignettes
+
+New files in subdirectory inst/doc:
+-----------------------------------
+
+- math-dplR.pdf is a vignette-ish document about the mathematical details
+  of some dplR functions (room for expansion in the future).  It is
+  packaged as a static PDF due to the long build time.  However, the
+  source is available as required by the CRAN policies for an open
+  source package.  Arguably the staticness also makes sense in light of
+  the document presenting non-changing information about the package.  If
+  the functions analyzed in the document change fundamentally (which is not
+  to be expected), the relevant parts of the document must be rewritten
+  and the document recompiled.  Compare this to the idea that regular
+  vignettes usually include concrete examples about how the package can be
+  used.  In that case it makes sense to compile the document often to
+  verify that the examples work.
+
+- math-dplR.Rnw.txt is the source of math-dplR.pdf, with extra file
+  extension .txt to prevent automatic rebuild by R CMD build and R CMD
+  check
+
+- math-dplR.bib is the BibTeX bibliography of the document
+
+- math-dplR.R is the R source extracted from the document
+
+- build-math-dplR.R is a build script
 
 Files: rcompact.c, readloop.c
 -----------------------------

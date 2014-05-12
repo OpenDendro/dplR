@@ -1,0 +1,5 @@
+build-math-dplR.R       Build script for math-dplR.pdf
+math-dplR.bib           BibTeX bibliography
+math-dplR.pdf           Document: Mathematical Details of Functions in dplR
+math-dplR.R             R code extracted from math-dplR.Rnw.txt
+math-dplR.Rnw.txt       Literate programming source of math-dplR.pdf

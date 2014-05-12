@@ -16,7 +16,9 @@ gini.coef(x)
   all-lag measure of diversity in tree-ring records - typically detrended
   series. Lower values indicate lower diversity. The use of the Gini
   coefficient in dendrochronology is described by Biondi and Qeadan (2008).
-  See Handcock and Morris (1999) for more information.
+  See Handcock and Morris (1999) for more information.  See
+  \sQuote{Examples} for a pointer to a \acronym{PDF} document including
+  mathematical details about the function.
 }
 \value{ the Gini coefficient.
 }
@@ -30,7 +32,14 @@ gini.coef(x)
 }
 \author{ Mikko Korpela, based on original by Andy Bunn }
 \seealso{ \code{\link{rwl.stats}} }
-\examples{data(ca533)
+\examples{docFile <- system.file("doc", "math-dplR.pdf", package="dplR")
+cat("See the following PDF for mathematical details:\n")
+cat(docFile, sep="\n")
+\dontrun{
+if (interactive() && requireNamespace("Biobase")) {
+    Biobase::openPDF(docFile)
+}}
+data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM")
 gini.coef(ca533.crn)

@@ -2,3 +2,7 @@
 ^[^/]*\.sh$
 ^(.*/)?svn.*\.tmp$
 ^(.*/)?\..+$
+^inst/doc/cache(/.*)?$
+^inst/doc/figure(/.*)?$
+^inst/doc/.*\.Rout$
+^.*-tikzDictionary$

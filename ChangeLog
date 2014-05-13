@@ -71,6 +71,12 @@ File: redfit.c
   will speed up otherwise unbearable computation times on some
   systems.
 
+File: timeseries-dplR.Rnw
+-------------------------
+
+- wavelet.plot(useRaster=TRUE) in the vignette reduces the size of
+  both timeseries-dplR.pdf and the package tarball
+
 File: wavelet.plot.R
 --------------------
 

@@ -7,7 +7,8 @@ wavelet.plot <-
              key.lab = parse(text = paste0("\"", gettext("Power"), "\"^2")),
              add.spline = FALSE, f = 0.5, nyrs = NULL,
              crn.col = "black", crn.lwd = 1,coi.col='black',
-             crn.ylim = range(wave.list$y)*1.1, side.by.side = FALSE)
+             crn.ylim = range(wave.list$y)*1.1, side.by.side = FALSE,
+             useRaster = FALSE, res = 150)
 {
 
     ## Wavelet transform variables:
@@ -86,12 +87,29 @@ wavelet.plot <-
         plot.window(xlim, ylim, "", xaxs=xaxs, yaxs=yaxs, asp=asp, las=las)
         # note replacement of .Internal(filledcontour(as.double(x),...)
         # with .filled.contour() as of R-2.15.0
-        .filled.contour(as.double(x),
-                        as.double(period2),
-                        z,
-                        as.double(wavelet.levels),
-                        key.cols)
-
+        if (isTRUE(useRaster)) {
+            cl <- quote(.filled.contour(as.double(x),
+                                        as.double(period2),
+                                        z,
+                                        as.double(wavelet.levels),
+                                        key.cols))
+            tryCatch(rasterPlot(cl, res = res, antialias = "none"),
+                     error = function(e) {
+                         warning(e)
+                         message("reverting to useRaster=FALSE")
+                         .filled.contour(as.double(x),
+                                         as.double(period2),
+                                         z,
+                                         as.double(wavelet.levels),
+                                         key.cols)
+                     })
+        } else {
+            .filled.contour(as.double(x),
+                            as.double(period2),
+                            z,
+                            as.double(wavelet.levels),
+                            key.cols)
+        }
         if (add.sig) {
             contour(x, period2, Signif, levels=1, labels=siglvl,
                     drawlabels = FALSE, axes = FALSE,
@@ -155,12 +173,29 @@ wavelet.plot <-
         plot.window(xlim, ylim, "", xaxs=xaxs, yaxs=yaxs, asp=asp, las=las)
         # note replacement of .Internal(filledcontour(as.double(x),...)
         # with .filled.contour() as of R-2.15.0
-        .filled.contour(as.double(x),
-                        as.double(period2),
-                        z,
-                        as.double(wavelet.levels),
-                        key.cols)
-
+        if (isTRUE(useRaster)) {
+            cl <- quote(.filled.contour(as.double(x),
+                                        as.double(period2),
+                                        z,
+                                        as.double(wavelet.levels),
+                                        key.cols))
+            tryCatch(rasterPlot(cl, res = res, antialias = "none"),
+                     error = function(e) {
+                         warning(e)
+                         message("reverting to useRaster=FALSE")
+                         .filled.contour(as.double(x),
+                                         as.double(period2),
+                                         z,
+                                         as.double(wavelet.levels),
+                                         key.cols)
+                     })
+        } else {
+            .filled.contour(as.double(x),
+                            as.double(period2),
+                            z,
+                            as.double(wavelet.levels),
+                            key.cols)
+        }
         if (add.sig) {
             contour(x, period2, Signif, levels=1, labels=siglvl,
                     drawlabels = FALSE, axes = FALSE,

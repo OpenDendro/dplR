@@ -4,13 +4,15 @@ File: NAMESPACE
 ---------------
 
 - Added latexify() and latexDate() to export list
+- Import readPNG from png.
 
 File: DESCRIPTION
 -----------------
 
-- New Suggested packages.  These are for document building (see
-  math-dplR.pdf below) and openPDF (math-dplR.pdf is not available through
-  vignette())
+- New Suggested packages: Biobase, dichromat, knitr, tikzDevice.
+  These are for document building (see math-dplR.pdf below) and
+  openPDF (math-dplR.pdf is not available through vignette())
+- New Imported package: png.
 
 File: common.interval.R
 -----------------------
@@ -49,6 +51,13 @@ New files in subdirectory inst/doc:
 
 - build-math-dplR.R is a build script
 
+New file rasterPlot.R
+---------------------
+
+- New function rasterPlot(), internal to the package.  Adds a
+  raster image drawn with low level graphics commands to the current
+  high level plot.
+
 Files: rcompact.c, readloop.c
 -----------------------------
 
@@ -61,6 +70,13 @@ File: redfit.c
 - Avoid using the long double type in some cases. Hopefully this
   will speed up otherwise unbearable computation times on some
   systems.
+
+File: wavelet.plot.R
+--------------------
+
+- Added two options to wavelet.plot().
+  'useRaster': draw the filled contours as a raster image? (default 'FALSE')
+  'res': resolution of the filled contours when 'useRaster' is 'TRUE'
 
 * CHANGES IN dplR VERSION 1.6.0
 

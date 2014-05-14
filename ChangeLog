@@ -91,6 +91,12 @@ File: wavelet.plot.R
   instead of seq(from=0, to=1, by=0.1).  Parentheses in the former are
   used for clarity of meaning.
 
+File: xskel.ccf.plot.R
+----------------------
+
+- Code optimizations
+- Small changes to output
+
 * CHANGES IN dplR VERSION 1.6.0
 
 File: TODO

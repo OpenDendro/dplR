@@ -82,6 +82,12 @@ CAMstd <- ca533.crn[, 1]
 out.wave <- morlet(y1 = CAMstd, x1 = Years, p2 = 9, dj = 0.1,
                    siglvl = 0.99)
 wavelet.plot(out.wave)
+\dontrun{
+## Alternative palette with better separation of colors
+if (require(RColorBrewer)) {
+  wavelet.plot(out.wave, key.cols=rev(brewer.pal(10, "Spectral")))
+}
+}
 levs <- quantile(out.wave$Power, probs = c(0, 0.5, 0.75, 0.9, 0.99))
 wavelet.plot(out.wave, wavelet.levels = levs, add.sig = FALSE,
              key.cols = c("white", "green", "blue", "red"))

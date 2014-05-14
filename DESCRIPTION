@@ -22,7 +22,7 @@ Imports: gmp (>= 0.5-2), graphics, grDevices, grid, stats, utils,
         digest (>= 0.2.3), lattice (>= 0.13-6), png (>= 0.1-1),
         stringr (>= 0.4), XML (>= 2.1-0)
 Suggests: Biobase, dichromat (>= 1.2-1), foreach, forecast, iterators,
-        knitr, RUnit (>= 0.4.25), tikzDevice, waveslim
+        knitr, RColorBrewer, RUnit (>= 0.4.25), tikzDevice, waveslim
 Description: This package contains functions for performing tree-ring
         analyses, IO, and graphics.
 LazyData: no

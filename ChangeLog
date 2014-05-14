@@ -9,9 +9,12 @@ File: NAMESPACE
 File: DESCRIPTION
 -----------------
 
-- New Suggested packages: Biobase, dichromat, knitr, tikzDevice.
-  These are for document building (see math-dplR.pdf below) and
-  openPDF (math-dplR.pdf is not available through vignette())
+- New Suggested packages: Biobase, dichromat, knitr, tikzDevice,
+  RColorBrewer. Of these, dichromat, knitr, and tikzDevice are for document
+  building (see math-dplR.pdf below).  Biobase is for making access to
+  math-dplR.pdf easier with openPDF().  RColorBrewer provides an
+  alternative palette to an example in wavelet.plot.Rd.
+
 - New Imported package: png.
 
 File: common.interval.R

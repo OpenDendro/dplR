@@ -1,6 +1,6 @@
 wavelet.plot <-
     function(wave.list,
-             wavelet.levels = quantile(wave.list$Power, probs=seq(from=0, to=1, by=0.1)),
+             wavelet.levels = quantile(wave.list$Power, probs=(0:10)/10),
              add.coi = TRUE, add.sig = TRUE, x.lab = gettext("Time"),
              period.lab = gettext("Period"), crn.lab = gettext("RWI"),
              key.cols = rev(rainbow(length(wavelet.levels)-1)),

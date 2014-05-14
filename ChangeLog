@@ -83,6 +83,10 @@ File: wavelet.plot.R
 - Added two options to wavelet.plot().
   'useRaster': draw the filled contours as a raster image? (default 'FALSE')
   'res': resolution of the filled contours when 'useRaster' is 'TRUE'
+- A subtle change to the default value of wavelet.levels: To get
+  the sequence 0, 0.1, 0.2, ..., 1 it is best to use (0:10)/10
+  instead of seq(from=0, to=1, by=0.1).  Parentheses in the former are
+  used for clarity of meaning.
 
 * CHANGES IN dplR VERSION 1.6.0
 

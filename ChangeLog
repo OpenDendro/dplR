@@ -5,6 +5,7 @@ File: NAMESPACE
 
 - Added latexify() and latexDate() to export list
 - Import readPNG from png.
+- Import more functions from grid.
 
 File: DESCRIPTION
 -----------------

@@ -95,7 +95,7 @@ wavelet.plot <-
                                         key.cols))
             tryCatch(rasterPlot(cl, res = res, antialias = "none"),
                      error = function(e) {
-                         warning(e)
+                         message(as.character(e), appendLF = FALSE)
                          message("reverting to useRaster=FALSE")
                          .filled.contour(as.double(x),
                                          as.double(period2),
@@ -181,7 +181,7 @@ wavelet.plot <-
                                         key.cols))
             tryCatch(rasterPlot(cl, res = res, antialias = "none"),
                      error = function(e) {
-                         warning(e)
+                         message(as.character(e), appendLF = FALSE)
                          message("reverting to useRaster=FALSE")
                          .filled.contour(as.double(x),
                                          as.double(period2),

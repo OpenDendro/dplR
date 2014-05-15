@@ -5,10 +5,9 @@
   ...
 }
 \usage{
-xskel.ccf.plot(rwl,series,series.yrs = as.numeric(names(series)),
-                       win.start, win.width=50, n = NULL, prewhiten = TRUE, 
-                       biweight = TRUE)
-
+xskel.ccf.plot(rwl, series, series.yrs = as.numeric(names(series)),
+               win.start, win.width = 50, n = NULL,
+               prewhiten = TRUE, biweight = TRUE)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows

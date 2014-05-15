@@ -5,10 +5,9 @@
   ...
 }
 \usage{
-xskel.plot(rwl,series,series.yrs = as.numeric(names(series)),
-                       win.start, win.end=win.start+100, n = NULL, 
-                       prewhiten = TRUE, biweight = TRUE)
-
+xskel.plot(rwl, series, series.yrs = as.numeric(names(series)),
+           win.start, win.end = win.start+100, n = NULL, 
+           prewhiten = TRUE, biweight = TRUE)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows

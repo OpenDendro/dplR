@@ -14,7 +14,8 @@ importFrom(grDevices, dev.hold, dev.flush, rainbow)
 importFrom(grid, gpar, grid.lines, grid.newpage, grid.polygon,
            grid.segments, grid.text, pushViewport, seekViewport, unit,
            viewport, vpList, vpTree, plotViewport, grid.grill, upViewport,
-           grid.points, popViewport, grid.rect, textGrob, grid.draw)
+           grid.points, popViewport, grid.rect, textGrob, grid.draw,
+           segmentsGrob, linesGrob, grobTree)
 
 importFrom(lattice, panel.abline, panel.dotplot, panel.segments,
            trellis.par.set, xyplot)

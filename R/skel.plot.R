@@ -14,6 +14,7 @@
         cat(gettextf("input series has length of %d\n", n.val))
         stop("long series (> 840) must be split into multiple plots")
     }
+    stopifnot(filt.weight >= 3)
     if(n.val < filt.weight) {
         cat(gettextf("input series has length of %d", n.val),
             gettextf("'filt.weight' is %f\n", filt.weight), sep=", ")
@@ -42,12 +43,13 @@
     }
 
     ## detrend and pad
-    rw.dt <- hanning(rw.df$rw, filt.weight)
-    skel <- rep(NA, length(rw.df$rw))
+    rwRw <- rw.df[["rw"]]
+    rw.dt <- hanning(rwRw, filt.weight)
+    skel <- rep(NA, length(rwRw))
     ## calc rel growth
-    n.diff <- length(rw.df$rw) - 1
+    n.diff <- length(rwRw) - 1
     idx <- 2:n.diff
-    temp.diff <- diff(rw.df$rw)
+    temp.diff <- diff(rwRw)
     skel[idx] <- rowMeans(cbind(temp.diff[-n.diff],
                                 -temp.diff[-1])) / rw.dt[idx]
     skel[skel > 0] <- NA
@@ -81,14 +83,13 @@
     n <- length(skel)
     n.rows <- ceiling(n / yrs.col)
     m <- seq_len(n.rows)
-    row.index <- rep(m, each = yrs.col)[seq_len(n)]
-    skel.df <- data.frame(yr=rw.df$yr, skel)
+    skel.df <- data.frame(yr=rw.df[["yr"]], skel)
     if(plot){
         ## master page
         grid.newpage()
-        vps <- list()
+        vps <- vector(mode = "list", length = n.rows)
         y <- ph
-        for (i in seq_len(min(n.rows, 7))) {
+        for (i in m) {
             y <- y - (rh + spcr)
             vps[[i]] <-
                 viewport(x=unit(3, "mm"),
@@ -96,124 +97,125 @@
                          width=unit(246, "mm"), height=unit(rh, "mm"),
                          just=c("left", "bottom"), name=LETTERS[i])
         }
-        tree <-
-            vpTree(viewport(width=unit(pw, "mm"), height=unit(ph, "mm"),
-                            name="page"),
-                   do.call(vpList, vps))
 
-        ## set up page with the right number of rows
-        pushViewport(tree)
         ## seq for 0 to plot width by 2mm
         tmp.1 <- seq(from=0, to=rw, by=2)
         tmp.2 <- seq(from=0, to=rh, by=2)
-        tmp.3 <- seq(from=0, to=rw, by=20)
+        ticks <- seq(from=0, to=rw, by=20)
+        vSegments <-
+            segmentsGrob(x0 = tmp.1, y0 = 0, x1 = tmp.1, y1 = rh,
+                         default.units = "mm",
+                         gp = gpar(col="green", lineend = "square",
+                         linejoin = "round"))
+        hSegments <-
+            segmentsGrob(x0 = 0, y0 = tmp.2, x1 = rw, y1 = tmp.2,
+                         default.units = "mm",
+                         gp = gpar(col="green", lineend = "square",
+                         linejoin = "round"))
+        ## decadal lines
+        decades <-
+            segmentsGrob(x0 = ticks, y0 = 0, x1 = ticks, y1 = rh,
+                         default.units = "mm",
+                         gp = gpar(col = "black", lwd = 1.5, lty = "dashed",
+                         lineend = "square", linejoin = "round"))
+        ## lines on top and bottom of plot
+        topLine <-
+            linesGrob(x = c(0, rw), y = c(rh, rh),
+                      default.units = "mm",
+                      gp = gpar(lwd = 2, lineend = "square",
+                      linejoin = "round"))
+        bottomLine <-
+            linesGrob(x = c(0, rw), y = c(0, 0),
+                      default.units = "mm",
+                      gp = gpar(lwd = 2, lineend = "square",
+                      linejoin = "round"))
+        rowTree <- grobTree(vSegments, hSegments, decades, topLine, bottomLine)
+        if(!master){
+            yy1 <- c(0, 6, 6)
+            yy2 <- rh - 1
+            sjust <- c("right", "bottom")
+            yrjust <- c("center", "bottom")
+            yry <- rh + 0.5
+        }
+        else{
+            yy1 <- c(rh, 16, 16)
+            yy2 <- 1
+            sjust <- c("left", "bottom")
+            yrjust <- c("center", "top")
+            yry <- rh - 22.5
+        }
+        ## set up page with the right number of rows
+        dev.hold()
+        on.exit(dev.flush())
+        pushViewport(vpTree(viewport(width=unit(pw, "mm"),
+                                     height=unit(ph, "mm"), name="page"),
+                            do.call(vpList, vps)))
+        row.last <- 0
         for (i in m) {
 
             seekViewport(LETTERS[i])
             ## working code goes here - e.g., skelplot!
-            grid.segments(x0=unit(tmp.1, "mm"), y0=unit(0, "mm"),
-                          x1=unit(tmp.1, "mm"), y1=unit(rh, "mm"),
-                          gp = gpar(col="green", lineend = "square", linejoin = "round"))
-            grid.segments(x0=unit(0, "mm"), y0=unit(tmp.2, "mm"),
-                          x1=unit(rw, "mm"), y1=unit(tmp.2, "mm"),
-                          gp = gpar(col="green", lineend = "square", linejoin = "round"))
+            grid.draw(rowTree)
 
-            ## decadal lines
-            grid.segments(x0=unit(tmp.3, "mm"), y0=unit(0, "mm"),
-                          x1=unit(tmp.3, "mm"), y1=unit(rh, "mm"),
-                          gp = gpar(col = "black", lwd = 1.5, lty = "dashed",
-                          lineend = "square", linejoin = "round"))
-
-            ## lines on top and bottom of plot
-            grid.lines(x=unit(c(0, rw), "mm"),
-                       y=unit(c(rh, rh), "mm"),
-                       gp=gpar(lwd = 2, lineend = "square", linejoin = "round"))
-            grid.lines(x=unit(c(0, rw), "mm"),
-                       y=unit(c(0, 0), "mm"),
-                       gp=gpar(lwd = 2, lineend = "square", linejoin = "round"))
             ## plot x axis
             ## get this row's data
-            skel.sub <- skel.df[row.index == i, ]
-            end.yr <- length(skel.sub$yr)
-            ticks <- seq(from=0, to=rw / 2, by=10)
-            init.lab <- min(skel.sub$yr)
+            row.first <- row.last + 1
+            row.last <- min(row.first + (yrs.col - 1), n)
+            skel.sub <- skel.df[row.first:row.last, ]
+            skelYr <- skel.sub[["yr"]]
+            skel2 <- skel.sub[["skel"]]
+            end.yr <- length(skelYr)
+            init.lab <- min(skelYr)
             x.labs <- seq(from=init.lab, length.out = length(ticks), by=10)
-            for(j in seq_along(ticks))
-                if(!master)
-                    grid.text(label = x.labs[j],
-                              x=unit(ticks[j] * 2, "mm"),
-                              y=unit(rh + 0.5, "mm"),
-                              just = c("center", "bottom"),
-                              gp = gpar(fontsize=10))
-                else
-                    grid.text(label = x.labs[j],
-                              x=unit(ticks[j] * 2, "mm"),
-                              y=unit(rh - 22.5, "mm"),
-                              just = c("center", "top"),
-                              gp = gpar(fontsize=10))
+            grid.text(label = x.labs, x = ticks, y = yry,
+                      default.units = "mm", just = yrjust,
+                      gp = gpar(fontsize=10))
             ## plot data
-            for(j in seq_along(skel.sub$yr)){
-                if(!is.na(skel.sub$skel[j])){
-                    if(!master)
-                        grid.lines(x=unit(c((j - 1) * 2, (j - 1) * 2), "mm"),
-                                   y=unit(c(0, skel.sub$skel[j] * 2), "mm"),
-                                   gp = gpar(col = "black", lwd = 2, lineend = "square",
-                                   linejoin = "round"))
-                    else
-                        grid.lines(x=unit(c((j - 1) * 2, (j - 1) * 2), "mm"),
-                                   y=unit(c(22, 22 - skel.sub$skel[j] * 2), "mm"),
-                                   gp = gpar(col = "black", lwd = 2, lineend = "square",
-                                   linejoin = "round"))
+            notNA <- which(!is.na(skel2))
+            if (length(notNA) > 0) {
+                xx <- (notNA - 1) * 2
+                if (!master) {
+                    y0 <- 0
+                    y1 <- 2 * skel2[notNA]
+                } else {
+                    y0 <- 22
+                    y1 <- 22 - 2 * skel2[notNA]
                 }
-                ## end arrow
-                if(i == n.rows && j == end.yr){
-                    end.mm <- (j - 1) * 2
-                    grid.lines(x=unit(c(end.mm, end.mm), "mm"),
-                               y=unit(c(rh, 0), "mm"),
-                               gp = gpar(lwd = 2, lineend = "square", linejoin = "round"))
-                    if(!master)
-                        grid.polygon(x=unit(c(end.mm, end.mm, end.mm + 2), "mm"),
-                                     y=unit(c(0, 6, 6), "mm"),
-                                     gp=gpar(fill = "black", lineend = "square", linejoin = "round"))
-                    else
-                        grid.polygon(x=unit(c(end.mm, end.mm, end.mm + 2), "mm"),
-                                     y=unit(c(rh, 16, 16), "mm"),
-                                     gp=gpar(fill = "black", lineend = "square", linejoin = "round"))
-                }
+                grid.segments(x0 = xx, x1 = xx, y0 = y0, y1 = y1,
+                              default.units = "mm",
+                              gp = gpar(col = "black", lwd = 2,
+                              lineend = "square", linejoin = "round"))
             }
-            ## start arrow and sample id
-            if(i == 1){
-                start.mm <- pad.length * 2
-                grid.lines(x=unit(c(start.mm, start.mm), "mm"),
-                           y=unit(c(rh, 0), "mm"),
-                           gp = gpar(lwd = 2, lineend = "square", linejoin = "round"))
-                fontsize.sname <- ifelse(nchar(sname) > 6, 9, 10)
-                if(!master){
-                    grid.polygon(x=unit(c(start.mm, start.mm, start.mm - 2), "mm"),
-                                 y=unit(c(0, 6, 6), "mm"),
-                                 gp=gpar(fill = "black", lineend = "square", linejoin = "round"))
-                    grid.text(label = sname,
-                              x=unit(start.mm - 1, "mm"),
-                              y=unit(rh - 1, "mm"),
-                              just = c("right", "bottom"),
-                              rot = 90,
-                              gp = gpar(fontsize=fontsize.sname))
-                }
-                else{
-                    grid.polygon(x=unit(c(start.mm, start.mm, start.mm - 2), "mm"),
-                                 y=unit(c(rh, 16, 16), "mm"),
-                                 gp=gpar(fill = "black", lineend = "square", linejoin = "round"))
-                    grid.text(label = sname,
-                              x=unit(start.mm - 1, "mm"),
-                              y=unit(1, "mm"),
-                              just = c("left", "bottom"),
-                              rot = 90,
-                              gp = gpar(fontsize=fontsize.sname))
-                }
-
-            }
-
         }
+        ## end arrow
+        end.mm <- (end.yr - 1) * 2
+        grid.lines(x=unit(c(end.mm, end.mm), "mm"), y=unit(c(rh, 0), "mm"),
+                   gp = gpar(lwd = 2, lineend = "square", linejoin = "round"))
+        grid.polygon(x = c(end.mm, end.mm, end.mm + 2), y = yy1,
+                     gp = gpar(fill = "black", lineend = "square",
+                     linejoin = "round"), default.units = "mm")
+        ## start arrow and sample id
+        seekViewport(LETTERS[1])
+        start.mm <- pad.length * 2
+        grid.lines(x=unit(c(start.mm, start.mm), "mm"),
+                   y=unit(c(rh, 0), "mm"),
+                   gp = gpar(lwd = 2, lineend = "square", linejoin = "round"))
+        fontsize.sname <- ifelse(nchar(sname) > 6, 9, 10)
+        grid.polygon(x = c(start.mm, start.mm, start.mm - 2),
+                     y = yy1, default.units = "mm",
+                     gp=gpar(fill = "black", lineend = "square",
+                     linejoin = "round"))
+        grid.text(label = sname, x = start.mm - 1, y = yy2,
+                  just = sjust, rot = 90, default.units = "mm",
+                  gp = gpar(fontsize=fontsize.sname))
+        popViewport()
+        for (i in seq(from = 2, by = 1, length.out = n.rows - 1)) {
+            seekViewport(LETTERS[i])
+            popViewport()
+        }
+        popViewport()
     }
-    if(dat.out) return(skel.df)
+    if (dat.out) {
+        skel.df
+    }
 }

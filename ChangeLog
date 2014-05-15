@@ -75,6 +75,11 @@ File: redfit.c
   will speed up otherwise unbearable computation times on some
   systems.
 
+File: skel.plot.R
+-----------------
+
+- Performance optimization
+
 File: timeseries-dplR.Rnw
 -------------------------
 

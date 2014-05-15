@@ -91,6 +91,8 @@ xskel.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
                              name = "overall.txt.vp")
 
   ## actual plotting
+  dev.hold()
+  on.exit(dev.flush())
   pushViewport(bnd.vp) # inside margins
   pushViewport(skel.bnd.vp) # inside skel
   pushViewport(skel.region.vp) # inside margins
@@ -100,20 +102,12 @@ xskel.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
              gp = gpar(col=col1light, lineend = "square",
                        linejoin = "round"))
   ## rw plot
-  master.tmp <- master*-2
-  for(i in 1:length(yrs)){
-    xx <- c(yrs[i]+0.5,yrs[i]-0.5,yrs[i]-0.5,yrs[i]+0.5)
-    yy <- c(0,0,master.tmp[i],master.tmp[i])
-    grid.polygon(xx,yy,default.units="native",
-                 gp=gpar(fill=col1light,col=col1dark))
-  }
-  series.tmp <- series*2
-  for(i in 1:length(yrs)){
-    xx <- c(yrs[i]+0.5,yrs[i]-0.5,yrs[i]-0.5,yrs[i]+0.5)
-    yy <- c(0,0,series.tmp[i],series.tmp[i])
-    grid.polygon(xx,yy,default.units="native",
-                 gp=gpar(fill=col1light,col=col1dark))
-  }
+  grid.rect(x = yrs, y = 0, width = 1, height = 2 * master,
+            hjust = 0.5, vjust = 1, default.units = "native",
+            gp=gpar(fill=col1light,col=col1dark))
+  grid.rect(x = yrs, y = 0, width = 1, height = 2 * series,
+            hjust = 0.5, vjust = 0, default.units = "native",
+            gp=gpar(fill=col1light,col=col1dark))
 
   ## master
   grid.segments(x0=master.yrs.sig,y0=0,

@@ -6,17 +6,24 @@
 ###
 ### Arguments:
 ### x          Low-level plotting commands representing elements to be added
-###            to the current plot. Examples: lines(), points(), text(),
+###            to the current plot.  Examples: lines(), points(), text(),
 ###            mtext(), .filled.contour()
 ### res        Resolution in points per inch.
 ###            Estimated useful range: 100 - 300.
 ### region     Draw in the plot region or the figure region?
 ###            The figure region contains the plot region and margins.
 ###            Plotting in the outer margin is not supported.
-### antialias  antialiasing argument for png(). "none" is preferred for
-###            images. The default value (missing argument) is probably
-###            good for line plots.
-rasterPlot <- function(x, res = 150, region=c("plot", "figure"), antialias) {
+### antialias  Antialiasing option for png().  See argument 'antialias'
+###            in ?png.  "none" is preferred for images in which color
+###            signifies value of data.  The default (missing argument)
+###            is probably good for line plots.
+### interpolate
+###            Argument passed to rasterImage().  A logical flag.
+###            The default is TRUE: use linear interpolation.
+###            Analogously to 'antialias', FALSE is preferred when
+###            color maps to value.
+rasterPlot <- function(x, res = 150, region=c("plot", "figure"), antialias,
+                       interpolate = TRUE) {
     if (identical(dev.capabilities("rasterImage")[["rasterImage"]], "no")) {
         stop("device does not support raster images")
     }
@@ -87,7 +94,8 @@ rasterPlot <- function(x, res = 150, region=c("plot", "figure"), antialias) {
     if (plotRegion) {
         ## Add a raster image to the plot region of the original plot
         rasterImage(pngData, xleft = usrLeft, ybottom = usrBottom,
-                    xright = usrRight, ytop = usrTop)
+                    xright = usrRight, ytop = usrTop,
+                    interpolate = interpolate)
     } else {
         usrWidth <- usrRight - usrLeft
         usrHeight <- usrTop - usrBottom
@@ -108,6 +116,7 @@ rasterPlot <- function(x, res = 150, region=c("plot", "figure"), antialias) {
         on.exit(par(xpd = op[["xpd"]]))
         ## Add a raster image to the figure region of the original plot
         rasterImage(pngData, xleft = figLeft, ybottom = figBottom,
-                    xright = figRight, ytop = figTop)
+                    xright = figRight, ytop = figTop,
+                    interpolate = interpolate)
     }
 }

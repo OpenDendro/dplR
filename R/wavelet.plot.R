@@ -93,7 +93,8 @@ wavelet.plot <-
                                         z,
                                         as.double(wavelet.levels),
                                         key.cols))
-            tryCatch(rasterPlot(cl, res = res, antialias = "none"),
+            tryCatch(rasterPlot(cl, res = res,
+                                antialias = "none", interpolate = FALSE),
                      error = function(e) {
                          message(as.character(e), appendLF = FALSE)
                          message("reverting to useRaster=FALSE")
@@ -179,7 +180,8 @@ wavelet.plot <-
                                         z,
                                         as.double(wavelet.levels),
                                         key.cols))
-            tryCatch(rasterPlot(cl, res = res, antialias = "none"),
+            tryCatch(rasterPlot(cl, res = res,
+                                antialias = "none", interpolate = FALSE),
                      error = function(e) {
                          message(as.character(e), appendLF = FALSE)
                          message("reverting to useRaster=FALSE")

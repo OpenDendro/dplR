@@ -24,6 +24,11 @@ File: common.interval.R
 - Bug fix: make.plot=TRUE threw an error when input data.frame had leading
   or trailing all-NA rows
 
+File: corr.rwl.seg.R, skel.plot.R
+---------------------------------
+
+- Performance optimization, including the use of dev.hold() and dev.flush()
+
 File: latexify.R
 ----------------
 
@@ -74,11 +79,6 @@ File: redfit.c
 - Avoid using the long double type in some cases. Hopefully this
   will speed up otherwise unbearable computation times on some
   systems.
-
-File: skel.plot.R
------------------
-
-- Performance optimization
 
 File: timeseries-dplR.Rnw
 -------------------------

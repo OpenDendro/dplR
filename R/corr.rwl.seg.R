@@ -151,7 +151,8 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
     idx.good <- norm.one$idx.good
 
     ## loop through series
-    for (i in seq_len(nseries)) {
+    seq.series <- seq_len(nseries)
+    for (i in seq.series) {
         if (is.null(master)) {
             idx.noti <- rep(TRUE, nseries)
             idx.noti[i] <- FALSE
@@ -217,18 +218,18 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         on.exit(par(op), add=TRUE)
         col.pal <- c("#E41A1C", "#377EB8", "#4DAF4A")
         par(mar=c(4, 5, 4, 5) + 0.1, mgp=c(1.25, 0.25, 0), tcl=0.25)
+        dev.hold()
+        on.exit(dev.flush(), add=TRUE)
         plot(yrs, segs[, 1], type="n", ylim=c(0.5, nsegs + 0.5),
              axes=FALSE, ylab="", xlab=gettext("Year"),
              sub=gettextf("Segments: length=%d,lag=%d", seg.length, seg.lag,
              domain="R-dplR"),
              ...)
         ## bounding poly for even series
-        xx <- c(min.yr - 100, max.yr + 100)
-        xx <- c(xx, rev(xx))
-        for (i in seq(from=1, to=nseries, by=2)) {
-            yy <- c(i - 0.5, i - 0.5, i + 0.5, i + 0.5)
-            polygon(xx, yy, col="grey90", border=NA)
-        }
+        iEven <- seq(from=1, to=nseries, by=2)
+        rect(xleft = min.yr - 100, ybottom = iEven - 0.5,
+             xright = max.yr + 100, ytop = iEven + 0.5,
+             col="grey90", border=NA)
         abline(v=c(bins[, 1], bins[c(nbins - 1, nbins), 2] + 1),
                col="grey", lty="dotted")
 
@@ -242,7 +243,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             flag.segs <- matrix(NA, ncol=nseries, nrow=nyrs)
             ## loop through these.bins
             tmp <- res.pval[neworder, this.seq, drop=FALSE] > pcrit
-            for (i in seq_len(nseries)) {
+            for (i in seq.series) {
                 for (j in seq_len(nrow(these.bins))) {
                     mask <- yrs %in% seq(from = these.bins[j, 1],
                                          to = these.bins[j, 2])
@@ -265,29 +266,36 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
             ## Ticks at 1) first year of each bin,
             ## and 2) first year larger than any of these bins
             axis(ax[odd.even], at=guides.x.base)
-            for (i in seq_len(nseries)) {
-                y.deviation <- y.deviation + 1
-                ## whole segs
-                xx <- c(segs.mat[i, 1], segs.mat[i, 2] + 1)
-                xx <- c(xx, rev(xx))
-                yy <- c(i, i, y.deviation, y.deviation)
-                polygon(xx, yy, col=col.pal[3], border=NA)
-                ## complete segs
-                xx <- c(com.segs.mat[i, 1], com.segs.mat[i, 2] + 1)
-                xx <- c(xx, rev(xx))
-                polygon(xx, yy, col=col.pal[2], border=NA)
+            ## whole segs
+            if (odd.even == 1) {
+                ytop <- seq.series
+                ybottom <- ytop - 0.25
+            } else {
+                ybottom <- seq.series
+                ytop <- ybottom + 0.25
+            }
+            rect(xleft = segs.mat[, 1], ybottom = ybottom,
+                 xright = segs.mat[, 2] + 1, ytop = ytop,
+                 col=col.pal[3], border=NA)
+            ## complete segs
+            rect(xleft = com.segs.mat[, 1], ybottom = ybottom,
+                 xright = com.segs.mat[, 2] + 1, ytop = ytop,
+                 col=col.pal[2], border=NA)
+            for (i in seq.series) {
+                yb <- ybottom[i]
+                yt <- ytop[i]
                 ## flags
                 flag.segs.mat <- yr.ranges(flag.segs[, i], yrs)
-                for (j in seq_len(nrow(flag.segs.mat))) {
-                    xx <- c(flag.segs.mat[j, 1], flag.segs.mat[j, 2] + 1)
-                    xx <- c(xx, rev(xx))
-                    polygon(xx, yy, col=col.pal[1], border=NA)
+                if (nrow(flag.segs.mat) > 0) {
+                    rect(xleft = flag.segs.mat[, 1], ybottom = yb,
+                         xright = flag.segs.mat[, 2] + 1, ytop = yt,
+                         col=col.pal[1], border=NA)
                 }
                 ## guides
                 guides.x <- guides.x.base[guides.x.base >= segs.mat[i, 1]]
                 guides.x <- guides.x[guides.x <= segs.mat[i, 2]]
                 if (length(guides.x) > 0) {
-                    segments(guides.x, i, guides.x, y.deviation, col="white")
+                    segments(guides.x, yb, guides.x, yt, col="white")
                 }
             }
         }
@@ -302,7 +310,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         axis(4, at=even.seq,
              labels=cnames.segs[even.seq], srt=45,
              tick=FALSE, las=2, cex.axis=label.cex)
-        abline(h=seq_len(nseries), col="white")
+        abline(h=seq.series, col="white")
         box()
     }
 

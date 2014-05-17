@@ -111,5 +111,7 @@ pointer(rwl, rgv.thresh = 10, nseries.thresh = 75, round.decimals = 2)
 
 \examples{## Pointer years calculation on ring-width series. Returns a data.frame.
 data(gp.rwl)
-pointer(rwl=gp.rwl, rgv.thresh=10, nseries.thresh=75, round.decimals=2)
+py <- pointer(rwl=gp.rwl, rgv.thresh=10, nseries.thresh=75,
+              round.decimals=2)
+tail(py)
 }

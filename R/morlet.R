@@ -98,11 +98,12 @@ morlet <- function(y1, x1=seq_along(y1), p2=NULL, dj=0.25, siglvl=0.95){
     dof <- 2
     Signif <- fft_theor * qchisq(siglvl, dof) / dof   # [Eqn(18)]
 
-    Power <- abs(wave[seq_len(n1), , drop=FALSE])
+    wave2 <- wave[seq_len(n1), , drop=FALSE]
+    Power <- abs(wave2)
     Power <- Power * Power  # Compute wavelet power spectrum
 
     ## Done
-    list(y=y1, x=x1, wave = wave[seq_len(n1), , drop=FALSE], coi = coi,
+    list(y=y1, x=x1, wave = wave2, coi = coi,
          period = period, Scale = Scale, Signif = Signif, Power = Power,
          siglvl = siglvl)
 }

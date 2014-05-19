@@ -29,6 +29,12 @@ File: corr.rwl.seg.R, skel.plot.R
 
 - Performance optimization, including the use of dev.hold() and dev.flush()
 
+File: corr.series.seg.R
+-----------------------
+
+- Bug fix: Argument 'method' was not used for moving correlations.
+  Instead, the method used was always "spearman".
+
 File: latexify.R
 ----------------
 

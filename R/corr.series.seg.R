@@ -5,7 +5,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
                             pcrit=0.05, make.plot = TRUE,
                             floor.plus1 = FALSE, ...) {
 
-    method <- match.arg(method)
+    method2 <- match.arg(method)
 
     ## Handle different types of 'series'
     tmp <- pick.rwl.series(rwl, series, series.yrs)
@@ -98,7 +98,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
             bin.cor <- NA
             bin.pval <- NA
         } else {
-            tmp <- cor.test(series2[mask], master[mask], method = method,
+            tmp <- cor.test(series2[mask], master[mask], method = method2,
                             alternative = "greater")
             bin.cor <- tmp$estimate
             bin.pval <- tmp$p.val
@@ -107,7 +107,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
         res.pval[j] <- bin.pval
     }
     ## overall correlation
-    tmp <- cor.test(series2, master, method = method,
+    tmp <- cor.test(series2, master, method = method2,
                     alternative = "greater")
     overall.cor[1] <- tmp$estimate
     overall.cor[2] <- tmp$p.val
@@ -116,7 +116,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     for (i in seq_len(nyrs - seg.length + 1)) {
         mask <- i:(i + seg.length - 1)
         tmp <- cor.test(series2[mask], master[mask],
-                        method = "spearman", alternative = "greater")
+                        method = method2, alternative = "greater")
         res.mcor[i + seg.lag, 1] <- tmp$estimate
         res.mcor[i + seg.lag, 2] <- tmp$p.val
     }

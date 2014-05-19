@@ -68,7 +68,7 @@
 
     ## Variables for plotting
     ## page width
-    pw <- 254
+    pw <- 278
     ## page height
     ph <- 178
     ## row height
@@ -92,8 +92,7 @@
         for (i in m) {
             y <- y - (rh + spcr)
             vps[[i]] <-
-                viewport(x=unit(3, "mm"),
-                         y=unit(y, "mm"),
+                viewport(x=unit(19, "mm"), y=unit(y, "mm"),
                          width=unit(246, "mm"), height=unit(rh, "mm"),
                          just=c("left", "bottom"), name=LETTERS[i])
         }
@@ -147,8 +146,9 @@
         ## set up page with the right number of rows
         dev.hold()
         on.exit(dev.flush())
-        pushViewport(vpTree(viewport(width=unit(pw, "mm"),
-                                     height=unit(ph, "mm"), name="page"),
+        pushViewport(vpTree(viewport(width=unit(pw, "mm"), y=1, just="top",
+                                     height=unit(ph, "mm"), name="page",
+                                     clip="off"),
                             do.call(vpList, vps)))
         row.last <- 0
         for (i in m) {

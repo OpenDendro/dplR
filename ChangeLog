@@ -90,6 +90,13 @@ Files: series.rwl.plot.R
 
 - Fixed clipping of text in the lower right corner of the plot
 
+File: skel.plot.R
+-----------------
+
+- Adjusted alignment, size and clipping properties of viewports.  Now a
+  plot with less than the full number of rows can fit in a smaller
+  device and text on the sides won't be clipped.
+
 File: timeseries-dplR.Rnw
 -------------------------
 

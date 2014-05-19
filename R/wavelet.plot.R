@@ -22,14 +22,14 @@ wavelet.plot <-
 
     stopifnot(is.numeric(x), is.numeric(y), is.numeric(period),
               is.numeric(Signif), is.numeric(coi), is.numeric(Power),
-              is.numeric(siglvl))
+              is.numeric(siglvl), is.logical(useRaster),
+              length(useRaster) == 1)
     n.x <- length(x)
     n.period <- length(period)
     dim.Power <- dim(Power)
     stopifnot(length(dim.Power) == 2, n.x == length(y), dim.Power[1] == n.x,
               dim.Power[2] == n.period, length(Signif) == n.period,
               length(coi) == n.x, length(siglvl) == 1, n.x >= 2, n.period >= 2)
-
     if (any(diff(x) <= 0) || any(diff(period) <= 0)) {
         stop("'wave.list$x' and 'wave.list$period' must be strictly ascending")
     }
@@ -92,9 +92,14 @@ wavelet.plot <-
         plot.new()
 
         plot.window(xlim, ylim, "", xaxs=xaxs, yaxs=yaxs, asp=asp, las=las)
-        # note replacement of .Internal(filledcontour(as.double(x),...)
-        # with .filled.contour() as of R-2.15.0
-        if (isTRUE(useRaster)) {
+        if (is.na(useRaster)) {
+            useRaster2 <- names(dev.cur()) %in% c("pdf", "postscript")
+        } else {
+            useRaster2 <- useRaster
+        }
+        ## note replacement of .Internal(filledcontour(as.double(x),...)
+        ## with .filled.contour() as of R-2.15.0
+        if (useRaster2) {
             cl <- quote(.filled.contour(as.double(x),
                                         as.double(period2),
                                         z,
@@ -179,9 +184,14 @@ wavelet.plot <-
         plot.new()
 
         plot.window(xlim, ylim, "", xaxs=xaxs, yaxs=yaxs, asp=asp, las=las)
-        # note replacement of .Internal(filledcontour(as.double(x),...)
-        # with .filled.contour() as of R-2.15.0
-        if (isTRUE(useRaster)) {
+        if (is.na(useRaster)) {
+            useRaster2 <- names(dev.cur()) %in% c("pdf", "postscript")
+        } else {
+            useRaster2 <- useRaster
+        }
+        ## note replacement of .Internal(filledcontour(as.double(x),...)
+        ## with .filled.contour() as of R-2.15.0
+        if (useRaster2) {
             cl <- quote(.filled.contour(as.double(x),
                                         as.double(period2),
                                         z,

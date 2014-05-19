@@ -45,11 +45,15 @@ wavelet.plot(wave.list,
     not affected.  \code{useRaster=TRUE} can be especially useful when a
     \code{pdf} device is used: the size and complexity of the
     \acronym{PDF} file will probably be greatly reduced.  Setting this
-    to \code{TRUE} only has negative effects when used with a bitmap
-    device such as \code{png}.  The default is \code{FALSE}.  }
+    to \code{TRUE} has negative effects when used with a bitmap
+    device such as \code{png}.  If \code{NA}, plotting of a raster image
+    will be attempted if and only if the name of the graphics device is
+    \code{"pdf"} or \code{"postscript"}.  The default is \code{FALSE}:
+    draw directly to the graphics device without using an intermediate
+    raster image.  }
   \item{res}{A \code{numeric} vector of length 1.  The resolution
-    (pixels per inch) of the filled contours when \code{useRaster} is
-    \code{TRUE}.}
+    (pixels per inch) of the filled contours when a raster image is
+    used.  See \code{useRaster}.}
   \item{reverse.y}{A \code{logical} flag.  If \code{TRUE}, the Y-axis
     will be reversed, i.e. period increasing towards the bottom.  The
     default is \code{FALSE}. }
@@ -84,15 +88,17 @@ Years <- as.numeric(rownames(ca533.crn))
 CAMstd <- ca533.crn[, 1]
 out.wave <- morlet(y1 = CAMstd, x1 = Years, p2 = 9, dj = 0.1,
                    siglvl = 0.99)
-wavelet.plot(out.wave)
+wavelet.plot(out.wave, useRaster = NA)
 \dontrun{
 ## Alternative palette with better separation of colors
 if (require(RColorBrewer)) {
-  wavelet.plot(out.wave, key.cols=rev(brewer.pal(10, "Spectral")))
+  wavelet.plot(out.wave, key.cols=rev(brewer.pal(10, "Spectral")),
+               useRaster = NA)
 }
 }
 levs <- quantile(out.wave$Power, probs = c(0, 0.5, 0.75, 0.9, 0.99))
 wavelet.plot(out.wave, wavelet.levels = levs, add.sig = FALSE,
-             key.cols = c("white", "green", "blue", "red"))
+             key.cols = c("white", "green", "blue", "red"),
+             useRaster = NA)
 }
 \keyword{ hplot }

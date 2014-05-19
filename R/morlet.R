@@ -34,8 +34,12 @@ morlet <- function(y1, x1=seq_along(y1), p2=NULL, dj=0.25, siglvl=0.95){
     ## global=NULL
 
     ## r = 0
-    if(length(x1) != length(y1)) stop("'x1' and 'y1' lengths differ")
     n <- length(y1)
+    stopifnot(is.numeric(dj), is.numeric(siglvl), length(dj) == 1,
+              length(siglvl) == 1, is.numeric(x1), is.numeric(y1),
+              is.null(p2) || (is.numeric(p2) && length(p2) == 1),
+              n > 0)
+    if(length(x1) != length(y1)) stop("'x1' and 'y1' lengths differ")
     n1 <- n
     base2 <- trunc(log2(n) + 0.4999)   # power of 2 nearest to N
     if(is.null(p2)) J <- trunc(log2(n * Dt / s0) / dj) # [Eqn(10)]

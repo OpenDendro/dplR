@@ -60,6 +60,11 @@ New files in subdirectory inst/doc:
 
 - build-math-dplR.R is a build script
 
+File: morlet.R
+--------------
+
+- Added some input checks
+
 New file rasterPlot.R
 ---------------------
 
@@ -89,13 +94,16 @@ File: timeseries-dplR.Rnw
 File: wavelet.plot.R
 --------------------
 
-- Added two options to wavelet.plot().
+- Added three options to wavelet.plot().
   'useRaster': draw the filled contours as a raster image? (default 'FALSE')
   'res': resolution of the filled contours when 'useRaster' is 'TRUE'
+  'reverse.y': if TRUE, Y-axis of the filled contour plot is reversed
 - A subtle change to the default value of wavelet.levels: To get
   the sequence 0, 0.1, 0.2, ..., 1 it is best to use (0:10)/10
   instead of seq(from=0, to=1, by=0.1).  Parentheses in the former are
   used for clarity of meaning.
+- Added some input checks
+- Small optimizations
 
 Files: xskel.ccf.plot.R and xskel.plot.R
 ----------------------------------------

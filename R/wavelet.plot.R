@@ -8,19 +8,27 @@ wavelet.plot <-
              add.spline = FALSE, f = 0.5, nyrs = NULL,
              crn.col = "black", crn.lwd = 1,coi.col='black',
              crn.ylim = range(wave.list$y)*1.1, side.by.side = FALSE,
-             useRaster = FALSE, res = 150)
+             useRaster = FALSE, res = 150, reverse.y = FALSE)
 {
 
     ## Wavelet transform variables:
     y <- wave.list$y
     x <- wave.list$x
-    wave <- wave.list$wave
     period <- wave.list$period
     Signif <- wave.list$Signif
     coi <- wave.list$coi
-    coi[coi == 0] <- 1e-12
     Power <- wave.list$Power
     siglvl <- wave.list$siglvl
+
+    stopifnot(is.numeric(x), is.numeric(y), is.numeric(period),
+              is.numeric(Signif), is.numeric(coi), is.numeric(Power),
+              is.numeric(siglvl))
+    n.x <- length(x)
+    n.period <- length(period)
+    dim.Power <- dim(Power)
+    stopifnot(length(dim.Power) == 2, n.x == length(y), dim.Power[1] == n.x,
+              dim.Power[2] == n.period, length(Signif) == n.period,
+              length(coi) == n.x, length(siglvl) == 1, n.x >= 2, n.period >= 2)
 
     if (any(diff(x) <= 0) || any(diff(period) <= 0)) {
         stop("'wave.list$x' and 'wave.list$period' must be strictly ascending")
@@ -29,20 +37,22 @@ wavelet.plot <-
         stop("'wave.list$period' must be positive")
     }
 
+    coi[coi == 0] <- 1e-12
+
     ## Expand signif --> (length(wave.list$Scale))x(N) array
-    Signif <- t(matrix(Signif, dim(wave)[2], dim(wave)[1]))
+    Signif <- t(matrix(Signif, dim.Power[2], dim.Power[1]))
     ## Where ratio > 1, power is significant
     Signif <- Power / Signif
 
     ## Period is in years, period2 is in powers of 2
     period2 <- log2(period)
     ytick <- unique(trunc(period2)) # Unique integer powers of 2
-    ytickv <- 2^(ytick) # Labels are in years
+    ytickv <- 2^ytick # Labels are in years
 
     ## coi is in years, coi2 in powers of 2
     coi2 <- log2(coi)
     coi2[coi2 < 0] <- 0
-    coi2.yy <- c(coi2, rep(max(period2, na.rm=TRUE), length(coi2)))
+    coi2.yy <- c(coi2, rep(max(period2, na.rm=TRUE), n.x))
     coi2.yy[is.na(coi2.yy)] <- coi[2]
     yr.vec.xx <- c(x, rev(x))
 
@@ -57,13 +67,10 @@ wavelet.plot <-
     las <- 1
     xlim <- range(x, finite=TRUE)
     ylim <- range(period2, finite=TRUE)
+    if (isTRUE(reverse.y)) {
+        ylim <- rev(ylim)
+    }
     z <- Power
-    ## invert to match std figs? Not sure how to do tht coi
-    ## parabola be easier to just fool the filled.countor internal
-    ## to change the plot order?
-    ##z <- z[,ncol(z):1]
-    ##Signif <-Signif[,ncol(Signif):1]
-    ##ytick <- rev(ytick)
 
     if (side.by.side) {
         ## plot set up

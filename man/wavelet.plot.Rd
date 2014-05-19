@@ -16,7 +16,7 @@ wavelet.plot(wave.list,
              add.spline = FALSE, f = 0.5, nyrs = NULL,
              crn.col = "black", crn.lwd = 1,coi.col='black',
              crn.ylim = range(wave.list$y)*1.1, side.by.side = FALSE,
-             useRaster = FALSE, res = 150)
+             useRaster = FALSE, res = 150, reverse.y = FALSE)
 }
 \arguments{
   \item{wave.list}{A \code{list}. Output from \code{\link{morlet}}.}
@@ -50,6 +50,9 @@ wavelet.plot(wave.list,
   \item{res}{A \code{numeric} vector of length 1.  The resolution
     (pixels per inch) of the filled contours when \code{useRaster} is
     \code{TRUE}.}
+  \item{reverse.y}{A \code{logical} flag.  If \code{TRUE}, the Y-axis
+    will be reversed, i.e. period increasing towards the bottom.  The
+    default is \code{FALSE}. }
 }
 \details{
   This produces a plot of a continuous wavelet transform and plots the

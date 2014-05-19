@@ -104,6 +104,9 @@ File: wavelet.plot.R
   used for clarity of meaning.
 - Added some input checks
 - Small optimizations
+- More graphical parameters are restored after the function has run
+- Better reuse of code between side.by.side=TRUE and side.by.side=FALSE
+- Use of dev.hold() and dev.flush()
 
 Files: xskel.ccf.plot.R and xskel.plot.R
 ----------------------------------------

@@ -23,7 +23,9 @@ wavelet.plot <-
     stopifnot(is.numeric(x), is.numeric(y), is.numeric(period),
               is.numeric(Signif), is.numeric(coi), is.numeric(Power),
               is.numeric(siglvl), is.logical(useRaster),
-              length(useRaster) == 1)
+              length(useRaster) == 1,
+              identical(side.by.side, TRUE) || identical(side.by.side, FALSE))
+    stopifnot(is.numeric(wavelet.levels))
     n.x <- length(x)
     n.period <- length(period)
     dim.Power <- dim(Power)
@@ -56,7 +58,7 @@ wavelet.plot <-
     coi2.yy[is.na(coi2.yy)] <- coi[2]
     yr.vec.xx <- c(x, rev(x))
 
-    par.orig <- par(c("mar", "las", "mfrow"))
+    par.orig <- par(c("mar", "las", "mfrow", "mgp", "tcl"))
     on.exit(par(par.orig))
     nlevels <- length(wavelet.levels)
     seq.level <- seq_len(nlevels - 1)
@@ -72,190 +74,127 @@ wavelet.plot <-
     }
     z <- Power
 
+    ## plot set up
     if (side.by.side) {
-        ## plot set up
         layout(matrix(c(3, 2, 1), nrow=1, byrow=TRUE),
                widths=c(1, 1, 0.2))
-        ## plot 1: scale
-        mar <- c(3, 1, 3, 3)
-        par(mar=mar, tcl=0.5, mgp=c(1.5, 0.25, 0), las=las)
-        plot.new()
-        plot.window(ylim=c(1, nlevels), xlim=c(0, 1),
-                    xaxs=xaxs, yaxs=yaxs, asp=asp)
-        rect(0, seq.level, 1, 2:nlevels, col = key.cols)
-        axis(4, at=seq_along(wavelet.levels), labels=key.labs)
-        ## add units
-        title(key.lab, cex.main=1)
-        ## plot 2: contour-image
-        mar <- c(3, 3, 3, 3)
-        par(mar=mar, tcl=0.5, mgp=c(1.5, 0.25, 0))
-        plot.new()
-
-        plot.window(xlim, ylim, "", xaxs=xaxs, yaxs=yaxs, asp=asp, las=las)
-        if (is.na(useRaster)) {
-            useRaster2 <- names(dev.cur()) %in% c("pdf", "postscript")
-        } else {
-            useRaster2 <- useRaster
-        }
-        ## note replacement of .Internal(filledcontour(as.double(x),...)
-        ## with .filled.contour() as of R-2.15.0
-        if (useRaster2) {
-            cl <- quote(.filled.contour(as.double(x),
-                                        as.double(period2),
-                                        z,
-                                        as.double(wavelet.levels),
-                                        key.cols))
-            tryCatch(rasterPlot(cl, res = res,
-                                antialias = "none", interpolate = FALSE),
-                     error = function(e) {
-                         message(as.character(e), appendLF = FALSE)
-                         message("reverting to useRaster=FALSE")
-                         .filled.contour(as.double(x),
-                                         as.double(period2),
-                                         z,
-                                         as.double(wavelet.levels),
-                                         key.cols)
-                     })
-        } else {
-            .filled.contour(as.double(x),
-                            as.double(period2),
-                            z,
-                            as.double(wavelet.levels),
-                            key.cols)
-        }
-        if (add.sig) {
-            contour(x, period2, Signif, levels=1, labels=siglvl,
-                    drawlabels = FALSE, axes = FALSE,
-                    frame.plot = FALSE, add = TRUE,
-                    lwd = 2, col="black")
-        }
-        if (add.coi) {
-            polygon(yr.vec.xx, coi2.yy, density=c(10, 20),
-                    angle=c(-45, 45), col=coi.col)
-        }
-        axis(1)
-        axis(3)
-        axis(2, at = ytick, labels = ytickv)
-        axis(4, at = ytick, labels = ytickv)
-        title(xlab = x.lab, ylab = period.lab)
-        box()
-
-        ## plot 3: chron
-        mar <- c(3, 3, 3, 3)
-        par(mar = mar, las=0)
-        plot(x, y, type = "l", xlim, xaxs = xaxs, yaxs = yaxs,
-             asp = asp, xlab = "", ylab = "", axes = FALSE, col = crn.col,
-             lwd = crn.lwd, ylim = crn.ylim)
-        if (add.spline) {
-            spl <- y
-            tmp <- na.omit(spl)
-            if (is.null(nyrs)) {
-                nyrs2 <- length(tmp) * 0.33
-            } else {
-                nyrs2 <- nyrs
-            }
-            tmp <- ffcsaps(y = tmp, x = seq_along(tmp), nyrs = nyrs2, f = f)
-            spl[!is.na(spl)] <- tmp
-            lines(x, spl, col = "red", lwd = 2)
-        }
-        axis(1)
-        axis(3)
-        axis(2)
-        axis(4)
-        title(xlab = x.lab, ylab = crn.lab)
-        box()
-    }
-    else {
-        ## plot set up
+        scale.xlim <- c(0, 1)
+        scale.ylim <- c(1, nlevels)
+        scale.side <- 4
+        scale.xleft <- 0
+        scale.ybottom <- seq.level
+        scale.xright <- 1
+        scale.ytop <- 2:nlevels
+        mar1 <- c(3, 1, 3, 3)
+        mar2 <- c(3, 3, 3, 3)
+        mar3 <- c(3, 3, 3, 3)
+    } else {
         layout(matrix(c(3, 2, 1), ncol=1, byrow=TRUE),
                heights=c(1, 1, 0.3))
-        ## plot 1: scale
-        mar <- c(3, 3, 0.1, 3)
-        par(mar=mar, tcl=0.5, mgp=c(1.5, 0.25, 0), las=las)
-        plot.new()
-        plot.window(xlim=c(1, nlevels), ylim=c(0, 1),
-                    xaxs=xaxs, yaxs=yaxs, asp=asp)
-        rect(seq.level, 0, 2:nlevels, 1, col = key.cols)
-        axis(1, at=seq_along(wavelet.levels), labels=key.labs)
-        ## add units
+        scale.xlim <- c(1, nlevels)
+        scale.ylim <- c(0, 1)
+        scale.side <- 1
+        scale.xleft <- seq.level
+        scale.ybottom <- 0
+        scale.xright <- 2:nlevels
+        scale.ytop <- 1
+        mar1 <- c(3, 3, 0.1, 3)
+        mar2 <- mar1
+        mar3 <- c(0.1, 3, 3, 3)
+    }
+    ## plot 1: scale
+    par(mar=mar1, tcl=0.5, mgp=c(1.5, 0.25, 0), las=las)
+    dev.hold()
+    on.exit(dev.flush(), add=TRUE)
+    plot.new()
+    plot.window(ylim=scale.ylim, xlim=scale.xlim,
+                xaxs=xaxs, yaxs=yaxs, asp=asp)
+    rect(scale.xleft, scale.ybottom, scale.xright, scale.ytop, col = key.cols)
+    axis(scale.side, at=seq_along(wavelet.levels), labels=key.labs)
+    ## add units
+    if (side.by.side) {
+        title(key.lab, cex.main=1)
+    } else {
         title(sub=key.lab, cex.sub=1, line=1.5)
-        ## plot 2: contour-image
-        par(mar=mar, tcl=0.5, mgp=c(1.5, 0.25, 0))
-        plot.new()
+    }
+    ## plot 2: contour-image
+    par(mar=mar2, tcl=0.5, mgp=c(1.5, 0.25, 0))
+    plot.new()
 
-        plot.window(xlim, ylim, "", xaxs=xaxs, yaxs=yaxs, asp=asp, las=las)
-        if (is.na(useRaster)) {
-            useRaster2 <- names(dev.cur()) %in% c("pdf", "postscript")
-        } else {
-            useRaster2 <- useRaster
-        }
-        ## note replacement of .Internal(filledcontour(as.double(x),...)
-        ## with .filled.contour() as of R-2.15.0
-        if (useRaster2) {
-            cl <- quote(.filled.contour(as.double(x),
-                                        as.double(period2),
-                                        z,
-                                        as.double(wavelet.levels),
-                                        key.cols))
-            tryCatch(rasterPlot(cl, res = res,
-                                antialias = "none", interpolate = FALSE),
-                     error = function(e) {
-                         message(as.character(e), appendLF = FALSE)
-                         message("reverting to useRaster=FALSE")
-                         .filled.contour(as.double(x),
-                                         as.double(period2),
-                                         z,
-                                         as.double(wavelet.levels),
-                                         key.cols)
-                     })
-        } else {
-            .filled.contour(as.double(x),
-                            as.double(period2),
-                            z,
-                            as.double(wavelet.levels),
-                            key.cols)
-        }
-        if (add.sig) {
-            contour(x, period2, Signif, levels=1, labels=siglvl,
-                    drawlabels = FALSE, axes = FALSE,
-                    frame.plot = FALSE, add = TRUE,
-                    lwd = 2, col="black")
-        }
-        if (add.coi) {
-            polygon(yr.vec.xx, coi2.yy, density=c(10, 20),
-                    angle=c(-45, 45), col=coi.col)
-        }
-        axis(1)
-        axis(2, at = ytick, labels = ytickv)
+    plot.window(xlim, ylim, "", xaxs=xaxs, yaxs=yaxs, asp=asp, las=las)
+    if (is.na(useRaster)) {
+        useRaster2 <- names(dev.cur()) %in% c("pdf", "postscript")
+    } else {
+        useRaster2 <- useRaster
+    }
+    ## note replacement of .Internal(filledcontour(as.double(x),...)
+    ## with .filled.contour() as of R-2.15.0
+    cl <- quote(.filled.contour(as.double(x),
+                                as.double(period2),
+                                z,
+                                as.double(wavelet.levels),
+                                key.cols))
+    if (useRaster2) {
+        tryCatch(rasterPlot(cl, res = res,
+                            antialias = "none", interpolate = FALSE),
+                 error = function(e) {
+                     message(as.character(e), appendLF = FALSE)
+                     message("reverting to useRaster=FALSE")
+                     eval(cl)
+                 })
+    } else {
+        eval(cl)
+    }
+    if (isTRUE(add.sig)) {
+        contour(x, period2, Signif, levels=1, labels=siglvl,
+                drawlabels = FALSE, axes = FALSE,
+                frame.plot = FALSE, add = TRUE,
+                lwd = 2, col="black")
+    }
+    if (isTRUE(add.coi)) {
+        polygon(yr.vec.xx, coi2.yy, density=c(10, 20),
+                angle=c(-45, 45), col=coi.col)
+    }
+    axis(1)
+    axis(2, at = ytick, labels = ytickv)
+    if (side.by.side) {
+        axis(3)
+        axis(4, at = ytick, labels = ytickv)
+    } else {
         axis(3, labels = NA)
         axis(4, at = ytick, labels = NA)
-        title(xlab = x.lab, ylab = period.lab)
-        box()
+    }
+    title(xlab = x.lab, ylab = period.lab)
+    box()
 
-        ## plot 3: chron
-        mar <- c(0.1, 3, 3, 3)
-        par(mar = mar, las=0)
-        plot(x, y, type = "l", xlim, xaxs = xaxs, yaxs = yaxs,
-             asp = asp, xlab = "", ylab = "", axes = FALSE, col = crn.col,
-             lwd = crn.lwd, ylim = crn.ylim)
-        if (add.spline) {
-            spl <- y
-            tmp <- na.omit(spl)
-            if (is.null(nyrs)) {
-                nyrs2 <- length(tmp) * 0.33
-            } else {
-                nyrs2 <- nyrs
-            }
-            tmp <- ffcsaps(y = tmp, x = seq_along(tmp), nyrs = nyrs2, f = f)
-            spl[!is.na(spl)] <- tmp
-            lines(x, spl, col = "red", lwd = 2)
+    ## plot 3: chron
+    par(mar = mar3, las=0)
+    plot(x, y, type = "l", xlim, xaxs = xaxs, yaxs = yaxs,
+         asp = asp, xlab = "", ylab = "", axes = FALSE, col = crn.col,
+         lwd = crn.lwd, ylim = crn.ylim)
+    if (add.spline) {
+        spl <- y
+        tmp <- na.omit(spl)
+        if (is.null(nyrs)) {
+            nyrs2 <- length(tmp) * 0.33
+        } else {
+            nyrs2 <- nyrs
         }
+        tmp <- ffcsaps(y = tmp, x = seq_along(tmp), nyrs = nyrs2, f = f)
+        spl[!is.na(spl)] <- tmp
+        lines(x, spl, col = "red", lwd = 2)
+    }
+    axis(3)
+    axis(4)
+    if (side.by.side) {
+        axis(1)
+        axis(2)
+        title(xlab = x.lab, ylab = crn.lab)
+    } else {
         axis(1, labels = NA)
         axis(2, labels = NA)
-        axis(3)
-        axis(4)
         mtext(crn.lab, side=4, line=1.5, cex=0.75)
-        box()
     }
+    box()
     invisible()
 }

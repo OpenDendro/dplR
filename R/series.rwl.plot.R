@@ -124,6 +124,7 @@ series.rwl.plot <-
         polygon(xx, yy, col="grey90")
     }
     ## plot 4
+    par(xpd = TRUE)
     plot(c(-1, 1), c(-2, 1), type="n", ylab="", xlab="", axes=FALSE)
     txt1 <- gettextf("Series:%d-%d", min(na.omit(series.yrs0)),
                      max(na.omit(series.yrs0)), domain="R-dplR")

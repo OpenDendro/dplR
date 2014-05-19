@@ -85,6 +85,11 @@ File: redfit.c
   will speed up otherwise unbearable computation times on some
   systems.
 
+Files: series.rwl.plot.R
+------------------------
+
+- Fixed clipping of text in the lower right corner of the plot
+
 File: timeseries-dplR.Rnw
 -------------------------
 

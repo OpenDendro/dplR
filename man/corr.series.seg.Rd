@@ -51,8 +51,8 @@ corr.series.seg(rwl, series, series.yrs = as.numeric(names(series)),
 }
 \details{
 
-  This function calculates the correlation a tree-ring series and a
-  master chronology built from a rwl object. Correlations are done by
+  This function calculates the correlation between a tree-ring series and a
+  master chronology built from a rwl object.  Correlations are done by
   segment (see below) and with a moving correlation with length equal to
   the \code{\var{seg.length}}.  The function is typically invoked to
   produce a plot.
@@ -67,7 +67,7 @@ corr.series.seg(rwl, series, series.yrs = as.numeric(names(series)),
   (segments). Matrix \code{\var{moving.rho}} contains the moving
   correlation and p-value for a moving average equal to
   \code{\var{seg.length}}.  Vector \code{\var{spearman.rho}} contains
-  the correlations each series by bin and \code{\var{p.val}} contains
+  the correlations by bin and \code{\var{p.val}} contains
   the p-values. Vector \code{\var{overall}} contains the average
   correlation and p-value.
 }

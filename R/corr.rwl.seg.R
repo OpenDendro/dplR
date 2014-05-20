@@ -260,7 +260,6 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                 t(apply(com.segs, 2, yr.range, yr.vec=yrs))
 
             ## polygons for these bins (go down or up from series line)
-            y.deviation <- y.offset[odd.even]
             guides.x.base <-
                 c(these.bins[, 1], these.bins[length(this.seq), 2] + 1)
             ## Ticks at 1) first year of each bin,

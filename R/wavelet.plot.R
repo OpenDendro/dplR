@@ -72,7 +72,6 @@ wavelet.plot <-
     if (isTRUE(reverse.y)) {
         ylim <- rev(ylim)
     }
-    z <- Power
 
     ## plot set up
     if (side.by.side) {
@@ -131,7 +130,7 @@ wavelet.plot <-
     ## with .filled.contour() as of R-2.15.0
     cl <- quote(.filled.contour(as.double(x),
                                 as.double(period2),
-                                z,
+                                Power,
                                 as.double(wavelet.levels),
                                 key.cols))
     if (useRaster2) {

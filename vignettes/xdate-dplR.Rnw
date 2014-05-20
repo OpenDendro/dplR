@@ -132,7 +132,7 @@ in the rwl object (leave-one-out principle). These correlations are calculated
 on overlapping segments (e.g., 50-year segments would be overlapped by 
 25 years). By default, each of the series is filtered to remove low-frequency
 variation prior to the correlation analysis. The help file has abundant 
-details. Here will will look at overlapping 60 year segments. A plot is 
+details. Here we will look at overlapping 60 year segments. A plot is 
 produced by default with \code{corr.rwl.seg} (Figure~\ref{fig:corr.rwl.plot}).
 In the \code{corr.rwl.seg} plots each segment of each series 
 is shown and colored by its correlation with the master. Each series is 

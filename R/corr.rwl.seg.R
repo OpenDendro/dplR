@@ -9,7 +9,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                              rownames(master)
                          }),
                          ...) {
-    method <- match.arg(method)
+    method2 <- match.arg(method)
     ## run error checks
     qa.xdate(rwl, seg.length, n, bin.floor)
 
@@ -177,7 +177,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                 bin.pval <- NA
             } else {
                 tmp <- cor.test(series[mask], master2[mask],
-                                method = method, alternative = "greater")
+                                method = method2, alternative = "greater")
                 bin.cor <- tmp$estimate
                 bin.pval <- tmp$p.val
             }
@@ -186,7 +186,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         }
         ## overall correlation
         tmp <- cor.test(series, master2,
-                        method = method, alternative = "greater")
+                        method = method2, alternative = "greater")
         overall.cor[i, 1] <- tmp$estimate
         overall.cor[i, 2] <- tmp$p.val
     }
@@ -234,7 +234,6 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
                col="grey", lty="dotted")
 
         ## First odd segs, then even segs
-        y.offset <- c(-0.25, 0.25)
         ax <- c(1, 3)
         for (odd.even in c(1, 2)) {
             this.seq <- seq(from=odd.even, to=nbins, by=2)

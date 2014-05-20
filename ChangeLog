@@ -18,6 +18,12 @@ File: DESCRIPTION
 
 - New Imported package: png.
 
+Files: corr.rwl.seg.R, corr.series.seg.R, interseries.cor.R,
+       rwi.stats.running.R, xskel.ccf.plot.R, xskel.plot.R
+------------------------------------------------------------
+
+- Parameters not changed by assignment anymore (small technical detail)
+
 File: common.interval.R
 -----------------------
 

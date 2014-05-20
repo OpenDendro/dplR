@@ -67,7 +67,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
                               round.decimals=3,
                               zero.is.missing=TRUE) {
     period2 <- match.arg(period)
-    method <- match.arg(method)
+    method2 <- match.arg(method)
     if (running.window) {
         if (window.length < 3) {
             stop("minimum 'window.length' is 3")
@@ -255,7 +255,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
             for (j in (i + 1):n.trees) {
                 j.data <- rwi3[year.idx, cores.of.tree[[j]], drop=FALSE]
                 bt.r.mat <- cor.with.limit(min.corr.overlap, i.data, j.data,
-                                           method=method)
+                                           method=method2)
                 bt.r.mat <- bt.r.mat[!is.na(bt.r.mat)]
                 n.bt.temp <- length(bt.r.mat)
                 if (n.bt.temp > 0) {
@@ -278,7 +278,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
             } else {
                 these.data <- rwi3[year.idx, these.cores, drop=FALSE]
                 wt.r.vec <- cor.with.limit.upper(min.corr.overlap, these.data,
-                                                 method=method)
+                                                 method=method2)
                 wt.r.vec <- wt.r.vec[!is.na(wt.r.vec)]
                 n.wt.temp <- length(wt.r.vec)
                 if (n.wt.temp > 0) {

@@ -9,19 +9,19 @@ xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
 
   ## Handle different types of 'series'
   tmp <- pick.rwl.series(rwl, series, series.yrs)
-  rwl <- tmp[[1]]
-  series <- tmp[[2]]
+  rwl2 <- tmp[[1]]
+  series2 <- tmp[[2]]
 
-  master.yrs <- as.numeric(rownames(rwl))
-  series.yrs <- as.numeric(names(series))
+  master.yrs <- as.numeric(rownames(rwl2))
+  series.yrs2 <- as.numeric(names(series2))
   yrs <- seq(from=win.start,to=win.start+win.width)
   ## nyrs <- length(yrs)
   cen.win <- win.width/2
 
   ## check window overlap with master and series yrs
-  if (!all(yrs %in% series.yrs)) {
+  if (!all(yrs %in% series.yrs2)) {
     cat("Window Years: ", min(yrs), "-", max(yrs)," & ",
-        "Series Years: ", min(series.yrs), "-", max(series.yrs),
+        "Series Years: ", min(series.yrs2), "-", max(series.yrs2),
         "\n", sep="")
     stop("Fix window overlap")
   }
@@ -33,8 +33,8 @@ xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
   }
 
   ## normalize.
-  names(series) <- series.yrs
-  tmp <- normalize.xdate(rwl, series, n, prewhiten, biweight)
+  names(series2) <- series.yrs2
+  tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight)
 
   ## master
   master <- tmp$master
@@ -42,17 +42,17 @@ xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
   master <- master[master.yrs%in%yrs]
   master.yrs <- as.numeric(names(master))
   ## series
-  series <- tmp$series
-  series.yrs <- as.numeric(names(series))
-  series <- series[series.yrs%in%yrs]
-  series.yrs <- as.numeric(names(series))
+  series2 <- tmp$series
+  series.yrs2 <- as.numeric(names(series2))
+  series2 <- series2[series.yrs2%in%yrs]
+  series.yrs2 <- as.numeric(names(series2))
 
 
   ## skeleton
   master.skel <- cbind(master.yrs,xskel.calc(master))
   master.skel <- master.skel[master.skel[,1]%in%yrs,]
   master.yrs.sig <- master.skel[!is.na(master.skel[,2]),1]
-  series.skel <- cbind(series.yrs,xskel.calc(series))
+  series.skel <- cbind(series.yrs2,xskel.calc(series2))
   series.skel <- series.skel[series.skel[,1]%in%yrs,]
   series.yrs.sig <- series.skel[!is.na(series.skel[,2]),1]
 
@@ -62,9 +62,9 @@ xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
   first.yrs <- yrs[first.half]
   second.yrs <- yrs[second.half]
   master.early <- master[first.half]
-  series.early <- series[first.half]
+  series.early <- series2[first.half]
   master.late <- master[second.half]
-  series.late <- series[second.half]
+  series.late <- series2[second.half]
 
   ## subset skel data
   early.series.skel <- series.skel[series.skel[,1]%in%first.yrs,]
@@ -88,7 +88,7 @@ xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
   sig <- c(-sig, sig)
 
   ## cor and skel agreement
-  overall.r <- round(cor(series,master),3)
+  overall.r <- round(cor(series2,master),3)
   early.r <- round(cor(series.early,master.early),3)
   late.r <- round(cor(series.late,master.late),3)
 
@@ -171,7 +171,7 @@ xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
   grid.rect(x = yrs, y = 0, width = 1, height = 2 * master,
             hjust = 0.5, vjust = 1, default.units = "native",
             gp=gpar(fill=col1light,col=col1dark))
-  grid.rect(x = yrs, y = 0, width = 1, height = 2 * series,
+  grid.rect(x = yrs, y = 0, width = 1, height = 2 * series2,
             hjust = 0.5, vjust = 0, default.units = "native",
             gp=gpar(fill=col1light,col=col1dark))
 

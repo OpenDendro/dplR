@@ -314,14 +314,16 @@ test.corr.rwl.seg <- function() {
 
 test.corr.series.seg <- function() {
     ## Setup
-    srs1 <- rep(seq(from=0.5, to=1.5, length.out=50), 10)
+    srs1 <- rep.int(seq(from=0.5, to=1.5, length.out=50), 10)
     srs2 <- rev(srs1)
     srs3 <- srs1
     srs3[26:75] <- rev(srs3[26:75])
     srs3[326:425] <- rev(srs3[326:425])
+    srs4 <- rep.int(seq(1, 2, length.out=50) + sin((1:50)*0.4), 10)
     names(srs1) <- seq_along(srs1)
     names(srs2) <- seq_along(srs2)
     names(srs3) <- seq_along(srs3)
+    names(srs4) <- seq_along(srs4)
     dat <- data.frame(a=srs1, b=srs1, c=srs1, d=srs1, e=srs1, f=srs1, g=srs1)
     res1 <- corr.series.seg(rwl=dat, series=srs1, seg.length=50,
                             bin.floor=100, make.plot=FALSE)
@@ -332,6 +334,30 @@ test.corr.series.seg <- function() {
     res4 <- corr.series.seg(rwl=dat, series=srs3, seg.length=100,
                             prewhiten=FALSE, bin.floor=100,
                             make.plot=FALSE, floor.plus1=TRUE)
+    res5 <- corr.series.seg(rwl=dat, series=srs4, seg.length=50,
+                            biweight=FALSE, prewhiten=FALSE,
+                            bin.floor=100, make.plot=FALSE)
+    res6 <- corr.series.seg(rwl=dat, series=srs4, seg.length=50,
+                            biweight=FALSE, prewhiten=FALSE,
+                            bin.floor=100, make.plot=FALSE, method="spearman")
+    res6.2 <- corr.series.seg(rwl=dat, series=srs4, seg.length=50,
+                              biweight=FALSE, prewhiten=FALSE,
+                              bin.floor=50, make.plot=FALSE, method="spearman")
+    res7 <- corr.series.seg(rwl=dat, series=srs4, seg.length=50,
+                            biweight=FALSE, prewhiten=FALSE,
+                            bin.floor=100, make.plot=FALSE, method="pearson")
+    res8 <- corr.series.seg(rwl=dat, series=srs4, seg.length=50,
+                            biweight=FALSE, prewhiten=FALSE,
+                            bin.floor=100, make.plot=FALSE, method="kendall")
+    res9 <- corr.series.seg(rwl=dat, series=srs4, seg.length=48,
+                            biweight=FALSE, prewhiten=FALSE,
+                            bin.floor=100, make.plot=FALSE, method="pearson")
+    res10 <- corr.series.seg(rwl=dat, series=srs4, seg.length=100,
+                             biweight=FALSE, prewhiten=FALSE,
+                             bin.floor=100, make.plot=FALSE, method="pearson")
+    res11 <- corr.series.seg(rwl=dat, series=srs4, seg.length=142,
+                             biweight=FALSE, prewhiten=FALSE,
+                             bin.floor=100, make.plot=FALSE, method="pearson")
 
     expected.cnames1 <- paste(res1$bins[, 1], res1$bins[, 2], sep=".")
     expected.cnames3 <- paste(res3$bins[, 1], res3$bins[, 2], sep=".")
@@ -372,32 +398,33 @@ test.corr.series.seg <- function() {
     ## Test
     checkTrue(all(res1$bins[, 2] - res1$bins[, 1] + 1 == 50),
               msg="Bins have correct length(test 1)")
-    checkEqualsNumeric(100, res1$bins[1, 1],
-                       msg="First bin is in correct position (test 1)")
+    checkTrue(res1$bins[1, 1] == 100,
+              msg="First bin is in correct position (test 1)")
     checkTrue(all(diff(res1$bins[, 1]) == 25),
               msg="Bins have correct overlap (test 1)")
-    checkEqualsNumeric(450, res1$bins[nrow(res1$bins), 1],
-                       msg="Last bin is in correct position (test 1)")
+    checkTrue(res1$bins[nrow(res1$bins), 1] == 450,
+              msg="Last bin is in correct position (test 1)")
 
-    checkEquals(res1$bins, res2$bins, msg="Bins are equal (tests 1 and 2)")
+    checkIdentical(res1$bins, res2$bins,
+                   msg="Bins are identical (tests 1 and 2)")
 
     checkTrue(all(res3$bins[, 2] - res3$bins[, 1] + 1 == 100),
               msg="Bins have correct length(test 3)")
-    checkEqualsNumeric(100, res3$bins[1, 1],
-                       msg="First bin is in correct position (test 3)")
+    checkTrue(res3$bins[1, 1] == 100,
+              msg="First bin is in correct position (test 3)")
     checkTrue(all(diff(res3$bins[, 1]) == 50),
               msg="Bins have correct overlap (test 3)")
-    checkEqualsNumeric(400, res3$bins[nrow(res3$bins), 1],
-                       msg="Last bin is in correct position (test 3)")
+    checkTrue(res3$bins[nrow(res3$bins), 1] == 400,
+              msg="Last bin is in correct position (test 3)")
 
     checkTrue(all(res4$bins[, 2] - res4$bins[, 1] + 1 == 100),
               msg="Bins have correct length(test 4)")
-    checkEqualsNumeric(1, res4$bins[1, 1],
-                       msg="First bin is in correct position (test 4)")
+    checkTrue(res4$bins[1, 1] == 1,
+              msg="First bin is in correct position (test 4)")
     checkTrue(all(diff(res4$bins[, 1]) == 50),
               msg="Bins have correct overlap (test 4)")
-    checkEqualsNumeric(401, res4$bins[nrow(res4$bins), 1],
-                       msg="Last bin is in correct position (test 4)")
+    checkTrue(res4$bins[nrow(res4$bins), 1] == 401,
+              msg="Last bin is in correct position (test 4)")
 
     checkEquals(expected.corr1, res1$spearman.rho,
                 msg="Correlations are as expected (test 1)")
@@ -428,6 +455,56 @@ test.corr.series.seg <- function() {
                 msg="Moving correlations are as expected (test 3)")
     checkEquals(c(-1, 1), range(res4$moving.rho[, "rho"], na.rm=TRUE),
                 msg="Moving correlations are as expected (test 4)")
+
+    checkIdentical(res5, res6, msg="Default method is spearman")
+    checkTrue(!isTRUE(all.equal(res6$overall, res7$overall)),
+              msg="Overall correlation differs between methods (test 1)")
+    checkTrue(!isTRUE(all.equal(res6$overall, res8$overall)),
+              msg="Overall correlation differs between methods (test 2)")
+    checkTrue(!isTRUE(all.equal(res7$overall, res8$overall)),
+              msg="Overall correlation differs between methods (test 3)")
+    checkTrue(!isTRUE(all.equal(res6$moving.rho, res7$moving.rho)),
+              msg="Moving correlations differ between methods (test 1)")
+    checkTrue(!isTRUE(all.equal(res6$moving.rho, res8$moving.rho)),
+              msg="Moving correlations differ between methods (test 2)")
+    checkTrue(!isTRUE(all.equal(res7$moving.rho, res8$moving.rho)),
+              msg="Moving correlations differ between methods (test 3)")
+    checkTrue(!isTRUE(all.equal(res6$spearman.rho, res7$spearman.rho)),
+              msg="Segment correlations differ between methods (test 1)")
+    checkTrue(!isTRUE(all.equal(res6$spearman.rho, res8$spearman.rho)),
+              msg="Segment correlations differ between methods (test 2)")
+    checkTrue(!isTRUE(all.equal(res7$spearman.rho, res8$spearman.rho)),
+              msg="Segment correlations differ between methods (test 3)")
+
+    tmp7 <- na.omit(res7$moving.rho[, "rho"])
+    checkTrue(length(tmp7) == 451,
+              msg = "Number of non-NA correlations (test 1)")
+    uniqueRho7 <- unique(tmp7)
+    checkTrue(length(uniqueRho7) == 1,
+              msg = "Correlation when segment length matches the common cycle of rwl and series")
+    tmp9 <- na.omit(res9$moving.rho[, "rho"])
+    checkTrue(length(tmp9) == 453,
+              msg = "Number of non-NA correlations (test 2)")
+    uniqueRho9 <- unique(tmp9)
+    checkTrue(length(uniqueRho9) == 50,
+              msg = "Correlations for rwl and series with a common cycle, shorter segments")
+    tmp10 <- na.omit(res10$moving.rho[, "rho"])
+    checkTrue(length(tmp10) == 401,
+              msg = "Number of non-NA correlations (test 3)")
+    uniqueRho10 <- unique(tmp10)
+    checkTrue(length(uniqueRho10) == 1,
+              msg = "Correlation when segment length is a multiple of the length of the common cycle of rwl and series")
+    tmp11 <- na.omit(res11$moving.rho[, "rho"])
+    checkTrue(length(tmp11) == 359,
+              msg = "Number of non-NA correlations (test 4)")
+    uniqueRho11 <- unique(tmp11)
+    checkTrue(length(uniqueRho11) == 50,
+              msg = "Correlations for rwl and series with a common cycle, longer segments (not a multiple of cycle length)")
+
+    checkTrue(length(res6.2$spearman.rho) == length(res6$spearman.rho) + 2,
+              msg = "Extra segments with different bin.floor")
+    checkIdentical(res6.2$spearman.rho[-c(1, 2)], res6$spearman.rho,
+                   msg = "Other segments have identical correlation")
 }
 
 test.ffcsaps <- function() {

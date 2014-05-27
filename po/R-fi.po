@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.6.1\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2014-05-06 09:59+0300\n"
-"PO-Revision-Date: 2014-05-05 23:34+0300\n"
+"POT-Creation-Date: 2014-05-27 12:43+0300\n"
+"PO-Revision-Date: 2014-05-27 14:41+0300\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -346,6 +346,12 @@ msgstr "’n’:n täytyy olla suurempi kuin 3"
 
 msgid "'bin.floor' must be a non-negative integer"
 msgstr "’bin.floor’in täytyy olla epänegatiivinen kokonaisluku"
+
+msgid "device does not support raster images"
+msgstr "laite ei tue bittikarttakuvia"
+
+msgid "png device unavailable"
+msgstr "png-laite ei ole saatavana"
 
 msgid "minimum 'po' is 1"
 msgstr "pienin mahdollinen ’po’ on 1"
@@ -911,6 +917,9 @@ msgstr "’wave.list$x’:n ja ’wave.list$period’in täytyy olla aidosti nou
 msgid "'wave.list$period' must be positive"
 msgstr "’wave.list$period’in täytyy olla positiivinen"
 
+msgid "reverting to useRaster=FALSE"
+msgstr "palataan asetukseen useRaster=FALSE"
+
 msgid "'rwl.df' must be a data.frame"
 msgstr "’rwl.df’:n täytyy olla data.frame"
 
@@ -1034,8 +1043,29 @@ msgstr "win.width:in pitäisi olla < 100 ellei kuva ole hyvin leveä!"
 msgid "Fix window overlap"
 msgstr "Korjaa ikkunoiden päällekkäisyys"
 
+msgid "(Negative)"
+msgstr "(Negatiivinen)"
+
+msgid "(Positive)"
+msgstr "(Positiivinen)"
+
+msgid "Period: %d-%d"
+msgstr "Jakso: %d–%d"
+
+msgid "Skeleton Agreement %s%%"
+msgstr "Yhteensopivuus %s%%"
+
 msgid "These plots get crowded with windows longer than 100 years."
 msgstr "Kuvista tulee ahtaita jos ikkunat ovat pidempiä kuin 100 vuotta"
+
+msgid "Window Years: %d-%d"
+msgstr "Ikkunan vuodet: %d–%d"
+
+msgid "Series Years: %d-%d"
+msgstr "Sarjan vuodet: %d–%d"
+
+msgid "Master Years: %d-%d"
+msgstr "Pääsarjan vuodet: %d–%d"
 
 msgid "There is %d series\n"
 msgid_plural "There are %d series\n"
@@ -1072,6 +1102,3 @@ msgid "%.0f NA value removed"
 msgid_plural "%.0f NA values removed"
 msgstr[0] "%.0f NA-arvo poistettu"
 msgstr[1] "%.0f NA-arvoa poistettu"
-
-#~ msgid "Years"
-#~ msgstr "Vuodet"

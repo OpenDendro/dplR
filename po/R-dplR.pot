@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dplR 1.6.1\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2014-05-06 09:59+0300\n"
+"POT-Creation-Date: 2014-05-27 12:43+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -336,6 +336,12 @@ msgid "'n' must be larger than 3"
 msgstr ""
 
 msgid "'bin.floor' must be a non-negative integer"
+msgstr ""
+
+msgid "device does not support raster images"
+msgstr ""
+
+msgid "png device unavailable"
 msgstr ""
 
 msgid "minimum 'po' is 1"
@@ -878,6 +884,9 @@ msgstr ""
 msgid "'wave.list$period' must be positive"
 msgstr ""
 
+msgid "reverting to useRaster=FALSE"
+msgstr ""
+
 msgid "'rwl.df' must be a data.frame"
 msgstr ""
 
@@ -986,7 +995,28 @@ msgstr ""
 msgid "Fix window overlap"
 msgstr ""
 
+msgid "(Negative)"
+msgstr ""
+
+msgid "(Positive)"
+msgstr ""
+
+msgid "Period: %d-%d"
+msgstr ""
+
+msgid "Skeleton Agreement %s%%"
+msgstr ""
+
 msgid "These plots get crowded with windows longer than 100 years."
+msgstr ""
+
+msgid "Window Years: %d-%d"
+msgstr ""
+
+msgid "Series Years: %d-%d"
+msgstr ""
+
+msgid "Master Years: %d-%d"
 msgstr ""
 
 msgid        "There is %d series\n"

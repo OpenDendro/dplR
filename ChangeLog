@@ -77,6 +77,11 @@ File: morlet.R
 
 - Added some input checks
 
+File: powt.R
+------------
+
+- Handle cases where the running mean of a series is 0
+
 New file rasterPlot.R
 ---------------------
 

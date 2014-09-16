@@ -18,6 +18,11 @@ File: DESCRIPTION
 
 - New Imported package: png.
 
+File: chron.R
+-------------
+
+- Added pass-through of arguments from chron() to ar()
+
 Files: corr.rwl.seg.R, corr.series.seg.R, interseries.cor.R,
        rwi.stats.running.R, xskel.ccf.plot.R, xskel.plot.R
 ------------------------------------------------------------

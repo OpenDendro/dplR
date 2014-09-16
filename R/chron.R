@@ -1,5 +1,5 @@
 `chron` <-
-    function(x, prefix="xxx", biweight=TRUE, prewhiten=FALSE)
+    function(x, prefix="xxx", biweight=TRUE, prewhiten=FALSE, ...)
 {
     prefix.str <- as.character(prefix)
     if (length(prefix.str) != 1 || nchar(prefix.str) > 3) {
@@ -12,7 +12,7 @@
         std <- apply(x, 1, tbrm, C=9)
     }
     if (prewhiten) {
-        x.ar <- apply(x, 2, ar.func)
+        x.ar <- apply(x, 2, ar.func, ...)
         if (!biweight) {
             res <- rowMeans(x.ar, na.rm=TRUE)
         } else {

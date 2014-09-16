@@ -82,10 +82,10 @@ dec <- function(from, to) {
 }
 
 ### AR function for chron, normalize1, normalize.xdate, ...
-ar.func <- function(x, model = FALSE) {
+ar.func <- function(x, model = FALSE, ...) {
     y <- x
     idx.goody <- !is.na(y)
-    ar1 <- ar(y[idx.goody])
+    ar1 <- ar(y[idx.goody], ...)
     y[idx.goody] <- ar1$resid+ar1$x.mean
     if (isTRUE(model)) {
         structure(y, model = ar1)

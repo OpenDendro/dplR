@@ -7,7 +7,7 @@
   \code{\link{detrend}}.
 }
 \usage{
-chron(x, prefix = "xxx", biweight = TRUE, prewhiten = FALSE)
+chron(x, prefix = "xxx", biweight = TRUE, prewhiten = FALSE, \dots)
 }
 \arguments{
   \item{x}{a \code{data.frame} of ring widths with
@@ -20,11 +20,14 @@ chron(x, prefix = "xxx", biweight = TRUE, prewhiten = FALSE)
     mean is calculated using \code{\link{tbrm}.}}
   \item{prewhiten}{\code{logical} flag. If \acronym{TRUE} each series is
     whitened using \code{\link{ar}} prior to averaging.}
+  \item{\dots}{Arguments passed to \code{\link{ar}} when
+    \code{prewhiten} is \code{TRUE}. For example, use \code{aic}
+    and \code{order.max} to control the order of the AR model.}
 }
 \details{
   This either averages the rows of the \code{data.frame} using a mean or
   a robust mean (the so-called standard chronology) or can do so from
-  the residuals of an ar process (the residual chronology).
+  the residuals of an AR process (the residual chronology).
 }
 \value{
   A \code{data.frame} with the standard chronology, residual chronology (if

@@ -46,6 +46,11 @@ File: corr.series.seg.R
 - Bug fix: Argument 'method' was not used for moving correlations.
   Instead, the method used was always "spearman".
 
+File: detrend.R
+---------------
+
+- Updated .export of foreach() to match previous changes to the loop body
+
 File: latexify.R
 ----------------
 

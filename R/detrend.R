@@ -34,9 +34,7 @@
         ## a way to get rid of "no visible binding" NOTE in R CMD check
         rwl.i <- NULL
 
-        exportFun <- c("detrend.series", "is.data.frame",
-                       "row.names<-", "<-", "if")
-
+        exportFun <- c("names<-", "detrend.series")
         out <- foreach::"%dopar%"(foreach::foreach(rwl.i=it.rwl,
                                                    .export=exportFun),
                               {

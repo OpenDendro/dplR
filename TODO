@@ -36,8 +36,6 @@ o[mvkorpel] Should we use class('rwl) as a way of error checking?
 o[andybunn]  Write more vignettes:
 -  Advanced chronology building (strip.rwl, etc.)
 
-*  Add option to change segment years in corr.rwl.seg()
 
--  The latest measurements should be included
 
-*  Check if skel.plot() could show the sign of exceptional growth
+

@@ -6,3 +6,5 @@
 ^inst/doc/figure(/.*)?$
 ^inst/doc/.*\.Rout$
 ^.*-tikzDictionary$
+^.*\.Rproj$
+^\.Rproj\.user$

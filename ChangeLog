@@ -368,7 +368,7 @@ readloop.c, read.tucson.R, sens.c, sens1.R, sens2.R, tbrm.c, tbrm.R
 Files: exactsum.c, exactsum.h
 -----------------------------
 
-- Reuse of code between function by using the C preprocessor
+- Reuse of code between functions by using the C preprocessor
 - New (internal to dplR C code) function cumsum (cumulative sum,
   overwrites input array)
 - size_t n

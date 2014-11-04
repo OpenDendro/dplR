@@ -259,14 +259,14 @@ File: timeseries-dplR.Rnw
 
 File: corr.series.seg.R
 --------------------
-- Added method argument to specify method for cor.test(). Defauts to
+- Added method argument to specify method for cor.test(). Defaults to
   "spearman."
 
 File: corr.rwl.seg.R
 --------------------
 - Removed yr.range() function in favor of yr.range() in helpers.R.
   They are identical for all practical purposes.
-- Added method argument to specify method for cor.test(). Defauts to
+- Added method argument to specify method for cor.test(). Defaults to
   "spearman."
 File: interseries.cor.R
 -------------------------
@@ -376,7 +376,7 @@ Files: exactsum.c, exactsum.h
 File: gini.c
 ------------
 
-- Simplified expression for gini coefficent reduces number of
+- Simplified expression for gini coefficient reduces number of
   arithmetic operations performed
 - Fewer calls to other functions (use of the new cumulative sum function)
 
@@ -636,7 +636,7 @@ File: read.tucson.R
 -------------------
 
 - Fixed trimming of all-NA rows
-- Fixed a bug that could crash R if the fided-width columns of the input
+- Fixed a bug that could crash R if the fixed-width columns of the input
   file did not follow the (loose) specifications of the Tucson format
 - AB: Note to dplR developers that this is a result of a poor standard in
   the Tucson format but this fix is needed to work with files that are
@@ -1994,7 +1994,7 @@ File: write.tucson.Rd
 
 2011-05-18 Andy  Bunn <andy.bunn@wwu.edu>
 * CHANGES IN dplR VERSION 1.4.0
-* Incporporation of TRiDAS via Mikko Korpela, May 16, 2011
+* Incorporation of TRiDAS via Mikko Korpela, May 16, 2011
 
 File: NAMESPACE
 ---------------
@@ -2075,7 +2075,7 @@ New documentation file.
 2010-11-15 Andy  Bunn <andy.bunn@wwu.edu>
 * CHANGES IN dplR VERSION 1.3.9
 * Added an option to control the colors in plot.wavelet().
-* Added an option to plot wavelets side by side instead of stacked (plus a few owther beutifications).
+* Added an option to plot wavelets side by side instead of stacked (plus a few other beautifications).
 * Changes mostly in wavelet.plot.R and arg side.by.side and key.col added to the help.
 * Added an axis on side three for the wavelet plot.
 
@@ -2223,7 +2223,7 @@ File: write.tucson.Rd
 * Modified wavelet.plot() to produce a better looking plot and put the wavelet code into a new function called morlet().
 * Deprecated cwt.filled.contour
 * Added normalize1 to NAMESPACE
-* Added arguiment label.cex to pass to axis to increase the size of the labels on the plot in corr.rwl.seg() and modified 
+* Added argument label.cex to pass to axis to increase the size of the labels on the plot in corr.rwl.seg() and modified 
   the help file accordingly. This change was requested by a user and seems like a good idea.
 * Corrected some spelling in help for corr.rwl.seg(), ccf.series.seg(), and corr.series.seg(). I'm sure there is more.
 2010-07-17 Andy  Bunn <andy.bunn@wwu.edu>
@@ -2231,7 +2231,7 @@ File: write.tucson.Rd
 * Modified rcs() to stop() if any of the pith offsets are <1 or not integers. The help file indicated that this should
   be so but it's now explicit in the code.
 * Fixed a bug in corr.rwl.seg() where floating series were not being drawn properly - the plot had them displaying all the way to the 
-  max yr range b/c of an inexing problem. Also made some cosmetic changes to the guides in between segments for the graph. I do NOT
+  max yr range b/c of an indexing problem. Also made some cosmetic changes to the guides in between segments for the graph. I do NOT
   like the way the plot on this function is done with the odd bin and even bin looping. Very clunky and confusing to look at. The
   correlation part is fine and the graph is nice but the logic of the plot is silly.
 * Clarified language the help page for corr.rwl.seg().
@@ -2244,12 +2244,12 @@ File: write.tucson.Rd
   ccf.df$bin factor to be the same order as bins[,1].
 * Clarified language the help page for ccf.series.rwl().
 * Improved series.rwl.plot() to give more diagnostic information in four plots.
-* Improved the help page for series.rwl.plot() to beter explain what it now does.
+* Improved the help page for series.rwl.plot() to better explain what it now does.
 
 2010-07-05 Andy  Bunn <andy.bunn@wwu.edu>
 * CHANGES IN dplR VERSION 1.3.5
 * Modified the help file for write.crn() so that the elev in the hdr will be written in a way that might
-  be more robust in terms of the ITRDB standard. But, it's very clunky and silly to depend on an unrelaible
+  be more robust in terms of the ITRDB standard. But, it's very clunky and silly to depend on an unreliable
   standard. I also added some text to the help file for write.tucson() to indicate that the header should be thought
   of as experimental. Thank goodness Mikko is working on getting tridas implemented.
 * Fixed a bug in rcs() where the rc was calculated wrong if none. The function implicitly assumed 

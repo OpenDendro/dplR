@@ -8,3 +8,4 @@
 ^.*-tikzDictionary$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^.*/auto$

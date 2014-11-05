@@ -124,6 +124,14 @@ File: skel.plot.R
   plot with less than the full number of rows can fit in a smaller
   device and text on the sides won't be clipped.
 
+File: spag.plot.R
+-----------------
+
+- Added two options to spag.plot().
+  'useRaster': draw the tree-ring series as a raster image? (default
+     'FALSE')
+  'res': resolution of the tree-ring series when 'useRaster' is 'TRUE'
+
 File: timeseries-dplR.Rnw
 -------------------------
 

@@ -1,4 +1,5 @@
-spag.plot <- function(rwl, zfac=1, ...){
+spag.plot <- function(rwl, zfac=1, useRaster = FALSE, res = 150, ...){
+    stopifnot(is.logical(useRaster), length(useRaster) == 1)
     nseries <- ncol(rwl)
     if (nseries == 0) {
         stop("empty 'rwl' given, nothing to draw")
@@ -20,8 +21,23 @@ spag.plot <- function(rwl, zfac=1, ...){
          axes=FALSE, ylab="", xlab=gettext("Year", domain="R-dplR"))
     abline(h=1:nseries, col="grey")
     grid(ny = NA)
-    for (i in 1:nseries) {
+    if (is.na(useRaster)) {
+        useRaster2 <- names(dev.cur()) %in% c("pdf", "postscript")
+    } else {
+        useRaster2 <- useRaster
+    }
+    cl <- quote(for (i in 1:nseries) {
         lines(yr, rwl2[, i], ...)
+    })
+    if (useRaster2) {
+        tryCatch(rasterPlot(cl, res = res),
+                 error = function(e) {
+                     message(as.character(e), appendLF = FALSE)
+                     message("reverting to useRaster=FALSE")
+                     eval(cl)
+                 })
+    } else {
+        eval(cl)
     }
     tmp.seq <- seq(from=1, to=nseries, by=2)
     axis(2, at=tmp.seq,

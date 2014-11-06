@@ -9,3 +9,4 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^.*/auto$
+^(|.*[^[:alpha:]])README-developer(|[^[:alpha:]].*)$

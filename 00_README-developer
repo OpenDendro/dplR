@@ -1,0 +1,97 @@
+1. Introduction
+
+The (hidden) directory .R in the dplR source repository contains
+suggested R initialization files to use when building, checking and
+installing (compiling) the dplR package.  The initialization files
+should generally be placed in HOME/.R/ where HOME is the user's home
+directory.  Some customization may be required depending on the
+platform.  Check if the files already exist and combine the suggested
+"dplR settings" with your previous settings if appropriate.
+
+
+2. List of files included, and the settings explained
+
+* Makevars
+
+This file is used when R CMD INSTALL compiles the C source code
+included in dplR.  The compiler flags in the Makevars file should work
+with the GCC compiler.  Other compilers may require different flags.
+
+The following variables are set:
+
+CFLAGS=-Wall -pedantic -Wextra
+
+  The purpose of the flags is to enable more thorough warnings than
+  those used by default [1, Customizing package compilation].  The
+  warnings are useful in the development phase when making changes to
+  the C code.  Because all issues should be solved before releasing
+  the package on CRAN, there is no need to distribute a Makevars file
+  with dplR (as long as Makevars serves no other purpose than to add
+  more compile time checks).  Spurious warnings may occur when using
+  an old compiler.  A list of known cases:
+    - warning about imaginary constants being a GNU extension by
+      Apple's gcc 4.2, OS X 10.7
+
+Note that a matching platform-specific Makevars file
+(Makevars-R_PLATFORM, Makevars.win or Makevars.win64), if available,
+takes precedence over a generic Makevars file.  If you already have a
+platform-specific Makevars file, consider adding these definitions
+there.
+
+* build.Renviron
+
+This is used with R CMD build [2, Checking and building packages].
+The following environment variables are set:
+
+LC_ALL=en_US.UTF-8
+
+  The locale is set to use the UTF-8 character set and US English.
+  UTF-8 is used because dplR specifies UTF-8 as its Encoding in the
+  DESCRIPTION file.  The language setting may not matter, but one must
+  be chosen, and the en_US.UTF-8 locale is probably available on most
+  systems.
+
+_R_BUILD_COMPACT_VIGNETTES_=both
+
+  This enables the compression of vignettes and other PDFs, making the
+  dplR source package (.tar.gz) smaller.  The value "both" means that
+  two compression steps (lossy and lossless) are performed.  Two
+  programs must be available: Ghostscript [3] and QPDF [4].  Among
+  other things, the Ghostscript step applies lossy compression to
+  bitmap images using "ebook" quality (150 dpi) [5, 6].  This may
+  considerably reduce the size of the PDF.  QPDF performs a lossless
+  compression.  At the time of writing (dplR revision 908 on R-Forge,
+  Ghostscript 9.15, QPDF 5.12), the reduction in package size is 330
+  KiB (18 %).  [2, Building package tarballs; 7]
+
+* check.Renviron
+
+Settings for R CMD check [2, Checking and building packages]: locale
+as in build.Renviron.
+
+
+References
+
+[1] R Installation and Administration (R-devel).
+    http://cran.r-project.org/doc/manuals/r-devel/R-admin.html
+    (Accessed 2014-11-06)
+
+[2] Writing R Extensions (R-devel).
+    http://cran.r-project.org/doc/manuals/r-devel/R-exts.html
+    (Accessed 2014-11-06)
+
+[3] Ghostscript. http://ghostscript.com/ (Accessed 2014-11-06)
+
+[4] QPDF: A Content-Preserving PDF Transformation System.
+    http://qpdf.sourceforge.net/ (Accessed 2014-11-06)
+
+[5] File src/library/tools/R/build.R in the R source tree
+
+[6] compactPDF: Compact PDF Files.  Rd help page accessible by running
+    "?tools::compactPDF" in the R command prompt.
+
+[7] Help text of "R CMD build" command line tool.  Accessible by
+    running "R CMD build --help" in a command line interpreter.
+
+The version of R in 5, 6 and 7 was "R Under development (unstable)
+(2014-11-03 r66928)".

@@ -48,6 +48,8 @@
 %   required. A TeX Live installation, for example, should have all of
 %   the required packages.
 
+\documentclass[a4paper]{article}
+
 <<"try-matlab", echo=FALSE, results="hide">>=
 TRY_MATLAB <- TRUE
 @ 
@@ -61,8 +63,6 @@ library(dichromat)
 library(graphics)
 library(stats)
 @ 
-
-\documentclass[a4paper]{article}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenx}
@@ -695,7 +695,13 @@ functions, I modified \texttt{ffcsaps} slightly so that it can take
 \texttt{p} as an argument and omit \texttt{nyrs} and \texttt{f}.  I
 created a segment of a noisy sine wave and smoothed it with both
 functions using all values of \texttt{p} in the set \(\{0, 0.01, 0.02,
-\dots, 1\}\), covering the whole range of useful values~\cite{csaps}.
+\dots, 1\}\), covering the whole range of useful
+values~\cite{csaps}\footnote{The Mathworks web site openly provides access
+  to the documentation of the latest Matlab version.  Older documents
+  are available after a login to the website or by running \texttt{doc
+    csaps} in the command prompt of a particular Matlab version.  The
+  author has checked that the documentation of \texttt{csaps} agrees
+  between versions 2012b, 2013a, 2013b, 2014a and 2014b.}.
 Using the R function \texttt{all.equal} to compare each pair of
 smoothed series, I found that the results of \texttt{csaps} and
 \texttt{ffcsaps} always matched.  \Sexpr{matlabNoteText}

@@ -2,10 +2,8 @@
 ## ----"try-matlab", echo=FALSE, results="hide"----------------------------
 TRY_MATLAB <- TRUE
 
-
 ## ----"flip-to-retry", echo=FALSE, results="hide", cache=TRUE-------------
 "tails"
-
 
 ## ----"packages", echo=FALSE, results="hide"------------------------------
 library(dplR) # latexify(), latexDate()
@@ -305,7 +303,6 @@ FFCSAPS_CAPTION <-
     "\\texttt{ffcsaps}.  The orange crosses show the results",
     "when~\\eqref{eq:pinv.book} is used instead.")
 
-
 ## ----"response", opts.label="myfigures", fig.width=PAGE_WIDTH, fig.height=PAGE_HEIGHT-0.95, fig.cap=FFCSAPS_CAPTION, dependson=c("response-init", "response-comp"), cache.vars=character(0)----
 op <- par(mfcol = c(3, 1), mgp = c(2, 0.75, 0), mar = par("mar") - 1)
 
@@ -365,7 +362,6 @@ for (i in seq_along(P)) {
     smoothed.R[, i] <- ffcsaps2(y, p = P[i])
 }
 
-
 ## ----"smoothed-matlab", dependson=c("smoothed-R", "flip-to-retry"), cache.vars=c("matlabValue", "matlabVersion", "smoothed.matlab")----
 if (isTRUE(TRY_MATLAB)) {
     fnames <- tempfile(pattern=c("a", "b", "c"), fileext=".txt")
@@ -412,7 +408,6 @@ if (isTRUE(TRY_MATLAB)) {
     matlabVersion <- "8.3.0.532 (R2014a)" # tested ok on 2014-05-12
 }
 
-
 ## ----"R-matlab-compare", cache=FALSE, error=FALSE------------------------
 if (isTRUE(TRY_MATLAB) && matlabValue == 0) {
     stopifnot(identical(as.numeric(dim(smoothed.R)), c(100, 101)),
@@ -435,7 +430,6 @@ if (isTRUE(TRY_MATLAB) && matlabValue == 0) {
 SMOOTHED_CAPTION <-
     paste("Spline with different values of smoothing parameter",
           "\\texttt{p} fitted to a noisy sine wave")
-
 
 ## ----"smoothed", opts.label="myfigures", fig.width=PAGE_WIDTH, fig.height=PAGE_WIDTH, fig.cap=SMOOTHED_CAPTION, dependson="smoothed-R", cache.vars=character(0)----
 ## Plot the input series and a few output series

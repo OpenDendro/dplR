@@ -1,29 +1,5 @@
-### Add raster elements to the active high-level plot.  The given
-### plotting commands are drawn using a temporary png() device.  The
-### raster image is read into memory and added to the original plot.
-###
-### Written by Mikko Korpela
-###
-### Arguments:
-### x          Low-level plotting commands representing elements to be added
-###            to the current plot.  Examples: lines(), points(), text(),
-###            mtext(), .filled.contour()
-### res        Resolution in points per inch.
-###            Estimated useful range: 100 - 300.
-### region     Draw in the plot region or the figure region?
-###            The figure region contains the plot region and margins.
-###            Plotting in the outer margin is not supported.
-### antialias  Antialiasing option for png().  See argument 'antialias'
-###            in ?png.  "none" is preferred for images in which color
-###            signifies value of data.  The default (missing argument)
-###            is probably good for line plots.
-### interpolate
-###            Argument passed to rasterImage().  A logical flag.
-###            The default is TRUE: use linear interpolation.
-###            Analogously to 'antialias', FALSE is preferred when
-###            color maps to value.
-rasterPlot <- function(x, res = 150, region=c("plot", "figure"), antialias,
-                       interpolate = TRUE) {
+rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
+                       bg = "transparent", interpolate = TRUE, ...) {
     if (identical(dev.capabilities("rasterImage")[["rasterImage"]], "no")) {
         stop("device does not support raster images")
     }
@@ -50,10 +26,10 @@ rasterPlot <- function(x, res = 150, region=c("plot", "figure"), antialias,
     fname <- tempfile(fileext = ".png")
     if (missing(antialias)) {
         png(fname, width = pngWidthHeight[1], height = pngWidthHeight[2],
-            units = "in", res = res, bg = "transparent")
+            units = "in", res = res, bg = bg, ...)
     } else {
         png(fname, width = pngWidthHeight[1], height = pngWidthHeight[2],
-            units = "in", res = res, bg = "transparent", antialias = antialias)
+            units = "in", res = res, bg = bg, antialias = antialias, ...)
     }
     ## Record things to do on exit (will be removed from list one-by-one)
     on.exit(dev.off())
@@ -70,10 +46,10 @@ rasterPlot <- function(x, res = 150, region=c("plot", "figure"), antialias,
     ## Copy graphical parameters from original device to png:
     ## (margins), coordinates of plot region, etc.
     par(op)
-    ## Evaluate the plotting commands 'x' in the environment of the
+    ## Evaluate the plotting commands 'expr' in the environment of the
     ## caller of rasterPlot()
     pf <- parent.frame()
-    eval(x, pf)
+    eval(expr, pf)
     on.exit(dev.set(curDev))
     on.exit(unlink(fname), add=TRUE)
     ## Close the png device
@@ -119,4 +95,5 @@ rasterPlot <- function(x, res = 150, region=c("plot", "figure"), antialias,
                     xright = figRight, ytop = figTop,
                     interpolate = interpolate)
     }
+    invisible(NULL)
 }

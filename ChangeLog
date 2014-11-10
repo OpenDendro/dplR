@@ -3,7 +3,7 @@
 File: NAMESPACE
 ---------------
 
-- Added latexify() and latexDate() to export list
+- Added rasterPlot, latexify() and latexDate() to export list
 - Import readPNG from png.
 - Import more functions from grid.
 
@@ -95,9 +95,8 @@ File: powt.R
 New file rasterPlot.R
 ---------------------
 
-- New function rasterPlot(), internal to the package.  Adds a
-  raster image drawn with low level graphics commands to the current
-  high level plot.
+- New function rasterPlot().  Adds a raster image drawn with low
+  level graphics commands to the current high level plot.
 
 Files: rcompact.c, readloop.c
 -----------------------------

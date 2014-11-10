@@ -4,7 +4,7 @@
 ^(.*/)?\..+$
 ^inst/doc/cache(/.*)?$
 ^inst/doc/figure(/.*)?$
-^inst/doc/.*\.Rout$
+^inst/doc/.*\.(Rnw|Rout|aux|bbl|blg|fdb_latexmk|fls|glo|gls|glg|idx|ind|ilg|lof|log|lot|out|synctex.gz|tex|toc)$
 ^.*-tikzDictionary$
 ^.*\.Rproj$
 ^\.Rproj\.user$

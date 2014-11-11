@@ -92,3 +92,4 @@ foo <- runif(5, min = 1, max = 5)
 rasterPlot(quote(points(foo)))
 }
 \keyword{ aplot }
+\keyword{ utilities }

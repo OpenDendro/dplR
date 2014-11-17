@@ -6,6 +6,7 @@ File: NAMESPACE
 - Added rasterPlot, latexify() and latexDate() to export list
 - Import readPNG from png.
 - Import more functions from grid.
+- Import stri_trans_nfc from stringi.
 
 File: DESCRIPTION
 -----------------
@@ -16,7 +17,7 @@ File: DESCRIPTION
   math-dplR.pdf easier with openPDF().  RColorBrewer provides an
   alternative palette to an example in wavelet.plot.Rd.
 
-- New Imported package: png.
+- New Imported packages: png and stringi.
 
 File: chron.R
 -------------

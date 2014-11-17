@@ -728,33 +728,3 @@ test.tbrm <- function() {
     checkTrue(is.nan(tbrm(seq.even, C=0)),
               msg="Robust mean of an even length sequence of consecutive integers is NaN when using a small C")
 }
-
-test.uuid.gen <- function() {
-    ## Setup
-    SAMP.SIZE <- 100
-    ugen <- uuid.gen()
-    uuids <- character(SAMP.SIZE)
-    for(i in seq_len(SAMP.SIZE))
-        uuids[i] <- ugen()
-    uuids.split <- strsplit(uuids, split="-", fixed=TRUE)
-    unique.nchar <- unique(t(sapply(uuids.split, nchar)))
-    unique.chars <-
-        unique(strsplit(paste(sapply(uuids.split, paste, collapse=""),
-                              collapse=""), split=character(0))[[1]])
-    all.4 <- unique(substr(uuids, 15, 15))
-    one.of.four <- unique(substr(uuids, 20, 20))
-    ## Test
-    checkEquals(SAMP.SIZE, length(unique(uuids)), msg="Unique IDs are unique")
-    checkTrue(all(nchar(uuids) == 36), msg="IDs have correct length")
-    checkTrue(all(sapply(uuids.split, length) == 5),
-              msg="IDs have 5 parts separated by dashes")
-    checkTrue(nrow(unique.nchar) == 1 &&
-              all(as.vector(unique.nchar) == c(8, 4, 4, 4, 12)),
-              msg="The parts have lengths 8, 4, 4, 4, and 12")
-    checkTrue(all(unique.chars %in% c(as.character(0:9), letters[seq_len(6)])),
-              msg="In addition to dashes, IDs only contain hexadecimal digits")
-    checkEquals("4", all.4,
-                msg="IDs have a constant character \"4\" in one position")
-    checkTrue(all(one.of.four %in% c("8", "9", "a", "b")),
-              msg="IDs have a restricted character (4/16 choices) in one position")
-}

@@ -37,12 +37,12 @@ latexify <- function(x, doublebackslash=TRUE) {
         cat(y[encBytes], sep = "\n")
         y[encBytes] <- foo
     }
+    ## Remove control characters (not spaces!)
+    y <- gsub("(?![[:space:]])[[:cntrl:]]", "", y, perl=TRUE)
     ## Convert any sequence of whitespace to a single space.  This
     ## substitution must be done before control characters because
     ## newline belongs to both groups.
     y <- gsub("[[:space:]]+", " ", y)
-    ## Remove control characters
-    y <- gsub("[[:cntrl:]]", "", y)
     ## Escape LaTeX special characters.
     ## Source: Scott Pakin (2009) The Comprehensive LaTeX Symbol List.
     ## Accessible through "texdoc symbols".
@@ -72,16 +72,6 @@ latexify <- function(x, doublebackslash=TRUE) {
     if (isTRUE(doublebackslash)) {
         y <- gsub("\\", "\\\\", y, fixed=TRUE)
     }
-    ## gsub() may have changed encodings. Therefore we check them
-    ## again.
-    encs <- Encoding(y)
-    encLatin <- which(encs == "latin1")
-    if (length(encLatin) > 0) {
-        y[encLatin] <- iconv(y[encLatin], from = "latin1", to = "UTF-8")
-    }
-    encUnknown <- which(encs == "unknown")
-    if (length(encUnknown) > 0) {
-        y[encUnknown] <- iconv(y[encUnknown], to = "UTF-8")
-    }
-    y
+    ## Convert result to UTF-8 NFC encoding
+    stri_trans_nfc(y)
 }

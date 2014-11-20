@@ -21,7 +21,9 @@ latexDate <- function(x = Sys.Date(), ...) {
 ##
 ## It seems that Sweave needs doublebackslash = TRUE
 ## but knitr needs doublebackslash = FALSE.
-latexify <- function(x, doublebackslash=TRUE) {
+latexify <- function(x, doublebackslash = TRUE,
+                     quotes = c("straight", "curved"),
+                     packages = c("fontenc", "textcomp")) {
     y <- as.character(x)
     ## Kludge for converting from "byte" to the current encoding
     ## in a way which preserves the hex notation.
@@ -37,6 +39,9 @@ latexify <- function(x, doublebackslash=TRUE) {
         cat(y[encBytes], sep = "\n")
         y[encBytes] <- foo
     }
+    fontenc <- "fontenc" %in% packages
+    textcomp <- "textcomp" %in% packages
+    straightQuotes <- match.arg(quotes) == "straight"
     ## Remove control characters (not spaces!)
     y <- gsub("(?![[:space:]])[[:cntrl:]]", "", y, perl=TRUE)
     ## Convert any sequence of whitespace to a single space.  This
@@ -56,17 +61,43 @@ latexify <- function(x, doublebackslash=TRUE) {
     substitutions <-
         list(c("\\{", "\\\\{"),
              c("\\}", "\\\\}"),
-             c("\\\\(?!(\\{|\\}))", "\\\\textbackslash{}"),
+             c("\\\\(?!\\{|\\})", "\\\\textbackslash{}"),
              c("\\#", "\\\\#"),
              c("\\$", "\\\\$"),
              c("%", "\\\\%"),
-             c("\\^", "\\\\^{}"),
+             c("\\^", "\\\\textasciicircum{}"),
              c("&", "\\\\&"),
              c("_", "\\\\_"),
-             c("~", "\\\\~{}"),
-             c('"', "\\\\textquotedbl{}"),
+             c("~", "\\\\textasciitilde{}"),
+             if (textcomp && straightQuotes) {
+                 c("'", "\\\\textquotesingle{}")
+             },
+             c('"', if (fontenc && straightQuotes) {
+                 "\\\\textquotedbl{}"
+             } else {
+                 "\\\\textquotedblright{}"
+             }),
              c("/", "\\\\slash{}"))
-    for (subst in substitutions) {
+    if (isTRUE(l10n_info()[["MBCS"]])) {
+        ## The output of sQuote() and dQuote() may contain
+        ## non-ASCII quoting characters.  If the input is ASCII,
+        ## it may be a surprise to the user that an UTF-8 input
+        ## encoding is then needed in LaTeX.  Converting the
+        ## quotes to commands solves this problem.
+        substitutions <-
+            c(substitutions,
+              list(c("\u2018", "\\\\textquoteleft{}"),
+                   c("\u2019", "\\\\textquoteright{}"),
+                   c("\u201c", "\\\\textquotedblleft{}"),
+                   c("\u201d", "\\\\textquotedblright{}")))
+    }
+    ## Remove empty group after command when followed by a backslash
+    Letters <- paste(c(LETTERS, letters), collapse="")
+    substitutions <- c(substitutions,
+                       list(c(sprintf("(\\\\[%s]+)\\{\\}(?=\\\\)",
+                                      Letters), "\\1")))
+
+    for (subst in substitutions[!vapply(substitutions, is.null, logical(1))]) {
         y <- gsub(subst[1], subst[2], y, perl = TRUE)
     }
     if (isTRUE(doublebackslash)) {

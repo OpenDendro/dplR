@@ -65,6 +65,7 @@ library(stats)
 @ 
 
 \usepackage[T1]{fontenc}
+\usepackage{textcomp}
 \usepackage[utf8]{inputenx}
 \usepackage[english]{babel}
 \usepackage{amsmath}

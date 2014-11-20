@@ -10,13 +10,30 @@
   used together with \samp{\Sexpr} in vignettes.
 }
 \usage{
-latexify(x, doublebackslash = TRUE)
+latexify(x, doublebackslash = TRUE,
+         quotes = c("straight", "curved"),
+         packages = c("fontenc", "textcomp"))
 }
 \arguments{
   \item{x}{ a \code{character} vector }
   \item{doublebackslash}{ a \code{logical} flag.  If \code{TRUE},
     backslashes in the output are doubled.  It seems that Sweave needs
     \code{TRUE} and knitr \code{FALSE}. }
+  \item{quotes}{ a \code{character} string specifying how single and
+    double quotes (ASCII codes 39 and 34) in the input are
+    treated.  The default is to use straight quotes.  The other option
+    is to use curved right side (closing) quotes.  Straight double
+    quotes are not available in the default OT1 font encoding of LaTeX.
+    Straight single quotes require the \dQuote{textcomp} package.  See
+    \code{\var{packages}}. }
+  \item{packages}{ a \code{character} vector specifying the LaTeX
+    packages allowed.  The use of some symbols in LaTeX requires
+    commands or characters made available by an add-on package.  If a
+    package required for a given character is not marked as available, a
+    fallback solution is silently used.  For example, curved quotes may
+    be used instead of straight quotes.  Including \code{"fontenc"} in
+    the vector means that some other encoding than OT1 is going to be
+    used.  }
 }
 \details{
 
@@ -38,11 +55,18 @@ latexify(x, doublebackslash = TRUE)
   This set includes tabs, newlines and control characters.  The
   substitutions are then applied to the intermediate result.
 
-  The result is converted to UTF-8 encoding, Normalization Form C
-  (NFC).
+  The quoting functions \code{\link{sQuote}} and \code{\link{dQuote}} may
+  use non-ASCII quote characters, depending on the locale.  Also these
+  quotes are converted to LaTeX commands.  This means that the quoting
+  functions are safe to use with any LaTeX input encoding.
+
+  The result is converted to UTF-8 encoding, Normalization Form C (NFC).
+  Note that this function will not add any non-ASCII characters that
+  were not already present in the input.
 
   Assuming that \samp{pdflatex} is used for compilation, suggested
-  package loading commands in the document preamble are: \preformatted{\usepackage[T1]{fontenc}    \% required for "
+  package loading commands in the document preamble are: \preformatted{\usepackage[T1]{fontenc}    \% no '"' in OT1 font encoding
+\usepackage{textcomp}       \% some symbols e.g. straight single quote
 \usepackage[utf8]{inputenx} \% UTF-8 input encoding
 \input{ix-utf8enc.dfu}      \% more supported characters} 
   

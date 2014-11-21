@@ -49,6 +49,9 @@ latexify <- function(x, doublebackslash = TRUE,
     ## newline belongs to both groups.
     y <- gsub("[[:space:]]+", " ", y)
     ## Escape LaTeX special characters.
+    ## Some substitutions are mandatory, others affect matters such as
+    ## the rendering of the character in question (\textquote...) or
+    ## line breaks (\slash).
     ## Source: Scott Pakin (2009) The Comprehensive LaTeX Symbol List.
     ## Accessible through "texdoc symbols".
     ## Particularly section 8.6 "ASCII and Latin 1 quick reference".
@@ -59,16 +62,11 @@ latexify <- function(x, doublebackslash = TRUE,
     ## but not if followed by { or }.
     ## After that, the order does not matter.
     substitutions <-
-        list(c("\\{", "\\\\{"),
-             c("\\}", "\\\\}"),
+        list(c("([{}])", "\\\\\\1"),
              c("\\\\(?!\\{|\\})", "\\\\textbackslash{}"),
-             c("\\#", "\\\\#"),
-             c("\\$", "\\\\$"),
-             c("%", "\\\\%"),
              c("\\^", "\\\\textasciicircum{}"),
-             c("&", "\\\\&"),
-             c("_", "\\\\_"),
              c("~", "\\\\textasciitilde{}"),
+             c("([#$%&_])", "\\\\\\1"),
              if (textcomp && straightQuotes) {
                  c("'", "\\\\textquotesingle{}")
              },

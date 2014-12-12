@@ -28,7 +28,12 @@ test.uuid.gen <- function() {
               msg="IDs have a restricted character (4/16 choices) in one position")
 }
 
-test.latexify <- function(testDocument=FALSE) {
+## If 'testDocument' is TRUE, produces a test document to 'con', which may
+## be a connection or a filename.
+test.latexify <-
+    function(testDocument=FALSE,
+             con=tempfile(pattern = "latexify", fileext = ".tex"))
+{
     ## Number of test strings
     ## (including one "extra difficult" case and one empty string)
     SAMP.SIZE <- 50
@@ -39,16 +44,22 @@ test.latexify <- function(testDocument=FALSE) {
     ## All ASCII characters except NUL (0)
     characters <- rawToChar(as.raw(1:127), multiple = TRUE)
     ## LaTeX special characters.  Some of these must be converted to
-    ## commands.  Others (single and double quote) are converted to
-    ## commands or other characters for improved compatibility with
-    ## other packages or to get a particular glyph (upright quote)
-    ## instead of the default (curved quote).
+    ## commands.  Others (e.g. single and double quote, *) are
+    ## converted to commands or other characters for improved
+    ## compatibility with other packages or to get a particular glyph
+    ## (upright quote, centered asterisk) instead of the default
+    ## (curved quote, asterisk located higher than the center of the
+    ## line).  Some characters would work fine in font encodings other
+    ## than OT1 (e.g. <, >, |), but are converted to commands anyway.
+    ## The dash is included to prevent -- and --- turning into an n
+    ## dash and an m dash, respectively.
     ##
     ## NOTE that the handling (what kind of treatment if any) of some
-    ## characters (currently single quote) depends on the (default)
+    ## characters (currently quotes) depends on the (default)
     ## arguments of latexify().
     specialChars <-
-        c("{", "}", "\\", "#", "$", "%", "^", "&", "_", "~", "\"", "/", "'")
+        c("{", "}", "\\", "#", "$", "%", "^", "&", "_", "~", "\"", "/", "'",
+          "<", ">", "|", "`", "-")
     specialStr <- paste(specialChars, collapse="")
     ## latexify() is designed to convert any sequence of space
     ## characters to a single regular space
@@ -96,12 +107,14 @@ test.latexify <- function(testDocument=FALSE) {
     checkTrue(!any(grepl("\\\\", ltxSingle, fixed=TRUE)),
               msg="No line breaks (double backslash)")
     Letters <- paste(c(LETTERS, letters), collapse="")
-    textCommand <- sprintf("\\\\[%s]+", Letters)
-    commandAndGroup <- paste(textCommand, "(\\{\\}|(?=\\\\))", sep="")
-    commandsAt <- gregexpr(commandAndGroup, ltxSingle, perl=TRUE)
+    textCommand <- sprintf("\\\\[%s]+(\\{([^}]|\\\\})+})?", Letters)
+    commandTerminated <-
+        paste(textCommand,
+              "((?<=})|\\{\\}| +|(?=$|[[:digit:],.?!;:\\\\}+*/-]))", sep="")
+    commandsAt <- gregexpr(commandTerminated, ltxSingle, perl=TRUE)
     checkEquals(lapply(gregexpr(textCommand, ltxSingle), as.vector),
                 lapply(commandsAt, as.vector),
-                msg="Command name is followed by empty group or backslash")
+                msg="Command name is terminated properly")
     escape <- sprintf("\\\\[^%s](\\{\\})?", Letters)
     escapesAt <- gregexpr(escape, ltxSingle)
 
@@ -153,8 +166,8 @@ test.latexify <- function(testDocument=FALSE) {
             ## a space between words
             strStart <- which(diff(c(0, charIdx)) > 0)
             strStop <- c(strStart[-1] - 1, nChars)
-            ## Strip off empty group following a command
-            ltxChars <- sub(sprintf("([%s])\\{\\}$", Letters), "\\1",
+            ## Strip off empty group or spaces following a command
+            ltxChars <- sub(sprintf("([%s])(\\{\\}| +)$", Letters), "\\1",
                             substring(ltxSingle[i], strStart, strStop))
         } else {
             ltxChars <- character(0)
@@ -194,16 +207,16 @@ test.latexify <- function(testDocument=FALSE) {
                        tolerance=0)
     checkTrue(all(specialChars %in% specialMap[, 1]),
               msg="Each special character has a mapping")
-    ## A test for encoding conversion
+    ## A test for handling of different encodings in the input
     latin1String <- "clich\xe9 ma\xf1ana"
     Encoding(latin1String) <- "latin1"
-    utf8fy <- latexify(latin1String)
-    checkEquals("UTF-8", Encoding(utf8fy),
-                msg="Declared encoding is UTF-8")
-    checkEquals(as.raw(c(0x63, 0x6c, 0x69, 0x63, 0x68, 0xc3, 0xa9, 0x20,
-                         0x6d, 0x61, 0xc3, 0xb1, 0x61, 0x6e, 0x61)),
-                charToRaw(utf8fy),
-                msg="Conversion to UTF-8 NFC succeeded")
+    latinConverted <- latexify(latin1String, doublebackslash=FALSE)
+    checkEquals("clich\\'{e} ma\\~{n}ana",
+                latinConverted,
+                msg="Conversion of latin1 string succeeded")
+    checkEquals(latinConverted,
+                latexify(enc2utf8(latin1String), doublebackslash=FALSE),
+                msg="Encoding of the input does not matter")
     ## A test for other than default quoting options
     quoteString <- "\"It's five o'clock\", he said."
     res1 <- latexify(quoteString, doublebackslash=FALSE)
@@ -211,48 +224,123 @@ test.latexify <- function(testDocument=FALSE) {
     res3 <- latexify(quoteString, packages=character(0), doublebackslash=FALSE)
     res4 <- latexify(quoteString, packages="fontenc", doublebackslash=FALSE)
     res5 <- latexify(quoteString, packages="textcomp", doublebackslash=FALSE)
-    exp2 <- gsub("\"", "\\\\textquotedblright{}", quoteString)
-    exp4 <- gsub("\"", "\\\\textquotedbl{}", quoteString)
-    exp5 <- gsub("'", "\\\\textquotesingle{}", exp2)
-    exp1 <- gsub("'", "\\\\textquotesingle{}", exp4)
+    exp2 <- sub("\"", "\\\\textquotedblright ", quoteString)
+    exp2 <- sub("\"", "\\\\textquotedblright", exp2)
+    exp4 <- sub("\"", "\\\\textquotedbl ", quoteString)
+    exp4 <- sub("\"", "\\\\textquotedbl", exp4)
+    exp5 <- gsub("'", "\\\\textquotesingle ", exp2)
+    exp1 <- gsub("'", "\\\\textquotesingle ", exp4)
     checkEquals(exp1, res1, msg="Default straight quotes")
     checkEquals(exp2, res2, msg="Curved quotes")
     checkEquals(res2, res3, msg="Fallback to curved quotes")
     checkEquals(exp4, res4, msg="Fallback to curved single quotes")
-    retVal <- checkEquals(exp5, res5, msg="Fallback to curved double quotes")
+    checkEquals(exp5, res5, msg="Fallback to curved double quotes")
     ## Check that non-ASCII quotes used by dQuote() and sQuote() are
     ## converted to LaTeX commands
-    if (isTRUE(l10n_info()[["MBCS"]])) {
-        nestQuotes <- paste0("You said, \u201cHe said, ",
-                             "\u2018Have a nice day.\u2019\u201d")
-        nq <- latexify(nestQuotes, doublebackslash=FALSE)
-        retVal <-
-            checkEquals(gsub("\\{\\}(?=\\\\)", "",
-                             gsub("\u2018", "\\\\textquoteleft{}",
-                                  gsub("\u2019", "\\\\textquoteright{}",
-                                       gsub("\u201c", "\\\\textquotedblleft{}",
-                                            gsub("\u201d",
-                                                 "\\\\textquotedblright{}",
-                                                 nestQuotes)))),
-                             perl=TRUE),
-                        nq)
-    }
+    nestQuotes <- paste0("You said, \u201cHe said, ",
+                         "\u2018Have a nice day.\u2019\u201d")
+    nq <- latexify(nestQuotes, doublebackslash=FALSE)
+    checkEquals(gsub("\\{\\}(?=\\\\)", "",
+                     gsub("\u2018", "\\\\textquoteleft ",
+                          gsub("\u2019", "\\\\textquoteright",
+                               gsub("\u201c", "\\\\textquotedblleft ",
+                                    gsub("\u201d",
+                                         "\\\\textquotedblright",
+                                         nestQuotes)))),
+                     perl=TRUE),
+                nq, msg="dQuote() and sQuote() are safe")
+    diaeresisD <- "o\u0308ljysa\u0308ilio\u0308"
+    diasD <- latexify(diaeresisD, doublebackslash=FALSE)
+    diaeresisC <- "\u00f6ljys\u00e4ili\u00f6"
+    diasC <- latexify(diaeresisC, doublebackslash=FALSE)
+    checkEquals(diasD, diasC, msg="Unicode NFD and NFC")
+    ## Strings containing practically every non-ASCII character that
+    ## will be converted by latexify()
+    breakWords <- rep(c("space", "vacation", "movie", "line", "break",
+                        "rope", "period"), 2)
+    allChars <-
+        c("\u0132sselmeer is a lake, Berl\u0133n is Dutch for Berlin.",
+          paste0("Other digraphs and ligatures: \u01f1, \u01f2, \u01f3, ",
+                 "\u01c4, \u01c5, \u01c6, \u01c7, \u01c8, \u01c9, \u01ca, ",
+                 "\u01cb, \u01cc, \ufb00, \ufb01, \ufb02, \ufb03, \ufb04, ",
+                 "\ufb05, \ufb06"),
+          paste0("\u017c\u00f3\u0142ty, p\u0113c, f\u00eate, ",
+                 "vis-\u00e0-vis, pi\u00f1ata, Erd\u0151s, ",
+                 "\u00c5ngstr\u00f6m, m\u0103r, t\u0159i, \u0203, t\u0331, ",
+                 "fa\u00e7ade, \u1e0c, ",
+                 "k\u0361p (there should be a ligature tie), t\u0105sa"),
+          "Circled: a\u20dd, \u00f1\u20dd",
+          "\u00a1Hola! \u00bfQu\u00e9 pasa? \u2e18Verdad\u203d",
+          paste0("Money: \u00a3, \u20ac, \u00a2, \u00a5, \u00a4, \u0e3f, ",
+                 "\u20a1, \u20ab, \u20b2, \u20a4, \u20a6, \u20b1, \u20a9"),
+          paste0("No-Break\u00a0", breakWords, collapse=" "),
+          paste0("Do-Break ", breakWords, collapse=" "),
+          "visible\u2423space",
+          paste0(rep("Zero\u200bWidth\u200bSpace\u200b", 10), collapse=""),
+          paste0(rep(paste0("S\u00ado\u00adf\u00adt\u00ad",
+                            "H\u00ady\u00adp\u00adh\u00ade\u00adn\u00ad",
+                            "E\u00adv\u00ade\u00adr\u00ady\u00ad",
+                            "w\u00adh\u00ade\u00adr\u00ade"), 8),
+                 collapse="\u00ad"),
+          "Legal \u00a7, \u00a9, \u00ae, \u00b6, \u2117, \u2120, \u2122",
+          paste0("Letters \u00c6, \u00e6, \u0152, \u0153, \u00d8, \u00f8, ",
+                 "\u0141, \u0142, \u1e9e, \u00df, \u017f, \u00d0, \u00f0, ",
+                 "\u0110, \u0111, \u014a, \u014b, \u00de, \u00fe"),
+          paste0("Quotes: \u00ab | \u00bb | \u201a | \u201e | \u2039 | \u203a",
+                 " | \u2018 | \u2019 | \u201c | \u201d"),
+          paste0("mho \u2127, ohm \u03a9, micro \u00b5, Celsius \u2103, ",
+                 "degree \u00b0"),
+          paste0("Division \u00f7, times \u00d7, fractions \u00bc, \u00bd, ",
+                 "\u00be, plusminus \u00b1, root \u221a, minus \u2212, ",
+                 "asterisk \u2217, not \u00ac, fraction solidus \u2044, ",
+                 "superscript \u00b9, \u00b2, \u00b3"),
+          paste0("Discount \u2052, estimated \u212e, \u2116 5, ",
+                 "per mille \u2030, parts per ten thousand \u2031"),
+          "Bullets: \u2022 Closed, \u25e6 open",
+          paste0("Spacing diacritics: double acute \u02dd, acute \u00b4, ",
+                 "cedilla \u00b8, breve \u02d8, ",
+                 "caron \u02c7, diaeresis \u00a8, macron \u00af"),
+          "Arrows: left \u2190, up \u2191, right \u2192, down \u2193",
+          "Delimiters: \u3008, \u3009, \u301a, \u301b, \u2045, \u2046",
+          paste0("Miscellaneous: feminine ordinal \u00aa, ",
+                 "masculine ordinal \u00ba, middle dot \u00b7, ",
+                 "daggers \u2020, \u2021, ellipsis \u2026, ",
+                 "double vertical line \u2016, large circle \u25ef, ",
+                 "blank symbol \u2422, broken bar \u00a6, recipe \u211e, ",
+                 "reference mark \u203b, low tilde \u02f7, ",
+                 "en dash \u2013, em dash \u2014"))
+    ac <- latexify(allChars, doublebackslash=FALSE)
+    retVal <- checkTrue(all(Encoding(ac) == "unknown"),
+                        msg("No non-ASCII characters left"))
     ## When used independently outside the test suite, the function
-    ## can create a test document
+    ## can create a test document, but only in a UTF-8 locale.
     if (isTRUE(testDocument) && isTRUE(l10n_info()[["UTF-8"]])) {
         preamble <- c("\\documentclass[a4paper]{article}",
-                      "\\usepackage[T1]{fontenc}",
-                      "\\usepackage{textcomp}",
+                      "\\usepackage{etoolbox}",
+                      "\\usepackage{ifluatex}",
+                      "\\usepackage{ifxetex}",
                       "\\usepackage{parskip}",
-                      "\\usepackage[utf8]{inputenx}",
-                      "\\input{ix-utf8enc.dfu}")
-        id <- c(testStrings, latin1String, rep(quoteString, 5), nestQuotes)
-        extraInfo <- c(rep("", length(testStrings) + 1),
+                      "\\usepackage{textcomp}",
+                      "\\ifbool{luatex}{",
+                      "\\usepackage{fontspec}",
+                      "}{",
+                      "\\ifbool{xetex}{",
+                      "\\usepackage{fontspec}",
+                      "}{",
+                      "\\usepackage[T1]{fontenc}",
+                      "\\usepackage{lmodern}",
+                      "}}")
+        id <- c(testStrings, latin1String, rep(quoteString, 5), nestQuotes,
+                diaeresisD, diaeresisC, allChars)
+        extraInfo <- c(rep("", length(testStrings) + length(latin1String)),
                        paste0(" (", c("default", "curved", "no packages",
                                       "only fontenc", "only textcomp"), ")"),
-                       "")
+                       rep("", length(nestQuotes)),
+                       rep(" (Unicode NFD)", length(diaeresisD)),
+                       rep(" (Unicode NFC)", length(diaeresisC)),
+                       rep("", length(allChars)))
 
-        ## Record how R prints inputDescription
+        ## Record how R prints the elements in 'id'
         inputDescription <- character(length(id)) # dummy line
         tc <- textConnection("inputDescription", "w", local = TRUE)
         sink(tc)
@@ -265,9 +353,18 @@ test.latexify <- function(testDocument=FALSE) {
         close(tc)
         on.exit()
 
-        allOutput <- c(ltxSingle, utf8fy, res1, res2, res3, res4, res5, nq)
-        filename <- tempfile(pattern = "latexify", fileext = ".tex")
-        co <- file(filename, open = "wt", encoding = "UTF-8")
+        allOutput <- c(ltxSingle, latinConverted, res1, res2, res3, res4,
+                       res5, nq, diasD, diasC, ac)
+        if (is.character(con)) {
+            co <- file(con, open = "wt", encoding = "UTF-8")
+            on.exit(close(co))
+        } else {
+            co <- con
+            if (!isOpen(co)) {
+                open(co, open = "wt")
+                on.exit(close(co))
+            }
+        }
         writeLines(preamble, co)
         writeLines("\\begin{document}", co)
         writeLines("\\begin{enumerate}", co)
@@ -277,8 +374,7 @@ test.latexify <- function(testDocument=FALSE) {
                    co, sep = "\n\n")
         writeLines("\\end{enumerate}", co)
         writeLines("\\end{document}", co)
-        close(co)
-        filename
+        con
     } else {
         retVal
     }

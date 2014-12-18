@@ -20,11 +20,11 @@ glk <- function(x) {
                     } else {
                         dif1 <- sign(diff(col1[not.na.both]))
                         dif2 <- sign(diff(col2[not.na.both]))
-                        G[i, k] <- sum(abs(dif1 + dif2)) / (2 * m - 2)
-                    }
-                }
-            }
-        }
-    }
+                        G[i, k] <- 1 - sum(abs(dif1 - dif2))/(2 * m - 2)
+                     }
+                  }
+              }
+          }
+      }
     G
 }

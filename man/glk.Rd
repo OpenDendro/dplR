@@ -27,7 +27,11 @@ glk(x)
   upper triangle reports the \enc{Gleichläufigkeit}{Gleichlaeufigkeit}
   of each possible combination of records. The global
   \enc{Gleichläufigkeit}{Gleichlaeufigkeit} can be calculated as
-  \code{mean(glk(\var{x}), na.rm = TRUE)}.
+  \code{mean(glk(\var{x}), na.rm = TRUE)}. This implementation improves 
+  the original formulation inasmuch as the case of neighbouring
+  identical measurements in the same years is accounted for. Here, it is
+  treated as full agreement, in contrast to only partial agreement in
+  the original formulation.
 }
 
 \value{
@@ -37,7 +41,8 @@ glk(x)
   computed, and \code{NA} is returned.
 }
 
-\author{ Christian Zang.  Patched and improved by Mikko Korpela. }
+\author{ Christian Zang.  Patched and improved by Mikko Korpela.
+  Improved by Allan Buras. }
 
 \references{
   Eckstein, D., Bauch J. (1969) Beitrag zur Rationalisierung eines

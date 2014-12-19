@@ -3,18 +3,18 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.6.1
-Date: 2014-12-12
+Date: 2014-12-19
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "trl")), person("Franco", "Biondi",
         role = c("aut", "cph")), person("Filipe", "Campelo", role = 
         c("aut", "cph")), person("Pierre", "Mérian", role = c("aut", 
-        "cph")), person("Manfred", "Mudelsee", role = "ctb"),
-        person("Fares", "Qeadan", role = c("aut", "cph")),
-        person("Michael", "Schulz", role = "ctb"), person("Christian",
-        "Zang", role = c("aut", "cph")), person("Jacob", "Cecile",
-        role = "ctb"))
-Author: Andy Bunn [aut, cph, cre, trl], Mikko Korpela [aut, trl], Franco Biondi [aut, cph], Filipe Campelo [aut, cph], Pierre Mérian [aut, cph], Manfred Mudelsee [ctb], Fares Qeadan [aut, cph], Michael Schulz [ctb], Christian Zang [aut, cph], Jacob Cecile [ctb]
+        "cph")), person("Fares", "Qeadan", role = c("aut", "cph")),
+        person("Christian", "Zang", role = c("aut", "cph")),
+        person("Allan", "Buras", role = "ctb"), person("Jacob",
+        "Cecile", role = "ctb"), person("Manfred", "Mudelsee", role =
+        "ctb"), person("Michael", "Schulz", role = "ctb"))
+Author: Andy Bunn [aut, cph, cre, trl], Mikko Korpela [aut, trl], Franco Biondi [aut, cph], Filipe Campelo [aut, cph], Pierre Mérian [aut, cph], Fares Qeadan [aut, cph], Christian Zang [aut, cph], Allan Buras [ctb], Jacob Cecile [ctb], Manfred Mudelsee [ctb], Michael Schulz [ctb]
 Copyright: Authors and Aalto University (for work of M. Korpela)
 Maintainer: Andy Bunn <andy.bunn@wwu.edu>
 Depends: R (>= 2.15.0)

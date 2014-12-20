@@ -593,14 +593,14 @@ test.glk <- function() {
                 msg="glk() is 1 when two sequences agree about the signs of all the differences and there are no zero differences")
     checkEquals(0, glk(data.frame(seq.rand, -seq.rand))[1, 2],
                 msg="glk() is 0 when two sequences disagree about the signs of all the differences and there are no zero differences")
-    checkEquals(0, glk(data.frame(seq.step, -seq.step))[1, 2],
-                msg="glk() is 0 when two sequences agree about the location of zero differences and disagree about the signs of nonzero differences")
+    checkEquals(0.5, glk(data.frame(seq.step, -seq.step))[1, 2],
+                msg="dplR >= 1.6.1: a zero difference in both series is full agreement (here, exactly half of the cases)")
     checkEquals(0.5, glk(data.frame(seq.rand, rep(1, length(seq.rand))))[1, 2],
                 msg="glk() is 0.5 when one sequence is constant and the other only has nonzero differences")
-    checkEquals(0.5, glk(data.frame(seq.step, seq.step))[1, 2],
-                msg="glk() is 0.5 when comparing a sequence where exactly half of the differences are zero with itself")
-    checkEquals(0.25, glk(data.frame(seq.step, rep(1, length(seq.step))))[1, 2],
-                msg="glk() is 0.25 when comparing a constant sequence and a sequence where exactly half of the differences are zero")
+    checkEquals(1, glk(data.frame(seq.step, seq.step))[1, 2],
+                msg="dplR >= 1.6.1: glk() is 1 when comparing any sequence with itself")
+    checkEquals(0.75, glk(data.frame(seq.step, rep(1, length(seq.step))))[1, 2],
+                msg="dplR >= 1.6.1: glk() is 0.75 when comparing a constant sequence and a sequence where exactly half of the differences are zero")
 }
 
 test.hanning <- function() {

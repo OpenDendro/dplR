@@ -24,7 +24,9 @@ Imports: gmp (>= 0.5-2), graphics, grDevices, grid, stats, utils,
 Suggests: Biobase, dichromat (>= 1.2-3), foreach, forecast, iterators,
         knitr, RColorBrewer, RUnit (>= 0.4.25), tikzDevice, waveslim
 Description: This package contains functions for performing tree-ring
-        analyses, IO, and graphics.
+        analyses such as detrending, chronology building, and cross dating.
+        The package reads and writes standard file formats used in 
+        dendrochronology
 LazyData: no
 License: GPL (>= 2)
 URL: http://huxley.wwu.edu/trl/htrl-dplr,

@@ -7,7 +7,8 @@ wavelet.plot <-
              key.lab = parse(text = paste0("\"", gettext("Power"), "\"^2")),
              add.spline = FALSE, f = 0.5, nyrs = NULL,
              crn.col = "black", crn.lwd = 1,coi.col='black',
-             crn.ylim = range(wave.list$y)*1.1, side.by.side = FALSE,
+             crn.ylim = c(min(wave.list$y)*0.95,max(wave.list$y)*1.05), 
+             side.by.side = FALSE,
              useRaster = FALSE, res = 150, reverse.y = FALSE)
 {
 

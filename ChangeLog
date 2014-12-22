@@ -1,5 +1,29 @@
 * CHANGES IN dplR VERSION 1.6.1
 
+
+File: glk.R and glk.Rd
+-------------
+- Modified by Christian Zang in reponse to a bug report by Allan Buras. In the
+  case of  no change from year i to year i+1 in both series then the glk sign
+  will for both be 0 and the sum of both is then also 0 and will not be 
+  accounted for correctly in the sum of synchronous years. Zang and Buras have
+  pached and Zang updates the help file to reflect the change as:
+  "This implementation improves the original formulation inasmuch as the case 
+  of neighbouring identical measurements in the same years is accounted for. 
+  Here, it is treated as full agreement, in contrast to only partial agreement 
+  in the original formulation.""
+
+File: crn.plot.R
+-------------
+
+- Removed automatic plotting of chronology name in main title.
+
+
+File: plot.wavelet.R
+-------------
+
+- Fixed small bug in ylim for the chronology in the plot.
+
 File: NAMESPACE
 ---------------
 

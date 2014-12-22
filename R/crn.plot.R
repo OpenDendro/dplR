@@ -33,8 +33,7 @@
   nyrs2 <- nyrs
   for(i in seq_len(nCrn)){
     spl <- crn[[i]]
-    plot(yr.vec, spl, type="n",axes=FALSE,
-         main=crn.names[i],...)
+    plot(yr.vec, spl, type="n",axes=FALSE,...)
     if(sd.exist) {
       par(new=TRUE)
       plot(yr.vec, samp.depth, type="n",

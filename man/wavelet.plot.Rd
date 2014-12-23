@@ -15,7 +15,8 @@ wavelet.plot(wave.list,
              key.lab = parse(text=paste0("\"", gettext("Power"), "\"^2")),
              add.spline = FALSE, f = 0.5, nyrs = NULL,
              crn.col = "black", crn.lwd = 1,coi.col='black',
-             crn.ylim = range(wave.list$y)*1.1, side.by.side = FALSE,
+             crn.ylim = range(wave.list$y) * c(0.95, 1.05),
+             side.by.side = FALSE,
              useRaster = FALSE, res = 150, reverse.y = FALSE)
 }
 \arguments{

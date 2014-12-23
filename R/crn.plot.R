@@ -1,14 +1,14 @@
 `plot.crn` <- function(x, ...){ crn.plot(crn=x, ...) }
 
 `crn.plot` <- function(crn, add.spline=FALSE, nyrs=NULL, f=0.5,
-                                       crn.line.col='grey50',
-                                       spline.line.col='red',
-                                       samp.depth.col='grey90',
-                                       samp.depth.border.col='grey80',
-                                       crn.lwd=1, spline.lwd=1.5,
-                                       abline.pos=1, abline.col='black',
-                                       abline.lty=1, abline.lwd=1,
-                                       ...) {
+                       crn.line.col='grey50',
+                       spline.line.col='red',
+                       samp.depth.col='grey90',
+                       samp.depth.border.col='grey80',
+                       crn.lwd=1, spline.lwd=1.5,
+                       abline.pos=1, abline.col='black',
+                       abline.lty=1, abline.lwd=1,
+                       ...) {
   if(!is.data.frame(crn)) stop("'crn' must be a data.frame")
 
   op <- par(no.readonly=TRUE) # Save par

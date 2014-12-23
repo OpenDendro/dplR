@@ -57,19 +57,18 @@ crn.plot(crn, add.spline = FALSE, nyrs = NULL, f = 0.5,
 }
 \examples{data(cana157)
 crn.plot(cana157,xlab='Year',ylab='RWI')
-plot(cana157,xlab='Year',ylab='RWI')
+plot(cana157,xlab='Year',ylab='RWI', main='Twisted Tree Heartrot Hill')
 # with added spline
 crn.plot(cana157,add.spline=TRUE, nyrs=32, xlab='Year',ylab='RWI')
 ## Without sample depth
 cana157.mod <- cana157
 cana157.mod$samp.depth <- NULL
 crn.plot(cana157.mod, add.spline = TRUE, xlab='Year',ylab='RWI')
-## With multiple chronologies
-data(gp.rwl)
-data(gp.po)
-gp.rwi <- cms(rwl = gp.rwl, po = gp.po)
-gp.crn <- chron(gp.rwi,prefix="GP",prewhiten=TRUE)
-crn.plot(gp.crn, add.spline = TRUE)
+## A raw ring-width chronology
+data(ca533)
+ca533.raw.crn <- chron(ca533, prefix = "CAM", prewhiten=TRUE)
+plot(ca533.raw.crn,abline.pos=NULL,ylab='mm',xlab='Year')  
+
 \dontrun{
   # not pretty - but illustrates the coloring options
   my.cols <- c("#3182BD","#9ECAE1","#DEEBF7","#31A354","#A1D99B","#E5F5E0")
@@ -80,11 +79,8 @@ crn.plot(gp.crn, add.spline = TRUE)
              samp.depth.border.col=my.cols[2],
              abline.col=my.cols[1],
              crn.lwd=1.5,spline.lwd=3,
-             abline.lwd=1)
-  # a raw ring-width chronology
-  data(ca533)
-  ca533.raw.crn <- chron(ca533, prefix = "CAM")
-  crn.plot(ca533.raw.crn,abline.pos=NULL,ylab='mm')  
+             abline.lwd=1,
+             xlab="Year", ylab="RWI")
 }
 }
 \keyword{ hplot }

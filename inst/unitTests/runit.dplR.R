@@ -476,24 +476,22 @@ test.corr.series.seg <- function() {
     checkTrue(!isTRUE(all.equal(res7$spearman.rho, res8$spearman.rho)),
               msg="Segment correlations differ between methods (test 3)")
 
-    tmp7 <- na.omit(res7$moving.rho[, "rho"])
+    tmp7 <- as.vector(na.omit(res7$moving.rho[, "rho"]))
     checkTrue(length(tmp7) == 451,
               msg = "Number of non-NA correlations (test 1)")
-    uniqueRho7 <- unique(tmp7)
-    checkTrue(length(uniqueRho7) == 1,
-              msg = "Correlation when segment length matches the common cycle of rwl and series")
+    checkEquals(rep(mean(tmp7), 451), tmp7,
+                msg = "Correlation when segment length matches the common cycle of rwl and series")
     tmp9 <- na.omit(res9$moving.rho[, "rho"])
     checkTrue(length(tmp9) == 453,
               msg = "Number of non-NA correlations (test 2)")
     uniqueRho9 <- unique(tmp9)
     checkTrue(length(uniqueRho9) == 50,
               msg = "Correlations for rwl and series with a common cycle, shorter segments")
-    tmp10 <- na.omit(res10$moving.rho[, "rho"])
+    tmp10 <- as.vector(na.omit(res10$moving.rho[, "rho"]))
     checkTrue(length(tmp10) == 401,
               msg = "Number of non-NA correlations (test 3)")
-    uniqueRho10 <- unique(tmp10)
-    checkTrue(length(uniqueRho10) == 1,
-              msg = "Correlation when segment length is a multiple of the length of the common cycle of rwl and series")
+    checkEquals(rep(mean(tmp10), 401), tmp10,
+                msg = "Correlation when segment length is a multiple of the length of the common cycle of rwl and series")
     tmp11 <- na.omit(res11$moving.rho[, "rho"])
     checkTrue(length(tmp11) == 359,
               msg = "Number of non-NA correlations (test 4)")

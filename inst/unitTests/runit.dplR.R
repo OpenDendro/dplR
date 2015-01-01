@@ -405,8 +405,8 @@ test.corr.series.seg <- function() {
     checkTrue(res1$bins[nrow(res1$bins), 1] == 450,
               msg="Last bin is in correct position (test 1)")
 
-    checkIdentical(res1$bins, res2$bins,
-                   msg="Bins are identical (tests 1 and 2)")
+    checkEquals(res1$bins, res2$bins,
+                msg="Bins are the same (tests 1 and 2)")
 
     checkTrue(all(res3$bins[, 2] - res3$bins[, 1] + 1 == 100),
               msg="Bins have correct length(test 3)")
@@ -456,7 +456,14 @@ test.corr.series.seg <- function() {
     checkEquals(c(-1, 1), range(res4$moving.rho[, "rho"], na.rm=TRUE),
                 msg="Moving correlations are as expected (test 4)")
 
-    checkIdentical(res5, res6, msg="Default method is spearman")
+    tmpNames <- names(res5)
+    checkEquals(tmpNames, names(res6),
+                msg="Result lists have the same names in the same order")
+    for (i in seq_along(res5)) {
+        checkEquals(res5[[i]], res6[[i]],
+                    msg=sprintf("Default method is spearman (%s)",
+                    tmpNames[i]))
+    }
     checkTrue(!isTRUE(all.equal(res6$overall, res7$overall)),
               msg="Overall correlation differs between methods (test 1)")
     checkTrue(!isTRUE(all.equal(res6$overall, res8$overall)),
@@ -501,8 +508,8 @@ test.corr.series.seg <- function() {
 
     checkTrue(length(res6.2$spearman.rho) == length(res6$spearman.rho) + 2,
               msg = "Extra segments with different bin.floor")
-    checkIdentical(res6.2$spearman.rho[-c(1, 2)], res6$spearman.rho,
-                   msg = "Other segments have identical correlation")
+    checkEquals(res6.2$spearman.rho[-c(1, 2)], res6$spearman.rho,
+                msg = "Other segments have the same correlation")
 }
 
 test.ffcsaps <- function() {

@@ -1,3 +1,11 @@
+* CHANGES IN dplR VERSION 1.6.3
+
+File: DESCRIPTION
+-----------------
+
+- A new field, MailingList, shows the address of the web interface
+  to the dplR-help mailing list hosted on Google Groups
+
 * CHANGES IN dplR VERSION 1.6.2
 
 No functional changes.  A unit test was changed so it would not fail

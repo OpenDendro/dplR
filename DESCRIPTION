@@ -2,8 +2,8 @@ Encoding: UTF-8
 Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
-Version: 1.6.2
-Date: 2015-01-01
+Version: 1.6.3
+Date: 2015-01-05
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "trl")), person("Franco", "Biondi",
@@ -31,3 +31,4 @@ LazyData: no
 License: GPL (>= 2)
 URL: http://huxley.wwu.edu/trl/htrl-dplr,
         http://R-Forge.R-project.org/projects/dplr/
+MailingList: https://groups.google.com/d/forum/dplr-help

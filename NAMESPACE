@@ -22,6 +22,8 @@ importFrom(lattice, panel.abline, panel.dotplot, panel.segments,
 
 importFrom(png, readPNG)
 
+importFrom(R.utils, captureOutput)
+
 importFrom(stringi, stri_trans_nfc, stri_trans_nfd)
 
 importFrom(stringr, str_pad, str_trim)

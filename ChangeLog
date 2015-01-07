@@ -4,7 +4,24 @@ File: DESCRIPTION
 -----------------
 
 - A new field, MailingList, shows the address of the web interface
-  to the dplR-help mailing list hosted on Google Groups
+  to the dplR-help mailing list hosted on Google Groups.
+- New Imported package: R.utils.
+
+File: NAMESPACE
+---------------
+
+- Import captureOutput from R.utils.
+
+File: latexify.R
+----------------
+
+- Improved efficiency when handling a large number of strings with
+  the "bytes" Encoding.  The code now uses R.utils::captureOutput()
+  instead of a home-baked re-implementation of (parts of)
+  utils::capture.output(), which is also a more compact solution in
+  terms of lines of code in dplR.  See Henrik Bengtsson's notes at
+  http://www.jottr.org/2014/05/captureOutput.html (referenced on
+  2015-01-07).
 
 * CHANGES IN dplR VERSION 1.6.2
 

@@ -23,15 +23,7 @@ latexify <- function(x, doublebackslash = TRUE, dashdash = TRUE,
     ## in a way which preserves the hex notation.
     encBytes <- Encoding(y) == "bytes"
     if (any(encBytes)) {
-        foo <- character(0) # dummy line
-        tc <- textConnection("foo", "w", local = TRUE)
-        sink(tc)
-        on.exit(sink())
-        on.exit(close(tc), add = TRUE)
-        ## Embedded newlines (if any) in y[encBytes] will not cause
-        ## line breaks with cat().
-        cat(y[encBytes], sep = "\n")
-        y[encBytes] <- foo
+        y[encBytes] <- captureOutput(cat(y[encBytes], sep = "\n"))
     }
     l10n <- l10n_info()
     Letters <- paste0(c(LETTERS, letters), collapse="")

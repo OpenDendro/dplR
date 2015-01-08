@@ -207,9 +207,27 @@ test.latexify <-
                        tolerance=0)
     checkTrue(all(specialChars %in% specialMap[, 1]),
               msg="Each special character has a mapping")
+
     ## A test for handling of different encodings in the input
-    latin1String <- "clich\xe9 ma\xf1ana"
+
+    ## The following string must have a literal (escaped) backspace
+    ## and "x" in front of every "special" character (byte), and each
+    ## character code must consist of two hexadecimal digits.
+    bytePrint <- "clich\\xe9\\x0ama\\xf1ana" # "\x0a" is a newline
+
+    codeLoc <- as.vector(gregexpr("\\x", bytePrint, fixed=TRUE)[[1]])
+    asSuch <- substring(bytePrint,
+                        c(1, codeLoc + 4),
+                        c(codeLoc - 1, nchar(bytePrint)))
+    special <-
+        rawToChar(as.raw(paste0("0x", substring(bytePrint,
+                                                codeLoc + 2, codeLoc + 3))),
+                  multiple = TRUE)
+    latin1String <- paste0(asSuch, c(special, ""), collapse="")
     Encoding(latin1String) <- "latin1"
+    byteString <- latin1String
+    Encoding(byteString) <- "bytes"
+
     latinConverted <- latexify(latin1String, doublebackslash=FALSE)
     checkEquals("clich\\'{e} ma\\~{n}ana",
                 latinConverted,
@@ -217,6 +235,11 @@ test.latexify <-
     checkEquals(latinConverted,
                 latexify(enc2utf8(latin1String), doublebackslash=FALSE),
                 msg="Encoding of the input does not matter")
+    byteConverted <- latexify(byteString, doublebackslash=FALSE)
+    checkEquals(gsub("\\", "\\textbackslash ", bytePrint, fixed=TRUE),
+                tolower(byteConverted),# do hex codes print in lower case?
+                msg="Conversion of byte string succeeded")
+
     ## A test for other than default quoting options
     quoteString <- "\"It's five o'clock\", he said."
     res1 <- latexify(quoteString, doublebackslash=FALSE)
@@ -330,9 +353,10 @@ test.latexify <-
                       "\\usepackage[T1]{fontenc}",
                       "\\usepackage{lmodern}",
                       "}}")
-        id <- c(testStrings, latin1String, rep(quoteString, 5), nestQuotes,
-                diaeresisD, diaeresisC, allChars)
-        extraInfo <- c(rep("", length(testStrings) + length(latin1String)),
+        id <- c(testStrings, latin1String, byteString, rep(quoteString, 5),
+                nestQuotes, diaeresisD, diaeresisC, allChars)
+        extraInfo <- c(rep("", length(testStrings) + length(latin1String) +
+                           length(byteString)),
                        paste0(" (", c("default", "curved", "no packages",
                                       "only fontenc", "only textcomp"), ")"),
                        rep("", length(nestQuotes)),
@@ -341,20 +365,10 @@ test.latexify <-
                        rep("", length(allChars)))
 
         ## Record how R prints the elements in 'id'
-        inputDescription <- character(length(id)) # dummy line
-        tc <- textConnection("inputDescription", "w", local = TRUE)
-        sink(tc)
-        on.exit(sink())
-        on.exit(close(tc), add = TRUE)
-        for (i in seq_along(id)) {
-            print(id[i])
-        }
-        sink()
-        close(tc)
-        on.exit()
+        inputDescription <- capture.output(invisible(vapply(id, print, "")))
 
-        allOutput <- c(ltxSingle, latinConverted, res1, res2, res3, res4,
-                       res5, nq, diasD, diasC, ac)
+        allOutput <- c(ltxSingle, latinConverted, byteConverted, res1, res2,
+                       res3, res4, res5, nq, diasD, diasC, ac)
         if (is.character(con)) {
             co <- file(con, open = "wt", encoding = "UTF-8")
             on.exit(close(co))

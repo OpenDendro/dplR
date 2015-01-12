@@ -202,8 +202,8 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
   Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
 
   Cook, E. R. and Pederson, N. (2011) \emph{Uncertainty, Emergence, and
-  Statistics in Dendrochronology} In M.K. Hughes, T.W. Swetnam, and
-  H.F. Diaz (Eds.), \emph{Dendroclimatology} (77\enc{–}{--}112),
+  Statistics in Dendrochronology}. In M. K. Hughes, T. W. Swetnam, and
+  H. F. Diaz (Eds.), \emph{Dendroclimatology} (77\enc{–}{--}112),
   \acronym{ISBN-13}: 978-1-4020-4010-8.
 
   Fritts, H. C. (2001) \emph{Tree Rings and Climate}.  Blackburn.

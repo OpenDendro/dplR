@@ -128,7 +128,7 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
         stop("shorten 'seg.length' or adjust 'bin.floor'")
     }
     bins <- seq(from=min.bin, to=max.bin, by=seg.lag)
-    bins <- cbind(bins, bins + (seg.length - 1))
+    bins <- cbind(bins, bins + (seg.length - 1), deparse.level=0)
     nbins <- nrow(bins)
     bin.names <- paste0(bins[, 1], ".", bins[, 2])
     ## structures for results

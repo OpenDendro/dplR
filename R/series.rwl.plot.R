@@ -62,7 +62,7 @@ series.rwl.plot <-
         stop("shorten 'seg.length' or adjust 'bin.floor'")
     }
     bins <- seq(from=min.bin, to=to + seg.lag, by=seg.lag)
-    bins <- cbind(bins, bins + (seg.length - 1))
+    bins <- cbind(bins, bins + (seg.length - 1), deparse.level=0)
     nbins <- nrow(bins)
 
     op <- par(no.readonly=TRUE)

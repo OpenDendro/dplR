@@ -12,6 +12,15 @@ File: NAMESPACE
 
 - Import captureOutput from R.utils.
 
+Various .R files
+----------------
+
+- Using deparse.level=0 in some calls to cbind() and rbind() when names
+  are not needed in the result.  Due to this change, the first column of
+  the $bins matrix in the return value of ccf.series.rwl(),
+  corr.rwl.seg(), and corr.series.seg() does not have (undocumented)
+  column names anymore.
+
 File: latexify.R
 ----------------
 

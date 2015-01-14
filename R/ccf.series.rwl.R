@@ -58,7 +58,7 @@ ccf.series.rwl <- function(rwl, series,
         stop("shorten 'seg.length' or adjust 'bin.floor'")
     }
     bins <- seq(from=min.bin, to=to + seg.lag, by=seg.lag)
-    bins <- cbind(bins, bins + (seg.length - 1))
+    bins <- cbind(bins, bins + (seg.length - 1), deparse.level=0)
     nbins <- nrow(bins)
     bin.names <- paste0(bins[, 1], ".", bins[, 2])
 

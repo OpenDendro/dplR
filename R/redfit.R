@@ -1134,11 +1134,11 @@ redfitNormcrit <- function(n, p, limits = FALSE) {
         lowlow[lowGood] <- pnorm(rcritlo[lowGood] - 0.5,
                                  mean = nMean[lowGood], sd = nSd[lowGood])
         lowhigh <- pnorm(rcritlo + 0.5, mean = nMean, sd = nSd)
-        list(rbind(rcritlo, rcrithi),
+        list(rbind(rcritlo, rcrithi, deparse.level=0),
              pmin = 2 * max(lowlow),
              pmax = 2 * min(lowhigh))
     } else {
-        rbind(rcritlo, rcrithi)
+        rbind(rcritlo, rcrithi, deparse.level=0)
     }
 }
 

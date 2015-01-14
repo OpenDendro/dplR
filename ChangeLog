@@ -1,5 +1,11 @@
 * CHANGES IN dplR VERSION 1.6.3
 
+File: CITATION
+--------------
+
+- Removed a piece of obsolete code which raised a NOTE in recent R-devel
+  when checking --as-cran.
+
 File: DESCRIPTION
 -----------------
 

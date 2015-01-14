@@ -1,7 +1,3 @@
-if(!exists("meta") || is.null(meta)) {
-    meta <- packageDescription("dplR")
-}
-
 bibentry(bibtype = "Article",
          title = "A dendrochronology program library in R (dplR)",
          journal = "Dendrochronologia",

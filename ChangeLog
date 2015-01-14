@@ -6,6 +6,9 @@ File: DESCRIPTION
 - A new field, MailingList, shows the address of the web interface
   to the dplR-help mailing list hosted on Google Groups.
 - New Imported package: R.utils.
+- New Suggested package: testthat. Unit tests are now done with testthat
+  instead of RUnit.
+- RUnit is no longer Suggested.
 
 File: NAMESPACE
 ---------------

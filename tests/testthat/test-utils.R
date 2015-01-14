@@ -1,10 +1,12 @@
+context("utility functions")
 test.uuid.gen <- function() {
     ## Setup
     SAMP.SIZE <- 100
     ugen <- uuid.gen()
     uuids <- character(SAMP.SIZE)
-    for(i in seq_len(SAMP.SIZE))
+    for (i in seq_len(SAMP.SIZE)) {
         uuids[i] <- ugen()
+    }
     uuids.split <- strsplit(uuids, split="-", fixed=TRUE)
     unique.nchar <- unique(t(sapply(uuids.split, nchar)))
     unique.chars <-
@@ -13,20 +15,23 @@ test.uuid.gen <- function() {
     all.4 <- unique(substr(uuids, 15, 15))
     one.of.four <- unique(substr(uuids, 20, 20))
     ## Test
-    checkEquals(SAMP.SIZE, length(unique(uuids)), msg="Unique IDs are unique")
-    checkTrue(all(nchar(uuids) == 36), msg="IDs have correct length")
-    checkTrue(all(sapply(uuids.split, length) == 5),
-              msg="IDs have 5 parts separated by dashes")
-    checkTrue(nrow(unique.nchar) == 1 &&
-              all(as.vector(unique.nchar) == c(8, 4, 4, 4, 12)),
-              msg="The parts have lengths 8, 4, 4, 4, and 12")
-    checkTrue(all(unique.chars %in% c(as.character(0:9), letters[seq_len(6)])),
-              msg="In addition to dashes, IDs only contain hexadecimal digits")
-    checkEquals("4", all.4,
-                msg="IDs have a constant character \"4\" in one position")
-    checkTrue(all(one.of.four %in% c("8", "9", "a", "b")),
-              msg="IDs have a restricted character (4/16 choices) in one position")
+    test_that("unique IDs are unique", {
+        expect_equal(SAMP.SIZE, length(unique(uuids)))
+    })
+    test_that("UUIDs have the right parts", {
+        expect_true(all(nchar(uuids) == 36))
+        expect_true(all(sapply(uuids.split, length) == 5))
+        expect_true(nrow(unique.nchar) == 1 &&
+                    all(as.vector(unique.nchar) == c(8, 4, 4, 4, 12)))
+        expect_true(all(unique.chars %in%
+                        c(as.character(0:9), letters[seq_len(6)])))
+    })
+    test_that("UUID fixed bits are correct", {
+        expect_equal(all.4, "4")
+        expect_true(all(one.of.four %in% c("8", "9", "a", "b")))
+    })
 }
+test.uuid.gen()
 
 ## If 'testDocument' is TRUE, produces a test document to 'con', which may
 ## be a connection or a filename.
@@ -34,8 +39,10 @@ test.latexify <-
     function(testDocument=FALSE,
              con=tempfile(pattern = "latexify", fileext = ".tex"))
 {
-    ## Number of test strings
-    ## (including one "extra difficult" case and one empty string)
+    ## First part of tests: basic character set
+
+    ## Number of test strings (first part, including one "extra
+    ## difficult" case and one empty string)
     SAMP.SIZE <- 50
     stopifnot(SAMP.SIZE >= 2)
     MIN.LENGTH <- 1
@@ -81,7 +88,7 @@ test.latexify <-
     testStrings <-
         c(substring(paste(sample(c(rep(characters,
                                        length.out = nTotal - nSpaces),
-                                   rep(" ", nSpaces))),
+                                   rep.int(" ", nSpaces))),
                           collapse=""), strStart, strStop),
           paste(c(specialChars, " ",
                   rev(specialChars), " ",
@@ -95,26 +102,32 @@ test.latexify <-
     ltxSingle <- latexify(testStrings, doublebackslash=FALSE)
 
     ## Tests
-    checkEquals(ltxDouble,
-                gsub("\\", "\\\\", ltxSingle, fixed=TRUE, useBytes=TRUE),
-                msg="doublebackslash argument works as expected")
-    checkTrue(!any(grepl(sprintf("[%s]", controlStr),
-                         ltxSingle, useBytes=TRUE)),
-              msg="No control characters")
-    checkTrue(!any(grepl(sprintf("[%s]{2,}", spaceStr),
-                         ltxSingle, useBytes=TRUE)),
-              msg="Sequence of space characters collapses into one space")
-    checkTrue(!any(grepl("\\\\", ltxSingle, fixed=TRUE)),
-              msg="No line breaks (double backslash)")
+    test_that("doublebackslash works", {
+        expect_equal(ltxDouble,
+                     gsub("\\", "\\\\",
+                          ltxSingle, fixed=TRUE, useBytes=TRUE))
+    })
+    test_that("no control characters are left", {
+        expect_false(any(grepl(sprintf("[%s]", controlStr),
+                               ltxSingle, useBytes=TRUE)))
+    })
+    test_that("space characters collapse", {
+        expect_false(any(grepl(sprintf("[%s]{2,}", spaceStr),
+                               ltxSingle, useBytes=TRUE)))
+    })
+    test_that("there are no line breaks", {
+        expect_false(any(grepl("\\\\", ltxSingle, fixed=TRUE)))
+    })
     Letters <- paste(c(LETTERS, letters), collapse="")
     textCommand <- sprintf("\\\\[%s]+(\\{([^}]|\\\\})+})?", Letters)
     commandTerminated <-
         paste(textCommand,
               "((?<=})|\\{\\}| +|(?=$|[[:digit:],.?!;:\\\\}+*/-]))", sep="")
     commandsAt <- gregexpr(commandTerminated, ltxSingle, perl=TRUE)
-    checkEquals(lapply(gregexpr(textCommand, ltxSingle), as.vector),
-                lapply(commandsAt, as.vector),
-                msg="Command name is terminated properly")
+    test_that("commands are terminated", {
+        expect_equal(lapply(gregexpr(textCommand, ltxSingle), as.vector),
+                     lapply(commandsAt, as.vector))
+    })
     escape <- sprintf("\\\\[^%s](\\{\\})?", Letters)
     escapesAt <- gregexpr(escape, ltxSingle)
 
@@ -125,7 +138,11 @@ test.latexify <-
     multiSpaceClass <- sprintf("[%s]+", spaceStr)
     controlClass <- sprintf("[%s]", controlStr)
     specialClass <- sprintf("[%s]", specialStr)
+    ## Record an ASCII representation of each element in 'testStrings',
+    inputDescription <-
+        capture.output(invisible(vapply(testStrings, dput, "")))
     for (i in seq_len(SAMP.SIZE)) {
+        thisInfo <- inputDescription[i]
         nChars <- nchar(ltxSingle[i])
         ## ltxChars: split ltxSingle[i] into strings representing one
         ## character each
@@ -182,31 +199,31 @@ test.latexify <-
                                "",
                                testStrings[i])),
                      "")[[1]]
-        ## Compare ltxChars and stripChars
-        checkEqualsNumeric(length(stripChars), length(ltxChars),
-                           msg=sprintf("Number of characters correct (%.0f)",
-                           i),
-                           tolerance=0)
         singleFlag <- nchar(ltxChars) == 1
-        checkTrue(!any(grepl(specialClass,
-                             ltxChars[singleFlag], useBytes=TRUE)),
-                  msg=sprintf("No specials left unescaped (%.0f)", i))
-        checkEquals(ltxChars[singleFlag], stripChars[singleFlag],
-                    msg=sprintf("Normal characters preserved (%.0f)", i))
-        specialMap[[i]] <- unique(cbind(stripChars[!singleFlag],
-                                        ltxChars[!singleFlag]))
+        multiFlag <- !singleFlag
+        specialMap[[i]] <- unique(cbind(stripChars[multiFlag],
+                                        ltxChars[multiFlag]))
+        ## Compare ltxChars and stripChars
+        test_that("normal and special characters are treated correctly", {
+            expect_equal(length(stripChars), length(ltxChars),
+                         info=thisInfo, tolerance=0)
+            expect_false(any(grepl(specialClass,
+                                   ltxChars[singleFlag], useBytes=TRUE)),
+                        info=thisInfo)
+            expect_equal(ltxChars[singleFlag], stripChars[singleFlag],
+                         info=thisInfo)
+        })
     }
     ## specialMap becomes a combination of the unique rows across its
     ## elements
     specialMap <- do.call(rbind, specialMap)
     specialMap <- unique(specialMap)
-    ## Check that special characters are mapped to LaTeX commands in a
-    ## consistent manner
-    checkEqualsNumeric(length(specialChars), nrow(specialMap),
-                       msg="Correct number of character mappings",
-                       tolerance=0)
-    checkTrue(all(specialChars %in% specialMap[, 1]),
-              msg="Each special character has a mapping")
+    test_that("mapping of special characters is consistent", {
+        expect_equal(nrow(specialMap), length(specialChars))
+        expect_true(all(specialChars %in% specialMap[, 1]))
+    })
+
+    ## Second part of tests: extended character set
 
     ## A test for handling of different encodings in the input
 
@@ -229,16 +246,14 @@ test.latexify <-
     Encoding(byteString) <- "bytes"
 
     latinConverted <- latexify(latin1String, doublebackslash=FALSE)
-    checkEquals("clich\\'{e} ma\\~{n}ana",
-                latinConverted,
-                msg="Conversion of latin1 string succeeded")
-    checkEquals(latinConverted,
-                latexify(enc2utf8(latin1String), doublebackslash=FALSE),
-                msg="Encoding of the input does not matter")
     byteConverted <- latexify(byteString, doublebackslash=FALSE)
-    checkEquals(gsub("\\", "\\textbackslash ", bytePrint, fixed=TRUE),
-                tolower(byteConverted),# do hex codes print in lower case?
-                msg="Conversion of byte string succeeded")
+    test_that("latexify handles different encodings", {
+        expect_equal(latinConverted, "clich\\'{e} ma\\~{n}ana")
+        expect_equal(latexify(enc2utf8(latin1String), doublebackslash=FALSE),
+                     latinConverted)
+        expect_equal(tolower(byteConverted),# do hex codes print in lower case?
+                     gsub("\\", "\\textbackslash ", bytePrint, fixed=TRUE))
+    })
 
     ## A test for other than default quoting options
     quoteString <- "\"It's five o'clock\", he said."
@@ -253,34 +268,40 @@ test.latexify <-
     exp4 <- sub("\"", "\\\\textquotedbl", exp4)
     exp5 <- gsub("'", "\\\\textquotesingle ", exp2)
     exp1 <- gsub("'", "\\\\textquotesingle ", exp4)
-    checkEquals(exp1, res1, msg="Default straight quotes")
-    checkEquals(exp2, res2, msg="Curved quotes")
-    checkEquals(res2, res3, msg="Fallback to curved quotes")
-    checkEquals(exp4, res4, msg="Fallback to curved single quotes")
-    checkEquals(exp5, res5, msg="Fallback to curved double quotes")
+    test_that("quoting options work", {
+        expect_equal(res1, exp1, info="Default straight quotes")
+        expect_equal(res2, exp2, info="Curved quotes")
+        expect_equal(res3, res2, info="Fallback to curved quotes")
+        expect_equal(res4, exp4, info="Fallback to curved single quotes")
+        expect_equal(res5, exp5, info="Fallback to curved double quotes")
+    })
     ## Check that non-ASCII quotes used by dQuote() and sQuote() are
     ## converted to LaTeX commands
     nestQuotes <- paste0("You said, \u201cHe said, ",
                          "\u2018Have a nice day.\u2019\u201d")
     nq <- latexify(nestQuotes, doublebackslash=FALSE)
-    checkEquals(gsub("\\{\\}(?=\\\\)", "",
-                     gsub("\u2018", "\\\\textquoteleft ",
-                          gsub("\u2019", "\\\\textquoteright",
-                               gsub("\u201c", "\\\\textquotedblleft ",
-                                    gsub("\u201d",
-                                         "\\\\textquotedblright",
-                                         nestQuotes)))),
-                     perl=TRUE),
-                nq, msg="dQuote() and sQuote() are safe")
+    test_that("dQuote() and sQuote() are safe", {
+        expect_equal(nq,
+                     gsub("\\{\\}(?=\\\\)", "",
+                          gsub("\u2018", "\\\\textquoteleft ",
+                               gsub("\u2019", "\\\\textquoteright",
+                                    gsub("\u201c", "\\\\textquotedblleft ",
+                                         gsub("\u201d",
+                                              "\\\\textquotedblright",
+                                              nestQuotes)))),
+                          perl=TRUE))
+    })
     diaeresisD <- "o\u0308ljysa\u0308ilio\u0308"
     diasD <- latexify(diaeresisD, doublebackslash=FALSE)
     diaeresisC <- "\u00f6ljys\u00e4ili\u00f6"
     diasC <- latexify(diaeresisC, doublebackslash=FALSE)
-    checkEquals(diasD, diasC, msg="Unicode NFD and NFC")
+    test_that("Unicode NFD and NFC are handled the same way", {
+        expect_equal(diasD, diasC)
+    })
     ## Strings containing practically every non-ASCII character that
     ## will be converted by latexify()
-    breakWords <- rep(c("space", "vacation", "movie", "line", "break",
-                        "rope", "period"), 2)
+    breakWords <- rep.int(c("space", "vacation", "movie", "line", "break",
+                            "rope", "period"), 2)
     allChars <-
         c("\u0132sselmeer is a lake, Berl\u0133n is Dutch for Berlin.",
           paste0("Other digraphs and ligatures: \u01f1, \u01f2, \u01f3, ",
@@ -299,11 +320,11 @@ test.latexify <-
           paste0("No-Break\u00a0", breakWords, collapse=" "),
           paste0("Do-Break ", breakWords, collapse=" "),
           "visible\u2423space",
-          paste0(rep("Zero\u200bWidth\u200bSpace\u200b", 10), collapse=""),
-          paste0(rep(paste0("S\u00ado\u00adf\u00adt\u00ad",
-                            "H\u00ady\u00adp\u00adh\u00ade\u00adn\u00ad",
-                            "E\u00adv\u00ade\u00adr\u00ady\u00ad",
-                            "w\u00adh\u00ade\u00adr\u00ade"), 8),
+          paste0(rep.int("Zero\u200bWidth\u200bSpace\u200b", 10), collapse=""),
+          paste0(rep.int(paste0("S\u00ado\u00adf\u00adt\u00ad",
+                                "H\u00ady\u00adp\u00adh\u00ade\u00adn\u00ad",
+                                "E\u00adv\u00ade\u00adr\u00ady\u00ad",
+                                "w\u00adh\u00ade\u00adr\u00ade"), 8),
                  collapse="\u00ad"),
           "Legal \u00a7, \u00a9, \u00ae, \u00b6, \u2117, \u2120, \u2122",
           paste0("Letters \u00c6, \u00e6, \u0152, \u0153, \u00d8, \u00f8, ",
@@ -333,8 +354,9 @@ test.latexify <-
                  "reference mark \u203b, low tilde \u02f7, ",
                  "en dash \u2013, em dash \u2014"))
     ac <- latexify(allChars, doublebackslash=FALSE)
-    retVal <- checkTrue(all(Encoding(ac) == "unknown"),
-                        msg("No non-ASCII characters left"))
+    test_that("a certain set of non-ASCII characters is converted", {
+        expect_true(all(Encoding(ac) == "unknown"))
+    })
     ## When used independently outside the test suite, the function
     ## can create a test document, but only in a UTF-8 locale.
     if (isTRUE(testDocument) && isTRUE(l10n_info()[["UTF-8"]])) {
@@ -353,19 +375,21 @@ test.latexify <-
                       "\\usepackage[T1]{fontenc}",
                       "\\usepackage{lmodern}",
                       "}}")
-        id <- c(testStrings, latin1String, byteString, rep(quoteString, 5),
+        id <- c(latin1String, byteString, rep.int(quoteString, 5),
                 nestQuotes, diaeresisD, diaeresisC, allChars)
-        extraInfo <- c(rep("", length(testStrings) + length(latin1String) +
-                           length(byteString)),
+        extraInfo <- c(rep.int("", length(testStrings) + length(latin1String) +
+                               length(byteString)),
                        paste0(" (", c("default", "curved", "no packages",
                                       "only fontenc", "only textcomp"), ")"),
-                       rep("", length(nestQuotes)),
-                       rep(" (Unicode NFD)", length(diaeresisD)),
-                       rep(" (Unicode NFC)", length(diaeresisC)),
-                       rep("", length(allChars)))
+                       rep.int("", length(nestQuotes)),
+                       rep.int(" (Unicode NFD)", length(diaeresisD)),
+                       rep.int(" (Unicode NFC)", length(diaeresisC)),
+                       rep.int("", length(allChars)))
 
-        ## Record how R prints the elements in 'id'
-        inputDescription <- capture.output(invisible(vapply(id, print, "")))
+        ## Record an ASCII representation of each element in 'id',
+        ## add to previous record of 'testStrings'
+        inputDescription <- c(inputDescription,
+                              capture.output(invisible(vapply(id, dput, ""))))
 
         allOutput <- c(ltxSingle, latinConverted, byteConverted, res1, res2,
                        res3, res4, res5, nq, diasD, diasC, ac)
@@ -389,40 +413,37 @@ test.latexify <-
         writeLines("\\end{enumerate}", co)
         writeLines("\\end{document}", co)
         con
-    } else {
-        retVal
     }
 }
+test.latexify()
 
 test.latexDate <- function() {
-    dates <- Sys.Date() + round(runif(100, min = -1000, max = 1000))
+    SAMP.SIZE <- 100
+    dates <- Sys.Date() + round(runif(SAMP.SIZE, min = -1000, max = 1000))
     latexDates <- latexDate(dates)
-    checkEqualsNumeric(length(dates), length(latexDates),
-                       msg="Length of output equals length of input",
-                       tolerance=0)
+    test_that("length of output equals length of input", {
+        expect_equal(length(dates), length(latexDates), tolerance=0)
+    })
     splitDates <- strsplit(latexDates, ", ")
-    checkEqualsNumeric(rep(2, length(dates)),
-                       vapply(splitDates, length, numeric(1)),
-                       msg="Year at end, separated by comma and space",
-                       tolerance=0)
+    test_that("year is at the end, separated by comma and space", {
+        expect_equal(vapply(splitDates, length, numeric(1)),
+                     rep.int(2, length(dates)), tolerance=0)
+    })
     monthsDays <- vapply(splitDates, "[[", character(1), 1)
-    yearStr <- vapply(splitDates, "[[", character(1), 2)
-    Years <- suppressWarnings(as.numeric(yearStr))
-    checkTrue(all(is.finite(Years)), msg="Year is a number")
     splitDates2 <- strsplit(monthsDays, " ")
-    checkEqualsNumeric(rep(2, length(dates)),
-                       vapply(splitDates2, length, numeric(1)),
-                       msg="Month and day separated by space",
-                       tolerance=0)
+    test_that("month and day are separated by space", {
+        expect_equal(vapply(splitDates2, length, numeric(1)),
+                     rep.int(2, length(dates)), tolerance=0)
+    })
+    yearStr <- vapply(splitDates, "[[", character(1), 2)
     Months <- match(vapply(splitDates2, "[[", character(1), 1), month.name)
-    checkTrue(all(is.finite(Months)),
-              msg="Month names match to entries in month.name")
     monthStr <- sprintf("%02.0f", Months)
     Days <- suppressWarnings(as.numeric(vapply(splitDates2,
                                                "[[", character(1), 2)))
-    checkTrue(all(is.finite(Days)), msg="Day of month is a number")
     dayStr <- sprintf("%02.0f", Days)
-    checkEquals(as.character(dates),
-                paste(yearStr, monthStr, dayStr, sep="-"),
-                msg="latexDate(x) matches x in ISO format")
+    test_that("output of latexDate(x) represents date x", {
+        expect_equal(paste(yearStr, monthStr, dayStr, sep="-"),
+                     as.character(dates))
+    })
 }
+test.latexDate()

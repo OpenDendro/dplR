@@ -3,7 +3,7 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.6.3
-Date: 2015-01-08
+Date: 2015-01-14
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "trl")), person("Franco", "Biondi",
@@ -22,7 +22,7 @@ Imports: graphics, grDevices, grid, stats, utils, lattice (>= 0.13-6),
         digest (>= 0.2.3), gmp (>= 0.5-2), png (>= 0.1-1), R.utils (>=
         1.32.0), stringi (>= 0.2-2), stringr (>= 0.4), XML (>= 2.1-0)
 Suggests: Biobase, dichromat (>= 1.2-3), foreach, forecast, iterators,
-        knitr, RColorBrewer, RUnit (>= 0.4.25), tikzDevice, waveslim
+        knitr, RColorBrewer, testthat (>= 0.8), tikzDevice, waveslim
 Description: This package contains functions for performing tree-ring
         analyses such as detrending, chronology building, and cross dating.
         The package reads and writes standard file formats used in 

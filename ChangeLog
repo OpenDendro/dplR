@@ -22,7 +22,8 @@ File: DESCRIPTION
 File: NAMESPACE
 ---------------
 
-- Import captureOutput from R.utils.
+- Importing captureOutput() from R.utils.
+- Exporting net().
 
 Various .R files
 ----------------
@@ -43,6 +44,11 @@ File: latexify.R
   terms of lines of code in dplR.  See Henrik Bengtsson's notes at
   http://www.jottr.org/2014/05/captureOutput.html (referenced on
   2015-01-07).
+
+File: net.R
+-----------
+
+- New function for computing the NET parameter (Esper et al., 2001).
 
 * CHANGES IN dplR VERSION 1.6.2
 

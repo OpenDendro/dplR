@@ -357,3 +357,37 @@ xskel.calc <- function(x,filt.weight=9,skel.thresh=3){
   y <- ceiling(y)
   y
 }
+
+## Reorders vector x according to partial matching of its names to the
+## names in Table.  This is designed to replicate argument matching in
+## R function calls, which also means that it is possible to omit some
+## or all names in x.  There is no equivalent of default values here,
+## i.e. the lengths of the arguments must match.
+vecMatched <- function(x, Table) {
+    stopifnot(is.character(Table), !is.na(Table), nzchar(Table),
+              length(x) == length(Table))
+    xNames <- names(x)
+    y <- as.vector(x)
+    N <- length(Table)
+    if (!is.null(xNames)) {
+        matches <- pmatch(xNames, Table)
+        isNA <- is.na(matches)
+        nNA <- sum(isNA)
+        if (nNA == 0) {
+            y[matches] <- x
+        } else {
+            flagBad <- nzchar(xNames[isNA])
+            if (any(flagBad)) {
+                stop(gettextf("unknown element(s): %s",
+                              paste(xNames[isNA][flagBad],collapse=", ")))
+            }
+            if (nNA < N) {
+                notNA <- !isNA
+                theMatch <- matches[notNA]
+                y[theMatch] <- x[notNA]
+                y[seq_len(N)[-theMatch]] <- x[isNA]
+            }
+        }
+    }
+    y
+}

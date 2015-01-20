@@ -26,9 +26,23 @@ net <- function(x, weights = c(v=1, g=1)) {
         delta[isNA] <- 0
         pos <- rowSums(delta > 0)
         neg <- rowSums(delta < 0)
-        c(NA_real_, pmax(pos, neg) / N)
+        res <- c(NA_real_, pmax(pos, neg) / N)
+        names(res) <- rownames(mat)
+        res
     }
-    NetJ <- weights2[1] * variability(x2) + weights2[2] * (1 - gleichlauf(x2))
+    w1 <- weights2[1]
+    w2 <- weights2[2]
+    do1 <- w1 != 0
+    do2 <- w2 != 0
+    NetJ <- if (do1 && do2) {
+        w1 * variability(x2) + w2 * (1 - gleichlauf(x2))
+    } else if (do1) {
+        w1 * variability(x2)
+    } else if (do2) {
+        w2 * (1 - gleichlauf(x2))
+    } else {
+        structure(rep.int(NA_real_, dimX[1]), names = rownames(x2))
+    }
     Net <- mean(NetJ, na.rm = TRUE)
     list(all = NetJ, average = Net)
 }

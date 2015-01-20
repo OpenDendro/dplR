@@ -611,7 +611,7 @@ test.net <- function() {
         seq.dec <- seq.int(from = -1, to = -10)
         testFrame2 <- data.frame(seq.inc, seq.inc, seq.inc, seq.dec)
         exp1 <- c(NA_real_, rep.int(2.25, 9))
-        exp2 <- c(NA_real_, rep.int(2, 9))
+        exp2 <- rep.int(2, 10)
         exp3 <- c(NA_real_, rep.int(0.25, 9))
         expect_equal(net(testFrame2)[["all"]], exp1)
         expect_equal(net(testFrame2, weights=c(v=1, 0))[["all"]], exp2)

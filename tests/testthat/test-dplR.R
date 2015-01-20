@@ -591,6 +591,55 @@ test.hanning <- function() {
     })
 }
 test.hanning()
+test.net <- function() {
+    ## Setup
+    seq.inc <- seq_len(10)
+    seq.rand <- sample(x = seq.inc, size = 10, replace = FALSE)
+    rowNames <- as.character(seq(from=100, length.out=length(seq.inc)))
+    testFrame <- data.frame(seq.rand, seq.rand, seq.rand, seq.rand,
+                            row.names = rowNames)
+    net.testFrame <- net(testFrame)
+    ## Test
+    test_that("result of net is correctly formatted", {
+        expect_is(net.testFrame, "list")
+        expect_named(net.testFrame, c("all", "average"))
+        expect_named(net.testFrame[["all"]], rowNames)
+        expect_equivalent(net.testFrame[["all"]], c(NA_real_, rep.int(0, 9)))
+        expect_equal(net.testFrame[["average"]], 0)
+    })
+    test_that("net returns correct results", {
+        seq.dec <- seq.int(from = -1, to = -10)
+        testFrame2 <- data.frame(seq.inc, seq.inc, seq.inc, seq.dec)
+        exp1 <- c(NA_real_, rep.int(2.25, 9))
+        exp2 <- c(NA_real_, rep.int(2, 9))
+        exp3 <- c(NA_real_, rep.int(0.25, 9))
+        expect_equal(net(testFrame2)[["all"]], exp1)
+        expect_equal(net(testFrame2, weights=c(v=1, 0))[["all"]], exp2)
+        expect_equal(net(testFrame2, weights=c(g=1, 0))[["all"]], exp3)
+        testFrame3 <- testFrame2[c(1:5, 5, 6:10), ]
+        row.names(testFrame3) <- NULL
+        expect_equal(net(testFrame3)[["all"]], c(exp1[1:5], 3, exp1[6:10]))
+        expect_equal(net(testFrame3, weights=c(v=1, 0))[["all"]],
+                     c(exp2[1:5], 2, exp2[6:10]))
+        expect_equal(net(testFrame3, weights=c(g=1, 0))[["all"]],
+                     c(exp3[1:5], 1, exp3[6:10]))
+    })
+    test_that("input can be matrix or data.frame", {
+        net.matrix <- net(as.matrix(testFrame))
+        expect_equal(net.matrix[["all"]], net.testFrame[["all"]])
+        expect_equal(net.matrix[["average"]], net.testFrame[["average"]])
+    })
+    test_that("invalid input and parameters fail", {
+        expect_error(net(1:5), "matrix-like")
+        expect_error(net(as.matrix(1:5)), "2 columns")
+        expect_error(net(t(as.matrix(1:5))), "2 rows")
+        expect_error(net(testFrame, weights = c(dontexist = 1, 0)), "unknown")
+        expect_error(net(testFrame, weights = c(1, NA_real_)), "is.finite")
+        expect_error(net(testFrame, weights = c(1, 1, 1)), "length")
+        expect_error(net(testFrame, weights = c("a", "b")), "is.numeric")
+    })
+}
+test.net()
 test.read.ids <- function() {
     ## Setup
     site <- "abc"

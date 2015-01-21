@@ -126,8 +126,8 @@ test.combine.rwl <- function() {
     res.8 <- combine.rwl(df.1, df.4)
     ## Test
     test_that("combine.rwl stops with nothing to combine", {
-        expect_error(combine.rwl(list()))
-        expect_error(combine.rwl(df.1))
+        expect_error(combine.rwl(list()),"nothing to combine",ignore.case=TRUE)
+        expect_error(combine.rwl(df.1), "nothing to combine", ignore.case=TRUE)
     })
     test_that("combine.rwl works with a list of length one", {
         expect_equal(res.3, df.1)
@@ -483,9 +483,9 @@ test.ffcsaps <- function() {
         expect_more_than(error.2, error.3)
     })
     test_that("ffcsaps stops on bad parameters", {
-        expect_error(ffcsaps(y, f=-1))
-        expect_error(ffcsaps(y, f=2))
-        expect_error(ffcsaps(y, nyrs=0))
+        expect_error(ffcsaps(y, f=-1), "between 0 and 1")
+        expect_error(ffcsaps(y, f=2), "between 0 and 1")
+        expect_error(ffcsaps(y, nyrs=0), "greater than 1")
     })
 }
 test.ffcsaps()

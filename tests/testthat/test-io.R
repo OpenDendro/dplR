@@ -10,7 +10,7 @@ test.read.tucson <- function() {
                fh)
     close(fh)
     test_that("read.tucson catches lines that are too long", {
-        expect_error(read.tucson(tf))
+        expect_error(read.tucson(tf), "failed to read")
     })
 
     ## Precision 0.01
@@ -107,7 +107,7 @@ test.read.tucson <- function() {
                  "TEST8A  1730  1230   456   789    12    34   999"), fh8)
     close(fh8)
     test_that("read.tucson stops on overlapping data", {
-        expect_error(read.tucson(tf8))
+        expect_error(read.tucson(tf8), "failed to read")
     })
 
     ## Non-standard file with missing decade

@@ -18,6 +18,8 @@ File: DESCRIPTION
 - Updated version requirement: gmp (>= 0.5-5).  Earlier versions of gmp do
   not export is.bigq() which is required by dplR.  The previous version
   requirement (>= 0.5-2) was a mistake.
+- Updated version requirement: R (>= 2.15.2).  For some reason, R
+  CMD check does not play nice with testthat on earlier versions of R.
 
 File: NAMESPACE
 ---------------

@@ -23,6 +23,7 @@ File: NAMESPACE
 ---------------
 
 - Importing captureOutput() from R.utils.
+- Importing package Matrix.
 - Exporting net().
 
 Various .R files
@@ -33,6 +34,12 @@ Various .R files
   the $bins matrix in the return value of ccf.series.rwl(),
   corr.rwl.seg(), and corr.series.seg() does not have (undocumented)
   column names anymore.
+
+File: ffcsaps.R
+---------------
+
+- Increased performance by using sparse matrices from the Matrix
+  package.
 
 File: latexify.R
 ----------------

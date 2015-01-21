@@ -31,6 +31,8 @@ importFrom(stringr, str_pad, str_trim)
 importFrom(utils, head, installed.packages, read.fwf, tail,
            packageVersion, write.table)
 
+import(Matrix)
+
 importFrom(XML, xmlEventParse)
 
 export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, cms,

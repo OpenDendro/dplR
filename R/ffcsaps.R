@@ -111,10 +111,10 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
                         c(0, 0, odx[-1])),
                   arg2, n)
     R2[, 1] <- R2[, 1] - 1
-    forR <- matrix(0, zz2, zz2)
-    forR2 <- matrix(0, zz2, n)
-    forR[R[, 1] + (R[, 2] - 1) * zz2] <- R[, 3]
-    forR2[R2[, 1] + (R2[, 2] - 1) * zz2] <- R2[, 3]
+    forR <- Matrix(0, zz2, zz2, sparse = TRUE)
+    forR2 <- Matrix(0, zz2, n, sparse = TRUE)
+    forR[R[, 1:2, drop=FALSE]] <- R[, 3]
+    forR2[R2[, 1:2, drop=FALSE]] <- R2[, 3]
     ## The following order of operations was tested to be relatively
     ## accurate across a wide range of f and nyrs
     p.inv <- (1 - f) * (cos(2 * pi / nyrs) + 2) /
@@ -124,8 +124,8 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     mplier <- 6 - 6 / p.inv # slightly more accurate than 6*(1-1/p.inv)
     ## forR*p is faster than forR/p.inv, and a quick test didn't
     ## show any difference in the final spline
-    u <- solve(mplier * tcrossprod(forR2) + forR * p,
-               diff(diff(yi) / diff.xi))
+    u <- as.numeric(solve(mplier * tcrossprod(forR2) + forR * p,
+                          diff(diff(yi) / diff.xi)))
     yi <- yi - mplier * diff(c(0, diff(c(0, u, 0)) / diff.xi, 0))
     test0 <- xi[-c(1, n)]
     c3 <- c(0, u / p.inv, 0)

@@ -30,7 +30,8 @@ License: \tab \acronym{GPL} (>= 2)\cr
   Zang.  Function \code{\link{redfit}} is an improved translation of
   program REDFIT which is original work of Manfred Mudelsee and Michael
   Schulz.  Jacob Cecile contributed a bug fix to
-  \code{\link{detrend.series}}.
+  \code{\link{detrend.series}}.  Allan Buras came up with the revised
+  formula of \code{\link{glk}} in dplR >= 1.6.1.
 }
 \references{
   Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of

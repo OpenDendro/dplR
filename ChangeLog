@@ -37,8 +37,8 @@ Various .R files
   the $bins matrix in the return value of ccf.series.rwl(),
   corr.rwl.seg(), and corr.series.seg() does not have (undocumented)
   column names anymore.
-- Using functions from the matrixStats package to speed up some
-  operations on the rows or columns of matrices.
+- Using base::rowSums and functions from the matrixStats package
+  to speed up some operations on rows or columns of matrices.
 
 File: ffcsaps.R
 ---------------

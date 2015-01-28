@@ -21,7 +21,7 @@ importFrom(lattice, panel.abline, panel.dotplot, panel.segments,
            trellis.par.set, xyplot)
 
 importFrom(matrixStats, colAlls, colAnys, colMedians, colSds, rowAlls,
-           rowSds)
+           rowAnys, rowSds)
 
 importFrom(png, readPNG)
 

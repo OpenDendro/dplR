@@ -15,10 +15,8 @@ wc.to.po <- function(wc){
                     !is.na(missing))
     pith.offset <- rep(as.integer(NA), n)
     pith.offset[not.na] <-
-        as.integer(apply(cbind(missing[not.na], unmeasured[not.na]),
-                         1,
-                         sum,
-                         na.rm = TRUE) + 1)
+        as.integer(rowSums(cbind(missing[not.na], unmeasured[not.na]),
+                           na.rm = TRUE) + 1)
 
     data.frame(series = row.names(wc),
                pith.offset)

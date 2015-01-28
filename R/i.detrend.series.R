@@ -4,7 +4,7 @@
     fits <- detrend.series(y, y.name, make.plot=TRUE, nyrs = nyrs, f = f,
                            pos.slope = pos.slope)
     ## Remove the nec resids if all na
-    fits <- fits[, !apply(is.na(fits), 2, all), drop=FALSE]
+    fits <- fits[, !colAlls(is.na(fits)), drop=FALSE]
     col.names <- names(fits)
     cat(gettextf("\nChoose a detrending method for this series %s.\n",
                  y.name, domain="R-dplR"))

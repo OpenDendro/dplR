@@ -20,7 +20,7 @@ series.rwl.plot <-
 
     seg.lag <- seg.length / 2
 
-    mask <- !apply(as.matrix(is.na(rwl2)), 1, all)
+    mask <- !rowAlls(as.matrix(is.na(rwl2)))
     yrs0 <- as.numeric(row.names(rwl2))[mask]
     ## Normalize.
     tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight)

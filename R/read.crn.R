@@ -118,7 +118,7 @@
     ## Clean up NAs
     crn.mat[which(crn.mat[, -ncol.crn.mat] == 9990)] <- NA # column-major order
     crn.mat <-
-        crn.mat[!apply(is.na(crn.mat[, -ncol.crn.mat, drop=FALSE]), 1, all),
+        crn.mat[!rowAlls(is.na(crn.mat[, -ncol.crn.mat, drop=FALSE])),
                 ,
                 drop=FALSE]
     ## If samp depth is all 1 then dump it

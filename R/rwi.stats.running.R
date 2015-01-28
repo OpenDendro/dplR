@@ -167,13 +167,13 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
     tree.any <- matrix(FALSE, n.years, n.trees)
     for (i in seq.tree) {
         tree.any[, i] <-
-            apply(rwiNotNA[, treeIds == unique.trees[i], drop=FALSE], 1, any)
+            rowAnys(rwiNotNA[, treeIds == unique.trees[i], drop=FALSE])
     }
     n.trees.by.year <- rowSums(tree.any)
 
     ## Easy way to force complete overlap of data
     if (period2 == "common") {
-        bad.rows <- !apply(rwiNotNA, 1, all)
+        bad.rows <- !rowAlls(rwiNotNA)
         rwi3[bad.rows, ] <- NA
         rwiNotNA[bad.rows, ] <- FALSE
         good.rows.flag <- !bad.rows
@@ -305,8 +305,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
             rbar.bt <- rsum.bt / n.bt
         }
 
-        coresPresent <-
-            which(apply(rwiNotNA[year.idx, , drop = FALSE], 2, any))
+        coresPresent <- which(colAnys(rwiNotNA[year.idx, , drop = FALSE]))
         treesPresent <- unique(treeIds[coresPresent])
         nCores <- length(coresPresent)
         nTrees <- length(treesPresent)

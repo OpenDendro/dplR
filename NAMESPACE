@@ -20,7 +20,8 @@ importFrom(grid, gpar, grid.lines, grid.newpage, grid.polygon,
 importFrom(lattice, panel.abline, panel.dotplot, panel.segments,
            trellis.par.set, xyplot)
 
-importFrom(matrixStats, colMedians, colSds, rowSds)
+importFrom(matrixStats, colAlls, colAnys, colMedians, colSds, rowAlls,
+           rowSds)
 
 importFrom(png, readPNG)
 

@@ -24,7 +24,7 @@ common.interval <- function(rwl, type=c("series", "years", "both"),
     ## series with overlaps
     rm.short <- function(rwl, yrs, rwlNotNA, row.idx, flag=FALSE) {
         n <- 0
-        anyNotNA <- apply(rwlNotNA, 2, any)
+        anyNotNA <- colAnys(rwlNotNA)
         which.good <- which(anyNotNA)
         nCol.orig <- length(which.good)
         series.range <- matrix(NA_real_, 2, nCol.orig)
@@ -55,7 +55,7 @@ common.interval <- function(rwl, type=c("series", "years", "both"),
                     break
                 }
             }
-            tmp <- apply(rwlNotNA[dontkeep.row, keep.col, drop = FALSE], 1, all)
+            tmp <- rowAlls(rwlNotNA[dontkeep.row, keep.col, drop = FALSE])
             dontkeep.row[dontkeep.row] <- !tmp
             nRow <- nRow + sum(tmp)
             n.years <- nCol * nRow
@@ -133,7 +133,7 @@ common.interval <- function(rwl, type=c("series", "years", "both"),
             keep.row <- tmp[[3]]
             keep.col <- tmp[[4]]
         } else { # type2 == "both"
-            keep.col <- apply(rwlNotNA[row.idx, , drop = FALSE], 2, all)
+            keep.col <- colAlls(rwlNotNA[row.idx, , drop = FALSE])
             nCol <- sum(keep.col)
         }
         opt <- nRow * nCol

@@ -11,7 +11,7 @@ File: DESCRIPTION
 
 - A new field, MailingList, shows the address of the web interface
   to the dplR-help mailing list hosted on Google Groups.
-- New Imported package: R.utils.
+- New Imported packages: Matrix, matrixStats, R.utils.
 - New Suggested package: testthat. Unit tests are now done with testthat
   instead of RUnit.
 - RUnit is no longer Suggested.
@@ -26,6 +26,7 @@ File: NAMESPACE
 
 - Importing captureOutput() from R.utils.
 - Importing package Matrix.
+- Importing various functions from matrixStats.
 - Exporting net().
 
 Various .R files
@@ -36,6 +37,8 @@ Various .R files
   the $bins matrix in the return value of ccf.series.rwl(),
   corr.rwl.seg(), and corr.series.seg() does not have (undocumented)
   column names anymore.
+- Using functions from the matrixStats package to speed up some
+  operations on the rows or columns of matrices.
 
 File: ffcsaps.R
 ---------------

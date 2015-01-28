@@ -40,7 +40,7 @@ pointer <- function(rwl, rgv.thresh=10, nseries.thresh=75,
     nat.y.2 <- pmax(0, out[, 4] - (nseries.thresh - 0.0000001))
     out[, 5] <- sign(nat.y.1 - nat.y.2)
     out[, 6] <- (rowMeans(gv, na.rm=TRUE) - 1) * 100
-    out[, 7] <- apply(gv, 1, function(x) sd(x, na.rm=TRUE)) * 100
+    out[, 7] <- rowSds(gv, na.rm=TRUE) * 100
     if (is.numeric(round.decimals) && length(round.decimals) > 0 &&
         is.finite(round.decimals[1]) && round.decimals[1] >= 0) {
         for (i in c(3, 4, 6, 7)) {

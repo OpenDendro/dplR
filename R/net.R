@@ -14,7 +14,7 @@ net <- function(x, weights = c(v=1, g=1)) {
     }
     ## Standard deviation standardized by mean
     variability <- function(mat) {
-        Sd <- apply(mat, 1, sd, na.rm = TRUE)
+        Sd <- rowSds(mat, na.rm = TRUE)
         Mean <- rowMeans(mat, na.rm = TRUE)
         Sd / Mean
     }

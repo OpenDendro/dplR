@@ -78,7 +78,7 @@ wavelet.plot(wave.list,
 }
 \note{ The function \code{morlet} is a port of Torrence's
   \acronym{IDL} code available at
-  \url{http://atoc.colorado.edu/research/wavelets/software.html}
+  \url{http://paos.colorado.edu/research/wavelets/software.html}
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{morlet}}, \code{\link{ffcsaps}}}

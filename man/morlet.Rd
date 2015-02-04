@@ -39,7 +39,7 @@ morlet(y1, x1 = seq_along(y1), p2 = NULL, dj = 0.25, siglvl = 0.95)
 }
 
 \note{ This is a port of Torrence's \acronym{IDL} code available at
-  \url{http://atoc.colorado.edu/research/wavelets/software.html}
+  \url{http://paos.colorado.edu/research/wavelets/software.html}
 }
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{wavelet.plot}} }

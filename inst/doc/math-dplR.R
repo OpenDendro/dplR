@@ -1,4 +1,3 @@
-
 ## ----"try-matlab", echo=FALSE, results="hide"----------------------------
 TRY_MATLAB <- TRUE
 
@@ -11,16 +10,13 @@ latexify2 <- function(x) latexify(x, doublebackslash = FALSE)
 library(dichromat)
 library(graphics)
 library(stats)
-
-
-
+library(Matrix) # ffcsaps uses sparse matrices
 
 ## ----"knitr-init-fig", echo=FALSE, cache=FALSE---------------------------
 PAGE_WIDTH <- 4.74
 PAGE_HEIGHT <- 8.22
 opts_template$set(myfigures=list(fig.path = "figure/", fig.pos = "tbp",
                   fig.align = "center", fig.lp = "fig:", dev = "tikz"))
-
 
 ## ----"response-comp-init"------------------------------------------------
 ## Helper function used in ffcsaps2
@@ -153,10 +149,10 @@ ffcsaps2 <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5,
                         c(0, 0, odx[-1])),
                   arg2, n)
     R2[, 1] <- R2[, 1] - 1
-    forR <- matrix(0, zz2, zz2)
-    forR2 <- matrix(0, zz2, n)
-    forR[R[, 1] + (R[, 2] - 1) * zz2] <- R[, 3]
-    forR2[R2[, 1] + (R2[, 2] - 1) * zz2] <- R2[, 3]
+    forR <- Matrix(0, zz2, zz2, sparse = TRUE)
+    forR2 <- Matrix(0, zz2, n, sparse = TRUE)
+    forR[R[, 1:2, drop=FALSE]] <- R[, 3]
+    forR2[R2[, 1:2, drop=FALSE]] <- R2[, 3]
     if (!missing(p)) {
         ## NEW: give value of p directly as an argument
         p.inv <- 1 / p
@@ -177,8 +173,8 @@ ffcsaps2 <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5,
     mplier <- 6 - 6 / p.inv # slightly more accurate than 6*(1-1/p.inv)
     ## forR*p is faster than forR/p.inv, and a quick test didn't
     ## show any difference in the final spline
-    u <- solve(mplier * tcrossprod(forR2) + forR * p,
-               diff(diff(yi) / diff.xi))
+    u <- as.numeric(solve(mplier * tcrossprod(forR2) + forR * p,
+                          diff(diff(yi) / diff.xi)))
     yi <- yi - mplier * diff(c(0, diff(c(0, u, 0)) / diff.xi, 0))
     test0 <- xi[-c(1, n)]
     c3 <- c(0, u / p.inv, 0)
@@ -204,7 +200,6 @@ ffcsaps2 <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5,
     res
 }
 
-
 ## ----"response-init"-----------------------------------------------------
 ##  Cook, E. R. and Kairiukstis, L. A. (1990) Methods of
 ##  Dendrochronology: Applications in the Environmental Sciences.
@@ -224,7 +219,6 @@ respCook <- function(f, p) {
     pif2 <- 2 * pi * f
     1 - 1 / (1 + (p * (cos(pif2) + 2)) / (6 * (cos(pif2) - 1)^2))
 }
-
 
 ## ----"response-comp", message=FALSE, dependson="response-comp-init", cache.vars=c("response1", "response2", "NYRS", "nFreq")----
 N <- 1536
@@ -292,7 +286,6 @@ for (j in seq_along(NYRS)) {
     response2[, j] <- rowMeans(ratio2[, , j])
 }
 
-
 ## ----"ffcsaps-caption", cache=FALSE--------------------------------------
 FFCSAPS_CAPTION <-
     paste("Theoretical frequency response of spline filter vs response",
@@ -336,7 +329,6 @@ legend("topright", bg = "white",
        lty = c(NA, NA, "solid"), pch = c(PCH_1, PCH_2, NA),
        lwd = c(1, 1, LWD))
 par(op)
-
 
 ## ----"smoothed-R", dependson="response-comp-init", cache.vars=c("smoothed.R", "y")----
 if (!exists(".Random.seed", globalenv(), mode="numeric")) {
@@ -405,7 +397,7 @@ if (isTRUE(TRY_MATLAB)) {
 } else {
     matlabValue <- NULL
     smoothed.matlab <- NULL
-    matlabVersion <- "8.3.0.532 (R2014a)" # tested ok on 2014-05-12
+    matlabVersion <- "8.4.0.150421 (R2014b)" # tested ok on 2015-02-04
 }
 
 ## ----"R-matlab-compare", cache=FALSE, error=FALSE------------------------
@@ -424,7 +416,6 @@ if (isTRUE(TRY_MATLAB) && matlabValue == 0) {
     ## from compiling.
     stopifnot(all(allEqual))
 }
-
 
 ## ----"smoothed-caption", cache=FALSE-------------------------------------
 SMOOTHED_CAPTION <-
@@ -455,12 +446,10 @@ legend(usr[1], usr[4], xjust = 0, yjust = 0, cex = 0.85,
        bty = "n")
 par(op)
 
-
 ## ----"matlab-version", cache=FALSE---------------------------------------
 if (isTRUE(TRY_MATLAB) && matlabValue == 0) {
     matlabVersionText <- paste0("(version ", latexify2(matlabVersion), ")")
 }
-
 
 ## ----"matlab-note", cache=FALSE, message=FALSE---------------------------
 matlabNoteText <- if (!isTRUE(TRY_MATLAB)) {
@@ -487,12 +476,10 @@ matlabNoteText <- if (!isTRUE(TRY_MATLAB)) {
     "The result was reproduced when this document was compiled."
 }
 
-
 ## ----gini-rmd, echo=TRUE, tidy=FALSE, cache=FALSE------------------------
 ## Gini index is one half of relative mean difference.
 ## x should not have NA values.
 gini.rmd <- function(x) {
     mean(abs(outer(x, x, "-"))) / mean(x) * 0.5
 }
-
 

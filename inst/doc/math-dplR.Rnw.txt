@@ -62,6 +62,7 @@ latexify2 <- function(x) latexify(x, doublebackslash = FALSE)
 library(dichromat)
 library(graphics)
 library(stats)
+library(Matrix) # ffcsaps uses sparse matrices
 @ 
 
 \usepackage[T1]{fontenc}
@@ -255,10 +256,10 @@ ffcsaps2 <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5,
                         c(0, 0, odx[-1])),
                   arg2, n)
     R2[, 1] <- R2[, 1] - 1
-    forR <- matrix(0, zz2, zz2)
-    forR2 <- matrix(0, zz2, n)
-    forR[R[, 1] + (R[, 2] - 1) * zz2] <- R[, 3]
-    forR2[R2[, 1] + (R2[, 2] - 1) * zz2] <- R2[, 3]
+    forR <- Matrix(0, zz2, zz2, sparse = TRUE)
+    forR2 <- Matrix(0, zz2, n, sparse = TRUE)
+    forR[R[, 1:2, drop=FALSE]] <- R[, 3]
+    forR2[R2[, 1:2, drop=FALSE]] <- R2[, 3]
     if (!missing(p)) {
         ## NEW: give value of p directly as an argument
         p.inv <- 1 / p
@@ -279,8 +280,8 @@ ffcsaps2 <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5,
     mplier <- 6 - 6 / p.inv # slightly more accurate than 6*(1-1/p.inv)
     ## forR*p is faster than forR/p.inv, and a quick test didn't
     ## show any difference in the final spline
-    u <- solve(mplier * tcrossprod(forR2) + forR * p,
-               diff(diff(yi) / diff.xi))
+    u <- as.numeric(solve(mplier * tcrossprod(forR2) + forR * p,
+                          diff(diff(yi) / diff.xi)))
     yi <- yi - mplier * diff(c(0, diff(c(0, u, 0)) / diff.xi, 0))
     test0 <- xi[-c(1, n)]
     c3 <- c(0, u / p.inv, 0)
@@ -339,8 +340,11 @@ coefficients in \texttt{gini.coef}.
 
 The original implementations of the functions covered here were not
 written by the author of this document.  Therefore the functions were
-analyzed with a reverse engineering approach.  At the time of writing,
-dplR was at version 1.6.0.  Although any changes affecting the
+analyzed with a reverse engineering approach.  At the time when this
+document was updated, the latest release of dplR was version 1.6.2,
+but the performance improvements of (future) version 1.6.3 had already
+been applied to \texttt{ffcsaps} in the development version and in the
+source code of the document.  Although any changes affecting the
 mathematical details of the functions are unlikely, the reader is
 advised to check that the document file originated from a current
 version of dplR.
@@ -603,7 +607,7 @@ if (isTRUE(TRY_MATLAB)) {
 } else {
     matlabValue <- NULL
     smoothed.matlab <- NULL
-    matlabVersion <- "8.3.0.532 (R2014a)" # tested ok on 2014-05-12
+    matlabVersion <- "8.4.0.150421 (R2014b)" # tested ok on 2015-02-04
 }
 @ 
 <<"R-matlab-compare", cache=FALSE, error=FALSE>>=

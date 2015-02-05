@@ -1,5 +1,6 @@
 `read.tucson` <- function(fname, header = NULL, long = FALSE,
-                          encoding = getOption("encoding"))
+                          encoding = getOption("encoding"),
+                          edge.zeros = TRUE)
 {
     ## Checks that the input is good. The input variables are vectors
     ## ('series', 'decade.yr') or matrices ('x') containing most of
@@ -206,7 +207,7 @@
     if (!grepl("\t", data1[length(data1)])) {
         ## Using a connection instead of a file name in read.fwf and
         ## read.table allows the function to support different encodings.
-        if (long) {
+        if (isTRUE(long)) {
             ## Reading 11 years per decade allows nonstandard use of stop
             ## marker at the end of a line that already has 10
             ## measurements.  Such files exist in ITRDB.
@@ -245,8 +246,12 @@
         series.fixed <- series
         decade.fixed <- decade.yr
         x <- as.matrix(dat[3:12])
-        ## Convert values <= 0 (not -9999) to NA
-        x[x <= 0 & x != -9999] <- NA
+        ## Convert values <= 0 or < 0 (not -9999) to NA
+        if (isTRUE(edge.zeros)) {
+            x[x < 0 & x != -9999] <- NA
+        } else {
+            x[x <= 0 & x != -9999] <- NA
+        }
         x.fixed <- x
         fixed.ok <- input.ok(series, decade.yr, x)
     } else {
@@ -285,7 +290,11 @@
         series <- dat[[1]]
         decade.yr <- dat[[2]]
         x <- as.matrix(dat[3:12])
-        x[x <= 0 & x != -9999] <- NA
+        if (isTRUE(edge.zeros)) {
+            x[x < 0 & x != -9999] <- NA
+        } else {
+            x[x <= 0 & x != -9999] <- NA
+        }
         if (!input.ok(series, decade.yr, x)) {
             if (exists("series.fixed", inherits=FALSE) &&
                 exists("decade.fixed", inherits=FALSE) &&

@@ -188,6 +188,41 @@ test.read.tucson <- function() {
         expect_equal(0, nrow(read.tucson(tf13, header = FALSE)))
     })
 
+    tf14 <- tempfile()
+    fh14 <- file(tf14, "wt")
+    on.exit(unlink(tf14), add=TRUE)
+    writeLines(c("TST14A  1906     0     0   100   200",
+                 "TST14A  1910   300   200   100   200   300   999",
+                 "TST14B  1905   300   200   100   200   300",
+                 "TST14B  1910   200   100     0     0   999",
+                 "TST14C  1906     0   200   100   200",
+                 "TST14C  1910   300   200   100     0   999"), fh14)
+    close(fh14)
+    test_that("read.tucson (by default) preserves edge zeros", {
+        res.tf14 <- read.tucson(tf14)
+        expect_true(is.data.frame(res.tf14))
+        expect_named(res.tf14, c("TST14A", "TST14B", "TST14C"))
+        expect_equal(row.names(res.tf14), as.character(1905:1914))
+        expect_equal(res.tf14[[1]],
+                     c(NA_real_, 0, 0, 1, 2, 3, 2, 1, 2, 3))
+        expect_equal(res.tf14[[2]],
+                     c(3, 2, 1, 2, 3, 2, 1, 0, 0, NA_real_))
+        expect_equal(res.tf14[[3]],
+                     c(NA_real_, 0, 2, 1, 2, 3, 2, 1, 0, NA_real_))
+        res.tf14B <- read.tucson(tf14, edge.zeros=FALSE)
+        expect_true(is.data.frame(res.tf14B))
+        expect_named(res.tf14B, c("TST14A", "TST14B", "TST14C"))
+        expect_equal(row.names(res.tf14B), as.character(1905:1914))
+        NA2 <- rep.int(NA_real_, 2)
+        NA3 <- rep.int(NA_real_, 3)
+        expect_equal(res.tf14B[[1]],
+                     c(NA3, 1, 2, 3, 2, 1, 2, 3))
+        expect_equal(res.tf14B[[2]],
+                     c(3, 2, 1, 2, 3, 2, 1, NA3))
+        expect_equal(res.tf14B[[3]],
+                     c(NA2, 2, 1, 2, 3, 2, 1, NA2))
+    })
+
 }
 test.read.tucson()
 ### We should write tests for other I/O functions, also

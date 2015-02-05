@@ -62,6 +62,18 @@ File: net.R
 
 - New function for computing the NET parameter (Esper et al., 2001).
 
+File: read.tucson.R
+-------------------
+
+- New argument 'edge.zeros', TRUE (default) or FALSE.  If TRUE,
+  possible leading and trailing zero values in tree-ring series are
+  kept.  If FALSE, such values are dropped.  The latter is how the
+  function has worked between (pre-)release 1.5.5 and the previoius
+  release, and may be considered a bug or a misfeature.  To
+  reiterate, the default behavior has changed in some cases.  The
+  alternative, 1.5.5--1.6.2 behavior can be restored by changing the
+  value of the argument.
+
 * CHANGES IN dplR VERSION 1.6.2
 
 No functional changes.  A unit test was changed so it would not fail

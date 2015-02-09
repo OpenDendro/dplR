@@ -72,7 +72,8 @@ File: read.tucson.R
   release, and may be considered a bug or a misfeature.  To
   reiterate, the default behavior has changed in some cases.  The
   alternative, 1.5.5--1.6.2 behavior can be restored by changing the
-  value of the argument.
+  value of the argument.  Reported by Daniel Bishop and Neil
+  Pederson.
 
 * CHANGES IN dplR VERSION 1.6.2
 

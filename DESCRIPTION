@@ -3,7 +3,7 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.6.3
-Date: 2015-02-05
+Date: 2015-02-09
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "trl")), person("Franco", "Biondi",
@@ -27,7 +27,7 @@ Suggests: Biobase, dichromat (>= 1.2-3), foreach, forecast, iterators,
 Description: This package contains functions for performing tree-ring
         analyses such as detrending, chronology building, and cross dating.
         The package reads and writes standard file formats used in 
-        dendrochronology
+        dendrochronology.
 LazyData: no
 License: GPL (>= 2)
 URL: http://huxley.wwu.edu/trl/htrl-dplr

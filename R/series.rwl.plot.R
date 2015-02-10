@@ -14,9 +14,8 @@ series.rwl.plot <-
 
     ## turn off warnings for this function
     ## The sig test for spearman's rho often produces warnings.
-    w <- options("warn")
+    w <- options(warn = -1)
     on.exit(options(w))
-    options(warn = -1)
 
     seg.lag <- seg.length / 2
 

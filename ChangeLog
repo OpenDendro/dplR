@@ -39,6 +39,8 @@ Various .R files
   column names anymore.
 - Using base::rowSums and functions from the matrixStats package
   to speed up some operations on rows or columns of matrices.
+- Reduced the number of calls to options() by one when setting and
+  restoring options
 
 File: ffcsaps.R
 ---------------

@@ -15,9 +15,8 @@ corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
 
     ## turn off warnings for this function
     ## The sig test for spearman's rho often produces warnings.
-    w <- options("warn")
+    w <- options(warn = -1)
     on.exit(options(w))
-    options(warn = -1)
 
     nseries <- length(rwl)
     if (is.null(master) && nseries < 2) {

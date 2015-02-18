@@ -1,5 +1,10 @@
 * CHANGES IN dplR VERSION 1.6.3
 
+File: spag.plot.R
+--------------
+
+- Change to ylim in the plotting area.
+
 File: CITATION
 --------------
 

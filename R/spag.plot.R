@@ -12,7 +12,7 @@ spag.plot <- function(rwl, zfac=1, useRaster = FALSE, res = 150, ...){
     op <- par(no.readonly=TRUE)
     on.exit(par(op))
     par(mar=c(2, 5, 2, 5) + 0.1, mgp=c(1.1, 0.1, 0), tcl=0.5,
-        xaxs="i")
+        xaxs="i",yaxs="i")
     ## Set vertical offset for plotting each series
     for (i in 1:nseries) {
         rwl2[, i] <- rwl2[, i] + i

@@ -64,6 +64,7 @@ File: latexify.R
   terms of lines of code in dplR.  See Henrik Bengtsson's notes at
   http://www.jottr.org/2014/05/captureOutput.html (referenced on
   2015-01-07).
+- Removed an unused variable.
 
 File: net.R
 -----------

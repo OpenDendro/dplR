@@ -25,7 +25,6 @@ latexify <- function(x, doublebackslash = TRUE, dashdash = TRUE,
     if (any(encBytes)) {
         y[encBytes] <- captureOutput(cat(y[encBytes], sep = "\n"))
     }
-    l10n <- l10n_info()
     Letters <- paste0(c(LETTERS, letters), collapse="")
     fontenc <- "fontenc" %in% packages
     textcomp <- "textcomp" %in% packages

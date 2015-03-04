@@ -36,9 +36,9 @@ File: NAMESPACE
 - Exporting net().
 - Added previously missing imports.  From grDevices:
   dev.capabilities(), dev.cur(), png(), dev.off(), dev.set(),
-  devAskNewPage().  From utils: read.table().  As these packages are
-  attached by default, the missing imports would not have been a
-  problem in most cases.
+  devAskNewPage().  From utils: read.table(), write.csv().  As these
+  packages are attached by default, the missing imports would not
+  have been a problem in most cases.
 
 Various .R files
 ----------------

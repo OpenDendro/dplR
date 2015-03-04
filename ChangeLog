@@ -32,6 +32,7 @@ File: NAMESPACE
 - Importing captureOutput() from R.utils.
 - Importing package Matrix.
 - Importing various functions from matrixStats.
+- Importing packageDescription() from utils, dropped installed.packages().
 - Exporting net().
 
 Various .R files
@@ -81,6 +82,12 @@ File: read.tucson.R
   alternative, 1.5.5--1.6.2 behavior can be restored by changing the
   value of the argument.  Reported by Daniel Bishop and Neil
   Pederson.
+
+File: write.tridas.R
+--------------------
+
+- Implementation detail: When checking the package version,
+  packageDescription() is now used instead of installed.packages().
 
 * CHANGES IN dplR VERSION 1.6.2
 

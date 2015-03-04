@@ -371,16 +371,9 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
 
     ## TODO: Enable identifiers given by the user
     if (random.identifiers) {
-        prefix.stub <- "dplR"
-        ip <- try(installed.packages(), silent = TRUE)
-        if (!inherits(ip, "try-error")) {
-            dplR.index <- which(rownames(ip) == "dplR")
-            if (length(dplR.index) > 0) {
-                prefix.stub <-
-                    paste0(prefix.stub, ip[dplR.index[1], "Version"])
-            }
-        }
-        ugen <- uuid.gen(paste0(prefix.stub, fname))
+        ugen <- uuid.gen(paste0("dplR",
+                                packageDescription("dplR", fields = "Version"),
+                                fname))
     }
 
     ## <tridas>

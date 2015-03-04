@@ -31,7 +31,7 @@ importFrom(stringi, stri_trans_nfc, stri_trans_nfd)
 
 importFrom(stringr, str_pad, str_trim)
 
-importFrom(utils, head, installed.packages, read.fwf, tail,
+importFrom(utils, head, packageDescription, read.fwf, tail,
            packageVersion, write.table)
 
 import(Matrix)

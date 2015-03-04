@@ -34,6 +34,11 @@ File: NAMESPACE
 - Importing various functions from matrixStats.
 - Importing packageDescription() from utils, dropped installed.packages().
 - Exporting net().
+- Added previously missing imports.  From grDevices:
+  dev.capabilities(), dev.cur(), png(), dev.off(), dev.set(),
+  devAskNewPage().  From utils: read.table().  As these packages are
+  attached by default, the missing imports would not have been a
+  problem in most cases.
 
 Various .R files
 ----------------

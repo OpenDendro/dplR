@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{morlet}
 \alias{morlet}
 \title{ Perform a Continuous Morlet Wavelet Transform }

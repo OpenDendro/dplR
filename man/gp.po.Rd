@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{gp.po}
 \docType{data}
 \alias{gp.po}

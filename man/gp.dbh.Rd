@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{gp.dbh}
 \docType{data}
 \alias{gp.dbh}

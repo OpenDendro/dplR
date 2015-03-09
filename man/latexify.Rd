@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{latexify}
 \alias{latexify}
 \title{

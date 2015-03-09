@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{write.rwl}
 \alias{write.rwl}
 \title{ Write Chronology File }

@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{read.tucson}
 \alias{read.tucson}
 \title{ Read Tucson Format Ring Width File }

@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{powt}
 \alias{powt}
 \title{Power Transformation of Tree-Ring Data}

@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{cms}
 \alias{cms}
 \title{ C-Method Standardization }

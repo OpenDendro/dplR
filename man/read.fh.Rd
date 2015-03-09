@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{read.fh}
 \alias{read.fh}
 \title{ Read Heidelberg Format Ring Width File }

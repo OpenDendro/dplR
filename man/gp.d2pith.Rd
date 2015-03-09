@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{gp.d2pith}
 \docType{data}
 \alias{gp.d2pith}

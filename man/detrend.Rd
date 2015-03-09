@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{detrend}
 \alias{detrend}
 \title{ Detrend Multiple Ring-Width Series Simultaneously }

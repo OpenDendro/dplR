@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{series.rwl.plot}
 \alias{series.rwl.plot}
 \title{ Plot Series and a Master }

@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{detrend.series}
 \alias{detrend.series}
 \title{ Detrend a Ring-Width Series }

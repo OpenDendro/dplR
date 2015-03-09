@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{write.crn}
 \alias{write.crn}
 \title{ Write Tucson Format Chronology File }

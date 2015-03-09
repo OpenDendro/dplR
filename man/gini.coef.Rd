@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{gini.coef}
 \alias{gini.coef}
 \title{ Calculate the Gini Coefficient   }

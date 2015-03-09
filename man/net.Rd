@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{net}
 \alias{net}
 \title{

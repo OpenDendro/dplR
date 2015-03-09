@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{ffcsaps}
 \alias{ffcsaps}
 \title{ Smoothing Spline with User-Specified Rigidity and Frequency Cutoff }

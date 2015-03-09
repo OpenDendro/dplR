@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{ccf.series.rwl}
 \alias{ccf.series.rwl}
 \title{ Cross-Correlation between a Series and a Master Chronology }

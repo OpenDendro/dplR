@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{corr.series.seg}
 \alias{corr.series.seg}
 \title{ Compute Correlation between a Series and a Master Chronology }

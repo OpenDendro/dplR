@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{bai.in}
 \alias{bai.in}
 \title{ Basal Area Increment (Inside Out) }

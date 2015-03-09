@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{strip.rwl}
 \alias{strip.rwl}
 \title{Chronology Stripping by \acronym{EPS}}

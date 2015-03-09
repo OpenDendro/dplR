@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{common.interval}
 \alias{common.interval}
 \title{Common Interval}

@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{hanning}
 \alias{hanning}
 \title{ Hanning Filter }

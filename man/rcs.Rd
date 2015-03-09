@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{rcs}
 \alias{rcs}
 \title{ Regional Curve Standardization }

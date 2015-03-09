@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{po.to.wc}
 \alias{po.to.wc}
 \title{

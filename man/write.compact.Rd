@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{write.compact}
 \alias{write.compact}
 \title{ Write \acronym{DPL} Compact Format Ring Width File }

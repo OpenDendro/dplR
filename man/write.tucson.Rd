@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{write.tucson}
 \alias{write.tucson}
 \title{ Write Tucson Format Chronology File }

@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{rwl.stats}
 \alias{rwl.stats}
 \alias{summary.rwl}

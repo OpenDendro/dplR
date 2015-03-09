@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{xskel.ccf.plot}
 \alias{xskel.ccf.plot}
 \title{ Skeleton Plot for Series and Master with Cross Correlation }

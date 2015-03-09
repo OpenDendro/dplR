@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{xskel.plot}
 \alias{xskel.plot}
 \title{ Skeleton Plot for Series and Master }

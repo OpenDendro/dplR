@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{print.redfit}
 \alias{print.redfit}
 \title{

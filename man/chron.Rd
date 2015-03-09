@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{chron}
 \alias{chron}
 \title{Build Mean Value Chronology}

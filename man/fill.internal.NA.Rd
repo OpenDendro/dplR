@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{fill.internal.NA}
 \alias{fill.internal.NA}
 \title{Fill Internal NA}

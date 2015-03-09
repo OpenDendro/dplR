@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{redfit}
 \alias{redfit}
 \alias{runcrit}

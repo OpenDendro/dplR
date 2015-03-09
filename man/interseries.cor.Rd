@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{interseries.cor}
 \alias{interseries.cor}
 \title{ Individual Series Correlation Against a Master Chronology }

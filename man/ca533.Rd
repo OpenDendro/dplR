@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{ca533}
 \docType{data}
 \alias{ca533}

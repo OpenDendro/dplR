@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{sens2}
 \alias{sens2}
 \title{ Calculate Mean Sensitivity on Series with a Trend }

@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{sens1}
 \alias{sens1}
 \title{ Calculate Mean Sensitivity  }

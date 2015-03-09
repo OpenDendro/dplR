@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{write.tridas}
 \alias{write.tridas}
 
@@ -36,7 +37,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     series \acronym{ID}s are the column names and the years are the row
     names. This type of \code{data.frame} is produced by
     \code{\link{read.tucson}}, \code{\link{read.compact}} and
-    \code{\link{read.tridas}}. Defaults to \code{NULL} -- no measurement
+    \code{\link{read.tridas}}. Defaults to \code{NULL}: no measurement
     series are written. }
 
   \item{fname}{ \code{character} vector giving the file name of the rwl
@@ -54,11 +55,11 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     that the first chronology gets the first sample depth column, second
     chronology gets the second set of sample depths, etc.  If there are
     less sample depth columns than chronologies, the sample depths are
-    recycled.  Defaults to \code{NULL} -- no chronologies are written. }
+    recycled.  Defaults to \code{NULL}: no chronologies are written. }
 
   \item{prec}{ optional \code{numeric} indicating the rounding precision
     of the output file when writing the data contained in
-    \code{\var{rwl.df}}.  Defaults to \code{NULL} -- no rounding is done
+    \code{\var{rwl.df}}.  Defaults to \code{NULL}: no rounding is done
     and the measurements are written in (non-integer) millimetres.
     Possible \code{numeric} values are 0.001, 0.01, 0.05, 0.1, 1, 10,
     100 and 1000, which cause the data to be transformed to micrometres,

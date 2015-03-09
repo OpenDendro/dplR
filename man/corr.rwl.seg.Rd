@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{corr.rwl.seg}
 \alias{corr.rwl.seg}
 \title{ Compute Correlations between Series }

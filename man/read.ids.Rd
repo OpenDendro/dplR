@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{read.ids}
 \alias{read.ids}
 \alias{autoread.ids}

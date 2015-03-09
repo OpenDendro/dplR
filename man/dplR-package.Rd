@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{dplR-package}
 \alias{dplR-package}
 \alias{dplR}

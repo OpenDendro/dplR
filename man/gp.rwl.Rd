@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{gp.rwl}
 \docType{data}
 \alias{gp.rwl}

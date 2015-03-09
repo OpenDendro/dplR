@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{read.crn}
 \alias{read.crn}
 \title{ Read Tucson Format Chronology File }

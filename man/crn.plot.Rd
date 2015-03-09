@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{crn.plot}
 \alias{plot.crn}
 \alias{crn.plot}

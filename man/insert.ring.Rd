@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{insert.ring}
 \alias{insert.ring}
 \alias{delete.ring}

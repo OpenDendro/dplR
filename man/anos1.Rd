@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{anos1}
 \docType{data}
 \alias{anos1}

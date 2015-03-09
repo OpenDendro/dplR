@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{tridas.vocabulary}
 \alias{tridas.vocabulary}
 \title{

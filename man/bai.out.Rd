@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{bai.out}
 \alias{bai.out}
 \title{ Basal Area Increment (Outside In) }

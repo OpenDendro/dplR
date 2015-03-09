@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{latexDate}
 \alias{latexDate}
 \title{

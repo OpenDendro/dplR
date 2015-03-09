@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{uuid.gen}
 \alias{uuid.gen}
 \title{

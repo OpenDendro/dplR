@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{co021}
 \docType{data}
 \alias{co021}

@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{skel.plot}
 \alias{skel.plot}
 \title{ Skeleton Plot }

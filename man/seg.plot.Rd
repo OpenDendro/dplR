@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{seg.plot}
 \alias{seg.plot}
 \title{ Segment Plot }

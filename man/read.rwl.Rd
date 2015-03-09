@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{read.rwl}
 \alias{read.rwl}
 \title{ Read Ring Width File }

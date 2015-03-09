@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{tbrm}
 \alias{tbrm}
 \title{ Calculate Tukey's Biweight Robust Mean }

@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{read.compact}
 \alias{read.compact}
 \title{ Read \acronym{DPL} Compact Format Ring Width File }

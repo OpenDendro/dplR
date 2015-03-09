@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{spag.plot}
 \alias{spag.plot}
 \title{ Spaghetti Plot }

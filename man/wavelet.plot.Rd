@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{wavelet.plot}
 \alias{wavelet.plot}
 \title{ Plot a Continuous Wavelet Transform }

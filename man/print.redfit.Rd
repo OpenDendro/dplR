@@ -55,7 +55,7 @@
 \references{
 
   This function is based on the Fortran program
-  \href{http://www.ncdc.noaa.gov/paleo/softlib/redfit/redfit.html}{REDFIT},
+  \href{http://www.geo.uni-bremen.de/geomod/staff/mschulz/}{REDFIT},
   which is in the public domain.
 
   Schulz, M. and Mudelsee, M. (2002) REDFIT: estimating red-noise

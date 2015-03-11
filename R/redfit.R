@@ -1547,17 +1547,17 @@ redfitGetrho <- function(t, x, n50, nseg, segskip, lmfitfun) {
     rhovec <- numeric(n50)
     twkM <- matrix(1, nseg2, 2)
     for (i in as.numeric(seq_len(n50))) {
-	## copy data of (i+1)'th segment into workspace
-	iseg <- .Call(dplR.seg50, i, nseg2, segskip2, np)
+        ## copy data of (i+1)'th segment into workspace
+        iseg <- .Call(dplR.seg50, i, nseg2, segskip2, np)
         twk <- t[iseg]
         twkM[, 2] <- twk
         xwk <- x[iseg]
-	## detrend data
+        ## detrend data
         xwk <- do.call(lmfitfun, list(twkM, xwk))[["residuals"]]
-	## estimate and sum rho for each segment
-	rho <- redfitTauest(twk, xwk)
-	## bias correction for rho (Kendall & Stuart, 1967; Vol. 3))
-	rhovec[i] <- (rho * (nseg2 - 1) + 1) / (nseg2 - 4)
+        ## estimate and sum rho for each segment
+        rho <- redfitTauest(twk, xwk)
+        ## bias correction for rho (Kendall & Stuart, 1967; Vol. 3))
+        rhovec[i] <- (rho * (nseg2 - 1) + 1) / (nseg2 - 4)
     }
     ## average rho
     mean(rhovec)
@@ -1598,11 +1598,11 @@ redfitTauest <- function(t, x) {
     xscalMNP <- xscal[-np]
     rho <- sum(xscalMNP * xscal[-1]) / sum(xscalMNP * xscalMNP)
     if (rho <= 0) {
-	rho <- 0.05
-	warning("rho estimation: <= 0")
+        rho <- 0.05
+        warning("rho estimation: <= 0")
     } else if (rho > 1) {
-	rho <- 0.95
-	warning("rho estimation: > 1")
+        rho <- 0.95
+        warning("rho estimation: > 1")
     }
     scalt <- -log(rho) / dt
     tscal <- t * scalt
@@ -1612,14 +1612,14 @@ redfitTauest <- function(t, x) {
     mult <- minRes[["nmu"]]
     warnings <- FALSE
     if (mult) {
-	warning("estimation problem: LS function has > 1 minima")
+        warning("estimation problem: LS function has > 1 minima")
         warnings <- TRUE
     }
     if (amin <= 0) {
-	warning("estimation problem: a_min =< 0")
+        warning("estimation problem: a_min =< 0")
         warnings <- TRUE
     } else if (amin >= 1) {
-	warning("estimation problem: a_min >= 1")
+        warning("estimation problem: a_min >= 1")
         warnings <- TRUE
     }
     if (!warnings) {

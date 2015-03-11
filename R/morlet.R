@@ -1,23 +1,23 @@
 morlet <- function(y1, x1=seq_along(y1), p2=NULL, dj=0.25, siglvl=0.95){
 
     morlet.func <- function(k0=6, Scale, k) {
-	n <- length(k)
-	expnt <- -(Scale * k - k0) ^ 2 / 2 * as.numeric(k > 0)
-	Dt <- 2 * pi / (n * k[2])
-	norm <- sqrt(2 * pi * Scale / Dt) * (pi ^ (-0.25)) #  total energy=N   [Eqn(7)]
+        n <- length(k)
+        expnt <- -(Scale * k - k0) ^ 2 / 2 * as.numeric(k > 0)
+        Dt <- 2 * pi / (n * k[2])
+        norm <- sqrt(2 * pi * Scale / Dt) * (pi ^ (-0.25)) #  total energy=N   [Eqn(7)]
 
-	morlet <- norm * exp(ifelse(expnt > -100, expnt, 100))
-	morlet <- morlet * (as.numeric(expnt > -100))  # Avoid underflow errors
-	morlet <- morlet * (as.numeric(k > 0))  # Heaviside step function (Morlet is complex)
-	fourier_factor <-
+        morlet <- norm * exp(ifelse(expnt > -100, expnt, 100))
+        morlet <- morlet * (as.numeric(expnt > -100))  # Avoid underflow errors
+        morlet <- morlet * (as.numeric(k > 0))  # Heaviside step function (Morlet is complex)
+        fourier_factor <-
             (4 * pi) / (k0 + sqrt(2 + k0 ^ 2)) # Scale-->Fourier [Sec.3h]
-	period <- Scale * fourier_factor
-	coi <- fourier_factor / sqrt(2)   # Cone-of-influence [Sec.3g]
-	## dofmin = 2   # Degrees of freedom with no smoothing
-	## Cdelta = -1
-	## if(k0 == 6) Cdelta = 0.776 # Reconstruction factor
-	## psi0 = pi^(-0.25)
-	list(psi_fft = morlet, period = period, coi = coi)
+        period <- Scale * fourier_factor
+        coi <- fourier_factor / sqrt(2)   # Cone-of-influence [Sec.3g]
+        ## dofmin = 2   # Degrees of freedom with no smoothing
+        ## Cdelta = -1
+        ## if(k0 == 6) Cdelta = 0.776 # Reconstruction factor
+        ## psi0 = pi^(-0.25)
+        list(psi_fft = morlet, period = period, coi = coi)
     }
 
     ## Construct optional inputs, these could be passed in as args
@@ -84,9 +84,9 @@ morlet <- function(y1, x1=seq_along(y1), p2=NULL, dj=0.25, siglvl=0.95){
         psi_fft <- morlet.out$psi_fft
         coi <- morlet.out$coi # One value per scale
         wave[, a1] <- fft(yfft * psi_fft, inverse=TRUE)
-  	if(do_daughter) daughter[, a1] <- fft(psi_fft, inverse=TRUE)
+        if(do_daughter) daughter[, a1] <- fft(psi_fft, inverse=TRUE)
         period[a1] <- morlet.out$period   # Save period
-  	fft_theor[a1] <- sum((abs(psi_fft) ^ 2) * fft_theor_k) / n
+        fft_theor[a1] <- sum((abs(psi_fft) ^ 2) * fft_theor_k) / n
     }
     time.scalar <- c(seq_len(floor(n1 + 1) / 2),
                      seq.int(from=floor(n1 / 2), to=1, by=-1)) * Dt

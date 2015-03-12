@@ -24,17 +24,17 @@ spag.plot(rwl, zfac = 1, useRaster = FALSE, res = 150, \dots)
   \item{\dots}{ arguments to be passed to \code{\link{lines}}. }
 }
 \details{
-  This makes a simple plot of each series in a tree-ring data set. Each
+  This makes a simple plot of each series in a tree-ring data set.  Each
   series is centered first by subtracting the column mean using
-  \code{\link{scale}}. The plot can be grossly tuned with
+  \code{\link{scale}}.  The plot can be grossly tuned with
   \code{\var{zfac}} which is a multiplier to \code{\var{rwl}} before
   plotting and centering.
 }
 \value{
-  None. This function is invoked for its side effect, which is to
+  None.  This function is invoked for its side effect, which is to
   produce a plot.
 }
-\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
+\author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{seg.plot}} }
 \examples{data(co021)
 spag.plot(co021)

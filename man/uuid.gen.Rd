@@ -44,7 +44,7 @@ uuid.gen(more.state = "")
   going through or starting from the same state with both generators.
 
   The user is responsible for selecting a \acronym{PRNG} with a
-  reasonable number of randomness.  Usually, this doesn't require any
+  reasonable number of randomness.  Usually, this doesn\enc{’}{'}t require any
   action.  For example, any \acronym{PRNG} algorithm available in \R
   works fine.  However, the uniqueness of \acronym{UUID}s can be
   destroyed by using a bad user-supplied \acronym{PRNG}.
@@ -70,9 +70,10 @@ uuid.gen(more.state = "")
   (\code{character} string)
 }
 \references{
-  Leach, P., Mealling, M. and Salz, R. (July 2005) A Universally Unique
-  IDentifier (\acronym{UUID}) \acronym{URN} Namespace, \acronym{RFC}
-  4122. [Online].  Available: \url{http://tools.ietf.org/html/rfc4122}
+  Leach, P., Mealling, M., and Salz, R. (2005) A Universally Unique
+  IDentifier (\acronym{UUID}) \acronym{URN} namespace, \acronym{RFC}
+  4122, RFC Editor.
+  \acronym{URL} \url{http://www.rfc-editor.org/rfc/rfc4122.txt}.
 }
 \author{
   Mikko Korpela

@@ -14,8 +14,8 @@ gini.coef(x)
 }
 \details{
   This calculates the Gini coefficient of inequality which is used as an
-  all-lag measure of diversity in tree-ring records - typically detrended
-  series. Lower values indicate lower diversity. The use of the Gini
+  all-lag measure of diversity in tree-ring records \enc{–}{-} typically detrended
+  series.  Lower values indicate lower diversity.  The use of the Gini
   coefficient in dendrochronology is described by Biondi and Qeadan (2008).
   See Handcock and Morris (1999) for more information.  See
   \sQuote{Examples} for a pointer to a \acronym{PDF} document including
@@ -25,10 +25,10 @@ gini.coef(x)
 }
 \references{
   Biondi, F. and Qeadan, F. (2008) Inequality in Paleorecords.
-  \emph{Ecology},  89(4):1056\enc{–}{--}1067.
+  \emph{Ecology}, \bold{89}(4), 1056\enc{–}{--}1067.
 
-  Handcock. M. S. and Morris, M. (1999) \emph{Relative Distribution
-    Methods in the Social Sciences}.  Springer-Verlag.  \acronym{ISBN}:
+  Handcock, M. S. and Morris, M. (1999) \emph{Relative Distribution
+    Methods in the Social Sciences}.  Springer.  \acronym{ISBN}:
   0-387-98778-9.
 }
 \author{ Mikko Korpela, based on original by Andy Bunn }

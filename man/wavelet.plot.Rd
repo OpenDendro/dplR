@@ -21,26 +21,28 @@ wavelet.plot(wave.list,
              useRaster = FALSE, res = 150, reverse.y = FALSE)
 }
 \arguments{
-  \item{wave.list}{A \code{list}. Output from \code{\link{morlet}}.}
-  \item{wavelet.levels}{A \code{numeric} vector. Values for levels of
+  \item{wave.list}{A \code{list}.  Output from \code{\link{morlet}}.}
+  \item{wavelet.levels}{A \code{numeric} vector.  Values for levels of
     the filled contours for the wavelet plot.}
-  \item{add.coi}{A \code{logical} flag. Add cone of influence?}
-  \item{add.sig}{A \code{logical} flag. Add contour lines for significance?}
+  \item{add.coi}{A \code{logical} flag.  Add cone of influence?}
+  \item{add.sig}{A \code{logical} flag.  Add contour lines for significance?}
   \item{x.lab}{X-axis label.}
   \item{period.lab}{Y-axis label for the wavelet plot.}
   \item{crn.lab}{Y-axis label for the time-series plot.}
   \item{key.cols}{A vector of colors for the wavelets and the key.}
   \item{key.lab}{Label for key.}
-  \item{add.spline}{A \code{logical} flag. Add a spline to the
+  \item{add.spline}{A \code{logical} flag.  Add a spline to the
     time-series plot using \code{\link{ffcsaps}}?. }
-  \item{nyrs}{ A number giving the rigidity of the smoothing spline, defaults to 0.33 of series length if nyrs is \code{NULL}. }
+  \item{nyrs}{ A number giving the rigidity of the smoothing spline,
+    defaults to 0.33 of series length if \code{\var{nyrs}} is
+    \code{NULL}. }
   \item{f}{ A number between 0 and 1 giving the frequency response or
-    wavelength cutoff for the smoothing spline. Defaults to 0.5. }
+    wavelength cutoff for the smoothing spline.  Defaults to 0.5. }
   \item{crn.col}{Line color for the time-series plot.}
   \item{crn.lwd}{Line width for the time-series plot.}
-  \item{coi.col}{Color for the COI if \code{add.coi} is \code{TRUE}.}
+  \item{coi.col}{Color for the COI if \code{\var{add.coi}} is \code{TRUE}.}
   \item{crn.ylim}{Axis limits for the time-series plot.}
-  \item{side.by.side}{A \code{logical} flag. Plots will be in one row if
+  \item{side.by.side}{A \code{logical} flag.  Plots will be in one row if
     \code{TRUE}.}
   \item{useRaster}{A \code{logical} flag.  If \code{TRUE}, the filled
     contours are drawn as a raster image.  Other parts of the plot are
@@ -55,33 +57,33 @@ wavelet.plot(wave.list,
     raster image.  }
   \item{res}{A \code{numeric} vector of length 1.  The resolution
     (pixels per inch) of the filled contours when a raster image is
-    used.  See \code{useRaster}.}
+    used.  See \code{\var{useRaster}}.}
   \item{reverse.y}{A \code{logical} flag.  If \code{TRUE}, the Y-axis
     will be reversed, i.e. period increasing towards the bottom.  The
     default is \code{FALSE}. }
 }
 \details{
   This produces a plot of a continuous wavelet transform and plots the
-  original time series. Contours are added for significance and a cone of
-  influence polygon can be added as well. Anything within the cone of
+  original time series.  Contours are added for significance and a cone of
+  influence polygon can be added as well.  Anything within the cone of
   influence should not be interpreted.
 
   The time series can be plotted with a smoothing spline as well.
 }
 \value{
-  None. This function is invoked for its side effect, which is to produce a
+  None.  This function is invoked for its side effect, which is to produce a
   plot.
 }
 \references{
   Torrence, C. and Compo, G. P. (1998) A practical guide to wavelet
   analysis.  \emph{Bulletin of the American Meteorological Society},
-  79(1):61\enc{–}{--}78.
+  \bold{79}(1), 61\enc{–}{--}78.
 }
-\note{ The function \code{morlet} is a port of Torrence's
+\note{ The function \code{morlet} is a port of Torrence\enc{’}{'}s
   \acronym{IDL} code available at
-  \url{http://paos.colorado.edu/research/wavelets/software.html}
+  \url{http://paos.colorado.edu/research/wavelets/software.html}.
 }
-\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
+\author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{morlet}}, \code{\link{ffcsaps}}}
 \examples{data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")

@@ -16,13 +16,13 @@ chron(x, prefix = "xxx", biweight = TRUE, prewhiten = FALSE, \dots)
     containing each series \acronym{ID} such as produced by
     \code{\link{read.rwl}}}
   \item{prefix}{a \code{character} string with less than 4
-    characters. Defaults to \code{"xxx"}}
-  \item{biweight}{\code{logical} flag. If \acronym{TRUE} then a robust
+    characters.  Defaults to \code{"xxx"}}
+  \item{biweight}{\code{logical} flag.  If \acronym{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}.}}
-  \item{prewhiten}{\code{logical} flag. If \acronym{TRUE} each series is
+  \item{prewhiten}{\code{logical} flag.  If \acronym{TRUE} each series is
     whitened using \code{\link{ar}} prior to averaging.}
   \item{\dots}{Arguments passed to \code{\link{ar}} when
-    \code{prewhiten} is \code{TRUE}. For example, use \code{aic}
+    \code{prewhiten} is \code{TRUE}.  For example, use \code{aic}
     and \code{order.max} to control the order of the AR model.}
 }
 \details{
@@ -35,14 +35,14 @@ chron(x, prefix = "xxx", biweight = TRUE, prewhiten = FALSE, \dots)
   prewhitening was performed), and the sample depth.
 }
 \references{
-  Cook, E. R. and Kairiukstis, L. A. (1990) \emph{Methods of
-    Dendrochronology: Applications in the Environmental Sciences.}
-  Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
+  Cook, E. R. and Kairiukstis, L. A., editors (1990) \emph{Methods of
+    Dendrochronology: Applications in the Environmental Sciences}.
+    Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
 
-  Fritts, H. C. (2001) \emph{Tree Rings and Climate.}  Blackburn.
+  Fritts, H. C. (2001) \emph{Tree Rings and Climate}.  Blackburn.
   \acronym{ISBN-13}: 978-1-930665-39-2.
 }
-\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
+\author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{read.rwl}}, \code{\link{detrend}},
   \code{\link{ar}}, \code{\link{crn.plot}}
 }

@@ -20,14 +20,14 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
 
   \item{y.name}{ a \code{character} vector of
     \code{length(ncol(\var{rwl}))} that gives the \acronym{ID} of each
-    series. Defaults to the column names of \code{\var{rwl}}. }
+    series.  Defaults to the column names of \code{\var{rwl}}. }
 
-  \item{make.plot}{ a \code{logical} flag. Makes plots of the raw data
-    and detrended data if \code{TRUE}. See details below. }
+  \item{make.plot}{ a \code{logical} flag.  Makes plots of the raw data
+    and detrended data if \code{TRUE}.  See details below. }
   
   \item{method}{ a \code{character} vector to determine the detrending
-    methods. See details below. Possible values are all subsets of
-    \code{c("Spline", "ModNegExp", "Mean", "Ar")}. Defaults to using all the
+    methods.  See details below.  Possible values are all subsets of
+    \code{c("Spline", "ModNegExp", "Mean", "Ar")}.  Defaults to using all the
     available methods.}
   
   \item{nyrs}{ a number giving the rigidity of the smoothing spline,
@@ -35,17 +35,17 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
     \code{NULL}. }
   
   \item{f}{ a number between 0 and 1 giving the frequency response or
-    wavelength cutoff. Defaults to 0.5. }
+    wavelength cutoff.  Defaults to 0.5. }
 
-  \item{pos.slope}{ a \code{logical} flag. Will allow for a positive
-    slope to be used in method \code{"ModNegExp"}. If \code{FALSE} the
+  \item{pos.slope}{ a \code{logical} flag.  Will allow for a positive
+    slope to be used in method \code{"ModNegExp"}.  If \code{FALSE} the
     line will be horizontal. }
   
   \item{constrain.modnegexp}{ a \code{character} string which controls
-    the constraints of the \code{"ModNegExp"} model. See 
+    the constraints of the \code{"ModNegExp"} model.  See 
     \code{\link{detrend.series}} for further details. }
     
-  \item{verbose}{ logical. Write out details? }
+  \item{verbose}{ \code{logical}.  Write out details? }
 
   \item{return.info}{ a \code{logical} flag.  If \code{TRUE}, details
     about models and data will be added to the return value.  See
@@ -54,14 +54,14 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
 }
 \details{
   See \code{\link{detrend.series}} for details on detrending
-  methods. Setting \code{\var{make.plot} = TRUE} will cause plots of
-  each series to be produced. These could be saved using
+  methods.  Setting \code{\var{make.plot} = TRUE} will cause plots of
+  each series to be produced.  These could be saved using
   \code{\link{Devices}} if desired.
 }
 \value{
   If one detrending method is used, a \code{data.frame} containing the
   dimensionless detrended ring widths with column names, row names and
-  dimensions of \code{\var{rwl}}. If more methods are used, a list with
+  dimensions of \code{\var{rwl}}.  If more methods are used, a list with
   \code{ncol(\var{rwl})} elements each containing a \code{data.frame}
   with the detrended ring widths in each column.
 
@@ -88,7 +88,7 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   must be registered before running the function.  If
   \code{\var{verbose}} is \code{TRUE}, parallel computation is disabled.
 }
-\author{ Andy Bunn. Improved by Mikko Korpela. }
+\author{ Andy Bunn.  Improved by Mikko Korpela. }
 \seealso{ \code{\link{detrend.series}} }
 \examples{data(ca533)
 ## Detrend using modified exponential decay. Returns a data.frame

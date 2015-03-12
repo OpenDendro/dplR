@@ -21,18 +21,18 @@ crn.plot(crn, add.spline = FALSE, nyrs = NULL, f = 0.5,
 }
 \arguments{
   \item{x, crn}{ a \code{data.frame} e.g., as produced by
-    \code{\link{chron}}. The \code{data.frame} should have the years in
+    \code{\link{chron}}.  The \code{data.frame} should have the years in
     \code{rownames(\var{crn})}, the chronologies in the columns.
     Optionally, the last column can contain the sample depth named
-    \code{"samp.depth"}. If the data are produced via \code{\link{chron}}
+    \code{"samp.depth"}.  If the data are produced via \code{\link{chron}}
     the object will be of class "crn" and the generic plot method can be used }
-  \item{add.spline}{ a \code{logical} flag. Will add a line with a
+  \item{add.spline}{ a \code{logical} flag.  Will add a line with a
     smoothing spline using \code{\link{ffcsaps} } }
   \item{nyrs}{ a number giving the rigidity of the smoothing spline.
     Defaults to 0.33 times the length of the first chronology if
     \code{\var{nyrs}} is \code{NULL} }
   \item{f}{ a number between 0 and 1 giving the frequency response or
-    wavelength cutoff. Defaults to 0.5 }
+    wavelength cutoff.  Defaults to 0.5 }
   \item{crn.line.col}{ color for the x line }
   \item{spline.line.col}{ color for the spline (if added) }
   \item{samp.depth.col}{ color for the sample depth polygon (if present) }
@@ -51,9 +51,9 @@ crn.plot(crn, add.spline = FALSE, nyrs = NULL, f = 0.5,
   This makes a plot of one or more tree-ring chronologies.
 }
 \value{
-  None. Invoked for side effect (plot).
+  None.  Invoked for side effect (plot).
 }
-\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
+\author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{chron}}
 }
 \examples{data(cana157)

@@ -20,42 +20,42 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9,
   \item{dat.out}{ \code{logical} flag indicating whether to return a
     \code{data.frame} containing the data. }
   \item{master}{ \code{logical} flag indicating whether to make the plot
-    with the segments inverted to ease pattern matching. If \code{TRUE}
+    with the segments inverted to ease pattern matching.  If \code{TRUE}
     the segments will be plotted from the top down and the labels on the
     x axes will be on the bottom. }
   \item{plot}{ \code{logical} flag indicating whether to make a plot. }
 }
 \details{
-  This makes a skeleton plot - a plot that gives the relative growth for
+  This makes a skeleton plot \enc{–}{-} a plot that gives the relative growth for
   year \code{\var{t}} relative to years \code{\var{t}-1} and
-  \code{\var{t}+1}. Note that this plot is a standard plot in
+  \code{\var{t}+1}.  Note that this plot is a standard plot in
   dendrochronology and typically made by hand for visually cross-dating
-  series. This type of plot might be confusing to those not accustomed
-  to visual cross-dating. See references for more information. The
-  implementation is based on Meko's (2002) skeleton plotting approach.
+  series.  This type of plot might be confusing to those not accustomed
+  to visual cross-dating.  See references for more information.  The
+  implementation is based on Meko\enc{’}{'}s (2002) skeleton plotting approach.
 
   The skeleton plot is made by calculating departures from high
   frequency growth for each year by comparing year \code{\var{t}} to the
   surrounding three years
-  (\code{\var{t}-1},\code{\var{t}},\code{\var{t}+1}). Low frequency
-  variation is removed using a \code{\link{hanning}} filter. Relative
+  (\code{\var{t}-1},\code{\var{t}},\code{\var{t}+1}).  Low frequency
+  variation is removed using a \code{\link{hanning}} filter.  Relative
   growth is scaled from one to ten but only values greater than three
-  are plotted. This function's primary effect is to create plot with
-  absolute units that can be printed and compared to other plots. Here,
+  are plotted.  This function\enc{’}{'}s primary effect is to create plot with
+  absolute units that can be printed and compared to other plots.  Here,
   anomalous growth is plotted on a 2mm grid and up to 120 years are
-  plotted on a single row with a maximum of 7 rows (840 years). These
+  plotted on a single row with a maximum of 7 rows (840 years).  These
   plots are designed to be plotted on standard paper using an
   appropriate \code{device}, e.g., \code{postscript} with defaults or to
   \code{pdf} with plot width and height to accommodate a landscape plot,
   e.g., \code{\var{width} = 10}, \code{\var{height} = 7.5},
-  \code{\var{paper} = "USr"}. These plots are designed to be printable
-  and cut into strips to align long series. Statistical cross-dating is
+  \code{\var{paper} = "USr"}.  These plots are designed to be printable
+  and cut into strips to align long series.  Statistical cross-dating is
   possible if the data are output.
 
 }
 \value{
   This function is invoked primarily for its side effect, which is to
-  produce a plot. If \code{\var{dat.out}} is \code{TRUE} then a
+  produce a plot.  If \code{\var{dat.out}} is \code{TRUE} then a
   \code{data.frame} is returned with the years and height of the
   skeleton plot segments as columns.
 }
@@ -66,13 +66,14 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9,
   \acronym{ISBN-13}: 978-0-8165-1680-3.
   
   Sheppard, P. R. (2002) Crossdating Tree Rings Using Skeleton Plotting.
-  \url{http://www.ltrr.arizona.edu/skeletonplot/introcrossdate.htm}
+  \acronym{URL}
+  \url{http://www.ltrr.arizona.edu/skeletonplot/introcrossdate.htm}.
   
   Meko, D. (2002) Tree-Ring MATLAB Toolbox.
-  \url{http://www.mathworks.com/matlabcentral/}
+  \acronym{URL} \url{http://www.mathworks.com/matlabcentral/}.
   
 }
-\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
+\author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{  \code{\link{Devices}}, \code{\link{hanning}}  }
 
 \examples{library(grDevices)

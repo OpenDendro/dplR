@@ -22,22 +22,22 @@ glk(x)
 
 \details{
   \enc{Gleichläufigkeit}{Gleichlaeufigkeit} is a classical agreement
-  test based on sign tests (Eckstein and Bauch, 1969). This function
+  test based on sign tests (Eckstein and Bauch, 1969).  This function
   implements \enc{Gleichläufigkeit}{Gleichlaeufigkeit} as the pairwise
   comparison of all records in data set, and thus returns a matrix whose
   upper triangle reports the \enc{Gleichläufigkeit}{Gleichlaeufigkeit}
-  of each possible combination of records. The global
+  of each possible combination of records.  The global
   \enc{Gleichläufigkeit}{Gleichlaeufigkeit} can be calculated as
-  \code{mean(glk(\var{x}), na.rm = TRUE)}. This implementation improves 
+  \code{mean(glk(\var{x}), na.rm = TRUE)}.  This implementation improves 
   the original formulation inasmuch as the case of neighbouring
-  identical measurements in the same years is accounted for. Here, it is
+  identical measurements in the same years is accounted for.  Here, it is
   treated as full agreement, in contrast to only partial agreement in
   the original formulation.
 }
 
 \value{
   A \code{matrix} with the \enc{Gleichläufigkeit}{Gleichlaeufigkeit} for
-  all possible combinations of records. If two curves have less than 3
+  all possible combinations of records.  If two curves have less than 3
   years of overlap, \enc{Gleichläufigkeit}{Gleichlaeufigkeit} cannot be
   computed, and \code{NA} is returned.
 }
@@ -46,10 +46,10 @@ glk(x)
   Improved by Allan Buras. }
 
 \references{
-  Eckstein, D., Bauch J. (1969) Beitrag zur Rationalisierung eines
+  Eckstein, D. and Bauch, J. (1969) Beitrag zur Rationalisierung eines
   dendrochronologischen Verfahrens und zur Analyse seiner
   Aussagesicherheit.  \emph{Forstwissenschaftliches Centralblatt},
-  88(1):230\enc{–}{--}250.
+  \bold{88}(1), 230\enc{–}{--}250.
 
   Schweingruber, F. H. (1988) \emph{Tree rings: basics and applications
     of dendrochronology}.  Kluwer Academic Publishers, Dordrecht,

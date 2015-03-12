@@ -28,7 +28,7 @@ combine.rwl(x, y = NULL)
   rows.  The keycodes are the column names and the years are the row
   names. }
 
-\author{ Christian Zang. Patched by Mikko Korpela. }
+\author{ Christian Zang.  Patched by Mikko Korpela. }
 
 \examples{data(ca533)
 data(co021)

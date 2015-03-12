@@ -28,7 +28,7 @@ rwl.stats(rwl)
 \details{
 
   This calculates a variety of descriptive statistics commonly used in
-  dendrochronology (see below). Users unfamiliar with these should see
+  dendrochronology (see below).  Users unfamiliar with these should see
   Cook and Kairiukstis (1990) and Fritts (2001) for further details.
 
   The \code{\link{summary}} method for class \code{"rwl"} is a wrapper
@@ -38,7 +38,7 @@ rwl.stats(rwl)
 
 \value{
   A \code{data.frame} containing descriptive stats on each
-  \code{"series"}. These are the first and last year of the series as
+  \code{"series"}.  These are the first and last year of the series as
   well as the length of the series (\code{"first"}, \code{"last"},
   \code{"year"}).  The mean, median, standard deviation are given
   (\code{"mean"}, \code{"median"}, \code{"stdev"}) as are the skewness,
@@ -54,17 +54,17 @@ rwl.stats(rwl)
   Bunn, A. G., Jansma, E., Korpela, M., Westfall, R. D., and Baldwin,
   J. (2013) Using simulations and data to evaluate mean sensitivity
   (\eqn{\zeta}{zeta}) as a useful statistic in dendrochronology.
-  \emph{Dendrochronologia}, 31(3):250\enc{–}{--}254.
+  \emph{Dendrochronologia}, \bold{31}(3), 250\enc{–}{--}254.
 
-  Cook, E. R. and Kairiukstis, L.A. (1990) \emph{Methods of
-  Dendrochronology: Applications in the Environmental Sciences}.
-  Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
+  Cook, E. R. and Kairiukstis, L. A., editors (1990) \emph{Methods of
+    Dendrochronology: Applications in the Environmental Sciences}.
+    Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
 
   Fritts, H. C. (2001) \emph{Tree Rings and Climate}.  Blackburn.
   \acronym{ISBN-13}: 978-1-930665-39-2.
 
 }
-\author{ Andy Bunn. Slightly improved by Mikko Korpela. }
+\author{ Andy Bunn.  Slightly improved by Mikko Korpela. }
 \seealso{ \code{\link{rwi.stats}}, \code{\link{read.rwl}} }
 \examples{data(ca533)
 rwl.stats(ca533)

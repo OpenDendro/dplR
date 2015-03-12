@@ -96,28 +96,29 @@ latexify(x, doublebackslash = TRUE, dashdash = TRUE,
   package loading commands in the document preamble are: \preformatted{\usepackage[T1]{fontenc}    \% no '"' in OT1 font encoding
 \usepackage{textcomp}       \% some symbols e.g. straight single quote
 \usepackage[utf8]{inputenx} \% UTF-8 input encoding
-\input{ix-utf8enc.dfu}      \% more supported characters} 
-  
+\input{ix-utf8enc.dfu}      \% more supported characters}
+
 }
 \value{
   A \code{character} vector
 }
 \references{
   INRIA.  Tralics: a LaTeX to XML translator, HTML documentation of all
-  TeX commands.  \url{http://www-sop.inria.fr/marelle/tralics/}
+  TeX commands.  \acronym{URL} \url{http://www-sop.inria.fr/marelle/tralics/}.
 
-  Levitt, N., Persch, C. and Unicode, Inc. (2013) GNOME Character Map,
+  Levitt, N., Persch, C., and Unicode, Inc. (2013) GNOME Character Map,
   application version 3.10.1.
 
-  Mittelbach, F. and Goossens, M. with Braams, J., Carlisle, D. and
-  Rowley, C. (2004) \emph{The LaTeX Companion, Second Edition.}
-  Addison-Wesley.  \acronym{ISBN-13}: 978-0-201-36299-2.
+  Mittelbach, F., Goossens, M., Braams, J., Carlisle, D., and
+  Rowley, C. (2004) \emph{The LaTeX Companion}.  Addison-Wesley,
+  second edition.  \acronym{ISBN-13}: 978-0-201-36299-2.
 
   Pakin, S. (2009) The Comprehensive LaTeX Symbol
-  List. \url{http://www.ctan.org/tex-archive/info/symbols/comprehensive}
+  List.  \acronym{URL}
+  \url{http://www.ctan.org/tex-archive/info/symbols/comprehensive}.
 
   The Unicode Consortium.  The Unicode Standard.
-  \url{http://www.unicode.org/versions/latest/}
+  \acronym{URL} \url{http://www.unicode.org/versions/latest/}.
 }
 \author{
   Mikko Korpela

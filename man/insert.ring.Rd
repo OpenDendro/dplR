@@ -18,7 +18,7 @@ delete.ring(rw.vec,rw.vec.yrs=as.numeric(names(rw.vec)),
   \item{rw.vec.yrs}{ the years for \code{rw.vec} as \code{names} }
   \item{year}{ the year to add or delete }
   \item{ring.value}{ the value to add }
-  \item{fix.last}{ logical. If TRUE the last year of the series
+  \item{fix.last}{ logical.  If TRUE the last year of the series
     is fixed and the first year changes.}
 }
 \details{
@@ -27,7 +27,7 @@ delete.ring(rw.vec,rw.vec.yrs=as.numeric(names(rw.vec)),
 \value{
   A named vector.
 }
-\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
+\author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{dplR}}
 }
 \examples{data(gp.rwl)

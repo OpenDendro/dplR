@@ -158,18 +158,18 @@ runcrit(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000)
 
   Function \code{runcrit} returns a \code{list} containing
   \code{\var{rcritlo}}, \code{\var{rcrithi}} and \code{\var{rcritexact}}
-  (see below). Function \code{redfit} returns a \code{list} with the
+  (see below).  Function \code{redfit} returns a \code{list} with the
   following elements:
 
   \item{varx }{ variance of \code{\var{x}} estimated from its spectrum.
     A \code{numeric} value. }
 
   \item{rho }{ average autocorrelation coefficient, either estimated
-    from the data or prescribed (\code{\var{rhopre}}). A \code{numeric}
+    from the data or prescribed (\code{\var{rhopre}}).  A \code{numeric}
     value. }
 
   \item{tau }{ the time scale of an AR1 process corresponding to
-    \code{\var{rho}}. A \code{numeric} value.  }
+    \code{\var{rho}}.  A \code{numeric} value.  }
 
   \item{rcnt }{ a \code{numeric} value giving the number of runs to be
     used for a statistical test studying the difference between a
@@ -256,11 +256,11 @@ runcrit(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000)
       \item{hifac }{ value of the \code{\var{hifac}} argument.  }
       
       \item{segskip }{ the ideal, non-rounded difference between
-	starting indices of consecutive segments.  }
+        starting indices of consecutive segments.  }
       
       \item{iwin }{ value of the \code{\var{iwin}} argument.  If a
-	\code{character} value was used, this contains the corresponding
-	number used internally. }
+        \code{character} value was used, this contains the corresponding
+        number used internally. }
       
       \item{nsim }{ value of the \code{\var{nsim}} argument.  }
       
@@ -292,11 +292,11 @@ runcrit(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000)
   (version 3.8e), which is in the public domain.
 
   Bradley, J. V. (1968) \emph{Distribution-Free Statistical
-    Tests}. Prentice-Hall.
+    Tests}.  Prentice-Hall.
   
   Schulz, M. and Mudelsee, M. (2002) REDFIT: estimating red-noise
   spectra directly from unevenly spaced paleoclimatic time series.
-  \emph{Computers & Geosciences}, 28(3):421\enc{–}{--}426.
+  \emph{Computers & Geosciences}, \bold{28}(3), 421\enc{–}{--}426.
 
 }
 \author{

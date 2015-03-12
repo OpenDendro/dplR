@@ -19,9 +19,9 @@
   \url{ftp://ftp.ncdc.noaa.gov/pub/data/paleo/treering/chronologies/northamerica/canada/cana157.crn}
 }
 \references{
-  Jacoby, G., D'Arrigo, R. and Buckley, B. (1992) Twisted Tree Heartrot
-  Hill Data Set.  \acronym{IGBP} \acronym{PAGES}/World Data Center for
-  Paleoclimatology Data Contribution Series 1992-CANA157.CRN.
+  Jacoby, G., D\enc{’}{'}Arrigo, R. and Buckley, B. (1992) Twisted Tree
+  Heartrot Hill Data Set.  \acronym{IGBP} \acronym{PAGES}/World Data
+  Center for Paleoclimatology Data Contribution Series 1992-CANA157.CRN.
   \acronym{NOAA}/\acronym{NCDC} Paleoclimatology Program, Boulder,
   Colorado, \acronym{USA}.
 }

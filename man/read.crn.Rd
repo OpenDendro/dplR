@@ -26,16 +26,16 @@ read.crn(fname, header = NULL, encoding = getOption("encoding"))
 \details{
   This reads in a standard crn file as defined according to the
   standards of the \acronym{ITRDB} at
-  \url{http://www.ncdc.noaa.gov/paleo/treeinfo.html}. Despite the
+  \url{http://www.ncdc.noaa.gov/paleo/treeinfo.html}.  Despite the
   standards at the \acronym{ITRDB}, this occasionally fails due to
   formatting problems.
 }
 \value{
   A \code{data.frame} with each chronology in columns and the years as
-  rows. The chronology \acronym{ID}s are the column names and the years
-  are the row names. If the file includes sample depth that is included
-  as the last column (\code{\var{samp.depth}}). The output class is
+  rows.  The chronology \acronym{ID}s are the column names and the years
+  are the row names.  If the file includes sample depth that is included
+  as the last column (\code{\var{samp.depth}}).  The output class is
   class "crn" and "data.frame"
 }
-\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
+\author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \keyword{ IO }

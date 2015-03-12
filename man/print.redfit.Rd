@@ -60,7 +60,7 @@
 
   Schulz, M. and Mudelsee, M. (2002) REDFIT: estimating red-noise
   spectra directly from unevenly spaced paleoclimatic time series.
-  \emph{Computers & Geosciences}, 28(3):421\enc{–}{--}426.
+  \emph{Computers & Geosciences}, \bold{28}(3), 421\enc{–}{--}426.
 
 }
 \author{

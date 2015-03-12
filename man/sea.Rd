@@ -26,10 +26,10 @@ sea(x, key, lag = 5, resample = 1000)
 
 \details{
   Superposed epoch analysis is used to test the significance of a mean
-  tree growth response to certain events (such as droughts). Departures
+  tree growth response to certain events (such as droughts).  Departures
   from the mean \acronym{RWI} values for the specified years prior to
   each event year, the event year, and the specified years immediately
-  after each event are averaged to a superposed epoch. To determine if
+  after each event are averaged to a superposed epoch.  To determine if
   \acronym{RWI} for these years was significantly different from
   randomly selected sets of \code{\var{lag}+1} other years, bootstrap
   resampling is used to randomly select sets of \code{\var{lag}+1} years
@@ -44,7 +44,7 @@ sea(x, key, lag = 5, resample = 1000)
     the event years,}
   \item{se.unscaled}{the unscaled superposed epoch, i.e. the mean
     \acronym{RWI} for the event years,}
-  \item{p}{significance of the departure from the chrono's mean
+  \item{p}{significance of the departure from the chrono\enc{’}{'}s mean
     \acronym{RWI}.}
 }
 
@@ -55,7 +55,7 @@ sea(x, key, lag = 5, resample = 1000)
   Lough, J. M. and Fritts, H. C. (1987) An assessment of the possible
   effects of volcanic eruptions on North American climate using
   tree-ring data, 1602 to 1900 \acronym{AD}.  \emph{Climatic Change},
-  10(3):219\enc{–}{--}239.
+  \bold{10}(3), 219\enc{–}{--}239.
   
 }
 

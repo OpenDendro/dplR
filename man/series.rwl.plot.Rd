@@ -28,15 +28,15 @@ series.rwl.plot(rwl, series, series.yrs = as.numeric(names(series)),
     years (e.g., 20, 50, 100 years). }
   \item{bin.floor}{ a non-negative integral value giving the base for
     locating the first segment (e.g., 1600, 1700, 1800
-    \acronym{AD}). Typically 0, 10, 50, 100, etc. }
+    \acronym{AD}).  Typically 0, 10, 50, 100, etc. }
   \item{n}{ \code{NULL} or an integral value giving the filter length
     for the \code{\link{hanning}} filter used for removal of low
     frequency variation. }
-  \item{prewhiten}{ \code{logical} flag. If \code{TRUE} each series is
+  \item{prewhiten}{ \code{logical} flag.  If \code{TRUE} each series is
     whitened using \code{\link{ar}}. }
-  \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust
+  \item{biweight}{ \code{logical} flag.  If \code{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}}. }
-  \item{floor.plus1}{ \code{logical} flag. If \code{TRUE}, one year is
+  \item{floor.plus1}{ \code{logical} flag.  If \code{TRUE}, one year is
     added to the base location of the first segment (e.g., 1601, 1701,
     1801 \acronym{AD}). }
 }

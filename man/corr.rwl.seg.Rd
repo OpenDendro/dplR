@@ -37,7 +37,7 @@ corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
     mean is calculated using \code{\link{tbrm}}. }
   \item{method}{Can be either \code{"pearson"}, \code{"kendall"}, or
     \code{"spearman"} which indicates the correlation coefficient to be
-    used. Defaults to \code{"spearman"}. See \code{\link{cor.test}}. }
+    used.  Defaults to \code{"spearman"}.  See \code{\link{cor.test}}. }
   \item{make.plot}{ \code{logical flag} indicating whether to make a
     plot. }
   \item{label.cex}{ \code{numeric} scalar for the series labels on the
@@ -84,7 +84,7 @@ corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   Correlations are calculated for the first segment, then the second
   segment and so on.  Correlations are only calculated for segments with
   complete overlap with the master chronology.  For now, correlations are
-  Spearman's rho calculated via \code{\link{cor.test}} using
+  Spearman\enc{’}{'}s rho calculated via \code{\link{cor.test}} using
   \code{method = "spearman"}.
 
   Each series (including those in the rwl object) is optionally
@@ -118,7 +118,7 @@ corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   correlations for each series by bin.  Matrix \code{\var{p.val}}
   contains the p-values on the correlation for each series by
   bin.  Matrix \code{\var{overall}} contains the average correlation and
-  p-value for each series. Matrix \code{\var{bins}} contains the years
+  p-value for each series.  Matrix \code{\var{bins}} contains the years
   encapsulated by each bin.  The vector \code{\var{avg.seg.rho}}
   contains the average correlation for each bin.
 }

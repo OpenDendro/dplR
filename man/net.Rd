@@ -68,9 +68,9 @@ net(x, weights = c(v = 1, g = 1))
 }
 \references{
 
-  Esper, J., Neuwirth, B., Treydte, K. (2001) A new parameter to
+  Esper, J., Neuwirth, B., and Treydte, K. (2001) A new parameter to
   evaluate temporal signal strength of tree-ring chronologies.
-  \emph{Dendrochronologia}, 19(1):93\enc{–}{--}102.
+  \emph{Dendrochronologia}, \bold{19}(1), 93\enc{–}{--}102.
   
 }
 \author{

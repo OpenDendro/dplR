@@ -14,14 +14,14 @@
 
   \item{x}{ An object of class \code{"rwl"}.  }
 
-  \item{plot.type}{ Character. Type "seg" calls \code{\link{seg.plot}} 
+  \item{plot.type}{ Character.  Type "seg" calls \code{\link{seg.plot}} 
   while "spag" calls \code{\link{spag.plot}} }
 
   \item{\dots}{ Additional arguments for each \code{type}  }
   
 }
 \value{
-  None. A plot is produced.
+  None.  A plot is produced.
 }
 \author{
   Andy Bunn

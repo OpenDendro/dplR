@@ -12,12 +12,12 @@
 }
 \usage{data(anos1)}
 \format{A \code{data.frame} containing 20 tree-ring series from 10 trees
-  in columns and 98 years in rows. The correct stc mask for use with
+  in columns and 98 years in rows.  The correct stc mask for use with
   \code{\link{read.ids}} is \code{c(5, 2, 1)}.}
 \references{
   Zang, C. (2010) Growth reaction of temperate forest tree species to
   summer drought \enc{–}{--} a multispecies tree-ring network
-  approach. PhD-Thesis, Technische \enc{Universität}{Universitaet}
+  approach.  PhD thesis, Technische \enc{Universität}{Universitaet}
   \enc{München}{Muenchen}.
 }
 \keyword{datasets}

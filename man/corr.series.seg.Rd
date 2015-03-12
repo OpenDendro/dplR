@@ -30,22 +30,22 @@ corr.series.seg(rwl, series, series.yrs = as.numeric(names(series)),
     years (e.g., 20, 50, 100 years). }
   \item{bin.floor}{ a non-negative integral value giving the base for
     locating the first segment (e.g., 1600, 1700, 1800
-    \acronym{AD}). Typically 0, 10, 50, 100, etc. }
+    \acronym{AD}).  Typically 0, 10, 50, 100, etc. }
   \item{n}{ \code{NULL} or an integral value giving the filter length
     for the \code{\link{hanning}} filter used for removal of low
     frequency variation. }
-  \item{prewhiten}{ \code{logical} flag. If \code{TRUE} each series is
+  \item{prewhiten}{ \code{logical} flag.  If \code{TRUE} each series is
     whitened using \code{\link{ar}}. }
-  \item{biweight}{ \code{logical} flag. If \code{TRUE} then a robust
+  \item{biweight}{ \code{logical} flag.  If \code{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}}. }
   \item{method}{Can be either \code{"pearson"}, \code{"kendall"}, or
     \code{"spearman"} which indicates the correlation coefficient to be
-    used. Defaults to \code{"spearman"}. See \code{\link{cor.test}}. }
+    used.  Defaults to \code{"spearman"}.  See \code{\link{cor.test}}. }
   \item{pcrit}{ a number between 0 and 1 giving the critical value for
     the correlation test. }
   \item{make.plot}{ \code{logical} flag indicating whether to make a
     plot. }
-  \item{floor.plus1}{ \code{logical} flag. If \code{TRUE}, one year is
+  \item{floor.plus1}{ \code{logical} flag.  If \code{TRUE}, one year is
     added to the base location of the first segment (e.g., 1601, 1701,
     1801 \acronym{AD}). }
   \item{\dots}{ other arguments passed to plot. }
@@ -65,14 +65,14 @@ corr.series.seg(rwl, series, series.yrs = as.numeric(names(series)),
   \code{\var{p.val}}, and \code{\var{overall}}.
 
   Matrix \code{\var{bins}} contains the years encapsulated by each bin
-  (segments). Matrix \code{\var{moving.rho}} contains the moving
+  (segments).  Matrix \code{\var{moving.rho}} contains the moving
   correlation and p-value for a moving average equal to
   \code{\var{seg.length}}.  Vector \code{\var{spearman.rho}} contains
   the correlations by bin and \code{\var{p.val}} contains
-  the p-values. Vector \code{\var{overall}} contains the average
+  the p-values.  Vector \code{\var{overall}} contains the average
   correlation and p-value.
 }
-\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
+\author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{
   \code{\link{corr.series.seg}}, \code{\link{skel.plot}},
   \code{\link{series.rwl.plot}}, \code{\link{ccf.series.rwl}}

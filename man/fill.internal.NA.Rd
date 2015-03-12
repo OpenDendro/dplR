@@ -17,14 +17,14 @@ fill.internal.NA(x, fill = c("Mean", "Spline", "Linear"))
     containing each series \acronym{ID} such as produced by
     \code{\link{read.rwl}}}
   \item{fill}{a \code{numeric} value (e.g., \code{0}) or a \code{character} string of
-    \code{"Mean"}, \code{"Spline"}, or \code{"Linear"}. Defaults to \code{"Mean"}.}
+    \code{"Mean"}, \code{"Spline"}, or \code{"Linear"}.  Defaults to \code{"Mean"}.}
 }
 \details{
-  There are occasionally data gaps within a tree-ring series. Some of
+  There are occasionally data gaps within a tree-ring series.  Some of
   the functions in dplR will fail
-  when an internal \code{NA} is encountered (e.g. \code{\link{ffcsaps}}). This
+  when an internal \code{NA} is encountered (e.g. \code{\link{ffcsaps}}).  This
   function fills internal \code{NA} values with either a given numeric value
-  (e.g., \code{0}) or through crude imputation. The latter can be calculated as 
+  (e.g., \code{0}) or through crude imputation.  The latter can be calculated as 
   the mean of the series (\code{fill="Mean"}) or calculated by fitting a cubic spline
   (\code{fill="Spline"}) using the \code{\link{spline}} function or calculated
   by linear approximation (\code{fill="Linear"}) using the function
@@ -32,24 +32,24 @@ fill.internal.NA(x, fill = c("Mean", "Spline", "Linear"))
 
   Editorial: Having internal \code{NA} in a tree-ring series is
   often bad practice and filling those values should be done with
-  caution. For instance, some users code missing rings as \code{NA}
-  instead of \code{0}. And missing values (i.e., \code{NA}) are
+  caution.  For instance, some users code missing rings as \code{NA}
+  instead of \code{0}.  And missing values (i.e., \code{NA}) are
   sometimes present in maximum latewood density data when the rings are
-  small. A common, but not recommended, practice is to leave stretches
+  small.  A common, but not recommended, practice is to leave stretches
   of \code{NA} values in places where it has been impossible to
-  accurately measure rings (perhaps because of a break in the core). It
+  accurately measure rings (perhaps because of a break in the core).  It
   is often better to treat that core as two separate series (e.g., "01A"
-  and "01B" rather than have internal \code{NA} values. As with all
+  and "01B" rather than have internal \code{NA} values.  As with all
   processing, the analyst should make a decision based on their
   experience with the wood and not rely on software to make a choice for
   them!
 }
 \value{
   A \code{data.frame} with \code{colnames(\var{x})} and
-  \code{rownames(\var{x})}. Internal \code{NA}s
+  \code{rownames(\var{x})}.  Internal \code{NA}s
   filled as above.
 }
-\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
+\author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{spline}}, \code{\link{approx}}
 }
 \examples{

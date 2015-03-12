@@ -35,16 +35,16 @@ read.tucson(fname, header = NULL, long = FALSE,
 \details{
   This reads in a standard rwl file as defined according to the
   standards of the \acronym{ITRDB} at
-  \url{http://www.ncdc.noaa.gov/paleo/treeinfo.html}. Despite the
+  \url{http://www.ncdc.noaa.gov/paleo/treeinfo.html}.  Despite the
   standards at the \acronym{ITRDB}, this occasionally fails due to
   formatting problems.
 }
 \value{
   A \code{data.frame} with the series in columns and the years as
-  rows. The series \acronym{ID}s are the column names and the years are
+  rows.  The series \acronym{ID}s are the column names and the years are
   the row names.
 }
-\author{ Andy Bunn. Patched and greatly improved by Mikko Korpela. }
+\author{ Andy Bunn.  Patched and greatly improved by Mikko Korpela. }
 \seealso{ \code{\link{read.rwl}}, \code{\link{read.compact}},
   \code{\link{read.tridas}}, \code{\link{read.fh}},
   \code{\link{write.tucson}} }

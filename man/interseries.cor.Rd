@@ -22,7 +22,7 @@
     mean is calculated using \code{\link{tbrm}}.}
   \item{method}{Can be either \code{"pearson"}, \code{"kendall"}, or
     \code{"spearman"} which indicates the correlation coefficient to be
-    used. Defaults to \code{"spearman"}. See \code{\link{cor.test}}. }
+    used.  Defaults to \code{"spearman"}.  See \code{\link{cor.test}}. }
 }
 \details{
   This function calculates correlation serially between each tree-ring
@@ -44,9 +44,9 @@
   detrending can be seen with \code{\link{series.rwl.plot}}.
 
   This function produces the same output of the \code{\var{overall}} portion of 
-  \code{\link{corr.rwl.seg}}. The mean correlation value given is sometimes 
+  \code{\link{corr.rwl.seg}}.  The mean correlation value given is sometimes 
   referred to as the \dQuote{overall interseries correlation} or the \dQuote{COFECHA 
-  interseries correlation}. This output differs from the \code{rbar} 
+  interseries correlation}.  This output differs from the \code{rbar} 
   statistics given by \code{\link{rwi.stats}} in that \code{rbar} is 
   the average pairwise correlation between series where this is the 
   correlation between a series and a master chronology.

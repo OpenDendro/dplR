@@ -20,9 +20,10 @@
   \url{ftp://ftp.ncdc.noaa.gov/pub/data/paleo/treering/measurements/northamerica/usa/ca533.rwl}
 }
 \references{
-  Graybill, D. (1983) Campito Mountain Data Set.  \acronym{IGBP}
-  \acronym{PAGES}/World Data Center for Paleoclimatology Data
-  Contribution Series 1983-CA533.RWL.  \acronym{NOAA}/\acronym{NCDC}
-  Paleoclimatology Program, Boulder, Colorado, \acronym{USA}.
+  Graybill, D. A. and LaMarche, Jr., V. C. (1983) Campito Mountain Data
+  Set.  \acronym{IGBP} \acronym{PAGES}/World Data Center for
+  Paleoclimatology Data Contribution Series 1983-CA533.RWL.
+  \acronym{NOAA}/\acronym{NCDC} Paleoclimatology Program, Boulder,
+  Colorado, \acronym{USA}.
 }
 \keyword{datasets}

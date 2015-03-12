@@ -7,8 +7,8 @@
   This data set includes ring-width measurements for ponderosa pine
   (\emph{Pinus ponderosa}) increment cores collected at the Gus Pearson
   Natural Area (\acronym{GPNA}) in northern Arizona,
-  \acronym{USA}. There are 58 series from 29 trees (2 cores per
-  tree). Data are further described by Biondi and Qeadan (2008) and
+  \acronym{USA}.  There are 58 series from 29 trees (2 cores per
+  tree).  Data are further described by Biondi and Qeadan (2008) and
   references therein.
 }
 \usage{data(gp.rwl)}
@@ -22,7 +22,7 @@
 }
 \references{
   Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring
-  standardization: Defining the biological trend from expected basal
-  area increment.  \emph{Tree-Ring Research}, 64(2):81\enc{–}{--}96.
+  standardization: Defining the biological trend from expected basal area
+  increment.  \emph{Tree-Ring Research}, \bold{64}(2), 81\enc{–}{--}96.
 }
 \keyword{datasets}

@@ -22,7 +22,7 @@ powt(rwl)
   logs of level and spread, where level is defined as the local mean
   \eqn{M_t = \left(R_t + R_{t-1}\right)/2}{M_t = (R_t + R_(t-1))/2} with
   ring widths R, and spread S is the local standard deviation defined as
-  \eqn{S_t = \left|R_t - R_{t-1}\right|}{S_t = |R_t - R_(t-1)|}. The
+  \eqn{S_t = \left|R_t - R_{t-1}\right|}{S_t = |R_t - R_(t-1)|}.  The
   regression coefficient b from \eqn{\log S = k + b \log M}{log S = k +
   b log M} is then used for the power transform \eqn{\star{R}_t =
   R_t^{1-b}}{R*_t = R_t^(1-b)}.
@@ -30,7 +30,7 @@ powt(rwl)
 \references{
   Cook, E. R. and Peters, K. (1997) Calculating unbiased
   tree-ring indices for the study of climatic and environmental
-  change. \emph{The Holocene}, 7(3):361\enc{–}{--}370.
+  change.  \emph{The Holocene}, \bold{7}(3), 361\enc{–}{--}370.
 }
 \seealso{\code{\link{rcs}}
 }

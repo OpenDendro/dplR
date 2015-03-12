@@ -33,11 +33,11 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 \arguments{
 
   \item{rwl.df}{ \code{data.frame} containing tree-ring ring widths in
-    millimetres with the series in columns and the years as rows. The
+    millimetres with the series in columns and the years as rows.  The
     series \acronym{ID}s are the column names and the years are the row
-    names. This type of \code{data.frame} is produced by
+    names.  This type of \code{data.frame} is produced by
     \code{\link{read.tucson}}, \code{\link{read.compact}} and
-    \code{\link{read.tridas}}. Defaults to \code{NULL}: no measurement
+    \code{\link{read.tridas}}.  Defaults to \code{NULL}: no measurement
     series are written. }
 
   \item{fname}{ \code{character} vector giving the file name of the rwl
@@ -153,60 +153,60 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     \describe{
 
       \item{n.unmeasured.inner}{Field for recording whether there are
-	any rings at the inner (i.e. towards pith) edge of the sample
-	that have not been measured.  Typically used to note when rings
-	are too damaged to measure.  Non-negative integral value.}
+        any rings at the inner (i.e. towards pith) edge of the sample
+        that have not been measured.  Typically used to note when rings
+        are too damaged to measure.  Non-negative integral value.}
 
       \item{n.unmeasured.outer}{Field for recording whether there are
-	any rings at the outer (i.e. towards bark) edge of the sample
-	that have not been measured.  Typically used to note when rings
-	are too damaged to measure.  Non-negative integral value.}
+        any rings at the outer (i.e. towards bark) edge of the sample
+        that have not been measured.  Typically used to note when rings
+        are too damaged to measure.  Non-negative integral value.}
 
       \item{pith.presence}{Whether the pith is present or absent.
-	Each element must be a partial match with the contents of
-	category \code{"complex presence / absence"} in
-	\code{\link{tridas.vocabulary}}.}
+        Each element must be a partial match with the contents of
+        category \code{"complex presence / absence"} in
+        \code{\link{tridas.vocabulary}}.}
 
       \item{heartwood.presence}{Whether the outer (youngest) heartwood
-	is present and if so whether it is complete.
+        is present and if so whether it is complete.
 
-	Category \code{"complex presence / absence"} in
-	\code{\link{tridas.vocabulary}}.}
+        Category \code{"complex presence / absence"} in
+        \code{\link{tridas.vocabulary}}.}
 
       \item{n.missing.heartwood}{Estimated number of missing heartwood
-	rings to the pith.  Non-negative integral value.}
+        rings to the pith.  Non-negative integral value.}
 
       \item{missing.heartwood.foundation}{Description of the way the
-	estimation of how many heartwood rings are missing was made and
-	what the certainty is.  Free-form string.}
+        estimation of how many heartwood rings are missing was made and
+        what the certainty is.  Free-form string.}
 
       \item{sapwood.presence}{Whether the sapwood is present or not.
 
-	Category \code{"complex presence / absence"}.}
+        Category \code{"complex presence / absence"}.}
 
       \item{n.sapwood}{Number of sapwood rings measured.  Non-negative
-	integral value.}
+        integral value.}
 
       \item{last.ring.presence}{Last ring under the bark is present or
-	absent.
+        absent.
 
-	Category \code{"presence / absence"}.}
+        Category \code{"presence / absence"}.}
 
       \item{last.ring.details}{If the last ring under the bark is
-	present, include information about the completeness of this ring
-	and/or season of felling.  Free-form string.}
+        present, include information about the completeness of this ring
+        and/or season of felling.  Free-form string.}
 
       \item{n.missing.sapwood}{Estimated number of missing sapwood rings
-	to the bark.  Non-negative integral value.}
+        to the bark.  Non-negative integral value.}
 
       \item{missing.sapwood.foundation}{Description of the way the
-	estimation of how many sapwood rings are missing was made and
-	what the certainty is.  Free-form string.}
+        estimation of how many sapwood rings are missing was made and
+        what the certainty is.  Free-form string.}
 
       \item{bark.presence}{Bark is present or absent.
 
-	Category \code{"presence / absence"} in
-	\code{\link{tridas.vocabulary}}.}
+        Category \code{"presence / absence"} in
+        \code{\link{tridas.vocabulary}}.}
 
     }
   }
@@ -236,24 +236,24 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
     \describe{
 
       \item{type}{\code{character} vector.  The type(s) of the project.
-	Defaults to \code{"unknown"}.}
+        Defaults to \code{"unknown"}.}
 
       \item{description}{\code{character} string.  A description of the
-	project.  Defaults to \code{NULL}: no description.}
+        project.  Defaults to \code{NULL}: no description.}
 
       \item{title}{\code{character} string.  The title of the project.
-	Defaults to an empty string.}
+        Defaults to an empty string.}
 
       \item{category}{\code{character} string.  Category of research
-	this project falls into.  Defaults to an empty string.}
+        this project falls into.  Defaults to an empty string.}
 
       \item{investigator}{\code{character} string.  Principal
-	investigator of this project.  Defaults to an empty string.}
+        investigator of this project.  Defaults to an empty string.}
 
       \item{period}{\code{character} string.  When the
-	dendrochronological project took place.  Could consist of a
-	start- and end-date.  If unknown it should be estimated.
-	Defaults to an empty string.}
+        dendrochronological project took place.  Could consist of a
+        start- and end-date.  If unknown it should be estimated.
+        Defaults to an empty string.}
 
     }
   }
@@ -273,9 +273,9 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
       \item{identifier}{Optional identifier of the laboratory}
 
       \item{domain}{The domain which the identifier of the laboratory is
-	applicable to.  Could be the \acronym{URL} of the organization's
-	server or the name of the organization as long as it is not
-	ambiguous.}
+        applicable to.  Could be the \acronym{URL} of the
+        organization\enc{’}{'}s server or the name of the organization
+        as long as it is not ambiguous.}
 
       \item{addressLine1}{First address line}
 
@@ -286,8 +286,8 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
       \item{stateProvinceRegion}{State, province or region}
 
       \item{postalCode}{Postal code.  Beware of ignored leading zeros
-	if these are given in \code{numeric} or \code{integer} type
-	values.  It is always safe to use \code{character} values.}
+        if these are given in \code{numeric} or \code{integer} type
+        values.  It is always safe to use \code{character} values.}
 
       \item{country}{Country}
 
@@ -296,7 +296,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 
   \item{research.info}{ optional \code{data.frame} with information
     about the systems in which the research project is
-    registered. Columns are the following:
+    registered.  Columns are the following:
 
     \describe{
 
@@ -334,7 +334,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 
   \item{identifier.domain}{ \code{character} string.  The domain which
     the random identifiers are applicable to.  Could be the
-    \acronym{URL} of the organization's server or the name of the
+    \acronym{URL} of the organization\enc{’}{'}s server or the name of the
     organization as long as it is not ambiguous.  Defaults to the name
     of the first laboratory in \code{\var{lab.info}}.  }
 
@@ -344,8 +344,8 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 
 \value{ \code{\var{fname}} }
 
-\references{ TRiDaS \enc{–}{--} The Tree Ring Data Standard,
-  \url{http://www.tridas.org/} }
+\references{ TRiDaS \enc{–}{--} The Tree Ring Data Standard.
+  \acronym{URL} \url{http://www.tridas.org/}. }
 
 \author{ Mikko Korpela }
 

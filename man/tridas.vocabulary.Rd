@@ -30,6 +30,10 @@ tridas.vocabulary(category = c("dating type", "measuring method",
     \code{FALSE}.}
 }
 \details{
+  The Tree Ring Data Standard (TRiDaS) is described in Jansma et. al
+  (2010).  Information about the current version of the standard can be
+  found from \href{http://www.tridas.org/}{TRiDaS website}.
+
   The function has four usage modes:
   \enumerate{
 
@@ -65,8 +69,12 @@ tridas.vocabulary(category = c("dating type", "measuring method",
 
 }
 \references{
+  Jansma, E., Brewer, P. W., and Zandhuis, I. (2010) TRiDaS 1.1: The
+  tree-ring data standard.  \emph{Dendrochronologia}, \bold{28}(2),
+  99--130.
+
   TRiDaS \enc{–}{--} The Tree Ring Data Standard.
-  \acronym{URL} \url{http://www.tridas.org/}.
+  \url{http://www.tridas.org/}.
 }
 \author{
   Mikko Korpela

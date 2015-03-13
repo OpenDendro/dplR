@@ -60,12 +60,20 @@ read.tridas(fname, ids.from.titles = FALSE,
   
 }
 
-\details{ The parameters used for rearranging
-  (\code{\var{ids.from.titles}}, \code{\var{ids.from.identifiers}}) and
-  combining (\code{\var{combine.series}}) measurement series only affect
-  the four lowest levels of document structure: element, sample, radius,
+\details{
+
+  The Tree Ring Data Standard (TRiDaS) is described in Jansma et. al
+  (2010).  Information about the current version of the standard can be
+  found from \href{http://www.tridas.org/}{TRiDaS website}.
+
+  The parameters used for rearranging (\code{\var{ids.from.titles}},
+  \code{\var{ids.from.identifiers}}) and combining
+  (\code{\var{combine.series}}) measurement series only affect the four
+  lowest levels of document structure: element, sample, radius,
   measurementSeries.  Series are not reorganized or combined at the
-  upper structural levels (project, object). }
+  upper structural levels (project, object).
+
+}
 
 \value{
   A list with a variable number of components according to the contents
@@ -541,8 +549,14 @@ read.tridas(fname, ids.from.titles = FALSE,
   }
 }
 
-\references{ TRiDaS \enc{–}{--} The Tree Ring Data Standard.
-  \acronym{URL} \url{http://www.tridas.org/}. }
+\references{
+  Jansma, E., Brewer, P. W., and Zandhuis, I. (2010) TRiDaS 1.1: The
+  tree-ring data standard.  \emph{Dendrochronologia}, \bold{28}(2),
+  99--130.
+
+  TRiDaS \enc{–}{--} The Tree Ring Data Standard.
+  \url{http://www.tridas.org/}.
+}
 
 \author{ Mikko Korpela }
 

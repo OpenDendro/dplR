@@ -35,6 +35,6 @@ read.fh(fname)
 \seealso{ \code{\link{read.rwl}} }
 
 \references{ Rinn, F. (2003) \emph{TSAP-Win User Reference Manual.}
-  Rinntech, Heidelberg.  \acronym{URL} \url{http://www.rinntech.com/}.
+  Rinntech, Heidelberg.  \url{http://www.rinntech.com/}.
 }
 \keyword{ IO }

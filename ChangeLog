@@ -89,6 +89,12 @@ File: read.tucson.R
   value of the argument.  Reported by Daniel Bishop and Neil
   Pederson.
 
+File: redfit.R
+--------------
+
+- Fixed a bug where redfit() would fail if the "stats" package was
+  not attached.
+
 File: write.tridas.R
 --------------------
 

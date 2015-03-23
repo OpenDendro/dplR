@@ -314,8 +314,9 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
         ww[, i] <- redfitWinwgt(twk, iwin2)
     }
     ## determine autospectrum of input data
-    lmfitfun <- tryCatch(match.fun(".lm.fit"),
-                         error = function(...) match.fun("lm.fit"))
+    lmfitfun <-
+        tryCatch(getExportedValue("stats", ".lm.fit"),
+                 error = function(...) getExportedValue("stats", "lm.fit"))
     gxx <- .Call(dplR.spectr, t2, x2, np, ww, tr[[1]], tr[[2]], tr[[3]],
                  nseg, nfreq, avgdt, freq, dn50, segskip, lmfitfun)
     ## estimate data variance from autospectrum

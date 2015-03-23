@@ -80,8 +80,8 @@ wavelet.plot(wave.list,
   \bold{79}(1), 61\enc{–}{--}78.
 }
 \note{ The function \code{morlet} is a port of Torrence\enc{’}{'}s
-  \acronym{IDL} code.% available at
-%  \url{http://paos.colorado.edu/research/wavelets/software.html}.
+  \acronym{IDL} code, which can be accessed through the
+\href{http://web.archive.org/web/20141216211516/http://paos.colorado.edu/research/wavelets/software.html}{Internet Archive Wayback Machine}.
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{morlet}}, \code{\link{ffcsaps}}}

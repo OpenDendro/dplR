@@ -77,6 +77,7 @@ strip.rwl(rwl, ids = NULL, verbose = FALSE, comp.plot = FALSE,
   \code{\link{rwi.stats}}
 }
 \examples{
+library(utils)
 data(anos1)
 anos1.ids <- read.ids(anos1, stc = c(4, 3, 1))
 srwl <- strip.rwl(anos1, ids = anos1.ids, verbose = TRUE)

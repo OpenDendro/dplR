@@ -50,8 +50,10 @@ bai.out(rwl, diam = NULL)
   Nevada Reno, \acronym{USA}.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{bai.in}} }
 \examples{
-\dontrun{
 library(graphics)
+library(utils)
+\dontrun{
+library(stats)
 ## Toy
 n <- 100
 ## Make three fake tree-ring series to show that these funcs work on rwl objects

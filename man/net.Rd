@@ -76,7 +76,8 @@ net(x, weights = c(v = 1, g = 1))
 \author{
   Mikko Korpela
 }
-\examples{data(ca533)
+\examples{library(utils)
+data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.net <- net(ca533.rwi)
 tail(ca533.net$all)

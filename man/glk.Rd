@@ -56,7 +56,8 @@ glk(x)
   Netherlands, 276 p.
 }
 
-\examples{data(ca533)
+\examples{library(utils)
+data(ca533)
 ca533.glk <- glk(ca533)
 mean(ca533.glk, na.rm = TRUE)
 }

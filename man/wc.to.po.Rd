@@ -35,7 +35,8 @@ wc.to.po(wc)
 \seealso{
   \code{\link{po.to.wc}}, \code{\link{rcs}}, \code{\link{read.tridas}}
 }
-\examples{data(gp.po)
+\examples{library(utils)
+data(gp.po)
 all(wc.to.po(po.to.wc(gp.po)) == gp.po)
 }
 \keyword{ manip }

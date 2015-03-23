@@ -36,7 +36,8 @@ spag.plot(rwl, zfac = 1, useRaster = FALSE, res = 150, \dots)
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{seg.plot}} }
-\examples{data(co021)
+\examples{library(utils)
+data(co021)
 spag.plot(co021)
 spag.plot(co021, zfac = 2)
 }

@@ -127,7 +127,8 @@ corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   \code{\link{corr.series.seg}}, \code{\link{skel.plot}},
   \code{\link{series.rwl.plot}}, \code{\link{ccf.series.rwl}}
 }
-\examples{data(co021)
+\examples{library(utils)
+data(co021)
 crs <- corr.rwl.seg(co021, seg.length = 100, label.cex = 1.25)
 names(crs)
 ## Average correlation and p-value for the first few series

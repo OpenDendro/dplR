@@ -88,7 +88,9 @@ rasterPlot(expr, res = 150, region = c("plot", "figure"), antialias,
   requires one of the following \code{\link{capabilities}}:
   \code{"png"}, \code{"aqua"} or \code{"cairo"}.
 }
-\examples{plot(1:5, type = "n")
+\examples{library(graphics)
+library(stats)
+plot(1:5, type = "n")
 foo <- runif(5, min = 1, max = 5)
 rasterPlot(quote(points(foo)))
 }

@@ -64,7 +64,8 @@ xskel.ccf.plot(rwl, series, series.yrs = as.numeric(names(series)),
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{ccf}}
 }
-\examples{data(co021)
+\examples{library(utils)
+data(co021)
 dat <- co021
 #corrupt a series
 bad.series <- dat$"641143"

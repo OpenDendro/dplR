@@ -34,7 +34,8 @@ powt(rwl)
 }
 \seealso{\code{\link{rcs}}
 }
-\examples{data(gp.rwl)
+\examples{library(utils)
+data(gp.rwl)
 gp.pt <- powt(gp.rwl)
 }
 \author{

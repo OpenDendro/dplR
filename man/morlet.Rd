@@ -44,7 +44,8 @@ morlet(y1, x1 = seq_along(y1), p2 = NULL, dj = 0.25, siglvl = 0.95)
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{wavelet.plot}} }
-\examples{data(ca533)
+\examples{library(utils)
+data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = FALSE)
 Years <- as.numeric(rownames(ca533.crn))

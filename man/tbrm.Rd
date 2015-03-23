@@ -53,7 +53,8 @@ tbrm(x, C = 9)
 \author{ Mikko Korpela }
 \seealso{ \code{\link{chron}} }
 \examples{
-
+library(stats)
+library(utils)
 foo <- rnorm(100)
 tbrm(foo)
 mean(foo)

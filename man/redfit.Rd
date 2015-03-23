@@ -368,6 +368,7 @@ box()
 # Note the long-term low-freq signal in the data. E.g.,
 # crn.plot(cana157)
 
+library(utils)
 data(cana157)
 yrs <- as.numeric(rownames(cana157))
 x <- cana157[, 1]

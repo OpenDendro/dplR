@@ -50,14 +50,15 @@ ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
 
 \seealso{ \code{\link{hanning}}, \code{\link{detrend}} }
 
-\examples{docFile <- system.file("doc", "math-dplR.pdf", package="dplR")
+\examples{library(graphics)
+library(utils)
+docFile <- system.file("doc", "math-dplR.pdf", package="dplR")
 cat("See the following PDF for mathematical details:\n")
 cat(docFile, sep="\n")
 \dontrun{
 if (interactive() && requireNamespace("Biobase")) {
     Biobase::openPDF(docFile)
 }
-library(graphics)
 ## Use series CAM011 from the Campito data set
 data(ca533)
 series <- ca533[, "CAM011"]

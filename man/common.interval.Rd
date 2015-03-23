@@ -37,6 +37,7 @@ common.interval(rwl, type=c("series", "years", "both"),
 \seealso{ \code{\link{seg.plot}} }
 
 \examples{
+library(utils)
 data(co021)
 co021.s <- common.interval(co021, type="series", make.plot=TRUE)
 co021.y <- common.interval(co021, type="years", make.plot=TRUE)

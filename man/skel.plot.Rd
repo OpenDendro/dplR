@@ -75,7 +75,7 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9,
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{  \code{\link{Devices}}, \code{\link{hanning}}  }
 
-\examples{library(grDevices)
+\examples{library(utils)
 data(co021)
 x <- co021[,33]
 x.yrs <- as.numeric(rownames(co021))
@@ -85,6 +85,7 @@ skel.plot(x)
 ## On a raw ring width series - dated with names
 skel.plot(x, yr.vec = x.yrs, sname = x.name, master = TRUE)
 \dontrun{
+library(grDevices)
 ## Try cross-dating
 y <- co021[, 11]
 y.yrs <- as.numeric(rownames(co021))

@@ -38,6 +38,7 @@ po.to.wc(po)
 }
 \examples{
 \dontrun{
+library(utils)
 data(gp.po)
 all(wc.to.po(po.to.wc(gp.po)) == gp.po)
 }

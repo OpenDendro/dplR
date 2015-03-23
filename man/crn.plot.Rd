@@ -56,7 +56,9 @@ crn.plot(crn, add.spline = FALSE, nyrs = NULL, f = 0.5,
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{chron}}
 }
-\examples{data(cana157)
+\examples{library(graphics)
+library(utils)
+data(cana157)
 crn.plot(cana157,xlab='Year',ylab='RWI')
 plot(cana157,xlab='Year',ylab='RWI', main='Twisted Tree Heartrot Hill')
 # with added spline

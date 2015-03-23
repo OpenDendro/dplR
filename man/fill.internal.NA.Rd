@@ -54,6 +54,7 @@ fill.internal.NA(x, fill = c("Mean", "Spline", "Linear"))
 }
 \examples{
 library(graphics)
+library(stats)
 foo <- data.frame(x1=c(rnorm(5), NA, NA, rnorm(3)),
                   x2=c(rnorm(10)),
                   x3=c(NA, NA, rnorm(3), NA, rnorm(4)),

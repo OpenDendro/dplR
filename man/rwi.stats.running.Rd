@@ -223,7 +223,8 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
 \seealso{ \code{\link{detrend}}, \code{\link{cor}},
   \code{\link{read.ids}}, \code{\link{rwi.stats}},
   \code{\link{corr.rwl.seg}}  } 
-\examples{data(gp.rwl)
+\examples{library(utils)
+data(gp.rwl)
 data(gp.po)
 gp.rwi <- cms(rwl = gp.rwl, po = gp.po)
 gp.ids <- read.ids(gp.rwl, stc = c(0, 2, 1))

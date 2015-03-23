@@ -50,6 +50,8 @@ bai.in(rwl, d2pith = NULL)
 \seealso{ \code{\link{bai.out}} }
 \examples{
 library(graphics)
+library(stats)
+library(utils)
 ## Toy
 n <- 100
 ## Make three fake tree-ring series to show that these funcs work on rwl objects

@@ -69,7 +69,8 @@
 \seealso{
   \code{\link{redfit}}
 }
-\examples{data(ca533)
+\examples{library(utils)
+data(ca533)
 t <- as.numeric(row.names(ca533))
 x <- ca533[[1]]
 idx <- which(!is.na(x))

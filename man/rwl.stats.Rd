@@ -66,7 +66,8 @@ rwl.stats(rwl)
 }
 \author{ Andy Bunn.  Slightly improved by Mikko Korpela. }
 \seealso{ \code{\link{rwi.stats}}, \code{\link{read.rwl}} }
-\examples{data(ca533)
+\examples{library(utils)
+data(ca533)
 rwl.stats(ca533)
 summary(ca533)
 }

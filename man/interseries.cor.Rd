@@ -56,7 +56,8 @@
 }
 \author{ Andy Bunn, patched and improved by Mikko Korpela  }
 \seealso{ \code{\link{rwl.stats}}, \code{\link{rwi.stats}} }
-\examples{data(gp.rwl)
+\examples{library(utils)
+data(gp.rwl)
 foo <- interseries.cor(gp.rwl)
 # compare to: 
 # corr.rwl.seg(rwl=gp.rwl,make.plot=FALSE)$overall

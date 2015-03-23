@@ -65,6 +65,7 @@ cms(rwl, po, c.hat.t = FALSE, c.hat.i = FALSE)
 }
 \seealso{ \code{\link{detrend}}, \code{\link{chron}}, \code{\link{rcs}} }
 \examples{library(graphics)
+library(utils)
 data(gp.rwl)
 data(gp.po)
 gp.rwi <- cms(rwl = gp.rwl, po = gp.po)

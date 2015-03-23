@@ -35,7 +35,8 @@
 }
 \author{ Mikko Korpela, based on original by Andy Bunn }
 \seealso{ \code{\link{sens2}}, \code{\link{rwl.stats}} }
-\examples{data(ca533)
+\examples{library(utils)
+data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 sens1(ca533.rwi[, 1])
 }

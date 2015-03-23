@@ -46,7 +46,9 @@ chron(x, prefix = "xxx", biweight = TRUE, prewhiten = FALSE, \dots)
 \seealso{ \code{\link{read.rwl}}, \code{\link{detrend}},
   \code{\link{ar}}, \code{\link{crn.plot}}
 }
-\examples{data(ca533)
+\examples{library(graphics)
+library(utils)
+data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM")
 plot(ca533.crn,xlab="Year",ylab="RWI")

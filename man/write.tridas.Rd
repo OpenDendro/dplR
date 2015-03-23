@@ -368,7 +368,8 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
   \code{\link{write.compact}}, \code{\link{write.crn}},
   \code{\link{read.tridas}} }
 
-\examples{## Write raw ring widths
+\examples{library(utils)
+## Write raw ring widths
 data(co021)
 fname1 <- write.tridas(rwl.df = co021,
     fname = tempfile(fileext=".xml"), prec = 0.01,

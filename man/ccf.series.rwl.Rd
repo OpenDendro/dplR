@@ -102,6 +102,7 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
   \bold{28}(4), 251\enc{–}{--}258.
 }
 \examples{
+library(utils)
 data(co021)
 dat <- co021
 ## Create a missing ring by deleting a year of growth in a random series

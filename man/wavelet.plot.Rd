@@ -85,7 +85,9 @@ wavelet.plot(wave.list,
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{morlet}}, \code{\link{ffcsaps}}}
-\examples{data(ca533)
+\examples{library(stats)
+library(utils)
+data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = FALSE)
 Years <- as.numeric(rownames(ca533.crn))
@@ -96,6 +98,8 @@ wavelet.plot(out.wave, useRaster = NA)
 \dontrun{
 ## Alternative palette with better separation of colors
 if (require(RColorBrewer)) {
+  ## RColorBrewer (1.1.2) uses but does not import rgb()
+  library(grDevices)
   wavelet.plot(out.wave, key.cols=rev(brewer.pal(10, "Spectral")),
                useRaster = NA)
 }

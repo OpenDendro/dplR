@@ -192,6 +192,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   related to negative output values is based on work by Jacob Cecile. }
 \seealso{ \code{\link{detrend}} }
 \examples{library(stats)
+library(utils)
 ## Using a plausible representation of a tree-ring series
 gt <- 0.5 * exp (-0.05 * 1:200) + 0.2
 noise <- c(arima.sim(model = list(ar = 0.7), n = 200, sd = 0.5))+2

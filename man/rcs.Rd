@@ -90,7 +90,8 @@ rcs(rwl, po, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE,
 }
 \seealso{ \code{\link{detrend}}, \code{\link{chron}}, \code{\link{cms}},
   \code{\link{ffcsaps}} }
-\examples{data(gp.rwl)
+\examples{library(utils)
+data(gp.rwl)
 data(gp.po)
 gp.rwi <- rcs(rwl = gp.rwl, po = gp.po, biweight = TRUE,
               rc.out = TRUE, make.plot = FALSE)

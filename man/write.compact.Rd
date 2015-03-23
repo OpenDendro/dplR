@@ -54,7 +54,8 @@ write.compact(rwl.df, fname, append = FALSE, prec = 0.01,
 \seealso{ \code{\link{write.rwl}}, \code{\link{write.tucson}},
   \code{\link{write.tridas}}, \code{\link{read.compact}}
 }
-\examples{data(co021)
+\examples{library(utils)
+data(co021)
 fname <- write.compact(rwl.df = co021,
                        fname = tempfile(fileext=".rwl"),
                        append = FALSE, prec = 0.001)

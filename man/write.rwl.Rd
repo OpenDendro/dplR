@@ -40,7 +40,8 @@ write.rwl(rwl.df, fname, format = c("tucson", "compact", "tridas"), \dots)
   \code{\link{write.compact}}, \code{\link{write.tridas}},
   \code{\link{read.rwl}}
 }
-\examples{data(co021)
+\examples{library(utils)
+data(co021)
 co021.hdr <- list(site.id = "CO021",
                   site.name = "SCHULMAN OLD TREE NO. 1, MESA VERDE",
                   spp.code = "PSME", state.country = "COLORADO",

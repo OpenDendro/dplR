@@ -28,6 +28,7 @@ hanning(x, n = 7)
 \seealso{ \code{\link[stats]{filter} } }
 
 \examples{library(graphics)
+library(utils)
 data(ca533)
 yrs <- as.numeric(rownames(ca533))
 y <- ca533[, 1]

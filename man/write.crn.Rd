@@ -76,7 +76,8 @@ write.crn(crn, fname, header = NULL, append = FALSE)
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{chron}}, \code{\link{read.crn}}
 }
-\examples{data(ca533)
+\examples{library(utils)
+data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM")
 fname1 <- write.crn(ca533.crn, tempfile(fileext=".crn"))

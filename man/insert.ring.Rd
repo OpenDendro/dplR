@@ -30,7 +30,8 @@ delete.ring(rw.vec,rw.vec.yrs=as.numeric(names(rw.vec)),
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{dplR}}
 }
-\examples{data(gp.rwl)
+\examples{library(utils)
+data(gp.rwl)
 series <- gp.rwl$"50A"
 names(series) <- rownames(gp.rwl)
 series <- series[!is.na(series)]

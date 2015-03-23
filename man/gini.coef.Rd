@@ -40,6 +40,7 @@ cat(docFile, sep="\n")
 if (interactive() && requireNamespace("Biobase")) {
     Biobase::openPDF(docFile)
 }}
+library(utils)
 data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM")

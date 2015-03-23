@@ -248,7 +248,8 @@ autoread.ids(rwl, ignore.site.case = TRUE, ignore.case = "auto",
 \author{ Andy Bunn (original version) and Mikko Korpela (patches,
   \code{\var{stc}="auto"}, \code{\var{fix.typos}}, etc.). }
 \seealso{ \code{\link{rwi.stats}}, \code{\link{read.rwl}} }
-\examples{data(ca533)
+\examples{library(utils)
+data(ca533)
 read.ids(ca533, stc = c(3, 2, 3))
 autoread.ids(ca533)
 }

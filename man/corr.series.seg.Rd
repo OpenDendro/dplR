@@ -77,7 +77,8 @@ corr.series.seg(rwl, series, series.yrs = as.numeric(names(series)),
   \code{\link{corr.series.seg}}, \code{\link{skel.plot}},
   \code{\link{series.rwl.plot}}, \code{\link{ccf.series.rwl}}
 }
-\examples{data(co021)
+\examples{library(utils)
+data(co021)
 dat <- co021
 ## Create a missing ring by deleting a year of growth in a random series
 flagged <- dat$"641143"

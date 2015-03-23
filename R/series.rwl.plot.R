@@ -98,7 +98,7 @@ series.rwl.plot <-
          ylab=gettext("Master", domain="R-dplR"),
          xlab=gettext("Series", domain="R-dplR"), pch=20,
          sub=bquote(R^2==.(tmp)))
-    abline(lm1, lwd=2)
+    abline(coef = coef(lm1), lwd=2)
 
     ## plot 3
     plot(yrs, series2, type="n", ylim=c(-1, 1), ylab="",

@@ -95,6 +95,14 @@ File: redfit.R
 - Fixed a bug where redfit() would fail if the "stats" package was
   not attached.
 
+File: series.rwl.plot.R
+-----------------------
+
+- Worked around a problem in graphics::abline(): the function
+  fails when a linear model is given and the "stats" package is not
+  attached. The solution is to extract the coefficients of the model
+  and use those in the call.
+
 File: write.tridas.R
 --------------------
 

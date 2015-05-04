@@ -184,6 +184,12 @@ compose.name <- function(orig.name, alphabet, idx, limit) {
 ### cases. The output vector keeps the names of the input vector.
 fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
                       basic.charset=TRUE) {
+    fn <- mapping.fname
+    if (!is.character(fn) || is.na(fn[1]) || Encoding(fn[1]) == "bytes") {
+        fn <- ""
+    } else {
+        fn <- fn[1]
+    }
     write.map <- FALSE
     n.x <- length(x)
     x.cut <- x
@@ -193,7 +199,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
         idx.bad <- grep(bad.chars, x.cut, perl=TRUE)
         if (length(idx.bad) > 0) {
             warning("characters outside a-z, A-Z, 0-9 present: renaming series")
-            if (nzchar(mapping.fname)) {
+            if (nzchar(fn)) {
                 write.map <- TRUE
             }
             rename.flag[idx.bad] <- TRUE
@@ -205,7 +211,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
         over.limit <- nchar(x.cut) > limit
         if (any(over.limit)) {
             warning("some names are too long: renaming series")
-            if (nzchar(mapping.fname)) {
+            if (nzchar(fn)) {
                 write.map <- TRUE
             }
             rename.flag[over.limit] <- TRUE
@@ -221,7 +227,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
         y <- x.cut
     } else {
         warning("duplicate names present: renaming series")
-        if (nzchar(mapping.fname)) {
+        if (nzchar(fn)) {
             write.map <- TRUE
         }
 
@@ -276,10 +282,10 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
         }
     }
     if (write.map) {
-        if (mapping.append && file.exists(mapping.fname)) {
-            map.file <- file(mapping.fname, "a")
+        if (mapping.append && file.exists(fn)) {
+            map.file <- file(fn, "a")
         } else {
-            map.file <- file(mapping.fname, "w")
+            map.file <- file(fn, "w")
         }
         for (i in which(rename.flag)) {
             if (x[i] != y[i]) {
@@ -376,7 +382,8 @@ vecMatched <- function(x, Table) {
         if (nNA == 0) {
             y[matches] <- x
         } else {
-            flagBad <- nzchar(xNames[isNA])
+            xNA <- xNames[isNA]
+            flagBad <- is.na(xNA) | nzchar(xNA)
             if (any(flagBad)) {
                 stop(gettextf("unknown element(s): %s",
                               paste(xNames[isNA][flagBad],collapse=", ")))

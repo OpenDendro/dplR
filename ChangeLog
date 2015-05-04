@@ -59,6 +59,16 @@ File: ffcsaps.R
 - Increased performance by using sparse matrices from the Matrix
   package.
 
+File: helpers.R
+---------------
+
+- Internal function fix.names() now checks its 'mapping.fname'
+  argument more thoroughly. This makes write.compact() and
+  write.tucson() more robust against unusual values of that
+  argument: wrong type, "bytes" encoding, zero length or NA.
+- Internal function vecMatched does not care if nzchar() starts
+  returning NA some day.
+
 File: latexify.R
 ----------------
 

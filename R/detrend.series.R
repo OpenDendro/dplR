@@ -5,10 +5,13 @@
              constrain.modnegexp = c("never", "when.fail", "always"),
              verbose = FALSE, return.info = FALSE)
 {
-    stopifnot(identical(make.plot, TRUE) || identical(make.plot, FALSE),
-              identical(pos.slope, FALSE) || identical(pos.slope, TRUE),
-              identical(verbose, TRUE) || identical(verbose, FALSE),
-              identical(return.info, TRUE) || identical(return.info, FALSE))
+    check.flags(make.plot, pos.slope, verbose, return.info)
+    if (length(y.name) == 0) {
+        y.name2 <- ""
+    } else {
+        y.name2 <- as.character(y.name)[1]
+        stopifnot(Encoding(y.name2) != "bytes")
+    }
     known.methods <- c("Spline", "ModNegExp", "Mean", "Ar")
     constrain2 <- match.arg(constrain.modnegexp)
     method2 <- match.arg(arg = method,
@@ -23,7 +26,7 @@
         sepLine <-
             indent(paste0(rep.int("~", max(1, widthOpt - 2 * indentSize)),
                           collapse = ""))
-        cat(gettext("Verbose output: ", domain="R-dplR"), y.name, "\n",
+        cat(gettext("Verbose output: ", domain="R-dplR"), y.name2, "\n",
             sep = "")
         opts <- c("make.plot" = make.plot,
                   "method(s)" = deparse(method2),
@@ -347,7 +350,7 @@
 
         plot(y2, type="l", ylab="mm",
              xlab=gettext("Age (Yrs)", domain="R-dplR"),
-             main=gettextf("Raw Series %s", y.name, domain="R-dplR"))
+             main=gettextf("Raw Series %s", y.name2, domain="R-dplR"))
         if(do.spline) lines(Spline, col="green", lwd=2)
         if(do.mne) lines(ModNegExp, col="red", lwd=2)
         if(do.mean) lines(Mean, col="blue", lwd=2)

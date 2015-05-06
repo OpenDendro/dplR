@@ -9,6 +9,12 @@ read.ids <- function(rwl, stc=c(3, 2, 3), ignore.site.case = FALSE,
                      typo.ratio = 5, use.cor = TRUE) {
 
 ### Check arguments
+    stopifnot(is.data.frame(rwl))
+    ids <- names(rwl)
+    if (is.null(ids) || any(is.na(ids))) {
+        stop("'rwl' must have non-NA names")
+    }
+    stopifnot(Encoding(ids) != "bytes")
     check.flags(fix.typos, use.cor, ignore.site.case)
     if (fix.typos) {
         stopifnot(is.numeric(typo.ratio), length(typo.ratio) == 1,
@@ -691,11 +697,7 @@ read.ids <- function(rwl, stc=c(3, 2, 3), ignore.site.case = FALSE,
              dupl=n.duplicated)
     }
 ### Actual body of the main function
-    ids <- names(rwl)
     n.cases <- length(ids)
-    if (is.null(ids) || any(is.na(ids))) {
-        stop("'rwl' must have non-NA names")
-    }
     if (n.cases < 2) {
         return(data.frame(tree = seq_len(n.cases), core = rep(1, n.cases),
                           row.names = ids))

@@ -1,9 +1,15 @@
 `chron` <-
     function(x, prefix="xxx", biweight=TRUE, prewhiten=FALSE, ...)
 {
-    prefix.str <- as.character(prefix)
-    if (length(prefix.str) != 1 || nchar(prefix.str) > 3) {
-        stop("'prefix' must be a character string with less than 4 characters")
+    check.flags(biweight, prewhiten)
+    if (length(prefix) == 0) {
+        prefix.str <- ""
+    } else {
+        prefix.str <- as.character(prefix)[1]
+        if (is.na(prefix.str) || Encoding(prefix.str) == "bytes" ||
+            nchar(prefix.str) > 3) {
+            stop("'prefix' must be a character string with less than 4 characters")
+        }
     }
     samps <- rowSums(!is.na(x))
     if (!biweight) {

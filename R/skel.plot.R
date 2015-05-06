@@ -2,8 +2,16 @@
     function(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9,
              dat.out = FALSE, master=FALSE, plot=TRUE)
 {
-    if(nchar(sname) > 7)
-        stop("'sname' must be a character string less than 8 characters long")
+    if (length(sname) == 0) {
+        sname2 <- ""
+    } else {
+        sname2 <- as.character(sname)[1]
+        if (is.na(sname2)) {
+            sname2 <- "NA"
+        } else if (Encoding(sname2) == "bytes" || nchar(sname2) > 7) {
+            stop("'sname' must be a character string less than 8 characters long")
+        }
+    }
 
     ## what about NA. Internal NA?
     na.mask <- is.na(rw.vec)
@@ -200,12 +208,12 @@
         grid.lines(x=unit(c(start.mm, start.mm), "mm"),
                    y=unit(c(rh, 0), "mm"),
                    gp = gpar(lwd = 2, lineend = "square", linejoin = "round"))
-        fontsize.sname <- ifelse(nchar(sname) > 6, 9, 10)
+        fontsize.sname <- ifelse(nchar(sname2) > 6, 9, 10)
         grid.polygon(x = c(start.mm, start.mm, start.mm - 2),
                      y = yy1, default.units = "mm",
                      gp=gpar(fill = "black", lineend = "square",
                      linejoin = "round"))
-        grid.text(label = sname, x = start.mm - 1, y = yy2,
+        grid.text(label = sname2, x = start.mm - 1, y = yy2,
                   just = sjust, rot = 90, default.units = "mm",
                   gp = gpar(fontsize=fontsize.sname))
         popViewport()

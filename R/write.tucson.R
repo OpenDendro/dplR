@@ -80,6 +80,8 @@
     nseries <- ncol(rwl.df)
     yrs.all <- as.numeric(row.names(rwl.df))
     col.names <- names(rwl.df)
+    stopifnot(is.character(col.names), !is.na(col.names),
+              Encoding(col.names) != "bytes")
 
     ## Sort years using increasing order, reorder rwl.df accordingly
     yrs.order <- sort.list(yrs.all)

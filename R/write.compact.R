@@ -25,7 +25,10 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
     name.width <-
         line.width - max.field.width.width - max.n.width - max.i.width - 17
 
-    col.names <- fix.names(x=names(rwl.df), limit=name.width,
+    col.names <- names(rwl.df)
+    stopifnot(is.character(col.names), !is.na(col.names),
+              Encoding(col.names) != "bytes")
+    col.names <- fix.names(x=col.names, limit=name.width,
                            mapping.fname=mapping.fname,
                            mapping.append=mapping.append, basic.charset=TRUE)
 

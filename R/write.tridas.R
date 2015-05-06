@@ -457,6 +457,8 @@ write.tridas <- function(rwl.df = NULL, fname, crn = NULL,
                              c("site.info", "", "title")))
         n.col <- ncol(rwl.df)
         cnames <- names(rwl.df)
+        stopifnot(is.character(cnames), !is.na(cnames),
+                  Encoding(cnames) != "bytes")
 
         ## If 'ids' is NULL then assume one core, radius and
         ## measurement per tree.  In case of missing columns (less

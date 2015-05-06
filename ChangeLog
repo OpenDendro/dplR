@@ -52,6 +52,15 @@ Various .R files
   to speed up some operations on rows or columns of matrices.
 - Reduced the number of calls to options() by one when setting and
   restoring options
+- Argument values, particularly those that should be character
+  vectors, are checked more thoroughly. This makes many functions
+  more robust against unusual values: wrong type, "bytes" encoding,
+  zero length or NA. Some values that previously failed are now
+  silently accepted by coercion to character, extraction of first
+  element when a single string is expected, and / or intepretation
+  of a zero length argument as an empty string. NA is equivalent to
+  "NA" in detrend.series() and skel.plot() where it is used for
+  plotting or text output, but forbidden otherwise, e.g. in chron().
 
 File: ffcsaps.R
 ---------------
@@ -62,10 +71,6 @@ File: ffcsaps.R
 File: helpers.R
 ---------------
 
-- Internal function fix.names() now checks its 'mapping.fname'
-  argument more thoroughly. This makes write.compact() and
-  write.tucson() more robust against unusual values of that
-  argument: wrong type, "bytes" encoding, zero length or NA.
 - Internal function vecMatched does not care if nzchar() starts
   returning NA some day.
 
@@ -112,6 +117,11 @@ File: series.rwl.plot.R
   fails when a linear model is given and the "stats" package is not
   attached. The solution is to extract the coefficients of the model
   and use those in the call.
+
+File: write.crn.R
+-----------------
+
+- Better coding style: avoid using assign().
 
 File: write.tridas.R
 --------------------

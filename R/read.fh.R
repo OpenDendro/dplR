@@ -223,6 +223,9 @@ read.fh <- function(fname) {
             stop(gettextf("in series %s: ", keycodes[i], domain="R-dplR"),
                  gettextf("too few values (expected %d, got %d)",
                           n.expected, n.true, domain="R-dplR"), domain=NA)
+        } else if (all(is.na(data[(n.expected+1):n.true]))) {
+            dendro.matrix[(start.years[i]-r.off):(end.years[i]-r.off), i] <-
+                data[seq_len(n.expected)]
         } else {
             stop(gettextf("in series %s: ", keycodes[i], domain="R-dplR"),
                  gettextf("too many values (expected %d, got %d)",

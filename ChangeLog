@@ -91,6 +91,11 @@ File: net.R
 
 - New function for computing the NET parameter (Esper et al., 2001).
 
+File: read.fh.R
+---------------
+
+- read.fh() now ignores empty lines at the end of series.
+
 File: read.tucson.R
 -------------------
 

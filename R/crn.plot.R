@@ -8,6 +8,7 @@
                        crn.lwd=1, spline.lwd=1.5,
                        abline.pos=1, abline.col='black',
                        abline.lty=1, abline.lwd=1,
+                       xlab="Time",ylab="RWI",
                        ...) {
   if(!is.data.frame(crn)) stop("'crn' must be a data.frame")
 
@@ -33,7 +34,7 @@
   nyrs2 <- nyrs
   for(i in seq_len(nCrn)){
     spl <- crn[[i]]
-    plot(yr.vec, spl, type="n",axes=FALSE,...)
+    plot(yr.vec, spl, type="n",axes=FALSE,xlab=xlab,ylab=ylab,...)
     if(sd.exist) {
       par(new=TRUE)
       plot(yr.vec, samp.depth, type="n",

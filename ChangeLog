@@ -1,5 +1,12 @@
 * CHANGES IN dplR VERSION 1.6.3
 
+File: crn.plot.R
+-------------
+
+- Added default x and y labels to plot. It would be better to use match.call()
+  to check to see if xlab and ylab were passed in as dots but it is a very 
+  cumbersome bit of code for only a little difference to the user.
+
 File: spag.plot.R
 --------------
 

@@ -5,7 +5,7 @@
 ### http://www.geo.uni-bremen.de/geomod/staff/mschulz/
 ### Author of the dplR version is Mikko Korpela.
 ###
-### Copyright (C) 2013 Aalto University
+### Copyright (C) 2013-2015 Aalto University
 ###
 ### This program is free software; you can redistribute it and/or modify
 ### it under the terms of the GNU General Public License as published by

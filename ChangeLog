@@ -1,3 +1,7 @@
+* CHANGES IN dplR VERSION 1.6.4
+
+
+
 * CHANGES IN dplR VERSION 1.6.3
 
 File: crn.plot.R
@@ -32,10 +36,10 @@ File: DESCRIPTION
   requirement (>= 0.5-2) was a mistake.
 - Updated version requirement: R (>= 2.15.2).  For some reason, R
   CMD check does not play nice with testthat on earlier versions of R.
-- Removed one of the URLs in the URL field. BDR sent and email saying that 
+- Removed one of the URLs in the URL field. BDR sent an email saying that
   having two URLs was breaking R and that we should put a comma in betwixt
   them. But the comma is problematic as it is a valid part of some URLs.
-  We deicded the better part of valor was to keep only one URL and not fight
+  We decided the better part of valor was to keep only one URL and not fight
   this particular battle.
 
 File: NAMESPACE
@@ -69,7 +73,7 @@ Various .R files
   more robust against unusual values: wrong type, "bytes" encoding,
   zero length or NA. Some values that previously failed are now
   silently accepted by coercion to character, extraction of first
-  element when a single string is expected, and / or intepretation
+  element when a single string is expected, and / or interpretation
   of a zero length argument as an empty string. NA is equivalent to
   "NA" in detrend.series() and skel.plot() where it is used for
   plotting or text output, but forbidden otherwise, e.g. in chron().
@@ -114,7 +118,7 @@ File: read.tucson.R
 - New argument 'edge.zeros', TRUE (default) or FALSE.  If TRUE,
   possible leading and trailing zero values in tree-ring series are
   kept.  If FALSE, such values are dropped.  The latter is how the
-  function has worked between (pre-)release 1.5.5 and the previoius
+  function has worked between (pre-)release 1.5.5 and the previous
   release, and may be considered a bug or a misfeature.  To
   reiterate, the default behavior has changed in some cases.  The
   alternative, 1.5.5--1.6.2 behavior can be restored by changing the
@@ -355,7 +359,7 @@ File: NAMESPACE
 - Added summary.rwl as an S3Method.
 - Added insert and delete.ring functions.
 
-File: xskel.ccf.plot.R and xskel.plot.R and 
+File: xskel.ccf.plot.R and xskel.plot.R
 ---------------
 
 - New plotting functions to help crossdate with skeleton plot

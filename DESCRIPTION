@@ -29,6 +29,5 @@ Description: Perform tree-ring analyses such as detrending, chronology
         used in dendrochronology.
 LazyData: no
 License: GPL (>= 2)
-URL: http://huxley.wwu.edu/trl/htrl-dplr
-        http://R-Forge.R-project.org/projects/dplr/
+URL: http://R-Forge.R-project.org/projects/dplr/
 MailingList: https://groups.google.com/d/forum/dplr-help

@@ -5,6 +5,10 @@ File: treeMean.R
 - Made a new function to calculate the mean value of each tree when there are 
   multiple cores.
 
+File: NAMESPACE
+-------------
+- Added treeMean function.
+
 * CHANGES IN dplR VERSION 1.6.3
 
 File: crn.plot.R

@@ -6,18 +6,17 @@
   This function calculates the mean value for each tree in a rwl or rwi object.
 }
 \usage{
-treeMean(x, ids = NULL)
+treeMean(rwl, ids)
 }
 \arguments{
-  \item{x}{a \code{data.frame} of ring widths with
-    \code{rownames(\var{x})} containing years and \code{colnames(x)}
+  \item{rwl}{a \code{data.frame} of ring widths with
+    \code{rownames(\var{rwl})} containing years and \code{colnames(rwl)}
     containing each series \acronym{ID} such as produced by
     \code{\link{read.rwl}}}
-  \item{ids}{ an optional \code{data.frame} with column one named
+  \item{ids}{ a \code{data.frame} with column one named
     \code{"tree"} giving a \code{numeric} \acronym{ID} for each tree and
     column two named \code{"core"} giving a \code{numeric} \acronym{ID}
-    for each core.  Defaults to one core per tree as\cr
-    \code{data.frame(tree=1:ncol(\var{rwi}), core=rep(1, ncol(\var{rwi})))}. }
+    for each core. }
 }
 \details{
   Here.
@@ -26,7 +25,7 @@ treeMean(x, ids = NULL)
   A \code{data.frame} with the means of each tree.
 }
 
-\author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
+\author{ Andy Bunn. Patched and improved by Mikko Korpela. }
 
 \seealso{ \code{\link{read.rwl}}, \code{\link{read.ids}}
 }

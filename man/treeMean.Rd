@@ -34,6 +34,8 @@ treeMean(rwl, ids)
 data(gp.rwl)
 gp.ids <- read.ids(gp.rwl, stc = c(0, 2, 1))
 gp.treeMean <- treeMean(gp.rwl, gp.ids)
+# plot using S3method for class "rwl"
+plot(gp.treeMean,plot.type="spag")
 
 data(ca533)
 ca533.treeMean <- treeMean(ca533, autoread.ids(ca533))

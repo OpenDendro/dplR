@@ -22,7 +22,8 @@ treeMean(rwl, ids)
   Here.
 }
 \value{
-  A \code{data.frame} with the means of each tree.
+  An object of class \code{c("rwl", "data.frame")} with the means of
+  each tree.
 }
 
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }

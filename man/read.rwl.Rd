@@ -30,10 +30,11 @@ read.rwl(fname,
   read operation.
 }
 \value{
-  If a \code{"tucson"} or \code{"compact"} file is read (even through
-  \code{"auto"}), returns a \code{data.frame} with the series in columns
-  and the years as rows.  The series \acronym{ID}s are the column names
-  and the years are the row names.
+  If a \code{"tucson"}, \code{"compact"} or \code{"heidelberg"} file is
+  read (even through \code{"auto"}), returns an object of class
+  \code{c("rwl", "data.frame")} with the series in columns and the years
+  as rows.  The series \acronym{ID}s are the column names and the years
+  are the row names.
   
   If a \code{"tridas"} file is read (even through \code{"auto"}),
   returns a list of results.  See \code{\link{read.tridas}} for more

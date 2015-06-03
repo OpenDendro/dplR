@@ -19,7 +19,7 @@ treeMean <- function(rwl, ids) {
     }
     uTrees <- unique(trees)
     if (any(is.na(uTrees))) {
-        warning("series with missing tree IDs, will be averaged")
+        stop("missing tree IDs are not allowed")
     }
     matches <- match(trees, uTrees)
     res <- matrix(NA_real_, nrow=nrow(rwl2), ncol=length(uTrees))

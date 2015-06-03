@@ -19,9 +19,9 @@ read.compact(fname)
   format.
 }
 \value{
-  A \code{data.frame} with the series in columns and the years as
-  rows.  The series \acronym{ID}s are the column names and the years are
-  the row names.
+  An object of class \code{c("rwl", "data.frame")} with the series in
+  columns and the years as rows.  The series \acronym{ID}s are the
+  column names and the years are the row names.
 }
 \author{ Mikko Korpela }
 \seealso{ \code{\link{read.rwl}}, \code{\link{read.tucson}},

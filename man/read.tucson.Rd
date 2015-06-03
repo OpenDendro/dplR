@@ -40,9 +40,9 @@ read.tucson(fname, header = NULL, long = FALSE,
   formatting problems.
 }
 \value{
-  A \code{data.frame} with the series in columns and the years as
-  rows.  The series \acronym{ID}s are the column names and the years are
-  the row names.
+  An object of class \code{c("rwl", "data.frame")} with the series in
+  columns and the years as rows.  The series \acronym{ID}s are the
+  column names and the years are the row names.
 }
 \author{ Andy Bunn.  Patched and greatly improved by Mikko Korpela. }
 \seealso{ \code{\link{read.rwl}}, \code{\link{read.compact}},

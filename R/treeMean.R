@@ -1,4 +1,4 @@
-treeMean <- function(rwl, ids) {
+treeMean <- function(rwl, ids, na.rm=FALSE) {
     rwl2 <- as.matrix(rwl)
     if (!is.data.frame(ids) || !("tree" %in% names(ids))) {
         stop("'ids' must be a data.frame with column 'tree'")
@@ -24,7 +24,7 @@ treeMean <- function(rwl, ids) {
     matches <- match(trees, uTrees)
     res <- matrix(NA_real_, nrow=nrow(rwl2), ncol=length(uTrees))
     for (i in seq_along(uTrees)) {
-        res[, i] <- rowMeans(rwl2[, matches == i, drop=FALSE], na.rm=TRUE)
+      res[,i] <- rowMeans(rwl2[, matches == i, drop=FALSE], na.rm=na.rm)
     }
     res[is.nan(res)] <- NA_real_
     res <- as.data.frame(res, row.names = rownames(rwl2))

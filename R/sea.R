@@ -36,13 +36,18 @@ sea <- function(x, key, lag = 5, resample = 1000) {
         rand.key <- sample(rnames, n, replace = TRUE)
         for (i in seq.n) {
             re.subtable[i, ] <-
-                x.scaled[as.character(rand.key[i] + yrs.base), ]
+                               x.scaled[as.character(rand.key[i] + yrs.base), ]
         }
         re.table[k, ] <- colMeans(re.subtable, na.rm = TRUE)
     }
     ## calculate significance for each (lagged) year
+    ## compute confidence bands, too
     p <- rep(NA_real_, m)
     w <- resample
+    ci_pos <- floor(resample * c(0.025, 0.975, 0.005, 0.995))
+    ci <- apply(apply(re.table, 2, sort), 2, function(x) {
+        x[ci_pos]
+    })
     for (i in seq_len(m)) {
         if (is.na(se[i])) {
             warning(gettextf("NA result at position %d. ", i),
@@ -70,5 +75,12 @@ sea <- function(x, key, lag = 5, resample = 1000) {
             }
         }
     }
-    data.frame(lag = c(-lag:lag), se, se.unscaled, p)
+    data.frame(lag = c(-lag:lag),
+               se.unscaled,
+               p,
+               se.scaled = se,
+               ci.95.lower = ci[1,],
+               ci.95.upper = ci[2,],
+               ci.99.lower = ci[3,],
+               ci.99.upper = ci[4,])
 }

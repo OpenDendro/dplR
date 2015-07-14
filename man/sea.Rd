@@ -40,12 +40,16 @@ sea(x, key, lag = 5, resample = 1000)
 \value{
   A \code{data.frame} with
   \item{lag}{the lagged years,}
-  \item{se}{the superposed epoch, i.e. the scaled mean \acronym{RWI} for
-    the event years,}
   \item{se.unscaled}{the unscaled superposed epoch, i.e. the mean
     \acronym{RWI} for the event years,}
   \item{p}{significance of the departure from the chrono\enc{’}{'}s mean
-    \acronym{RWI}.}
+    \acronym{RWI},}
+  \item{se.scaled}{the superposed epoch, i.e. the scaled mean \acronym{RWI} for
+    the event years,}
+  \item{ci.95.lower}{lower 95\% confidence band,}
+  \item{ci.95.upper}{upper 95\% confidence band,}
+  \item{ci.99.lower}{lower 99\% confidence band,}
+  \item{ci.99.upper}{upper 99\% confidence band.}
 }
 
 \author{ Christian Zang.  Patched and improved by Mikko Korpela. }

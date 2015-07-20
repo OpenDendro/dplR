@@ -1,5 +1,9 @@
 * CHANGES IN dplR VERSION 1.6.4
 
+File: sea.R
+-----------
+- Updated sea() to return bootstrapped CIs.
+
 File: treeMean.R
 -------------
 - Made a new function to calculate the mean value of each tree when there are 
@@ -46,7 +50,7 @@ File: DESCRIPTION
 - Removed one of the URLs in the URL field. BDR sent and email saying that 
   having two URLs was breaking R and that we should put a comma in betwixt
   them. But the comma is problematic as it is a valid part of some URLs.
-  We deicded the better part of valor was to keep only one URL and not fight
+  We decided the better part of valor was to keep only one URL and not fight
   this particular battle.
 
 File: NAMESPACE

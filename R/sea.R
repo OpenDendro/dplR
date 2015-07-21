@@ -76,9 +76,9 @@ sea <- function(x, key, lag = 5, resample = 1000) {
         }
     }
     data.frame(lag = c(-lag:lag),
+               se,
                se.unscaled,
                p,
-               se.scaled = se,
                ci.95.lower = ci[1,],
                ci.95.upper = ci[2,],
                ci.99.lower = ci[3,],

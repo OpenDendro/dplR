@@ -25,7 +25,7 @@ sea(x, key, lag = 5, resample = 1000)
 }
 
 \details{
-  Superposed epoch analysis is used to test the significance of a mean
+  Superposed epoch analysis (SEA) is used to test the significance of a mean
   tree growth response to certain events (such as droughts).  Departures
   from the mean \acronym{RWI} values for the specified years prior to
   each event year, the event year, and the specified years immediately
@@ -35,17 +35,21 @@ sea(x, key, lag = 5, resample = 1000)
   resampling is used to randomly select sets of \code{\var{lag}+1} years
   from the data set and to estimate significances for the departures
   from the mean \acronym{RWI}.
+  
+  SEA computation is based on scaled \acronym{RWI} values, and
+  95\%-confidence intervals are computed for the scaled values for each
+  year in the superposed epoch.
 }
 
 \value{
   A \code{data.frame} with
   \item{lag}{the lagged years,}
+  \item{se}{the superposed epoch, i.e. the scaled mean \acronym{RWI} for
+    the event years,}
   \item{se.unscaled}{the unscaled superposed epoch, i.e. the mean
     \acronym{RWI} for the event years,}
   \item{p}{significance of the departure from the chrono\enc{’}{'}s mean
     \acronym{RWI},}
-  \item{se.scaled}{the superposed epoch, i.e. the scaled mean \acronym{RWI} for
-    the event years,}
   \item{ci.95.lower}{lower 95\% confidence band,}
   \item{ci.95.upper}{upper 95\% confidence band,}
   \item{ci.99.lower}{lower 99\% confidence band,}

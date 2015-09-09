@@ -1,12 +1,12 @@
 # Translation template for messages in dplR R code
 # Copyright (C) dplR copyright holders
 # This file is distributed under the same license as the dplR package.
-# Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012, 2014.
+# Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012, 2014, 2015.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.6.1\n"
+"Project-Id-Version: dplR 1.6.4\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2014-05-27 12:43+0300\n"
+"POT-Creation-Date: 2015-09-09 17:01+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -266,6 +266,9 @@ msgstr ""
 msgid "'series' of length 1 must be a column index to 'rwl'"
 msgstr ""
 
+msgid "unknown element(s): %s"
+msgstr ""
+
 msgid "Detrend series %d of %d"
 msgstr ""
 
@@ -291,6 +294,15 @@ msgid "'year' not present in 'rw.vec.yrs'"
 msgstr ""
 
 msgid "'x1' and 'y1' lengths differ"
+msgstr ""
+
+msgid "'x' must be a matrix-like object"
+msgstr ""
+
+msgid "'x' must have at least 2 rows and 2 columns"
+msgstr ""
+
+msgid "'x' must contain numeric data"
 msgstr ""
 
 msgid "use only with \"rwl\" objects"
@@ -371,7 +383,7 @@ msgstr ""
 msgid "There does not appear to be a header in the crn file"
 msgstr ""
 
-msgid "'header' must be NULL or logical"
+msgid "'header' must be NULL, TRUE or FALSE"
 msgstr ""
 
 msgid "file has under 4 lines"
@@ -431,6 +443,9 @@ msgstr ""
 msgid "Pith offsets were found (no missing values). See attribute \"po\"."
 msgstr ""
 
+msgid "'rwl' must have non-NA names"
+msgstr ""
+
 msgid "Site-Tree-Core mask must only contain integral values"
 msgstr ""
 
@@ -438,9 +453,6 @@ msgid "length of Site-Tree-Core mask must be 3"
 msgstr ""
 
 msgid "changed tree-core code \"%s\" to \"%s\""
-msgstr ""
-
-msgid "'rwl' must have non-NA names"
 msgstr ""
 
 msgid "series names must be at least 1 character long"
@@ -839,7 +851,7 @@ msgstr ""
 msgid "Detrending Options:"
 msgstr ""
 
-msgid "'sname' must be a character string less than 8 characters long"
+msgid "'sname' must be a character string whose width is less than 8"
 msgstr ""
 
 msgid "input series has length of %d"
@@ -857,6 +869,9 @@ msgstr ""
 msgid "empty 'rwl' given, nothing to draw"
 msgstr ""
 
+msgid "reverting to useRaster=FALSE"
+msgstr ""
+
 msgid "'rwl' must have unique, non-NA names"
 msgstr ""
 
@@ -864,6 +879,15 @@ msgid "'ids' must be NULL or a data.frame"
 msgstr ""
 
 msgid "'length(rwl)' != 'nrow(ids)'"
+msgstr ""
+
+msgid "'ids' must be a data.frame with column 'tree'"
+msgstr ""
+
+msgid "'ncol(rwl)' != 'nrow(ids)'"
+msgstr ""
+
+msgid "missing tree IDs are not allowed"
 msgstr ""
 
 msgid "a user-coded (pseudo) random number generator is in use"
@@ -882,9 +906,6 @@ msgid "'wave.list$x' and 'wave.list$period' must be strictly ascending"
 msgstr ""
 
 msgid "'wave.list$period' must be positive"
-msgstr ""
-
-msgid "reverting to useRaster=FALSE"
 msgstr ""
 
 msgid "'rwl.df' must be a data.frame"

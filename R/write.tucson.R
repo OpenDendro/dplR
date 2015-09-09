@@ -8,7 +8,8 @@
     if (!is.data.frame(rwl.df)) {
         stop("'rwl.df' must be a data.frame")
     }
-    if (!(prec == 0.01 || prec == 0.001)) {
+    if (!is.numeric(prec) || length(prec) != 1 || is.na(prec) ||
+        !(prec == 0.01 || prec == 0.001)) {
         stop("'prec' must equal 0.01 or 0.001")
     }
     header2 <- header
@@ -50,8 +51,11 @@
         long <- header2$long[1]
         lead.invs <- header2$lead.invs[1]
         comp.date <- header2$comp.date[1]
-        lat.long <- ifelse(nchar(long) > 5, paste0(lat, long),
-                           paste(lat, long, sep=" "))
+        lat.long <- if (isTRUE(nchar(long) > 5)) {
+            paste0(lat, long)
+        } else {
+            paste(lat, long, sep=" ")
+        }
         yrs <- paste(header2$first.yr[1], header2$last.yr[1], sep=" ")
 
         field.name <-
@@ -155,9 +159,15 @@
         cat(hdr2, line.term, file=rwl.out, sep="")
         cat(hdr3, line.term, file=rwl.out, sep="")
     }
-    na.str <- ifelse(prec == 0.01, 9.99, -9.999)
-    missing.str <- ifelse(prec == 0.01, -9.99, 0)
-    prec.rproc <- ifelse(prec == 0.01, 100, 1000) # reciprocal of precision
+    if (prec == 0.01) {
+        na.str <- 9.99
+        missing.str <- -9.99
+        prec.rproc <- 100 # reciprocal of precision
+    } else {
+        na.str <- -9.999
+        missing.str <- 0
+        prec.rproc <- 1000
+    }
     format.year <- sprintf("%%%d.0f", year.width)
 
     for (l in seq_len(nseries)) {
@@ -178,13 +188,8 @@
 
         ## 1--name.width
         rwl.df.name <- col.names[l]
-        rwl.df.width <- nchar(rwl.df.name)
         ## Pad to name.width
-        rwl.df.name <- ifelse(rwl.df.width < name.width,
-                              format(rwl.df.name, width=name.width,
-                                     justify="left"),
-                              rwl.df.name)
-
+        rwl.df.name <- str_pad(rwl.df.name, name.width, side = "right")
         for (i in seq_len(n.decades)) {
             ## up to 4 numbers and a minus sign from long series
             dec <- decades[i]

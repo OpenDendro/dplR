@@ -747,7 +747,7 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
         precat()
         gtxt <- gettext("Input:", domain = "R-dplR")
         precat(gtxt)
-        precat(rep.int("-", nchar(gtxt)))
+        precat(rep.int("-", nchar(gtxt, type = "width")))
         precat("ofac = ", format(ofac, digits = digits))
         precat("hifac = ", format(params[["hifac"]], digits = digits))
         precat("n50 = ", format(n50, digits = digits))
@@ -756,7 +756,7 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
         precat()
         gtxt <- gettext("Initial values:", domain = "R-dplR")
         precat(gtxt)
-        precat(rep.int("-", nchar(gtxt)))
+        precat(rep.int("-", nchar(gtxt, type = "width")))
         seed <- x[["seed"]]
         if (!is.null(seed)) {
             precat("seed = ", format(seed, digits = digits))
@@ -770,7 +770,7 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
         precat()
         gtxt <- gettext("Results:", domain = "R-dplR")
         precat(gtxt)
-        precat(rep.int("-", nchar(gtxt)))
+        precat(rep.int("-", nchar(gtxt, type = "width")))
         if (is.null(rhopre) || rhopre < 0) {
             precat(gettextf("Avg. autocorr. coeff., rho = %s",
                             format(x[["rho"]], digits = digits),
@@ -800,7 +800,7 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
         gtxt <- gettext("Equality of theoretical and data spectrum: Runs test",
                         domain = "R-dplR")
         precat(gtxt)
-        precat(rep.int("-", nchar(gtxt)))
+        precat(rep.int("-", nchar(gtxt, type = "width")))
         rcnt <- x[["rcnt"]]
         if (!is.null(rcnt)) {
             runP <- params[["p"]]
@@ -810,7 +810,7 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
                                  format(as.numeric(100 * (1 - runP)),
                                         digits = digits),
                                  domain = "R-dplR")
-                nC <- nchar(gtxt[1])
+                nC <- nchar(gtxt[1], type = "width")
                 rcritlo <- x[["rcritlo"]]
                 rcrithi <- x[["rcrithi"]]
             }
@@ -839,7 +839,7 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
             precat()
             gtxt <- gettext("Data Columns:", domain = "R-dplR")
             precat(gtxt)
-            precat(rep.int("-", nchar(gtxt)))
+            precat(rep.int("-", nchar(gtxt, type = "width")))
             precat(gettext(" 1: Freq = frequency", domain = "R-dplR"))
             precat(gettext(" 2: Gxx = spectrum of input data",
                            domain = "R-dplR"))

@@ -191,13 +191,13 @@
             cat(gettext("There does not appear to be a header in the rwl file\n",
                         domain="R-dplR"))
         }
-    } else if (!is.logical(header)) {
-        stop("'header' must be NULL or logical")
+    } else if (!is.logical(header) || length(header) != 1 || is.na(header)) {
+        stop("'header' must be NULL, TRUE or FALSE")
     } else {
         is.head <- header
     }
 
-    skip.lines <- ifelse(is.head, 3, 0)
+    skip.lines <- if (is.head) 3 else 0
     data1 <- readLines(tfcon, n=skip.lines + 1)
     if (length(data1) < skip.lines + 1) {
         stop("file has no data")

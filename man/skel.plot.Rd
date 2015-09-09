@@ -14,8 +14,9 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9,
     series }
   \item{yr.vec}{ optional \code{numeric} vector giving years for the
     tree-ring data }
-  \item{sname}{ an optional \code{character} string of less than 8
-    characters giving the \acronym{ID} for the data }
+  \item{sname}{ an optional \code{character} string giving the
+    \acronym{ID} for the data.  The width of the string, often identical
+    to the number of characters, must be less than 8. }
   \item{filt.weight}{ filter length for the Hanning filter, defaults to 9 }
   \item{dat.out}{ \code{logical} flag indicating whether to return a
     \code{data.frame} containing the data. }

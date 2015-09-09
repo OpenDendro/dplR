@@ -785,9 +785,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
              },
              firstYear = function(x, atts, ...) {
                  tag.stack[stack.pointer <<- stack.pointer + 1] <<- "firstYear"
-                 firstYear.suffix <<- ifelse(is.null(atts),
-                                             as.character(NA),
-                                             atts["suffix"])
+                 firstYear.suffix <<- if (is.null(atts)) {
+                     as.character(NA)
+                 } else {
+                     atts["suffix"]
+                 }
              },
              heartwood = function(x, atts, ...) {
                  grandparent.element <- tag.stack[stack.pointer - 1]
@@ -802,16 +804,20 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
              },
              identifier = function(x, atts, ...){
                  tag.stack[stack.pointer <<- stack.pointer + 1] <<- "identifier"
-                 domain.text <<- ifelse(is.null(atts),
-                                        as.character(NA),
-                                        atts["domain"])
+                 domain.text <<- if (is.null(atts)) {
+                     as.character(NA)
+                 } else {
+                     atts["domain"]
+                 }
              },
              ## A reference to an identifier in the same document
              idRef = function(x, atts, ...) {
                  tag.stack[stack.pointer <<- stack.pointer + 1] <<- "idRef"
-                 link.idRef <<- ifelse(is.null(atts),
-                                       as.character(NA),
-                                       atts["ref"])
+                 link.idRef <<- if (is.null(atts)) {
+                     as.character(NA)
+                 } else {
+                     atts["ref"]
+                 }
              },
              laboratory = function(...) {
                  tag.stack[stack.pointer <<- stack.pointer + 1] <<- "laboratory"
@@ -835,9 +841,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
              },
              lastYear = function(x, atts, ...) {
                  tag.stack[stack.pointer <<- stack.pointer + 1] <<- "lastYear"
-                 lastYear.suffix <<- ifelse(is.null(atts),
-                                            as.character(NA),
-                                            atts["suffix"])
+                 lastYear.suffix <<- if (is.null(atts)) {
+                     as.character(NA)
+                 } else {
+                     atts["suffix"]
+                 }
              },
              measurementSeries = function(...) {
                  tag.stack[stack.pointer <<- stack.pointer + 1] <<-
@@ -853,9 +861,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
              },
              name = function(x, atts, ...) {
                  tag.stack[stack.pointer <<- stack.pointer + 1] <<- "name"
-                 lab.acronym <<- ifelse(is.null(atts),
-                                        as.character(NA),
-                                        atts["acronym"])
+                 lab.acronym <<- if (is.null(atts)) {
+                     as.character(NA)
+                 } else {
+                     atts["acronym"]
+                 }
              },
              object = function(...) {
                  parent.element <- tag.stack[stack.pointer]
@@ -1039,10 +1049,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
                      }
                  }
                  if (in.derived.values) {
-                     count.vector[idx.value] <<-
-                         ifelse(no.atts,
-                                as.numeric(NA),
-                                as.numeric(atts["count"]))
+                     count.vector[idx.value] <<- if (no.atts) {
+                         as.numeric(NA)
+                     } else {
+                         as.numeric(atts["count"])
+                     }
                  }
              },
              values = function(...) {
@@ -1104,9 +1115,11 @@ read.tridas <- function(fname, ids.from.titles=FALSE,
              ## A reference URI
              xLink = function(x, atts, ...) {
                  tag.stack[stack.pointer <<- stack.pointer + 1] <<- "xLink"
-                 link.xLink <<- ifelse(is.null(atts),
-                                       as.character(NA),
-                                       atts["href"])
+                 link.xLink <<- if (is.null(atts)) {
+                     as.character(NA)
+                 } else {
+                     atts["href"]
+                 }
              },
              ## Other start tag
              .startElement = function(name, ...) {

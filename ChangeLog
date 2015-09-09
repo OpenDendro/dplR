@@ -13,6 +13,18 @@ File: NAMESPACE
 -------------
 - Added treeMean function.
 
+Various .R files
+----------------
+- Argument values are checked more thoroughly: 'prec', 'header'.
+- 'if (condition) optionA else optionB' is used instead of
+  'ifelse(condition, optionA, optionB)' where appropriate.
+- Number of characters is used instead of display width where
+  appropriate, or vice versa. Counterparts:
+    strtrim() and substr();
+    nchar(type = "width") and nchar() with default 'type';
+    format(string, width = w, justify = "left") and
+      stringr::str_pad(string, w, side="right").
+
 * CHANGES IN dplR VERSION 1.6.3
 
 File: crn.plot.R

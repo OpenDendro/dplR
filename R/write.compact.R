@@ -4,7 +4,8 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
     if (!is.data.frame(rwl.df)) {
         stop("'rwl.df' must be a data.frame")
     }
-    if (!(prec == 0.01 || prec == 0.001)) {
+    if (!is.numeric(prec) || length(prec) != 1 || is.na(prec) ||
+        !(prec == 0.01 || prec == 0.001)) {
         stop("'prec' must equal 0.01 or 0.001")
     }
     if (append && !file.exists(fname)) {
@@ -16,7 +17,7 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
     yrs.all <- row.names(rwl.df)
 
     line.width <- 80 # max line width
-    prec.rproc <- ifelse(prec == 0.01, 100, 1000) # reciprocal of precision
+    prec.rproc <- if (prec == 0.01) 100 else 1000 # reciprocal of precision
     max.field.width.width <-
         nchar(nchar(round(max(rwl.df, na.rm=TRUE) * prec.rproc)))
     max.n.width <- nchar(nrow(rwl.df)) # conservative
@@ -79,8 +80,8 @@ write.compact <- function(rwl.df, fname, append=FALSE, prec=0.01,
 
         ## Write header
         head1 <- paste0(nyrs, "=N", " ", min.year, "=I", " ")
-        head2 <- paste0(ifelse(prec == 0.01, -2, -3), "(", n.fields, "F",
-                        field.width, ".0)~")
+        head2 <- paste0(if (prec == 0.01) "-2" else "-3", "(",
+                        n.fields, "F", field.width, ".0)~")
         n.space <- line.width - nchar(head1) - nchar(head2) - nchar(rwl.df.name)
         if (n.space < 1) {
             ## since names are cut to length, this should not happen

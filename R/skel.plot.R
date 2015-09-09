@@ -8,8 +8,9 @@
         sname2 <- as.character(sname)[1]
         if (is.na(sname2)) {
             sname2 <- "NA"
-        } else if (Encoding(sname2) == "bytes" || nchar(sname2) > 7) {
-            stop("'sname' must be a character string less than 8 characters long")
+        } else if (Encoding(sname2) == "bytes" ||
+                   nchar(sname2, type = "width") > 7) {
+            stop("'sname' must be a character string whose width is less than 8")
         }
     }
 
@@ -208,7 +209,12 @@
         grid.lines(x=unit(c(start.mm, start.mm), "mm"),
                    y=unit(c(rh, 0), "mm"),
                    gp = gpar(lwd = 2, lineend = "square", linejoin = "round"))
-        fontsize.sname <- ifelse(nchar(sname2) > 6, 9, 10)
+        fontsize.sname <-
+            if (nchar(sname2, type = "width") > 6) {
+                9
+            } else {
+                10
+            }
         grid.polygon(x = c(start.mm, start.mm, start.mm - 2),
                      y = yy1, default.units = "mm",
                      gp=gpar(fill = "black", lineend = "square",

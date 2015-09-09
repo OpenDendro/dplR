@@ -23,8 +23,8 @@
                         domain="R-dplR"))
             is.head <- FALSE # No header lines
         }
-    } else if(!is.logical(header)){
-        stop("'header' must be NULL or logical")
+    } else if(!is.logical(header) || length(header) != 1 || is.na(header)){
+        stop("'header' must be NULL, TRUE or FALSE")
     } else{
         is.head <- header
     }
@@ -50,7 +50,7 @@
     ## if nchar <=63 then there is a stats line
     nlines <- length(readLines(con, n=-1))
     ## Read file
-    skip.lines <- ifelse(is.head, 3, 0)
+    skip.lines <- if (is.head) 3 else 0
     ## Do nothing. read.fwf closes (and destroys ?!?) the file connection
     on.exit()
     ## Get chron stats if needed

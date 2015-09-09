@@ -1,13 +1,13 @@
 # Finnish translations for messages in dplR R code
 # Copyright (C) dplR copyright holders
 # This file is distributed under the same license as the dplR package.
-# Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012, 2014.
+# Mikko Korpela <mvkorpel@iki.fi>, 2011, 2012, 2014, 2015.
 msgid ""
 msgstr ""
-"Project-Id-Version: dplR 1.6.1\n"
+"Project-Id-Version: dplR 1.6.4\n"
 "Report-Msgid-Bugs-To: mvkorpel@iki.fi\n"
-"POT-Creation-Date: 2014-05-27 12:43+0300\n"
-"PO-Revision-Date: 2014-05-27 14:41+0300\n"
+"POT-Creation-Date: 2015-09-09 17:01+0300\n"
+"PO-Revision-Date: 2015-09-09 17:09+0300\n"
 "Last-Translator: Mikko Korpela <mvkorpel@iki.fi>\n"
 "Language-Team: Finnish <mvkorpel@iki.fi>\n"
 "Language: fi\n"
@@ -275,6 +275,9 @@ msgstr "toistuvia sarakenimiä, useita osumia"
 msgid "'series' of length 1 must be a column index to 'rwl'"
 msgstr "yhden elementin 'series'-muuttujan täytyy olla sarakeindeksi 'rwl':ään"
 
+msgid "unknown element(s): %s"
+msgstr "tuntematon elementti: %s"
+
 msgid "Detrend series %d of %d"
 msgstr "Trendipuhdistetaan sarja %d / %d"
 
@@ -301,6 +304,15 @@ msgstr "'year' puuttuu 'rw.vec.yrs':stä"
 
 msgid "'x1' and 'y1' lengths differ"
 msgstr "’x1’:n ja ’y1’:n pituudet eroavat"
+
+msgid "'x' must be a matrix-like object"
+msgstr "’x’:n täytyy olla matriisin kaltainen"
+
+msgid "'x' must have at least 2 rows and 2 columns"
+msgstr "’x’:ssä pitää olla vähintään 2 riviä ja saraketta"
+
+msgid "'x' must contain numeric data"
+msgstr "’x’:n täytyy sisältää numeerisia arvoja"
 
 msgid "use only with \"rwl\" objects"
 msgstr "käytä vain \"rwl\"-objektien kanssa"
@@ -382,8 +394,8 @@ msgstr "Tiedostossa näyttää olevan otsake"
 msgid "There does not appear to be a header in the crn file"
 msgstr "Tiedostossa ei näytä olevan otsaketta"
 
-msgid "'header' must be NULL or logical"
-msgstr "’header’in täytyy olla NULL tai logical-tyyppiä"
+msgid "'header' must be NULL, TRUE or FALSE"
+msgstr "’header’in täytyy olla NULL, TRUE tai FALSE"
 
 msgid "file has under 4 lines"
 msgstr "tiedostossa on alle 4 riviä"
@@ -447,6 +459,9 @@ msgstr ""
 "Sarjojen alusta puuttuvien renkaiden määrät löydettiin. Katso attribuutti "
 "\"po\"."
 
+msgid "'rwl' must have non-NA names"
+msgstr "’rwl’:ssä pitää olla ei-NA-nimet"
+
 msgid "Site-Tree-Core mask must only contain integral values"
 msgstr "Paikka–Puu–Näyte‐maskissa täytyy olla pelkkiä kokonaislukuja"
 
@@ -455,9 +470,6 @@ msgstr "Paikka–Puu–Näyte‐maskin pituuden täytyy olla 3"
 
 msgid "changed tree-core code \"%s\" to \"%s\""
 msgstr "vaihdettiin puu–näyte‐koodi ”%s” koodiksi ”%s”"
-
-msgid "'rwl' must have non-NA names"
-msgstr "’rwl’:ssä pitää olla ei-NA-nimet"
 
 msgid "series names must be at least 1 character long"
 msgstr "sarjojen nimien täytyy olla vähintään 1 merkin mittaisia"
@@ -872,8 +884,8 @@ msgstr "%d–%d"
 msgid "Detrending Options:"
 msgstr "Trendinpuhdistusvaihtoehdot:"
 
-msgid "'sname' must be a character string less than 8 characters long"
-msgstr "’sname’n täytyy olla alle 8-merkkinen merkkijono"
+msgid "'sname' must be a character string whose width is less than 8"
+msgstr "’sname’n täytyy olla merkkijono jonka leveys on alle 8"
 
 msgid "input series has length of %d"
 msgstr "syötesarjan pituus on %d"
@@ -890,6 +902,9 @@ msgstr "’filt.weight’ ei saa olla suurempi kuin syötesarjan pituus"
 msgid "empty 'rwl' given, nothing to draw"
 msgstr "tyhjä ’rwl’ annettu, ei mitään piirrettävää"
 
+msgid "reverting to useRaster=FALSE"
+msgstr "palataan asetukseen useRaster=FALSE"
+
 msgid "'rwl' must have unique, non-NA names"
 msgstr "’rwl’:ssä pitää olla uniikit, ei-NA-nimet"
 
@@ -898,6 +913,15 @@ msgstr "’ids’:n täytyy olla NULL tai data.frame"
 
 msgid "'length(rwl)' != 'nrow(ids)'"
 msgstr "’length(rwl)’ ≠ ’nrow(ids)’"
+
+msgid "'ids' must be a data.frame with column 'tree'"
+msgstr "’ids’:n täytyy olla data.frame jossa on sarake ’tree’"
+
+msgid "'ncol(rwl)' != 'nrow(ids)'"
+msgstr "’ncol(rwl)’ ≠ ’nrow(ids)’"
+
+msgid "missing tree IDs are not allowed"
+msgstr "puuttuvia puutunnisteita ei sallita"
 
 msgid "a user-coded (pseudo) random number generator is in use"
 msgstr "käyttäjän tekemä (pseudo)satunnaislukugeneraattori on käytössä"
@@ -916,9 +940,6 @@ msgstr "’wave.list$x’:n ja ’wave.list$period’in täytyy olla aidosti nou
 
 msgid "'wave.list$period' must be positive"
 msgstr "’wave.list$period’in täytyy olla positiivinen"
-
-msgid "reverting to useRaster=FALSE"
-msgstr "palataan asetukseen useRaster=FALSE"
 
 msgid "'rwl.df' must be a data.frame"
 msgstr "’rwl.df’:n täytyy olla data.frame"

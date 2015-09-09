@@ -170,7 +170,7 @@ compose.name <- function(orig.name, alphabet, idx, limit) {
         if (is.null(limit)) {
             new.name <- paste0(orig.name, last.part)
         } else {
-            new.name <- paste0(strtrim(orig.name, limit - idx.length),
+            new.name <- paste0(substr(orig.name, 1, limit - idx.length),
                                last.part)
         }
     }
@@ -215,7 +215,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
                 write.map <- TRUE
             }
             rename.flag[over.limit] <- TRUE
-            x.cut[over.limit] <- strtrim(x.cut[over.limit], limit)
+            x.cut[over.limit] <- substr(x.cut[over.limit], 1, limit)
         }
     }
     unique.cut <- unique(x.cut)
@@ -245,7 +245,7 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
         }
 
         if (!is.null(limit)) {
-            x.cut <- strtrim(x.cut, limit-1)
+            x.cut <- substr(x.cut, 1, limit - 1)
         }
         x.cut[y != ""] <- NA
         unique.cut <- unique(x.cut) # may contain NA

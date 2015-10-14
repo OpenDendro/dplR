@@ -10,3 +10,4 @@
 ^\.Rproj\.user$
 ^.*/auto$
 ^(|.*[^[:alpha:]])README-developer(|[^[:alpha:]].*)$
+^vignettes/Rplots.*\.pdf$

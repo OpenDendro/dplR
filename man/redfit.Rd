@@ -23,7 +23,9 @@ runcrit(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000)
     spaced time-series.  }
 
   \item{t}{ a \code{numeric} vector of times or ages corresponding to
-    \code{\var{x}}.  See \code{\var{txOrdered}}. }
+    \code{\var{x}}.  If missing, this is set to an evenly spaced
+    increasing integer sequence (1, 2, \ldots) along \code{\var{x}}.
+    See \code{\var{txOrdered}}. }
 
   \item{tType}{ a \code{character} string indicating the type of the
     \code{\var{t}} vector: either times or ages.  }

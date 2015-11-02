@@ -90,9 +90,12 @@ rasterPlot(expr, res = 150, region = c("plot", "figure"), antialias,
 }
 \examples{library(graphics)
 library(stats)
-plot(1:5, type = "n")
 foo <- runif(5, min = 1, max = 5)
+plot(foo, type = "n", axes = FALSE, ylim = c(1, 5))
 rasterPlot(quote(points(foo)))
+box()
+axis(1)
+axis(2)
 }
 \keyword{ aplot }
 \keyword{ utilities }

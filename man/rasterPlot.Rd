@@ -90,9 +90,44 @@ rasterPlot(expr, res = 150, region = c("plot", "figure"), antialias,
 }
 \examples{library(graphics)
 library(stats)
-foo <- runif(5, min = 1, max = 5)
-plot(foo, type = "n", axes = FALSE, ylim = c(1, 5))
-rasterPlot(quote(points(foo)))
+x <- 1:100
+y0 <- quote(sin(pi * x / 20) + x / 100 + rnorm(100, 0, 0.2))
+y <- eval(y0)
+ylab <- deparse(y0)
+spl <- smooth.spline(y)
+plot(x, y, type = "n", axes = FALSE, ylab = ylab)
+usr <- par("usr")
+xrange <- usr[2] - usr[1]
+xsize <- xrange * 0.4
+nsteps <- 8
+xmar <- xsize / 20
+yrange <- usr[4] - usr[3]
+ysize <- yrange / 20
+ymar <- 0.5 * ysize
+X <- seq(usr[1] + xmar, by = xsize / nsteps, length.out = nsteps + 1)
+xleft <- X[-(nsteps + 1)]
+xright <- X[-1]
+maxrad <- xsize / 3
+nrad <- 16
+minrad <- maxrad / nrad
+Rad <- seq(maxrad, by = (minrad - maxrad) / (nrad - 1), length.out=nrad)
+expr <- quote({
+    rect(xleft, usr[4] - 1.5 * ysize, xright, usr[4] - ymar,
+         col = rainbow(8), border = NA)
+    symbols(rep(usr[2] - xmar - maxrad, nrad),
+            rep(usr[3] + ymar + maxrad / xrange * yrange, nrad),
+            circles = Rad, inches = FALSE, add = TRUE, fg = NA,
+            bg = gray.colors(nrad + 1, 1, 0)[-1])
+    points(y)
+    lines(spl)
+})
+rasterPlot(expr, res = 50)
+box()
+axis(1)
+axis(2)
+
+plot(x, y, type = "n", axes = FALSE, ylab = ylab)
+rasterPlot(expr, antialias = "none", interpolate = FALSE)
 box()
 axis(1)
 axis(2)

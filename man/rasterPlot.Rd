@@ -8,7 +8,7 @@
   This function takes plotting commands and uses a temporary
   \code{\link{png}} bitmap graphics device to capture their output.  The
   resulting raster image is drawn in the plot or figure region of the
-  active high-level plot.
+  active high-level plot.  A new plot is started if one does not exist.
 }
 \usage{
 rasterPlot(expr, res = 150, region = c("plot", "figure"), antialias,
@@ -66,12 +66,13 @@ rasterPlot(expr, res = 150, region = c("plot", "figure"), antialias,
   The call or expression \code{\var{expr}} is evaluated in the
   environment of the caller.
 
-  Resizing a graphics device after a call to this function may distort
-  the image.  For example, circle symbols will become ellipses if the
-  width to height ratio is not maintained (see \sQuote{Examples}).  This
-  is in contrast to a standard plot in a display graphics device,
-  e.g. \code{\link{x11}}, where text and symbols maintain their size
-  when the device is resized.
+  It is possible that the raster contents will maintain a constant size
+  when the graphics device is resized.  If resizing works, however, the
+  image may become distorted.  For example, circle symbols will turn
+  into ellipses if the width to height ratio is not maintained (see
+  \sQuote{Examples}).  This is in contrast to a standard plot in a
+  display graphics device, e.g. \code{\link{x11}}, where text and
+  symbols maintain their size when the device is resized.
 }
 \value{
   No return value.  Used for the side effects.
@@ -87,9 +88,17 @@ rasterPlot(expr, res = 150, region = c("plot", "figure"), antialias,
   The \R build must have a functional \code{\link{png}} device, which
   requires one of the following \code{\link{capabilities}}:
   \code{"png"}, \code{"aqua"} or \code{"cairo"}.
+
+  If either of these requirements is not met, at least one
+  \code{\link{message}} is generated and the function reverts to regular
+  plotting.  The \code{\var{bg}} argument is then handled by drawing a
+  filled rectangle.  Also \code{\var{region}} is honored, but the other
+  settings do not apply.
 }
 \examples{library(graphics)
 library(stats)
+
+## Picture with various graphical elements
 x <- 1:100
 y0 <- quote(sin(pi * x / 20) + x / 100 + rnorm(100, 0, 0.2))
 y <- eval(y0)
@@ -107,15 +116,17 @@ ymar <- 0.5 * ysize
 X <- seq(usr[1] + xmar, by = xsize / nsteps, length.out = nsteps + 1)
 xleft <- X[-(nsteps + 1)]
 xright <- X[-1]
-maxrad <- xsize / 3
+pin <- par("pin")
+maxrad <- xsize / 3 * min(1, pin[2] / pin[1])
 nrad <- 16
 minrad <- maxrad / nrad
 Rad <- seq(maxrad, by = (minrad - maxrad) / (nrad - 1), length.out=nrad)
+xmar2 <- xmar + maxrad
+ymar2 <- (xmar2 / xrange) * pin[1] / pin[2] * yrange
 expr <- quote({
     rect(xleft, usr[4] - 1.5 * ysize, xright, usr[4] - ymar,
          col = rainbow(8), border = NA)
-    symbols(rep(usr[2] - xmar - maxrad, nrad),
-            rep(usr[3] + ymar + maxrad / xrange * yrange, nrad),
+    symbols(rep(usr[2] - xmar2, nrad), rep(usr[3] + ymar2, nrad),
             circles = Rad, inches = FALSE, add = TRUE, fg = NA,
             bg = gray.colors(nrad + 1, 1, 0)[-1])
     points(y)
@@ -126,11 +137,27 @@ box()
 axis(1)
 axis(2)
 
+## The same picture with higher resolution but no antialiasing
 plot(x, y, type = "n", axes = FALSE, ylab = ylab)
-rasterPlot(expr, antialias = "none", interpolate = FALSE)
+## region = "figure" makes no difference here
+rasterPlot(expr, antialias = "none", interpolate = FALSE,
+           region = "figure")
 box()
 axis(1)
 axis(2)
+
+## A part of plot(1:5) is drawn normally, the rest with rasterPlot.
+## Resize to see stretching.
+op <- par(no.readonly = TRUE)
+par(mar = c(5.1, 4.1, 2.1, 2.1))
+plot(c(1, 3, 5), c(1, 3, 5), axes = FALSE)
+box()
+axis(1)
+axis(4)
+rasterPlot(quote(points(c(2, 4), c(2, 4))), region = "figure")
+rasterPlot(quote(axis(2)), region = "figure")
+rasterPlot(quote(axis(3)), region = "figure")
+par(op)
 }
 \keyword{ aplot }
 \keyword{ utilities }

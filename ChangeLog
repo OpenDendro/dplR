@@ -1,5 +1,14 @@
 * CHANGES IN dplR VERSION 1.6.4
 
+File: rasterPlot.R
+------------------
+- rasterPlot() now reverts to normal plotting if png device is unavailable or
+  raster images are not supported. Previously an error would be produced.
+- The function now also works if no high level plot exists,
+  i.e. if plot.new() has not been called.
+- png plot is initialized with plot.new() instead of the previous
+  plot(type = "n", ...) arrangement.
+
 File: sea.R
 -----------
 - Updated sea() to return bootstrapped CIs.

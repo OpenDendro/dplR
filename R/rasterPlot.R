@@ -1,19 +1,83 @@
 rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
                        bg = "transparent", interpolate = TRUE, ...) {
+    ## Plotting commands 'expr' will be evaluated in the environment
+    ## of the caller of rasterPlot()
+    pf <- parent.frame()
+    fallback <- FALSE
     if (identical(dev.capabilities("rasterImage")[["rasterImage"]], "no")) {
-        stop("device does not support raster images")
+        message("device does not support raster images")
+        fallback <- TRUE
     }
     if (sum(capabilities(c("cairo", "png", "aqua")), na.rm=TRUE) == 0) {
-        stop("png device unavailable")
+        message("png device unavailable")
+        fallback <- TRUE
     }
     region2 <- match.arg(region)
     plotRegion <- region2 == "plot"
+    ## Start new plot if one does not exist
+    parnew <- tryCatch(par(new = TRUE), warning = function(...) NULL)
+    op <- NULL
+    marzero <- FALSE
+    if (is.null(parnew)) {
+        if (!plotRegion && !fallback) {
+            plot.new()
+            op <- par(no.readonly = TRUE)
+            par(mar = c(0, 0, 0, 0))
+            marzero <- TRUE
+        }
+        plot.new()
+        parnew <- list(new = FALSE)
+    } else if (!parnew[[1L]]) {
+        par(new = FALSE)
+    }
+    usr <- par("usr")
+    ## Limits of the plot region in user coordinates
+    usrLeft <- usr[1]
+    usrRight <- usr[2]
+    usrBottom <- usr[3]
+    usrTop <- usr[4]
+    figCoord <- function() {
+        usrWidth <- usrRight - usrLeft
+        usrHeight <- usrTop - usrBottom
+        plt <- par("plt")
+        ## Limits of the plot region proportional to the figure region, 0..1
+        pltLeft <- plt[1]
+        pltRight <- plt[2]
+        pltWidth <- pltRight - pltLeft
+        pltBottom <- plt[3]
+        pltTop <- plt[4]
+        pltHeight <- pltTop - pltBottom
+        ## Limits of the figure region in user coordinates
+        figLeft <- usrLeft - pltLeft / pltWidth * usrWidth
+        figRight <- usrRight + (1 - pltRight) / pltWidth * usrWidth
+        figBottom <- usrBottom - pltBottom / pltHeight * usrHeight
+        figTop <- usrTop + (1 - pltTop) / pltHeight * usrHeight
+        return(c(figLeft, figBottom, figRight, figTop))
+    }
+    if (fallback) {
+        message("using fallback: regular plotting")
+        on.exit(par(parnew))
+        parxpd <- par(xpd = !plotRegion)
+        on.exit(par(parxpd), add = TRUE)
+        if (length(bg) != 1 || !is.character(bg) || bg != "transparent") {
+            if (plotRegion) {
+                rect(usrLeft, usrBottom, usrRight, usrTop,
+                     col = bg, border = NA)
+            } else {
+                fc <- figCoord()
+                rect(fc[1], fc[2], fc[3], fc[4], col = bg, border = NA)
+            }
+        }
+        par(new = TRUE)
+        eval(expr, pf)
+        return(invisible(NULL))
+    }
     ## Record number of current device so it can be reactivated later
     curDev <- dev.cur()
     ## Record graphical parameters of the device
-    op <- par(no.readonly = TRUE)
-    plt <- op[["plt"]]
-    usr <- op[["usr"]]
+    if (is.null(op)) {
+        op <- par(no.readonly = TRUE)
+    }
     pngWidthHeight <- op[[c(figure="fin", plot="pin")[region2]]]
     op <- op[!(names(op) %in%
                c("ask", "bg", "fig", "fin", "mar", "mfcol", "mfg", "mfrow",
@@ -41,14 +105,9 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
     if (plotRegion) {
         par(mai=rep(0, 4))
     }
-    ## Dummy plot for initialization
-    plot(1, type = "n", xlab = "", ylab = "", axes=FALSE)
-    ## Copy graphical parameters from original device to png:
-    ## (margins), coordinates of plot region, etc.
+    ## Initialize and copy graphical parameters from original device
+    plot.new()
     par(op)
-    ## Evaluate the plotting commands 'expr' in the environment of the
-    ## caller of rasterPlot()
-    pf <- parent.frame()
     eval(expr, pf)
     on.exit(dev.set(curDev))
     on.exit(unlink(fname), add=TRUE)
@@ -62,37 +121,19 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
     on.exit()
     ## Remove the temporary .png file
     unlink(fname)
-    ## Limits of the plot region in user coordinates
-    usrLeft <- usr[1]
-    usrRight <- usr[2]
-    usrBottom <- usr[3]
-    usrTop <- usr[4]
-    if (plotRegion) {
+    if (plotRegion || marzero) {
         ## Add a raster image to the plot region of the original plot
         rasterImage(pngData, xleft = usrLeft, ybottom = usrBottom,
                     xright = usrRight, ytop = usrTop,
                     interpolate = interpolate)
     } else {
-        usrWidth <- usrRight - usrLeft
-        usrHeight <- usrTop - usrBottom
-        ## Limits of the plot region proportional to the figure region, 0..1
-        pltLeft <- plt[1]
-        pltRight <- plt[2]
-        pltWidth <- pltRight - pltLeft
-        pltBottom <- plt[3]
-        pltTop <- plt[4]
-        pltHeight <- pltTop - pltBottom
-        ## Limits of the figure region in user coordinates
-        figLeft <- usrLeft - pltLeft / pltWidth * usrWidth
-        figRight <- usrRight + (1 - pltRight) / pltWidth * usrWidth
-        figBottom <- usrBottom - pltBottom / pltHeight * usrHeight
-        figTop <- usrTop + (1 - pltTop) / pltHeight * usrHeight
         ## Set clipping to figure region, restore at exit
         par(xpd = TRUE)
         on.exit(par(xpd = op[["xpd"]]))
         ## Add a raster image to the figure region of the original plot
-        rasterImage(pngData, xleft = figLeft, ybottom = figBottom,
-                    xright = figRight, ytop = figTop,
+        fc <- figCoord()
+        rasterImage(pngData, xleft = fc[1], ybottom = fc[2],
+                    xright = fc[3], ytop = fc[4],
                     interpolate = interpolate)
     }
     invisible(NULL)

@@ -1,16 +1,22 @@
 rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
-                       bg = "transparent", interpolate = TRUE, ...) {
+                       bg = "transparent", interpolate = TRUE, draw = TRUE,
+                       ...) {
+    draw2 <- isTRUE(as.logical(draw)[1L])
     ## Plotting commands 'expr' will be evaluated in the environment
     ## of the caller of rasterPlot()
     pf <- parent.frame()
     fallback <- FALSE
-    if (identical(dev.capabilities("rasterImage")[["rasterImage"]], "no")) {
+    if (draw2 &&
+        identical(dev.capabilities("rasterImage")[["rasterImage"]], "no")) {
         message("device does not support raster images")
         fallback <- TRUE
     }
     if (sum(capabilities(c("cairo", "png", "aqua")), na.rm=TRUE) == 0) {
         message("png device unavailable")
         fallback <- TRUE
+    }
+    if (fallback && !draw2) {
+        return(NULL)
     }
     region2 <- match.arg(region)
     plotRegion <- region2 == "plot"
@@ -121,6 +127,9 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
     on.exit()
     ## Remove the temporary .png file
     unlink(fname)
+    if (!draw2) {
+        return(pngData)
+    }
     if (plotRegion || marzero) {
         ## Add a raster image to the plot region of the original plot
         rasterImage(pngData, xleft = usrLeft, ybottom = usrBottom,

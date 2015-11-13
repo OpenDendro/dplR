@@ -12,7 +12,7 @@
 }
 \usage{
 rasterPlot(expr, res = 150, region = c("plot", "figure"), antialias,
-           bg = "transparent", interpolate = TRUE, \dots)
+           bg = "transparent", interpolate = TRUE, draw = TRUE, \dots)
 }
 \arguments{
   \item{expr}{
@@ -53,6 +53,10 @@ rasterPlot(expr, res = 150, region = c("plot", "figure"), antialias,
     Analogously to \code{\var{antialias}}, \code{FALSE} is preferred
     when color maps to value.
   }
+  \item{draw}{
+    A \code{logical} flag.  Draw the results (\code{TRUE}, the default)
+    or return an image object (\code{FALSE})?
+  }
   \item{\dots}{
     Other arguments to \code{\link{png}}.
   }
@@ -75,7 +79,14 @@ rasterPlot(expr, res = 150, region = c("plot", "figure"), antialias,
   symbols maintain their size when the device is resized.
 }
 \value{
-  No return value.  Used for the side effects.
+  If \code{\var{draw}} is \code{TRUE}, there is no return value.  The
+  function is used for the side effects.
+
+  If \code{\var{draw}} is \code{FALSE}, an object of class
+  \code{"nativeRaster"} is returned.  The object can be used as input
+  for \code{\link{rasterImage}} or \code{\link{grid.raster}}.  See
+  \code{\link{readPNG}}.  If no \code{\link{png}} device is available
+  (see \sQuote{Note}), \code{NULL} is returned.
 }
 \author{
   Mikko Korpela
@@ -138,25 +149,32 @@ axis(1)
 axis(2)
 
 ## The same picture with higher resolution but no antialiasing
-plot(x, y, type = "n", axes = FALSE, ylab = ylab)
-## region = "figure" makes no difference here
+plot(y, type = "n", axes = FALSE, ann = FALSE)
+## No content in margin, but region = "figure" and bg = "white"
+## paints margin white
 rasterPlot(expr, antialias = "none", interpolate = FALSE,
-           region = "figure")
-box()
-axis(1)
-axis(2)
+           region = "figure", bg = "white")
+## Draw box, axes, labels
+parnew <- par(new = TRUE)
+plot(x, y, type = "n", ylab = ylab)
+par(parnew)
 
-## A part of plot(1:5) is drawn normally, the rest with rasterPlot.
-## Resize to see stretching.
+## Draw plot(1:5) with adjusted margins and additional axes.  Some parts
+## are drawn with rasterPlot, others normally.  Resize to see stretching.
 op <- par(no.readonly = TRUE)
 par(mar = c(5.1, 4.1, 2.1, 2.1))
-plot(c(1, 3, 5), c(1, 3, 5), axes = FALSE)
+plot(1:5, type = "n", axes = FALSE, ann = FALSE)
+expr2 <- quote({
+    points(c(2, 4), c(2, 4))
+    axis(2)
+    axis(3)
+})
+rasterPlot(expr2, region = "figure", bg = "white")
+points(c(1, 3, 5), c(1, 3, 5))
 box()
 axis(1)
 axis(4)
-rasterPlot(quote(points(c(2, 4), c(2, 4))), region = "figure")
-rasterPlot(quote(axis(2)), region = "figure")
-rasterPlot(quote(axis(3)), region = "figure")
+title(xlab = "Index", ylab = "1:5")
 par(op)
 }
 \keyword{ aplot }

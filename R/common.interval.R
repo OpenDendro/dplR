@@ -55,7 +55,7 @@ common.interval <- function(rwl, type=c("series", "years", "both"),
                     break
                 }
             }
-            tmp <- rowAlls(rwlNotNA[dontkeep.row, keep.col, drop = FALSE])
+            tmp <- rowAlls(rwlNotNA, rows = dontkeep.row, cols = keep.col)
             dontkeep.row[dontkeep.row] <- !tmp
             nRow <- nRow + sum(tmp)
             n.years <- nCol * nRow
@@ -133,7 +133,7 @@ common.interval <- function(rwl, type=c("series", "years", "both"),
             keep.row <- tmp[[3]]
             keep.col <- tmp[[4]]
         } else { # type2 == "both"
-            keep.col <- colAlls(rwlNotNA[row.idx, , drop = FALSE])
+            keep.col <- colAlls(rwlNotNA, rows = row.idx)
             nCol <- sum(keep.col)
         }
         opt <- nRow * nCol

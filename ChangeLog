@@ -1,5 +1,10 @@
 * CHANGES IN dplR VERSION 1.6.4
 
+File: DESCRIPTION
+-----------------
+
+- Version number requirement for matrixStats is now (>= 0.50.0).
+
 File: rasterPlot.R
 ------------------
 - rasterPlot() now reverts to normal plotting if png device is unavailable or
@@ -35,6 +40,9 @@ Various .R files
     nchar(type = "width") and nchar() with default 'type';
     format(string, width = w, justify = "left") and
       stringr::str_pad(string, w, side="right").
+- Using 'rows' and 'cols' arguments of matrixStats functions where
+  appropriate. This should result in less time and memory being
+  used. Thanks to Henrik Bengtsson for the tip and code examples.
 
 * CHANGES IN dplR VERSION 1.6.3
 

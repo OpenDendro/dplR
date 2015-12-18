@@ -167,7 +167,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
     tree.any <- matrix(FALSE, n.years, n.trees)
     for (i in seq.tree) {
         tree.any[, i] <-
-            rowAnys(rwiNotNA[, treeIds == unique.trees[i], drop=FALSE])
+            rowAnys(rwiNotNA, cols = treeIds == unique.trees[i])
     }
     n.trees.by.year <- rowSums(tree.any)
 
@@ -305,7 +305,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
             rbar.bt <- rsum.bt / n.bt
         }
 
-        coresPresent <- which(colAnys(rwiNotNA[year.idx, , drop = FALSE]))
+        coresPresent <- which(colAnys(rwiNotNA, rows = year.idx))
         treesPresent <- unique(treeIds[coresPresent])
         nCores <- length(coresPresent)
         nTrees <- length(treesPresent)

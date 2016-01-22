@@ -10,7 +10,7 @@ importFrom(digest, digest)
 importFrom(gmp, as.bigq, as.bigz, chooseZ, is.bigq)
 
 importFrom(grDevices, dev.hold, dev.flush, rainbow, dev.capabilities,
-           dev.cur, png, dev.off, dev.set, devAskNewPage)
+           dev.cur, png, dev.off, dev.set, devAskNewPage, dev.capture)
 
 importFrom(grid, gpar, grid.lines, grid.newpage, grid.polygon,
            grid.segments, grid.text, pushViewport, seekViewport, unit,

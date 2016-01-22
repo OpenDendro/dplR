@@ -9,7 +9,7 @@ wavelet.plot <-
              crn.col = "black", crn.lwd = 1,coi.col='black',
              crn.ylim = range(wave.list$y) * c(0.95, 1.05),
              side.by.side = FALSE,
-             useRaster = FALSE, res = 150, reverse.y = FALSE)
+             useRaster = FALSE, res = 150, reverse.y = FALSE, ...)
 {
 
     ## Wavelet transform variables:
@@ -135,8 +135,34 @@ wavelet.plot <-
                                 as.double(wavelet.levels),
                                 key.cols))
     if (useRaster2) {
-        tryCatch(rasterPlot(cl, res = res,
-                            antialias = "none", interpolate = FALSE),
+        args <- list(...)
+        argNames <- names(args)
+        if (is.null(argNames)) {
+            args <- NULL
+        } else {
+            args <- args[!is.na(argNames) & nzchar(argNames)]
+        }
+        if (length(args) == 0L) {
+            Call <- as.call(c(as.name("rasterPlot"),
+                              alist(expr = cl, res = res, antialias = "none",
+                                    interpolate = FALSE)))
+        } else {
+            Call <- as.call(c(as.name("rasterPlot"), args))
+            Call <- as.list(match.call(rasterPlot, Call))
+            anam <- names(Call[-1L])
+            Call[["expr"]] <- quote(cl)
+            Call[["res"]] <- quote(res)
+            Call[["region"]] <- "plot"
+            Call[["draw"]] <- TRUE
+            if (!("antialias" %in% anam)) {
+                Call[["antialias"]] <- "none"
+            }
+            if (!("interpolate" %in% anam)) {
+                Call[["interpolate"]] <- FALSE
+            }
+            Call <- as.call(Call)
+        }
+        tryCatch(eval(Call),
                  error = function(e) {
                      message(as.character(e), appendLF = FALSE)
                      message("reverting to useRaster=FALSE")

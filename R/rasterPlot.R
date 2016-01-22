@@ -1,7 +1,8 @@
 rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
                        bg = "transparent", interpolate = TRUE, draw = TRUE,
-                       ...) {
+                       Cairo = FALSE, ...) {
     draw2 <- isTRUE(as.logical(draw)[1L])
+    Cairo2 <- isTRUE(as.logical(Cairo)[1L])
     ## Plotting commands 'expr' will be evaluated in the environment
     ## of the caller of rasterPlot()
     pf <- parent.frame()
@@ -11,9 +12,42 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
         message("device does not support raster images")
         fallback <- TRUE
     }
-    if (sum(capabilities(c("cairo", "png", "aqua")), na.rm=TRUE) == 0) {
-        message("png device unavailable")
-        fallback <- TRUE
+    cairoRaster <- FALSE
+    fallback <- TRUE
+    for (k in 1:2) {
+        if (Cairo2) {
+            if (requireNamespace("Cairo", quietly = TRUE)) {
+                caps <- Cairo::Cairo.capabilities()
+                if (isTRUE(as.vector(caps["raster"]))) {
+                    fallback <- FALSE
+                    cairoRaster <- TRUE
+                } else if (isTRUE(as.vector(caps["png"]))) {
+                    fallback <- FALSE
+                } else {
+                    message("png and raster unsupported in this Cairo library")
+                }
+                if (!fallback) {
+                    if (k == 2) {
+                        message("using Cairo device")
+                    }
+                    break
+                }
+            } else {
+                message("Cairo device unavailable")
+            }
+            Cairo2 <- FALSE
+        } else {
+            if (sum(capabilities(c("cairo", "png", "aqua")), na.rm=TRUE) > 0) {
+                fallback <- FALSE
+                if (k == 2) {
+                    message("using png device")
+                }
+                break
+            } else {
+                message("png device unavailable")
+            }
+            Cairo2 <- TRUE
+        }
     }
     if (fallback && !draw2) {
         return(NULL)
@@ -94,7 +128,18 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
     ## in the original device.  Resolution (points per inch) is the
     ## argument 'res'.
     fname <- tempfile(fileext = ".png")
-    if (missing(antialias)) {
+    if (Cairo2) {
+        if (cairoRaster) {
+            cairoType <- "raster"
+            cairoFile <- ""
+        } else {
+            cairoType <- "png"
+            cairoFile <- fname
+        }
+        Cairo::Cairo(width = pngWidthHeight[1], height = pngWidthHeight[2],
+                     units = "in", dpi = res, bg = bg,
+                     type = cairoType, file = cairoFile, ...)
+    } else if (missing(antialias)) {
         png(fname, width = pngWidthHeight[1], height = pngWidthHeight[2],
             units = "in", res = res, bg = bg, ...)
     } else {
@@ -104,7 +149,9 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
     ## Record things to do on exit (will be removed from list one-by-one)
     on.exit(dev.off())
     on.exit(dev.set(curDev), add=TRUE)
-    on.exit(unlink(fname), add=TRUE)
+    if (!cairoRaster) {
+        on.exit(unlink(fname), add=TRUE)
+    }
     devAskNewPage(FALSE)
     par(mfcol=c(1,1))
     par(omi=rep(0, 4))
@@ -115,24 +162,33 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
     plot.new()
     par(op)
     eval(expr, pf)
-    on.exit(dev.set(curDev))
-    on.exit(unlink(fname), add=TRUE)
-    ## Close the png device
-    dev.off()
-    on.exit(unlink(fname))
+    if (cairoRaster) {
+        ## Capture raster data from device before closing
+        rasterData <- dev.capture(native = TRUE)
+        on.exit(dev.set(curDev))
+        dev.off()
+        on.exit()
+    } else {
+        on.exit(dev.set(curDev))
+        on.exit(unlink(fname), add=TRUE)
+        dev.off()
+        on.exit(unlink(fname))
+    }
     ## Return to the original plot (device)
     dev.set(curDev)
-    ## Read the png image to memory
-    pngData <- readPNG(fname, native=TRUE)
-    on.exit()
-    ## Remove the temporary .png file
-    unlink(fname)
+    if (!cairoRaster) {
+        ## Read the png image to memory
+        rasterData <- readPNG(fname, native=TRUE)
+        on.exit()
+        ## Remove the temporary .png file
+        unlink(fname)
+    }
     if (!draw2) {
-        return(pngData)
+        return(rasterData)
     }
     if (plotRegion || marzero) {
         ## Add a raster image to the plot region of the original plot
-        rasterImage(pngData, xleft = usrLeft, ybottom = usrBottom,
+        rasterImage(rasterData, xleft = usrLeft, ybottom = usrBottom,
                     xright = usrRight, ytop = usrTop,
                     interpolate = interpolate)
     } else {
@@ -141,7 +197,7 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
         on.exit(par(xpd = op[["xpd"]]))
         ## Add a raster image to the figure region of the original plot
         fc <- figCoord()
-        rasterImage(pngData, xleft = fc[1], ybottom = fc[2],
+        rasterImage(rasterData, xleft = fc[1], ybottom = fc[2],
                     xright = fc[3], ytop = fc[4],
                     interpolate = interpolate)
     }

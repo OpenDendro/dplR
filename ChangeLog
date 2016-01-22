@@ -7,8 +7,13 @@ File: DESCRIPTION
 
 File: rasterPlot.R
 ------------------
-- rasterPlot() now reverts to normal plotting if png device is unavailable or
-  raster images are not supported. Previously an error would be produced.
+- Added option 'Cairo' to control the preferred bitmap
+  device. FALSE (the default) for png() as before, and TRUE for
+  Cairo() as a new option. If the preferred device is unavailable,
+  the other one will be tried.
+- rasterPlot() now reverts to normal plotting if bitmap device is
+  unavailable or raster images are not supported. Previously an
+  error would be produced.
 - The function now also works if no high level plot exists,
   i.e. if plot.new() has not been called.
 - Added option 'draw' to control whether the raster plot is to be drawn (TRUE,
@@ -25,9 +30,20 @@ File: treeMean.R
 - Made a new function to calculate the mean value of each tree when there are 
   multiple cores.
 
+File: wavelet.plot.R
+--------------------
+- wavelet.plot() now passes ... arguments to rasterPlot().
+
+File: DESCRIPTION
+-----------------
+- New Suggested package: Cairo. Used (if available) in
+  rasterPlot() if the png() device is unavailable or if the user
+  specifies 'Cairo=TRUE'.
+
 File: NAMESPACE
 -------------
 - Added treeMean function.
+- Importing dev.capture() from grDevices.
 
 Various .R files
 ----------------

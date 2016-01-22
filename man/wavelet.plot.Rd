@@ -18,7 +18,7 @@ wavelet.plot(wave.list,
              crn.col = "black", crn.lwd = 1,coi.col='black',
              crn.ylim = range(wave.list$y) * c(0.95, 1.05),
              side.by.side = FALSE,
-             useRaster = FALSE, res = 150, reverse.y = FALSE)
+             useRaster = FALSE, res = 150, reverse.y = FALSE, \dots)
 }
 \arguments{
   \item{wave.list}{A \code{list}.  Output from \code{\link{morlet}}.}
@@ -61,6 +61,10 @@ wavelet.plot(wave.list,
   \item{reverse.y}{A \code{logical} flag.  If \code{TRUE}, the Y-axis
     will be reversed, i.e. period increasing towards the bottom.  The
     default is \code{FALSE}. }
+  \item{\dots}{Arguments passed to \code{\link{rasterPlot}}.  Only
+    relevant when the filled contours are drawn as a raster image.  See
+    \code{\var{useRaster}}.
+  }
 }
 \details{
   This produces a plot of a continuous wavelet transform and plots the

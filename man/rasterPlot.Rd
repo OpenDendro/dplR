@@ -6,13 +6,14 @@
 }
 \description{
   This function takes plotting commands and uses a temporary
-  \code{\link{png}} bitmap graphics device to capture their output.  The
+  bitmap graphics device to capture their output.  The
   resulting raster image is drawn in the plot or figure region of the
   active high-level plot.  A new plot is started if one does not exist.
 }
 \usage{
 rasterPlot(expr, res = 150, region = c("plot", "figure"), antialias,
-           bg = "transparent", interpolate = TRUE, draw = TRUE, \dots)
+           bg = "transparent", interpolate = TRUE, draw = TRUE,
+           Cairo = FALSE, \dots)
 }
 \arguments{
   \item{expr}{
@@ -38,11 +39,12 @@ rasterPlot(expr, res = 150, region = c("plot", "figure"), antialias,
     Antialiasing argument passed to \code{\link{png}}.  The default
     (missing argument) is probably good for line plots but
     \code{"none"} is preferred for images in which color signifies value
-    of data.
+    of data.  Unused if a \code{\link[Cairo]{Cairo}} device is used instead of
+    \code{png}.
   }
   \item{bg}{
     Background color of the raster plot, an argument passed to
-    \code{\link{png}}.  If the default \code{"transparent"} does not
+    the bitmap device.  If the default \code{"transparent"} does not
     work, try \code{"white"} or another color.  Note that a
     non-transparent background will mask any previous content in the
     figure or plot region, depending on the value of \code{\var{region}}.
@@ -57,13 +59,19 @@ rasterPlot(expr, res = 150, region = c("plot", "figure"), antialias,
     A \code{logical} flag.  Draw the results (\code{TRUE}, the default)
     or return an image object (\code{FALSE})?
   }
+  \item{Cairo}{
+    A \code{logical} flag.  \code{TRUE} for preferring a
+    \code{\link[Cairo]{Cairo}} to \code{\link{png}} as the bitmap device,
+    \code{FALSE} (the default) for the opposite.  If the preferred
+    device cannot be used, the other one will be tried.
+  }
   \item{\dots}{
-    Other arguments to \code{\link{png}}.
+    Other arguments to \code{\link{png}} or \code{\link[Cairo]{Cairo}}.
   }
 }
 \details{
   The appropriate graphical parameters of the current graphics device
-  are copied to the temporary \code{\link{png}} device.  Therefore the
+  are copied to the temporary bitmap device.  Therefore the
   appearance of the raster contents should be almost the same as when
   directly drawn.
 
@@ -85,20 +93,28 @@ rasterPlot(expr, res = 150, region = c("plot", "figure"), antialias,
   If \code{\var{draw}} is \code{FALSE}, an object of class
   \code{"nativeRaster"} is returned.  The object can be used as input
   for \code{\link{rasterImage}} or \code{\link{grid.raster}}.  See
-  \code{\link{readPNG}}.  If no \code{\link{png}} device is available
+  \code{\link{readPNG}}.  If no bitmap device is available
   (see \sQuote{Note}), \code{NULL} is returned.
 }
 \author{
   Mikko Korpela
 }
 \note{
-  The graphics device used for the output must have support for
-  including raster images.  See \code{"rasterImage"} in
-  \code{\link{dev.capabilities}}.
 
-  The \R build must have a functional \code{\link{png}} device, which
-  requires one of the following \code{\link{capabilities}}:
-  \code{"png"}, \code{"aqua"} or \code{"cairo"}.
+  \itemize{
+
+    \item{The graphics device used for the output must have support for
+      including raster images.  See \code{"rasterImage"} in
+      \code{\link{dev.capabilities}}.}
+
+    \item{The \R build must have a functional \code{\link{png}} device,
+      which requires one of the following \code{\link{capabilities}}:
+      \code{"png"}, \code{"aqua"} or \code{"cairo"}.  Alternatively, a
+      \code{\link[Cairo]{Cairo}} device from package Cairo must be
+      available with \code{\link[Cairo]{Cairo.capabilities}}
+      \code{"raster"} or \code{"png"}.}
+
+  }
 
   If either of these requirements is not met, at least one
   \code{\link{message}} is generated and the function reverts to regular

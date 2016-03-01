@@ -1,3 +1,7 @@
+o[andybunn]  Add Friedman super-smoother to detrend.series and its ilk. This
+             should be trivial using function supsmu() in stats. But it will
+             require some work on the docs, plotting, etc.
+
 o[andybunn]  Recode vignettes into markdown so as to have them on Rpubs?
 
 o[mvkorpel]  Add option for smooth CI curves from theoretical AR1 in redfit!

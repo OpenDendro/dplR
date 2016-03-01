@@ -87,7 +87,7 @@ mean(co021.sum$ar1)
 mean(interseries.cor(co021)[, 1])
 plot(co021, plot.type="spag")
 @
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics{timeseries-dplR-a}
 \caption{A spaghetti plot of the Mesa Verde ring widths.}
@@ -107,7 +107,7 @@ co021.rwi <- detrend(co021, method="Spline")
 co021.crn <- chron(co021.rwi, prefix="MES")
 plot(co021.crn, add.spline=TRUE, nyrs=64)
 @
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics{timeseries-dplR-b}
 \caption{The Mesa Verde chronology.}
@@ -129,7 +129,7 @@ acf(dat)
 pacf(dat)
 par(op)
 @
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics{timeseries-dplR-c}
 \caption{ACF and PACF plots of the Mesa Verde chronology.}
@@ -218,7 +218,7 @@ par(op)
 @
 
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
   \includegraphics{timeseries-dplR-d}
   \caption{Spectra of Mesa Verde chronology using redfit}
@@ -241,7 +241,7 @@ out.wave <- morlet(y1 = dat, x1 = yrs, p2 = 8, dj = 0.1,
                    siglvl = 0.99)
 wavelet.plot(out.wave, useRaster=NA)
 @
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
   \includegraphics{timeseries-dplR-e}
   \caption{Continuous wavelet of the Mesa Verde chronology}
@@ -293,7 +293,7 @@ if (require("waveslim", character.only = TRUE)) {
   par(op) #reset par
 }
 @
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
   \includegraphics{timeseries-dplR-f}
   \caption{Multiresolution analysis of the Mesa Verde chronology}
@@ -337,7 +337,7 @@ axis(1);axis(2);axis(3);axis(4)
 box()
 par(op)
 @
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
   \includegraphics{timeseries-dplR-g}
   \caption{The Mesa Verde chronology plotted with a variety of splines}

@@ -90,7 +90,7 @@ mean(dat.sum$ar1)
 mean(interseries.cor(dat)[, 1])
 plot(dat, plot.type="spag")
 @
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics{xdate-dplR-a}
 \caption{A spaghetti plot of the Mesa Verde ring widths.}
@@ -148,7 +148,7 @@ set indicates one series with dating problems.
 <<b, fig=TRUE>>=
 rwl.60 <- corr.rwl.seg(dat, seg.length=60, pcrit=0.01)
 @
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics{xdate-dplR-b}
 \caption{Each 60-year segment of each series in the  modified Mesa 
@@ -168,7 +168,7 @@ end of the 19th century.
 seg.60 <- corr.series.seg(rwl=dat, series="643114",
                           seg.length=60)
 @
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics{xdate-dplR-c}
 \caption{Correlations between series \code{643114} and the master chronology are 
@@ -192,7 +192,7 @@ ccf.30 <- ccf.series.rwl(rwl=dat.trunc, series="643114",
                          seg.length=30, bin.floor=50)
 @
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics{xdate-dplR-d}
 \caption{Cross-correlations between series \code{643114} and the master 
@@ -229,7 +229,7 @@ ccf.20 <- ccf.series.rwl(rwl=dat.trunc, series="643114",
                          seg.length=20, bin.floor=0)
 @
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics{xdate-dplR-e}
 \caption{Cross-correlations between series \code{643114} and the master 
@@ -254,7 +254,7 @@ xskel.ccf.plot(rwl=dat, series="643114",
                win.start=1865, win.width=40)
 @
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics{xdate-dplR-f}
 \caption{The top panel shows the normalized values for the master chronology

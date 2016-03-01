@@ -117,7 +117,7 @@ as a ``spaghetti plot.'' The \code{rwl} objects have a generic S3 method for
 <<a, fig=TRUE>>=
 plot(ca533, plot.type="spag")
 @
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics{intro-dplR-a}
 \caption{A spaghetti plot of the Campito Mountain ring widths.}
@@ -200,7 +200,7 @@ names(series) <- rownames(ca533) # give it years as rownames
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
                              verbose=TRUE)
 @
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics{intro-dplR-b}
 \caption{Detrending a single series via multiple methods.}
@@ -297,7 +297,7 @@ a smoothing spline added. See Figure~\ref{fig:crn.plot.spline}.
 <<c, fig=TRUE>>=
 plot(ca533.crn, add.spline=TRUE, nyrs=20)
 @
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics{intro-dplR-c}
 \caption{Campito Mountain chronology with 20-year smoothing spline.}
@@ -356,7 +356,7 @@ axis(1); axis(2); axis(3); axis(4)
 box()
 par(def.par)
 @
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics{intro-dplR-d}
 \caption{Campito Mountain chronology using an EPS cutoff.}

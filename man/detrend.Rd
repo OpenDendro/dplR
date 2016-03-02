@@ -8,10 +8,11 @@
 }
 \usage{
 detrend(rwl, y.name = names(rwl), make.plot = FALSE,
-        method = c("Spline", "ModNegExp", "Mean", "Ar"), nyrs = NULL,
-        f = 0.5, pos.slope = FALSE,
+        method = c("Spline", "ModNegExp", "Mean", "Ar", "Friedman"),
+        nyrs = NULL, f = 0.5, pos.slope = FALSE,
         constrain.modnegexp = c("never", "when.fail", "always"),
-        verbose = FALSE, return.info = FALSE)
+        verbose = FALSE, return.info = FALSE,
+        wt, span = "cv", bass = 0)
 }
 \arguments{
 
@@ -51,6 +52,15 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
     about models and data will be added to the return value.  See
     \sQuote{Value}. }
 
+  \item{wt}{ a \code{numeric} vector of case weights for method
+    \code{"Friedman"}. The default means equals weights. }
+
+  \item{span}{ a \code{numeric} value controlling method
+    \code{"Friedman"}, or \code{"cv"} (default) for automatic choice by
+    cross-validation. See \code{\link{supsmu}}. }
+
+  \item{bass}{ a \code{numeric} value controlling the smoothness of the
+    fitted curve in method \code{"Friedman"}. See \code{\link{supsmu}}. }
 }
 \details{
   See \code{\link{detrend.series}} for details on detrending

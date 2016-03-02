@@ -1,15 +1,16 @@
 `detrend` <-
     function(rwl, y.name = names(rwl), make.plot = FALSE,
-             method=c("Spline", "ModNegExp", "Mean", "Ar"),
+             method=c("Spline", "ModNegExp", "Mean", "Ar", "Friedman"),
              nyrs = NULL, f = 0.5, pos.slope = FALSE,
              constrain.modnegexp = c("never", "when.fail", "always"),
-             verbose = FALSE, return.info = FALSE)
+             verbose = FALSE, return.info = FALSE,
+             wt, span = "cv", bass = 0)
 {
     stopifnot(identical(make.plot, TRUE) || identical(make.plot, FALSE),
               identical(pos.slope, FALSE) || identical(pos.slope, TRUE),
               identical(verbose, TRUE) || identical(verbose, FALSE),
               identical(return.info, TRUE) || identical(return.info, FALSE))
-    known.methods <- c("Spline", "ModNegExp", "Mean", "Ar")
+    known.methods <- c("Spline", "ModNegExp", "Mean", "Ar", "Friedman")
     constrain2 <- match.arg(constrain.modnegexp)
     method2 <- match.arg(arg = method,
                          choices = known.methods,
@@ -18,6 +19,15 @@
         stop("'rwl' must be a data.frame")
     rn <- row.names(rwl)
 
+    detrend.args <- c(alist(rwl.i),
+                      list(make.plot = FALSE, method = method2,
+                           nyrs = nyrs, f = f, pos.slope = pos.slope,
+                           constrain.modnegexp = constrain2,
+                           verbose = FALSE, return.info = return.info,
+                           span = span, bass = bass))
+    if (!missing(wt)) {
+        detrend.args <- c(detrend.args, list(wt = wt))
+    }
     if(!make.plot && !verbose &&
        ("Spline" %in% method2 || "ModNegExp" %in% method2) &&
        !inherits(try(suppressWarnings(req.it <-
@@ -39,14 +49,7 @@
                                                    .export=exportFun),
                               {
                                   names(rwl.i) <- rn
-                                  detrend.series(rwl.i, make.plot=FALSE,
-                                                 method=method2,
-                                                 nyrs=nyrs, f=f,
-                                                 pos.slope=pos.slope,
-                                                 constrain.modnegexp=
-                                                 constrain2,
-                                                 verbose=FALSE,
-                                                 return.info=return.info)
+                                  do.call(detrend.series, detrend.args)
                               })
 
         if (return.info) {
@@ -61,13 +64,11 @@
             modelStats <- vector(mode = "list", length = n.series)
             dataStats <- vector(mode = "list", length = n.series)
         }
+        detrend.args[1] <- alist(rwl[[i]])
+        detrend.args[["verbose"]] <- verbose
+        detrend.args <- c(detrend.args, alist(y.name = y.name[i]))
         for (i in seq_len(n.series)) {
-            fits <- detrend.series(rwl[[i]], y.name=y.name[i],
-                                   make.plot=make.plot,
-                                   method=method2, nyrs=nyrs, f=f,
-                                   pos.slope=pos.slope,
-                                   constrain.modnegexp=constrain2,
-                                   verbose=verbose, return.info=return.info)
+            fits <- do.call(detrend.series, detrend.args)
             if (return.info) {
                 modelStats[[i]] <- fits[[2]]
                 dataStats[[i]] <- fits[[3]]

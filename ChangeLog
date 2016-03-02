@@ -34,6 +34,13 @@ File: wavelet.plot.R
 --------------------
 - wavelet.plot() now passes ... arguments to rasterPlot().
 
+Files: detrend.R, detrend.series.R
+----------------------------------
+- New detrending method "Friedman" is Friedman's super smoother,
+  implemented in stats::supsmu().
+- When 'return.info' is TRUE, also the "f" parameter of
+  method="Spline" is returned.
+
 File: DESCRIPTION
 -----------------
 - New Suggested package: Cairo. Used (if available) in

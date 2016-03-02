@@ -8,10 +8,11 @@
 }
 \usage{
 detrend.series(y, y.name = "", make.plot = TRUE,
-               method = c("Spline", "ModNegExp", "Mean", "Ar"),
+               method = c("Spline", "ModNegExp", "Mean", "Ar", "Friedman"),
                nyrs = NULL, f = 0.5, pos.slope = FALSE,
                constrain.modnegexp = c("never", "when.fail", "always"),
-               verbose=FALSE, return.info=FALSE)
+               verbose = FALSE, return.info = FALSE,
+               wt, span = "cv", bass = 0)
 }
 \arguments{
 
@@ -55,6 +56,16 @@ detrend.series(y, y.name = "", make.plot = TRUE,
     about models and data will be added to the return value.  See
     \sQuote{Value}. }
   
+  \item{wt}{ a \code{numeric} vector of case weights for method
+    \code{"Friedman"}. The default means equals weights. }
+
+  \item{span}{ a \code{numeric} value controlling method
+    \code{"Friedman"}, or \code{"cv"} (default) for automatic choice by
+    cross-validation. See \code{\link{supsmu}}. }
+
+  \item{bass}{ a \code{numeric} value controlling the smoothness of the
+    fitted curve in method \code{"Friedman"}. See \code{\link{supsmu}}. }
+
 }
 \details{
   This detrends and standardizes a tree-ring series.  The detrending is
@@ -114,6 +125,12 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   user to determine the best detrending method for their data.
   
   See the references below for further details on detrending.
+
+  The \code{"Friedman"} approach uses Friedman's \sQuote{super smoother}
+  as implemented in \code{\link{supsmu}}.  The parameters
+  \code{\var{wt}}, \code{\var{span}} and \code{\var{bass}} can be
+  adjusted, but \code{\var{periodic}} is always set to \code{FALSE}.
+
 }
 \value{
 

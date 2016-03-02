@@ -1,10 +1,10 @@
-o[andybunn]  Add Friedman super-smoother to detrend.series and its ilk. This
+o [andybunn]  Add Friedman super-smoother to detrend.series and its ilk. This
              should be trivial using function supsmu() in stats. But it will
              require some work on the docs, plotting, etc.
 
-o[andybunn]  Recode vignettes into markdown so as to have them on Rpubs?
+o [andybunn]  Recode vignettes into markdown so as to have them on Rpubs?
 
-o[mvkorpel]  Add option for smooth CI curves from theoretical AR1 in redfit!
+o [mvkorpel]  Add option for smooth CI curves from theoretical AR1 in redfit!
 
 *  At the moment, in the crossdating functions where a user wants to compare a 
    series to a master chrnology we calculate the master from a rwl object.
@@ -20,7 +20,7 @@ o[mvkorpel]  Add option for smooth CI curves from theoretical AR1 in redfit!
    and Treydte, K.S. 2001 A new parameter to evaluate temporal signal 
    strength of tree-ring chronologies. Dendrochronologia, 19 (1), 93-102.
 
-o[andybunn]  xskel.cff.plot is a renamed version of skel.cff.plot which has been taken 
+o [andybunn]  xskel.cff.plot is a renamed version of skel.cff.plot which has been taken 
    out of the package. I think. The x preface is to denote its use
    in crossdating. This function needs to have checks built in that will allow
    it to be used on rwl and crn objects (for the master).
@@ -28,20 +28,28 @@ o[andybunn]  xskel.cff.plot is a renamed version of skel.cff.plot which has been
    its own function called xskel.calc in helpers.R
 _  I will make a version without the ccf plots as well "xskel.plot."
 
-o[mvkorpel]  Finish the verbose option for detrend.series and it's bretheren
+o [mvkorpel]  Finish the verbose option for detrend.series and it's bretheren
    (e.g., detrend, i.detrend.series, i.detrend). Better yet, should we 
    depricate the i.detrend functions and have "interactive" be an argument
    to detrend?
 
-o[mvkorpel] Should we use class('rwl) as a way of error checking? 
+o [mvkorpel] Should we use class('rwl) as a way of error checking? 
    E.g.,when a function has "rwl" as an argument should there be a check:
       if (!inherits(rwl, "rwl")) {
           stop('use only with "rwl" objects')
 - Related: We should have functions is.rwl() and as.rwl() 
 
-o[andybunn]  Write more vignettes:
+o [andybunn]  Write more vignettes:
 -  Advanced chronology building (strip.rwl, etc.)
 
 
+o [mvkorpel] Investigate parallel processing in detrend
+- Is it actually any good or is the overhead too large?
 
+- It is possible that the relative benefit of parallel processing has
+   changed over time.
+
+- Different parallel backends have different performance characteristics.
+
+- The logic of when to go parallel is a heuristic that can be adjusted.
 

@@ -1,9 +1,10 @@
 `detrend.series` <-
     function(y, y.name = "", make.plot = TRUE,
-             method = c("Spline", "ModNegExp", "Mean", "Ar"),
+             method = c("Spline", "ModNegExp", "Mean", "Ar", "Friedman"),
              nyrs = NULL, f = 0.5, pos.slope = FALSE,
              constrain.modnegexp = c("never", "when.fail", "always"),
-             verbose = FALSE, return.info = FALSE)
+             verbose = FALSE, return.info = FALSE,
+             wt, span = "cv", bass = 0)
 {
     check.flags(make.plot, pos.slope, verbose, return.info)
     if (length(y.name) == 0) {
@@ -12,11 +13,13 @@
         y.name2 <- as.character(y.name)[1]
         stopifnot(Encoding(y.name2) != "bytes")
     }
-    known.methods <- c("Spline", "ModNegExp", "Mean", "Ar")
+    known.methods <- c("Spline", "ModNegExp", "Mean", "Ar", "Friedman")
     constrain2 <- match.arg(constrain.modnegexp)
     method2 <- match.arg(arg = method,
                          choices = known.methods,
                          several.ok = TRUE)
+    wt.missing <- missing(wt)
+    wt.description <- NULL
     if (verbose) {
         widthOpt <- getOption("width")
         indentSize <- 1
@@ -28,6 +31,7 @@
                           collapse = ""))
         cat(gettext("Verbose output: ", domain="R-dplR"), y.name2, "\n",
             sep = "")
+        wt.description <- if (wt.missing) "default" else deparse(wt)
         opts <- c("make.plot" = make.plot,
                   "method(s)" = deparse(method2),
                   "nyrs" = if (is.null(nyrs)) "NULL" else nyrs,
@@ -35,7 +39,10 @@
                   "pos.slope" = pos.slope,
                   "constrain.modnegexp" = constrain2,
                   "verbose" = verbose,
-                  "return.info" = return.info)
+                  "return.info" = return.info,
+                  "wt" = wt.description,
+                  "span" = span,
+                  "bass" = bass)
         optNames <- names(opts)
         optChar <- c(gettext("Options", domain="R-dplR"),
                       paste(str_pad(optNames,
@@ -254,7 +261,7 @@
             Spline <- rep.int(theMean, nY2)
             splineStats <- list(method = "Mean", mean = theMean)
         } else {
-            splineStats <- list(method = "Spline", nyrs = nyrs2)
+            splineStats <- list(method = "Spline", nyrs = nyrs2, f = f)
         }
         resids$Spline <- y2 / Spline
         modelStats$Spline <- splineStats
@@ -307,6 +314,35 @@
       do.ar <- FALSE
     }
 
+    if ("Friedman" %in% method2) {
+        if (is.null(wt.description)) {
+            wt.description <- if (wt.missing) "default" else deparse(wt)
+        }
+        if (verbose) {
+            cat("", sepLine, sep = "\n")
+            cat(indent(c(gettext(c("Detrend by FriedMan's super smoother.",
+                                   "Smoother parameters"), domain = "R-dplR"),
+                         paste0("span = ", span, ", bass = ", bass),
+                         paste0("wt = ", wt.description))),
+                sep = "\n")
+        }
+        if (wt.missing) {
+            Friedman <- supsmu(x = seq_len(nY2), y = y2, span = span,
+                               periodic = FALSE, bass = bass)[["y"]]
+        } else {
+            Friedman <- supsmu(x = seq_len(nY2), y = y2, wt = wt, span = span,
+                               periodic = FALSE, bass = bass)[["y"]]
+        }
+        resids$Friedman <- y2 / Friedman
+        modelStats$Friedman <-
+            list(method = "Friedman",
+                 wt = if (wt.missing) "default" else wt,
+                 span = span, bass = bass)
+        do.friedman <- TRUE
+    } else {
+        do.friedman <- FALSE
+    }
+
     resids <- data.frame(resids)
     if (verbose || return.info) {
         zero.years <- lapply(resids, zeroFun)
@@ -337,13 +373,18 @@
     if(make.plot){
         op <- par(no.readonly=TRUE)
         on.exit(par(op))
+        n.methods <- ncol(resids)
         par(mar=c(2.1, 2.1, 2.1, 2.1), mgp=c(1.1, 0.1, 0),
             tcl=0.5, xaxs='i')
-        mat <- switch(ncol(resids),
+        if (n.methods > 4) {
+            par(cex.main = min(1, par("cex.main")))
+        }
+        mat <- switch(n.methods,
                       matrix(c(1,2), nrow=2, ncol=1, byrow=TRUE),
                       matrix(c(1,1,2,3), nrow=2, ncol=2, byrow=TRUE),
                       matrix(c(1,2,3,4), nrow=2, ncol=2, byrow=TRUE),
-                      matrix(c(1,1,2,3,4,5), nrow=3, ncol=2, byrow=TRUE))
+                      matrix(c(1,1,2,3,4,5), nrow=3, ncol=2, byrow=TRUE),
+                      matrix(c(1,1,1,2,3,4,5,6,0), nrow=3, ncol=3, byrow=TRUE))
         layout(mat,
                widths=rep.int(0.5, ncol(mat)),
                heights=rep.int(1, nrow(mat)))
@@ -354,6 +395,7 @@
         if(do.spline) lines(Spline, col="green", lwd=2)
         if(do.mne) lines(ModNegExp, col="red", lwd=2)
         if(do.mean) lines(Mean, col="blue", lwd=2)
+        if(do.friedman) lines(Friedman, col="cyan", lwd=2)
 
         if(do.spline){
             plot(resids$Spline, type="l", col="green",
@@ -386,6 +428,14 @@
                ylab=gettext("RWI", domain="R-dplR"))
           abline(h=1)
           mtext(text="(Not plotted with raw series)",side=3,line=-1,cex=0.75)
+        }
+
+        if (do.friedman) {
+            plot(resids$Friedman, type="l", col="cyan",
+                 main=gettext("Friedman's Super Smoother", domain="R-dplR"),
+                 xlab=gettext("Age (Yrs)", domain="R-dplR"),
+                 ylab=gettext("RWI", domain="R-dplR"))
+            abline(h=1)
         }
     }
 

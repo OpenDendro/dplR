@@ -7,6 +7,12 @@ File: DESCRIPTION
 
 File: rasterPlot.R
 ------------------
+- The anos1 data from Christian Zang had been read into R incorrectly at
+  some point. AGB noticed negative ring widths in the file and emailed Zang
+  who sent along a corected anos1.rda file.
+
+File: rasterPlot.R
+------------------
 - Added option 'Cairo' to control the preferred bitmap
   device. FALSE (the default) for png() as before, and TRUE for
   Cairo() as a new option. If the preferred device is unavailable,

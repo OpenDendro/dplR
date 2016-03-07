@@ -11,7 +11,7 @@
 }
 \usage{data(wa082)}
 \format{
-  A \code{data.frame} containing 35 tree-ring series in columns and 286
+  A \code{data.frame} containing 23 tree-ring series in columns and 286
   years in rows.
 }
 \source{

@@ -12,10 +12,6 @@ o [mvkorpel]  Add option for smooth CI curves from theoretical AR1 in redfit!
    data differntly based on its class.
 
 
-*  Calculate the NET index that was proposed by Esper, J., Neuwirth, B. 
-   and Treydte, K.S. 2001 A new parameter to evaluate temporal signal 
-   strength of tree-ring chronologies. Dendrochronologia, 19 (1), 93-102.
-
 o [andybunn]  xskel.cff.plot is a renamed version of skel.cff.plot which has been taken 
    out of the package. I think. The x preface is to denote its use
    in crossdating. This function needs to have checks built in that will allow

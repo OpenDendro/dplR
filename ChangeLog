@@ -9,7 +9,7 @@ File: rasterPlot.R
 ------------------
 - The anos1 data from Christian Zang had been read into R incorrectly at
   some point. AGB noticed negative ring widths in the file and emailed Zang
-  who sent along a corected anos1.rda file.
+  who sent along a corrected anos1.rda file.
 
 File: rasterPlot.R
 ------------------

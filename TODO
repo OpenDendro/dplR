@@ -11,7 +11,6 @@ o [mvkorpel]  Add option for smooth CI curves from theoretical AR1 in redfit!
    of the argument from rwl to just "data" might be the best option and handle
    data differntly based on its class.
 
-
 o [andybunn]  xskel.cff.plot is a renamed version of skel.cff.plot which has been taken 
    out of the package. I think. The x preface is to denote its use
    in crossdating. This function needs to have checks built in that will allow
@@ -32,7 +31,7 @@ o [mvkorpel] Should we use class('rwl) as a way of error checking?
 - Related: We should have functions is.rwl() and as.rwl() 
 
 o [andybunn]  Write more vignettes:
--  Advanced chronology building (strip.rwl, etc.)
+-  Detrending
 
 o [mvkorpel] Investigate parallel processing in detrend
 - Is it actually any good or is the overhead too large?

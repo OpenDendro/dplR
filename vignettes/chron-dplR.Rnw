@@ -60,14 +60,10 @@ citation("dplR")
 @
 
 \section{Data Sets}
-
 Throughout this vignette we will use the onboard data set \code{wa082} 
-which gives the raw ring widths for Norway spruce \emph{Picea abies} at 
-Rothenburg ob der Tauber, Bavaria, Germany. There are 20 series from 10 trees,
-spanning 98 years. 
-
-This data comes from Zang's PhD thesis. It is a well-dated ring width data set 
-and plotted in Figure~\ref{fig:rwl}. Note the summary stats below.
+which gives the raw ring widths for Pacific silver fir \emph{Abies amabilis} 
+at Hurricane Ridge in Washington, USA. There are 23 series covering 286 years.
+The data are plotted in Figure~\ref{fig:rwl}. Note the summary stats below.
 <<a, fig=TRUE>>=
 library(dplR)
 data(wa082)
@@ -77,12 +73,12 @@ mean(wa082.sum$stdev)
 mean(wa082.sum$median)
 mean(wa082.sum$ar1)
 mean(interseries.cor(wa082)[, 1])
-plot(wa082, plot.type="spag",zfac=0.5)
+plot(wa082, plot.type="spag")
 @
 \begin{figure}[ht]
 \centering
 \includegraphics{chron-dplR-a}
-\caption{A spaghetti plot of the Norway spruce ring widths.}
+\caption{A spaghetti plot of the Pacific silver fir ring widths.}
 \label{fig:rwl}
 \end{figure}
 
@@ -94,44 +90,46 @@ tree-ring analysis. It is intended to teach you how to use the package.}
 \section{Building Chronologies}
 Let us make a few chronologies from the \code{wa082} data after detrending
 each series with a spline that has a frequency response of 50\% at a 
-wavelength of 2/3 of
-each series's length. 
+wavelength of 2/3 of each series's length. 
 <<b>>=
 wa082.rwi <- detrend(wa082, method="Spline")
 @
 
 
 \subsection{Traditional Chronology}
-The simplest way to make a chronology in `dplR` is chronology is with the `crn`
-function which also has a `plot` method. This defaults to building a mean-value
-chronology by averaging the rows of the `rwi` data using Tukey's biweight robust
-mean. The result is plotted in Figure~\ref{fig:crn.plot}.
+The simplest way to make a chronology in \code{dplR} is chronology is with the \code{crn}
+function which also has a \code{plot} method. This defaults to building a mean-value
+chronology by averaging the rows of the \code{rwi} data using Tukey's biweight robust
+mean. The result is plotted in Figure~\ref{fig:crn.plot} with a 30-year
+smoothing spline.
 <<c, fig=TRUE>>=
 wa082.crn <- chron(wa082.rwi, prefix="HUR")
-plot(wa082.crn, add.spline=TRUE, nyrs=10)
+tail(wa082.crn)
+plot(wa082.crn, add.spline=TRUE, nyrs=30)
 @
 \begin{figure}[ht]
 \centering
 \includegraphics{chron-dplR-c}
-\caption{The `wa082` chronology.}
+\caption{The \code{wa082} chronology.}
 \label{fig:crn.plot}
 \end{figure}
-Note that the `chron` function will also compute a residual chronology by
-"prewhitening" the series before averaging. If the `prewhiten` flag is 	
-set to `TRUE`, each series is whitened using `ar` prior to averaging. The 
+
+Note that the \code{chron} function will also compute a residual chronology by
+"prewhitening" the series before averaging. If the \code{prewhiten} flag is 	
+set to \code{TRUE}, each series is whitened using \code{ar} prior to averaging. The 
 residual chronology is thus white noise and has no autocorrelation. Note that
-the `wa082.std.resid` object has two columns with chronologies as well as the sample
+the \code{wa082.std.resid} object has two columns with chronologies as well as the sample
 depth in a third column. The result is plotted in 
-Figure~\ref{fig:crn.plot.resid}.
+Figure~\ref{fig:crn.plot.resid}. 
 <<d, fig=TRUE>>=
 wa082.std.resid <- chron(wa082.rwi, prefix="HUR",prewhiten = TRUE)
 tail(wa082.std.resid)
-plot(wa082.std.resid, add.spline=TRUE, nyrs=10)
+plot(wa082.std.resid, add.spline=TRUE, nyrs=30)
 @
 \begin{figure}[ht]
 \centering
 \includegraphics{chron-dplR-d}
-\caption{The `wa082` chronology as the standard chronology and the residual
+\caption{The \code{wa082} chronology as the standard chronology and the residual
 chronology.}
 \label{fig:crn.plot.resid}
 \end{figure}
@@ -139,36 +137,36 @@ chronology.}
 \subsection{Using a Cutoff}
 A relatively simple addition to the traditional chronology is to truncate the
 chronology when the sample depth gets to a certain threshold. The output from
-the `chron` function contains a column called `samp.depth` which shows the
+the \code{chron} function contains a column called \code{samp.depth} which shows the
 number of series that are average for a particular year. We can use the 
-`subset` function to modify the chronology. The result is plotted in 
+\code{subset} function to modify the chronology. The result is plotted in 
 Figure~\ref{fig:crn.plot.sd}.
 
 <<e, fig=TRUE>>=
 head(wa082.crn)
 wa082.trunc <- subset(wa082.crn, samp.depth > 5)
 # and plot
-plot(wa082.trunc,add.spline=T,nyrs=10)
+plot(wa082.trunc,add.spline=T,nyrs=30)
 @
 
 \begin{figure}[ht]
 \centering
 \includegraphics{chron-dplR-e}
-\caption{The `wa082` chronology truncated by sample depth.}
+\caption{The \code{wa082} chronology truncated by sample depth.}
 \label{fig:crn.plot.sd}
 \end{figure}
 
 A more interesting and likely more robust approach is to truncate via the
-expressed population signal (EPS).The result is plotted in 
+expressed population signal (EPS). The result is plotted in 
 Figure~\ref{fig:crn.plot.eps}.
 
 <<f, fig=TRUE>>=
 wa082.ids <- autoread.ids(wa082)
 eps.cut <- 0.75 # An arbitrary EPS cutoff for demonstration
-foo <- rwi.stats.running(wa082.rwi, wa082.ids, window.length = 32)
+wa082.rwi.stats <- rwi.stats.running(wa082.rwi, wa082.ids, window.length = 30)
 yrs <- as.numeric(rownames(wa082.crn))
-bar <- data.frame(yrs = c(min(yrs), foo$mid.year, max(yrs)),
-                  eps = c(NA, foo$eps, NA))
+bar <- data.frame(yrs = c(min(yrs), wa082.rwi.stats$mid.year, max(yrs)),
+                  eps = c(NA, wa082.rwi.stats$eps, NA))
 op <- par(no.readonly=TRUE)
 par(mar = c(2, 2, 2, 2), mgp = c(1.1, 0.1, 0), tcl = 0.25,
     mfcol = c(2, 1), xaxs='i')
@@ -180,13 +178,13 @@ yy <- c(-1, 3, 3, -1)
 polygon(xx, yy, col = "grey80")
 abline(h = 1, lwd = 1.5)
 lines(yrs, wa082.crn[, 1], col = "grey50")
-lines(yrs, ffcsaps(wa082.crn[, 1], nyrs = 32), col = "red", lwd = 2)
+lines(yrs, ffcsaps(wa082.crn[, 1], nyrs = 30), col = "red", lwd = 2)
 axis(1); axis(2); axis(3);
 par(new = TRUE)
 ## Add EPS
 plot(bar$yrs, bar$eps, type = "b", xlab = "", ylab = "",
      axes = FALSE, pch = 20, col = "blue")
-axis(4, at = pretty(foo$eps))
+axis(4, at = pretty(wa082.rwi.stats$eps))
 mtext("EPS", side = 4, line = 1.1)
 box()
 ## Second plot is the chronology after the cutoff only
@@ -194,12 +192,13 @@ box()
 ## that difference is essentially nil.
 yr.mask <- yrs > cutoff
 yrs2 <- yrs[yr.mask]
-wa082.crn2 <- chron(wa082.rwi[yr.mask, ])
-plot(yrs2, wa082.crn2[, 1], type = "n",
+wa082.rwi2 <- wa082.rwi[yr.mask, ]
+wa082.crn.eps <- chron(wa082.rwi2)
+plot(yrs2, wa082.crn.eps[, 1], type = "n",
      xlab = "Year", ylab = "RWI", axes=FALSE)
 abline(h = 1, lwd = 1.5)
-lines(yrs2, wa082.crn2[, 1], col = "grey50")
-lines(yrs2, ffcsaps(wa082.crn2[, 1], nyrs = 32),
+lines(yrs2, wa082.crn.eps[, 1], col = "grey50")
+lines(yrs2, ffcsaps(wa082.crn.eps[, 1], nyrs = 30),
       col = "red", lwd = 2)
 axis(1); axis(2); axis(3); axis(4)
 box()
@@ -209,30 +208,85 @@ par(op)
 \begin{figure}[ht]
 \centering
 \includegraphics{chron-dplR-f}
-\caption{The `wa082` chronology truncated by EPS.}
+\caption{The \code{wa082} chronology truncated by EPS.}
 \label{fig:crn.plot.eps}
 \end{figure}
 
-\subsection{Stripping out series by EPS}
+\subsection{Chronology uncertainty}
+Typically we calculate a chronology by taking the average of each year from
+the \code{rwi} object. (And that is typically the biweight robust mean.) The function
+\code{chron} like pretty much all the functions in \code{dplR} are realtively simple 
+chunks of code that are used for convenience. We can make our own chronology
+and get the mean plus two standard error of the yearly growth 
+(Figure~\ref{fig:crn.plot.se}). Don't
+get stuck in just using the prepackaged functions in \code{dplR}!
 
-<<f, fig=TRUE>>=
-wa082.strip.rwl <- strip.rwl(wa082, ids = wa082.ids)
-wa082.rwi.strip <- detrend(wa082.strip.rwl, method="Spline")
-wa082.crn.strip <- chron(wa082.rwi.strip, prefix = "HUR")
-plot(wa082.crn.strip)
+<<g, fig=TRUE>>=
+wa082.avg <- apply(wa082.rwi2,1,mean,na.rm=TRUE)
+se <- function(x){
+  x2 <- na.omit(x)
+  n <- length(x2)
+  sd(x2)/sqrt(n)
+}
+wa082.se <- apply(wa082.rwi2,1,se)
+wa082.sd <- apply(wa082.rwi2,1,sd,na.rm=TRUE)
+
+par(mar = c(2, 2, 2, 2), mgp = c(1.1, 0.1, 0), tcl = 0.25, xaxs='i')
+plot(yrs2, wa082.avg, type = "n",ylim=c(0.5,1.6),
+     xlab = "Year", ylab = "RWI", axes=FALSE)
+abline(h = 1, lwd = 1.5)
+xx <- c(yrs2,rev(yrs2))
+yy <- c(wa082.avg+wa082.se*2,rev(wa082.avg-wa082.se*2))
+polygon(xx,yy,col="grey80",border = NA)
+lines(yrs2, wa082.avg, col = "black")
+lines(yrs2, ffcsaps(wa082.avg, nyrs = 30),
+      col = "red", lwd = 2)
+legend(x=1800,y=0.75,legend=c("Mean","2 SE", "30-yr Spline"),
+       lwd=c(1,10,1), col=c("black","grey","red"),
+       bg = "white")
+axis(1); axis(2); axis(3); axis(4)
+box()
+par(op)
 @
 
 \begin{figure}[ht]
 \centering
-\includegraphics{chron-dplR-f}
-\caption{The `wa082` chronology after stripping series with low EPS.}
+\includegraphics{chron-dplR-g}
+\caption{The \code{wa082} chronology with two standard errors.}
+\label{fig:crn.plot.se}
+\end{figure}
+
+\subsection{Stripping out series by EPS}
+We want to introduce one other approach that doesn't deal explicitly with
+chronology building but can be used to build a better chronology. The 
+\code{strip.rwl} function uses EPS-based chronology stripping \cite{Fowler2003} 
+where each series is assessed to see if its inclusion in the chronology
+improves the EPS. If it does not the series is dropped from the \code{rwl} object.
+As we will see in this example two series are excluded which causes a modest
+improvement in EPS (Figure~\ref{fig:crn.plot.strip}). 
+
+<<h, fig=TRUE>>=
+wa082.strip.rwl <- strip.rwl(wa082, ids = wa082.ids)
+wa082.rwi.strip <- detrend(wa082.strip.rwl, method="Spline")
+wa082.crn.strip <- chron(wa082.rwi.strip, prefix = "HUR")
+wa082.crn.strip <- subset(wa082.crn.strip, samp.depth > 5)
+plot(wa082.crn.strip,add.spline=TRUE,nyrs=30)
+@
+
+\begin{figure}[ht]
+\centering
+\includegraphics{chron-dplR-h}
+\caption{The \code{wa082} chronology after stripping series with low EPS.}
 \label{fig:crn.plot.strip}
 \end{figure}
 
 \section{Conclusion}
-There are dozens of packages in R that to do time series analysis. Here, 
-we've tried to give just a few examples of doing work with dplR while
-showing you how you might harness the awesome power of R.
+We have tried to introduce a few ways of building chronologies with \code{dplR} that
+are either typical (like truncating by sample depth) or less commmonly used.
+Again, we feel that it is important to reiterate that the advantage of using
+\code{dplR} is that it gets the analyst to use \code{R} and thus have access to the 
+essentailly limitless tool that it provides. Go foRth!
+
 \bibliography{dplR}
 
 \end{document}

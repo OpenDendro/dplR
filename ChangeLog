@@ -5,7 +5,11 @@ File: DESCRIPTION
 
 - Version number requirement for matrixStats is now (>= 0.50.0).
 
-File: rasterPlot.R
+File: chron-dplR-Rnw
+------------------
+- A new vignette for chronology building
+
+File: anos1.Rda
 ------------------
 - The anos1 data from Christian Zang had been read into R incorrectly at
   some point. AGB noticed negative ring widths in the file and emailed Zang

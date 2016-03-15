@@ -7,7 +7,8 @@ File: DESCRIPTION
 
 File: chron-dplR-Rnw
 ------------------
-- A new vignette for chronology building
+- A new vignette for chronology building. This is pretty rough and could
+use some expanding.
 
 File: anos1.Rda
 ------------------

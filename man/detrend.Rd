@@ -28,8 +28,8 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   
   \item{method}{ a \code{character} vector to determine the detrending
     methods.  See details below.  Possible values are all subsets of
-    \code{c("Spline", "ModNegExp", "Mean", "Ar")}.  Defaults to using all the
-    available methods.}
+    \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman")}.  Defaults to 
+    using all the available methods.}
   
   \item{nyrs}{ a number giving the rigidity of the smoothing spline,
     defaults to 0.67 of series length if \code{\var{nyrs}} is

@@ -1,3 +1,10 @@
+* CHANGES IN dplR VERSION 1.6.5
+
+File: detrend and detrend.series.Rd
+-----------------
+
+- Added Friedman under method argument in the help file. It was ommitted by mistake. 
+
 * CHANGES IN dplR VERSION 1.6.4
 
 File: DESCRIPTION

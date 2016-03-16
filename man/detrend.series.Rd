@@ -26,8 +26,8 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 
   \item{method}{ a \code{character} vector to determine the detrending
     methods.  See details below.  Possible values are all subsets of
-    \code{c("Spline", "ModNegExp", "Mean", "Ar")}.  Defaults to using all the
-    available methods.}
+    \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman")}.  Defa
+    ults to using all the available methods.}
 
   \item{nyrs}{ a number controlling the smoothness of the
     fitted curve in method \code{"Spline"},

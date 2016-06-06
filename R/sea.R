@@ -43,35 +43,27 @@ sea <- function(x, key, lag = 5, resample = 1000) {
     ## calculate significance for each (lagged) year
     ## compute confidence bands, too
     p <- rep(NA_real_, m)
-    w <- resample
-    ci_pos <- floor(resample * c(0.025, 0.975, 0.005, 0.995))
-    ci <- apply(apply(re.table, 2, sort), 2, function(x) {
-        x[ci_pos]
-    })
+    re_ecdfs <- apply(re.table, 2, ecdf)
+    ci <- apply(re.table, 2, quantile,
+               probs = c(0.025, 0.975, 0.005, 0.995)
+               )
+
+    if (resample < 1000) {
+        warning("'resample' is lower than 1000, potentially leading to less accuracy in estimating p-values and confidence bands.")
+    }
+    
     for (i in seq_len(m)) {
         if (is.na(se[i])) {
             warning(gettextf("NA result at position %d. ", i),
                     "You could check whether 'key' years are in range.")
-        } else if (se[i] < 0) {         # superposed value < 0, it is
+        } else {
+            if (se[i] < 0) {         # superposed value < 0, it is
                                         # tested whether is
                                         # significantly LOWER than
                                         # random values
-            if (!any(re.table[, i] < se[i])) {
-                p[i] <- 0
-                warning(gettextf("Exact p-value (< %f) could not be estimated for superposed epoch at position %d. ",
-                                 1 / resample, i),
-                        "You could try a higher value for 'resample'.")
-            } else {
-                p[i] <- (tail(which(sort(re.table[, i]) < se[i]), 1) * 2) / w
-            }
-        } else {                        # ditto, but v.v.
-            if (!any(re.table[, i] > se[i])) {
-                p[i] <- 0
-                warning(gettextf("Exact p-value (< %f) could not be estimated for superposed epoch at position %d. ",
-                                 1 / resample, i),
-                        "You could try a higher value for 'resample'.")
-            } else {
-                p[i] <- ((w - which(sort(re.table[, i]) > se[i])[1]) * 2) / w
+                p[i] <- re_ecdfs[[i]](se[i])
+            } else {                        # ditto, but v.v.
+                p[i] <- 1 - re_ecdfs[[i]](se[i])
             }
         }
     }
@@ -82,5 +74,6 @@ sea <- function(x, key, lag = 5, resample = 1000) {
                ci.95.lower = ci[1,],
                ci.95.upper = ci[2,],
                ci.99.lower = ci[3,],
-               ci.99.upper = ci[4,])
+               ci.99.upper = ci[4,]
+               )
 }

@@ -39,6 +39,8 @@ import(Matrix)
 
 importFrom(XML, xmlEventParse)
 
+importFrom(plyr, alply)
+
 export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, cms,
        combine.rwl, common.interval, corr.rwl.seg, corr.series.seg,
        crn.plot, detrend, detrend.series, ffcsaps, fill.internal.NA,
@@ -52,9 +54,10 @@ export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, cms,
        write.compact, write.crn, write.rwl, write.tridas,
        write.tucson, plot.rwl, interseries.cor, summary.rwl,
        plot.crn, insert.ring, delete.ring, xskel.ccf.plot, xskel.plot,
-       latexify, latexDate, rasterPlot, treeMean)
+       latexify, latexDate, rasterPlot, treeMean, rwl.report, print.rwl.report)
 
 S3method(print, redfit)
 S3method(plot, rwl)
 S3method(plot, crn)
 S3method(summary, rwl)
+S3method(print, rwl.report)

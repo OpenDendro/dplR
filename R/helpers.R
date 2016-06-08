@@ -398,3 +398,28 @@ vecMatched <- function(x, Table) {
     }
     y
 }
+
+
+# Looks for internal NA in a series. Returns the position of internal NA via which
+find.internal.na <- function(x) {
+  x.na <- is.na(x)
+  x.ok <- which(!x.na)
+  n.ok <- length(x.ok)
+  if (n.ok <= 1) {
+    internal.na <- 0 # NA, NULL?
+    return(internal.na)
+  }
+  
+  first.ok <- x.ok[1]
+  last.ok <- x.ok[n.ok]
+  
+  if (last.ok - first.ok + 1 > n.ok) {
+    first.to.last <- first.ok:last.ok
+    x.notok <- which(x.na)
+    internal.na <- x.notok[x.notok %in% first.to.last]
+  }
+  else {
+    internal.na <- 0 # NA, NULL?
+  }
+  internal.na    
+}

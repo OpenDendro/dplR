@@ -5,6 +5,27 @@ File: detrend and detrend.series.Rd
 
 - Added Friedman under method argument in the help file. It was ommitted by mistake. 
 
+File: helpers.R
+-----------------
+
+- Added function find.internal.na() that reutrns the index of internal NA in a series. This will be used by the rwl.report() function and could be used (maybe) by the fill.internal.NA
+
+File: rwl.report.R
+-----------------
+
+- Added function find.internal.na() that reutrns the index of internal NA in a series. This will be used by the ringReport() function and could be used (maybe) by the fill.internal.NA
+
+File: NAMESPACE
+-----------------
+
+- Added rwl.report to export
+
+File: sea.R
+-----------------
+
+- Note on commit from Zang: sea() simplified and computation of p-values fixed; computation of p-values and CI bands for sea() now based on ecdf() and quantile() functions.
+
+
 * CHANGES IN dplR VERSION 1.6.4
 
 File: DESCRIPTION

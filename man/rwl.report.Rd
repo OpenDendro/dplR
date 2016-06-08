@@ -29,8 +29,9 @@ rwl.report(gp.rwl)
 foo <- gp.rwl
 foo[177,1] <- NA 
 foo[177:180,3] <- NA 
-rwl.report(foo)
+foo[185,4] <- 0.001 
 x <- rwl.report(foo)
+class(x)
 x
 }
 \keyword{ manip }

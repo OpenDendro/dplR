@@ -28,8 +28,11 @@ rwl.report <- function(rwl){
   # wee rings
   wee <- rwl > 0 & rwl < 0.003
   wee <- apply(wee,2,which)
-  res$wee <- sapply(wee, function(x) {as.numeric(names(x))} )
-  
+  wee <- sapply(wee, function(x) {as.numeric(names(x))} )
+  wee <- wee[lapply(wee,length)>0]
+  if(length(wee)<1) res$small <- numeric(0)
+  else res$small <- wee
+
   options(warn = oldw)
   
   class(res) <- "rwl.report"
@@ -65,12 +68,12 @@ print.rwl.report <- function(x){
   }
   cat("-------------\n")
   cat("Very small rings listed by series \n")
-  if(length(x$wee)==0) cat("    None \n")
+  if(length(x$small)==0) cat("    None \n")
   else{
-    for(i in 1:length(x$wee)){
-      tmp = x$wee[[i]]
+    for(i in 1:length(x$small)){
+      tmp = x$small[[i]]
       if(length(tmp)==0) next()
-      cat("Series", names(x$wee)[i],"--",tmp,"\n",  
+      cat("   Series", names(x$small)[i],"--",tmp,"\n",  
           sep = " ")
     }
   }

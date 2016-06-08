@@ -13,12 +13,14 @@ File: helpers.R
 File: rwl.report.R
 -----------------
 
-- Added function find.internal.na() that reutrns the index of internal NA in a series. This will be used by the ringReport() function and could be used (maybe) by the fill.internal.NA
+- Added function to provide a summary of information about an rwl object. This is still very much a work in progress.
 
 File: NAMESPACE
 -----------------
 
 - Added rwl.report to export
+- Added rwl.report print method
+- Added export from plyr
 
 File: sea.R
 -----------------

@@ -107,14 +107,14 @@ head(rownames(ca533)) # the first few years
 class(ca533) # note "rwl" class as well as "data.frame"
 @
 
+
 \subsection{Describing and Plotting Ring-Width Data}
 Once a \code{rwl} data set has been read into R, there are a variety of ways to 
-describe and visualize those data. For instance, we can plot a \code{rwl} 
-object by showing either the segments arranged over time as straight lines or 
-as a ``spaghetti plot.'' The \code{rwl} objects have a generic S3 method for
+describe and visualize those data. For instance, we can run a quick report  using \code{rwl.report} that summarizes the \code{rwl} data and gives a few descriptive stats and also tells the user where the series have absent rings (zeros) and so on (more descriptive statistics like rbar and EPS are described below). We can also plot a \code{rwl} object by showing either the segments arranged over time as straight lines or as a ``spaghetti plot.'' The \code{rwl} objects have a generic S3 method for
 \code{plot} and \code{summary}. See Figure~\ref{fig:rwl.plot}.
 
 <<a, fig=TRUE>>=
+rwl.report(ca533)
 plot(ca533, plot.type="spag")
 @
 \begin{figure}[ht]
@@ -220,22 +220,18 @@ and converting measurements of ring widths to basal area increment (functions
 \code{bai.in} and \code{bai.out}). See help pages for further 
 information.
 
+
 \section{Descriptive Statistics}
-Either before or after standardization, it is natural to want to look at
-some common (and not-so common) descriptive statistics of a \code{rwl} object. The
-\code{rwl.stats} function is typically used on raw ring widths 
-(the \code{rwl} object) and produces summary statistics. Here are summary 
-statistics on the first five series in \code{ca533}.
+The \code{rwl.report} function above gave a very cursory look at the \code{rwl} data. Let's look at some common (and not-so common) descriptive statistics of a \code{rwl} object. The \code{rwl.stats} function is typically used on raw ring widths (the \code{rwl} object) and produces summary statistics. Here are summary statistics on the first five series in \code{ca533}.
 <<>>=
-rwl.stats(ca533[1:5])
+rwl.stats(ca533[1:5]) # can also be run via summary(ca533)
 @
 
 These are common summary statistics like mean, median, etc. but also statistics 
 that are more specific to dendrochronology like the first-order autocorrelation 
 (\code{ar1}) and mean sensitivity (\code{sens1} and \code{sens2}). 
-We would be remiss if we did not here 
-mention that mean sensitivity is actually a terrible statistic that should 
-rarely, if ever, be used \citep{Bunn2013}.
+We would be remiss if we did not here mention that mean sensitivity is actually 
+a terrible statistic that should rarely, if ever, be used \citep{Bunn2013}.
 
 It is also easy in dplR to compute commonly used descriptive statistics that 
 describe the correlation between series (both within and between tree 

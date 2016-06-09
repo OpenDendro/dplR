@@ -22,6 +22,11 @@ File: NAMESPACE
 - Added rwl.report print method
 - Added export from plyr
 
+File: DESCRIPTION
+-----------------
+
+- Added plyr (>= 1.8.3) to imports
+
 File: sea.R
 -----------------
 

@@ -4,10 +4,14 @@ rwl.report <- function(rwl){
   
   res <- list()
   # get a summary
-  res$sum <- summary.rwl(rwl)
-  
+  tmp.sum <- summary.rwl(rwl)
+  res$n <- nrow(tmp.sum)
+  res$segbar <- mean(tmp.sum$year)
+  res$yr0 <- min(tmp.sum$first)
+  res$yr1 <- max(tmp.sum$last)
+  res$ar1bar <- mean(tmp.sum$ar1)
   # interseries
-  res$rbar <- interseries.cor(rwl)
+  res$interrbar <- mean(interseries.cor(rwl)[,1])
   
   # missing rings
   zeds <- rwl == 0
@@ -26,7 +30,7 @@ rwl.report <- function(rwl){
   else res$internalNAs <- internalNAs
 
   # wee rings
-  wee <- rwl > 0 & rwl < 0.003
+  wee <- rwl > 0 & rwl < 0.005
   wee <- apply(wee,2,which)
   wee <- sapply(wee, function(x) {as.numeric(names(x))} )
   wee <- wee[lapply(wee,length)>0]
@@ -34,16 +38,17 @@ rwl.report <- function(rwl){
   else res$small <- wee
 
   options(warn = oldw)
-  
-  class(res) <- "rwl.report"
-  res  
+  res$rwl.class <- class(rwl)
+  res
 }
 
-print.rwl.report <- function(x){
-  cat("Number of dated series:",nrow(x$sum),"\n")
-  cat("Avg series length:",mean(x$sum$year),"\n")
-  cat("Span: ",min(x$sum$first), "-", max(x$sum$last), "\n")
-  cat("Avg series intercorrelation:",mean(x$rbar[,1]), "\n")
+print.rwl.report <- function(x, ...){
+  cat("Number of dated series:",x$n,"\n")
+  cat("Avg series length:",x$segbar,"\n")
+  cat("Range: ", x$yr1 - x$yr0, "\n")
+  cat("Span: ",x$yr0, "-", x$yr1, "\n")
+  cat("Avg series intercorrelation:",x$interrbar, "\n")
+  cat("Avg AR1:",x$ar1bar, "\n")
   cat("-------------\n")
   cat("Absent rings listed by series \n")
   if(length(x$zeros)==0) cat("    None \n")
@@ -59,6 +64,7 @@ print.rwl.report <- function(x){
   cat("Internal NA values listed by series \n")
   if(length(x$internalNAs)==0) cat("    None \n")
   else{
+    cat("Warning: Internal NA are not standard practice and can break dplR \n")
     for(i in 1:length(x$internalNAs)){
       tmp = x$internalNAs[[i]]
       if(length(tmp)==0) next()
@@ -67,7 +73,7 @@ print.rwl.report <- function(x){
     }
   }
   cat("-------------\n")
-  cat("Very small rings listed by series \n")
+  cat("Very small rings (< 0.005) listed by series \n")
   if(length(x$small)==0) cat("    None \n")
   else{
     for(i in 1:length(x$small)){

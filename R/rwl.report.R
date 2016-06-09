@@ -5,7 +5,8 @@ rwl.report <- function(rwl){
   res <- list()
   # get a summary
   tmp.sum <- summary.rwl(rwl)
-  res$n <- nrow(tmp.sum)
+  res$nseries <- ncol(rwl)
+  res$n <- length(rwl[!is.na(rwl)])
   res$segbar <- mean(tmp.sum$year)
   res$yr0 <- min(tmp.sum$first)
   res$yr1 <- max(tmp.sum$last)
@@ -15,6 +16,7 @@ rwl.report <- function(rwl){
   
   # missing rings
   zeds <- rwl == 0
+  res$nzeros <- table(zeds)["TRUE"] 
   zeds <- apply(zeds,2,which)
   zeds <- sapply(zeds, function(x) {as.numeric(names(x))} )
   zeds <- zeds[lapply(zeds,length)>0]
@@ -38,12 +40,13 @@ rwl.report <- function(rwl){
   else res$small <- wee
 
   options(warn = oldw)
-  res$rwl.class <- class(rwl)
+  class(res) <- "rwl.report"
   res
 }
 
 print.rwl.report <- function(x, ...){
-  cat("Number of dated series:",x$n,"\n")
+  cat("Number of dated series:",x$nseries,"\n")
+  cat("Number of measurements:",x$n,"\n")
   cat("Avg series length:",x$segbar,"\n")
   cat("Range: ", x$yr1 - x$yr0, "\n")
   cat("Span: ",x$yr0, "-", x$yr1, "\n")
@@ -59,6 +62,7 @@ print.rwl.report <- function(x, ...){
       cat("    Series", names(x$zeros)[i],"--",tmp,"\n",  
           sep = " ")
     }
+    cat(x$nzeros, "absent rings (", round(x$nzeros/x$n * 100, 3),"%)\n")    
   }
   cat("-------------\n")
   cat("Internal NA values listed by series \n")

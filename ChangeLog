@@ -1,5 +1,11 @@
 * CHANGES IN dplR VERSION 1.6.5
 
+File: crn.plot.R
+----------------
+
+- Graphical parameters (xlim, ylim, ...) are handled better in crn.plot().
+- Parameter 'ylim2' controls scale of secondary y axis.
+
 File: detrend and detrend.series.Rd
 -----------------
 

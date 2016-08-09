@@ -22,23 +22,32 @@
   nCrn <- ncol(crn)
   ## Check to see if the crn has sample depth
   sd.exist <- crn.names[nCrn] == "samp.depth"
+  args0 <- list(...)
+  args1 <- args0
+  args1[["ylim2"]] <- NULL
+  args1[c("x", "y", "type", "axes", "xlab", "ylab")] <-
+      list(yr.vec, as.name("spl"), "n", FALSE, xlab, ylab)
+  args2 <- args1
+  args2[c("main", "sub", "xlab", "ylab")] <- list("", "", "", "")
   if(sd.exist) {
     samp.depth <- crn[[nCrn]]
     nCrn <- nCrn-1
+    text.samp <- gettext("Sample Depth", domain="R-dplR")
+    sdargs <- args2
+    sdargs[["ylim"]] <- args0[["ylim2"]]
+    sdargs[["y"]] <- samp.depth
   }
   if(nCrn > 1) layout(matrix(seq_len(nCrn), nrow=nCrn, ncol=1))
   # strike these?
 #  text.years <- gettext("Years", domain="R-dplR")
 #  text.rwi <- gettext("RWI", domain="R-dplR")
-  text.samp <- gettext("Sample Depth", domain="R-dplR")
   nyrs2 <- nyrs
   for(i in seq_len(nCrn)){
     spl <- crn[[i]]
-    plot(yr.vec, spl, type="n",axes=FALSE,xlab=xlab,ylab=ylab,...)
+    do.call("plot", args1)
     if(sd.exist) {
       par(new=TRUE)
-      plot(yr.vec, samp.depth, type="n",
-           xlab="", ylab="", axes=FALSE)
+      do.call("plot", sdargs)
       xx <- c(yr.vec,max(yr.vec,na.rm=TRUE),min(yr.vec,na.rm=TRUE))
       yy <- c(samp.depth, 0, 0)
       polygon(xx,yy,col=samp.depth.col,border=samp.depth.border.col)
@@ -46,7 +55,7 @@
       mtext(text.samp, side=4, line=1.25)
     }
     par(new=TRUE)
-    plot(yr.vec, spl, type="n",axes=FALSE,xlab="",ylab="")
+    do.call("plot", args2)
     abline(h=abline.pos,lwd=abline.lwd,
            lty=abline.lty,col=abline.col)
     lines(yr.vec, spl, col=crn.line.col,lwd=crn.lwd)

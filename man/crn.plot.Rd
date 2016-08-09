@@ -48,7 +48,9 @@ crn.plot(crn, add.spline = FALSE, nyrs = NULL, f = 0.5,
   \item{abline.lwd}{ line width for the reference abline (if added)}
   \item{xlab}{ default label for x axis }
   \item{ylab}{ default label for y axis }
-  \item{\dots}{ Additional arguments to pass to \code{\link{plot}} }
+  \item{\dots}{ Additional arguments to pass to \code{\link{plot}}. The
+    scale of the secondary y axis (sample depth) can be controlled with
+    argument \code{ylim2}. }
 }
 \details{
   This makes a plot of one or more tree-ring chronologies.

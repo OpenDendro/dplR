@@ -6,23 +6,28 @@
   This function generates a small report on a \code{rwl} (or \code{rwi}) object
   that gives the user some basic information on the data including the number of
   series, the span of the data, the mean interseries correlation, the number of
-  zeros, small rings, or internal \code{NA}, etc.
+  missing rings (zeros), internal \code{NA} values, and rings that are very small,
+  or very large.
 }
 \usage{
-rwl.report(rwl)
+rwl.report(rwl,small.thresh=NA,big.thresh=NA)
 }
 \arguments{
   \item{rwl}{a \code{data.frame} of ring widths with
     \code{rownames(\var{x})} containing years and \code{colnames(x)}
     containing each series \acronym{ID} such as produced by
     \code{\link{read.rwl}}}
+  \item{small.thresh}{a \code{numeric} value for the threshold value that will cause
+    small rings to be listed. If values is \code{NA} this will be omitted.}
+  \item{big.thresh}{a \code{numeric} value for the threshold value that will cause
+    large rings to be listed. If values is \code{NA} this will be omitted.}
 }
 \details{
   This report is a \code{list} containing the number of series, the mean length
   of all the series, the first year, last year, the mean first-order 
   autocorrelation (via \code{\link{summary.rwl}}), the mean interseries 
   correlation (via \code{\link{interseries.cor}}), the years where a series has 
-  a missing ring (zero), internal NA, or a very small ring (<0.005). 
+  a missing ring (zero), internal NA, very small ring, and very large rings. 
   
   This output of this function is not typically meant for the user to access 
   but has a \code{print} method that formats that data for the user.
@@ -37,11 +42,9 @@ rwl.report(rwl)
 }
 \examples{
 data("gp.rwl")
-rwl.report(gp.rwl)
-foo <- gp.rwl
-foo[177,1] <- NA 
-foo[177:180,3] <- NA 
-foo[185,4] <- 0.001 
-rwl.report(foo)
+rwl.report(rwl = gp.rwl)
+# list very small (smallest 1pct) of rings as well
+one.pct <- quantile(gp.rwl[gp.rwl != 0], na.rm=TRUE, probs=0.01)
+rwl.report(rwl = gp.rwl, small.thresh = one.pct)
 }
 \keyword{ manip }

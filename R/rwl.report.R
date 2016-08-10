@@ -1,8 +1,10 @@
-rwl.report <- function(rwl){
+rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
   oldw <- getOption("warn")
   options(warn = -1)
   
   res <- list()
+  res$small.thresh <- small.thresh
+  res$big.thresh <- big.thresh
   # get a summary
   tmp.sum <- summary.rwl(rwl)
   res$nseries <- ncol(rwl)
@@ -33,14 +35,28 @@ rwl.report <- function(rwl){
   if(length(internalNAs)<1) res$internalNAs <- numeric(0)
   else res$internalNAs <- internalNAs
 
-  # wee rings
-  wee <- rwl > 0 & rwl < 0.005
-  wee <- apply(wee,2,which)
-  wee <- sapply(wee, function(x) {as.numeric(names(x))} )
-  wee <- wee[lapply(wee,length)>0]
-  if(length(wee)<1) res$small <- numeric(0)
-  else res$small <- wee
+  # small rings
+  if(is.na(small.thresh)) res$small <- numeric(0)
+  else {
+    small <- rwl > 0 & rwl < small.thresh
+    small <- apply(small,2,which)
+    small <- sapply(small, function(x) {as.numeric(names(x))} )
+    small <- small[lapply(small,length)>0]
+    if(length(small)<1) res$small <- numeric(0)
+    else res$small <- small
+  }
 
+  # big rings
+  if(is.na(big.thresh)) res$big <- numeric(0)
+  else {
+    big <- rwl > big.thresh
+    big <- apply(big,2,which)
+    big <- sapply(big, function(x) {as.numeric(names(x))} )
+    big <- big[lapply(big,length)>0]
+    if(length(big)<1) res$big <- numeric(0)
+    else res$big <- big
+  }
+  
   options(warn = oldw)
   class(res) <- "rwl.report"
   res
@@ -80,15 +96,30 @@ print.rwl.report <- function(x, ...){
           sep = " ")
     }
   }
-  cat("-------------\n")
-  cat("Years with very small rings (< 0.005) listed by series \n")
-  if(length(x$small)==0) cat("    None \n")
-  else{
-    for(i in 1:length(x$small)){
-      tmp = x$small[[i]]
-      if(length(tmp)==0) next()
-      cat("   Series", names(x$small)[i],"--",tmp,"\n",  
-          sep = " ")
+  if(!is.na(x$small.thresh)){
+    cat("-------------\n")
+    cat("Years with values <", x$small.thresh, "listed by series \n")
+    if(length(x$small)==0) cat("    None \n")
+    else{
+      for(i in 1:length(x$small)){
+        tmp = x$small[[i]]
+        if(length(tmp)==0) next()
+        cat("   Series", names(x$small)[i],"--",tmp,"\n",  
+            sep = " ")
+      }
+    }
+  }
+  if(!is.na(x$big.thresh)){
+    cat("-------------\n")
+    cat("Years with values >", x$big.thresh, " listed by series \n")
+    if(length(x$big)==0) cat("    None \n")
+    else{
+      for(i in 1:length(x$big)){
+        tmp = x$big[[i]]
+        if(length(tmp)==0) next()
+        cat("   Series", names(x$big)[i],"--",tmp,"\n",  
+            sep = " ")
+      }
     }
   }
   invisible(x)

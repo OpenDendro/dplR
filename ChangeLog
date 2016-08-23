@@ -26,7 +26,7 @@ File: NAMESPACE
 
 - Added rwl.report to export
 - Added rwl.report print method
-- Added export from plyr
+- Added import from plyr
 
 File: DESCRIPTION
 -----------------

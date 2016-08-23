@@ -3,7 +3,7 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.6.5
-Date: 2016-08-09
+Date: 2016-08-23
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "trl")), person("Franco", "Biondi",
@@ -22,7 +22,7 @@ Imports: graphics, grDevices, grid, stats, utils, lattice (>= 0.13-6),
         Matrix (>= 1.0-3), digest (>= 0.2.3), gmp (>= 0.5-5),
         matrixStats (>= 0.50.0), png (>= 0.1-1), R.utils (>= 1.32.0),
         stringi (>= 0.2-2), stringr (>= 0.4), XML (>= 2.1-0), 
-        plyr (>= 1.8.3)
+        plyr (>= 1.8)
 Suggests: Biobase, Cairo (>= 1.5-0), dichromat (>= 1.2-3), foreach,
         forecast, iterators, knitr, RColorBrewer, testthat (>= 0.8),
         tikzDevice, waveslim

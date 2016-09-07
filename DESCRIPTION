@@ -3,7 +3,7 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.6.5
-Date: 2016-08-23
+Date: 2016-09-07
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "trl")), person("Franco", "Biondi",
@@ -31,5 +31,5 @@ Description: Perform tree-ring analyses such as detrending, chronology
         used in dendrochronology.
 LazyData: no
 License: GPL (>= 2)
-URL: http://R-Forge.R-project.org/projects/dplr/
+URL: https://r-forge.r-project.org/projects/dplr/
 MailingList: https://groups.google.com/d/forum/dplr-help

@@ -24,7 +24,8 @@ combine.rwl(x, y = NULL)
   also fulfills this condition.  If the input is differently formatted,
   the result will be wrong.}
 
-\value{ A \code{data.frame} with the series in columns and the years as
+\value{An object of class \code{c("rwl", "data.frame")} with the series in 
+  columns and the years as
   rows.  The keycodes are the column names and the years are the row
   names. }
 

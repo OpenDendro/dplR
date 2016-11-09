@@ -42,5 +42,7 @@ combine.rwl <- function(x, y = NULL) {
     } else {
         stop("Nothing to combine here. Please supply data.frames formatted according to the data standards in dplR.")
     }
-    as.data.frame(new.mat)
+    new.mat <- as.data.frame(new.mat)
+    class(new.mat) <- c("rwl", "data.frame")
+    new.mat
 }

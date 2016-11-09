@@ -1,5 +1,10 @@
 * CHANGES IN dplR VERSION 1.6.5
 
+File: combine.rwl.R
+----------------
+-Changed so that combine.rwl returns class data.frame and class rwl.
+
+
 File: crn.plot.R
 ----------------
 

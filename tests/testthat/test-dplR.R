@@ -108,10 +108,12 @@ test.combine.rwl <- function() {
     rnames.3 <- as.character(range.3)
     range.4 <- range.1 + 450
     rnames.4 <- as.character(range.4)
-    df.1 <- data.frame(col1 = c(v.1, rep.int(NA, 50)),
-                       col2 = c(rep.int(NA, 25), v.1, rep.int(NA, 25)),
-                       col3 = c(rep.int(NA, 50), v.1),
-                       row.names = rnames.1)
+    df.1 <-
+        structure(data.frame(col1 = c(v.1, rep.int(NA, 50)),
+                             col2 = c(rep.int(NA, 25), v.1, rep.int(NA, 25)),
+                             col3 = c(rep.int(NA, 50), v.1),
+                             row.names = rnames.1),
+                  class = c("rwl", "data.frame"))
     df.2 <- df.1
     rownames(df.2) <- rnames.2
     df.3 <- df.1

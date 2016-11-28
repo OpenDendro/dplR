@@ -11,3 +11,4 @@
 ^.*/auto$
 ^(|.*[^[:alpha:]])README-developer(|[^[:alpha:]].*)$
 ^vignettes/Rplots.*\.pdf$
+^revdep$

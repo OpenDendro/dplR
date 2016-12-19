@@ -32,8 +32,11 @@ sea <- function(x, key, lag = 5, resample = 1000) {
     se.unscaled <- colMeans(se.unscaled.table, na.rm = TRUE)
     re.table <- matrix(NA_real_, ncol = m, nrow = resample)
     re.subtable <- matrix(NA_real_, ncol = m, nrow = n)
+    l <- length(rnames)
+    trim <- c(1:lag, (l - lag + 1):l)
+    rnames.red <- rnames[-trim]
     for (k in seq_len(resample)) {
-        rand.key <- sample(rnames, n, replace = TRUE)
+        rand.key <- sample(rnames.red, n, replace = TRUE)
         for (i in seq.n) {
             re.subtable[i, ] <-
                                x.scaled[as.character(rand.key[i] + yrs.base), ]

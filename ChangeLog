@@ -43,6 +43,10 @@ File: sea.R
 
 - Note on commit from Zang: sea() simplified and computation of p-values fixed; computation of p-values and CI bands for sea() now based on ecdf() and quantile() functions.
 
+File: zzz.R
+-----------------
+
+- .onUnload(): DLL / shared library is unloaded together with package
 
 * CHANGES IN dplR VERSION 1.6.4
 

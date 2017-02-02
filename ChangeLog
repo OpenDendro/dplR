@@ -15,6 +15,8 @@ File: detrend and detrend.series.Rd
 -----------------
 
 - Added Friedman under method argument in the help file. It was ommitted by mistake. 
+- Bug in detrend fixed where make.plot was hard coded as FALSE which kept TRUE 
+  from being passed to detrend.series.
 
 File: helpers.R
 -----------------

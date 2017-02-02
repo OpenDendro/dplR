@@ -20,7 +20,7 @@
     rn <- row.names(rwl)
 
     detrend.args <- c(alist(rwl.i),
-                      list(make.plot = FALSE, method = method2,
+                      list(make.plot = make.plot, method = method2,
                            nyrs = nyrs, f = f, pos.slope = pos.slope,
                            constrain.modnegexp = constrain2,
                            verbose = FALSE, return.info = return.info,

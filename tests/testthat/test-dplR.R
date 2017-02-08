@@ -481,8 +481,8 @@ test.ffcsaps <- function() {
         expect_equal(res.5, x)
     })
     test_that("smoother spline means more error", {
-        expect_more_than(error.1, error.2)
-        expect_more_than(error.2, error.3)
+        expect_true(error.1 > error.2)
+        expect_true(error.2 > error.3)
     })
     test_that("ffcsaps stops on bad parameters", {
         expect_error(ffcsaps(y, f=-1), "between 0 and 1")

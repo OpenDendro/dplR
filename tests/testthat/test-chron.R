@@ -38,8 +38,8 @@ test.chron <- function() {
     test_that("chron works (with autocorrelation)", {
         expect_equal(res2[["samp.depth"]], threes)
         expect_equal(res2[["xxxstd"]], srs2)
-        expect_more_than(length(which(is.na(res2[["xxxres"]]))), 0)
-        expect_less_than(sd2.2, sd2.1)
+        expect_true(length(which(is.na(res2[["xxxres"]]))) > 0)
+        expect_true(sd2.2 < sd2.1)
     })
 }
 test.chron()

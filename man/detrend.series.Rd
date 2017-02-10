@@ -127,8 +127,8 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   
   See the references below for further details on detrending.
 
-  The \code{"Friedman"} approach uses Friedman's \sQuote{super smoother}
-  as implemented in \code{\link{supsmu}}.  The parameters
+  The \code{"Friedman"} approach uses Friedman\enc{’}{'}s \sQuote{super
+  smoother} as implemented in \code{\link{supsmu}}.  The parameters
   \code{\var{wt}}, \code{\var{span}} and \code{\var{bass}} can be
   adjusted, but \code{\var{periodic}} is always set to \code{FALSE}.
 

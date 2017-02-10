@@ -52,9 +52,10 @@ export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, cms,
        series.rwl.plot, skel.plot, spag.plot, strip.rwl, tbrm,
        tridas.vocabulary, uuid.gen, wavelet.plot, wc.to.po,
        write.compact, write.crn, write.rwl, write.tridas,
-       write.tucson, plot.rwl, interseries.cor, summary.rwl,
-       plot.crn, insert.ring, delete.ring, xskel.ccf.plot, xskel.plot,
-       latexify, latexDate, rasterPlot, treeMean, rwl.report, print.rwl.report)
+       write.tucson, plot.rwl, interseries.cor, summary.rwl, plot.crn,
+       insert.ring, delete.ring, xskel.ccf.plot, xskel.plot, latexify,
+       latexDate, rasterPlot, treeMean, rwl.report, print.rwl.report,
+       sfrcs)
 
 S3method(print, redfit)
 S3method(plot, rwl)

@@ -8,7 +8,7 @@
 }
 \usage{
 rcs(rwl, po, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE,
-    rc.out = FALSE, make.plot = TRUE, \dots)
+    rc.out = FALSE, make.plot = TRUE, \dots, rc.in = NULL, check = TRUE)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as
@@ -30,12 +30,15 @@ rcs(rwl, po, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE,
   \item{ratios}{ \code{logical} flag.  If \code{TRUE} (the default) then
     indices are calculated by division, if \code{FALSE} indices are
     calculated by subtraction. }
-  \item{make.plot}{ \code{logical} flag.  Makes plots of the raw data and
-    regional curve if \code{TRUE}. }
   \item{rc.out}{ \code{logical} flag.  Returns the regional curve along
     with the ring-width indices if \code{TRUE}. }
+  \item{make.plot}{ \code{logical} flag.  Makes plots of the raw data and
+    regional curve if \code{TRUE}. }
   \item{\dots}{ other arguments passed to
     \code{\link[graphics]{plot}}. }
+  \item{rc.in}{ for internal use. }
+  \item{check}{ a \code{logical} flag. Bypass input checks by setting
+    this to \code{FALSE}. }
 }
 \details{
 
@@ -89,7 +92,7 @@ rcs(rwl, po, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE,
   dplR by Andy Bunn.  Patched and improved by Mikko Korpela.
 }
 \seealso{ \code{\link{detrend}}, \code{\link{chron}}, \code{\link{cms}},
-  \code{\link{ffcsaps}} }
+  \code{\link{ffcsaps}}, \code{\link{sfrcs}} }
 \examples{library(utils)
 data(gp.rwl)
 data(gp.po)

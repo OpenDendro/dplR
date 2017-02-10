@@ -1,24 +1,26 @@
 rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, ratios=TRUE,
-                rc.out=FALSE, make.plot=TRUE, ...) {
-    if (!is.data.frame(rwl)) {
-        stop("'rwl' must be a data.frame")
-    }
-    n.col <- ncol(rwl)
-    if (n.col == 0) {
-        return(rwl)
-    }
-    if (n.col != nrow(po)) {
-        stop("dimension problem: ", "'ncol(rw)' != 'nrow(po)'")
-    }
+                rc.out=FALSE, make.plot=TRUE, ..., rc.in=NULL, check=TRUE) {
+    n.col <- length(rwl)
     col.names <- names(rwl)
-    if (!all(sort(po[, 1]) == sort(col.names))) {
-        stop("series ids in 'po' and 'rwl' do not match")
-    }
-    if (any(po[, 2] < 1)) {
-        stop("minimum 'po' is 1")
-    }
-    if (!all(is.int(po[, 2]))) {
-        stop("each value in 'po' must be an integer")
+    if (isTRUE(check)) {
+        if (!is.data.frame(rwl)) {
+            stop("'rwl' must be a data.frame")
+        }
+        if (n.col == 0) {
+            return(rwl)
+        }
+        if (n.col != nrow(po)) {
+            stop("dimension problem: ", "'ncol(rw)' != 'nrow(po)'")
+        }
+        if (!all(sort(po[, 1]) == sort(col.names))) {
+            stop("series ids in 'po' and 'rwl' do not match")
+        }
+        if (any(po[, 2] < 1)) {
+            stop("minimum 'po' is 1")
+        }
+        if (!all(is.int(po[, 2]))) {
+            stop("each value in 'po' must be an integer")
+        }
     }
     seq.cols <- seq_len(n.col)
     rwl2 <- rwl
@@ -34,21 +36,27 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, ratios=TRUE,
         rwca[yrs2pith:(yrs2pith + nrow.m1), i] <- rwl.ord[, i]
     }
 
-    if (biweight) {
-        ca.m <- apply(rwca, 1, tbrm, C = 9)
-    } else {
-        ca.m <- rowMeans(rwca, na.rm=TRUE)
+    if (is.null(rc.in) || make.plot) {
+        if (biweight) {
+            ca.m <- apply(rwca, 1, tbrm, C = 9)
+        } else {
+            ca.m <- rowMeans(rwca, na.rm=TRUE)
+        }
     }
 
-    ## spline follows B&Q 2008 as 10% of the RC length
-    if (is.null(nyrs)) {
-        nyrs2 <- floor(length(na.omit(ca.m)) * 0.1)
+    if (is.null(rc.in)) {
+        ## spline follows B&Q 2008 as 10% of the RC length
+        if (is.null(nyrs)) {
+            nyrs2 <- floor(length(na.omit(ca.m)) * 0.1)
+        } else {
+            nyrs2 <- nyrs
+        }
+        tmp <- ffcsaps(y=na.omit(ca.m), nyrs=nyrs2, f=f)
+        rc <- rep(NA, nrow(rwca))
+        rc[!is.na(ca.m)] <- tmp
     } else {
-        nyrs2 <- nyrs
+        rc <- rc.in
     }
-    tmp <- ffcsaps(y=na.omit(ca.m), nyrs=nyrs2, f=f)
-    rc <- rep(NA, nrow(rwca))
-    rc[!is.na(ca.m)] <- tmp
     ## calculate indices as ratios or differences
     if (ratios) {
         rwica <- rwca/rc

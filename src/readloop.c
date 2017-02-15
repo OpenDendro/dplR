@@ -1,6 +1,7 @@
 #include "dplR.h"
 #include <Rmath.h>
 #include <limits.h>
+#include "registered.h"
 
 /* A function to speed up the heaviest part of read.tucson.R */
 /* Written by Mikko Korpela */

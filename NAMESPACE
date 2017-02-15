@@ -1,7 +1,4 @@
-useDynLib(dplR, dplR.gini=gini, dplR.makear1=makear1,
-          dplR.mean=exactmean, dplR.rcompact=rcompact,
-          dplR.seg50=seg50, dplR.sens1=sens1, dplR.sens2=sens2,
-          dplR.spectr=spectr, dplR.tbrm=tbrm, rwl.readloop=readloop)
+useDynLib(dplR, .registration = TRUE, .fixes = "dplR.")
 
 import(graphics, stats)
 

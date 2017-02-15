@@ -5,6 +5,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <limits.h>
+#include "registered.h"
 
 #define CONTENT_LENGTH 80
 #define LINE_LENGTH 83 /* 80 + 2 (newline characters) + 1 (null)*/

@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include "dplR.h"
 #include "exactsum.h"
+#include "registered.h"
 
 SEXP exactmean(SEXP x){
     SEXP ans;

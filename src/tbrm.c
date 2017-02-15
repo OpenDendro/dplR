@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include "dplR.h"
 #include "exactsum.h"
+#include "registered.h"
 
 /* Tukey's Biweight Robust Mean (tbrm).
    There must be no NAs in 'x'.

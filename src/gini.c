@@ -2,6 +2,7 @@
 #include <limits.h>
 #include "dplR.h"
 #include "exactsum.h"
+#include "registered.h"
 
 /* Written by Mikko Korpela */
 SEXP gini(SEXP x){

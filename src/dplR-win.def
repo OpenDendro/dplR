@@ -1,0 +1,3 @@
+LIBRARY dplR.dll
+EXPORTS
+ R_init_dplR

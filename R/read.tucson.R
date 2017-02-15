@@ -327,7 +327,7 @@
     }
     extra.col <- dat[[13]]
 
-    res <- .Call(rwl.readloop, series.index, decade.yr, x)
+    res <- .Call(dplR.readloop, series.index, decade.yr, x)
     rw.mat <- res[[1]]
     min.year <- res[[2]]
     prec.rproc <- res[[3]]

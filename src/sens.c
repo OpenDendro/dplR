@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include "dplR.h"
 #include "exactsum.h"
+#include "registered.h"
 
 /* Written by Mikko Korpela */
 SEXP sens2(SEXP x){

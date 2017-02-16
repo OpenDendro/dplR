@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include <R_ext/Rdynload.h>
 #include <R_ext/Visibility.h>
+#include <Rversion.h>
 
+#include "dplR.h"
 #include "registered.h"
 
 #define CALLDEF(name, n) {#name, (DL_FUNC) &name, n}
@@ -23,5 +25,7 @@ const static R_CallMethodDef R_CallDef[] = {
 void attribute_visible R_init_dplR(DllInfo *dll) {
     R_registerRoutines(dll, NULL, R_CallDef, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
+#ifdef DPLR_RGEQ3
     R_forceSymbols(dll, TRUE);
+#endif
 }

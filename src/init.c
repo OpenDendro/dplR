@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <R_ext/Rdynload.h>
 #include <R_ext/Visibility.h>
-#include <Rversion.h>
 
 #include "dplR.h"
 #include "registered.h"

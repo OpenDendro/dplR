@@ -7,7 +7,7 @@
 
 #define CALLDEF(name, n) {#name, (DL_FUNC) &name, n}
 
-const static R_CallMethodDef R_CallDef[] = {
+static const R_CallMethodDef R_CallDef[] = {
     CALLDEF(exactmean,       1),
     CALLDEF(gini,            1),
     CALLDEF(makear1,         3),

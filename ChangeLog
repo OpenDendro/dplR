@@ -10,6 +10,9 @@ File: DESCRIPTION
   because it's not possible to test 0.50.0, 0.50.1 with really old
   versions of R, e.g. 2.15.2.
 
+- Version requirement for png bumped up to >= 0.1-2: difficulties
+  compiling 0.1-1 on a test system (type voidp not defined).
+
 Files: NAMESPACE, src/..., R/...
 ----------------
 

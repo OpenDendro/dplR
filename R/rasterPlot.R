@@ -16,7 +16,8 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
     fallback <- TRUE
     for (k in 1:2) {
         if (Cairo2) {
-            if (requireNamespace("Cairo", quietly = TRUE)) {
+            if (requireNamespace("Cairo", quietly = TRUE) &&
+                packageVersion("Cairo") >= "1.4-8") {
                 caps <- Cairo::Cairo.capabilities()
                 if (isTRUE(as.vector(caps["raster"]))) {
                     fallback <- FALSE
@@ -33,7 +34,7 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
                     break
                 }
             } else {
-                message("Cairo device unavailable")
+                message("Cairo device (>= 1.4-8) unavailable")
             }
             Cairo2 <- FALSE
         } else {

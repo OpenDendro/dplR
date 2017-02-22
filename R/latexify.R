@@ -25,6 +25,11 @@ latexify <- function(x, doublebackslash = TRUE, dashdash = TRUE,
     if (any(encBytes)) {
         y[encBytes] <- captureOutput(cat(y[encBytes], sep = "\n"))
     }
+    ## Convert strings to UTF-8 encoding, NFD (decomposed) form, for
+    ## processing of accented characters. Doing this early to
+    ## circumvent pecularities in gsub() (and nchar()) when working in
+    ## the C locale.
+    y <- stri_trans_nfd(y)
     Letters <- paste0(c(LETTERS, letters), collapse="")
     fontenc <- "fontenc" %in% packages
     textcomp <- "textcomp" %in% packages
@@ -326,9 +331,6 @@ latexify <- function(x, doublebackslash = TRUE, dashdash = TRUE,
           list(c(paste0(tmp, "(?=$|[[:digit:],.?!;:\\\\}+*/-])"), "\\1"),
                c(paste0(tmp, "(?! )"), "\\1 ")))
 
-    ## Convert strings to UTF-8 encoding, NFD (decomposed) form, for
-    ## processing of accented characters.
-    y <- stri_trans_nfd(y)
     ## Apply the substitutions in the list
     for (subst in substitutions) {
         y <- gsub(subst[1], subst[2], y, perl = TRUE)

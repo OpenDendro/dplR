@@ -1,6 +1,12 @@
 * CHANGES IN dplR VERSION 1.6.6
 
-File: R/rasterPlot.R
+File: latexify.R
+----------------
+
+- Fixed conversion bugs in the latexify() utility when working in
+  the C locale.
+
+File: rasterPlot.R
 ----------------
 
 - In rasterPlot(Cairo = TRUE, ...), added a version check for the Cairo

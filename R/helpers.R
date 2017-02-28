@@ -204,7 +204,8 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
             }
             rename.flag[idx.bad] <- TRUE
             ## Remove inappropriate characters (replace with nothing)
-            x.cut[idx.bad] <- gsub(bad.chars, "", x.cut[idx.bad])
+            x.cut[idx.bad] <- gsub(bad.chars, "", x.cut[idx.bad],
+                                   useBytes = !l10n_info()[["MBCS"]])
         }
     }
     if (!is.null(limit)) {

@@ -102,10 +102,10 @@ void rmtrend(SEXP x, SEXP y, SEXP lengthfun, SEXP lmfit) {
     PROTECT(lmres = eval(lmcall, R_EmptyEnv));
 
     /* dplR: get residuals from the list given by lm.fit(x, y) */
-    lmnames = getAttrib(lmres, R_NamesSymbol);
     PROTECT(tmp = ncall = allocList(2));
     SET_TYPEOF(ncall, LANGSXP);
     SETCAR(tmp, lengthfun); tmp = CDR(tmp);
+    lmnames = getAttrib(lmres, R_NamesSymbol);
     SETCAR(tmp, lmnames);
     PROTECT_WITH_INDEX(sn = eval(ncall, R_BaseEnv), &ipx);
     REPROTECT(sn = coerceVector(sn, REALSXP), ipx);

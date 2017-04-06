@@ -51,6 +51,13 @@ File: rcs.R
 
 - Technical changes to facilitate the implematation of sfrcs().
 
+File: src/redfit.c
+----------------
+
+- Fixed a pointer protection alert reported by rchk / Tomas
+  Kalibera. Seemed like a false alarm, but the code is slightly
+  cleaner as a result of the change.
+
 * CHANGES IN dplR VERSION 1.6.5
 
 File: combine.rwl.R

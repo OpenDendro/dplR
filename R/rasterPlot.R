@@ -134,6 +134,7 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
             cairoType <- "raster"
             cairoFile <- ""
         } else {
+            check.tempdir()
             cairoType <- "png"
             cairoFile <- fname
         }
@@ -141,9 +142,11 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
                      units = "in", dpi = res, bg = bg,
                      type = cairoType, file = cairoFile, ...)
     } else if (missing(antialias)) {
+        check.tempdir()
         png(fname, width = pngWidthHeight[1], height = pngWidthHeight[2],
             units = "in", res = res, bg = bg, ...)
     } else {
+        check.tempdir()
         png(fname, width = pngWidthHeight[1], height = pngWidthHeight[2],
             units = "in", res = res, bg = bg, antialias = antialias, ...)
     }

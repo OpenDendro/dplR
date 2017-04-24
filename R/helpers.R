@@ -1,3 +1,11 @@
+### Try to create directory named by tempdir() if it has gone missing
+check.tempdir <- function() {
+    td <- tempdir()
+    if (!file.exists(td)) {
+        dir.create(td)
+    }
+}
+
 ### Checks that all arguments are TRUE or FALSE
 check.flags <- function(...) {
     flag.bad <- vapply(list(...),

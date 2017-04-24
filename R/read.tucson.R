@@ -121,6 +121,7 @@
     ## Temporary file for 'goodLines'. Reading from this file is
     ## faster than making a textConnection to 'goodLines'.
     tf <- tempfile()
+    check.tempdir()
     tfcon <- file(tf, encoding="UTF-8")
     on.exit(close(tfcon))
     on.exit(unlink(tf), add=TRUE)

@@ -6,6 +6,8 @@ File: helpers.R
 - Internal helper fix.names() is more robust when working in the C
   locale.
 
+- Added internal helper function check.tempdir()
+
 File: latexify.R
 ----------------
 
@@ -17,6 +19,13 @@ File: rasterPlot.R
 
 - In rasterPlot(Cairo = TRUE, ...), added a version check for the Cairo
   package
+
+- Check if temporary directory is missing before use
+
+File: read.tucson.R
+----------------
+
+- Check if temporary directory is missing before use
 
 File: DESCRIPTION
 ----------------

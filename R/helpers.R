@@ -2,7 +2,7 @@
 check.tempdir <- function() {
     td <- tempdir()
     if (!file.exists(td)) {
-        dir.create(td)
+        dir.create(td, mode = "0700")
     }
 }
 

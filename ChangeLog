@@ -73,7 +73,7 @@ File: sfrcs.R
 File: rcs.R
 ----------------
 
-- Technical changes to facilitate the implematation of sfrcs().
+- Technical changes to facilitate the implementation of sfrcs().
 
 File: src/redfit.c
 ----------------

@@ -16,8 +16,7 @@ rasterPlot <- function(expr, res = 150, region=c("plot", "figure"), antialias,
     fallback <- TRUE
     for (k in 1:2) {
         if (Cairo2) {
-            if (requireNamespace("Cairo", quietly = TRUE) &&
-                packageVersion("Cairo") >= "1.4-8") {
+            if (requireVersion("Cairo", "1.4-8")) {
                 caps <- Cairo::Cairo.capabilities()
                 if (isTRUE(as.vector(caps["raster"]))) {
                     fallback <- FALSE

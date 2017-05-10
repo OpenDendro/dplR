@@ -160,7 +160,9 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
     stopifnot(is.numeric(nsim), length(nsim) == 1, is.finite(nsim), nsim >= 1,
               round(nsim) == nsim)
     if (length(p) > 0) {
-        stopifnot(is.numeric(p) || is.bigq(p), p > 0, p < 1)
+        stopifnot(is.numeric(p) ||
+                  (requireVersion("gmp", "0.5-5") && gmp::is.bigq(p)))
+        stopifnot(p > 0, p < 1)
     }
     stopifnot(is.numeric(maxTime), length(maxTime) == 1, maxTime >= 0)
     stopifnot(is.numeric(nLimit), length(nLimit) == 1, nLimit >= 0,
@@ -874,7 +876,7 @@ print.redfit <- function(x, digits = NULL, csv.out = FALSE, do.table = FALSE,
 
 ## dplR: Utility function.
 redfitRunprobZ <- function(k, n) {
-    invhalfpowM1 <- as.bigz(2)^(n - 1)
+    invhalfpowM1 <- gmp::as.bigz(2)^(n - 1)
     if (k %% 2 == 0) {
         ## even number of runs
         r <- k / 2
@@ -882,7 +884,7 @@ redfitRunprobZ <- function(k, n) {
         nn1 <- length(n1)
         halfn1 <- nn1 %/% 2
         if (nn1 %% 2 == 1) {
-            probsum <- chooseZ(n1[halfn1 + 1] - 1, r - 1)
+            probsum <- gmp::chooseZ(n1[halfn1 + 1] - 1, r - 1)
             probsum <- probsum * probsum
         } else {
             probsum <- 0
@@ -890,19 +892,19 @@ redfitRunprobZ <- function(k, n) {
         lown1 <- n1[seq_len(halfn1)]
         if (length(lown1) > 0) {
             lown2 <- n - lown1
-            probsum <- probsum + 2 * sum(chooseZ(lown1 - 1, r - 1) *
-                                         chooseZ(lown2 - 1, r - 1))
+            probsum <- probsum + 2 * sum(gmp::chooseZ(lown1 - 1, r - 1) *
+                                         gmp::chooseZ(lown2 - 1, r - 1))
         }
         probsum / invhalfpowM1
     } else if (k == 1) {
         ## one run
-        as.bigq(2)^(1 - n)
+        gmp::as.bigq(2)^(1 - n)
     } else {
         ## odd number of runs
         r <- (k - 1) / 2
         n1 <- seq(from = r + 1, by = 1, to = n - r)
         n2 <- n - n1
-        probsum <- sum(chooseZ(n1 - 1, r) * chooseZ(n2 - 1, r - 1))
+        probsum <- sum(gmp::chooseZ(n1 - 1, r) * gmp::chooseZ(n2 - 1, r - 1))
         probsum / invhalfpowM1
     }
 }
@@ -910,10 +912,10 @@ redfitRunprobZ <- function(k, n) {
 ## dplR: Utility function.
 redfitRuncsum <- function(n, crit, verbose = FALSE,
                           timelimit = Inf) {
-    if (is.bigq(crit)) {
+    if (gmp::is.bigq(crit)) {
         halfcrit <- crit / 2
     } else {
-        halfcrit <- as.bigq(crit, 2)
+        halfcrit <- gmp::as.bigq(crit, 2)
     }
     verbose2 <- isTRUE(verbose)
     nn <- length(n)
@@ -926,16 +928,16 @@ redfitRuncsum <- function(n, crit, verbose = FALSE,
         halfn <- thisn %/% 2
         oddn <- thisn %% 2
         complength <- halfn + oddn
-        tmpcsums <- as.bigq(rep.int(NA_real_, complength))
+        tmpcsums <- gmp::as.bigq(rep.int(NA_real_, complength))
         if (oddn == 1) {
             st <- system.time({
-                csum <- (as.bigq(1) - redfitRunprobZ(complength,
-                                                     thisn)) / 2
+                csum <- (gmp::as.bigq(1) -
+                         redfitRunprobZ(complength, thisn)) / 2
                 tmpcsums[[complength]] <- csum
             })
         } else {
             st <- system.time({
-                csum <- as.bigq(1, 2) - redfitRunprobZ(complength, thisn)
+                csum <- gmp::as.bigq(1, 2) - redfitRunprobZ(complength, thisn)
                 tmpcsums[[complength]] <- csum
             })
         }
@@ -959,7 +961,7 @@ redfitRuncsum <- function(n, crit, verbose = FALSE,
         seqstart <- max(2, finalk)
         seqlength <- complength - seqstart + 1
         ## store n, drop 0 and NA
-        csums[[j]] <- c(as.bigq(thisn),
+        csums[[j]] <- c(gmp::as.bigq(thisn),
                         tmpcsums[seq(from = seqstart, by = 1,
                                      length.out = seqlength)])
     }
@@ -1345,7 +1347,9 @@ redfitCompcrit <- function(n, p, maxTime) {
 ## region of the number of runs test (p == 0.5).  Exported function.
 runcrit <- function(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000) {
     if (length(p) > 0) {
-        stopifnot(is.numeric(p) || is.bigq(p), p > 0, p < 1)
+        stopifnot(is.numeric(p) ||
+                  (requireVersion("gmp", "0.5-5") && gmp::is.bigq(p)))
+        stopifnot(p > 0, p < 1)
     }
     stopifnot(is.numeric(n), length(n) == 1, n >= 1, round(n) == n)
     stopifnot(is.numeric(maxTime), length(maxTime) == 1, maxTime >= 0)
@@ -1360,7 +1364,7 @@ runcrit <- function(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000) {
     todo <- colSums(is.na(rcritlohi)) > 0
     if (any(todo)) {
         ## Exact solution by computation (n small enough)
-        if (n < nLimit) {
+        if (n < nLimit && requireVersion("gmp", "0.5-5")) {
             normCritMin <- normCrit[, which.min(p)]
             ## time allowed per "iteration"
             maxTime2 <- maxTime /

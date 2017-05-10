@@ -8,6 +8,8 @@ File: helpers.R
 
 - Added internal helper function check.tempdir()
 
+- Added internal helper function requireVersion()
+
 File: latexify.R
 ----------------
 
@@ -26,6 +28,17 @@ File: read.tucson.R
 ----------------
 
 - Check if temporary directory is missing before use
+
+File: redfit.R
+----------------
+
+- Computation of the exact acceptance region of number of runs
+  distributions in runcrit(), if not precomputed, depends on package
+  "gmp" being installed (now optional).
+
+- Argument 'p' of redfit() and runcrit() may be numeric (which is
+  the default) or "bigq", but the latter now fails if "gmp" is not
+  installed.
 
 File: DESCRIPTION
 ----------------
@@ -48,6 +61,8 @@ Files: NAMESPACE, src/..., R/...
 
 - Technical change: Visibility of native routines has been
   limited, following 6.15 "Controlling visibility" in R-exts.
+
+- Package "gmp" is now in Suggests, not in Imports.
 
 File: sfrcs.R
 ----------------

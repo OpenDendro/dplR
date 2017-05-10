@@ -1,3 +1,8 @@
+requireVersion <- function(package, ver) {
+    requireNamespace(package, quietly = TRUE) &&
+        packageVersion(package) >= ver
+}
+
 ### Try to create directory named by tempdir() if it has gone missing
 check.tempdir <- function() {
     td <- tempdir()

@@ -51,9 +51,10 @@ runcrit(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000)
     autocorrelation coefficient.  If \code{NULL} or negative, the
     autocorrelation coefficient will be estimated from the data. }
 
-  \item{p}{ a \code{numeric} or \code{\link{bigq}} vector of
-    significance levels for a statistical test considering the number of
-    runs in a sequence.  See \sQuote{Details}. }
+  \item{p}{ a \code{numeric} or \code{\link[gmp:bigrational]{bigq}} (if
+    package \code{"gmp"} is installed) vector of significance levels for
+    a statistical test considering the number of runs in a sequence.
+    See \sQuote{Details}. }
   
   \item{iwin}{ the type of window used for scaling the values of each
     segment of data.  A \code{numeric} value or one of
@@ -151,8 +152,8 @@ runcrit(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000)
   some values of \code{\var{p}} and \code{\var{n}}.  If a precomputed
   result is not found and \code{\var{n}} is not too large
   (\code{\var{nLimit}}, \code{\var{maxTime}}), the exact results are
-  computed on-demand.  Otherwise, the normal distribution is used for
-  approximation.
+  computed on-demand.  Otherwise, or if package \code{"gmp"} is not
+  installed, the normal distribution is used for approximation.
 
 }
 

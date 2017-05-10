@@ -4,8 +4,6 @@ import(graphics, stats)
 
 importFrom(digest, digest)
 
-importFrom(gmp, as.bigq, as.bigz, chooseZ, is.bigq)
-
 importFrom(grDevices, dev.hold, dev.flush, rainbow, dev.capabilities,
            dev.cur, png, dev.off, dev.set, devAskNewPage, dev.capture)
 

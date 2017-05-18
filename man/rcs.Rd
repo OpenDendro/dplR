@@ -92,7 +92,7 @@ rcs(rwl, po, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE,
   dplR by Andy Bunn.  Patched and improved by Mikko Korpela.
 }
 \seealso{ \code{\link{detrend}}, \code{\link{chron}}, \code{\link{cms}},
-  \code{\link{ffcsaps}}, \code{\link{sfrcs}} }
+  \code{\link{ffcsaps}} }
 \examples{library(utils)
 data(gp.rwl)
 data(gp.po)

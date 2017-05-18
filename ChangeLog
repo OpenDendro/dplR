@@ -64,16 +64,11 @@ Files: NAMESPACE, src/..., R/...
 
 - Package "gmp" is now in Suggests, not in Imports.
 
-File: sfrcs.R
-----------------
-
-- Added a detrending method, in function sfrcs(): Signal-Free
-  Regional Curve Standardization (Melvin and Briffa, 2014).
-
 File: rcs.R
 ----------------
 
-- Technical changes to facilitate the implementation of sfrcs().
+- Technical changes to facilitate the future implementation of
+  signal-free rcs.
 
 File: src/redfit.c
 ----------------

@@ -3,7 +3,7 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.6.7
-Date: 2017-05-18
+Date: 2017-11-20
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "trl")), person("Franco", "Biondi",
@@ -13,15 +13,18 @@ Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         person("Christian", "Zang", role = c("aut", "cph")),
         person("Allan", "Buras", role = "ctb"), person("Jacob",
         "Cecile", role = "ctb"), person("Manfred", "Mudelsee", role =
-        "ctb"), person("Michael", "Schulz", role = "ctb"))
-Author: Andy Bunn [aut, cph, cre, trl], Mikko Korpela [aut, trl], Franco Biondi [aut, cph], Filipe Campelo [aut, cph], Pierre Mérian [aut, cph], Fares Qeadan [aut, cph], Christian Zang [aut, cph], Allan Buras [ctb], Jacob Cecile [ctb], Manfred Mudelsee [ctb], Michael Schulz [ctb]
+        "ctb"), person("Michael", "Schulz", role = "ctb"),
+        person("Darwin", "Pucha-Cofrep", role = c("aut", "cph")),
+        person("Jakob", "Wernicke", role = c("aut", "cph")))
+Author: Andy Bunn [aut, cph, cre, trl], Mikko Korpela [aut, trl], Franco Biondi [aut, cph], Filipe Campelo [aut, cph], Pierre Mérian [aut, cph], Fares Qeadan [aut, cph], Christian Zang [aut, cph], Allan Buras [ctb], Jacob Cecile [ctb], Manfred Mudelsee [ctb], Michael Schulz [ctb], Darwin Pucha-Cofrep [aut, cph], Jakob Wernicke [aut, cph]
 Copyright: Authors and file inst/COPYRIGHTS
 Maintainer: Andy Bunn <andy.bunn@wwu.edu>
 Depends: R (>= 2.15.2)
 Imports: graphics, grDevices, grid, stats, utils, lattice (>= 0.13-6),
         Matrix (>= 1.0-3), digest (>= 0.2.3), matrixStats (>= 0.50.2),
         png (>= 0.1-2), R.utils (>= 1.32.0), stringi (>= 0.2-3),
-        stringr (>= 0.4), XML (>= 2.1-0), plyr (>= 1.8)
+        stringr (>= 0.4), XML (>= 2.1-0), plyr (>= 1.8), 
+        animation (>= 1.8)
 Suggests: Biobase, Cairo (>= 1.5-0), dichromat (>= 1.2-3), foreach,
         forecast, gmp (>= 0.5-5), iterators, knitr, RColorBrewer,
         testthat (>= 0.8), tikzDevice, waveslim

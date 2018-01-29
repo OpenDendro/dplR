@@ -1,4 +1,5 @@
-plotRings <- function(year, trwN, trwS = NA, trwE = NA, trwW =NA, 
+plotRings <- function(year, trwN, trwS = NA_real_,
+                      trwE = NA_real_, trwW = NA_real_, 
                       animation = FALSE, sys.sleep = 0.2, 
                       year.labels = TRUE, 
                       d2pith = NA,
@@ -9,14 +10,14 @@ plotRings <- function(year, trwN, trwS = NA, trwE = NA, trwW =NA,
   
   ## Creating a data.frame
   TRW <- data.frame(row.names = year, trwN = trwN, 
-                    trwS = if (exists("trwS") == TRUE) trwS else NA, 
-                    trwE = if (exists("trwE") == TRUE) trwE else NA,
-                    trwW = if (exists("trwW") == TRUE) trwW else NA)
+                    trwS = trwS, 
+                    trwE = trwE,
+                    trwW = trwW)
   
   TRW <- TRW[as.logical((rowSums(is.na(TRW))-length(TRW))),] # It is to remove rows with NAs across all rows
   
   # trw means
-  TRW$trw.means <- rowMeans(TRW, na.rm = T)
+  TRW$trw.means <- rowMeans(TRW, na.rm = TRUE)
   
   # Distance to pith (d2pith)
   # Add d2pith values,  
@@ -25,7 +26,7 @@ plotRings <- function(year, trwN, trwS = NA, trwE = NA, trwW =NA,
   # This code check the NA values of d2pith. If there are NA values 
   # this code do nothing, else sum the individual d2pith values to the 
   # first ring. 
-  if(!is.na(mean(d2pith, na.rm = T))) {  
+  if(!is.na(mean(d2pith, na.rm = TRUE))) {  
     TRW.d2pith <- TRW[,1:4]
     if(!is.na(d2pith[1])) {
       TRW.d2pith$trwN[which.min(is.na(TRW.d2pith$trwN))] <- TRW.d2pith$trwN[which.min(is.na(TRW.d2pith$trwN))]+d2pith[1] }
@@ -36,7 +37,7 @@ plotRings <- function(year, trwN, trwS = NA, trwE = NA, trwW =NA,
     if(!is.na(d2pith[4])) {
       TRW.d2pith$trwW[which.min(is.na(TRW.d2pith$trwW))] <- TRW.d2pith$trwW[which.min(is.na(TRW.d2pith$trwW))]+d2pith[4] }
     # add d2pith to the first ring of the trw.means
-    TRW$trw.means[1] <- rowMeans(TRW.d2pith[1,], na.rm = T)  
+    TRW$trw.means[1] <- rowMeans(TRW.d2pith[1,], na.rm = TRUE)  
   }
   
   # Accumulative trw.means
@@ -80,7 +81,7 @@ plotRings <- function(year, trwN, trwS = NA, trwE = NA, trwW =NA,
       narrow.cols <- c(col.narrow.rings[1:i-1], col.outring) # colors when is selected "narrow.rings"
       wider.cols <- c(col.wider.rings[1:i-1], col.outring) # colors when is selected "wider.rings"
      
-      max.acc <- max(z, na.rm = T) * 2.5
+      max.acc <- max(z, na.rm = TRUE) * 2.5
       symbols(y = y[1:i], x = if(length(x) > 0) y[1:i] else x[1:i],
                circles=z[1:i], inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
                xlab='', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))),
@@ -106,7 +107,7 @@ plotRings <- function(year, trwN, trwS = NA, trwE = NA, trwW =NA,
     wider.cols <- c(col.wider.rings[1:length(x)-1], col.outring) # colors when is selected "wider.rings"
     rings.lwd <- c(rep(1, length(x)), 3)
     
-    max.acc <- max(z, na.rm = T) * 2.5
+    max.acc <- max(z, na.rm = TRUE) * 2.5
     symbols( y = y, x = if(length(x) > 0) y else x,
              circles=z, inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
              xlab='', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))), line=1.5,adj=0.5, 
@@ -135,7 +136,7 @@ plotRings <- function(year, trwN, trwS = NA, trwE = NA, trwW =NA,
      narrow.cols <- c(col.narrow.rings[1:i-1], col.outring) # colors when is selected "narrow.rings"
      wider.cols <- c(col.wider.rings[1:i-1], col.outring) # colors when is selected "wider.rings"
      
-     max.acc <- max(z, na.rm = T) * 2.5
+     max.acc <- max(z, na.rm = TRUE) * 2.5
      symbols(y = y[1:i], x = if(length(x) > 0) y[1:i] else x[1:i],
              circles=z[1:i], inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
              xlab='', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))),
@@ -161,7 +162,7 @@ plotRings <- function(year, trwN, trwS = NA, trwE = NA, trwW =NA,
    wider.cols <- c(col.wider.rings[1:length(x)-1], col.outring) # colors when is selected "wider.rings"
    rings.lwd <- c(rep(1, length(x)), 3)
    
-   max.acc <- max(z, na.rm = T) * 2.5
+   max.acc <- max(z, na.rm = TRUE) * 2.5
    symbols( y = y, x = if(length(x) > 0) y else x,
             circles=z, inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
             xlab='', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))), line=1.5,adj=0.5, 

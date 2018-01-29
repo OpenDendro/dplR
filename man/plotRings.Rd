@@ -6,7 +6,8 @@
   Make a plot of a cross section based on up to four ring-width series.
 }
 \usage{
-plotRings(year, trwN, trwS = NA, trwE = NA, trwW = NA,
+plotRings(year, trwN, trwS = NA_real_,
+          trwE = NA_real_, trwW = NA_real_,
           animation = FALSE, sys.sleep = 0.2, year.labels = TRUE,
           d2pith = NA, col.rings = "grey", col.outring = "black",
           x.rings = "none", col.x.rings = "red", species.name = NA,

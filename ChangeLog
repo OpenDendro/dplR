@@ -1,5 +1,10 @@
 * CHANGES IN dplR VERSION 1.6.7
 
+File: latexify.R
+----------------
+
+- Fixed a bug in latexDate() which was causing failure on R-Devel.
+
 File: plotRings.R
 ----------------
 
@@ -8,14 +13,15 @@ File: plotRings.R
 File: DESCRIPTION
 ----------------
 
-- Added in new authors (Darwin Pucha-Cofrep and Jakob Wernicke), 
+- Added in new authors (Darwin Pucha-Cofrep and Jakob Wernicke) 
 - Added animation to Imports list
 - Added gmp to Suggests
 
 File: NAMESPACE
 ----------------
 
-- Added plotRings to export and importFrom(animation, saveGIF) to support it.
+- Added plotRings to export and importFrom(animation, saveGIF) to support it
+
 * CHANGES IN dplR VERSION 1.6.6
 
 File: helpers.R

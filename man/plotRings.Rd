@@ -95,33 +95,28 @@ See \code{\link{saveGIF}} for details.
 \author{ Code by Darwin Pucha-Cofrep and Jakob Wernicke. Patched and improved by Andy Bunn and Mikko Korpela. }
 
 \examples{
-
-####### Example 1
 # with tree-ring series from Rothenburg data
 data("anos1")
 
 yrs <- as.numeric(rownames(anos1))
 # Plot rings with data of two radii from same individual tree
-res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5],sp="Cedrela odorata") 
-res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5],animation=TRUE, sys.sleep=0.1)
-
-# Playing with colors
+res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5], sp="Cedrela odorata") # Playing with colors
 res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5], col.rings = "tan", col.outring = "blue") 
 
-res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5], col.rings = terrain.colors(nrow(anos1)) ) 
+res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5], col.rings = terrain.colors(nrow(anos1))) 
 
-# x.rings
+# Specifying x.rings
 # highlighting only narrow rings
 res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5], x.rings = 'narrow.rings') 
-# highlighting and coloring only wider rings
+# Highlighting and coloring only wider rings
 res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5], x.rings = 'wider.rings', col.x.rings = "green") 
 
 ## Not run
+# Plot Rings and animate:
+res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5], animation=TRUE, sys.sleep=0.1)
 # Plot Rings and save as GIF:
 res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5], saveGIF=TRUE, sys.sleep = 0.1)
 
-
-####### Example 1
 # with four fake tree-ring series 
 trw <- data.frame (trw01.n = abs(rnorm(100, 10, 7.5)),  # North direction
                    trw01.s = abs(rnorm(100, 10, 7.5)),  # South direction

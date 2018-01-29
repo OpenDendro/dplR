@@ -6,9 +6,9 @@
 latexDate <- function(x = Sys.Date(), ...) {
     ltDate <- as.POSIXlt(x, ...)
     sprintf("%s %d, %d",
-            month.name[ltDate[["mon"]] + 1],
-            ltDate[["mday"]],
-            1900 + ltDate[["year"]])
+            month.name[ltDate$mon + 1],
+            ltDate$mday,
+            1900 + ltDate$year)
 }
 
 ## Usage: \Sexpr{latexify(string_produced_by_R_code)}

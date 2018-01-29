@@ -6,11 +6,7 @@
   Make a plot of a cross section based on up to four ring-width series.
 }
 \usage{
-plotRings(year, trwN, trwS = NA, trwE = NA, trwW = NA, 
-animation = FALSE, sys.sleep = 0.2, year.labels = TRUE, 
-d2pith = NA, col.rings = "grey", col.outring = "black", 
-x.rings = "none", col.x.rings = "red", species.name = NA, 
-saveGIF=FALSE, fname="GIF_plotRings.gif")
+plotRings(year, trwN, trwS = NA, trwE = NA, trwW = NA, animation = FALSE, sys.sleep = 0.2, year.labels = TRUE, d2pith = NA, col.rings = "grey", col.outring = "black", x.rings = "none", col.x.rings = "red", species.name = NA, saveGIF=FALSE, fname="GIF_plotRings.gif")
 }
 \arguments{
 
@@ -34,7 +30,7 @@ saveGIF=FALSE, fname="GIF_plotRings.gif")
   
   \item{animation}{ \code{logical} flag. If \code{TRUE} then each 
   ring will be individually plotted as an animation within the 
-  R-GUI. A working copy of ``ImageMagic'' is required. See 
+  R-GUI. A working copy of ``ImageMagick'' is required. See 
   \code{Details}. }
   
   \item{sys.sleep}{ a \code{numeric} value defining the sleep pause

@@ -66,12 +66,12 @@ plotRings(year, trwN, trwS = NA, trwE = NA, trwW = NA, animation = FALSE, sys.sl
 
 }
 \details{
-This makes a simple plot drawing all rings from tree-ring series on a 
+This makes a simple plot, drawing all rings from tree-ring series on a 
 cartesian plane of up to four cardinal directions (N, S, E, W) 
 defining the eccentricity of the stem. It can be plotted using 
 only data from one ratio, or up to four diferent radii from same tree.
 This function can plot each individual ring as an animation within 
-your R-GUI, as an GIF-file, or it can plot all rings at once.
+the R-GUI, as an GIF-file, or it can plot all rings at once.
 
 Animations require a functional installation of of ImageMagick. 
 See \code{\link{saveGIF}} for details.
@@ -101,16 +101,15 @@ res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5], col.rings = "tan", col.outri
 
 res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5], col.rings = terrain.colors(nrow(anos1))) 
 
-# Specifying x.rings
-# highlighting only narrow rings
+# Specifying x.rings highlighting only narrow rings
 res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5], x.rings = 'narrow.rings') 
 # Highlighting and coloring only wider rings
 res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5], x.rings = 'wider.rings', col.x.rings = "green") 
 
 ## Not run
-# Plot Rings and animate:
+# Plot Rings and animate (requires ImageMagick)
 res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5], animation=TRUE, sys.sleep=0.1)
-# Plot Rings and save as GIF:
+# Plot Rings and save as GIF (requires ImageMagick)
 res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5], saveGIF=TRUE, sys.sleep = 0.1)
 
 # with four fake tree-ring series 

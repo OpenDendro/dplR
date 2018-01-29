@@ -1,11 +1,11 @@
 plotRings <- function(year, trwN, trwS = NA, trwE = NA, trwW =NA, 
-                     animation = FALSE, sys.sleep = 0.2, 
-                     year.labels = TRUE, 
-                     d2pith = NA,
-                     col.rings = "grey", col.outring = "black", 
-                     x.rings = "none", col.x.rings = "red",
-                     species.name = NA,
-                     saveGIF=FALSE, fname="GIF_plotRings.gif") {
+                      animation = FALSE, sys.sleep = 0.2, 
+                      year.labels = TRUE, 
+                      d2pith = NA,
+                      col.rings = "grey", col.outring = "black", 
+                      x.rings = "none", col.x.rings = "red",
+                      species.name = NA,
+                      saveGIF=FALSE, fname="GIF_plotRings.gif") {
   
   ## Creating a data.frame
   TRW <- data.frame(row.names = year, trwN = trwN, 

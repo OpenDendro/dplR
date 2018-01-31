@@ -2,6 +2,7 @@ The code of this package is licensed under GPL 2 or later.
 
 For code contributed by Mikko Korpela:
 * Copyright (C) Aalto University (code introduced in dplR <= 1.6.4)
-* Copyright (C) University of Helsinki (code later than dplR 1.6.4)
+* Copyright (C) University of Helsinki (1.6.4 < dplR <= 1.6.7)
+* Copyright (C) Mikko Korpela (after dplR 1.6.7)
 
 Other code in the package is copyright (C) by the corresponding authors.

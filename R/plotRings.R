@@ -1,3 +1,4 @@
+# starting to add changes - Darwin PC
 plotRings <- function(year, trwN, trwS = NA_real_,
                       trwE = NA_real_, trwW = NA_real_, 
                       animation = FALSE, sys.sleep = 0.2, 

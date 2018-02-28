@@ -3,13 +3,14 @@
 \alias{plotRings}
 \title{ Plot Rings }
 \description{
-  Make a plot of a cross section based on up to four ring-width series.
+ Make a plot and/or animation of a cross section based on up to four ring-width series. Besides, give basic summary statistics (e.g. Annual Basal Area, mean ring-width) of an approximated stem disc.
+
 }
 \usage{
 plotRings(year, trwN, trwS = NA_real_,
-          trwE = NA_real_, trwW = NA_real_,
+          trwE = NA_real_, trwW = NA_real_, length.unit = "mm",
           animation = FALSE, sys.sleep = 0.2, year.labels = TRUE,
-          d2pith = NA, col.rings = "grey", col.outring = "black",
+          d2pith = NA, col.inrings = "grey", col.outring = "black",
           x.rings = "none", col.x.rings = "red", species.name = NA,
           saveGIF = FALSE, fname = "GIF_plotRings.gif")
 }
@@ -38,6 +39,10 @@ plotRings(year, trwN, trwS = NA_real_,
   R-GUI. A working copy of \dQuote{ImageMagick} is required. See 
   \sQuote{Details}. }
   
+  \item{length.unit}{ a \code{character} string to to set the length 
+  unit of ring measurement. Possible values are \code{"mm"}, 
+  \code{"1/10 mm"}, \code{"1/100 mm"} and \code{"1/10 mm"}. }
+  
   \item{sys.sleep}{ a \code{numeric} value defining the sleep pause
   in between rings during animation. }
   
@@ -45,9 +50,10 @@ plotRings(year, trwN, trwS = NA_real_,
   labels will be shown in upper right corner of the plot.  }
   
   \item{d2pith}{ \code{numeric}. The distance from the innermost 
-  ring to the pith of the tree.  }
+  ring to the pith of the tree. It has to be written in the same 
+  unit as in the \code{"length.unit"} argument. }
 
-  \item{col.rings}{ The color to be used for the interior rings.
+  \item{col.inrings}{ The color to be used for the interior rings.
   See section \sQuote{Color Specification} for suitable values.  }
   
   \item{col.outring}{ The color to be used for the outer ring.
@@ -64,8 +70,9 @@ plotRings(year, trwN, trwS = NA_real_,
   \item{species.name}{ an optional \code{character} string that 
   defines the species name in the plot.  }
 
-  \item{saveGIF}{ \code{logical}. If \code{TRUE} a \acronym{GIF} will be
-  saved. }
+  \item{saveGIF}{ \code{logical}. If \code{TRUE} a \acronym{GIF} will
+  be saved. A working copy of \dQuote{ImageMagic} is required. 
+  See \sQuote{Details} and examples. }
 
   \item{fname}{ \code{character}. Filename for \acronym{GIF}.  }
 
@@ -79,7 +86,9 @@ only data from one ratio, or up to four different radii from same tree.
 This function can plot each individual ring as an animation within 
 the R-GUI, as a \acronym{GIF}-file, or it can plot all rings at once.
 
-Animations require a functional installation of ImageMagick. 
+Animations require a functional installation of ImageMagick [https://www.imagemagick.org]. Note: If there are problems to save the animation as a GIF file it can be related with the GIF conversion. Be sure to set correctly the "magick.exe" folder path in the convert option. 
+In \code{ani.options()} try to change the folder name to "PROGRA~1" instead of "Program Files", and the file "magick.exe" instead of "convert.exe".  Be sure to type the right name of the folder '.../ImageMagick-7.0.7-Q16/...' to your current program version because it changes.  Eg.:  \code{ani.options(convert = 'C:/PROGRA~1/ImageMagick-7.0.7-Q16/magick.exe')}
+
 See \code{\link{saveGIF}} for details.
 
 }
@@ -107,9 +116,13 @@ res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
                  species.name = "Cedrela odorata")
 # Playing with colors
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
-                 col.rings = "tan", col.outring = "blue") 
+                 col.inrings = "tan", col.outring = "blue") 
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
-                 col.rings = terrain.colors(nrow(anos1))) 
+                 col.inrings = terrain.colors(nrow(anos1))) 
+
+#Setting the length.unit
+res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5],sp="Cedrela odorata", length.unit = "mm")
+res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5],sp="Cedrela odorata", length.unit = "1/100 mm")
 
 # Specifying x.rings highlighting only narrow rings
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
@@ -123,7 +136,10 @@ res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
 # Plot Rings and animate (requires ImageMagick)
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
                  animation = TRUE, sys.sleep = 0.1)
+                 
 # Plot Rings and save as GIF (requires ImageMagick)
+library(animation)
+ani.options(convert = 'C:/PROGRA~1/ImageMagick-7.0.7-Q16/magick.exe')
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
                  saveGIF = TRUE, sys.sleep = 0.1)
 }

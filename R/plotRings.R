@@ -1,19 +1,35 @@
-# starting to add changes - Darwin PC
 plotRings <- function(year, trwN, trwS = NA_real_,
                       trwE = NA_real_, trwW = NA_real_, 
-                      animation = FALSE, sys.sleep = 0.2, 
+                      animation = FALSE, 
+                      length.unit = "100 mm",
+                      sys.sleep = 0.2, 
                       year.labels = TRUE, 
                       d2pith = NA,
-                      col.rings = "grey", col.outring = "black", 
+                      col.inrings = "grey", col.outring = "black", 
                       x.rings = "none", col.x.rings = "red",
                       species.name = NA,
                       saveGIF=FALSE, fname="GIF_plotRings.gif") {
   
   ## Creating a data.frame
   TRW <- data.frame(row.names = year, trwN = trwN, 
-                    trwS = trwS, 
-                    trwE = trwE,
-                    trwW = trwW)
+                    trwS = if (exists("trwS") == TRUE) 
+                      trwS
+                    else NA, trwE = if (exists("trwE") == TRUE) 
+                      trwE
+                    else NA, trwW = if (exists("trwW") == TRUE) 
+                      trwW
+                    else NA)
+  
+  ## Setting the length unit of ring measurement
+  if(length.unit == "mm") 
+    TRW[, 1:4] <- TRW[, 1:4]    
+  else if(length.unit == "1/10 mm") 
+    TRW[, 1:4] <- TRW[, 1:4]/10 
+  else if(length.unit == "1/100 mm") 
+    TRW[, 1:4] <- TRW[, 1:4]/100
+  else if(length.unit == "1/1000 mm") 
+    TRW[, 1:4] <- TRW[, 1:4]/1000 
+  
   
   TRW <- TRW[as.logical((rowSums(is.na(TRW))-length(TRW))),] # It is to remove rows with NAs across all rows
   
@@ -56,9 +72,9 @@ plotRings <- function(year, trwN, trwS = NA_real_,
  
   # Getting and coloring the narrow and wider rings
    q2 <- as.numeric(quantile(TRW[,5])[2]) # quantile 25% of trw.means
-          col.narrow.rings <- ifelse(TRW[,5] <= q2, col.x.rings, col.rings) 
+          col.narrow.rings <- ifelse(TRW[,5] <= q2, col.x.rings, col.inrings) 
    q4 <- as.numeric(quantile(TRW[,5])[4]) # quantile 75% of trw.means
-          col.wider.rings <- ifelse(TRW[,5] >= q4, col.x.rings, col.rings) 
+          col.wider.rings <- ifelse(TRW[,5] >= q4, col.x.rings, col.inrings) 
   
 
   
@@ -78,7 +94,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
     for (i in 1:length(x)) {
       # Rings
       par(mar=c(1,4,1,1)+0.1)
-      cols <-  c(rep(col.rings, i-1), col.outring) 
+      cols <-  c(rep(col.inrings, i-1), col.outring) 
       narrow.cols <- c(col.narrow.rings[1:i-1], col.outring) # colors when is selected "narrow.rings"
       wider.cols <- c(col.wider.rings[1:i-1], col.outring) # colors when is selected "wider.rings"
      
@@ -103,7 +119,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
  # Without animation
   else {
     par(mar=c(1,4,1,1)+0.1)
-    cols <- c(rep(col.rings, length(x)-1), col.outring)
+    cols <- c(rep(col.inrings, length(x)-1), col.outring)
     narrow.cols <- c(col.narrow.rings[1:length(x)-1], col.outring) # colors when is selected "narrow.rings"
     wider.cols <- c(col.wider.rings[1:length(x)-1], col.outring) # colors when is selected "wider.rings"
     rings.lwd <- c(rep(1, length(x)), 3)
@@ -133,7 +149,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
    for (i in 1:length(x)) {
      # Rings
      par(mar=c(1,4,1,1)+0.1,cex=1.5)
-     cols <-  c(rep(col.rings, i-1), col.outring) 
+     cols <-  c(rep(col.inrings, i-1), col.outring) 
      narrow.cols <- c(col.narrow.rings[1:i-1], col.outring) # colors when is selected "narrow.rings"
      wider.cols <- c(col.wider.rings[1:i-1], col.outring) # colors when is selected "wider.rings"
      
@@ -158,7 +174,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   # Without saving the GIF
  else {
    par(mar=c(1,4,1,1)+0.1)
-   cols <- c(rep(col.rings, length(x)-1), col.outring)
+   cols <- c(rep(col.inrings, length(x)-1), col.outring)
    narrow.cols <- c(col.narrow.rings[1:length(x)-1], col.outring) # colors when is selected "narrow.rings"
    wider.cols <- c(col.wider.rings[1:length(x)-1], col.outring) # colors when is selected "wider.rings"
    rings.lwd <- c(rep(1, length(x)), 3)
@@ -181,13 +197,31 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   ## Print Report:  
   print("Output data:")
   # print(TRW)  # all data.frame
-  # print Radii lenght [mm/100]
-  if(sum(TRW$trwN, na.rm = TRUE) > 0) print(paste("Length Radius N:  ", round(sum(TRW$trwN, na.rm = TRUE), digits=2 ), sep = " ", "mm/100"))
-  if(sum(TRW$trwS, na.rm = TRUE) > 0) print(paste("Length Radius S:  ", round(sum(TRW$trwS, na.rm = TRUE), digits=2 ), sep = " ", "mm/100"))
-  if(sum(TRW$trwE, na.rm = TRUE) > 0) print(paste("Length Radius E:  ", round(sum(TRW$trwE, na.rm = TRUE), digits=2 ), sep = " ", "mm/100"))
-  if(sum(TRW$trwW, na.rm = TRUE) > 0) print(paste("Length Radius W:  ", round(sum(TRW$trwW, na.rm = TRUE), digits=2 ), sep = " ", "mm/100"))
-  if(sum(TRW$trw.means, na.rm = TRUE) > 0) print(paste("Disc diameter:  ", round(sum(TRW$trw.means, na.rm = TRUE)*2, digits = 2), sep = " ", "mm/100"))
-  if(sum(TRW$bai.ind, na.rm = TRUE) > 0) print(paste("Basal Area of the disc:  ", round(sum(TRW$bai.ind, na.rm = TRUE)/10^6, digits = 2), sep = " ", "mm2"))
+  if  ((sum(TRW$trwN, na.rm = TRUE) > 0) & is.na(d2pith[1]))
+    print(paste("Length Radius N:  ", round(sum(TRW$trwN, na.rm = TRUE), digits = 2), sep = " ", "mm"))
+  else if  ((sum(TRW$trwN, na.rm = TRUE) > 0) & (d2pith[1] > 0))
+    print(paste("Length Radius N:  ", round(sum(TRW.d2pith$trwN, na.rm = TRUE), digits = 2), sep = " ", "mm"))
+  
+  if  ((sum(TRW$trwS, na.rm = TRUE) > 0) & is.na(d2pith[2]))
+    print(paste("Length Radius S:  ", round(sum(TRW$trwS, na.rm = TRUE), digits = 2), sep = " ", "mm"))
+  else if  ((sum(TRW$trwS, na.rm = TRUE) > 0) & (d2pith[2] > 0))
+    print(paste("Length Radius S:  ", round(sum(TRW.d2pith$trwS, na.rm = TRUE), digits = 2), sep = " ", "mm"))
+  
+  if  ((sum(TRW$trwE, na.rm = TRUE) > 0) & is.na(d2pith[3]))
+    print(paste("Length Radius E:  ", round(sum(TRW$trwE, na.rm = TRUE), digits = 2), sep = " ", "mm"))
+  else if  ((sum(TRW$trwE, na.rm = TRUE) > 0) & (d2pith[3] > 0))
+    print(paste("Length Radius E:  ", round(sum(TRW.d2pith$trwE, na.rm = TRUE), digits = 2), sep = " ", "mm"))
+  
+  if  ((sum(TRW$trwW, na.rm = TRUE) > 0) & is.na(d2pith[4]))
+    print(paste("Length Radius W:  ", round(sum(TRW$trwW, na.rm = TRUE), digits = 2), sep = " ", "mm"))
+  else if  ((sum(TRW$trwW, na.rm = TRUE) > 0) & (d2pith[4] > 0))
+    print(paste("Length Radius W:  ", round(sum(TRW.d2pith$trwW, na.rm = TRUE), digits = 2), sep = " ", "mm"))
+  
+  if (sum(TRW$trw.means, na.rm = TRUE) > 0) 
+    print(paste("Length Diameter:  ", round(sum(TRW$trw.means, na.rm = TRUE) * 2/10, digits = 6), sep = " ", "cm"))
+  
+  if (sum(TRW$bai.ind, na.rm = TRUE) > 0) 
+    print(paste("Basal Area of the disc:  ", round(sum(TRW$bai.ind, na.rm = TRUE)/10^6, digits = 6), sep = " ", "m2"))
   
   
   TRW  

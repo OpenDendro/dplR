@@ -243,10 +243,10 @@ while the dating at 1880--1899 seems accurate (lag 0). This suggests that
 the dating error is between 1879 and 1889.  
 
 We have strong inference now that series \code{643114} is misdated somewhere in a ten
-year period around 1885. On final tool that dplR has is the ability to combine 
+year period around 1885. One final tool that dplR has is the ability to combine 
 the visual style of crossdating using skeleton plots with the statistical 
 approach of cross-correlation analysis. The \code{skel.ccf.plot} function does 
-just this. Here we make a skeleton plot from the 80-year period around the 
+just this. Here we make a skeleton plot from the 40-year period around the 
 suspected dating error (1885):
 
 <<f, fig=TRUE>>=

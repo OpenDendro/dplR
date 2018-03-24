@@ -2,6 +2,16 @@
 
 - Note that Darwin Alexander Pucha Cofrep has been added as a developer to work on plotRings() etc.
 
+File: seg.plot.R
+----------------
+
+- Fixed an issue with ylim and yaxs which should cut out extra white space.
+
+File: xdate-dplR.Rnw
+----------------
+
+- Fixed typos 
+
 * CHANGES IN dplR VERSION 1.6.7
 
 File: latexify.R

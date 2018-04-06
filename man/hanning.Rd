@@ -30,7 +30,7 @@ hanning(x, n = 7)
 \examples{library(graphics)
 library(utils)
 data(ca533)
-yrs <- as.numeric(rownames(ca533))
+yrs <- time(ca533)
 y <- ca533[, 1]
 not.na <- !is.na(y)
 yrs <- yrs[not.na]

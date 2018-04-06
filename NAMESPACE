@@ -52,10 +52,12 @@ export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, cms,
        write.tucson, plot.rwl, interseries.cor, summary.rwl, plot.crn,
        insert.ring, delete.ring, xskel.ccf.plot, xskel.plot, latexify,
        latexDate, rasterPlot, treeMean, rwl.report, print.rwl.report, 
-       plotRings)
+       plotRings,time.rwl,time.crn)
 
 S3method(print, redfit)
 S3method(plot, rwl)
 S3method(plot, crn)
 S3method(summary, rwl)
 S3method(print, rwl.report)
+S3method(time, rwl)
+S3method(time, crn)

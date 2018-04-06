@@ -25,6 +25,6 @@ seg.plot(rwl, \dots)
 \seealso{ \code{\link{spag.plot}} }
 \examples{library(utils)
 data(co021)
-seg.plot(co021, main = "Campito Mountain")
+seg.plot(co021)
 }
 \keyword{ hplot }

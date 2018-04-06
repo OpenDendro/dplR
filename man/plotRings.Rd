@@ -110,7 +110,7 @@ improved by Andy Bunn and Mikko Korpela. }
 # with tree-ring series from Rothenburg data
 data("anos1")
 
-yrs <- as.numeric(rownames(anos1))
+yrs <- time(anos1)
 # Plot rings with data of two radii from same individual tree
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
                  species.name = "Cedrela odorata")
@@ -150,16 +150,17 @@ trw <- data.frame(trw01.n = abs(rnorm(100, 10, 7.5)),  # North direction
                   trw01.w = abs(rnorm(100, 10, 2.5)),  # West direction
                   trw01.e = abs(rnorm(100, 10, 2.5)),  # East direction
                   row.names = 1918:2017)
+class(trw) <- c("rwl","data.frame")
 
-year <- as.numeric(rownames(trw))
+yrs <- time(trw)
 
 # Default plot with 2, 3 and 4 radii
-res <- plotRings(year, trw[,1], trw[,2], trw[,3], trw[,4])
+res <- plotRings(yrs, trw[,1], trw[,2], trw[,3], trw[,4])
 
 # with d2pith values (see the hole before the first rings in the plot)
-res <- plotRings(year, trw[,1], trw[,2], trw[,3], trw[,4],
+res <- plotRings(yrs, trw[,1], trw[,2], trw[,3], trw[,4],
                  d2pith = 500)
-res <- plotRings(year, trw[,1], trw[,2], trw[,3], trw[,4],
+res <- plotRings(yrs, trw[,1], trw[,2], trw[,3], trw[,4],
                  d2pith = c(200, NA, NA, 50))
 
 }

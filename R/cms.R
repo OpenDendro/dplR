@@ -26,7 +26,7 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
 
     ## divide each series by c curve and restore to cal years
     rwi <- rwl2
-    yrs <- as.numeric(row.names(rwi))
+    yrs <- time(rwi)
     c.vec <- rep(as.numeric(NA), n.col)
     names(c.vec) <- col.names
     if(c.hat.t){

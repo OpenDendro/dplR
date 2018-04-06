@@ -74,10 +74,10 @@ data(gp.rwl)
 data(gp.d2pith)
 foo <- bai.in(rwl = gp.rwl, d2pith = gp.d2pith)
 foo.crn <- chron(foo)
-yr <- as.numeric(rownames(foo.crn))
-plot(yr, foo.crn[, 1], type = "n",
+yrs <- time(foo.crn)
+plot(yrs, foo.crn[, 1], type = "n",
      xlab = "Year", ylab = expression(mm^2))
-lines(yr, foo.crn[, 1], col = "grey", lty = "dashed")
-lines(yr, ffcsaps(foo.crn[, 1], nyrs = 32), col = "red", lwd = 2)
+lines(yrs, foo.crn[, 1], col = "grey", lty = "dashed")
+lines(yrs, ffcsaps(foo.crn[, 1], nyrs = 32), col = "red", lwd = 2)
 }
 \keyword{ manip }

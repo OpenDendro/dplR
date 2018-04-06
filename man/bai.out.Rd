@@ -79,10 +79,10 @@ gp.dbh2 <- gp.dbh[, 1:2]
 gp.dbh2[, 2] <- (gp.dbh[, 2] - gp.dbh[, 3]) * 10
 bar <- bai.out(rwl = gp.rwl, diam = gp.dbh2)
 bar.crn <- chron(bar)
-yr <- as.numeric(rownames(bar.crn))
-plot(yr, bar.crn[, 1], type = "n",
+yrs <- time(bar.crn)
+plot(yrs, bar.crn[, 1], type = "n",
      xlab = "Year", ylab = expression(mm^2))
-lines(yr, bar.crn[, 1], col = "grey", lty = "dashed")
-lines(yr, ffcsaps(bar.crn[, 1], nyrs = 32), col = "red", lwd = 2)
+lines(yrs, bar.crn[, 1], col = "grey", lty = "dashed")
+lines(yrs, ffcsaps(bar.crn[, 1], nyrs = 32), col = "red", lwd = 2)
 }
 \keyword{ manip }

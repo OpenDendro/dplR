@@ -236,7 +236,7 @@ functions for calculating the transform via \code{wavelet} and plotting
 the result via \code{wavelet.plot}.
 
 <<e, fig=TRUE>>=
-yrs <- as.numeric(rownames(co021.crn))
+yrs <- time(co021.crn)
 out.wave <- morlet(y1 = dat, x1 = yrs, p2 = 8, dj = 0.1,
                    siglvl = 0.99)
 wavelet.plot(out.wave, useRaster=NA, reverse.y = TRUE)

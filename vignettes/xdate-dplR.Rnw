@@ -186,7 +186,7 @@ problem (Figure~\ref{fig:ccf.plot}).
 
 <<d, fig=TRUE>>=
 win <- 1800:1960
-dat.yrs <- as.numeric(rownames(dat))
+dat.yrs <- time(dat)
 dat.trunc <- dat[dat.yrs %in% win, ]
 ccf.30 <- ccf.series.rwl(rwl=dat.trunc, series="643114", 
                          seg.length=30, bin.floor=50)

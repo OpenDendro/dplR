@@ -373,7 +373,7 @@ box()
 
 library(utils)
 data(cana157)
-yrs <- as.numeric(rownames(cana157))
+yrs <- time(cana157)
 x <- cana157[, 1]
 redf.x <- redfit(x, nsim = 1000)
 

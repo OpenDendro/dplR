@@ -79,7 +79,7 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9,
 \examples{library(utils)
 data(co021)
 x <- co021[,33]
-x.yrs <- as.numeric(rownames(co021))
+x.yrs <- time(co021)
 x.name <- colnames(co021)[33]
 ## On a raw ring width series - undated
 skel.plot(x)
@@ -89,7 +89,7 @@ skel.plot(x, yr.vec = x.yrs, sname = x.name, master = TRUE)
 library(grDevices)
 ## Try cross-dating
 y <- co021[, 11]
-y.yrs <- as.numeric(rownames(co021))
+y.yrs <- time(co021)
 y.name <- colnames(co021)[11]
 
 ## send to postscript - 3 pages total

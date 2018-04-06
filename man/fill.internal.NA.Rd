@@ -65,14 +65,14 @@ foo <- data.frame(x1=c(rnorm(5), NA, NA, rnorm(3)),
                   x8=c(rnorm(8), NA, NA),
                   x9=c(rnorm(5), NA, rnorm(3), NA))
 row.names(foo) <- 1901:1910
-
+class(foo) <- c("rwl","data.frame")
 fill.internal.NA(foo, fill=0)
 
 bar <- fill.internal.NA(foo, fill="Spline")
 baz <- fill.internal.NA(foo, fill="Linear")
 
 ## note differences in method "Spline" vs. "Linear"
-yrs <- as.numeric(row.names(foo))
+yrs <- time(foo)
 plot(yrs, foo$x7, type="b", lwd=3)
 lines(yrs, bar$x7, col="red", lwd=2)
 lines(yrs, baz$x7, col="green", lwd=1)

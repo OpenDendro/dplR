@@ -2,6 +2,13 @@
 
 - Note that Darwin Alexander Pucha Cofrep has been added as a developer to work on plotRings() etc.
 
+File: time.rwl.R
+----------------
+
+- Two convenience functions time.rwl and time.crn which extract the row.names of
+  rwl and crn objects as numerics. Used as a S3 method with class rwl and class crn.
+  This resulted in various changes to Rd files to make use of this capability.
+
 File: seg.plot.R
 ----------------
 

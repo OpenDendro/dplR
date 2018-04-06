@@ -6,6 +6,7 @@
     }
     yr <- as.numeric(row.names(rwl))
     first.year <- as.matrix(apply(rwl, 2, yr.range, yr.vec=yr))[1, ]
+    last.year <- as.matrix(apply(rwl, 2, yr.range, yr.vec=yr))[2, ]
     neworder <- order(first.year, decreasing=FALSE)
     segs <- rwl[, neworder, drop=FALSE]
     n.col <- ncol(segs)

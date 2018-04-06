@@ -99,7 +99,7 @@ library(utils)
 data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = FALSE)
-Years <- as.numeric(rownames(ca533.crn))
+Years <- time(ca533.crn)
 CAMstd <- ca533.crn[, 1]
 out.wave <- morlet(y1 = CAMstd, x1 = Years, p2 = 9, dj = 0.1,
                    siglvl = 0.99)

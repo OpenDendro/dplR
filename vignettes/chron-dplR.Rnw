@@ -178,7 +178,7 @@ Figure~\ref{fig:crn.plot.eps}.
 wa082.ids <- autoread.ids(wa082)
 eps.cut <- 0.75 # An arbitrary EPS cutoff for demonstration
 wa082.rwi.stats <- rwi.stats.running(wa082.rwi, wa082.ids, window.length = 30)
-yrs <- as.numeric(rownames(wa082.crn))
+yrs <- time(wa082.crn)
 bar <- data.frame(yrs = c(min(yrs), wa082.rwi.stats$mid.year, max(yrs)),
                   eps = c(NA, wa082.rwi.stats$eps, NA))
 op <- par(no.readonly=TRUE)

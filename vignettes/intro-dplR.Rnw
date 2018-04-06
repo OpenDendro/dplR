@@ -313,7 +313,7 @@ eps.cut <- 0.85 # An arbitrary EPS cutoff for demonstration
 ## based on EPS. Running stats on the rwi with a window.
 foo <- rwi.stats.running(ca533.rwi, ca533.ids,
                          window.length = 80)
-yrs <- as.numeric(rownames(ca533.crn))
+yrs <- time(ca533.crn)
 bar <- data.frame(yrs = c(min(yrs), foo$mid.year, max(yrs)),
                   eps = c(NA, foo$eps, NA))
 par(mar = c(2, 2, 2, 2), mgp = c(1.1, 0.1, 0), tcl = 0.25,

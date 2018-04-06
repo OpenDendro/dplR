@@ -244,7 +244,7 @@ rwi.stats.legacy(gp.rwi, gp.ids) # rwi.stats prior to dplR 1.5.3
   gp.crn <- chron(gp.rwi)
   ## Running stats on the rwi with an window
   foo <- rwi.stats.running(gp.rwi, gp.ids, window.length = 80)
-  yrs <- as.numeric(rownames(gp.crn))
+  yrs <- time(gp.crn)
   bar <- data.frame(yrs = c(min(yrs), foo$mid.year, max(yrs)),
                     eps = c(NA, foo$eps, NA))
   par(mar = c(2, 2, 2, 2), mgp = c(1.1, 0.1, 0), tcl = 0.25,

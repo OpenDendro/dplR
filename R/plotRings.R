@@ -69,14 +69,14 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   if(exists("x")==TRUE) TRW$E_W <- x  # add to the TRW data.frame
   z <- TRW$trw.acc   # accumulative rings
   
- 
-  # Getting and coloring the narrow and wider rings
-   q2 <- as.numeric(quantile(TRW[,5])[2]) # quantile 25% of trw.means
-          col.narrow.rings <- ifelse(TRW[,5] <= q2, col.x.rings, col.inrings) 
-   q4 <- as.numeric(quantile(TRW[,5])[4]) # quantile 75% of trw.means
-          col.wider.rings <- ifelse(TRW[,5] >= q4, col.x.rings, col.inrings) 
   
-
+  # Getting and coloring the narrow and wider rings
+  q2 <- as.numeric(quantile(TRW[,5])[2]) # quantile 25% of trw.means
+  col.narrow.rings <- ifelse(TRW[,5] <= q2, col.x.rings, col.inrings) 
+  q4 <- as.numeric(quantile(TRW[,5])[4]) # quantile 75% of trw.means
+  col.wider.rings <- ifelse(TRW[,5] >= q4, col.x.rings, col.inrings) 
+  
+  
   
   ## AREA calculation: pi(radius)^2    ||  pi(z)^2
   
@@ -85,115 +85,115 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   # Individual BAI (inside out)
   TRW$bai.ind  <-c(TRW$bai.acc[1], TRW$bai.acc[2:nrow(TRW)] - TRW$bai.acc[1:nrow(TRW)-1]) 
   
- # # # # # # # # # # # # # # # # # # # ## # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # ## # # # # # # # # # # # # # # # # # # #
   
   ## Plotting  
-    if (animation == TRUE) {
+  if (animation == TRUE) {
     
     # With animation
     for (i in 1:length(x)) {
       # Rings
-      par(mar=c(1,4,1,1)+0.1)
+      par(mar=c(1,4,1,1)+0.1,xaxs="i",yaxs="i")
       cols <-  c(rep(col.inrings, i-1), col.outring) 
       narrow.cols <- c(col.narrow.rings[1:i-1], col.outring) # colors when is selected "narrow.rings"
       wider.cols <- c(col.wider.rings[1:i-1], col.outring) # colors when is selected "wider.rings"
-     
-      max.acc <- max(z, na.rm = TRUE) * 2.5
+      
+      max.acc <- max(z, na.rm = TRUE) * 2.0
       symbols(y = y[1:i], x = if(length(x) > 0) y[1:i] else x[1:i],
-               circles=z[1:i], inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
-               xlab='', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))),
-               line=1.5,adj=0.5, side=3, cex=1.5), 
-               sub=if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
-               line=0.5,adj=0.5, side=3, cex=1), 
-               fg=  if(x.rings == "narrow.rings") narrow.cols 
-                 else if(x.rings == "wider.rings") wider.cols 
-                 else if(x.rings == "none") cols) 
+              circles=z[1:i], inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
+              xlab='', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))),
+                                                     line=1.5,adj=0.5, side=3, cex=1.5), 
+              sub=if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
+                                                 line=0.5,adj=0.5, side=3, cex=1), 
+              fg=  if(x.rings == "narrow.rings") narrow.cols 
+              else if(x.rings == "wider.rings") wider.cols 
+              else if(x.rings == "none") cols) 
       
       # year labels
-      if(year.labels == TRUE) legend('topright', legend=year[i], box.lty=0, inset = 0.01, cex=2)
+      if(year.labels == TRUE) legend('topright', legend=year[i], bty="n", inset = 0.01, cex=2)
       
       Sys.sleep(sys.sleep)
     }
   }  
   
- # Without animation
+  # Without animation
   else {
-    par(mar=c(1,4,1,1)+0.1)
+    par(mar=c(1,4,1,1)+0.1,xaxs="i",yaxs="i")
     cols <- c(rep(col.inrings, length(x)-1), col.outring)
     narrow.cols <- c(col.narrow.rings[1:length(x)-1], col.outring) # colors when is selected "narrow.rings"
     wider.cols <- c(col.wider.rings[1:length(x)-1], col.outring) # colors when is selected "wider.rings"
     rings.lwd <- c(rep(1, length(x)), 3)
     
-    max.acc <- max(z, na.rm = TRUE) * 2.5
+    max.acc <- max(z, na.rm = TRUE) * 2.0
     symbols( y = y, x = if(length(x) > 0) y else x,
              circles=z, inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
              xlab='', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))), line=1.5,adj=0.5, 
-             side=3, cex=1.5), sub= if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
-             line=0.5,adj=0.5, side=3, cex=1), 
+                                                    side=3, cex=1.5), sub= if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
+                                                                                                          line=0.5,adj=0.5, side=3, cex=1), 
              fg=  if(x.rings == "narrow.rings") narrow.cols 
              else if(x.rings == "wider.rings") wider.cols 
              else if(x.rings == "none") cols)
-
+    
     # year labels
-    if(year.labels == TRUE) legend('topright', legend=paste(range(year)[1], "-", range(year)[2]), box.lty=0, inset = 0.01, cex=1.2)
-      }
+    if(year.labels == TRUE) legend('topright', legend=paste(range(year)[1], "-", range(year)[2]), bty="n", inset = 0.01, cex=1.2)
+  }
   
   # saveGIF
   
- if (saveGIF == TRUE) {
-   
-   saveGIF({
-   par (bg="white")
-   
-   # With animation
-   for (i in 1:length(x)) {
-     # Rings
-     par(mar=c(1,4,1,1)+0.1,cex=1.5)
-     cols <-  c(rep(col.inrings, i-1), col.outring) 
-     narrow.cols <- c(col.narrow.rings[1:i-1], col.outring) # colors when is selected "narrow.rings"
-     wider.cols <- c(col.wider.rings[1:i-1], col.outring) # colors when is selected "wider.rings"
-     
-     max.acc <- max(z, na.rm = TRUE) * 2.5
-     symbols(y = y[1:i], x = if(length(x) > 0) y[1:i] else x[1:i],
-             circles=z[1:i], inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
-             xlab='', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))),
-                                                    line=1.5,adj=0.5, side=3, cex=1.5), 
-             sub=if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
-                                      line=0.5,adj=0.5, side=3, cex=1), 
+  if (saveGIF == TRUE) {
+    
+    saveGIF({
+      par(bg="white")
+      
+      # With animation
+      for (i in 1:length(x)) {
+        # Rings
+        par(mar=c(1,4,1,1)+0.1,cex=1.5,xaxs="i",yaxs="i")
+        cols <-  c(rep(col.inrings, i-1), col.outring) 
+        narrow.cols <- c(col.narrow.rings[1:i-1], col.outring) # colors when is selected "narrow.rings"
+        wider.cols <- c(col.wider.rings[1:i-1], col.outring) # colors when is selected "wider.rings"
+        
+        max.acc <- max(z, na.rm = TRUE) * 2.0
+        symbols(y = y[1:i], x = if(length(x) > 0) y[1:i] else x[1:i],
+                circles=z[1:i], inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
+                xlab='', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))),
+                                                       line=1.5,adj=0.5, side=3, cex=1.5), 
+                sub=if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
+                                                   line=0.5,adj=0.5, side=3, cex=1), 
+                fg=  if(x.rings == "narrow.rings") narrow.cols 
+                else if(x.rings == "wider.rings") wider.cols 
+                else if(x.rings == "none") cols) 
+        
+        # year labels
+        if(year.labels == TRUE) legend('topright', legend=year[i], bty="n", inset = 0.01, cex=2)
+      }
+    }, movie.name = fname, interval = sys.sleep, nmax = 10, ani.width = 1000, 
+    ani.height = 1000)  
+  }
+  
+  # Without saving the GIF
+  else {
+    par(mar=c(1,4,1,1)+0.1,xaxs="i",yaxs="i")
+    cols <- c(rep(col.inrings, length(x)-1), col.outring)
+    narrow.cols <- c(col.narrow.rings[1:length(x)-1], col.outring) # colors when is selected "narrow.rings"
+    wider.cols <- c(col.wider.rings[1:length(x)-1], col.outring) # colors when is selected "wider.rings"
+    rings.lwd <- c(rep(1, length(x)), 3)
+    
+    max.acc <- max(z, na.rm = TRUE) * 2.0
+    symbols( y = y, x = if(length(x) > 0) y else x,
+             circles=z, inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
+             xlab='', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))), line=1.5,adj=0.5, 
+                                                    side=3, cex=1.5), sub= if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
+                                                                                                          line=0.5,adj=0.5, side=3, cex=1), 
              fg=  if(x.rings == "narrow.rings") narrow.cols 
              else if(x.rings == "wider.rings") wider.cols 
-             else if(x.rings == "none") cols) 
-     
-     # year labels
-     if(year.labels == TRUE) legend('topright', legend=year[i], box.lty=0, inset = 0.01, cex=2)
-   }
-  }, movie.name = fname, interval = sys.sleep, nmax = 10, ani.width = 1000, 
-   ani.height = 1000)  
-}
- 
-  # Without saving the GIF
- else {
-   par(mar=c(1,4,1,1)+0.1)
-   cols <- c(rep(col.inrings, length(x)-1), col.outring)
-   narrow.cols <- c(col.narrow.rings[1:length(x)-1], col.outring) # colors when is selected "narrow.rings"
-   wider.cols <- c(col.wider.rings[1:length(x)-1], col.outring) # colors when is selected "wider.rings"
-   rings.lwd <- c(rep(1, length(x)), 3)
-   
-   max.acc <- max(z, na.rm = TRUE) * 2.5
-   symbols( y = y, x = if(length(x) > 0) y else x,
-            circles=z, inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
-            xlab='', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))), line=1.5,adj=0.5, 
-                                                   side=3, cex=1.5), sub= if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
-                                                                                               line=0.5,adj=0.5, side=3, cex=1), 
-            fg=  if(x.rings == "narrow.rings") narrow.cols 
-            else if(x.rings == "wider.rings") wider.cols 
-            else if(x.rings == "none") cols)
-   
-   # year labels
-   if(year.labels == TRUE) legend('topright', legend=paste(range(year)[1], "-", range(year)[2]), box.lty=0, inset = 0.01, cex=1.2)
- }
- 
-   
+             else if(x.rings == "none") cols)
+    
+    # year labels
+    if(year.labels == TRUE) legend('topright', legend=paste(range(year)[1], "-", range(year)[2]), bty="n", inset = 0.01, cex=1.2)
+  }
+  
+  
   ## Print Report:  
   print("Output data:")
   # print(TRW)  # all data.frame

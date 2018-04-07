@@ -8,7 +8,7 @@
 }
 \usage{
 read.rwl(fname,
-         format = c("auto", "tucson", "compact", "tridas", "heidelberg"),
+         format = c("auto", "tucson", "compact", "tridas", "heidelberg", "csv"),
          \dots)
 }
 \arguments{
@@ -17,9 +17,9 @@ read.rwl(fname,
     rwl file. }
 
   \item{format}{ a \code{character} vector giving the format.  This must
-    be \code{"auto"} (automatic detection), \code{"tucson"},
-    \code{"compact"}, \code{"tridas"} or \code{"heidelberg"}.  Automatic
-    format detection is the default. }
+    be \code{"auto"} (rough automatic detection), \code{"tucson"},
+    \code{"compact"}, \code{"tridas"}, \code{"heidelberg"} or \code{"csv"}.  Automatic
+    format detection is the default but failable. }
 
   \item{\dots}{ arguments specific to the function implementing the
     operation for the chosen format. }
@@ -30,7 +30,7 @@ read.rwl(fname,
   read operation.
 }
 \value{
-  If a \code{"tucson"}, \code{"compact"} or \code{"heidelberg"} file is
+  If a \code{"tucson"}, \code{"compact"}, \code{"heidelberg"}, \code{"csv"} file is
   read (even through \code{"auto"}), returns an object of class
   \code{c("rwl", "data.frame")} with the series in columns and the years
   as rows.  The series \acronym{ID}s are the column names and the years
@@ -42,5 +42,6 @@ read.rwl(fname,
 }
 \author{ Mikko Korpela }
 \seealso{ \code{\link{read.tucson}}, \code{\link{read.compact}},
-  \code{\link{read.tridas}}, \code{\link{read.fh}}, \code{\link{write.rwl}} }
+  \code{\link{read.tridas}}, \code{\link{read.fh}}, \code{\link{csv2rwl}}, 
+  \code{\link{write.rwl}} }
 \keyword{ IO }

@@ -159,13 +159,15 @@ an ARMA model using the \code{auto.arima} function in the package
 \newif\ifforecastUsable% Define boolean variable
 <<echo=FALSE,results=tex>>=
 ## Test if forecast can be loaded
-if (require("forecast", character.only = TRUE)) {
+if (require("forecast", character.only = TRUE) &&
+    packageVersion("forecast") >= "3.6") {
     cat("\\forecastUsabletrue\n\n")# output to LaTeX
 }
 @ 
 \ifforecastUsable% Conditional: If "forecast" is available
 <<>>=
-if (require("forecast", character.only = TRUE)) {
+if (require("forecast", character.only = TRUE) &&
+    packageVersion("forecast") >= "3.6") {
     dat.arima <- auto.arima(dat, ic="bic")
     summary(dat.arima)
     head(residuals(dat.arima))
@@ -179,7 +181,7 @@ a nice simple ARMA(1,1) model. Note that we could look at the residuals
 (just the first few), model coefficients, etc. quite easily. And indeed the 
 residuals are quite clean as we would expect.
 \else% If "forecast" is not available
-An example was dropped because \code{"forecast"} is not available.
+An example was dropped because \code{"forecast"} ($\geq 3.6$) is not available.
 \fi% End of conditional
 \section{Frequency Domain}
 There is, at times, an almost manic desire to better characterize the 

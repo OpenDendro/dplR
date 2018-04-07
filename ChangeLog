@@ -2,6 +2,13 @@
 
 - Note that Darwin Alexander Pucha Cofrep has been added as a developer to work on plotRings() etc.
 
+File: DESCRIPTION
+----------------
+
+- Fixing the version requirement for "animation" (>= 2.0-2)
+- Fixing the version requirement for "R.utils" (>= 1.32.1)
+- Introducing version requirement (>= 3.6) for suggested package "forecast"
+
 File: csv2rwl.R
 ----------------
 Adding new function to read csv files in as rwl objects. Also adding that capability into read.rwl. Mikko should see if the error checks etc pass muster.

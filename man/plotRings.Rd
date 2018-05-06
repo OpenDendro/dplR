@@ -67,6 +67,9 @@ plotRings(year, trwN, trwS = NA_real_,
   \item{col.x.rings}{ The color to be used for the \code{\var{x.rings}}.
   See section \sQuote{Color Specification} for suitable values.  }
   
+  \item{xy.lim}{a \code{numeric} vector giving the limit to xy coordinates ranges. 
+  Default is \code{\var{auto.lim}} which calculate automatically the xy axes limits.}
+  
   \item{species.name}{ an optional \code{character} string that 
   defines the species name in the plot.  }
 

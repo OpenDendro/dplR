@@ -7,6 +7,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
                       d2pith = NA,
                       col.inrings = "grey", col.outring = "black", 
                       x.rings = "none", col.x.rings = "red",
+                      xy.lim = auto.lim,
                       species.name = NA,
                       saveGIF=FALSE, fname="GIF_plotRings.gif") {
   
@@ -97,10 +98,10 @@ plotRings <- function(year, trwN, trwS = NA_real_,
       cols <-  c(rep(col.inrings, i-1), col.outring) 
       narrow.cols <- c(col.narrow.rings[1:i-1], col.outring) # colors when is selected "narrow.rings"
       wider.cols <- c(col.wider.rings[1:i-1], col.outring) # colors when is selected "wider.rings"
+      auto.lim <- max(z, na.rm = TRUE) * 2.0
       
-      max.acc <- max(z, na.rm = TRUE) * 2.0
       symbols(y = y[1:i], x = if(length(x) > 0) y[1:i] else x[1:i],
-              circles=z[1:i], inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
+              circles=z[1:i], inches=FALSE, xlim = c(-xy.lim, xy.lim), ylim = c(-xy.lim, xy.lim), 
               xlab='Width [mm]', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))),
                                                      line=1.5,adj=0.5, side=3, cex=1.5), 
               sub=if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
@@ -123,10 +124,10 @@ plotRings <- function(year, trwN, trwS = NA_real_,
     narrow.cols <- c(col.narrow.rings[1:length(x)-1], col.outring) # colors when is selected "narrow.rings"
     wider.cols <- c(col.wider.rings[1:length(x)-1], col.outring) # colors when is selected "wider.rings"
     rings.lwd <- c(rep(1, length(x)), 3)
+    auto.lim <- max(z, na.rm = TRUE) * 2.0
     
-    max.acc <- max(z, na.rm = TRUE) * 2.0
     symbols( y = y, x = if(length(x) > 0) y else x,
-             circles=z, inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
+             circles=z, inches=FALSE, xlim = c(-xy.lim, xy.lim), ylim = c(-xy.lim, xy.lim), 
              xlab='Width [mm]', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))), line=1.5,adj=0.5, 
                                                     side=3, cex=1.5), sub= if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
                                                                                                           line=0.5,adj=0.5, side=3, cex=1), 
@@ -152,10 +153,10 @@ plotRings <- function(year, trwN, trwS = NA_real_,
         cols <-  c(rep(col.inrings, i-1), col.outring) 
         narrow.cols <- c(col.narrow.rings[1:i-1], col.outring) # colors when is selected "narrow.rings"
         wider.cols <- c(col.wider.rings[1:i-1], col.outring) # colors when is selected "wider.rings"
+        auto.lim <- max(z, na.rm = TRUE) * 2.0
         
-        max.acc <- max(z, na.rm = TRUE) * 2.0
         symbols(y = y[1:i], x = if(length(x) > 0) y[1:i] else x[1:i],
-                circles=z[1:i], inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
+                circles=z[1:i], inches=FALSE, xlim = c(-xy.lim, xy.lim), ylim = c(-xy.lim, xy.lim), 
                 xlab='Width [mm]', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))),
                                                        line=1.5,adj=0.5, side=3, cex=1.5), 
                 sub=if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
@@ -178,10 +179,10 @@ plotRings <- function(year, trwN, trwS = NA_real_,
     narrow.cols <- c(col.narrow.rings[1:length(x)-1], col.outring) # colors when is selected "narrow.rings"
     wider.cols <- c(col.wider.rings[1:length(x)-1], col.outring) # colors when is selected "wider.rings"
     rings.lwd <- c(rep(1, length(x)), 3)
+    auto.lim <- max(z, na.rm = TRUE) * 2.0
     
-    max.acc <- max(z, na.rm = TRUE) * 2.0
     symbols( y = y, x = if(length(x) > 0) y else x,
-             circles=z, inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
+             circles=z, inches=FALSE, xlim = c(-xy.lim, xy.lim), ylim = c(-xy.lim, xy.lim), 
              xlab='Width [mm]', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))), line=1.5,adj=0.5, 
                                                     side=3, cex=1.5), sub= if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
                                                                                                           line=0.5,adj=0.5, side=3, cex=1), 

@@ -93,7 +93,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
     # With animation
     for (i in 1:length(x)) {
       # Rings
-      par(mar=c(1,4,1,1)+0.1,xaxs="i",yaxs="i")
+      par(mar=c(4,4,1,1)+0.1,xaxs="i",yaxs="i")
       cols <-  c(rep(col.inrings, i-1), col.outring) 
       narrow.cols <- c(col.narrow.rings[1:i-1], col.outring) # colors when is selected "narrow.rings"
       wider.cols <- c(col.wider.rings[1:i-1], col.outring) # colors when is selected "wider.rings"
@@ -101,7 +101,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
       max.acc <- max(z, na.rm = TRUE) * 2.0
       symbols(y = y[1:i], x = if(length(x) > 0) y[1:i] else x[1:i],
               circles=z[1:i], inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
-              xlab='', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))),
+              xlab='Width [mm]', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))),
                                                      line=1.5,adj=0.5, side=3, cex=1.5), 
               sub=if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
                                                  line=0.5,adj=0.5, side=3, cex=1), 
@@ -118,7 +118,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   
   # Without animation
   else {
-    par(mar=c(1,4,1,1)+0.1,xaxs="i",yaxs="i")
+    par(mar=c(4,4,1,1)+0.1,xaxs="i",yaxs="i")
     cols <- c(rep(col.inrings, length(x)-1), col.outring)
     narrow.cols <- c(col.narrow.rings[1:length(x)-1], col.outring) # colors when is selected "narrow.rings"
     wider.cols <- c(col.wider.rings[1:length(x)-1], col.outring) # colors when is selected "wider.rings"
@@ -127,7 +127,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
     max.acc <- max(z, na.rm = TRUE) * 2.0
     symbols( y = y, x = if(length(x) > 0) y else x,
              circles=z, inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
-             xlab='', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))), line=1.5,adj=0.5, 
+             xlab='Width [mm]', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))), line=1.5,adj=0.5, 
                                                     side=3, cex=1.5), sub= if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
                                                                                                           line=0.5,adj=0.5, side=3, cex=1), 
              fg=  if(x.rings == "narrow.rings") narrow.cols 
@@ -148,7 +148,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
       # With animation
       for (i in 1:length(x)) {
         # Rings
-        par(mar=c(1,4,1,1)+0.1,cex=1.5,xaxs="i",yaxs="i")
+        par(mar=c(4,4,1,1)+0.1,cex=1.5,xaxs="i",yaxs="i")
         cols <-  c(rep(col.inrings, i-1), col.outring) 
         narrow.cols <- c(col.narrow.rings[1:i-1], col.outring) # colors when is selected "narrow.rings"
         wider.cols <- c(col.wider.rings[1:i-1], col.outring) # colors when is selected "wider.rings"
@@ -156,7 +156,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
         max.acc <- max(z, na.rm = TRUE) * 2.0
         symbols(y = y[1:i], x = if(length(x) > 0) y[1:i] else x[1:i],
                 circles=z[1:i], inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
-                xlab='', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))),
+                xlab='Width [mm]', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))),
                                                        line=1.5,adj=0.5, side=3, cex=1.5), 
                 sub=if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
                                                    line=0.5,adj=0.5, side=3, cex=1), 
@@ -173,7 +173,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   
   # Without saving the GIF
   else {
-    par(mar=c(1,4,1,1)+0.1,xaxs="i",yaxs="i")
+    par(mar=c(4,4,1,1)+0.1,xaxs="i",yaxs="i")
     cols <- c(rep(col.inrings, length(x)-1), col.outring)
     narrow.cols <- c(col.narrow.rings[1:length(x)-1], col.outring) # colors when is selected "narrow.rings"
     wider.cols <- c(col.wider.rings[1:length(x)-1], col.outring) # colors when is selected "wider.rings"
@@ -182,7 +182,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
     max.acc <- max(z, na.rm = TRUE) * 2.0
     symbols( y = y, x = if(length(x) > 0) y else x,
              circles=z, inches=FALSE, xlim = c(-max.acc, max.acc), ylim = c(-max.acc, max.acc), 
-             xlab='', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))), line=1.5,adj=0.5, 
+             xlab='Width [mm]', ylab='Width [mm]', main=mtext(bquote(~bold(.("Annual tree growth"))), line=1.5,adj=0.5, 
                                                     side=3, cex=1.5), sub= if(!is.na(species.name)) mtext(bquote(~plain(.("(")) ~italic(.(species.name)) ~plain(.(")"))),
                                                                                                           line=0.5,adj=0.5, side=3, cex=1), 
              fg=  if(x.rings == "narrow.rings") narrow.cols 

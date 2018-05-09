@@ -31,6 +31,16 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   else if(length.unit == "1/1000 mm") 
     TRW[, 1:4] <- TRW[, 1:4]/1000 
   
+  ## Setting the unit of d2pith
+  if(length.unit == "mm") 
+    d2pith <- d2pith
+  else if(length.unit == "1/10 mm") 
+    d2pith <- d2pith/10 
+  else if(length.unit == "1/100 mm") 
+    d2pith <- d2pith/100
+  else if(length.unit == "1/1000 mm") 
+    d2pith <- d2pith/1000
+  
   
   TRW <- TRW[as.logical((rowSums(is.na(TRW))-length(TRW))),] # It is to remove rows with NAs across all rows
   
@@ -38,24 +48,13 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   TRW$trw.means <- rowMeans(TRW, na.rm = TRUE)
   
   # Distance to pith (d2pith)
-  # Add d2pith values,  
-  # This code find the index position of the first non-NA value in a 
-  # column:  which.min(is.na(TRW$trwE))
-  # This code check the NA values of d2pith. If there are NA values 
-  # this code do nothing, else sum the individual d2pith values to the 
-  # first ring. 
-  if(!is.na(mean(d2pith, na.rm = TRUE))) {  
-    TRW.d2pith <- TRW[,1:4]
-    if(!is.na(d2pith[1])) {
-      TRW.d2pith$trwN[which.min(is.na(TRW.d2pith$trwN))] <- TRW.d2pith$trwN[which.min(is.na(TRW.d2pith$trwN))]+d2pith[1] }
-    if(!is.na(d2pith[2])) {
-      TRW.d2pith$trwS[which.min(is.na(TRW.d2pith$trwS))] <- TRW.d2pith$trwS[which.min(is.na(TRW.d2pith$trwS))]+d2pith[2] }
-    if(!is.na(d2pith[3])) {
-      TRW.d2pith$trwE[which.min(is.na(TRW.d2pith$trwE))] <- TRW.d2pith$trwE[which.min(is.na(TRW.d2pith$trwE))]+d2pith[3] }
-    if(!is.na(d2pith[4])) {
-      TRW.d2pith$trwW[which.min(is.na(TRW.d2pith$trwW))] <- TRW.d2pith$trwW[which.min(is.na(TRW.d2pith$trwW))]+d2pith[4] }
-    # add d2pith to the first ring of the trw.means
-    TRW$trw.means[1] <- rowMeans(TRW.d2pith[1,], na.rm = TRUE)  
+  # Add a new row with the d2pith value at the first position if this argument is assigned
+  if (!is.na(mean(d2pith, na.rm = T))) {
+    TRW.d2pith <- TRW[1, 1:4]
+    TRW.d2pith[1,] <- NA
+    rownames(TRW.d2pith)[1] <- as.numeric(rownames(TRW))[1]-1 
+    TRW.d2pith$trw.means[1] <-  d2pith 
+    TRW <- rbind(TRW.d2pith, TRW)
   }
   
   # Accumulative trw.means
@@ -201,22 +200,22 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   if  ((sum(TRW$trwN, na.rm = TRUE) > 0) & is.na(d2pith[1]))
     print(paste("Length Radius N:  ", round(sum(TRW$trwN, na.rm = TRUE), digits = 2), sep = " ", "mm"))
   else if  ((sum(TRW$trwN, na.rm = TRUE) > 0) & (d2pith[1] > 0))
-    print(paste("Length Radius N:  ", round(sum(TRW.d2pith$trwN, na.rm = TRUE), digits = 2), sep = " ", "mm"))
+    print(paste("Length Radius N:  ", round(sum(TRW$trwN, d2pith, na.rm = TRUE), digits = 2), sep = " ", "mm"))
   
   if  ((sum(TRW$trwS, na.rm = TRUE) > 0) & is.na(d2pith[2]))
     print(paste("Length Radius S:  ", round(sum(TRW$trwS, na.rm = TRUE), digits = 2), sep = " ", "mm"))
   else if  ((sum(TRW$trwS, na.rm = TRUE) > 0) & (d2pith[2] > 0))
-    print(paste("Length Radius S:  ", round(sum(TRW.d2pith$trwS, na.rm = TRUE), digits = 2), sep = " ", "mm"))
+    print(paste("Length Radius S:  ", round(sum(TRW$trwS, d2pith, na.rm = TRUE), digits = 2), sep = " ", "mm"))
   
   if  ((sum(TRW$trwE, na.rm = TRUE) > 0) & is.na(d2pith[3]))
     print(paste("Length Radius E:  ", round(sum(TRW$trwE, na.rm = TRUE), digits = 2), sep = " ", "mm"))
   else if  ((sum(TRW$trwE, na.rm = TRUE) > 0) & (d2pith[3] > 0))
-    print(paste("Length Radius E:  ", round(sum(TRW.d2pith$trwE, na.rm = TRUE), digits = 2), sep = " ", "mm"))
+    print(paste("Length Radius E:  ", round(sum(TRW$trwE, d2pith, na.rm = TRUE), digits = 2), sep = " ", "mm"))
   
   if  ((sum(TRW$trwW, na.rm = TRUE) > 0) & is.na(d2pith[4]))
     print(paste("Length Radius W:  ", round(sum(TRW$trwW, na.rm = TRUE), digits = 2), sep = " ", "mm"))
   else if  ((sum(TRW$trwW, na.rm = TRUE) > 0) & (d2pith[4] > 0))
-    print(paste("Length Radius W:  ", round(sum(TRW.d2pith$trwW, na.rm = TRUE), digits = 2), sep = " ", "mm"))
+    print(paste("Length Radius W:  ", round(sum(TRW$trwW, d2pith, na.rm = TRUE), digits = 2), sep = " ", "mm"))
   
   if (sum(TRW$trw.means, na.rm = TRUE) > 0) 
     print(paste("Length Diameter:  ", round(sum(TRW$trw.means, na.rm = TRUE) * 2/10, digits = 6), sep = " ", "cm"))

@@ -50,8 +50,9 @@ plotRings(year, trwN, trwS = NA_real_,
   labels will be shown in upper right corner of the plot.  }
   
   \item{d2pith}{ \code{numeric}. The distance from the innermost 
-  ring to the pith of the tree. It has to be written in the same 
-  unit as in the \code{"length.unit"} argument. }
+  ring to the pith of the tree. It is computed in the same 
+  unit as in the \code{"length.unit"} argument. If a value is assigned, 
+  a new row in the output table will be added at the first year}
 
   \item{col.inrings}{ The color to be used for the interior rings.
   See section \sQuote{Color Specification} for suitable values.  }

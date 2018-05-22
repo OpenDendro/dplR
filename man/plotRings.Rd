@@ -145,11 +145,10 @@ res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],year.labels = TRUE, 
                  animation = TRUE, sys.sleep = 0.1)
                  
-# Plot Rings and save as GIF (requires ImageMagick)
+# Plot Rings and save as GIF (requires ImageMagick to be installed in PATH)
 library(animation)
-ani.options(convert = 'C:/PROGRA~1/ImageMagick-7.0.7-Q16/magick.exe')
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
-                 saveGIF = TRUE, sys.sleep = 0.1)
+                 saveGIF = TRUE, fname="GIF_plotRings.gif")
 }
 
 # with four fake tree-ring series 

@@ -111,7 +111,8 @@ plotRings <- function(year, trwN, trwS = NA_real_,
               else if(x.rings == "none") cols) 
       
       # year labels
-      if(year.labels == TRUE) legend('topright', legend=year[i], bty="n", inset = 0.01, cex=2)
+      #if(year.labels == TRUE) legend('topright', legend=year[i], bty="n", inset = 0.01, cex=2)
+      if(year.labels == TRUE) title(sub=year[i])
       
       Sys.sleep(sys.sleep)
     }
@@ -136,7 +137,9 @@ plotRings <- function(year, trwN, trwS = NA_real_,
              else if(x.rings == "none") cols)
     
     # year labels
-    if(year.labels == TRUE) legend('topright', legend=paste(range(year)[1], "-", range(year)[2]), bty="n", inset = 0.01, cex=1.2)
+    #if(year.labels == TRUE) legend('topright', legend=paste(range(year)[1], "-", range(year)[2]), bty="n", inset = 0.01, cex=1.2)
+    if(year.labels == TRUE) title(sub=paste(range(year)[1], "-", range(year)[2]))
+    
   }
   
   # saveGIF
@@ -166,10 +169,12 @@ plotRings <- function(year, trwN, trwS = NA_real_,
                 else if(x.rings == "none") cols) 
         
         # year labels
-        if(year.labels == TRUE) legend('topright', legend=year[i], bty="n", inset = 0.01, cex=2)
+        #if(year.labels == TRUE) legend('topright', legend=year[i], bty="n", inset = 0.01, cex=2)
+        if(year.labels == TRUE) title(sub=year[i])
       }
-    }, movie.name = fname, interval = sys.sleep, nmax = 10, ani.width = 1000, 
-    ani.height = 1000)  
+      # AGB changed interval to delay which works under mac. Not sure about windows.
+    }, movie.name = fname, delay = sys.sleep, nmax = 10, 
+    ani.width = 1000, ani.height = 1000)
   }
   
   # Without saving the GIF
@@ -191,7 +196,8 @@ plotRings <- function(year, trwN, trwS = NA_real_,
              else if(x.rings == "none") cols)
     
     # year labels
-    if(year.labels == TRUE) legend('topright', legend=paste(range(year)[1], "-", range(year)[2]), bty="n", inset = 0.01, cex=1.2)
+    #if(year.labels == TRUE) legend('topright', legend=paste(range(year)[1], "-", range(year)[2]), bty="n", inset = 0.01, cex=1.2)
+    if(year.labels == TRUE) title(sub=paste(range(year)[1], "-", range(year)[2]))
   }
   
   

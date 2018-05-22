@@ -3,11 +3,11 @@ plotRings <- function(year, trwN, trwS = NA_real_,
                       length.unit = "mm",
                       animation = FALSE, 
                       sys.sleep = 0.2, 
-                      year.labels = TRUE, 
+                      year.labels = FALSE, 
                       d2pith = NA,
                       col.inrings = "grey", col.outring = "black", 
                       x.rings = "none", col.x.rings = "red",
-                      xy.lim = auto.lim,
+                      xy.lim = NULL,
                       species.name = NA,
                       saveGIF=FALSE, fname="GIF_plotRings.gif") {
   
@@ -86,18 +86,19 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   TRW$bai.ind  <-c(TRW$bai.acc[1], TRW$bai.acc[2:nrow(TRW)] - TRW$bai.acc[1:nrow(TRW)-1]) 
   
   # # # # # # # # # # # # # # # # # # # ## # # # # # # # # # # # # # # # # # # #
-  
+  # set plotting parameters for all the plots that might follow
+  par(mar=c(4,4,4,1)+0.1,xaxs="i",yaxs="i",pty="s",mgp=c(1.5,0.5,0))
   ## Plotting  
   if (animation == TRUE) {
     
     # With animation
     for (i in 1:length(x)) {
       # Rings
-      par(mar=c(4,4,1,1)+0.1,xaxs="i",yaxs="i")
       cols <-  c(rep(col.inrings, i-1), col.outring) 
       narrow.cols <- c(col.narrow.rings[1:i-1], col.outring) # colors when is selected "narrow.rings"
       wider.cols <- c(col.wider.rings[1:i-1], col.outring) # colors when is selected "wider.rings"
-      auto.lim <- max(z, na.rm = TRUE) * 2.0
+      #auto.lim <- max(z, na.rm = TRUE) * 2.0
+      if(is.null(xy.lim)) xy.lim <- max(z, na.rm = TRUE) * 1.1
       
       symbols(y = y[1:i], x = if(length(x) > 0) y[1:i] else x[1:i],
               circles=z[1:i], inches=FALSE, xlim = c(-xy.lim, xy.lim), ylim = c(-xy.lim, xy.lim), 
@@ -118,12 +119,12 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   
   # Without animation
   else {
-    par(mar=c(4,4,1,1)+0.1,xaxs="i",yaxs="i")
     cols <- c(rep(col.inrings, length(x)-1), col.outring)
     narrow.cols <- c(col.narrow.rings[1:length(x)-1], col.outring) # colors when is selected "narrow.rings"
     wider.cols <- c(col.wider.rings[1:length(x)-1], col.outring) # colors when is selected "wider.rings"
     rings.lwd <- c(rep(1, length(x)), 3)
-    auto.lim <- max(z, na.rm = TRUE) * 2.0
+    #auto.lim <- max(z, na.rm = TRUE) * 2.0
+    if(is.null(xy.lim)) xy.lim <- max(z, na.rm = TRUE) * 1.1
     
     symbols( y = y, x = if(length(x) > 0) y else x,
              circles=z, inches=FALSE, xlim = c(-xy.lim, xy.lim), ylim = c(-xy.lim, xy.lim), 
@@ -148,11 +149,11 @@ plotRings <- function(year, trwN, trwS = NA_real_,
       # With animation
       for (i in 1:length(x)) {
         # Rings
-        par(mar=c(4,4,1,1)+0.1,cex=1.5,xaxs="i",yaxs="i")
         cols <-  c(rep(col.inrings, i-1), col.outring) 
         narrow.cols <- c(col.narrow.rings[1:i-1], col.outring) # colors when is selected "narrow.rings"
         wider.cols <- c(col.wider.rings[1:i-1], col.outring) # colors when is selected "wider.rings"
-        auto.lim <- max(z, na.rm = TRUE) * 2.0
+        #auto.lim <- max(z, na.rm = TRUE) * 2.0
+        if(is.null(xy.lim)) xy.lim <- max(z, na.rm = TRUE) * 1.1
         
         symbols(y = y[1:i], x = if(length(x) > 0) y[1:i] else x[1:i],
                 circles=z[1:i], inches=FALSE, xlim = c(-xy.lim, xy.lim), ylim = c(-xy.lim, xy.lim), 
@@ -173,12 +174,12 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   
   # Without saving the GIF
   else {
-    par(mar=c(4,4,1,1)+0.1,xaxs="i",yaxs="i")
     cols <- c(rep(col.inrings, length(x)-1), col.outring)
     narrow.cols <- c(col.narrow.rings[1:length(x)-1], col.outring) # colors when is selected "narrow.rings"
     wider.cols <- c(col.wider.rings[1:length(x)-1], col.outring) # colors when is selected "wider.rings"
     rings.lwd <- c(rep(1, length(x)), 3)
-    auto.lim <- max(z, na.rm = TRUE) * 2.0
+    # auto.lim <- max(z, na.rm = TRUE) * 2.0
+    if(is.null(xy.lim)) xy.lim <- max(z, na.rm = TRUE) * 1.1
     
     symbols( y = y, x = if(length(x) > 0) y else x,
              circles=z, inches=FALSE, xlim = c(-xy.lim, xy.lim), ylim = c(-xy.lim, xy.lim), 
@@ -222,7 +223,6 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   
   if (sum(TRW$bai.ind, na.rm = TRUE) > 0) 
     print(paste("Basal Area of the disc:  ", round(sum(TRW$bai.ind, na.rm = TRUE)/10^6, digits = 6), sep = " ", "m2"))
-  
   
   TRW  
 }

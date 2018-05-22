@@ -12,14 +12,21 @@ File: DESCRIPTION
 File: plotRings.R
 ----------------
 
-- Notes an issue in the length.unit arg to the function given differently in the Rd file vs the R file. Made a quick fix. Also made a small adjustment to the axis limits as it seemed there was a lot of extra white space in the plot. Removed bty for the legend. Not sure if I understand the full rationale behind the way the function is written though. -AGB
+- Big change made is to aspect so that the plot area is square: par(pty="s"). Will contact author to check on the reasonableness of this. Other changes. R CMD CHECK was throwing flags. Notes an issue in the length.unit arg to the function given differently in the Rd file vs the R file. Made a quick fix. Also made a small adjustment to the axis limits as it seemed there was a lot of extra white space in the plot. Removed bty for the legend. Adjusted par. Added documentation language. Not sure if I understand the full rationale behind the way the function is written though. There is a lot of redundant code. -AGB
 
 File: csv2rwl.R
 ----------------
 Adding new function to read csv files in as rwl objects. Also adding that capability into read.rwl. Mikko should see if the error checks etc pass muster.
 
-File: read.rwl.R
+File: read.crn.R
 ----------------
+Adding argument 'long' (default is TRUE) for supporting (non-standard) long
+series with more than 4 characters used for the decade field. Use FALSE to
+revert to the old way of assuming 6 characters for site ID and 4 characters
+for decade. Thanks to Richard Telford for notcing the bug.
+
+File: read.rwl.R
+	----------------
 Adding read2csv into read.rwl both as a format specification and as an auto detect. Mikko should see if the error checks etc pass muster.
 
 File: time.rwl.R

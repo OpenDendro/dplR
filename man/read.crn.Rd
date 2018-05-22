@@ -7,7 +7,8 @@
   chronologies (.crn).
 }
 \usage{
-read.crn(fname, header = NULL, encoding = getOption("encoding"))
+read.crn(fname, header = NULL, encoding = getOption("encoding"),
+         long = TRUE)
 }
 \arguments{
   \item{fname}{ a \code{character} vector giving the file name of the
@@ -22,6 +23,11 @@ read.crn(fname, header = NULL, encoding = getOption("encoding"))
     problem.  Examples of popular encodings available on many systems
     are \code{"ASCII"}, \code{"UTF-8"}, and \code{"latin1"} alias
     \code{"ISO-8859-1"}.  See the help of \code{\link{file}}.}
+  \item{long}{ \code{logical} flag indicating whether to automatically
+    detect when an input file uses more than 4 characters for the decade.
+    If \code{FALSE}, the function assumes 6 characters are used for the
+    site \acronym{ID} and 4 characters for the decade, which is the
+    standard. If \code{TRUE} (the default), long records may work. }
 }
 \details{
   This reads in a standard crn file as defined according to the

@@ -3,7 +3,7 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.6.8
-Date: 2018-04-07
+Date: 2018-05-22
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "cph", "trl")), person("Franco", "Biondi",
@@ -23,15 +23,21 @@ Depends: R (>= 2.15.2)
 Imports: graphics, grDevices, grid, stats, utils, lattice (>= 0.13-6),
         Matrix (>= 1.0-3), digest (>= 0.2.3), matrixStats (>= 0.50.2),
         png (>= 0.1-2), R.utils (>= 1.32.1), stringi (>= 0.2-3),
-        stringr (>= 0.4), XML (>= 2.1-0), plyr (>= 1.8),
-        animation (>= 2.0-2)
+        stringr (>= 0.4), XML (>= 2.1-0), plyr (>= 1.8), animation (>=
+        2.0-2)
 Suggests: Biobase, Cairo (>= 1.5-0), dichromat (>= 1.2-3), foreach,
-        forecast (>= 3.6), gmp (>= 0.5-5), iterators, knitr, RColorBrewer,
-        testthat (>= 0.8), tikzDevice, waveslim
+        forecast (>= 3.6), gmp (>= 0.5-5), iterators, knitr,
+        RColorBrewer, testthat (>= 0.8), tikzDevice, waveslim
 Description: Perform tree-ring analyses such as detrending, chronology
         building, and cross dating.  Read and write standard file formats
         used in dendrochronology.
 LazyData: no
 License: GPL (>= 2)
 URL: https://r-forge.r-project.org/projects/dplr/
-MailingList: https://groups.google.com/d/forum/dplr-help
+Repository: R-Forge
+Repository/R-Forge/Project: dplr
+Repository/R-Forge/Revision: 1096
+Repository/R-Forge/DateTimeStamp: 2018-05-09 03:02:56
+Date/Publication: 2018-05-09 03:02:56
+NeedsCompilation: yes
+Packaged: 2018-05-09 03:21:06 UTC; rforge

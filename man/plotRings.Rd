@@ -9,9 +9,9 @@
 \usage{
 plotRings(year, trwN, trwS = NA_real_,
           trwE = NA_real_, trwW = NA_real_, length.unit = "mm",
-          animation = FALSE, sys.sleep = 0.2, year.labels = TRUE,
+          animation = FALSE, sys.sleep = 0.2, year.labels = FALSE,
           d2pith = NA, col.inrings = "grey", col.outring = "black",
-          x.rings = "none", col.x.rings = "red", species.name = NA,
+          x.rings = "none", col.x.rings = "red", xy.lim = NULL, species.name = NA,
           saveGIF = FALSE, fname = "GIF_plotRings.gif")
 }
 \arguments{
@@ -68,7 +68,7 @@ plotRings(year, trwN, trwS = NA_real_,
   \item{col.x.rings}{ The color to be used for the \code{\var{x.rings}}.
   See section \sQuote{Color Specification} for suitable values.  }
   
-  \item{xy.lim}{a \code{numeric} vector giving the limit to xy coordinates ranges. 
+  \item{xy.lim}{a \code{numeric} giving a single positive value for the axis limits. If \code{NULL} limits are calculated automatically.  
   Default is \code{\var{auto.lim}} which calculate automatically the xy axes limits.}
   
   \item{species.name}{ an optional \code{character} string that 
@@ -118,6 +118,10 @@ yrs <- time(anos1)
 # Plot rings with data of two radii from same individual tree
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
                  species.name = "Cedrela odorata")
+                 
+res <- plotRings(yrs, anos1[,4], trwW = anos1[,5], 
+                 xy.lim = 100)
+
 # Playing with colors
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
                  col.inrings = "tan", col.outring = "blue") 
@@ -138,7 +142,7 @@ res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
 
 \dontrun{
 # Plot Rings and animate (requires ImageMagick)
-res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
+res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],year.labels = TRUE, 
                  animation = TRUE, sys.sleep = 0.1)
                  
 # Plot Rings and save as GIF (requires ImageMagick)

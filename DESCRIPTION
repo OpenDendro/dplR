@@ -34,10 +34,3 @@ Description: Perform tree-ring analyses such as detrending, chronology
 LazyData: no
 License: GPL (>= 2)
 URL: https://r-forge.r-project.org/projects/dplr/
-Repository: R-Forge
-Repository/R-Forge/Project: dplr
-Repository/R-Forge/Revision: 1096
-Repository/R-Forge/DateTimeStamp: 2018-05-09 03:02:56
-Date/Publication: 2018-05-09 03:02:56
-NeedsCompilation: yes
-Packaged: 2018-05-09 03:21:06 UTC; rforge

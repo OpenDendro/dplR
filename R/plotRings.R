@@ -151,8 +151,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   if (saveGIF == TRUE) {
     
     saveGIF({
-      ani.options(interval = sys.sleep, nmax = 50, 
-      ani.width = 1000, ani.height = 1000)
+      ani.options(interval = sys.sleep, nmax = 50, ani.width = 1000, ani.height = 1000)
       
       par(bg="white")
       

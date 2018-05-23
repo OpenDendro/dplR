@@ -3,7 +3,7 @@
 \alias{plotRings}
 \title{ Plot Rings }
 \description{
- Make a plot and/or animation of a cross section based on up to four ring-width series. Besides, give basic summary statistics (e.g. Annual Basal Area, mean ring-width) of an approximated stem disc.
+ Make a plot and/or animation of a cross section based on up to four ring-width series. Gives basic summary statistics (e.g. annual basal area, mean ring width) of an approximated stem disc.
 
 }
 \usage{
@@ -11,8 +11,8 @@ plotRings(year, trwN, trwS = NA_real_,
           trwE = NA_real_, trwW = NA_real_, length.unit = "mm",
           animation = FALSE, sys.sleep = 0.2, year.labels = FALSE,
           d2pith = NA, col.inrings = "grey", col.outring = "black",
-          x.rings = "none", col.x.rings = "red", xy.lim = NULL, species.name = NA,
-          saveGIF = FALSE, fname = "GIF_plotRings.gif")
+          x.rings = "none", col.x.rings = "red", xy.lim = NULL, 
+          species.name = NA, saveGIF = FALSE, fname = "GIF_plotRings.gif")
 }
 \arguments{
 
@@ -47,7 +47,7 @@ plotRings(year, trwN, trwS = NA_real_,
   in between rings during animation. }
   
   \item{year.labels}{ \code{logical} flag. If TRUE the year 
-  labels will be shown in upper right corner of the plot.  }
+  labels will be shown at the bottom of the plot.  }
   
   \item{d2pith}{ \code{numeric}. The distance from the innermost 
   ring to the pith of the tree. It is computed in the same 
@@ -68,8 +68,7 @@ plotRings(year, trwN, trwS = NA_real_,
   \item{col.x.rings}{ The color to be used for the \code{\var{x.rings}}.
   See section \sQuote{Color Specification} for suitable values.  }
   
-  \item{xy.lim}{a \code{numeric} giving a single positive value for the axis limits. If \code{NULL} limits are calculated automatically.  
-  Default is \code{\var{auto.lim}} which calculate automatically the xy axes limits.}
+  \item{xy.lim}{a \code{numeric} giving a single positive value for the axis limits. If \code{NULL} limits are calculated automatically. See examples.}
   
   \item{species.name}{ an optional \code{character} string that 
   defines the species name in the plot.  }
@@ -78,22 +77,15 @@ plotRings(year, trwN, trwS = NA_real_,
   be saved. A working copy of \dQuote{ImageMagic} is required. 
   See \sQuote{Details} and examples. }
 
-  \item{fname}{ \code{character}. Filename for \acronym{GIF}.  }
+  \item{fname}{ \code{character}. Filename for \acronym{GIF}. }
 
 
 }
 \details{
-This makes a simple plot, drawing all rings from tree-ring series on a 
-Cartesian plane of up to four cardinal directions (N, S, E, W) 
-defining the eccentricity of the stem. It can be plotted using 
-only data from one ratio, or up to four different radii from same tree.
-This function can plot each individual ring as an animation within 
-the R-GUI, as a \acronym{GIF}-file, or it can plot all rings at once.
 
-Animations require a functional installation of ImageMagick [https://www.imagemagick.org]. Note: If there are problems to save the animation as a GIF file it can be related with the GIF conversion. Be sure to set correctly the "magick.exe" folder path in the convert option. 
-In \code{ani.options()} try to change the folder name to "PROGRA~1" instead of "Program Files", and the file "magick.exe" instead of "convert.exe".  Be sure to type the right name of the folder '.../ImageMagick-7.0.7-Q16/...' to your current program version because it changes.  Eg.:  \code{ani.options(convert = 'C:/PROGRA~1/ImageMagick-7.0.7-Q16/magick.exe')}
+This makes a plot, drawing all rings from tree-ring series on a Cartesian plane of up to four cardinal directions (N, S, E, W) defining the eccentricity of the stem. It can be plotted using only data from one ratio, or up to four different radii from same tree. This function can plot each individual ring as an animation within the R-GUI, as a \acronym{GIF}-file, or it can plot all rings at once.
 
-See \code{\link{saveGIF}} for details.
+Animations require a functional installation of ImageMagick [https://www.imagemagick.org] where the ImageMagick program \code{convert} is configured correctly in the \code{PATH}. At the moment, the \code{saveGIF} option in \code{plotRings} is stable but occassionaly fails. Should users encoutner issues saving a \acronym{GIF}, the problem might be related  to the installation of ImageMagick the details of which depend on platform. See \code{\link{saveGIF}} for details.
 
 }
 \value{
@@ -118,7 +110,8 @@ yrs <- time(anos1)
 # Plot rings with data of two radii from same individual tree
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
                  species.name = "Cedrela odorata")
-                 
+
+# change plot limits                 
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5], 
                  xy.lim = 100)
 
@@ -136,25 +129,25 @@ res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5],sp="Cedrela odorata", length.
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
                  x.rings = "narrow.rings") 
 
-# Highlighting and coloring only wider rings
+# Highlight and color wide rings
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
                  x.rings = "wider.rings", col.x.rings = "green") 
 
 \dontrun{
-# Plot Rings and animate (requires ImageMagick to be installed in the PATH)
+# Plot rings and animate. Requires ImageMagick to be installed.
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],year.labels = TRUE, 
                  animation = TRUE, sys.sleep = 0.1)
                  
-# Plot Rings and save as GIF (requires ImageMagick to be installed in the PATH)
+# Plot rings, animate, save as GIF. Requires ImageMagick to be installed.
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
                  saveGIF = TRUE, fname="GIF_plotRings.gif",sys.sleep = 0.1)
 }
 
 # with four fake tree-ring series 
-trw <- data.frame(trw01.n = abs(rnorm(100, 10, 7.5)),  # North direction
-                  trw01.s = abs(rnorm(100, 10, 7.5)),  # South direction
-                  trw01.w = abs(rnorm(100, 10, 2.5)),  # West direction
-                  trw01.e = abs(rnorm(100, 10, 2.5)),  # East direction
+trw <- data.frame(trw01.n = abs(rnorm(100, 10, 4)),  # North direction
+                  trw01.s = abs(rnorm(100, 10, 2)),  # South direction
+                  trw01.w = abs(rnorm(100, 10, 2)),  # West direction
+                  trw01.e = abs(rnorm(100, 10, 2)),  # East direction
                   row.names = 1918:2017)
 class(trw) <- c("rwl","data.frame")
 
@@ -165,9 +158,7 @@ res <- plotRings(yrs, trw[,1], trw[,2], trw[,3], trw[,4])
 
 # with d2pith values (see the hole before the first rings in the plot)
 res <- plotRings(yrs, trw[,1], trw[,2], trw[,3], trw[,4],
-                 d2pith = 500)
-res <- plotRings(yrs, trw[,1], trw[,2], trw[,3], trw[,4],
-                 d2pith = c(200, NA, NA, 50))
+                 d2pith = 100)
 
 }
 \keyword{ hplot }

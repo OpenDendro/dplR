@@ -102,7 +102,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
       narrow.cols <- c(col.narrow.rings[1:i-1], col.outring) # colors when is selected "narrow.rings"
       wider.cols <- c(col.wider.rings[1:i-1], col.outring) # colors when is selected "wider.rings"
       #auto.lim <- max(z, na.rm = TRUE) * 2.0
-      if(is.null(xy.lim)) xy.lim <- max(z, na.rm = TRUE) * 1.1
+      if(is.null(xy.lim)) xy.lim <- max(z, na.rm = TRUE) * 1.05
       
       symbols(y = y[1:i], x = if(length(x) > 0) y[1:i] else x[1:i],
               circles=z[1:i], inches=FALSE, xlim = c(-xy.lim, xy.lim), ylim = c(-xy.lim, xy.lim), 
@@ -129,7 +129,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
     wider.cols <- c(col.wider.rings[1:length(x)-1], col.outring) # colors when is selected "wider.rings"
     rings.lwd <- c(rep(1, length(x)), 3)
     #auto.lim <- max(z, na.rm = TRUE) * 2.0
-    if(is.null(xy.lim)) xy.lim <- max(z, na.rm = TRUE) * 1.1
+    if(is.null(xy.lim)) xy.lim <- max(z, na.rm = TRUE) * 1.05
     
     symbols( y = y, x = if(length(x) > 0) y else x,
              circles=z, inches=FALSE, xlim = c(-xy.lim, xy.lim), ylim = c(-xy.lim, xy.lim), 
@@ -151,6 +151,9 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   if (saveGIF == TRUE) {
     
     saveGIF({
+      ani.options(interval = sys.sleep, nmax = 50, 
+      ani.width = 1000, ani.height = 1000)
+      
       par(bg="white")
       
       # With animation
@@ -160,7 +163,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
         narrow.cols <- c(col.narrow.rings[1:i-1], col.outring) # colors when is selected "narrow.rings"
         wider.cols <- c(col.wider.rings[1:i-1], col.outring) # colors when is selected "wider.rings"
         #auto.lim <- max(z, na.rm = TRUE) * 2.0
-        if(is.null(xy.lim)) xy.lim <- max(z, na.rm = TRUE) * 1.1
+        if(is.null(xy.lim)) xy.lim <- max(z, na.rm = TRUE) * 1.05
         
         symbols(y = y[1:i], x = if(length(x) > 0) y[1:i] else x[1:i],
                 circles=z[1:i], inches=FALSE, xlim = c(-xy.lim, xy.lim), ylim = c(-xy.lim, xy.lim), 
@@ -177,8 +180,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
         if(year.labels == TRUE) title(sub=year[i])
       }
       # AGB changed interval to delay which works under mac. Not sure about windows.
-    }, movie.name = fname, delay = sys.sleep, nmax = 10, 
-    ani.width = 1000, ani.height = 1000)
+    }, movie.name = fname)
   }
   
   # Without saving the GIF
@@ -188,7 +190,7 @@ plotRings <- function(year, trwN, trwS = NA_real_,
     wider.cols <- c(col.wider.rings[1:length(x)-1], col.outring) # colors when is selected "wider.rings"
     rings.lwd <- c(rep(1, length(x)), 3)
     # auto.lim <- max(z, na.rm = TRUE) * 2.0
-    if(is.null(xy.lim)) xy.lim <- max(z, na.rm = TRUE) * 1.1
+    if(is.null(xy.lim)) xy.lim <- max(z, na.rm = TRUE) * 1.05
     
     symbols( y = y, x = if(length(x) > 0) y else x,
              circles=z, inches=FALSE, xlim = c(-xy.lim, xy.lim), ylim = c(-xy.lim, xy.lim), 

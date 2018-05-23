@@ -36,7 +36,7 @@ importFrom(XML, xmlEventParse)
 
 importFrom(plyr, alply)
 
-importFrom(animation, saveGIF)
+importFrom(animation, saveGIF, ani.options)
 
 export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, cms,
        combine.rwl, common.interval, corr.rwl.seg, corr.series.seg,

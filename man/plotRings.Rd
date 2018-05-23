@@ -146,7 +146,6 @@ res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],year.labels = TRUE,
                  animation = TRUE, sys.sleep = 0.1)
                  
 # Plot Rings and save as GIF (requires ImageMagick to be installed in the PATH)
-library(animation)
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
                  saveGIF = TRUE, fname="GIF_plotRings.gif",sys.sleep = 0.1)
 }

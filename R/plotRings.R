@@ -87,7 +87,11 @@ plotRings <- function(year, trwN, trwS = NA_real_,
   
   # # # # # # # # # # # # # # # # # # # ## # # # # # # # # # # # # # # # # # # #
   # set plotting parameters for all the plots that might follow
+  op <- par(no.readonly=TRUE)
+  on.exit(par(op), add=TRUE)
   par(mar=c(4,4,4,1)+0.1,xaxs="i",yaxs="i",pty="s",mgp=c(1.5,0.5,0))
+  dev.hold()
+  on.exit(dev.flush(), add=TRUE)
   ## Plotting  
   if (animation == TRUE) {
     

@@ -348,7 +348,7 @@ par(tcl = 0.5, mar = rep(2.2, 4), mgp = c(1.1, 0.1, 0))
 
 plot(redf.x[["freq"]], redf.x[["gxxc"]],
      ylim = range(redf.x[["ci99"]], redf.x[["gxxc"]]),
-     type = "n", ylab = "Spectrum (dB)", xlab = "Frequency (1/yr)",
+     type = "n", ylab = "Spectrum", xlab = "Frequency (1/yr)",
      axes = FALSE)
 grid()
 lines(redf.x[["freq"]], redf.x[["gxxc"]], col = "#1B9E77")
@@ -379,7 +379,7 @@ redf.x <- redfit(x, nsim = 1000)
 
 plot(redf.x[["freq"]], redf.x[["gxxc"]],
      ylim = range(redf.x[["ci99"]], redf.x[["gxxc"]]),
-     type = "n", ylab = "Spectrum (dB)", xlab = "Frequency (1/yr)",
+     type = "n", ylab = "Spectrum", xlab = "Frequency (1/yr)",
      axes = FALSE)
 grid()
 lines(redf.x[["freq"]], redf.x[["gxxc"]], col = "#1B9E77")

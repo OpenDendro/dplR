@@ -53,8 +53,9 @@
                               })
 
         if (return.info) {
-            modelStats <- lapply(out, "[[", 2)
-            dataStats <- lapply(out, "[[", 3)
+            modelCurves <- lapply(out, "[[", 2)
+            modelStats <- lapply(out, "[[", 3)
+            dataStats <- lapply(out, "[[", 4)
             out <- lapply(out, "[[", 1)
         }
     } else{
@@ -70,8 +71,9 @@
         for (i in seq_len(n.series)) {
             fits <- do.call(detrend.series, detrend.args)
             if (return.info) {
-                modelStats[[i]] <- fits[[2]]
-                dataStats[[i]] <- fits[[3]]
+                modelCurves[[i]] <- fits[[2]]
+                modelStats[[i]] <- fits[[3]]
+                dataStats[[i]] <- fits[[4]]
                 fits <- fits[[1]]
             }
             if (is.data.frame(fits)) {
@@ -85,11 +87,13 @@
     if(length(method2) == 1){
         out <- data.frame(out, row.names = rn)
         names(out) <- y.name
+        modelCurves <- data.frame(modelCurves, row.names = rn)
+        names(modelCurves) <- y.name
     }
     if (return.info) {
         names(modelStats) <- series.names
         names(dataStats) <- series.names
-        list(series = out, model.info = modelStats, data.info = dataStats)
+        list(series = out, curves = modelCurves, model.info = modelStats, data.info = dataStats)
     } else {
         out
     }

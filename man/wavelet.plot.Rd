@@ -106,7 +106,8 @@ out.wave <- morlet(y1 = CAMstd, x1 = Years, p2 = 9, dj = 0.1,
 wavelet.plot(out.wave, useRaster = NA)
 # Alternative palette with better separation of colors
 # via: rev(RColorBrewer::brewer.pal(10, "Spectral"))
-specCols <- c("#5E4FA2", "#3288BD", "#66C2A5", "#ABDDA4", "#E6F598", "#FEE08B", "#FDAE61", "#F46D43", "#D53E4F", "#9E0142")
+specCols <- c("#5E4FA2", "#3288BD", "#66C2A5", "#ABDDA4", "#E6F598", 
+              "#FEE08B", "#FDAE61", "#F46D43", "#D53E4F", "#9E0142")
 wavelet.plot(out.wave, key.cols=specCols,useRaster = NA)
 
 # fewer colors

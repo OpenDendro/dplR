@@ -141,10 +141,12 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   only one method is selected, returns a vector.
 
   If \code{\var{return.info}} is \code{TRUE}, the return value is a
-  \code{list} with three parts:
+  \code{list} with four parts:
 
   \item{series}{ the main result described above (\code{data.frame} or
     vector) }
+
+  \item{curves}{ the curve or line used to detrend \code{series}. Either a \code{data.frame} or vector. }
 
   \item{model.info}{ Information about the models corresponding to each
     output series.  Whereas \code{\var{series}} may return a vector,

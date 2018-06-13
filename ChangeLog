@@ -1,7 +1,19 @@
 * CHANGES IN dplR VERSION 1.6.9
 
-- None yet.
+File: detrend.series.R and .Rd
+----------------
 
+- The function will now return the curves used for detrnding the series if return.info is TRUE.  Help file ammended.
+
+File: detrend.R
+----------------
+
+- See above. 
+
+File: wavelet.plot.R
+----------------
+
+- Typos. 
 
 * CHANGES IN dplR VERSION 1.6.8
 

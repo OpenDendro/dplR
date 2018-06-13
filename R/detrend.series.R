@@ -94,8 +94,9 @@
     y2[y2 == 0] <- 0.001
 
     resids <- list()
+    curves <- list()
     modelStats <- list()
-
+    
     if("ModNegExp" %in% method2){
         ## Nec or lm
         nec.func <- function(Y, constrain) {
@@ -224,7 +225,7 @@
                                     format(mneCoefsE)))),
                     sep = "\n")
             }
-            mneStats <- list(method = "ModNegExp",
+            mneStats <- list(method = "NegativeExponential",
                              is.constrained = attr(ModNegExp, "constrained"),
                              formula = attr(ModNegExp, "formula"),
                              coefs = mneCoefs)
@@ -232,6 +233,7 @@
             mneStats <- NULL
         }
         resids$ModNegExp <- y2 / ModNegExp
+        curves$ModNegExp <- ModNegExp
         modelStats$ModNegExp <- mneStats
         do.mne <- TRUE
     } else {
@@ -264,7 +266,9 @@
             splineStats <- list(method = "Spline", nyrs = nyrs2, f = f)
         }
         resids$Spline <- y2 / Spline
+        curves$Spline <- Spline
         modelStats$Spline <- splineStats
+        
         do.spline <- TRUE
     } else {
         do.spline <- FALSE
@@ -282,6 +286,7 @@
         }
         meanStats <- list(method = "Mean", mean = theMean)
         resids$Mean <- y2 / Mean
+        curves$Mean <- Mean
         modelStats$Mean <- meanStats
         do.mean <- TRUE
     } else {
@@ -308,6 +313,7 @@
         Ar[Ar<0] <- 0
       }
       resids$Ar <- Ar / mean(Ar,na.rm=TRUE)
+      curves$Ar <- mean(Ar,na.rm=TRUE)
       modelStats$Ar <- arStats
       do.ar <- TRUE
     } else {
@@ -334,6 +340,7 @@
                                periodic = FALSE, bass = bass)[["y"]]
         }
         resids$Friedman <- y2 / Friedman
+        curves$Friedman <- Friedman
         modelStats$Friedman <-
             list(method = "Friedman",
                  wt = if (wt.missing) "default" else wt,
@@ -344,6 +351,7 @@
     }
 
     resids <- data.frame(resids)
+    curves <- data.frame(curves)
     if (verbose || return.info) {
         zero.years <- lapply(resids, zeroFun)
         n.zeros <- lapply(zero.years, nFun)
@@ -445,14 +453,22 @@
     if(!is.null(names(y))) row.names(resids2) <- names(y)
     resids2[good.y, ] <- resids
 
+    curves2 <- matrix(NA, ncol=ncol(curves), nrow=length(y))
+    curves2 <- data.frame(curves2)
+    names(curves2) <- names(curves)
+    if(!is.null(names(y))) row.names(curves2) <- names(y)
+    curves2[good.y, ] <- curves
     ## Reorder columns of output to match the order of the argument
     ## "method".
     resids2 <- resids2[, method2]
+    curves2 <- curves2[, method2]
     ## Make sure names (years) are included if there is only one method
     if(!is.data.frame(resids2)) names(resids2) <- names(y)
     if (return.info) {
         list(series = resids2,
-             model.info = modelStats[method2], data.info = dataStats)
+             curves = curves2,
+             model.info = modelStats[method2],
+             data.info = dataStats)
     } else {
         resids2
     }

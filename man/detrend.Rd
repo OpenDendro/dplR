@@ -76,10 +76,12 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   with the detrended ring widths in each column.
 
   If \code{\var{return.info}} is \code{TRUE}, the return value is a
-  \code{list} with three parts:
+  \code{list} with four parts:
 
   \item{series}{ the main result described above (\code{data.frame} or
     list of data.frames) }
+
+  \item{curves}{ the curve or line used to detrend \code{series}. Either a \code{data.frame} or a list of  list of data.frames. }
 
   \item{model.info}{ Information about the models corresponding to each
     output series.  A \code{list} with one element for each column of

@@ -87,8 +87,10 @@
     if(length(method2) == 1){
         out <- data.frame(out, row.names = rn)
         names(out) <- y.name
-        modelCurves <- data.frame(modelCurves, row.names = rn)
-        names(modelCurves) <- y.name
+        if(return.info){
+          modelCurves <- data.frame(modelCurves, row.names = rn)
+          names(modelCurves) <- y.name
+        }
     }
     if (return.info) {
         names(modelStats) <- series.names

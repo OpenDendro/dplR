@@ -45,12 +45,12 @@
         rwl.i <- NULL
 
         exportFun <- c("names<-", "detrend.series")
-        out <- foreach::"%dopar%"(foreach::foreach(rwl.i=it.rwl,
+        out <- suppressWarnings(foreach::"%dopar%"(foreach::foreach(rwl.i=it.rwl,
                                                    .export=exportFun),
                               {
                                   names(rwl.i) <- rn
                                   do.call(detrend.series, detrend.args)
-                              })
+                              }))
 
         if (return.info) {
             modelCurves <- lapply(out, "[[", 2)

@@ -42,12 +42,10 @@ rwl.stats(rwl)
   well as the length of the series (\code{"first"}, \code{"last"},
   \code{"year"}).  The mean, median, standard deviation are given
   (\code{"mean"}, \code{"median"}, \code{"stdev"}) as are the skewness,
-  two measures of sensitivity, the Gini coefficient, and first order
-  autocorrelation (\code{"skew"}, \code{"\link{sens1}"},
-  \code{"\link{sens2}"}, \code{"\link{gini.coef}"}, \code{"ar1"}).
+  the Gini coefficient, and first order
+  autocorrelation (\code{"skew"}, \code{"\link{gini.coef}"}, \code{"ar1"}).
   
-  Note that mean sensitivity is not a robust statistic that should rarely,
-  if ever, be used (Bunn et al. 2013).
+  Note that prior to version 1.6.8, two measures of sensitivity were also included. However mean sensitivity is not a robust statistic that should rarely, if ever, be used (Bunn et al. 2013). Those sensitivity functions (\code{"\link{sens1}"} and \code{"\link{sens2}"}) are still available for continuity. Users should consider the coef of variation in lieu of mean sensitivity.
 }
 \references{
 

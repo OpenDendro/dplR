@@ -1,9 +1,17 @@
 * CHANGES IN dplR VERSION 1.6.9
 
+File: rwl.stats.R and .Rd
+----------------
+
+- Removing sens1 and sens2 from this function. At world dendro I'm still seeing these being used by dplR users. It's a terrible stat. I'm taking it out.  Help file ammended.
+
 File: detrend.series.R and .Rd
 ----------------
 
 - The function will now return the curves used for detrnding the series if return.info is TRUE.  Help file ammended.
+
+- Added the Hughershoff curve as an method for detrending. It's done along the lines of ModNegExp with straight line if the nls call fais. 
+
 
 File: detrend.R
 ----------------

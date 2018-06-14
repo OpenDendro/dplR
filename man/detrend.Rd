@@ -8,9 +8,9 @@
 }
 \usage{
 detrend(rwl, y.name = names(rwl), make.plot = FALSE,
-        method = c("Spline", "ModNegExp", "Mean", "Ar", "Friedman"),
+        method = c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff"),
         nyrs = NULL, f = 0.5, pos.slope = FALSE,
-        constrain.modnegexp = c("never", "when.fail", "always"),
+        constrain.nls = c("never", "when.fail", "always"),
         verbose = FALSE, return.info = FALSE,
         wt, span = "cv", bass = 0)
 }
@@ -28,8 +28,8 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   
   \item{method}{ a \code{character} vector to determine the detrending
     methods.  See details below.  Possible values are all subsets of
-    \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman")}.  Defaults to 
-    using all the available methods.}
+    \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff")}.  
+    Defaults to using all the available methods.}
   
   \item{nyrs}{ a number giving the rigidity of the smoothing spline,
     defaults to 0.67 of series length if \code{\var{nyrs}} is
@@ -39,11 +39,13 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
     wavelength cutoff.  Defaults to 0.5. }
 
   \item{pos.slope}{ a \code{logical} flag.  Will allow for a positive
-    slope to be used in method \code{"ModNegExp"}.  If \code{FALSE} the
+    slope to be used in method \code{"ModNegExp"} and \code{"ModHugershoff"}.  
+    If \code{FALSE} the
     line will be horizontal. }
   
-  \item{constrain.modnegexp}{ a \code{character} string which controls
-    the constraints of the \code{"ModNegExp"} model.  See 
+  \item{constrain.nls}{ a \code{character} string which controls
+    the constraints of the \code{"ModNegExp"} model and the 
+    \code{"ModHugershoff"}.  See 
     \code{\link{detrend.series}} for further details. }
     
   \item{verbose}{ \code{logical}.  Write out details? }
@@ -106,6 +108,10 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
 data(ca533)
 ## Detrend using modified exponential decay. Returns a data.frame
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
+## Detrend using modified Hugershoff curve and return info on the model fits. 
+## Returns a list with: series, curves, modelinfo and data.info
+data(co021)
+co021.rwi <- detrend(rwl = co021, method = "ModHugershoff", return.info=TRUE)
 
 \dontrun{
 library(grDevices)

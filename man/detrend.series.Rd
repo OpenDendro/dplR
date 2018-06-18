@@ -253,18 +253,22 @@ series.rwi <- detrend.series(y = series, y.name = "CAM011",
 # stiffness to 50 years (which is not neccesarily a good choice!)
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
                              method="Spline",nyrs=50)
+                             
 # note that method "Ar" doesn't get plotted in first panel
 # since this approach doesn't approximate a growth curve.
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
                              method="Ar")
+                             
 # note the difference between ModNegExp and ModHugershoff at the 
-# start of the series
+# start of the series. Also notice how curves, etc. are returned
+# via return.info
 data(co021)
 series <- co021[, 4]
 names(series) <- rownames(co021)
 series.rwi <- detrend.series(y = series, y.name = names(co021)[4],
                              method=c("ModNegExp", "ModHugershoff"),
-                             verbose = T, return.info = T, make.plot = T)
+                             verbose = TRUE, return.info = TRUE, 
+                             make.plot = TRUE)
 
 }
 \keyword{ manip }

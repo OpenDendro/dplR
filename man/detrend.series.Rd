@@ -8,7 +8,8 @@
 }
 \usage{
 detrend.series(y, y.name = "", make.plot = TRUE,
-               method = c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff"),
+               method = c("Spline", "ModNegExp", 
+               "Mean", "Ar", "Friedman", "ModHugershoff"),
                nyrs = NULL, f = 0.5, pos.slope = FALSE,
                constrain.nls = c("never", "when.fail", "always"),
                verbose = FALSE, return.info = FALSE,

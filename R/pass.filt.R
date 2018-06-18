@@ -1,4 +1,6 @@
-pass.filt <- function(y,W,type=c("low", "high", "stop", "pass"),n=4){
+pass.filt <- function(y,W,type=c("low", "high", "stop", "pass"),
+                      method = c("Butterworth","ChebyshevI"),
+                      n=4, Rp = 1){
   if(any(is.na(y))) stop("y contains NA")
   
   # check W's length
@@ -21,17 +23,29 @@ pass.filt <- function(y,W,type=c("low", "high", "stop", "pass"),n=4){
 
   # sort f in case it's passed in bcakwards
   f <- sort(f)
+  
+  method <- method[1]
 
-  # initialize the butterworth filter
-  bFilt <- signal::butter(n=n, W=f*2, type=type, plane="z")
+  if(method == "ChebyshevI"){
+    filt <- signal::cheby1(n=n, W=f*2, type = type, Rp=Rp, plane = "z")
+  }
+  else {
+    filt <- signal::butter(n=n, W=f*2, type=type, plane="z")  
+  }
+
+  # remove mean 
+  yAvg <- mean(y)
+  y <- y - yAvg
+
   # pad the data to twice the max period
   pad <- max(p) * 2
   ny <- length(y)
   # pad the data
   yPad <- c(y[pad:1],y,y[ny:(ny-pad)]) 
   # run the filter  
-  yFilt <- signal::filtfilt(bFilt, yPad)
-  # unpad the filtered data and return
+  yFilt <- signal::filtfilt(filt, yPad)
+  # unpad the filtered data
   yFilt <- yFilt[(pad+1):(ny+pad)]
-  yFilt
+  # return with mean added back in
+  yFilt + yAvg
 }

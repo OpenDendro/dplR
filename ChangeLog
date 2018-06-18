@@ -1,5 +1,11 @@
 * CHANGES IN dplR VERSION 1.6.9
 
+File: pass.filt.R and .Rd
+----------------
+
+- Adding a wrapper function for signal:butter and signal:filtfilt to get low-pass, high-pass, band-pass filtering implemented as per a user request.
+
+
 File: rwl.stats.R and .Rd
 ----------------
 

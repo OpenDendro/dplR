@@ -44,5 +44,7 @@ powt <- function(rwl) {
     }
     prec <- getprec(rwl)
     xt <- lapply(rwl, FUN = transf)
-    data.frame(xt, row.names = row.names(rwl), check.names = FALSE)
+    res <- data.frame(xt, row.names = row.names(rwl), check.names = FALSE)
+    class(res) <- c("rwl","data.frame")
+    res
 }

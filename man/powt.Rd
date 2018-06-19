@@ -14,7 +14,10 @@ powt(rwl)
     produced by \code{\link{read.rwl}} or \code{\link{read.fh}}}
 }
 \value{
-  A \code{data.frame} containing the power transformed ring width series.
+  An object of class \code{c("rwl", "data.frame")} containing the power 
+  transformed ring width series with the series in
+  columns and the years as rows.  The series \acronym{ID}s are the
+  column names and the years are the row names.
 }
 \details{
   This procedure is a variance stabilization technique implemented after
@@ -37,6 +40,8 @@ powt(rwl)
 \examples{library(utils)
 data(gp.rwl)
 gp.pt <- powt(gp.rwl)
+hist(summary(gp.rwl)$skew)
+hist(summary(gp.pt)$skew)
 }
 \author{
   Christian Zang.  Patched and improved by Mikko Korpela.

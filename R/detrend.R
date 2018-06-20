@@ -4,7 +4,7 @@
              nyrs = NULL, f = 0.5, pos.slope = FALSE,
              constrain.nls = c("never", "when.fail", "always"),
              verbose = FALSE, return.info = FALSE,
-             wt, span = "cv", bass = 0)
+             wt, span = "cv", bass = 0, difference = FALSE)
 {
     stopifnot(identical(make.plot, TRUE) || identical(make.plot, FALSE),
               identical(pos.slope, FALSE) || identical(pos.slope, TRUE),
@@ -24,7 +24,7 @@
                            nyrs = nyrs, f = f, pos.slope = pos.slope,
                            constrain.nls = constrain2,
                            verbose = FALSE, return.info = return.info,
-                           span = span, bass = bass))
+                           span = span, bass = bass, difference = difference))
     if (!missing(wt)) {
         detrend.args <- c(detrend.args, list(wt = wt))
     }

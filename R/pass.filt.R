@@ -21,7 +21,7 @@ pass.filt <- function(y,W,type=c("low", "high", "stop", "pass"),
     f <- W
   }
 
-  # sort f in case it's passed in bcakwards
+  # sort f in case it's passed in backwards
   f <- sort(f)
   
   method <- method[1]

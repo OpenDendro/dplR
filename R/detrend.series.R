@@ -4,7 +4,7 @@
              nyrs = NULL, f = 0.5, pos.slope = FALSE,
              constrain.nls = c("never", "when.fail", "always"),
              verbose = FALSE, return.info = FALSE,
-             wt, span = "cv", bass = 0)
+             wt, span = "cv", bass = 0, difference = FALSE)
 {
     check.flags(make.plot, pos.slope, verbose, return.info)
     if (length(y.name) == 0) {
@@ -42,7 +42,8 @@
                   "return.info" = return.info,
                   "wt" = wt.description,
                   "span" = span,
-                  "bass" = bass)
+                  "bass" = bass,
+                  "difference" = difference)
         optNames <- names(opts)
         optChar <- c(gettext("Options", domain="R-dplR"),
                       paste(str_pad(optNames,
@@ -232,7 +233,8 @@
         } else {
             mneStats <- NULL
         }
-        resids$ModNegExp <- y2 / ModNegExp
+        if(difference){ resids$ModNegExp <- y2 - ModNegExp }
+        else{ resids$ModNegExp <- y2 / ModNegExp }
         curves$ModNegExp <- ModNegExp
         modelStats$ModNegExp <- mneStats
         do.mne <- TRUE
@@ -376,7 +378,8 @@
       } else {
         hugStats <- NULL
       }
-      resids$ModHugershoff <- y2 / ModHugershoff
+      if(difference){ resids$ModHugershoff <- y2 - ModHugershoff }
+      else{ resids$ModHugershoff <- y2 / ModHugershoff }
       curves$ModHugershoff <- ModHugershoff
       modelStats$ModHugershoff <- hugStats
       do.hug <- TRUE
@@ -409,7 +412,8 @@
         } else {
             splineStats <- list(method = "Spline", nyrs = nyrs2, f = f)
         }
-        resids$Spline <- y2 / Spline
+        if(difference){ resids$Spline <- y2 - Spline }
+        else{ resids$Spline <- y2 / Spline }
         curves$Spline <- Spline
         modelStats$Spline <- splineStats
         
@@ -429,7 +433,8 @@
                 sep = "\n")
         }
         meanStats <- list(method = "Mean", mean = theMean)
-        resids$Mean <- y2 / Mean
+        if(difference){ resids$Mean <- y2 - Mean }
+        else{ resids$Mean <- y2 / Mean }
         curves$Mean <- Mean
         modelStats$Mean <- meanStats
         do.mean <- TRUE
@@ -456,7 +461,8 @@
         warning("Ar fit is not all positive")
         Ar[Ar<0] <- 0
       }
-      resids$Ar <- Ar / mean(Ar,na.rm=TRUE)
+      if(difference){ Ar - mean(Ar,na.rm=TRUE) }
+      else{ resids$Ar <- Ar / mean(Ar,na.rm=TRUE) }
       curves$Ar <- mean(Ar,na.rm=TRUE)
       modelStats$Ar <- arStats
       do.ar <- TRUE
@@ -483,7 +489,8 @@
             Friedman <- supsmu(x = seq_len(nY2), y = y2, wt = wt, span = span,
                                periodic = FALSE, bass = bass)[["y"]]
         }
-        resids$Friedman <- y2 / Friedman
+        if(difference){ resids$Friedman <- y2 - Friedman }
+        else{ resids$Friedman <- y2 / Friedman }
         curves$Friedman <- Friedman
         modelStats$Friedman <-
             list(method = "Friedman",
@@ -557,7 +564,8 @@
                  main=gettext("Spline", domain="R-dplR"),
                  xlab=gettext("Age (Yrs)", domain="R-dplR"),
                  ylab=gettext("RWI", domain="R-dplR"))
-            abline(h=1)
+            if(difference){ abline(h=0) }
+            else{ abline(h=1) }
         }
 
         if(do.mne){
@@ -566,7 +574,9 @@
                  domain="R-dplR"),
                  xlab=gettext("Age (Yrs)", domain="R-dplR"),
                  ylab=gettext("RWI", domain="R-dplR"))
-            abline(h=1)
+          if(difference){ abline(h=0) }
+          else{ abline(h=1) }
+          
         }
 
         if(do.mean){
@@ -574,14 +584,17 @@
                  main=gettext("Horizontal Line (Mean)", domain="R-dplR"),
                  xlab=gettext("Age (Yrs)", domain="R-dplR"),
                  ylab=gettext("RWI", domain="R-dplR"))
-            abline(h=1)
+          if(difference){ abline(h=0) }
+          else{ abline(h=1) }
+          
         }
         if(do.ar){
           plot(resids$Ar, type="l", col=cols[4],
                main=gettextf("Ar", domain="R-dplR"),
                xlab=gettext("Age (Yrs)", domain="R-dplR"),
                ylab=gettext("RWI", domain="R-dplR"))
-          abline(h=1)
+          if(difference){ abline(h=0) }
+          else{ abline(h=1) }
           mtext(text="(Not plotted with raw series)",side=3,line=-1,cex=0.75)
         }
 
@@ -590,7 +603,9 @@
                  main=gettext("Friedman's Super Smoother", domain="R-dplR"),
                  xlab=gettext("Age (Yrs)", domain="R-dplR"),
                  ylab=gettext("RWI", domain="R-dplR"))
-            abline(h=1)
+          if(difference){ abline(h=0) }
+          else{ abline(h=1) }
+          
         }
         if(do.hug){
           plot(resids$ModHugershoff, type="l", col=cols[6],
@@ -598,7 +613,9 @@
                             domain="R-dplR"),
                xlab=gettext("Age (Yrs)", domain="R-dplR"),
                ylab=gettext("RWI", domain="R-dplR"))
-          abline(h=1)
+          if(difference){ abline(h=0) }
+          else{ abline(h=1) }
+          
         }
         
     }

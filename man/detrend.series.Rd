@@ -13,7 +13,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
                nyrs = NULL, f = 0.5, pos.slope = FALSE,
                constrain.nls = c("never", "when.fail", "always"),
                verbose = FALSE, return.info = FALSE,
-               wt, span = "cv", bass = 0)
+               wt, span = "cv", bass = 0, difference = FALSE)
 }
 \arguments{
 
@@ -70,6 +70,9 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 
   \item{bass}{ a \code{numeric} value controlling the smoothness of the
     fitted curve in method \code{"Friedman"}. See \code{\link{supsmu}}. }
+
+  \item{difference}{ a \code{logical} flag.  Compute residuals by substraction if TRUE, otherwise use division. }
+
 }
 \details{
   This detrends and standardizes a tree-ring series.  The detrending is
@@ -244,7 +247,8 @@ names(series) <- rownames(ca533)
 series.rwi <- detrend.series(y = series, y.name = "CAM011", verbose=TRUE)
 # see plot with three methods
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
-                             method=c("Spline", "ModNegExp","Friedman"))
+                             method=c("Spline", "ModNegExp","Friedman"),
+                             difference=TRUE)
 # see plot with two methods
 # interesting to note difference from ~200 to 250 years 
 # in terms of what happens to low frequency growth

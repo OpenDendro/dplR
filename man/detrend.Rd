@@ -12,7 +12,7 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
         nyrs = NULL, f = 0.5, pos.slope = FALSE,
         constrain.nls = c("never", "when.fail", "always"),
         verbose = FALSE, return.info = FALSE,
-        wt, span = "cv", bass = 0)
+        wt, span = "cv", bass = 0, difference = FALSE)
 }
 \arguments{
 
@@ -63,6 +63,9 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
 
   \item{bass}{ a \code{numeric} value controlling the smoothness of the
     fitted curve in method \code{"Friedman"}. See \code{\link{supsmu}}. }
+
+  \item{difference}{ a \code{logical} flag.  Compute residuals by substraction if TRUE, otherwise use division. }
+
 }
 \details{
   See \code{\link{detrend.series}} for details on detrending
@@ -108,7 +111,10 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
 data(ca533)
 ## Detrend using modified exponential decay. Returns a data.frame
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
-## Detrend using modified Hugershoff curve and return info on the model fits. 
+## Detrend using a slines on power transformed data and compute residuals via subtraction
+ca533.rwi <- detrend(rwl = powt(ca533), method = "Spline", difference = TRUE)
+
+## Detrend using modified Hugershoff curve and return info on the model fits.
 ## Returns a list with: series, curves, modelinfo and data.info
 data(co021)
 co021.rwi <- detrend(rwl = co021, method = "ModHugershoff", return.info=TRUE)

@@ -10,8 +10,9 @@
                        abline.lty=1, abline.lwd=1,
                        xlab="Time",ylab="RWI",
                        ...) {
-  if(!is.data.frame(crn)) stop("'crn' must be a data.frame")
-
+  #if(!is.data.frame(crn)) stop("'crn' must be a data.frame")
+  if(!("crn" %in% class(crn))) stop("'crn' must be class crn")
+  
   op <- par(no.readonly=TRUE) # Save par
   on.exit(par(op))            # Reset par on exit
   par(mar=c(3, 3, 3, 3), mgp=c(1.1, 0.1, 0),

@@ -15,6 +15,7 @@ pass.filt(y,W,type=c("low", "high", "stop", "pass"),
   \item{W}{ a \code{numeric} vector giving frequency or period of the filter. See details. }
   \item{type}{ a \code{character} giving the type of filter. Values can be "low", "high", "stop", or "pass" for low-pass, high-pass, band-pass, or stop-pass filters. Defaults to "low". }
   \item{method}{ a \code{character} specifying indicating whether to use a Butterworth or a type I Chebyshev filter.}
+  \item{n}{ a \code{numeric} value giving the order of the filter. Larger numbers create steeper fall off.}
   \item{Rp}{ a \code{numeric} value giving the dB for the passband ripple. }
 }
 

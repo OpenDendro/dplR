@@ -5,7 +5,8 @@ spag.plot <- function(rwl, zfac=1, useRaster = FALSE, res = 150, ...){
         stop("empty 'rwl' given, nothing to draw")
     }
     rwl2 <- scale(rwl * zfac, center = TRUE, scale = FALSE) # result is a matrix
-    yr <- as.numeric(rownames(rwl2))
+    rwl2 <- as.rwl(rwl2)
+    yr <- time(rwl2)
     first.year <- as.matrix(apply(rwl2, 2, yr.range, yr.vec=yr))[1, ]
     neworder <- order(first.year, decreasing=FALSE)
     rwl2 <- rwl2[, neworder, drop=FALSE]

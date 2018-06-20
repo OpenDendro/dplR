@@ -1,5 +1,25 @@
 * CHANGES IN dplR VERSION 1.6.9
 
+File: spag.plot.R and .Rd
+----------------
+
+- Small bug fix
+
+File: crn.plot.R and .Rd
+----------------
+
+- Small bug fix
+
+File: as.rwl.R and .Rd
+----------------
+
+- Adding a convenience function to transform data.frame or matrix to class rwl
+
+File: powt.R and .Rd
+----------------
+
+- Small change so that powt returns class rwl as well as data.frame
+
 File: pass.filt.R and .Rd
 ----------------
 
@@ -16,8 +36,9 @@ File: detrend.series.R and .Rd
 
 - The function will now return the curves used for detrnding the series if return.info is TRUE.  Help file ammended.
 
-- Added the Hughershoff curve as an method for detrending. It's done along the lines of ModNegExp with straight line if the nls call fais. 
+- Added the Hughershoff curve as an method for detrending. It's done along the lines of ModNegExp with straight line if the nls call fails. 
 
+- Added option to compute differences via subtraction rather than division. 
 
 File: detrend.R
 ----------------

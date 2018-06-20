@@ -72,10 +72,11 @@ crn.plot(cana157,add.spline=TRUE, nyrs=32)
 cana157.mod <- cana157
 cana157.mod$samp.depth <- NULL
 crn.plot(cana157.mod, add.spline = TRUE)
-## A raw ring-width chronology
+## A raw ring-width chronology with prewhitening
 data(ca533)
 ca533.raw.crn <- chron(ca533, prefix = "CAM", prewhiten=TRUE)
-plot(ca533.raw.crn,abline.pos=NULL,ylab='mm')  
+plot(ca533.raw.crn,ylab='mm',
+     abline.pos=mean(ca533.raw.crn[,1],na.rm = TRUE))  
 
 \dontrun{
   # not pretty - but illustrates the coloring options

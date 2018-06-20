@@ -38,7 +38,7 @@ spag.plot(rwl, zfac = 1, useRaster = FALSE, res = 150, \dots)
 \seealso{ \code{\link{seg.plot}} }
 \examples{library(utils)
 data(co021)
-spag.plot(co021)
+plot(co021,plot.type = "spag")
 spag.plot(co021, zfac = 2)
 }
 \keyword{ hplot }

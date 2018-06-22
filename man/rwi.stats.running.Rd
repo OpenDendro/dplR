@@ -132,6 +132,8 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
   Fritts (2001) for further details for computational details on the
   output.  The signal-to-noise ratio is calculated following Cook and 
   Pederson (2011).
+  
+  Note that Buras (2017) cautions against using the expressed population signal as a statistic to determine the whether a chronology correctly represents the population signal of a data set. He reccomends the use of subsample signal strength (\code{\link{sss}}) over EPS.
 
   If desired, the \code{\var{rwi}} can be filtered in the same manner
   as the family of cross-dating functions using \code{\var{prewhiten}} and
@@ -198,6 +200,8 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
 }
 \references{
 
+  Buras, A. (2017) A comment on the Expressed Population Signal. Dendrochronologia 44:130-132. 
+
   Cook, E. R. and Kairiukstis, L. A., editors (1990) \emph{Methods of
     Dendrochronology: Applications in the Environmental Sciences}.
     Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
@@ -236,51 +240,5 @@ rwi.stats(gp.rwi, gp.ids)
 rwi.stats(gp.rwi, gp.ids, period="common")
 rwi.stats.legacy(gp.rwi, gp.ids) # rwi.stats prior to dplR 1.5.3
 
-\dontrun{
-  library(graphics)
-  def.par <- par(no.readonly=TRUE)
-  ## Plot the chronology showing a potential cutoff year based on EPS
-  eps.cut <- 0.92 # An arbitrary EPS cutoff for demonstration
-  gp.crn <- chron(gp.rwi)
-  ## Running stats on the rwi with an window
-  foo <- rwi.stats.running(gp.rwi, gp.ids, window.length = 80)
-  yrs <- time(gp.crn)
-  bar <- data.frame(yrs = c(min(yrs), foo$mid.year, max(yrs)),
-                    eps = c(NA, foo$eps, NA))
-  par(mar = c(2, 2, 2, 2), mgp = c(1.1, 0.1, 0), tcl = 0.25,
-      mfcol = c(2, 1), xaxs='i')
-  plot(yrs, gp.crn[, 1], type = "n", xlab = "Year",
-       ylab = "RWI", axes=FALSE)
-  cutoff <- max(bar$yrs[bar$eps < eps.cut], na.rm = TRUE)
-  xx <- c(500, 500, cutoff, cutoff)
-  yy <- c(-1, 3, 3, -1)
-  polygon(xx, yy, col = "grey80")
-  abline(h = 1, lwd = 1.5)
-  lines(yrs, gp.crn[, 1], col = "grey50")
-  lines(yrs, ffcsaps(gp.crn[, 1], nyrs = 32), col = "red", lwd = 2)
-  axis(1); axis(2); axis(3);
-  par(new = TRUE)
-  ## Add EPS
-  plot(bar$yrs, bar$eps, type = "b", xlab = "", ylab = "",
-       axes = FALSE, pch = 20, col = "blue")
-  axis(4, at = pretty(foo$eps))
-  mtext("EPS", side = 4, line = 1.1)
-  box()
-  ## Second plot is the chronology after the cutoff only
-  ## Chronology is rebuilt using just years after cutoff but
-  ## that difference is essentially nil.
-  yr.mask <- yrs > cutoff
-  yrs2 <- yrs[yr.mask]
-  gp.crn2 <- chron(gp.rwi[yr.mask, ])
-  plot(yrs2, gp.crn2[, 1], type = "n",
-       xlab = "Year", ylab = "RWI", axes=FALSE)
-  abline(h = 1, lwd = 1.5)
-  lines(yrs2, gp.crn2[, 1], col = "grey50")
-  lines(yrs2, ffcsaps(gp.crn2[, 1], nyrs = 32),
-        col = "red", lwd = 2)
-  axis(1); axis(2); axis(3); axis(4)
-  box()
-  par(def.par)
-}
 }
 \keyword{ misc }

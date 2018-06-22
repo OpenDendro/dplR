@@ -1,5 +1,10 @@
 * CHANGES IN dplR VERSION 1.6.9
 
+File: sss.R and .Rd
+----------------
+
+- Adding subsample signal strength as a stand alone function
+
 File: spag.plot.R and .Rd
 ----------------
 
@@ -29,7 +34,7 @@ File: pass.filt.R and .Rd
 File: rwl.stats.R and .Rd
 ----------------
 
-- Removing sens1 and sens2 from this function. At world dendro I'm still seeing these being used by dplR users. It's a terrible stat. I'm taking it out.  Help file ammended.
+- Removing sens1 and sens2 from this function. At world dendro I'm still seeing these being used by dplR users. It's a terrible stat. I'm taking it out.  Help file amended.
 
 File: detrend.series.R and .Rd
 ----------------

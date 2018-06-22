@@ -171,22 +171,20 @@ The result in this case is likely to be virtually identical to truncating after 
 the chronology as in Figure~\ref{fig:crn.plot.sd}.
 
 A more interesting and likely more robust approach is to truncate via the
-expressed population signal (EPS). The result is plotted in 
+subsample signal strength (SSS). The result is plotted in 
 Figure~\ref{fig:crn.plot.eps}.
 
 <<h, fig=TRUE>>=
 wa082.ids <- autoread.ids(wa082)
-eps.cut <- 0.75 # An arbitrary EPS cutoff for demonstration
-wa082.rwi.stats <- rwi.stats.running(wa082.rwi, wa082.ids, window.length = 30)
+sss.cut <- 0.85
+wa082.sss <- sss(wa082.rwi, wa082.ids)
 yrs <- time(wa082.crn)
-bar <- data.frame(yrs = c(min(yrs), wa082.rwi.stats$mid.year, max(yrs)),
-                  eps = c(NA, wa082.rwi.stats$eps, NA))
 op <- par(no.readonly=TRUE)
 par(mar = c(2, 2, 2, 2), mgp = c(1.1, 0.1, 0), tcl = 0.25,
     mfcol = c(2, 1), xaxs='i')
 plot(yrs, wa082.crn[, 1], type = "n", xlab = "Year",
      ylab = "RWI", axes=FALSE)
-cutoff <- max(bar$yrs[bar$eps < eps.cut], na.rm = TRUE)
+cutoff <- max(yrs[wa082.sss < 0.85])
 xx <- c(500, 500, cutoff, cutoff)
 yy <- c(-1, 3, 3, -1)
 polygon(xx, yy, col = "grey80")
@@ -196,23 +194,25 @@ lines(yrs, ffcsaps(wa082.crn[, 1], nyrs = 30), col = "red", lwd = 2)
 axis(1); axis(2); axis(3);
 par(new = TRUE)
 ## Add EPS
-plot(bar$yrs, bar$eps, type = "b", xlab = "", ylab = "",
-     axes = FALSE, pch = 20, col = "blue")
-axis(4, at = pretty(wa082.rwi.stats$eps))
-mtext("EPS", side = 4, line = 1.1)
+plot(yrs, wa082.sss, type = "l", xlab = "", ylab = "",
+     axes = FALSE, col = "blue")
+abline(h=0.85,col="blue",lty="dashed")
+axis(4, at = pretty(wa082.sss))
+mtext("SSS", side = 4, line = 1.1)
 box()
 ## Second plot is the chronology after the cutoff only
 ## Chronology is rebuilt using just years after cutoff but
-## that difference is essentially nil.
+## the difference by doing it this way rather than just truncating
+## is essentially nil.
 yr.mask <- yrs > cutoff
 yrs2 <- yrs[yr.mask]
 wa082.rwi2 <- detrend(wa082[yr.mask, ], method="Spline")
-wa082.crn.eps <- chron(wa082.rwi2)
-plot(yrs2, wa082.crn.eps[, 1], type = "n",
+wa082.crn2 <- chron(wa082.rwi2)
+plot(yrs2, wa082.crn2[, 1], type = "n",
      xlab = "Year", ylab = "RWI", axes=FALSE)
 abline(h = 1, lwd = 1.5)
-lines(yrs2, wa082.crn.eps[, 1], col = "grey50")
-lines(yrs2, ffcsaps(wa082.crn.eps[, 1], nyrs = 30),
+lines(yrs2, wa082.crn2[, 1], col = "grey50")
+lines(yrs2, ffcsaps(wa082.crn2[, 1], nyrs = 30),
       col = "red", lwd = 2)
 axis(1); axis(2); axis(3); axis(4)
 box()

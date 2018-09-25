@@ -5,8 +5,10 @@ bai.out <- function(rwl, diam = NULL) {
     if(!is.null(diam)) {
         if(ncol(rwl) != nrow(diam))
             stop("dimension problem: ", "'ncol(rw)' != 'nrow(diam)'")
-        if(!all(diam[, 1] %in% names(rwl)))
-            stop("series ids in 'diam' and 'rwl' do not match")
+        if(!all(diam[, 1] == names(rwl))){
+          print(data.frame(rwlNames=names(rwl),seriesID=diam[,1],test=diam[, 1] == names(rwl)))
+          stop("series ids in 'diam' and 'rwl' do not match exactly.")
+      }
         diam.vec <- diam[, 2]
     }
 

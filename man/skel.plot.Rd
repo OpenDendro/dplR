@@ -51,7 +51,8 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9,
   e.g., \code{\var{width} = 10}, \code{\var{height} = 7.5},
   \code{\var{paper} = "USr"}.  These plots are designed to be printable
   and cut into strips to align long series.  Statistical cross-dating is
-  possible if the data are output.
+  possible if the data are output but more easily done using the functions
+  \code{\link{xskel.plot}} and \code{\link{xskel.ccf.plot}}.
 
 }
 \value{
@@ -74,7 +75,8 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9,
   
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
-\seealso{  \code{\link{Devices}}, \code{\link{hanning}}  }
+\seealso{  \code{\link{Devices}}, \code{\link{hanning}},
+           \code{\link{xskel.plot}}, \code{\link{xskel.ccf.plot}}}
 
 \examples{library(utils)
 data(co021)

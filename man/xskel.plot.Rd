@@ -57,6 +57,8 @@ xskel.plot(rwl, series, series.yrs = as.numeric(names(series)),
   of years (unless the plotting device is wider than is typical).  For
   that reason the user will get a warning if \code{\var{win.width}} is
   greater than 100 years.
+  
+  Old-school skeleton plots to print on paper are made with \code{\link{skel.plot}}.
 }
 \value{
   None.  Invoked for side effect (plot).

@@ -28,7 +28,7 @@ File: powt.R and .Rd
 File: pass.filt.R and .Rd
 ----------------
 
-- Adding a wrapper function for signal:butter and signal:filtfilt to get low-pass, high-pass, band-pass filtering implemented as per a user request.
+- Adding a wrapper function for signal::butter and signal::filtfilt to get low-pass, high-pass, band-pass filtering implemented as per a user request.
 
 
 File: rwl.stats.R and .Rd
@@ -41,7 +41,7 @@ File: detrend.series.R and .Rd
 
 - The function will now return the curves used for detrending the series if return.info is TRUE.  Help file amended.
 
-- Added the Hughershoff curve as an method for detrending. It's done along the lines of ModNegExp with straight line if the nls call fails. 
+- Added the Hugershoff curve as an method for detrending. It's done along the lines of ModNegExp with straight line if the nls call fails. 
 
 - Added option to compute differences via subtraction rather than division. 
 

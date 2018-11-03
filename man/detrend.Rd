@@ -8,7 +8,8 @@
 }
 \usage{
 detrend(rwl, y.name = names(rwl), make.plot = FALSE,
-        method = c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff"),
+        method = c("Spline", "ModNegExp", "Mean", "Ar", "Friedman",
+                   "ModHugershoff"),
         nyrs = NULL, f = 0.5, pos.slope = FALSE,
         constrain.nls = c("never", "when.fail", "always"),
         verbose = FALSE, return.info = FALSE,
@@ -27,8 +28,8 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
     and detrended data if \code{TRUE}.  See details below. }
   
   \item{method}{ a \code{character} vector to determine the detrending
-    methods.  See details below.  Possible values are all subsets of
-    \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff")}.  
+    methods.  See details below.  Possible values are all subsets of\cr
+    \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff")}.
     Defaults to using all the available methods.}
   
   \item{nyrs}{ a number giving the rigidity of the smoothing spline,
@@ -111,13 +112,16 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
 data(ca533)
 ## Detrend using modified exponential decay. Returns a data.frame
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
-## Detrend using a slines on power transformed data and compute residuals via subtraction
-ca533.rwi <- detrend(rwl = powt(ca533), method = "Spline", difference = TRUE)
+## Detrend using a slines on power transformed data and compute
+## residuals via subtraction
+ca533.rwi <- detrend(rwl = powt(ca533), method = "Spline",
+                     difference = TRUE)
 
-## Detrend using modified Hugershoff curve and return info on the model fits.
-## Returns a list with: series, curves, modelinfo and data.info
+## Detrend using modified Hugershoff curve and return info on the model
+## fits. Returns a list with: series, curves, modelinfo and data.info
 data(co021)
-co021.rwi <- detrend(rwl = co021, method = "ModHugershoff", return.info=TRUE)
+co021.rwi <- detrend(rwl = co021, method = "ModHugershoff",
+                     return.info=TRUE)
 
 \dontrun{
 library(grDevices)

@@ -85,7 +85,7 @@ plotRings(year, trwN, trwS = NA_real_,
 
 This makes a plot, drawing all rings from tree-ring series on a Cartesian plane of up to four cardinal directions (N, S, E, W) defining the eccentricity of the stem. It can be plotted using only data from one ratio, or up to four different radii from same tree. This function can plot each individual ring as an animation within the R-GUI, as a \acronym{GIF}-file, or it can plot all rings at once.
 
-Animations require a functional installation of ImageMagick [https://www.imagemagick.org] where the ImageMagick program \code{convert} is configured correctly in the \code{PATH}. At the moment, the \code{saveGIF} option in \code{plotRings} is stable but occassionaly fails. Should users encoutner issues saving a \acronym{GIF}, the problem might be related  to the installation of ImageMagick the details of which depend on platform. See \code{\link{saveGIF}} for details.
+Animations require a functional installation of ImageMagick [\url{https://www.imagemagick.org}] where the ImageMagick program \code{convert} is configured correctly in the \code{PATH}. At the moment, the \code{saveGIF} option in \code{plotRings} is stable but occassionaly fails. Should users encoutner issues saving a \acronym{GIF}, the problem might be related  to the installation of ImageMagick the details of which depend on platform. See \code{\link{saveGIF}} for details.
 
 }
 \value{
@@ -122,8 +122,10 @@ res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],
                  col.inrings = terrain.colors(nrow(anos1))) 
 
 #Setting the length.unit
-res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5],sp="Cedrela odorata", length.unit = "mm")
-res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5],sp="Cedrela odorata", length.unit = "1/100 mm")
+res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5],sp="Cedrela odorata",
+                 length.unit = "mm")
+res <- plotRings(yrs,  anos1[,4], trwW = anos1[,5],sp="Cedrela odorata",
+                 length.unit = "1/100 mm")
 
 # Specifying x.rings highlighting only narrow rings
 res <- plotRings(yrs, anos1[,4], trwW = anos1[,5],

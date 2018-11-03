@@ -86,7 +86,7 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   \item{series}{ the main result described above (\code{data.frame} or
     list of data.frames) }
 
-  \item{curves}{ the curve or line used to detrend \code{series}. Either a \code{data.frame} or a list of  list of data.frames. }
+  \item{curves}{ the curve or line used to detrend \code{series}. Either a \code{data.frame} or a list of data.frames. }
 
   \item{model.info}{ Information about the models corresponding to each
     output series.  A \code{list} with one element for each column of

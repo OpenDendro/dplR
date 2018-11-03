@@ -39,7 +39,7 @@ File: rwl.stats.R and .Rd
 File: detrend.series.R and .Rd
 ----------------
 
-- The function will now return the curves used for detrnding the series if return.info is TRUE.  Help file ammended.
+- The function will now return the curves used for detrending the series if return.info is TRUE.  Help file amended.
 
 - Added the Hughershoff curve as an method for detrending. It's done along the lines of ModNegExp with straight line if the nls call fails. 
 

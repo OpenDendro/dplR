@@ -45,12 +45,16 @@
         rwl.i <- NULL
 
         exportFun <- c("names<-", "detrend.series")
-        out <- suppressWarnings(foreach::"%dopar%"(foreach::foreach(rwl.i=it.rwl,
+        ## Use a dummy loop to suppress possible (non-)warning from
+        ## initial call to %dopar% with a sequential backend...
+        foo <- suppressWarnings(foreach::"%dopar%"(foreach::foreach(i=1), {}))
+        ## ... but leave actual warnings on for the real loop.
+        out <- foreach::"%dopar%"(foreach::foreach(rwl.i=it.rwl,
                                                    .export=exportFun),
                               {
                                   names(rwl.i) <- rn
                                   do.call(detrend.series, detrend.args)
-                              }))
+                              })
 
         if (return.info) {
             modelCurves <- lapply(out, "[[", 2)

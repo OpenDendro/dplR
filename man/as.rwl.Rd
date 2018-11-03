@@ -12,7 +12,7 @@ as.rwl(x)
   \item{x}{ a \code{data.frame} or \code{matrix} with series as columns and years as rows }
 }
 \details{
-  This tries to coerce \code{x} into class \code{c("rwl","data,frame")}. Failable.
+  This tries to coerce \code{x} into class \code{c("rwl","data.frame")}. Failable.
 }
 \value{
   An object of class \code{c("rwl", "data.frame")} with the series in
@@ -38,7 +38,7 @@ foo <- data.frame(x1 = base.series + abs(rnorm(n, 0, 0.25)),
 # coerce to rwl and use plot and summary methods
 foo <- as.rwl(foo)
 class(foo)
-plot(foo,plot.type="spag")
+plot(foo, plot.type="spag")
 summary(foo)
 }
 \keyword{ manip }

@@ -2,7 +2,7 @@ Encoding: UTF-8
 Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
-Version: 1.6.9
+Version: 1.7.0
 Date: 2018-11-03
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",

@@ -6,16 +6,21 @@
   Applies low-pass, high-pass, band-pass, or stop-pass filtering to \code{\var{y}} with frequencies (or periods) supplied by the user.
 }
 \usage{
-pass.filt(y,W,type=c("low", "high", "stop", "pass"),
-          method = c("Butterworth","ChebyshevI"),
-          n=4, Rp = 1)
+pass.filt(y, W, type = c("low", "high", "stop", "pass"),
+          method = c("Butterworth", "ChebyshevI"),
+          n = 4, Rp = 1)
 }
 \arguments{
   \item{y}{ a \code{numeric} vector, typically a tree-ring series. }
-  \item{W}{ a \code{numeric} vector giving frequency or period of the filter. See details. }
-  \item{type}{ a \code{character} giving the type of filter. Values can be "low", "high", "stop", or "pass" for low-pass, high-pass, band-pass, or stop-pass filters. Defaults to "low". }
-  \item{method}{ a \code{character} specifying indicating whether to use a Butterworth or a type I Chebyshev filter.}
-  \item{n}{ a \code{numeric} value giving the order of the filter. Larger numbers create steeper fall off.}
+  \item{W}{ a \code{numeric} vector giving frequency or period of the
+    filter. See details. }
+  \item{type}{ a \code{character} giving the type of filter. Values can
+    be "low", "high", "stop", or "pass" for low-pass, high-pass,
+    band-pass, or stop-pass filters. Defaults to "low". }
+  \item{method}{ a \code{character} specifying indicating whether to use
+    a Butterworth (default) or a type I Chebyshev filter.}
+  \item{n}{ a \code{numeric} value giving the order of the
+    filter. Larger numbers create steeper fall off.}
   \item{Rp}{ a \code{numeric} value giving the dB for the passband ripple. }
 }
 
@@ -42,30 +47,30 @@ pass.filt(y,W,type=c("low", "high", "stop", "pass"),
 
 \examples{
 data("co021")
-x <- na.omit(co021[,1])
+x <- na.omit(co021[, 1])
 
 # 20-year low-pass filter -- note freq is passed in
-bSm <- pass.filt(x,W=0.05,type="low",method="Butterworth")
-cSm <- pass.filt(x,W=0.05,type="low",method="ChebyshevI")
-plot(x,type="l",col="grey")
-lines(bSm,col="red")
-lines(cSm,col="blue")
+bSm <- pass.filt(x, W=0.05, type="low", method="Butterworth")
+cSm <- pass.filt(x, W=0.05, type="low", method="ChebyshevI")
+plot(x, type="l", col="grey")
+lines(bSm, col="red")
+lines(cSm, col="blue")
 
 # 20-year high-pass filter -- note period is passed in
-bSm <- pass.filt(x,W=20,type="high")
-plot(x,type="l",col="grey")
-lines(bSm,col="red")
+bSm <- pass.filt(x, W=20, type="high")
+plot(x, type="l", col="grey")
+lines(bSm, col="red")
 
 # 20 to 100-year band-pass filter -- note freqs are passed in
-bSm <- pass.filt(x,W=c(0.01,0.05),type="pass")
-cSm <- pass.filt(x,W=c(0.01,0.05),type="pass",method="ChebyshevI")
-plot(x,type="l",col="grey")
-lines(bSm,col="red")
-lines(cSm,col="blue")
+bSm <- pass.filt(x, W=c(0.01, 0.05), type="pass")
+cSm <- pass.filt(x, W=c(0.01, 0.05), type="pass", method="ChebyshevI")
+plot(x, type="l", col="grey")
+lines(bSm, col="red")
+lines(cSm, col="blue")
 
 # 20 to 100-year stop-pass filter -- note periods are passed in
-cSm <- pass.filt(x,W=c(20,100),type="stop",method="ChebyshevI")
-plot(x,type="l",col="grey")
-lines(cSm,col="red")
+cSm <- pass.filt(x, W=c(20, 100), type="stop", method="ChebyshevI")
+plot(x, type="l", col="grey")
+lines(cSm, col="red")
 }
 \keyword{ smooth }

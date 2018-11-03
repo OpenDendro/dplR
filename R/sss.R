@@ -1,4 +1,4 @@
-sss <- function(rwi,ids=NULL){
+sss <- function(rwi, ids=NULL) {
   # rwi.stats is robust enough to have a single call regardless of
   # whether ids is passed in because if no ids are passed in
   # rbar.eff == rbar.bt and n.cores=n.trees
@@ -25,9 +25,9 @@ sss <- function(rwi,ids=NULL){
     # calculating n is kind of tedious:
     # we need n trees, not n cores in a year
     colnames.rwi <- colnames(rwi)
-    n <- rep(NA,nrow(rwi))
-    for(i in 1:nrow(rwi)){
-      cols.with.data <- c(!is.na(rwi[i,]))
+    n <- rep(NA_integer_, nrow(rwi))
+    for(i in seq_len(nrow(rwi))){
+      cols.with.data <- c(!is.na(rwi[i, ]))
       trees.this.year <- ids$tree[rownames(ids) %in% colnames.rwi[cols.with.data]]
       n[i] <- length(unique(trees.this.year))
     }

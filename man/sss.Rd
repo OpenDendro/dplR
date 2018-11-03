@@ -28,7 +28,7 @@ sss(rwi, ids = NULL)
 
   Subsample signal strength is calculated as \eqn{\frac{n[1+(N-1)\bar{r}]}{N[1+(n-1)\bar{r}]}}{n*(1+(N-1)*rbar) / N*(1+(n-1)*rbar)} where \code{n} and \code{N} are the number of cores or trees in the subsample and sample respectively and \code{rbar} is mean interseries correlation. If there is only one core per tree \code{n} is the sample depth in a given year (\code{rowSums(!is.na(rwi))}), \code{N} is the number of cores (\code{n.cores} as given by \code{\link{rwi.stats}}), and \code{rbar} is the mean interseries correlation between all series (\code{r.bt} as given by \code{\link{rwi.stats}}). If there are multiple cores per tree \code{n} is the number of trees present in a given year, \code{N} is the number of trees (\code{n.trees} as given by \code{\link{rwi.stats}}), and \code{rbar} is the effective mean interseries correlation (\code{r.eff} as given by \code{\link{rwi.stats}}).
 
-Readers interested in the differences between subsample signal strength and the more commonly used (running) expressed population signal should look at Buras (2017) on the common misuse of the expressed population signal as well as Cook and Pederson (2011) for a more general appraoch to categorizing variability in tree-ring data.
+Readers interested in the differences between subsample signal strength and the more commonly used (running) expressed population signal should look at Buras (2017) on the common misuse of the expressed population signal as well as Cook and Pederson (2011) for a more general approach to categorizing variability in tree-ring data.
 
 }
 

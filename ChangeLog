@@ -1,5 +1,20 @@
 * CHANGES IN dplR VERSION 1.7.0
 
+File: xdate.floater.R and .Rd
+----------------
+
+- New function to cross date a floating series (i.e., one with no dates).
+
+File: series.rwl.plot
+----------------
+
+- Cosmetic changes to plot
+
+File: intro-dplR
+----------------
+
+- typos
+
 * CHANGES IN dplR VERSION 1.6.9
 
 File: sss.R and .Rd

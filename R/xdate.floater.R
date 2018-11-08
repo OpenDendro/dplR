@@ -1,81 +1,160 @@
-xdate.floater <- function(rwl, series, min.overlap=50, n=NULL,prewhiten = TRUE, biweight=TRUE,
+xdate.floater <- function(rwl, series, series.name = NULL, min.overlap=50, n=NULL,prewhiten = TRUE, biweight=TRUE,
                           method = c("spearman", "pearson", "kendall"),
-                          make.plot = TRUE, ...) {
-
-    method2 <- match.arg(method)
-
-    # Trim series in case it has NA (e.g., submitted stright from the rwl)
-    idx.good <- !is.na(series)
-    series <- series[idx.good]
-    nSeries <- length(series)
-    print(nSeries)
-    
-    ## turn off warnings for this function
-    ## The sig test for spearman's rho often produces warnings.
-    w <- options(warn = -1)
-    on.exit(options(w))
-    
-    ## Normalize
-    tmp <- normalize.xdate(rwl, series, n, prewhiten, biweight)
-    master <- tmp$master
-
-    ## trim master so there are no NaN like dividing when
-    ## only one series for instance.
-    idx.good <- !is.nan(master)
-    master <- master[idx.good]
-    yrs <- as.numeric(names(master))
-
-    series2 <- tmp$series
-    # Pad. 
-    # The pad is max that the series could overlap at either end based
-    # on length of the series and the min overlap period specified from min.overlap
-    #
-    #  xxxxxxxxxxxxxxx series
-    #  ----------xxxxxxxxxxxxxxxxx----------master
-    #
-    # length series is 15, min overlap is 5, so pad (dashes) is 10 on each side
-    nPad <- nSeries - min.overlap
-    yrsPad <- (min(yrs)-nPad):(max(yrs)+nPad)
-    nYrsPad <- length(yrsPad)
-    masterPad <- c(rep(NA,nPad),master,rep(NA,nPad))
-    
-    #  xxxxxxxxxxxxxxx ---> drag series to end of master
-    #  ----------xxxxxxxxxxxxxxxxx----------master
-    
-    overallCor <- data.frame(startYr=yrsPad - nSeries + 1, 
-                             endYr=yrsPad, 
-                             r=rep(NA,nYrsPad), 
-                             p = rep(NA,nYrsPad), 
-                             n=rep(NA,nYrsPad))
-    for(i in (nPad+min.overlap):nYrsPad){
-      # pull the series through the master
-      # assign years to series working from end of the series
-      idx <- 1:i
-      yrs2try <- yrsPad[idx]
-      if(i==nPad+min.overlap) {y <- series2}
-      else {y <- c(rep(NA,i-(nPad+min.overlap)),series2)}
-      x <- masterPad[idx]
-      dat2cor <- data.frame(yrs=yrs2try,x,y)
-      mask <- rowSums(is.na(dat2cor))==0
-      tmp <- cor.test(dat2cor$x[mask], dat2cor$y[mask], method = method2,
-                      alternative = "greater")
-      overallCor$r[i] <- tmp$estimate
-      overallCor$p[i] <- tmp$p.val
-      overallCor$n[i] <- nrow(dat2cor)
+                          make.plot = TRUE, return.rwl = FALSE, verbose = TRUE) {
+  
+  
+  if(is.null(series.name)){ series.name <- "Unk" }
+  method2 <- match.arg(method)
+  # Trim series in case it has NA (e.g., submitted stright from the rwl)
+  idx.good <- !is.na(series)
+  series <- series[idx.good]
+  nSeries <- length(series)
+  ## turn off warnings for this function
+  ## The sig test for spearman's rho often produces warnings.
+  w <- options(warn = -1)
+  on.exit(options(w))
+  
+  ## Normalize
+  tmp <- normalize.xdate(rwl, series, n, prewhiten, biweight)
+  master <- tmp$master
+  
+  series2 <- tmp$series
+  idx.good <- !is.na(series2)
+  series2 <- series2[idx.good]
+  
+  
+  ## trim master so there are no NaN like dividing when
+  ## only one series for instance.
+  idx.good <- !is.nan(master)
+  x <- master[idx.good]
+  
+  yrs <- as.numeric(names(x))
+  y <- series2
+  
+  nx <- length(x)
+  ny <- length(y)
+  
+  minYrsOut <- numeric()
+  maxYrsOut <- numeric()
+  rOut <- numeric()
+  pOut <- numeric()
+  nOut <- numeric()
+  # need to crawl through backwards because, the start years on both the master and the series can
+  # be impacted by the nomalizing (e.g., hanning, prewhiten). The ends can't be. So crawl through backwards and calc 
+  # dates that way
+  crawl <- (nx+(ny-min.overlap)):(min.overlap)
+  edgeCounter <- 0
+  for(i in crawl){
+    if(i > nx){
+      xInd <- (i-ny+1):nx
+      yInd <- 1:(ny-(i-nx))
+      tmp <- cor.test(x[xInd],y[yInd], method = method2,alternative = "greater")
+      rOut[i] <- tmp$estimate
+      pOut[i] <- tmp$p.val
+      # the dating here is weird. The end date is going to be the max of xInd plus the overlap off the edge.
+      maxYrsOut[i] <- max(yrs[xInd]) + ny - min.overlap + edgeCounter
+      edgeCounter <- edgeCounter - 1
+      minYrsOut[i] <- maxYrsOut[i] - nSeries + 1
+      nOut[i] <- length(x[xInd])
     }
-    bestEndYr <- overallCor$endYr[which.max(overallCor$r)]
-    bestStartYr <- overallCor$startYr[which.max(overallCor$r)]
-    cat("Highest correlation is with series dates as: ", bestStartYr, " to ", bestEndYr, "\n")
-    print(overallCor[which.max(overallCor$r),])
-    ## plot
-    if (make.plot) {
-      par(mar=c(4, 2, 2, 1) + 0.1, mgp=c(1.25, 0.25, 0), tcl=0.25)
-      plot(overallCor$endYr,overallCor$r,type="n",xlab="Year", ylab="r")
-      lines(overallCor$endYr,overallCor$r,col="grey")
-      abline(v=bestEndYr,col="red",lty="dashed")
-      mtext(text = bestEndYr,side = 3,line = 0.1,at = bestEndYr,col="red")
+    if(i >= ny & i <= nx){
+      xInd <- (i-ny+1):i
+      tmp <- cor.test(x[xInd],y, method = method2,alternative = "greater")
+      rOut[i] <- tmp$estimate
+      pOut[i] <- tmp$p.val
+      maxYrsOut[i] <- max(yrs[xInd])
+      # the end date is right, so subtract the original series length to get start date
+      minYrsOut[i] <- max(yrs[xInd]) - nSeries + 1
+      nOut[i] <- length(x[xInd])
     }
+    if(i < ny){
+      xInd <- 1:i
+      yInd <- xInd + ny-length(xInd)
+      tmp <- cor.test(x[xInd],y[yInd], method = method2,alternative = "greater")
+      rOut[i] <- tmp$estimate
+      pOut[i] <- tmp$p.val
+      maxYrsOut[i] <- max(yrs[xInd])
+      # the end date is right, so subtract the original series length to get start date
+      minYrsOut[i] <- max(yrs[xInd]) - nSeries + 1
+      nOut[i] <- length(x[xInd])
+    }
+  }
+  res <- data.frame(minYrsOut,maxYrsOut,rOut,pOut,nOut)
+  names(res) <- c("first","last","r","p","n")
+  mask <- rowSums(is.na(res))==0
+  res <- res[mask,]
+  # best cor
+  rBest <- which.max(res$r)
+  firstBest <- res$first[rBest]
+  lastBest <- res$last[rBest]
+  rBest <- res$r[rBest]
+  pBest <- res$p[rBest]
+  
+  names(series) <- firstBest:lastBest
+  tmp <- as.rwl(data.frame(series))
+  names(tmp) <- series.name 
+  rwlOut <- combine.rwl(rwl,tmp)
+  
+  ## plot
+  if (make.plot) {
+    op <- par(no.readonly=TRUE) # Save par
+    on.exit(par(op))            # Reset par on exit
     
-    res <- overallCor
-    res
+    # plot 1 -- seg plot with new series inserted
+    yr <- as.numeric(row.names(rwlOut))
+    first.year <- as.matrix(apply(rwlOut, 2, yr.range, yr.vec=yr))[1, ]
+    last.year <- as.matrix(apply(rwlOut, 2, yr.range, yr.vec=yr))[2, ]
+    neworder <- order(first.year, decreasing=FALSE)
+    segs <- rwlOut[, neworder, drop=FALSE]
+    n.col <- ncol(segs)
+    seq.col <- seq_len(n.col)
+    for (i in seq.col) {
+      segs[[i]][!is.na(segs[[i]])] <- i
+    }
+    seg2col <- which(names(segs)==series.name)
+    segs.axis2 <- names(segs)
+    segs.axis4 <- names(segs)
+    segs.axis2[seq(2,n.col,by=2)] <- NA
+    segs.axis4[seq(1,n.col,by=2)] <- NA
+    
+    par(mfcol=c(2,1))
+    par(mar=c(-0.1, 5, 2, 5) + 0.1, mgp=c(1.1, 0.1, 0), tcl=0.5, 
+        xaxs="i", yaxs="i")
+    plot(yr, segs[[1]], type="n", ylim=c(0, n.col+1), 
+         xlim=range(res$first,res$last),axes=FALSE,
+         ylab="", xlab="")
+    abline(h=seq.col,lwd=1,col="grey")
+    grid(ny = NA)
+    apply(segs, 2, lines, x=yr, lwd=4,lend=2, col="grey60")
+    lines(x=yr,y = segs[[seg2col]], lwd=4,lend=2, col="darkgreen")
+    axis(2, at=seq.col, labels=segs.axis2, srt=45, tick=FALSE, las=2)
+    axis(4, at=seq.col, labels=segs.axis4, srt=45, tick=FALSE, las=2)
+    axis(3)
+    box()
+    # plot 2
+    sig <- qnorm(1 - 0.05 / 2) / sqrt(res$n)
+    par(mar=c(2, 5, -0.1, 5) + 0.1, yaxs="r")
+    plot(res$last,res$r,type="n",xlab="Year", ylab="End Year Cor.",
+         xlim=range(res$first,res$last),axes=FALSE)
+    lines(res$last,sig, lty="dashed")
+    lines(res$last,res$r,col="grey")
+    abline(h=0)
+    points(lastBest,rBest,col="darkgreen",pch=20)
+    segments(x0 = firstBest, x1 = lastBest,y0 = rBest, y1 = rBest, 
+             lty="dashed", col="darkgreen")
+    points(firstBest,rBest,col="darkgreen",pch=20)
+    text(x = lastBest, y = rBest, labels = lastBest, 
+         col="darkgreen", adj=c(0,1))
+    text(x = firstBest, y = rBest, labels = firstBest, 
+         col="darkgreen", adj = c(1,1))
+    axis(1);axis(2);box()
+  }
+  if(return.rwl){
+    res <- list(res,rwlOut)
+  }
+  if(verbose){
+    cat("Years searched", min(res$first), "to", max(res$last), "\n")
+    cat("Highest overall correlation for series is", round(rBest,2), "with dates", firstBest, "to", lastBest, "\n")
+  }
+  res
 }

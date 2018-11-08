@@ -87,20 +87,29 @@ series.rwl.plot <-
     box()
     lines(yrs, series2, lwd=1.5, col=col.pal[1])
     lines(yrs, master, lwd=1.5, col=col.pal[2])
-    legend(x = min(yrs, na.rm=TRUE), y = max(series2, master, na.rm=TRUE),
-           legend = gettext(c("Detrended Series", "Detrended Master"),
-           domain="R-dplR"),
+    legend(x = "bottomleft",
+           legend = gettext(c("Series", "Master"),
+           domain="R-dplR"),ncol = 2,
            col = c(col.pal[1], col.pal[2]), lty = "solid", lwd=1.5, bg="white")
     ## plot 2
     lm1 <- lm(master ~ series2)
-    tmp <- round(summary(lm1)$r.squared, 2)
+    #tmp <- round(summary(lm1)$r.squared, 2)
+    tmp <- round(cor(series2,master),2)
     plot(series2, master, type="p",
          ylab=gettext("Master", domain="R-dplR"),
          xlab=gettext("Series", domain="R-dplR"), pch=20,
-         sub=bquote(R^2==.(tmp)))
+         sub=bquote(r==.(tmp)))
     abline(coef = coef(lm1), lwd=2)
 
     ## plot 3
+    
+    # run corr.series.seg and stick the correlations in the boxes?
+    tmp <- corr.series.seg(rwl, series, series.yrs = series.yrs,
+                    seg.length = seg.length, bin.floor = bin.floor, n = n,
+                    prewhiten = prewhiten, biweight = biweight, 
+                    make.plot = FALSE, floor.plus1=floor.plus1)
+    cors4boxes <- round(tmp[[1]],2)
+    
     plot(yrs, series2, type="n", ylim=c(-1, 1), ylab="",
          xlab=gettext("Year", domain="R-dplR"),
          sub=gettextf("Segments: length=%d,lag=%d,bin.floor=%d",
@@ -111,16 +120,21 @@ series.rwl.plot <-
     axis(3, at=even.ticks)
     box()
     for (i in seq(1, nbins, by=2)) {
+        
         xx <- bins[i, ]
+        xmid <- mean(xx)
         xx <- c(xx, rev(xx))
         yy <- c(0, 0, 0.5, 0.5)
         polygon(xx, yy, col="grey90")
+        text(x=xmid,y = 0.25,labels = cors4boxes[i],cex = 0.75)
     }
     for (i in seq(2, nbins, by=2)) {
         xx <- bins[i, ]
+        xmid <- mean(xx)
         xx <- c(xx, rev(xx))
         yy <- c(0, 0, -0.5, -0.5)
         polygon(xx, yy, col="grey90")
+        text(x=xmid,y = -0.25,labels = cors4boxes[i],cex = 0.75)
     }
     ## plot 4
     par(xpd = TRUE)

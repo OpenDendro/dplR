@@ -6,10 +6,10 @@
   Pulls an undated series through a dated rwl file in order to try to establish dates
 }
 \usage{
-xdate.floater(rwl, series, min.overlap = 50, n = NULL,
+xdate.floater(rwl, series, min.overlap = 50, series.name =  NULL, n = NULL,
              prewhiten = TRUE, biweight = TRUE,
              method = c("spearman", "pearson","kendall"),
-             make.plot = TRUE,\dots)
+             make.plot = TRUE,return.rwl = FALSE, verbose = TRUE)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as
@@ -29,13 +29,15 @@ xdate.floater(rwl, series, min.overlap = 50, n = NULL,
     used.  Defaults to \code{"spearman"}.  See \code{\link{cor.test}}. }
   \item{make.plot}{ \code{logical flag} indicating whether to make a
     plot. }
-  \item{\dots}{ other arguments passed to plot. }
+  \item{return.rwl}{ \code{logical flag} indicating whether to make a
+    plot. }
+  \item{verbose}{ \code{logical flag} indicating whether to print some results to screen. }
 }
 \details{
-here
+Coming soon
 }
 \value{
-here
+Coming
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{
@@ -44,19 +46,18 @@ here
 }
 \examples{library(utils)
 data(co021)
-plot(co021)
+summary(co021)
 foo <- co021[,"645232"]
-# 645232  1466 1659  194
+# 645232  1466 1659
 bar <- co021
 bar$"645232" <- NULL
-out <- xdate.floater(bar, foo, min.overlap = 50)
+out <- xdate.floater(bar, foo, min.overlap = 50, series.name = "Undated")
 
 foo <- co021[,"646118"]
+# 646118  1176 1400
 bar <- co021
 bar$"646118" <- NULL
-out <- xdate.floater(bar, foo, min.overlap = 10)
-# check
-summary(co021)
+out <- xdate.floater(bar, foo, min.overlap = 100, series.name = "Undated")
 
 }
 \keyword{ manip }

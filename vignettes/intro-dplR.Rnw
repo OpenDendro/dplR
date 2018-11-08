@@ -4,7 +4,7 @@
 \usepackage{dplR} % dplR settings - needs some work
 \usepackage[utf8]{inputenx} % R CMD build wants this here, not in dplR.sty
 \input{ix-utf8enc.dfu} % more characters supported
-\title{An introduction to dplR} 
+\title{An Introduction to dplR} 
 \author{Andy Bunn \and Mikko Korpela}
 <<echo=FALSE,results=hide>>=
 library(dplR) # latexify(), latexDate()

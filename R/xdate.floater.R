@@ -14,6 +14,7 @@ xdate.floater <- function(rwl, series, series.name = NULL, min.overlap=50, n=NUL
   w <- options(warn = -1)
   on.exit(options(w))
   
+  
   ## Normalize
   tmp <- normalize.xdate(rwl, series, n, prewhiten, biweight)
   master <- tmp$master
@@ -33,6 +34,16 @@ xdate.floater <- function(rwl, series, series.name = NULL, min.overlap=50, n=NUL
   
   nx <- length(x)
   ny <- length(y)
+  
+  if(verbose){
+    cat("Original rwl years: ", min(time(rwl)), " to ", max(time(rwl))," (", length(time(rwl)), ")\n",sep="")
+    cat("Detrended rwl years: ", min(yrs), " to ", max(yrs), " (", length(yrs), ")\n",sep="")
+    cat("Original series length:", nSeries, "\n")
+    cat("Detrended series length:", ny, "\n")
+    cat("Minimum overlap for search:", min.overlap, "\n")
+    }
+  
+  if(min.overlap > ny) {stop("min.overlap must be less than series length after detrending")}
   
   minYrsOut <- numeric()
   maxYrsOut <- numeric()
@@ -126,6 +137,7 @@ xdate.floater <- function(rwl, series, series.name = NULL, min.overlap=50, n=NUL
     abline(h=seq.col,lwd=1,col="grey")
     grid(ny = NA)
     apply(segs, 2, lines, x=yr, lwd=4,lend=2, col="grey60")
+    abline(h=seq.col[[seg2col]],lwd=1,col="darkgreen")
     lines(x=yr,y = segs[[seg2col]], lwd=4,lend=2, col="darkgreen")
     axis(2, at=seq.col, labels=segs.axis2, srt=45, tick=FALSE, las=2)
     axis(4, at=seq.col, labels=segs.axis4, srt=45, tick=FALSE, las=2)
@@ -153,7 +165,7 @@ xdate.floater <- function(rwl, series, series.name = NULL, min.overlap=50, n=NUL
     res <- list(res,rwlOut)
   }
   if(verbose){
-    cat("Years searched", min(res$first), "to", max(res$last), "\n")
+    cat("Years searched:", min(res$first), "to", max(res$last), "\n")
     cat("Highest overall correlation for series is", round(rBest,2), "with dates", firstBest, "to", lastBest, "\n")
   }
   res

@@ -1,5 +1,11 @@
 * CHANGES IN dplR VERSION 1.7.0
 
+File: ccf.series.rwl.R and .Rd
+----------------
+
+- Added new argument to allow user to specify whether a series or master gets 
+  passed to ccf as x. The convention was screwy.
+
 File: xdate.floater.R and .Rd
 ----------------
 

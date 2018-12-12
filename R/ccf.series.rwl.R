@@ -3,7 +3,7 @@ ccf.series.rwl <- function(rwl, series,
                            seg.length = 50, bin.floor = 100, n = NULL,
                            prewhiten = TRUE, biweight = TRUE,
                            pcrit = 0.05, lag.max = 5, make.plot = TRUE,
-                           floor.plus1 = FALSE, ...) {
+                           floor.plus1 = FALSE, series.x, ...) {
 
     ## Handle different types of 'series'
     tmp <- pick.rwl.series(rwl, series, series.yrs)
@@ -79,8 +79,15 @@ ccf.series.rwl <- function(rwl, series,
             bin.ccf <- NA
         }
         else {
-            tmp <- ccf(series2[mask], master[mask], lag.max=lag.max,
+            if(series.x){
+              tmp <- ccf(x = series2[mask], y = master[mask], lag.max=lag.max,
+                         plot=FALSE)  
+            }
+          else {
+            tmp <- ccf(x = master[mask], y = series2[mask], lag.max=lag.max,
                        plot=FALSE)
+          }
+            
             bin.ccf <- as.vector(tmp$acf)
         }
         res.cor[, j] <- bin.ccf

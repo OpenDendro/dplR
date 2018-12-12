@@ -11,7 +11,7 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
                seg.length = 50, bin.floor = 100, n = NULL,
                prewhiten = TRUE, biweight = TRUE, pcrit = 0.05,
                lag.max = 5, make.plot = TRUE,
-               floor.plus1 = FALSE, \dots)
+               floor.plus1 = FALSE, series.x = FALSE, \dots)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
@@ -46,6 +46,8 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
   \item{floor.plus1}{ \code{logical} flag.  If \code{TRUE}, one year is
     added to the base location of the first segment (e.g., 1601, 1701,
     1801 \acronym{AD}). }
+  \item{series.x}{ \code{logical} flag indicating whether to make the \code{series}
+    the \code{x} argument to \code{\link{ccf}}. See Details. }
   \item{\dots}{ other arguments passed to plot. }
 }
 \details{
@@ -59,12 +61,13 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
   
   The cross correlations are calculated calling
   \code{\link{ccf}} as \cr
-  \code{ccf(x=series, y=master, lag.max=lag.max, plot=FALSE)}.  Note that
-  prior to dplR version 1.60, the \code{master} was set as \code{x} and 
-  the \code{series} as \code{y}.  This was changed to be more in line with 
-  user expectations so that a missing ring in a series produces a positive
-  lag in the plot rather than a negative lag.  This structure of this call
-  does put the plots at odds with Figure 3 in Bunn (2010) which is unfortunate.
+  \code{ccf(x=master, y=series, lag.max=lag.max, plot=FALSE)} if \code{series.x} is 
+  \code{FALSE} and as \code{ccf(x=series, y=master, lag.max=lag.max, plot=FALSE)} if 
+  \code{series.x} is \code{TRUE}.  This argument was introduced in dplR version 1.7.0.
+  
+  Different users have different expectations about how missing or extra rings are 
+  notated. If \code{switch.x = FALSE} the behavior will be like COFECHA where a missing 
+  ring in a series produces a negative lag in the plot rather than a positive lag.
 
   Correlations are calculated for the first segment, then the
   second segment and so on.  Correlations are only calculated for segments with

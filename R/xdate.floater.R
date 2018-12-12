@@ -1,9 +1,7 @@
-xdate.floater <- function(rwl, series, series.name = NULL, min.overlap=50, n=NULL,prewhiten = TRUE, biweight=TRUE,
+xdate.floater <- function(rwl, series, series.name = "Unk", min.overlap=50, n=NULL,prewhiten = TRUE, biweight=TRUE,
                           method = c("spearman", "pearson", "kendall"),
                           make.plot = TRUE, return.rwl = FALSE, verbose = TRUE) {
   
-  
-  if(is.null(series.name)){ series.name <- "Unk" }
   method2 <- match.arg(method)
   # Trim series in case it has NA (e.g., submitted stright from the rwl)
   idx.good <- !is.na(series)

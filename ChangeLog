@@ -1,5 +1,16 @@
 * CHANGES IN dplR VERSION 1.7.0
 
+File: xdate-dplR.Rnw
+----------------
+
+- Rewritten to explain new args in ccf.
+
+File: xskel.ccf.plot.R and .Rd
+----------------
+
+- Added new argument to allow user to specify whether a series or master gets 
+  passed to ccf as x. The convention was screwy.
+  
 File: ccf.series.rwl.R and .Rd
 ----------------
 

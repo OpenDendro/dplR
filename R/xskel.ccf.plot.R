@@ -1,6 +1,6 @@
 xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
          win.start, win.width=50, n = NULL, prewhiten = TRUE,
-         biweight = TRUE) {
+         biweight = TRUE, series.x = FALSE) {
   ## check to see that win.width is even
   if(as.logical(win.width %% 2)) stop("'win.width' must be even")
   if (win.width > 100) {
@@ -81,8 +81,14 @@ xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
 
 
   ## ccf
-  ccf.early <- as.vector(ccf(x=series.early,y=master.early,lag.max=5,plot=FALSE)$acf)
-  ccf.late <- as.vector(ccf(x=series.late,y=master.late,lag.max=5,plot=FALSE)$acf)
+  if(series.x){
+    ccf.early <- as.vector(ccf(x=series.early,y=master.early,lag.max=5,plot=FALSE)$acf)
+    ccf.late <- as.vector(ccf(x=series.late,y=master.late,lag.max=5,plot=FALSE)$acf)
+  }
+  else{
+    ccf.early <- as.vector(ccf(x=master.early,y=series.early,lag.max=5,plot=FALSE)$acf)
+    ccf.late <- as.vector(ccf(x=master.late,y=series.late,lag.max=5,plot=FALSE)$acf)
+  }
   pcrit=0.05
   sig <- qnorm(1 - pcrit / 2) / sqrt(length(master.early))
   sig <- c(-sig, sig)

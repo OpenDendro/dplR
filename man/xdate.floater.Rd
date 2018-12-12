@@ -6,7 +6,7 @@
   Pulls an undated series through a dated rwl file in order to try to establish dates
 }
 \usage{
-xdate.floater(rwl, series, min.overlap = 50, series.name =  NULL, n = NULL,
+xdate.floater(rwl, series, series.name = "Unk", min.overlap = 50, n = NULL,
              prewhiten = TRUE, biweight = TRUE,
              method = c("spearman", "pearson","kendall"),
              make.plot = TRUE,return.rwl = FALSE, verbose = TRUE)
@@ -16,6 +16,7 @@ xdate.floater(rwl, series, min.overlap = 50, series.name =  NULL, n = NULL,
     rows such as that produced by \code{\link{read.rwl}}. }
   \item{series}{ a \code{data.frame} with series as columns and years as
     rows such as that produced by \code{\link{read.rwl}}. }
+  \item{series.name}{ a \code{character} giving a name for the series. }
   \item{min.overlap}{ number }
   \item{n}{ \code{NULL} or an integral value giving the filter length
     for the \code{\link{hanning}} filter used for removal of low

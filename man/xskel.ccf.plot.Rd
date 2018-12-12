@@ -8,7 +8,7 @@
 \usage{
 xskel.ccf.plot(rwl, series, series.yrs = as.numeric(names(series)),
                win.start, win.width = 50, n = NULL,
-               prewhiten = TRUE, biweight = TRUE)
+               prewhiten = TRUE, biweight = TRUE, series.x=FALSE)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
@@ -30,6 +30,9 @@ xskel.ccf.plot(rwl, series, series.yrs = as.numeric(names(series)),
     whitened using \code{\link{ar}}. }
   \item{biweight}{ \code{logical} flag.  If \code{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}}. }
+  \item{series.x}{ \code{logical} flag indicating whether to make the \code{series}
+    the \code{x} argument to \code{\link{ccf}}. See Details. }
+
 }
 \details{
   This function produces a plot that is a mix of a skeleton plot and a
@@ -48,8 +51,18 @@ xskel.ccf.plot(rwl, series, series.yrs = as.numeric(names(series)),
   years the percentage would be 100\%.
 
   The bottom panels show cross correlations for the first half (left)
-  and second half of the time series using function \code{\link{ccf}} as
-  \code{ccf(x=series,y=master,lag.max=5)}.
+  and second half of the time series using function \code{\link{ccf}}.
+  
+  The cross correlations are calculated calling
+  \code{\link{ccf}} as \cr
+  \code{ccf(x=master, y=series, lag.max=lag.max, plot=FALSE)} if \code{series.x} is 
+  \code{FALSE} and as \code{ccf(x=series, y=master, lag.max=lag.max, plot=FALSE)} if 
+  \code{series.x} is \code{TRUE}.  This argument was introduced in dplR version 1.7.0.
+  Different users have different expectations about how missing or extra rings are 
+  notated. If \code{switch.x = FALSE} the behavior will be like COFECHA where a missing 
+  ring in a series produces a negative lag in the plot rather than a positive lag. See the 
+  crossdating vignette \code{xdate-dplR}for more information.
+  
 
   The plot is built using the \link[grid]{Grid} package which
   allows for great flexibility in building complicated plots.  However,

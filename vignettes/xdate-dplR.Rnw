@@ -198,25 +198,27 @@ ccf.30 <- ccf.series.rwl(rwl=dat.trunc, series="643114",
 \caption{Cross-correlations between series \code{643114} and the master 
 chronology are shown for each segment (30-year segments lagged by 15 years). 
 The series correlates well at lag 0 until the 1865--1894 bin and then at 
-lag +1 prior to 1865.}
+lag -1 prior to 1865.}
 \label{fig:ccf.plot}
 \end{figure}
 
 Figure~\ref{fig:ccf.plot} shows that 1865 to 1894 is the misdated part of 
-this series. The lag of +1 over a lag of 0 indicates that the series
+this series. The lag of -1 over a lag of 0 indicates that the series
 \code{643114} is missing a ring as it better correlates to the master 
-chronology with a one-year offset. \footnote{As of dplR version 1.60,
-the cross correlations in \code{ccf.series.rwl} are calculated calling
-\code{ccf(x=series, y=master, lag.max=lag.max, plot=FALSE)}. Note that
-prior to dplR version 1.60, the \code{master} was set as \code{x} and 
-the \code{series} as \code{y}. This was changed to be more in line with 
-user expectations so that a missing ring in a series produces a positive
-lag in the plot rather than a negative lag. This structure of this call
-does put the plots at odds with Figure 3 in \cite{Bunn2010} which is 
-unfortunate.}
+chronology with a one-year offset. \footnote{As of dplR version 1.7.0,
+the cross correlations in \code{ccf.series.rwl} can be calculated calling
+\code{ccf(x=series, y=master, lag.max=lag.max, plot=FALSE)} if \code{series.x = TRUE}. 
+Otherwise, the function is called \code{ccf(x=master, y=series, lag.max=lag.max, plot=FALSE)}.
+Note that prior to dplR version 1.60 the behavior of the function was to have 
+\code{series.x = FALSE} so that \code{master} was always set as \code{x} and 
+the \code{series} as \code{y}. From versions 1.6.0 to 1.6.9 the \code{x} and \code{y}
+arguments were reversed to be more in line with (some) user expectations that a missing 
+ring in a series would produce a positive lag in the plot rather than a negative lag. 
+This structure of calling the function this was does put the plots at odds with Figure 3 
+in \cite{Bunn2010} and with the text output from COFECHA. Thus, in true splitting the baby fashion, the argument \code{series.x} was introduced in version 1.7.0 making sure that everybody will be confused.}
 
 Using a smaller time window and shorter correlation segments we
-can try to further isolate the switch from correlation at lag 0 to lag +1.
+can try to further isolate the switch from correlation at lag 0 to lag -1.
 We will, of course, have to be very careful about using such short segments
 for correlation and be ready to adjust our expectations accordingly. 
 Fortunately, in this case the trees are so exquisitely sensitive that we can
@@ -238,7 +240,7 @@ chronology at 20-year segments lagged by 10 years over 1850--1900.}
 \end{figure}
 
 By 1879 the correlation between series \code{643114} and the master is solidly at 
-lag +1 (Figure~\ref{fig:ccf.plot2}). The 1870 to 1889 correlation is marginal 
+lag -1 (Figure~\ref{fig:ccf.plot2}). The 1870 to 1889 correlation is marginal 
 while the dating at 1880--1899 seems accurate (lag 0). This suggests that 
 the dating error is between 1879 and 1889.  
 
@@ -266,7 +268,7 @@ correlation between the series and master (green bars) as well as the percentage
 of agreement between the skeleton bars for the series and master. The bottom
 panels show cross correlations for the first half (left) and second half of 
 the time series. In this case, the early period (1865--1884) shows a mismatch
-of the skeleton plot by one year coupled with a strong lag +1 correlation. }
+of the skeleton plot by one year coupled with a strong lag -1 correlation. }
 \label{fig:ccf.skel.plot}
 \end{figure}
 

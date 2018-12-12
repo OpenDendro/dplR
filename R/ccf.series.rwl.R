@@ -3,7 +3,7 @@ ccf.series.rwl <- function(rwl, series,
                            seg.length = 50, bin.floor = 100, n = NULL,
                            prewhiten = TRUE, biweight = TRUE,
                            pcrit = 0.05, lag.max = 5, make.plot = TRUE,
-                           floor.plus1 = FALSE, series.x, ...) {
+                           floor.plus1 = FALSE, series.x = FALSE, ...) {
 
     ## Handle different types of 'series'
     tmp <- pick.rwl.series(rwl, series, series.yrs)

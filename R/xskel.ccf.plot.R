@@ -1,6 +1,7 @@
 xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
          win.start, win.width=50, n = NULL, prewhiten = TRUE,
          biweight = TRUE, series.x = FALSE) {
+  
   ## check to see that win.width is even
   if(as.logical(win.width %% 2)) stop("'win.width' must be even")
   if (win.width > 100) {
@@ -213,11 +214,13 @@ xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
   popViewport(2) # back to bnd
 
   negText <- textGrob(gettext("(Negative)", domain="R-dplR"),
-                      y=unit(-0.5,"lines"),x=unit(3,"native"),
+                      y=unit(0.25,"lines"),x=unit(3,"native"),
                       just = textJust)
   posText <- textGrob(gettext("(Positive)", domain="R-dplR"),
-                      y=unit(-0.5,"lines"),x=unit(9,"native"),
+                      y=unit(0.25,"lines"),x=unit(9,"native"),
                       just = textJust)
+  
+
   for (period in c("early", "late")) {
       if (period == "early") {
           vp1 <- ccf.early.bnd.vp
@@ -255,7 +258,7 @@ xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
   periodPattern <- gettext("Period: %d-%d", domain = "R-dplR")
   agreePattern <- gettext("Skeleton Agreement %s%%", domain = "R-dplR")
 
-  grid.segments(x0=0.5,y0=0,x1=0.5,y1=0.95,
+  grid.segments(x0=0.5,y0=0.05,x1=0.5,y1=0.95,
                 default.units="npc",
                 gp=gpar(lwd=2,lend="butt", col="black"))
   pushViewport(text.bnd.vp) # description
@@ -263,6 +266,7 @@ xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
                         list(period = sprintf(periodPattern,
                              min(first.yrs), max(first.yrs)),
                              corr = early.r))
+  
   grid.text(tmp.txt,y=unit(0.65,"npc"),x=unit(0.25,"npc"),
             just = textJust)
 
@@ -292,6 +296,13 @@ xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
                              agree = sprintf(agreePattern, overall.agree)))
   grid.text(tmp.txt,y=unit(0.5,"npc"),x=unit(0.5,"npc"),
             just = textJust)
+  
+  
   popViewport(2)
-
+  series.x.txt <- ifelse(series.x,
+                         "NB: With series.x = TRUE, postive lags indicate missing rings in series",
+                         "NB: With series.x = FALSE (default), negative lags indicate missing rings in series")
+  grid.text(series.x.txt,y=unit(0.015,"npc"),x=unit(0.5,"npc"),
+            just = textJust)
+  
 }

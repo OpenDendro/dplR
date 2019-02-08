@@ -36,8 +36,6 @@ importFrom(XML, xmlEventParse)
 
 importFrom(plyr, alply)
 
-importFrom(animation, saveGIF, ani.options)
-
 importFrom(signal, butter, filtfilt)
 
 

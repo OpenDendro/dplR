@@ -14,7 +14,7 @@ Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         person("Allan", "Buras", role = "ctb"), person("Jacob",
         "Cecile", role = "ctb"), person("Manfred", "Mudelsee", role =
         "ctb"), person("Michael", "Schulz", role = "ctb"))
-Author: Andy Bunn [aut, cph, cre, trl], Mikko Korpela [aut, cph, trl], Franco Biondi [aut, cph], Filipe Campelo [aut, cph], Pierre Mérian [aut, cph], Fares Qeadan [aut, cph], Christian Zang [aut, cph], Allan Buras [ctb], Jacob Cecile [ctb], Manfred Mudelsee [ctb], Michael Schulz [ctb], Darwin Pucha-Cofrep [aut, cph], Jakob Wernicke [aut, cph]
+Author: Andy Bunn [aut, cph, cre, trl], Mikko Korpela [aut, cph, trl], Franco Biondi [aut, cph], Filipe Campelo [aut, cph], Pierre Mérian [aut, cph], Fares Qeadan [aut, cph], Christian Zang [aut, cph], Allan Buras [ctb], Jacob Cecile [ctb], Manfred Mudelsee [ctb], Michael Schulz [ctb]
 Copyright: Authors and file inst/COPYRIGHTS
 Maintainer: Andy Bunn <andy.bunn@wwu.edu>
 Depends: R (>= 2.15.2)

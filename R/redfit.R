@@ -278,7 +278,7 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
             }
             t2 <- t2[notdupl]
             x2 <- xnew
-            np <- nunique
+            np <- as.numeric(nunique)
             if (np < MIN_POINTS) {
                 stop(gettextf("too few points (%.0f), at least %.0f needed",
                               np, MIN_POINTS, domain = "R-dplR"), domain = NA)

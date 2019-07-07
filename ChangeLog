@@ -1,10 +1,15 @@
 * CHANGES IN dplR VERSION 1.7.0
 
+File: redfit.R
+----------------
+
+- Fixed bug where the handling of series with duplicate times (ages)
+  would produce an error. Thanks to Mark Hall for reporting.
 
 File: plotRings.R and .Rd
 ----------------
 
-- Making plotRings defunct as there were too maby issues with the animation library and especially imageMajick integrating smoothly for some users. Suggested to Darwin that he make plotRings a stand alone library.
+- Making plotRings defunct as there were too maby issues with the animation library and especially ImageMagick integrating smoothly for some users. Suggested to Darwin that he make plotRings a stand alone library.
 
 
 File: xdate-dplR.Rnw

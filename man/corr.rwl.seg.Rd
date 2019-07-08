@@ -111,8 +111,10 @@ corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
 }
 \value{
   A \code{list} containing matrices \code{\var{spearman.rho}},
-  \code{\var{p.val}}, \code{\var{overall}}, \code{\var{bins}}, vector
-  \code{\var{avg.seg.rho}}.  An additional \code{character}
+  \code{\var{p.val}}, \code{\var{overall}}, \code{\var{bins}},  
+  \code{\var{rwi}}, vector \code{\var{avg.seg.rho}},
+  numeric \code{\var{seg.lag}}, \code{\var{seg.length}}, \code{\var{pcrit}}, 
+  \code{\var{label.cex}}.  An additional \code{character}
   \code{\var{flags}} is also returned if any segments fall below the
   critical value.  Matrix \code{\var{spearman.rho}} contains the
   correlations for each series by bin.  Matrix \code{\var{p.val}}
@@ -120,12 +122,16 @@ corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   bin.  Matrix \code{\var{overall}} contains the average correlation and
   p-value for each series.  Matrix \code{\var{bins}} contains the years
   encapsulated by each bin.  The vector \code{\var{avg.seg.rho}}
-  contains the average correlation for each bin.
+  contains the average correlation for each bin. Matrix \code{\var{rwi}}
+  contains the detrended rwl data, the numerics \code{\var{seg.lag}}, 
+  \code{\var{seg.length}}, \code{\var{pcrit}}, \code{\var{label.cex}} 
+  are from the oroginal call and used to pass into \code{\var{plot.crs}}. 
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{
   \code{\link{corr.series.seg}}, \code{\link{skel.plot}},
-  \code{\link{series.rwl.plot}}, \code{\link{ccf.series.rwl}}
+  \code{\link{series.rwl.plot}}, \code{\link{ccf.series.rwl}},
+  \code{\link{plot.crs}}
 }
 \examples{library(utils)
 data(co021)

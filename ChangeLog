@@ -1,5 +1,15 @@
 * CHANGES IN dplR VERSION 1.7.0
 
+File: plot.crs.R
+----------------
+
+- This is a new S3 method for plotting the ouptut from corr.rwl.seg. The rationale for this is to reduce computational overhard in the shiny app I'm developing for xdating.
+
+File: corr.rwl.seg.R
+----------------
+
+- Added class crs to the output object as well as added some new items to the list that are returned (e.g., the rwi, seg legnths and so on). This is done so that I could make a new S3 method for plotting objects `plot.crs()`. New output ites are explained in man file. The plotting code if make.plot=TRUE is gone and replaced with a call to plot.crs.
+
 File: redfit.R
 ----------------
 

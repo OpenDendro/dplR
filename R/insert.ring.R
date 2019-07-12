@@ -1,6 +1,6 @@
 insert.ring <- function(rw.vec, rw.vec.yrs=as.numeric(names(rw.vec)),
                         year, ring.value=mean(rw.vec,na.rm=TRUE),
-                        fix.last=TRUE) {
+                        fix.last=TRUE, fix.length=TRUE) {
     n <- length(rw.vec)
     stopifnot(is.numeric(ring.value), length(ring.value) == 1,
               is.finite(ring.value), ring.value >= 0,
@@ -29,6 +29,13 @@ insert.ring <- function(rw.vec, rw.vec.yrs=as.numeric(names(rw.vec)),
         } else {
             names(rw.vec2) <- first.yr:(last.yr+1)
         }
+        if(fix.last & fix.length){
+          rw.vec2 <- rw.vec2[-1]
+        }
+        
+        if(!fix.last & fix.length){
+          rw.vec2 <- rw.vec2[-length(rw.vec2)]
+        }
         rw.vec2
     } else {
         stop("invalid 'year': skipping years not allowed")
@@ -36,7 +43,7 @@ insert.ring <- function(rw.vec, rw.vec.yrs=as.numeric(names(rw.vec)),
 }
 
 delete.ring <- function(rw.vec, rw.vec.yrs=as.numeric(names(rw.vec)),
-                        year, fix.last=TRUE) {
+                        year, fix.last=TRUE, fix.length=TRUE) {
     n <- length(rw.vec)
     stopifnot(is.numeric(year), length(year) == 1, is.finite(year),
               n > 0, length(rw.vec.yrs) == n,
@@ -57,6 +64,13 @@ delete.ring <- function(rw.vec, rw.vec.yrs=as.numeric(names(rw.vec)),
             } else {
                 names(rw.vec2) <- first.yr:(last.yr-1)
             }
+        }
+        if(fix.last & fix.length){
+          rw.vec2 <- c(NA,rw.vec2)
+        }
+        
+        if(!fix.last & fix.length){
+          rw.vec2 <- c(rw.vec2,NA)
         }
         rw.vec2
     } else {

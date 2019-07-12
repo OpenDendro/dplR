@@ -1,5 +1,10 @@
 * CHANGES IN dplR VERSION 1.7.0
 
+File: insert.ring.R and delete.ring.R
+----------------
+
+- Adding an argument fix.length to maintain the length of the input and output. This makes it much easier to edit series and insert them back into a rwl object as needed.
+
 File: plot.crs.R
 ----------------
 

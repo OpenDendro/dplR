@@ -1,3 +1,10 @@
+* CHANGES IN dplR VERSION 1.7.1
+
+File: xdate.floater.R and .Rd
+----------------
+
+- New function to cross date a floating series (i.e., one with no dates).
+
 * CHANGES IN dplR VERSION 1.7.0
 
 File: insert.ring.R and delete.ring.R
@@ -44,10 +51,7 @@ File: ccf.series.rwl.R and .Rd
 - Added new argument to allow user to specify whether a series or master gets 
   passed to ccf as x. The convention was screwy.
 
-File: xdate.floater.R and .Rd
-----------------
 
-- New function to cross date a floating series (i.e., one with no dates).
 
 File: series.rwl.plot
 ----------------

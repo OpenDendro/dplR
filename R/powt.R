@@ -37,7 +37,7 @@ powt <- function(rwl) {
         Xt <- x
         X.nna <- which(!is.na(x))
         X <- na.omit(x)
-        p <- fit.lm(X)
+        p <- abs(fit.lm(X))
         X2 <- X^p
         Xt[X.nna] <- X2
         Xt

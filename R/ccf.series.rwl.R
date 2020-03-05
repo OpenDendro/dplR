@@ -85,13 +85,13 @@ ccf.series.rwl <- function(rwl, series,
         else {
             if(series.x){
               tmp <- ccf(x = series2[mask], y = master[mask], lag.max=lag.max,
-                         plot=FALSE)  
+                         plot=FALSE)
             }
           else {
             tmp <- ccf(x = master[mask], y = series2[mask], lag.max=lag.max,
                        plot=FALSE)
           }
-            
+
             bin.ccf <- as.vector(tmp$acf)
         }
         res.cor[, j] <- bin.ccf
@@ -101,17 +101,13 @@ ccf.series.rwl <- function(rwl, series,
         ccf.df <- data.frame(r = c(res.cor, recursive=TRUE),
                              bin = rep(colnames(res.cor),
                              each=length(lag.vec)),
-                             lag = rep(lag.vec, nbins))
-        ## reorder bins so that lattice definitely keeps them in
+                             lag = rep(lag.vec, nbins),
+                             stringsAsFactors = FALSE)
+        ## order bins so that lattice definitely keeps them in
         ## ascending order (i.e., no factor order funnies with long
         ## series)
-        num.bins <- bins[, 1]
-        ord.num <- order(num.bins)
-        char.bins <- as.character(bins[, 1])
-        ord.char <- order(char.bins)
-        foo <- data.frame(num.bins, ord.num, char.bins, ord.char)
         ccf.df$bin <- factor(ccf.df$bin,
-                             levels(ccf.df$bin)[order(foo$ord.char)])
+                             levels = colnames(res.cor)[order(bins[, 1])])
 
         sig <- qnorm(1 - pcrit / 2) / sqrt(seg.length)
         sig <- c(-sig, sig)
@@ -134,7 +130,7 @@ ccf.series.rwl <- function(rwl, series,
                        ## segments, dots for all r
                        #panel.segments(x1=x, y1=0, x2=x, y2=y, col=col, lwd=2)
                        #panel.dotplot(x, y, col = col, ...)
-                       panel.segments(x1=x, y1=0, x2=x, y2=y, 
+                       panel.segments(x1=x, y1=0, x2=x, y2=y,
                                       col=col, lwd=2)
                        panel.dotplot(x, y, col = col, fill=bg,
                                      pch=21,...)
@@ -144,7 +140,7 @@ ccf.series.rwl <- function(rwl, series,
         trellis.par.set(strip.background = list(col = "transparent"),
                         warn = FALSE,
                         par.sub.text = list(font = 1, cex=0.75,
-                                            just = "left", 
+                                            just = "left",
                                             x = grid::unit(5, "mm")))
         print(ccf.plot)
     }

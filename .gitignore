@@ -3,3 +3,6 @@
 .RData
 .DS_Store
 dplR.Rproj
+src/*.o
+src/*.so
+src/symbols.rds

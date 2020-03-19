@@ -1,14 +1,31 @@
+# This is a list of files/directories that are useful
+# for development but are not (cannot, should not) be included in 
+# the build. This needs some cleaning up as of March 2020.
+
+# Designates the directory as an RStudio Project
+^.*\.Rproj$
+# Used by RStudio for temporary files
+^\.Rproj\.user$
+# An Rmd file used to generate README.md
+^README\.Rmd$
+# All the git stuff
+^\.git$
+# The files in .R
+^\.R$
+# Examples? NOT NEEDED?
 ^dplR-Ex\.R$
+# Shell scripts NOT NEEDED?
 ^[^/]*\.sh$
-^(.*/)?svn.*\.tmp$
-^(.*/)?\..+$
+# Any README-developer files
+^(|.*[^[:alpha:]])README-developer(|[^[:alpha:]].*)$
+# Andy pdfs if the vignettes were knit
+^vignettes/Rplots.*\.pdf$
+# No idea from here down. I don't think these come into
+# play on my setup. Maybe they do on Mikko's system? 
+^(.*/)?\..+$      
 ^inst/doc/cache(/.*)?$
 ^inst/doc/figure(/.*)?$
 ^inst/doc/.*\.(Rnw|Rout|aux|bbl|blg|fdb_latexmk|fls|glo|gls|glg|idx|ind|ilg|lof|log|lot|out|synctex.gz|tex|toc)$
 ^.*-tikzDictionary$
-^.*\.Rproj$
-^\.Rproj\.user$
 ^.*/auto$
-^(|.*[^[:alpha:]])README-developer(|[^[:alpha:]].*)$
-^vignettes/Rplots.*\.pdf$
 ^revdep$

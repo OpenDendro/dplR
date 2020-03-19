@@ -1,5 +1,10 @@
 * CHANGES IN dplR VERSION 1.7.1
 
+File: ccf.series.rwl.R
+----------------
+
+- Fixed stringsAsFactors issue pointed out by Kurt H
+
 File: xdate.floater.R and .Rd
 ----------------
 

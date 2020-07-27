@@ -7,11 +7,12 @@
   raw tree-ring width series.
 }
 \usage{
-powt(rwl)
+powt(rwl, rescale = FALSE)
 }
 \arguments{
   \item{rwl}{a \code{data.frame} of raw tree-ring widths series, such as that
     produced by \code{\link{read.rwl}} or \code{\link{read.fh}}}
+  \item{rescale}{ \code{logical} flag.  If \code{TRUE} then each transformed series is rescaled to have the orginal mean and standard deviation of the input (\code{rwl})  series. }
 }
 \value{
   An object of class \code{c("rwl", "data.frame")} containing the power 
@@ -29,6 +30,9 @@ powt(rwl)
   regression coefficient b from \eqn{\log S = k + b \log M}{log S = k +
   b log M} is then used for the power transform \eqn{\star{R}_t =
   R_t^{1-b}}{R*_t = R_t^(1-b)}.
+  
+  The \code{rescale} argument rescales the data to more closely follow the 
+  convention in ARSTAN.
 }
 \references{
   Cook, E. R. and Peters, K. (1997) Calculating unbiased

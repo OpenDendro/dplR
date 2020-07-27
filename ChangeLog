@@ -1,5 +1,10 @@
 * CHANGES IN dplR VERSION 1.7.2
 
+File: powt.R
+----------------
+
+- C Zang added rescale arguemnt to powt to have results align better with 
+  ARSTAN output.
 
 * CHANGES IN dplR VERSION 1.7.1
 

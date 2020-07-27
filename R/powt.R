@@ -1,19 +1,21 @@
-## Power transform raw ring-width series after Cook & Peters 1997
-powt <- function(rwl) {
-    if (!is.data.frame(rwl))
+powt <- function (rwl, rescale = FALSE) 
+{
+    if (!is.data.frame(rwl)) 
         stop("'rwl' must be a data.frame")
-    ## Get maximum precision of rwl data from number of digits.
-    ## Assumes non-negative numbers.
+    if (!is.logical(rescale))
+        stop("'rescale' must be either FALSE (the default) or TRUE")
     getprec <- function(rwl) {
         rwl.num <- as.numeric(as.matrix(rwl))
         rwl.num <- rwl.num[!is.na(rwl.num) & rwl.num != 0]
         if (length(rwl.num) == 0) {
             NA_real_
-        } else {
+        }
+        else {
             rwl.char <- format(rwl.num, scientific = FALSE)
             if (grepl(".", rwl.char[1], fixed = TRUE)) {
                 maxdig <- nchar(sub("^[^.]*\\.", "", rwl.char[1]))
-            } else {
+            }
+            else {
                 rm.trail.zeros <- sub("0*$", "", rwl.char)
                 n.trail.zeros <- nchar(rwl.char) - nchar(rm.trail.zeros)
                 maxdig <- -min(n.trail.zeros)
@@ -25,9 +27,9 @@ powt <- function(rwl) {
         n <- length(series)
         drop.1 <- series[-1]
         drop.n <- series[-n]
-        runn.M <- (drop.1 + drop.n) / 2
+        runn.M <- (drop.1 + drop.n)/2
         runn.S <- abs(drop.1 - drop.n)
-        runn.S[runn.S == 0] <- prec         # add minimal difference
+        runn.S[runn.S == 0] <- prec
         runn.M[runn.M == 0] <- prec
         mod <- lm.fit(cbind(1, log(runn.M)), log(runn.S))
         b <- mod[["coefficients"]][2]
@@ -43,8 +45,19 @@ powt <- function(rwl) {
         Xt
     }
     prec <- getprec(rwl)
+    if (rescale) {
+        
+    }
     xt <- lapply(rwl, FUN = transf)
+    if (rescale) {
+        sds <- lapply(rwl, FUN = function(x) sd(x, na.rm = TRUE))
+        means <- lapply(rwl, FUN = function(x) mean(x, na.rm = TRUE))
+        rescale_ <- function(x, .sd, .mean) {
+            scale(x) * .sd + .mean
+        }
+        xt <- mapply(rescale_, xt, sds, means)
+    }
     res <- data.frame(xt, row.names = row.names(rwl), check.names = FALSE)
-    class(res) <- c("rwl","data.frame")
+    class(res) <- c("rwl", "data.frame")
     res
 }

@@ -1,5 +1,5 @@
 
-# dplR <img src="https://github.com/AndyBunn/dplR/blob/master/dplR_Sticker.png" width="180" align="right" />
+# dplR <img src="https://github.com/AndyBunn/dplR/blob/master/dplR_Sticker.png" width="220" align="right" />
 
 [![CRAN_version_badge](https://www.r-pkg.org/badges/version/dplR)](https://cran.r-project.org/package=dplR)
 

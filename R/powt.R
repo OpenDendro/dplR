@@ -45,9 +45,7 @@ powt <- function (rwl, rescale = FALSE)
         Xt
     }
     prec <- getprec(rwl)
-    if (rescale) {
-        
-    }
+    
     xt <- lapply(rwl, FUN = transf)
     if (rescale) {
         sds <- lapply(rwl, FUN = function(x) sd(x, na.rm = TRUE))

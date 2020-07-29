@@ -16,7 +16,7 @@
 ^dplR-Ex\.R$
 # Shell scripts NOT NEEDED?
 ^[^/]*\.sh$
-# Any README-developer files
+# Andy README-developer files
 ^(|.*[^[:alpha:]])README-developer(|[^[:alpha:]].*)$
 # Andy pdfs if the vignettes were knit
 ^vignettes/Rplots.*\.pdf$

@@ -3,7 +3,6 @@
 .RData
 .DS_Store
 dplR.Rproj
-dplR_Sticker.png
 # leave these out of gitignore so they get cleaned with git clean -f
 # or include them here and add them to .Rbuildignore?
 #src/*.o

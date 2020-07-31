@@ -1,5 +1,12 @@
 useDynLib(dplR, .registration = TRUE, .fixes = "dplR.")
 
+
+###############################################################
+#
+## Imports
+#
+###############################################################
+
 import(graphics, stats)
 
 importFrom(digest, digest)
@@ -38,29 +45,107 @@ importFrom(plyr, alply)
 
 importFrom(signal, butter, filtfilt)
 
+###############################################################
+#
+## Methods
+#
+###############################################################
 
-export(autoread.ids, bai.in, bai.out, ccf.series.rwl, chron, cms,
-       combine.rwl, common.interval, corr.rwl.seg, corr.series.seg,
-       crn.plot, detrend, detrend.series, ffcsaps, fill.internal.NA,
-       gini.coef, glk, hanning, i.detrend, i.detrend.series, morlet,
-       net, po.to.wc, pointer, powt, print.redfit, rcs, read.compact,
-       read.crn, read.fh, read.ids, read.rwl, read.tridas,
-       read.tucson, redfit, runcrit, rwi.stats, rwi.stats.legacy,
-       rwi.stats.running, rwl.stats, sea, seg.plot, sens1, sens2,
-       series.rwl.plot, skel.plot, spag.plot, strip.rwl, tbrm,
-       tridas.vocabulary, uuid.gen, wavelet.plot, wc.to.po,
-       write.compact, write.crn, write.rwl, write.tridas,
-       write.tucson, plot.rwl, interseries.cor, summary.rwl, plot.crn,
-       insert.ring, delete.ring, xskel.ccf.plot, xskel.plot, latexify,
-       latexDate, rasterPlot, treeMean, rwl.report, print.rwl.report, 
-       plotRings,time.rwl,time.crn,csv2rwl,pass.filt,as.rwl,sss,plot.crs,
-       xdate.floater)
-
-S3method(print, redfit)
-S3method(plot, rwl)
 S3method(plot, crn)
-S3method(summary, rwl)
+S3method(plot, crs)
+S3method(plot, rwl)
+S3method(print, redfit)
 S3method(print, rwl.report)
+S3method(summary, rwl)
 S3method(time, rwl)
 S3method(time, crn)
-S3method(plot, crs)
+S3method("time<-", rwl)
+S3method("time<-", crn)
+
+###############################################################
+#
+## Exports
+#
+###############################################################
+
+export("as.rwl",
+       "autoread.ids",
+       "bai.in",
+       "bai.out",
+       "ccf.series.rwl",
+       "chron",
+       "cms",
+       "combine.rwl",
+       "common.interval",
+       "corr.rwl.seg",
+       "corr.series.seg",
+       "crn.plot",
+       "csv2rwl",
+       "delete.ring",
+       "detrend",
+       "detrend.series",
+       "ffcsaps",
+       "fill.internal.NA",
+       "gini.coef",
+       "glk",
+       "hanning",
+       "i.detrend",
+       "i.detrend.series",
+       "insert.ring",
+       "interseries.cor",
+       "latexDate",
+       "latexify",
+       "morlet",
+       "net",
+       "pass.filt",
+       "plot.crn",
+       "plot.crs",
+       "plot.rwl",
+       "plotRings",
+       "po.to.wc",
+       "pointer",
+       "powt",
+       "print.redfit",
+       "print.rwl.report",
+       "rasterPlot",
+       "rcs",
+       "read.compact",
+       "read.crn",
+       "read.fh",
+       "read.ids",
+       "read.rwl",
+       "read.tridas",
+       "read.tucson",
+       "redfit",
+       "runcrit",
+       "rwi.stats",
+       "rwi.stats.legacy",
+       "rwi.stats.running",
+       "rwl.report",
+       "rwl.stats",
+       "sea",
+       "seg.plot",
+       "sens1",
+       "sens2",
+       "series.rwl.plot",
+       "skel.plot",
+       "spag.plot",
+       "sss",
+       "strip.rwl",
+       "summary.rwl",
+       "tbrm",
+       "time<-",
+       "treeMean",
+       "tridas.vocabulary",
+       "uuid.gen",
+       "wavelet.plot",
+       "wc.to.po",
+       "write.compact",
+       "write.crn",
+       "write.rwl",
+       "write.tridas",
+       "write.tucson",
+       "xdate.floater",
+       "xskel.ccf.plot",
+       "xskel.plot")
+

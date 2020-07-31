@@ -413,7 +413,6 @@ vecMatched <- function(x, Table) {
     y
 }
 
-
 # Looks for internal NA in a series. Returns the position of internal NA via which
 find.internal.na <- function(x) {
   x.na <- is.na(x)
@@ -437,3 +436,4 @@ find.internal.na <- function(x) {
   }
   internal.na    
 }
+

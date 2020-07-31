@@ -1,5 +1,12 @@
 * CHANGES IN dplR VERSION 1.7.2
 
+File: time.rwl.R
+----------------
+
+- Adding `time<-` as a method for `time.rwl<-` and `time.crn<-` so that
+  times can be set as well as retrieved from rwl and crn. Getting the NAMESPACE,
+  and .Rd files right was unpleasant.
+
 File: powt.R
 ----------------
 

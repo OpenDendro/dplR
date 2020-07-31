@@ -1,7 +1,8 @@
 # This is a list of files/directories that are useful
 # for development but are not (cannot, should not) be included in 
 # the build. This needs some cleaning up as of March 2020.
-
+# Leave out the sticker!
+dplR_Sticker.png
 # Designates the directory as an RStudio Project
 ^.*\.Rproj$
 # Used by RStudio for temporary files

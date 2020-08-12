@@ -7,7 +7,7 @@
 ## Overview
 
 Perform tree-ring analyses such as detrending, chronology building,
-and cross dating. Read and write standard file formats used in
+and crossdating. Read and write standard file formats used in
 dendrochronology.
 
 ## Installation

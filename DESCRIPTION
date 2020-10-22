@@ -3,7 +3,7 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.7.2
-Date: 2020-03-20
+Date: 2020-10-22
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "andy.bunn@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "cph", "trl")), person("Franco", "Biondi",
@@ -14,7 +14,7 @@ Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         person("Allan", "Buras", role = "ctb"), person("Jacob",
         "Cecile", role = "ctb"), person("Manfred", "Mudelsee", role =
         "ctb"), person("Michael", "Schulz", role = "ctb"))
-Author: Andy Bunn [aut, cph, cre, trl], Mikko Korpela [aut, cph, trl], Franco Biondi [aut, cph], Filipe Campelo [aut, cph], Pierre Mérian [aut, cph], Fares Qeadan [aut, cph], Christian Zang [aut, cph], Allan Buras [ctb], Jacob Cecile [ctb], Manfred Mudelsee [ctb], Michael Schulz [ctb]
+Author: Andy Bunn [aut, cph, cre, trl], Mikko Korpela [aut, cph, trl], Franco Biondi [aut, cph], Filipe Campelo [aut, cph], Pierre Mérian [aut, cph], Fares Qeadan [aut, cph], Christian Zang [aut, cph], Allan Buras [ctb], Jacob Cecile [ctb], Manfred Mudelsee [ctb], Michael Schulz [ctb], Stefan Klesse [aut, cph]
 Copyright: Authors and file inst/COPYRIGHTS
 Maintainer: Andy Bunn <andy.bunn@wwu.edu>
 Depends: R (>= 2.15.2)

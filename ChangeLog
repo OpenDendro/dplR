@@ -1,5 +1,11 @@
 * CHANGES IN dplR VERSION 1.7.2
 
+
+File: chron.stabilized.R
+----------------
+
+- Adding variance stabilization see https://github.com/AndyBunn/dplR/issues/3
+
 File: time.rwl.R
 ----------------
 

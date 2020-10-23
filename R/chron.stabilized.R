@@ -31,7 +31,7 @@
         
         # replacing original call to zoo:rollapply with a loop
         movingRbarVec <- rep(NA,nrow(x0))
-        for(i in 1:(nrow(x0)-winLength-1)){
+        for(i in 1:(nrow(x0)-winLength+1)){
             movingRbarVec[i+(winLength-1)/2] <- rbarWinLength(x0[i:(i+winLength-1),])
         }
         # replacing original call to na.locf

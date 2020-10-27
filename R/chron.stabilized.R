@@ -1,9 +1,10 @@
 `chron.stabilized` <-
-    function(x, winLength=51,biweight=TRUE, running.rbar = FALSE)
+    function(x, winLength,biweight=TRUE, running.rbar = FALSE)
     {
-        if(!is.int(winLength)) stop("'winLength' must be an integer")
-        if(!as.logical(winLength %% 2)) stop("'winLength' must be odd")
-        if(winLength <= 10) warning("'winLength' should be probably be larger than 10")
+        if(!is.int(winLength)) stop("'winLength' must be an integer.")
+        if(winLength > nrow(x)) stop("'winLength' must be (considerably) shorter than the chronology length.")
+        if(winLength <= 30) warning("'winLength' < 30 is not reccomended.\n  Consider  a longer window.")
+        if(winLength/nrow(x) > 0.5) warning("'winLength' > 50% of chronology length is not reccomended.\n  Consider  a shorter window.")
         
         # get rbar for some window length
         rbarWinLength <-function (x, WL=winLength) {
@@ -29,16 +30,34 @@
         diag(xCorrelMat) <- NA
         rbar <- mean(xCorrelMat, na.rm =TRUE) #rbar
         
-        # replacing original call to zoo:rollapply with a loop
+        
         movingRbarVec <- rep(NA,nrow(x0))
-        for(i in 1:(nrow(x0)-winLength+1)){
-            movingRbarVec[i+(winLength-1)/2] <- rbarWinLength(x0[i:(i+winLength-1),])
+        
+        # if winLength is even
+        if(winLength%%2 != 1){
+            for(i in 1:(nrow(x0)-winLength+1)){
+                movingRbarVec[i+(winLength-1)/2] <- rbarWinLength(x0[i:(i+winLength-1),])
+            } 
         }
-        # replacing original call to na.locf
-        #fill first winLength/2 values with first value
-        movingRbarVec[1:(winLength-1)/2] <- movingRbarVec[(winLength-1)/2 + 1]
-        #fill last winLength/2 values with last value
-        movingRbarVec[(i+(winLength-1)/2):nrow(x0)] <- movingRbarVec[i+(winLength-1)/2]
+        # if winLength is odd
+        else{
+            for(i in 1:(nrow(x0)-winLength)){
+                movingRbarVec[i+(winLength)/2] <- rbarWinLength(x0[i:(i+winLength),])
+            } 
+        }
+        # The 1st winLength/2 values of movingRbarVec are NA as are the 
+        # last winLength/2 (depending on odd or even winLength). 
+        # Pad with with first and last real values. This replaces the original call
+        # to na.locf from zoo.
+        # find the indices of the first and last NA values
+        idxNA <- which(!is.na(movingRbarVec))
+        padLow <- min(idxNA)
+        padHigh <- max(idxNA)
+        # pad the low end
+        movingRbarVec[1:padLow] <- movingRbarVec[padLow]
+        # and the high end
+        movingRbarVec[padHigh:length(movingRbarVec)] <- movingRbarVec[padHigh]
+        # keep NA where there no samples
         movingRbarVec[nSamps==0] <- NA
         
         nSampsEff <- nSamps/(1+(nSamps-1)*movingRbarVec)
@@ -47,21 +66,22 @@
         # and also if rbar goes negative effsamplesize gets larger than samplesize, 
         # and this brings it back down. But needed now with changes to orig func?
         
-        nSampsEffSimple <- nSamps/(1+(nSamps-1)*rbar)
+        # no longer used. Right SK?
+        #nSampsEffSimple <- nSamps/(1+(nSamps-1)*rbar)
         
         # res
-        RUNNINGadjustedchronology <- xCrn*(nSampsEff*rbar)^.5
+        xCrnAdjusted <- xCrn*(nSampsEff*rbar)^.5
         # add back the mean to the data
-        RUNNINGadjustedchronology <- scale(RUNNINGadjustedchronology,
-                                           center=-mean.x, scale=FALSE)[,1]
+        xCrnAdjusted <- scale(xCrnAdjusted,
+                              center=-mean.x, scale=FALSE)[,1]
         # make output
         if(running.rbar){
-            res <- data.frame(adj.crn = RUNNINGadjustedchronology,
+            res <- data.frame(adj.crn = xCrnAdjusted,
                               running.rbar = movingRbarVec,
                               samp.depth = nSamps)
         }
         else{
-            res <- data.frame(adj.crn = RUNNINGadjustedchronology,
+            res <- data.frame(adj.crn = xCrnAdjusted,
                               samp.depth = nSamps)
         }  
         rownames(res)<-rownames(x0)

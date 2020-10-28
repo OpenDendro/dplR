@@ -3,8 +3,8 @@
     {
         if(!is.int(winLength)) stop("'winLength' must be an integer.")
         if(winLength > nrow(x)) stop("'winLength' must be (considerably) shorter than the chronology length.")
-        if(winLength <= 30) warning("'winLength' < 30 is not reccomended.\n  Consider  a longer window.")
-        if(winLength/nrow(x) > 0.5) warning("'winLength' > 50% of chronology length is not reccomended.\n  Consider  a shorter window.")
+        if(winLength <= 30) warning("'winLength' < 30 is not recommended.\n  Consider a longer window.")
+        if(winLength/nrow(x) > 0.5) warning("'winLength' > 50% of chronology length is not recommended.\n  Consider a shorter window.")
         
         # get rbar for some window length
         rbarWinLength <-function (x, WL=winLength) {
@@ -33,18 +33,19 @@
         
         movingRbarVec <- rep(NA,nrow(x0))
         
-        # if winLength is even
-        if(winLength%%2 != 1){
-            for(i in 1:(nrow(x0)-winLength+1)){
-                movingRbarVec[i+(winLength-1)/2] <- rbarWinLength(x0[i:(i+winLength-1),])
-            } 
-        }
         # if winLength is odd
-        else{
-            for(i in 1:(nrow(x0)-winLength)){
-                movingRbarVec[i+(winLength)/2] <- rbarWinLength(x0[i:(i+winLength),])
-            } 
-        }
+    
+    if(winLength%%2 == 1){
+      for(i in 1:(nrow(x0)-winLength+1)){
+        movingRbarVec[i+(winLength-1)/2] <- rbarWinLength(x0[i:(i+winLength-1),])
+      } 
+    }
+    # if winLength is even
+    else{
+      for(i in 1:(nrow(x0)-winLength+1)){
+        movingRbarVec[i+(winLength)/2] <- rbarWinLength(x0[i:(i+winLength-1),])
+      } 
+    }
         # The 1st winLength/2 values of movingRbarVec are NA as are the 
         # last winLength/2 (depending on odd or even winLength). 
         # Pad with with first and last real values. This replaces the original call

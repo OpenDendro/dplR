@@ -8,7 +8,7 @@
   \code{\link{detrend}}.
 }
 \usage{
-chron.stabilized(x, winLength,biweight=TRUE, running.rbar = FALSE)
+chron.stabilized(x, winLength, biweight = TRUE, running.rbar = FALSE)
 }
 \arguments{
   \item{x}{a \code{data.frame} of ring widths with

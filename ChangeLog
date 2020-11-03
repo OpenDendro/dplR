@@ -1,10 +1,15 @@
 * CHANGES IN dplR VERSION 1.7.2
 
 
+File: glk.R sgc.R
+----------------
+
+- Revising glk for speed and adding sgc as a new function from Ronald Visser
+
 File: chron.stabilized.R
 ----------------
 
-- Adding variance stabilization see https://github.com/AndyBunn/dplR/issues/3
+- Adding variance stabilization from Stefan Kleese see https://github.com/AndyBunn/dplR/issues/3
 
 File: time.rwl.R
 ----------------

@@ -23,7 +23,7 @@
 }
 
 \details{
-  \enc{Gleichläufigkeit}{Gleichlaeufigkeit} is a classical agreement test based on sign tests (Eckstein and Bauch, 1969).  This function   implements \enc{Gleichläufigkeit}{Gleichlaeufigkeit} as the pairwise comparison of all records in data set. This vectorized implementation is faster than the previous version and follows the original definition (Huber 1942), instead of the incorrect interpretation that has been used in the past (Schweingruber 1988, see Buras/Wilmking 2015 for the correction). 
+  \enc{Gleichläufigkeit}{Gleichlaeufigkeit} is a classical agreement test based on sign tests (Eckstein and Bauch, 1969). This function implements \enc{Gleichläufigkeit}{Gleichlaeufigkeit} as the pairwise comparison of all records in data set. This vectorized implementation is faster than the previous version and follows the original definition (Huber 1942), instead of the incorrect interpretation that has been used in the past (Schweingruber 1988, see Buras/Wilmking 2015 for the correction). 
   
   The probability of exceedence (p) for the \enc{Gleichläufigkeit}{Gleichlaeufigkeit} expresses the chance that the \enc{Gleichläufigkeit}{Gleichlaeufigkeit} is incorrect. The observed value of the \enc{Gleichläufigkeit}{Gleichlaeufigkeit} is converted to a z-score and based on the standard normal curve the probability of exceedence is calculated. The result is a matrix of all p-values (Jansma 1995, 60-61, see also Visser 2020).
   
@@ -44,7 +44,7 @@
 }
 
 \author{ Christian Zang.  Patched and improved by Mikko Korpela.
-  Improved by Allan Buras. Further improved and expanded by Ronald Visser and Andy Bunn }
+  Improved by Allan Buras. Further improved and expanded by Ronald Visser and Andy Bunn}
 
 \references{
   

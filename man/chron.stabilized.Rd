@@ -25,11 +25,10 @@ chron.stabilized(x, winLength, biweight = TRUE, running.rbar = FALSE)
   
   Additionally, time-dependent changes in interseries correlation can cause artificial variance changes of the final mean chronology. The function \code{chron.stabilized} accounts for both temporal changes in the interseries correlation and sample depth to produce a mean value chronology with stabilized variance.
   
-  The basic correction centers around the use of the effective independent sample size, \code{Neff}, which considers sample replication and mean interseries correlation between the samples at every time. This is defined as: \code{Neff = n(t) / 1+(n(t)−1)rbar(t)}
+  The basic correction centers around the use of the effective independent sample size, \code{Neff}, which considers sample replication and mean interseries correlation between the samples at every time. This is defined as: \code{Neff = n(t) / 1+(n(t)-1)rbar(t)}
 
 where \code{n(t)} is the number of series at time \code{t}, and \code{rbar} is the interseries correlation (see \code{\link{interseries.cor}}). Multiplication of the mean timeseries with the square root of \code{Neff} at every time \code{t} theoretically results in variance that is independent of sample size. In the limiting cases, when the \code{rbar} is zero or unity, \code{Neff} obtains values of the true sample size and unity, respectively.
 
-SK, add something about the padding and winLength here. Also something about the 1/3 rule for correlations?
 
 }
 \value{

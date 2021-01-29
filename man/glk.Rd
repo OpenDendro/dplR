@@ -48,17 +48,17 @@
 
 \references{
   
-  Buras, A. and Wilmking, M. (2015) Correcting the calculation of Gleichläufigkeit, \emph{Dendrochronologia} \bold{34}, 29–30. DOI: https://doi.org/10.1016/j.dendro.2015.03.003
+  Buras, A. and Wilmking, M. (2015) Correcting the calculation of Gleichläufigkeit, \emph{Dendrochronologia} \bold{34}, 29-30. DOI: https://doi.org/10.1016/j.dendro.2015.03.003
   
-  Eckstein, D. and Bauch, J. (1969) Beitrag zur Rationalisierung eines dendrochronologischen Verfahrens und zur Analyse seiner Aussagesicherheit. \emph{Forstwissenschaftliches Centralblatt}, \bold{88}(1), 230\enc{–}{--}250.
+  Eckstein, D. and Bauch, J. (1969) Beitrag zur Rationalisierung eines dendrochronologischen Verfahrens und zur Analyse seiner Aussagesicherheit. \emph{Forstwissenschaftliches Centralblatt}, \bold{88}(1), 230-250.
   
-  Huber, B. (1943) Über die Sicherheit jahrringchronologischer Datierung. \emph{Holz als Roh- und Werkstoff} \bold{6}, 263–268. DOI: https://doi.org/10.1007/BF02603303
+  Huber, B. (1943) Über die Sicherheit jahrringchronologischer Datierung. \emph{Holz als Roh- und Werkstoff} \bold{6}, 263-268. DOI: https://doi.org/10.1007/BF02603303
   
   Jansma, E., 1995. \emph{RemembeRINGs; The development and application of local and regional tree-ring chronologies of oak for the purposes of archaeological and historical research in the Netherlands}, Nederlandse Archeologische Rapporten 19, Rijksdienst voor het Oudheidkundig Bodemonderzoek, Amersfoort
   
   Schweingruber, F. H. (1988) \emph{Tree rings: basics and applications of dendrochronology}, Kluwer Academic Publishers, Dordrecht, Netherlands, 276 p.
   
-  Visser, R.M. (2020) On the similarity of tree‐ring patterns: Assessing the influence of semi‐synchronous growth changes on the \enc{Gleichläufigkeit}{Gleichlaeufigkeit} for big tree‐ring data sets,\emph{Archaeometry}, \bold{XX}, xx\enc{–}{--}xx (DOI: https://doi.org/10.1111/arcm.12600).
+  Visser, R.M. (2020) On the similarity of tree‐ring patterns: Assessing the influence of semi‐synchronous growth changes on the \enc{Gleichläufigkeit}{Gleichlaeufigkeit} for big tree‐ring data sets,\emph{Archaeometry}, \bold{63}, 204-215 DOI: https://doi.org/10.1111/arcm.12600
 }
 
 \seealso{

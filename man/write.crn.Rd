@@ -25,7 +25,7 @@ write.crn(crn, fname, header = NULL, append = FALSE)
 \details{
   This writes a standard crn file as defined according to the standards
   of the \acronym{ITRDB} at
-  \url{http://www.ncdc.noaa.gov/paleo/treeinfo.html}.  This is the
+  \url{https://www1.ncdc.noaa.gov/pub/data/paleo/treering/treeinfo.txt}.  This is the
   decadal or Tucson format.  It is an \acronym{ASCII} file and machine
   readable by the standard dendrochronology programs.  Header information
   for the chronology can be written according to the International Tree

@@ -90,7 +90,7 @@ wavelet.plot(wave.list,
 }
 \note{ The function \code{morlet} is a port of Torrence\enc{’}{'}s
   \acronym{IDL} code, which can be accessed through the
-\href{http://web.archive.org/web/20141216211516/http://paos.colorado.edu/research/wavelets/software.html}{Internet Archive Wayback Machine}.
+\href{https://web.archive.org/web/20141216211516/https://paos.colorado.edu/research/wavelets/software.html}{Internet Archive Wayback Machine}.
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{morlet}}, \code{\link{ffcsaps}}}

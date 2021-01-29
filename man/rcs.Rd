@@ -85,7 +85,7 @@ rcs(rwl, po, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE,
   Fritts, H. C. (2001) \emph{Tree Rings and Climate}.
   Blackburn.  \acronym{ISBN-13}: 978-1-930665-39-2.
 }
-\note{ DendroLab website: \url{http://dendrolab.org/} }
+\note{ DendroLab website: \url{https://dendrolaborg.wordpress.com/} }
 \author{
   Code provided by DendroLab based on programming by F. Qeadan and
   F. Biondi, University of Nevada Reno, \acronym{USA} and adapted for

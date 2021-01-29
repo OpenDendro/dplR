@@ -58,7 +58,7 @@
   
   Schweingruber, F. H. (1988) \emph{Tree rings: basics and applications of dendrochronology}, Kluwer Academic Publishers, Dordrecht, Netherlands, 276 p.
   
-  Visser, R.M. (2020) On the similarity of tree‐ring patterns: Assessing the influence of semi‐synchronous growth changes on the \enc{Gleichläufigkeit}{Gleichlaeufigkeit} for big tree‐ring data sets,\emph{Archaeometry}, \bold{63}, 204-215 DOI: https://doi.org/10.1111/arcm.12600
+  Visser, R.M. (2020) On the similarity of tree-ring patterns: Assessing the influence of semi-synchronous growth changes on the \enc{Gleichläufigkeit}{Gleichlaeufigkeit} for big tree-ring data sets,\emph{Archaeometry}, \bold{63}, 204-215 DOI: https://doi.org/10.1111/arcm.12600
 }
 
 \seealso{

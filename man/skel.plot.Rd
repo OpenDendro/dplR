@@ -68,10 +68,10 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9,
   \acronym{ISBN-13}: 978-0-8165-1680-3.
   
   Sheppard, P. R. (2002) Crossdating Tree Rings Using Skeleton Plotting.
-  \url{http://www.ltrr.arizona.edu/skeletonplot/introcrossdate.htm}.
+  \url{https://www.ltrr.arizona.edu/skeletonplot/introcrossdate.htm}.
   
   Meko, D. (2002) Tree-Ring MATLAB Toolbox.
-  \url{http://www.mathworks.com/matlabcentral/}.
+  \url{https://www.mathworks.com/matlabcentral/}.
   
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }

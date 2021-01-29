@@ -57,7 +57,7 @@ cms(rwl, po, c.hat.t = FALSE, c.hat.i = FALSE)
   standardization: Defining the biological trend from expected basal area
   increment.  \emph{Tree-Ring Research}, \bold{64}(2), 81\enc{–}{--}96.
 }
-\note{ DendroLab website: \url{http://dendrolab.org/} }
+\note{ DendroLab website: \url{https://dendrolaborg.wordpress.com/} }
 \author{
   Code provided by DendroLab based on programming by F. Qeadan and
   F. Biondi, University of Nevada Reno, \acronym{USA} and adapted for

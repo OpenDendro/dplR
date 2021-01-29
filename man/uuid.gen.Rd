@@ -72,7 +72,7 @@ uuid.gen(more.state = "")
 \references{
   Leach, P., Mealling, M., and Salz, R. (2005) A Universally Unique
   IDentifier (\acronym{UUID}) \acronym{URN} namespace.  \acronym{RFC}
-  4122, RFC Editor.  \url{http://www.rfc-editor.org/rfc/rfc4122.txt}.
+  4122, RFC Editor.  \url{https://www.rfc-editor.org/rfc/rfc4122.txt}.
 }
 \author{
   Mikko Korpela

@@ -104,7 +104,7 @@ latexify(x, doublebackslash = TRUE, dashdash = TRUE,
 }
 \references{
   INRIA.  Tralics: a LaTeX to XML translator, HTML documentation of all
-  TeX commands.  \url{http://www-sop.inria.fr/marelle/tralics/}.
+  TeX commands.  \url{https://www-sop.inria.fr/marelle/tralics/}.
 
   Levitt, N., Persch, C., and Unicode, Inc. (2013) GNOME Character Map,
   application version 3.10.1.
@@ -114,10 +114,10 @@ latexify(x, doublebackslash = TRUE, dashdash = TRUE,
   second edition.  \acronym{ISBN-13}: 978-0-201-36299-2.
 
   Pakin, S. (2009) The Comprehensive LaTeX Symbol
-  List.  \url{http://www.ctan.org/tex-archive/info/symbols/comprehensive}.
+  List.  \url{https://www.ctan.org/tex-archive/info/symbols/comprehensive}.
 
   The Unicode Consortium.  The Unicode Standard.
-  \url{http://www.unicode.org/versions/latest/}.
+  \url{https://home.unicode.org/}.
 }
 \author{
   Mikko Korpela

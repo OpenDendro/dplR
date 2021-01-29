@@ -63,8 +63,7 @@ read.tridas(fname, ids.from.titles = FALSE,
 \details{
 
   The Tree Ring Data Standard (TRiDaS) is described in Jansma et. al
-  (2010).  Information about the current version of the standard can be
-  found from \href{http://www.tridas.org/}{TRiDaS website}.
+  (2010).  
 
   The parameters used for rearranging (\code{\var{ids.from.titles}},
   \code{\var{ids.from.identifiers}}) and combining
@@ -554,8 +553,6 @@ read.tridas(fname, ids.from.titles = FALSE,
   tree-ring data standard.  \emph{Dendrochronologia}, \bold{28}(2),
   99--130.
 
-  TRiDaS \enc{–}{--} The Tree Ring Data Standard.
-  \url{http://www.tridas.org/}.
 }
 
 \author{ Mikko Korpela }

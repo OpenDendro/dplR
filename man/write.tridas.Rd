@@ -213,7 +213,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 
   \item{taxon}{ \code{character} string.  The most detailed taxonomic
     name known for this element (species, genus, family etc).
-    Preferably from the \href{http://www.catalogueoflife.org/}{Catalogue
+    Preferably from the \href{https://www.catalogueoflife.org/}{Catalogue
       of Life} controlled vocabulary.  The same string is used for all of
     \code{\var{rwl.df}}.  The default value is an empty string, but a
     proper value should really be given.  }
@@ -344,8 +344,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
 
 \details{
   The Tree Ring Data Standard (TRiDaS) is described in Jansma et. al
-  (2010).  Information about the current version of the standard can be
-  found from \href{http://www.tridas.org/}{TRiDaS website}.
+  (2010).  
 }
 
 \value{ \code{\var{fname}} }
@@ -355,8 +354,6 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
   tree-ring data standard.  \emph{Dendrochronologia}, \bold{28}(2),
   99--130.
 
-  TRiDaS \enc{–}{--} The Tree Ring Data Standard.
-  \url{http://www.tridas.org/}.
 }
 
 \author{ Mikko Korpela }

@@ -18,7 +18,7 @@
   together with the ring widths to calculate the area of each ring.
 }
 \source{DendroLab, University of Nevada Reno, \acronym{USA}.
-  \url{http://dendrolab.org/}
+  \url{https://dendrolaborg.wordpress.com/}
 }
 \references{
   Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring

@@ -291,7 +291,7 @@ runcrit(n, p = c(0.10, 0.05, 0.02), maxTime = 10, nLimit = 10000)
 \references{
 
   Function \code{redfit} is based on the Fortran program
-  \href{http://www.geo.uni-bremen.de/geomod/staff/mschulz/}{REDFIT}
+  \href{https://www.marum.de/Prof.-Dr.-michael-schulz.html}{REDFIT}
   (version 3.8e), which is in the public domain.
 
   Bradley, J. V. (1968) \emph{Distribution-Free Statistical

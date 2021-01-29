@@ -32,7 +32,7 @@ read.crn(fname, header = NULL, encoding = getOption("encoding"),
 \details{
   This reads in a standard crn file as defined according to the
   standards of the \acronym{ITRDB} at
-  \url{http://www1.ncdc.noaa.gov/pub/data/paleo/treering/treeinfo.txt}.  Despite the
+  \url{https://www1.ncdc.noaa.gov/pub/data/paleo/treering/treeinfo.txt}.  Despite the
   standards at the \acronym{ITRDB}, this occasionally fails due to
   formatting problems.
 }

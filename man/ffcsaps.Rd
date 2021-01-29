@@ -41,7 +41,7 @@ ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
     Dendrochronology: Applications in the Environmental Sciences}.
     Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
 }
-\note{ DendroLab website: \url{http://dendrolab.org/} }
+\note{ DendroLab website: \url{https://dendrolaborg.wordpress.com/} }
 \author{
   Code provided by DendroLab based on programming by F. Qeadan and
   F. Biondi, University of Nevada Reno, \acronym{USA} and adapted for

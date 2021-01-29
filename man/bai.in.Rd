@@ -44,7 +44,7 @@ bai.in(rwl, d2pith = NULL)
   standardization: Defining the biological trend from expected basal area
   increment.  \emph{Tree-Ring Research}, \bold{64}(2), 81\enc{–}{--}96.
 }
-\note{ DendroLab website: \url{http://dendrolab.org/} }
+\note{ DendroLab website: \url{https://dendrolaborg.wordpress.com/} }
 \author{ Code by Andy Bunn based on work from DendroLab, University of
   Nevada Reno, \acronym{USA}.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{bai.out}} }

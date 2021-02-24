@@ -75,11 +75,9 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 
 }
 \details{
-  This detrends and standardizes a tree-ring series.  The detrending is
-  the estimation and removal of the tree\enc{’}{'}s natural biological growth
-  trend.  The standardization is done by dividing each series by the
-  growth trend to produce units in the dimensionless ring-width index
-  (\acronym{RWI}).  There are currently six methods available for
+  This detrends and standardizes a tree-ring series.  The detrending is the estimation and removal of the tree\enc{’}{'}s natural biological growth trend.  The default standardization is done by dividing each series by the growth trend to produce units in the dimensionless ring-width index (\acronym{RWI}).  If \code{difference} is TRUE, the index is calculated by subtraction. Values of zero (typically missing rings) in \code{y} are set to 0.001. 
+  
+  There are currently six methods available for
   detrending although more are certainly possible.  The methods
   implemented are a smoothing spline via \code{\link{ffcsaps}}
   (\code{\var{method} = "Spline"}), a modified negative exponential
@@ -151,7 +149,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   = a exp(b t) + k}) for detrending.  It is, of course, up to the 
   user to determine the best detrending method for their data.
   
-  See the references below for further details on detrending.
+  See the references below for further details on detrending. It's a dark art.
 
   The \code{"Friedman"} approach uses Friedman\enc{’}{'}s \sQuote{super
   smoother} as implemented in \code{\link{supsmu}}.  The parameters

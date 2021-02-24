@@ -85,8 +85,8 @@
         if (n.extra > 0) {
             warn.fmt <-
                 ngettext(n.bad,
-                         "overlap in %d pair of ID, year: %s",
-                         "overlap in %d pairs of ID, year: %s",
+                         "Duplicated series ID detected with overlap in %d pair of ID, year: %s",
+                         "Duplicated series ID detected with overlaps in %d pairs of ID, year: %s",
                          domain="R-dplR")
             if (n.extra > 5) {
                 extra.vals <- extra.vals[sample(n.extra, 5), ]

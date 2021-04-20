@@ -17,7 +17,7 @@
 }
 \source{
   International tree-ring data bank, Accessed on 27-August-2007 at
-  \url{ftp://ftp.ncdc.noaa.gov/pub/data/paleo/treering/measurements/northamerica/usa/ca533.rwl}
+  \url{https://www.ncei.noaa.gov/pub/data/paleo/treering/measurements/northamerica/usa/ca533.rwl}
 }
 \references{
   Graybill, D. A. and LaMarche, Jr., V. C. (1983) Campito Mountain Data

@@ -16,7 +16,7 @@
   (1530\enc{–}{--}1992) in the rows.
 }
 \source{International tree-ring data bank, Accessed on 27-August-2007 at
-  \url{ftp://ftp.ncdc.noaa.gov/pub/data/paleo/treering/chronologies/northamerica/canada/cana157.crn}
+  \url{https://www.ncei.noaa.gov/pub/data/paleo/treering/chronologies/northamerica/canada/cana157.crn}
 }
 \references{
   Jacoby, G., D\enc{’}{'}Arrigo, R. and Buckley, B. (1992) Twisted Tree

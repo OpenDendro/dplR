@@ -16,7 +16,7 @@
 }
 \source{
   International tree-ring data bank, Accessed on 06-March-2016 at
-  \url{ftp://ftp.ncdc.noaa.gov/pub/data/paleo/treering/measurements/northamerica/usa/wa082.rwl}
+  \url{https://www.ncei.noaa.gov/pub/data/paleo/treering/measurements/northamerica/usa/wa082.rwl}
 }
 \references{
   Schweingruber, F. (1983) Hurricane Ridge Data Set.  \acronym{IGBP}

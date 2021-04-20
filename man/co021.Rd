@@ -15,7 +15,7 @@
   years in rows.
 }
 \source{
-  International tree-ring data bank, Accessed on 12-September-2011 at
+  International tree-ring data bank, Accessed on 20-April-2021 at
   \url{https://www.ncei.noaa.gov/pub/data/paleo/treering/measurements/northamerica/usa/co021.rwl}
 }
 \references{

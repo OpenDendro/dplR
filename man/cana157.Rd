@@ -15,7 +15,7 @@
   and the sample depth in column two.  There are 463 years
   (1530\enc{–}{--}1992) in the rows.
 }
-\source{International tree-ring data bank, Accessed on 27-August-2007 at
+\source{International tree-ring data bank, Accessed on 20-April-2021 at
   \url{https://www.ncei.noaa.gov/pub/data/paleo/treering/chronologies/northamerica/canada/cana157.crn}
 }
 \references{

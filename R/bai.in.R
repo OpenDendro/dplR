@@ -1,5 +1,7 @@
 bai.in <- function(rwl, d2pith = NULL) {
-
+    
+    if(!is.data.frame(d2pith))
+        stop("'d2pith' must be a data.frame")
     if(!is.data.frame(rwl))
         stop("'rwl' must be a data.frame")
     if(!is.null(d2pith)) {
@@ -14,7 +16,7 @@ bai.in <- function(rwl, d2pith = NULL) {
         ## distance offset if not given
         d2pith.vec <- rep(0, ncol(rwl))
     }
-
+    
     out <- rwl
     ## vector of years
     n.vec <- seq_len(nrow(rwl))

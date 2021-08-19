@@ -9,7 +9,7 @@
         if (length(series) == 0) {
             return(FALSE)
         }
-
+        
         ## Number of values allowed per row depends on first year modulo 10
         n.per.row <-
             apply(x, 1,
@@ -105,7 +105,7 @@
             TRUE
         }
     }
-
+    
     ## Read data file into memory
     con <- file(fname, encoding = encoding)
     on.exit(close(con))
@@ -142,7 +142,7 @@
         is.head <- FALSE
         yrcheck <- suppressWarnings(as.numeric(substr(hdr1, 9, 12)))
         if (is.null(yrcheck) || length(yrcheck) != 1 || is.na(yrcheck) ||
-                yrcheck < -1e04 || yrcheck > 1e04 ||
+            yrcheck < -1e04 || yrcheck > 1e04 ||
             round(yrcheck) != yrcheck) {
             is.head <- TRUE
         }
@@ -197,7 +197,7 @@
     } else {
         is.head <- header
     }
-
+    
     skip.lines <- if (is.head) 3 else 0
     data1 <- readLines(tfcon, n=skip.lines + 1)
     if (length(data1) < skip.lines + 1) {
@@ -222,7 +222,7 @@
                               comment.char="", strip.white=TRUE,
                               blank.lines.skip=FALSE,
                               colClasses=c("character", rep("integer", 11),
-                              "character")),
+                                           "character")),
                      error = function(...) {
                          ## If predefined column classes fail
                          ## (e.g. missing values marked with "."), convert
@@ -268,7 +268,7 @@
             tryCatch(read.table(tfcon, skip=skip.lines, blank.lines.skip=FALSE,
                                 comment.char="", col.names=letters[1:13],
                                 colClasses=c("character", rep("integer", 11),
-                                "character"), fill=TRUE, quote=""),
+                                             "character"), fill=TRUE, quote=""),
                      error = function(...) {
                          ## In case predefined column classes fail
                          tfcon <- file(tf, encoding="UTF-8")
@@ -327,7 +327,7 @@
                       domain = "R-dplR"))
     }
     extra.col <- dat[[13]]
-
+    
     res <- .Call(dplR.readloop, series.index, decade.yr, x)
     rw.mat <- res[[1]]
     min.year <- res[[2]]
@@ -340,7 +340,7 @@
     }
     max.year <- min.year + (span - 1)
     rownames(rw.mat) <- min.year:max.year
-
+    
     ## The operations in the loop depend on the precision of each series.
     ## It's not exactly clear whether the Tucson format allows mixed
     ## precisions in the same file, but we can support that in any case.
@@ -448,7 +448,7 @@
             prec.rproc <- prec.rproc[to.keep]
         }
     }
-
+    
     the.range <-
         as.matrix(apply(rw.mat, 2, yr.range, yr.vec=min.year:max.year))
     series.min <- the.range[1, ]
@@ -467,7 +467,7 @@
                format(series.max.char, width=5, justify="right"), "\t",
                format(1/prec.rproc, scientific=FALSE,drop0trailing=TRUE),"\n"),
         sep="")
-
+    
     ## trim the front and back of the output to remove blank rows
     good.series <- !is.na(series.min)
     if (!any(good.series)) {

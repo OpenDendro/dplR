@@ -222,16 +222,10 @@ par(op)
 \begin{figure}[ht]
 \centering
 \includegraphics{chron-dplR-h}
-\caption{The \code{wa082} chronology truncated by EPS.}
+\caption{The \code{wa082} chronology truncated by SSS.}
 \label{fig:crn.plot.eps}
 \end{figure}
 
-This method calculates a running value for EPS using the 
-\code{rwi.stats.running} function with e 30-year window. Then we select a 
-cutoff point where we truncate the chronology when the EPS value dips below 
-a certain point. The cutoff method works in this case because the EPS dips
-as sample depth declines. However, some feel this is a more objective way 
-of setting a cutoff as opposed to just picking a minimum number of samples.
 
 \subsection{Chronology uncertainty}
 Typically we calculate a chronology by taking the average of each year from

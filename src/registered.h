@@ -1,5 +1,6 @@
 #include <Rinternals.h>
 
+SEXP c_ads_f(SEXP y, SEXP n, SEXP stiffness, SEXP res);
 SEXP exactmean(SEXP x);
 SEXP gini(SEXP x);
 SEXP makear1(SEXP t, SEXP np, SEXP tau);

@@ -1,6 +1,11 @@
 * CHANGES IN dplR VERSION 1.7.3
 
 
+File: ads
+----------------
+
+- Added new function ads(). This is a function to calculate age-dependent splines that came via Ed Cook. The work is done in Fortran and involved a C wrapper for the Fortran code. As a result the new files are ads.R, ads.Rd for the main file and the help function. But there are new Fortran and C files (adsf.f95, adsc.c) and changes to init.c and registered.h.
+
 File: bai.out, bai.in
 ----------------
 

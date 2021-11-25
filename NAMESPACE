@@ -68,7 +68,8 @@ S3method("time<-", crn)
 #
 ###############################################################
 
-export("as.rwl",
+export("ads",
+       "as.rwl",
        "autoread.ids",
        "bai.in",
        "bai.out",

@@ -1,0 +1,32 @@
+ads <- function(y,nyrs0=50,pos.slope=FALSE){
+
+  # set up
+  nobs <- length(y)
+  nyrs <- 1:nobs + nyrs0 - 1
+  ySpl <-.Call(dplR.c_ads_f,
+               y = as.double(y),
+               n=as.integer(nobs),
+               stiffness = as.integer(nyrs),
+               res = as.double(rep(0,nobs)))
+  #if(length(ySpl==1) && ySpl == 9999){
+  #  stop("SBR matrix not positive definite")
+  #}
+  
+  # If the user wants to constrain a positive slope at the end of the series
+  if(!pos.slope){
+    # 1. Calc first diff of the existing spline (ySpl)
+    ySplDiff <- c(NA,diff(ySpl))
+    # 2. Determine the last index where the spline changes slope
+    ySplCutoff <- max(which(ySplDiff < 0))
+    # 3. Set the spline values from the cutoff to the end
+    #    as the value at cuttoff.
+    ySpl[ySplCutoff:nobs] <- ySpl[ySplCutoff]
+    # 4. Rerun the ads on the splined data
+    ySpl <-.Call(dplR.c_ads_f,
+                 y = as.double(ySpl),
+                 n=as.integer(nobs),
+                 stiffness = as.integer(nyrs),
+                 res = as.double(rep(0,nobs)))
+  }
+  return(ySpl)
+}

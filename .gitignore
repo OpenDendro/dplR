@@ -5,6 +5,7 @@
 dplR.Rproj
 # leave these out of gitignore so they get cleaned with git clean -f
 # or include them here and add them to .Rbuildignore?
-#src/*.o
-#src/*.so
-#src/symbols.rds
+src/*.o
+src/*.so
+src/*.mod
+src/symbols.rds

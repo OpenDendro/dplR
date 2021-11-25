@@ -1,8 +1,5 @@
 bai.out <- function(rwl, diam = NULL) {
   
-  if(!is.data.frame(diam))
-    stop("'diam' must be a data.frame")
-  
   if(!is.data.frame(rwl))
     stop("'rwl' must be a data.frame")
   if(!is.null(diam)) {
@@ -12,6 +9,10 @@ bai.out <- function(rwl, diam = NULL) {
       print(data.frame(rwlNames=names(rwl),seriesID=diam[,1],test=diam[, 1] == names(rwl)))
       stop("series ids in 'diam' and 'rwl' do not match exactly.")
     }
+    if(!is.data.frame(diam)){
+      stop("'diam' must be a data.frame")
+    }
+    
     diam.vec <- diam[, 2]
   }
   

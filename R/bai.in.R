@@ -1,15 +1,17 @@
 bai.in <- function(rwl, d2pith = NULL) {
     
-    if(!is.data.frame(d2pith))
-        stop("'d2pith' must be a data.frame")
     if(!is.data.frame(rwl))
         stop("'rwl' must be a data.frame")
+    
     if(!is.null(d2pith)) {
         if(ncol(rwl) != nrow(d2pith))
             stop("dimension problem: ", "'ncol(rw)' != 'nrow(d2pith)'")
         if(!all(d2pith[, 1] == names(rwl))){
             print(data.frame(rwlNames=names(rwl),seriesID=d2pith[,1],test=d2pith[, 1] == names(rwl)))
             stop("series ids in 'd2pith' and 'rwl' do not match exactly.")
+        }
+        if(!is.data.frame(d2pith)){
+            stop("'d2pith' must be a data.frame")
         }
         d2pith.vec <- d2pith[, 2]
     } else {

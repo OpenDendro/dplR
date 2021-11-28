@@ -1,16 +1,27 @@
-ads <- function(y,nyrs0=50,pos.slope=FALSE){
-
+ads <- function(y,nyrs0=50,pos.slope=TRUE){
+  
   # set up
   nobs <- length(y)
   nyrs <- 1:nobs + nyrs0 - 1
+  # some error checks
+  if (nobs < 3) {
+    stop("there must be at least 3 data points")
+  }
+  if (nobs > 1e4) {
+    stop("y shouldn't be longer than 1e4. ask for help.")
+  }
+  if(!is.numeric(nyrs0) || length(nyrs0) != 1 || nyrs0 <= 1){
+    stop("'nyrs0' must be an integer greater than 1")
+  }
+  # call the c that calls the f
   ySpl <-.Call(dplR.c_ads_f,
                y = as.double(y),
                n=as.integer(nobs),
                stiffness = as.integer(nyrs),
                res = as.double(rep(0,nobs)))
-  #if(length(ySpl==1) && ySpl == 9999){
-  #  stop("SBR matrix not positive definite")
-  #}
+  if(length(ySpl)==1 && ySpl == 9999){
+    stop("SBR matrix not positive definite")
+  }
   
   # If the user wants to constrain a positive slope at the end of the series
   if(!pos.slope){

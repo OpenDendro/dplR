@@ -29,17 +29,6 @@ contains
 !!       implicit real*8 (a-h,o-z)
 !
 !
-! Compile for R
-! The typical way of doing this is via
-! R CMD SHLIB ads_f.f
-! or
-! An issue is that R CMD SHLIB throws a warning about the arrays
-! being too large:
-! Array 'a' at (1) is larger than limit set by '-fmax-stack-var-size='
-!
-! Thus, I added FFLAGS=-fmax-stack-var-size=320000 to ~/.R/Makevars
-! so that arrays are allocated OK. This will have to happen in
-! dplR/src/Makevars as well.
 !*******************************************************************
       subroutine ads_f(y, n, stiffness, res) bind(C, name = "ads_f_")
       use, intrinsic :: iso_c_binding

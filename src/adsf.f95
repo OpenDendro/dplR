@@ -1,11 +1,11 @@
-module fortsubs
-    use, intrinsic :: iso_c_binding
- 
-    implicit none
-    private
-    public :: ads_f
- 
-contains
+!module fortsubs
+!    use, intrinsic :: iso_c_binding
+! 
+!    implicit none
+!    private
+!    public :: ads_f
+! 
+!contains
 	
 !*******************************************************************
 ! calculates a cubic spline function to filter a time series.
@@ -14,20 +14,16 @@ contains
 ! n:  number of values in time series
 ! y:  time series array to be modeled
 ! res:  array of cubic spline function values computed
-! ls: stiffness vector (50% frequency response) of spline
-!
-! p:  value computed in this routine, used to calculate spline
-!     here it is a vector calculated from the input stiffness vector
-! a:  working array of dimension (n,4) - these are all internal
+! stiffness: stiffness vector (50% frequency response) of spline
 !
 !*******************************************************************
 !
 ! AGB Nov 2021 
 ! Modifying Ed Cook's spline2 subroutine to be a little less ugly
 ! This included removing all the implicit declarations and setting
-! implicit none. prior to that the code had
-!!       implicit real*8 (a-h,o-z)
-!
+! implicit none. Also removing archaic calls to dabs, dcos, dqrt.
+! Changed to follow f95 interms of I/O variable decalration and
+! c binding as well to play nicely with C and .Call
 !
 !*******************************************************************
       subroutine ads_f(y, n, stiffness, res) bind(C, name = "ads_f_")
@@ -177,5 +173,5 @@ contains
          res(i)=y(i)-res(i)
       end do
       return
-      end
-end module fortsubs
+      end subroutine ads_f
+!end module fortsubs

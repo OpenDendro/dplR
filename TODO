@@ -2,7 +2,7 @@ o [andybunn]  Implement ARSTAN. Algo is done.
 
 o [andybunn]  Implement simple signal free standardization. Algo is done.
 
-o [andybunn]  Clean up ads and caps functions and help.
+o [andybunn]  Where did the math pdf go? Get it back and make it a vingette? Ah. See here https://github.com/r-lib/pkgbuild/issues/58 So, if Mikko is game, it would be nice to have the math-dplR.Rnw done as a vignette using caps rather than ffscaps which should compile quickly. My guess is that Mikko will have many questions and horrified looks when he sees the fortran code.
 
-o [andybunn]  Where did the math pdf go? Get it back and make it a vingette
+
 

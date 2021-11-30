@@ -26,5 +26,8 @@
   if(length(ySpl)==1 && ySpl == 9999){
     stop("SBR matrix not positive definite")
   }
+  if(f==1){
+    ySpl <- y
+  }
   return(ySpl)
 }

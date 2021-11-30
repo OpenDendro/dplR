@@ -84,7 +84,7 @@ File: redfit.R
 File: plotRings.R and .Rd
 ----------------
 
-- Making plotRings defunct as there were too maby issues with the animation library and especially ImageMagick integrating smoothly for some users. Suggested to Darwin that he make plotRings a stand alone library.
+- Making plotRings defunct as there were too many issues with the animation library and especially ImageMagick integrating smoothly for some users. Suggested to Darwin that he make plotRings a stand alone library.
 
 
 File: xdate-dplR.Rnw

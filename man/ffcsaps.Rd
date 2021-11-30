@@ -30,8 +30,6 @@ ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
 \details{
   This applies a smoothing spline similar to the spline applied in most
   dendrochronological software.  See references for more information.
-  See \sQuote{Examples} for a pointer to a \acronym{PDF} document
-  including mathematical details about the function.
   
   In \code{\var{dplR}} in version 1.7.3 the function \code{\link{caps}} was introduced. This essentially replaces \code{\var{ffcsaps}} for most uses. Where \code{\var{ffcsaps}} is written entirely in R, \code{\link{caps}} is a wrapper for a Fortran subroutine from ARSTAN that is thousands of times faster.
 
@@ -55,15 +53,6 @@ ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
 \seealso{ \code{\link{caps}}, \code{\link{detrend}} }
 
 \examples{library(graphics)
-library(utils)
-docFile <- system.file("doc", "math-dplR.pdf", package="dplR")
-cat("See the following PDF for mathematical details:\n")
-cat(docFile, sep="\n")
-\dontrun{
-if (interactive() && requireNamespace("Biobase")) {
-    Biobase::openPDF(docFile)
-}
-}
 ## Use first series from the Mesa Verde data set
 data(co021)
 series <- co021[, 1]

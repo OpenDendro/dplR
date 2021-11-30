@@ -1,10 +1,14 @@
 * CHANGES IN dplR VERSION 1.7.3
 
+File: caps
+----------------
+
+- Added new function caps() for Cook and Peters Spline. This is a function to calculate the classic ARSTAN spline. The work is done in Fortran and involved a C wrapper for the Fortran code. As a result the new files are caps.R, caps.Rd for the main files and the help function. But there are new Fortran and C files (caps.f95, caps.c) and changes to init.c and registered.h. Oh and NAMESPACE too. Note that this function is 1000s of times faster than ffcsaps.
 
 File: ads
 ----------------
 
-- Added new function ads(). This is a function to calculate age-dependent splines that came via Ed Cook. The work is done in Fortran and involved a C wrapper for the Fortran code. As a result the new files are ads.R, ads.Rd for the main file and the help function. But there are new Fortran and C files (adsf.f95, adsc.c) and changes to init.c and registered.h.
+- Added new function ads(). This is a function to calculate age-dependent splines that came via Ed Cook. The work is done in Fortran and involved a C wrapper for the Fortran code. As a result the new files are ads.R, ads.Rd for the main files and the help function. But there are new Fortran and C files (adsf.f95, adsc.c) and changes to init.c and registered.h. Oh and NAMESPACE too.
 
 File: bai.out, bai.in
 ----------------

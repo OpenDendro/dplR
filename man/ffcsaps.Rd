@@ -32,14 +32,18 @@ ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
   dendrochronological software.  See references for more information.
   See \sQuote{Examples} for a pointer to a \acronym{PDF} document
   including mathematical details about the function.
+  
+  In \code{\var{dplR}} in version 1.7.3 the function \code{\link{caps}} was introduced. This essentially replaces \code{\var{ffcsaps}} for most uses. Where \code{\var{ffcsaps}} is written entirely in R, \code{\link{caps}} is a wrapper for a Fortran subroutine from ARSTAN that is thousands of times faster.
+
 }
 \value{
   A filtered vector.
 }
 \references{
-  Cook, E. R. and Kairiukstis, L. A., editors (1990) \emph{Methods of
-    Dendrochronology: Applications in the Environmental Sciences}.
-    Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
+  Cook, E. R. and Kairiukstis, L. A., editors (1990) \emph{Methods of Dendrochronology: Applications in the Environmental Sciences}. Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
+    
+  Cook, E. R. and Peters, K. (1981) The Smoothing Spline: A New Approach to Standardizing Forest Interior Tree-Ring Width Series for Dendroclimatic Studies. Tree-Ring Bulletin, 41, 45-53.
+  
 }
 \note{ DendroLab website: \url{https://dendrolaborg.wordpress.com/} }
 \author{
@@ -48,7 +52,7 @@ ffcsaps(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5)
   dplR by Andy Bunn.  Patched and improved by Mikko Korpela.
 }
 
-\seealso{ \code{\link{hanning}}, \code{\link{detrend}} }
+\seealso{ \code{\link{caps}}, \code{\link{detrend}} }
 
 \examples{library(graphics)
 library(utils)
@@ -59,14 +63,6 @@ cat(docFile, sep="\n")
 if (interactive() && requireNamespace("Biobase")) {
     Biobase::openPDF(docFile)
 }
-## Use series CAM011 from the Campito data set
-data(ca533)
-series <- ca533[, "CAM011"]
-series <- series[!is.na(series)]
-plot(series, type = "l", ylab = "Ring Width (mm)", col = "grey")
-lines(ffcsaps(series, nyrs = 32), col = "red", lwd = 2)
-lines(ffcsaps(series, nyrs = 64), col = "green", lwd = 2)
-lines(ffcsaps(series, nyrs = 128), col = "blue", lwd = 2)
 }
 ## Use first series from the Mesa Verde data set
 data(co021)
@@ -81,5 +77,10 @@ legend("topright",
        c("Series", "nyrs=32", "nyrs=64",
          paste("Default nyrs (", length(series) / 2, ")", sep="")),
        fill=c("grey", "red", "green", "blue"))
+
+## Compare to caps
+all.equal(caps(series),ffcsaps(series))
+
 }
+
 \keyword{ smooth }

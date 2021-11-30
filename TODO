@@ -1,45 +1,8 @@
-o [mvkorpel]  Signal free standardization. The users are begging for it.
+o [andybunn]  Implement ARSTAN. Algo is done.
 
-o [mvkorpel]  Add option for smooth CI curves from theoretical AR1 in redfit!
+o [andybunn]  Implement simple signal free standardization. Algo is done.
 
-*  At the moment, in the crossdating functions where a user wants to compare a 
-   series to a master chrnology we calculate the master from a rwl object.
-   The pick.rwl.series function was a great improvement to the former method
-   of having to pass in a rwl and a series argument. One further addition
-   will be to add in a crn as either the master (or the series?). I'm not sure
-   about the best way to do this as of yet. It might be that changing the name
-   of the argument from rwl to just "data" might be the best option and handle
-   data differntly based on its class.
+o [andybunn]  Clean up ads and caps functions and help.
 
-o [andybunn]  xskel.cff.plot is a renamed version of skel.cff.plot which has been taken 
-   out of the package. I think. The x preface is to denote its use
-   in crossdating. This function needs to have checks built in that will allow
-   it to be used on rwl and crn objects (for the master).
--  The relative growth calculation in for this plot has been moved to
-   its own function called xskel.calc in helpers.R
-_  I will make a version without the ccf plots as well "xskel.plot."
-
-o [mvkorpel]  Finish the verbose option for detrend.series and it's bretheren
-   (e.g., detrend, i.detrend.series, i.detrend). Better yet, should we 
-   depricate the i.detrend functions and have "interactive" be an argument
-   to detrend?
-
-o [mvkorpel] Should we use class('rwl) as a way of error checking? 
-   E.g.,when a function has "rwl" as an argument should there be a check:
-      if (!inherits(rwl, "rwl")) {
-          stop('use only with "rwl" objects')
-- Related: We should have functions is.rwl() and as.rwl() 
-
-o [andybunn]  Write more vignettes:
--  Detrending
-
-o [mvkorpel] Investigate parallel processing in detrend
-- Is it actually any good or is the overhead too large?
-
-- It is possible that the relative benefit of parallel processing has
-   changed over time.
-
-- Different parallel backends have different performance characteristics.
-
-- The logic of when to go parallel is a heuristic that can be adjusted.
+o [andybunn]  Where did the math pdf go? Get it back and make it a vingette
 

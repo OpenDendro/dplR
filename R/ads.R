@@ -1,4 +1,4 @@
-ads <- function(y,nyrs0=50,pos.slope=TRUE){
+`ads` <- function(y,nyrs0=50,pos.slope=TRUE){
   
   # set up
   nobs <- length(y)

@@ -30,16 +30,18 @@ If \code{\var{pos.slope}} is TRUE, the function will attempt to prevent a postiv
   A filtered vector.
 }
 \references{
-  Cook, E. R. and Kairiukstis, L. A., editors (1990) \emph{Methods of
-    Dendrochronology: Applications in the Environmental Sciences}.
-    Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
+  Cook, E. R. and Kairiukstis, L. A., editors (1990) \emph{Methods of Dendrochronology: Applications in the Environmental Sciences}. Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
+  
   Melvin, T. M. (2004) \emph{Historical Growth Rates and Changing Climatic Sensitivity of Boreal Conifers}. PhD Thesis, Climatic Research Unit, School of Environmental Sciences, University of East Anglia.
+  
+  Cook, E. R. and Peters, K. (1981) The Smoothing Spline: A New Approach to Standardizing Forest Interior Tree-Ring Width Series for Dendroclimatic Studies. Tree-Ring Bulletin, 41, 45-53.
+
 }
 \author{
   Fortran code provided by Ed Cook. Ported and adapted for dplR by Andy Bunn.
 }
 
-\seealso{ \code{\link{hanning}}, \code{\link{detrend}} }
+\seealso{ \code{\link{caps}}, \code{\link{detrend}} }
 
 \examples{
 # fit a curve

@@ -174,7 +174,7 @@
             }
             ## Straight line via linear regression
             if (mneNotPositive) {
-                warning("Fits from ModNegExp are not all positive, see constrain.nls argument in detrend.series")
+                warning("Fits from ModNegExp are not all positive, see constrain.nls argument in detrend.series. Rerun with verbose=TRUE if you haven't and proceed with caution. ARSTAN would tell you to plot that dirty dog at this point.")
             }
             x <- seq_len(nY2)
             lm1 <- lm(y2 ~ x)
@@ -195,7 +195,7 @@
                 useMean <- !isTRUE(ModNegExp[1] > 0 &&
                                    ModNegExp[nY2] > 0)
                 if (useMean) {
-                    warning("Linear fit (backup of ModNegExp) is not all positive")
+                    warning("Linear fit (backup of ModNegExp) is not all positive. Rerun with verbose=TRUE if you haven't and proceed with caution. ARSTAN would tell you to plot that dirty dog at this point.")
                 }
             } else {
                 useMean <- TRUE
@@ -241,6 +241,7 @@
     } else {
         do.mne <- FALSE
     }
+    
     if("ModHugershoff" %in% method2){
       ## hug or lm
       hug.func <- function(Y, constrain) {
@@ -319,7 +320,7 @@
         }
         ## Straight line via linear regression
         if (hugNotPositive) {
-          warning("Fits from ModHugershoff are not all positive, see constrain.nls argument in detrend.series")
+          warning("Fits from ModHugershoff are not all positive, see constrain.nls argument in detrend.series. Rerun with verbose=TRUE if you haven't and proceed with caution. ARSTAN would tell you to plot that dirty dog at this point.")
         }
         x <- seq_len(nY2)
         lm1 <- lm(y2 ~ x)
@@ -340,7 +341,7 @@
           useMean <- !isTRUE(ModHugershoff[1] > 0 &&
                                ModHugershoff[nY2] > 0)
           if (useMean) {
-            warning("Linear fit (backup of ModHugershoff) is not all positive")
+            warning("Linear fit (backup of ModHugershoff) is not all positive. Rerun with verbose=TRUE if you haven't and proceed with caution. ARSTAN would tell you to plot that dirty dog at this point.")
           }
         } else {
           useMean <- TRUE
@@ -405,7 +406,7 @@
         }
         Spline <- ffcsaps(y=y2, x=seq_len(nY2), nyrs=nyrs2, f=f)
         if (any(Spline <= 0)) {
-            warning("Spline fit is not all positive")
+            warning("Spline fit is not all positive. Series will be refit with the mean. Rerun with verbose=TRUE if you haven't and proceed with caution. ARSTAN would tell you to plot that dirty dog at this point.")
             theMean <- mean(y2)
             Spline <- rep.int(theMean, nY2)
             splineStats <- list(method = "Mean", mean = theMean)
@@ -441,6 +442,7 @@
     } else {
         do.mean <- FALSE
     }
+    
     if("Ar" %in% method2){
       ## Fit an ar model - aka prewhiten
       Ar <- ar.func(y2, model = TRUE)
@@ -452,13 +454,13 @@
       }
       arStats <- list(method = "Ar", order = arModel[["order"]],
                       ar = arModel[["ar"]])
-      # This will propogate NA to rwi as a result of detrending.
+      # This will propagate NA to rwi as a result of detrending.
       # Other methods don't. Problem when interacting with other
       # methods?
       # Also, this can (and does!) produce negative RWI values.
       # See example using CAM011. Thus:
       if (any(Ar <= 0, na.rm = TRUE)) {
-        warning("Ar fit is not all positive")
+        warning("Ar fit is not all positive. Setting values <0 to 0. Rerun with verbose=TRUE if you haven't and proceed with caution. ARSTAN would tell you to plot that dirty dog at this point.")
         Ar[Ar<0] <- 0
       }
       if(difference){ Ar - mean(Ar,na.rm=TRUE) }
@@ -476,7 +478,7 @@
         }
         if (verbose) {
             cat("", sepLine, sep = "\n")
-            cat(indent(c(gettext(c("Detrend by FriedMan's super smoother.",
+            cat(indent(c(gettext(c("Detrend by Friedman's super smoother.",
                                    "Smoother parameters"), domain = "R-dplR"),
                          paste0("span = ", span, ", bass = ", bass),
                          paste0("wt = ", wt.description))),
@@ -489,6 +491,15 @@
             Friedman <- supsmu(x = seq_len(nY2), y = y2, wt = wt, span = span,
                                periodic = FALSE, bass = bass)[["y"]]
         }
+      if (any(Friedman <= 0)) {
+        warning("Friedman fit is not all positive. Series will be refit with the mean. Rerun with verbose=TRUE if you haven't and proceed with caution. ARSTAN would tell you to plot that dirty dog at this point.")
+        theMean <- mean(y2)
+        Friedman <- rep.int(theMean, nY2)
+        friedmanStats <- list(method = "Mean", mean = theMean)
+      } else {
+        friedmanStats <- list(method = "Friedman", wt = wt.description, span = span, bass = bass)
+      }
+      
         if(difference){ resids$Friedman <- y2 - Friedman }
         else{ resids$Friedman <- y2 / Friedman }
         curves$Friedman <- Friedman

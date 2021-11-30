@@ -90,7 +90,8 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   The \code{"Spline"} approach uses an spline where the frequency
   response is 0.50 at a wavelength of 0.67 * \dQuote{series length in
   years}, unless specified differently using \code{\var{nyrs}} and
-  \code{\var{f}} in the function \code{\link{ffcsaps}}.
+  \code{\var{f}} in the function \code{\link{ffcsaps}}. If some of the fitted 
+  values are not positive then method \code{"Mean"} is used.
 
   The \code{"ModNegExp"} approach attempts to fit a classic nonlinear
   model of biological growth of the form \eqn{f(t) = a e^{b t} + k}{f(t)
@@ -142,6 +143,12 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   unless \code{\var{pos.slope}} is \code{FALSE} in which case method
   \code{"Mean"} is used.
 
+  The \code{"Friedman"} approach uses Friedman\enc{’}{'}s \sQuote{super
+  smoother} as implemented in \code{\link{supsmu}}.  The parameters
+  \code{\var{wt}}, \code{\var{span}} and \code{\var{bass}} can be
+  adjusted, but \code{\var{periodic}} is always set to \code{FALSE}. If some of 
+  the fitted values are not positive then method \code{"Mean"} is used.
+
   These methods are chosen because they are commonly used in
   dendrochronology.  There is a rich literature on detrending
   and many researchers are particularly skeptical of the use of the 
@@ -149,12 +156,11 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   = a exp(b t) + k}) for detrending.  It is, of course, up to the 
   user to determine the best detrending method for their data.
   
-  See the references below for further details on detrending. It's a dark art.
 
-  The \code{"Friedman"} approach uses Friedman\enc{’}{'}s \sQuote{super
-  smoother} as implemented in \code{\link{supsmu}}.  The parameters
-  \code{\var{wt}}, \code{\var{span}} and \code{\var{bass}} can be
-  adjusted, but \code{\var{periodic}} is always set to \code{FALSE}.
+  See the references below for further details on detrending. It's a dark art.
+  
+  Automoating detrending and not evaluating each series individually is folly.
+
 
 }
 \value{

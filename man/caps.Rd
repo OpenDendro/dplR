@@ -1,24 +1,34 @@
 \encoding{UTF-8}
 \name{caps}
 \alias{caps}
-\title{ Cook and Peters Smoothing Spline with User-Specified Rigidity }
+\title{ Cook and Peters Smoothing Spline with User-Specified Rigidity and Frequency Cutoff }
 \description{
   Applies a smoothing spline to \code{\var{y}} with rigidity determined
-  by \code{\var{nyrs}} years.
+  by two parameters: frequency response \code{\var{f}} at a wavelength
+  of \code{\var{nyrs}} years.
 }
 \usage{
-caps(y, nyrs = length(y)/2)
+caps(y, nyrs = length(y)/2, f = 0.5)
 }
 \arguments{
   \item{y}{ a \code{numeric} vector, typically a tree-ring series. }
   \item{nyrs}{ a number greater than 1, affecting the rigidity of the
-    spline.  A larger
-    \code{\var{nyrs}} produces a more rigid spline.  Defaults to \code{length(\var{y})/2}. }
+    spline.  When \code{\var{f}} is kept constant, a larger
+    \code{\var{nyrs}} produces a more rigid spline.  Defaults to
+    \code{length(\var{y})/2}. }
+  \item{f}{ a number between 0 and 1 giving the frequency response at a
+    wavelength of \code{\var{nyrs}} years.  When \code{\var{nyrs}} is
+    kept constant, a smaller \code{\var{f}} produces a more rigid
+    spline: At one extreme, \code{\var{f} = 0} causes the function to
+    return the least-squares straight line fit to the data.  At the
+    other extreme, as \code{\var{f}} approaches 1 the result approaches 
+    the natural spline, i.e. the function outputs \code{\var{y}}.  
+    The default value is 0.5 and shouldn't be changed without a good reason.}
 }
 \details{
   This applies the classic smoothing spline from Cook and Peters (1981). The rigidity of the spline has a frequency response of 50\% at a wavelength of \code{\var{nyrs}}. The references, of course, have more information and see \sQuote{Examples} for a pointer to a \acronym{PDF} document including mathematical details about the function.
   
-  This funciton was introduced to \code{\var{dplR}} in version 1.7.3 and essentially replaces \code{\link{ffcsaps}} for most uses. Where \code{\link{ffcsaps}} is written entirely in R, \code{\var{caps}} is a wrapper for a Fortran subroutine from ARSTAN that is thousands of times faster.
+  This funciton was introduced to \code{\var{dplR}} in version 1.7.3 and essentially replaces \code{\link{ffcsaps}} for most uses. Where \code{\link{ffcsaps}} is written entirely in R, \code{\var{caps}} is a wrapper for a Fortran subroutine from Ed Cook's ARSTAN program that is thousands of times faster.
 }
 \value{
   A filtered vector.
@@ -45,12 +55,12 @@ data(co021)
 series <- co021[, 1]
 series <- series[!is.na(series)]
 plot(series, type = "l", ylab = "Ring Width (mm)", col = "grey")
-lines(caps(series, nyrs = 32), col = "red", lwd = 2)
-lines(caps(series, nyrs = 64), col = "green", lwd = 2)
-## nyrs defaults to 0.5*length(series) == 347
+lines(caps(series, nyrs = 10), col = "red", lwd = 2)
+lines(caps(series, nyrs = 100), col = "green", lwd = 2)
+## nyrs defaults to 0.5*length(series) = 347
 lines(caps(series), col = "blue", lwd = 2)
 legend("topright",
-       c("Series", "nyrs=32", "nyrs=64",
+       c("Series", "nyrs=10", "nyrs=100",
          paste("Default nyrs (", length(series) / 2, ")", sep="")),
        fill=c("grey", "red", "green", "blue"))
 

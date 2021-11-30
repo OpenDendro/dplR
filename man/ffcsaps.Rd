@@ -69,12 +69,12 @@ data(co021)
 series <- co021[, 1]
 series <- series[!is.na(series)]
 plot(series, type = "l", ylab = "Ring Width (mm)", col = "grey")
-lines(ffcsaps(series, nyrs = 32), col = "red", lwd = 2)
-lines(ffcsaps(series, nyrs = 64), col = "green", lwd = 2)
-## nyrs defaults to 0.5*length(series) == 347
+lines(ffcsaps(series, nyrs = 10), col = "red", lwd = 2)
+lines(ffcsaps(series, nyrs = 100), col = "green", lwd = 2)
+## nyrs defaults to 0.5*length(series) = 347
 lines(ffcsaps(series), col = "blue", lwd = 2)
 legend("topright",
-       c("Series", "nyrs=32", "nyrs=64",
+       c("Series", "nyrs=10", "nyrs=100",
          paste("Default nyrs (", length(series) / 2, ")", sep="")),
        fill=c("grey", "red", "green", "blue"))
 

@@ -8,7 +8,7 @@
 #define CALLDEF(name, n) {#name, (DL_FUNC) &name, n}
 
 static const R_CallMethodDef R_CallDef[] = {
-    CALLDEF(c_caps_f,        4),
+    CALLDEF(c_caps_f,        5),
     CALLDEF(c_ads_f,         4),
     CALLDEF(exactmean,       1),
     CALLDEF(gini,            1),

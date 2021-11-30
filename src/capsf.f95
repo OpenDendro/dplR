@@ -17,6 +17,7 @@
 ! y: time series array to be modeled
 ! n: number of values in time series
 ! stiffness: length (stiffness) of spline to be used to model series
+! pct: freq cutoff
 ! res: array of cubic spline function values computed
 !
 !*******************************************************************
@@ -27,21 +28,24 @@
 ! implicit none. Also removing archaic calls to dabs, dcos, dsqrt.
 ! Changed to follow f95 in terms of I/O variable decalration and
 ! c binding as well to play nicely with C and .Call
+! Also aded back in pct as an arg to caps_f which mirrors the 
+! ffcsaps function in dplR. This way they can be interchangable
 !
 !*******************************************************************
 
-      subroutine caps_f(y,n,stiffness,res) bind(C, name = "caps_f_")
+      subroutine caps_f(y,n,stiffness,pct,res) bind(C, name = "caps_f_")
       use, intrinsic :: iso_c_binding
       implicit none
       real(kind = c_double), intent(in)  :: y !input
       integer(kind = c_int), intent(in)  :: n,stiffness !input
+      real(kind = c_double), intent(in)  :: pct !input
       real(kind = c_double), intent(out) :: res  !output
-      real*8 v,arg,rn,d1,d2,a,c1,c2,p,pct,pi,sum,pp
+      real*8 v,arg,rn,d1,d2,a,c1,c2,p,pi,sum,pp
       integer i,j,k,l,m,imncp1,i1,i2,iw,k1,kl,jm1,n1,nm2,nc,nc1,ncp1
       dimension a(9001,4),c1(4),c2(3),y(n),res(n)
       data c1 /1.d0,-4.d0,6.d0,-2.d0/
       data c2 /0.d0,.33333333333333d0,1.33333333333333d0/
-      data pct,pi / .50d0, 3.1415926535897935d0 /
+      data pi / 3.1415926535897935d0 /
       if(n .lt. 4)then
         res(1)=-9998.
         return
@@ -49,10 +53,9 @@
       nm2=n-2
       v=dfloat(stiffness)
       arg=(2.d0*pi)/v
-      p=(6.d0*(cos(arg)-1.d0)**2.d0)/(cos(arg)+2.d0)
-      pp=sngl(p)
-!cc      p1=((1.d0/(1.d0-pct)-1.d0)*6.d0*(cos(pi*2.d0/v)-1.d0)**2)/
-!cc     +     (cos(pi*2.d0/v)+2.d0)
+!      p=(6.d0*(cos(arg)-1.d0)**2.d0)/(cos(arg)+2.d0)
+      pp=sngl(p) ! this doesn't do anything, right?
+      p=((1.d0/(1.d0-pct)-1.d0)*6.d0*(cos(pi*2.d0/v)-1.d0)**2)/(cos(pi*2.d0/v)+2.d0)
 !cc      p2=(6.d0*(cos(arg)-1.d0)**2.d0)/((2.d0**0.5d0-1.d0)*
 !cc     *		(sqrt(arg)+2.d0))
       do i=1,nm2

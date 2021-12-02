@@ -29,7 +29,8 @@
       sepLine <-
         indent(paste0(rep.int("~", max(1, widthOpt - 2 * indentSize)),
                       collapse = ""))
-      cat(gettext("Verbose output: ", domain="R-dplR"), y.name2, "\n",
+      cat(sepLine,sepLine,
+          gettext("Verbose output: ", domain="R-dplR"), y.name2, "\n",
           sep = "")
       wt.description <- if (wt.missing) "default" else deparse(wt)
       opts <- c("make.plot" = make.plot,
@@ -174,11 +175,18 @@
         }
         ## Straight line via linear regression
         if (mneNotPositive) {
-          msg <- gettext("Fits from ModNegExp are not all positive. See constrain.nls argument in detrend.series. \nARSTAN would tell you to plot that dirty dog at this point.\n Plot your data and proceed with caution.",
+          msg <- gettext("Fits from method==\'ModNegExp\' are not all positive. \n  See constrain.nls argument in detrend.series. \n  ARSTAN would tell you to plot that dirty dog at this point.\n  Proceed with caution.",
                          domain = "R-dplR")
-          warning(msg)
+          if(y.name2==""){
+            msg2 <- gettext(msg, domain = "R-dplR")
+          }
+          else {
+            msg2 <- c(gettextf("In raw series %s: ", y.name2, domain = "R-dplR"),
+                      gettext(msg, domain = "R-dplR"))
+          }
+          warning(msg2)
           if (verbose) {
-            cat(sepLine, indent(msg), sep = "\n")
+            cat(sepLine, indent(msg), sepLine, sep = "\n")
           }
         }
         x <- seq_len(nY2)
@@ -200,11 +208,18 @@
           useMean <- !isTRUE(ModNegExp[1] > 0 &&
                                ModNegExp[nY2] > 0)
           if (useMean) {
-            msg <- gettext("Linear fit (backup of ModNegExp) is not all positive. \nARSTAN would tell you to plot that dirty dog at this point. \nPlot your data and proceed with caution.",
+            msg <- gettext("Linear fit (backup of method==\'ModNegExp\') is not all positive. \n  Proceed with caution. \n  ARSTAN would tell you to plot that dirty dog at this point.",
                            domain = "R-dplR")
-            warning(msg)
+            if(y.name2==""){
+              msg2 <- gettext(msg, domain = "R-dplR")
+            }
+            else {
+              msg2 <- c(gettextf("In raw series %s: ", y.name2, domain = "R-dplR"),
+                        gettext(msg, domain = "R-dplR"))
+            }
+            warning(msg2)
             if (verbose) {
-              cat(sepLine, indent(msg), sep = "\n")
+              cat(sepLine, indent(msg), sepLine, sep = "\n")
             }
           }
         } else {
@@ -330,11 +345,18 @@
         }
         ## Straight line via linear regression
         if (hugNotPositive) {
-          msg <- gettext("Fits from ModHugershoff are not all positive. See constrain.nls argument in detrend.series. \nARSTAN would tell you to plot that dirty dog at this point.\n Plot your data and proceed with caution.",
+          msg <- gettext("Fits from method==\'ModHugershoff\' are not all positive. \n  See constrain.nls argument in detrend.series. \n  ARSTAN would tell you to plot that dirty dog at this point.\n  Proceed with caution.",
                          domain = "R-dplR")
-          warning(msg)
+          if(y.name2==""){
+            msg2 <- gettext(msg, domain = "R-dplR")
+          }
+          else {
+            msg2 <- c(gettextf("In raw series %s: ", y.name2, domain = "R-dplR"),
+                      gettext(msg, domain = "R-dplR"))
+          }
+          warning(msg2)
           if (verbose) {
-            cat(sepLine, indent(msg), sep = "\n")
+            cat(sepLine, indent(msg), sepLine, sep = "\n")
           }
         }
         x <- seq_len(nY2)
@@ -356,11 +378,18 @@
           useMean <- !isTRUE(ModHugershoff[1] > 0 &&
                                ModHugershoff[nY2] > 0)
           if (useMean) {
-            msg <- gettext("Linear fit (backup of ModHugershoff) is not all positive. \nARSTAN would tell you to plot that dirty dog at this point. \nPlot your data and proceed with caution.",
+            msg <- gettext("Linear fit (backup of method==\'ModHugershoff\') is not all positive. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution.",
                            domain = "R-dplR")
-            warning(msg)
+            if(y.name2==""){
+              msg2 <- gettext(msg, domain = "R-dplR")
+            }
+            else {
+              msg2 <- c(gettextf("In raw series %s: ", y.name2, domain = "R-dplR"),
+                        gettext(msg, domain = "R-dplR"))
+            }
+            warning(msg2)
             if (verbose) {
-              cat(sepLine, indent(msg), sep = "\n")
+              cat(sepLine, indent(msg), sepLine, sep = "\n")
             }
             
           }
@@ -427,12 +456,17 @@
       }
       Spline <- ffcsaps(y=y2, x=seq_len(nY2), nyrs=nyrs2, f=f)
       if (any(Spline <= 0)) {
-        msg <- gettext("Fits from Spline are not all positive -- detrending with Mean which might not be what you want. \nARSTAN would tell you to plot that dirty dog at this point. \nPlot your data and proceed with caution.",
-                       domain = "R-dplR")
-        warning(msg)
+        msg <- "Fits from method==\'Spline\' are not all positive. \n  Series will be detrended with method==\'Mean\'. \n  This might not be what you want. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution."
+        if(y.name2==""){
+          msg2 <- gettext(msg, domain = "R-dplR")
+        }
+        else {
+          msg2 <- c(gettextf("In raw series %s: ", y.name2, domain = "R-dplR"),
+                    gettext(msg, domain = "R-dplR"))
+        }
+        warning(msg2)
         if (verbose) {
-          cat(sepLine, indent(msg), sep = "\n")
-          
+          cat(sepLine, indent(msg), sepLine, sep = "\n")
         }
         theMean <- mean(y2)
         Spline <- rep.int(theMean, nY2)
@@ -487,11 +521,17 @@
       # Also, this can (and does!) produce negative RWI values.
       # See example using CAM011. Thus:
       if (any(Ar <= 0, na.rm = TRUE)) {
-        msg <- gettext("Ar fit is not all positive. Setting values <0 to 0 which might not be what you want. \nARSTAN would tell you to plot that dirty dog at this point. \nPlot your data and proceed with caution.",
-                       domain = "R-dplR")
-        warning(msg)
+        msg <- "Fits from method==\'Ar\' are not all positive. \n  Setting values <0 to 0.  \n  This might not be what you want. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution."
+        if(y.name2==""){
+          msg2 <- gettext(msg, domain = "R-dplR")
+        }
+        else {
+          msg2 <- c(gettextf("In raw series %s: ", y.name2, domain = "R-dplR"),
+                    gettext(msg, domain = "R-dplR"))
+        }
+        warning(msg2)
         if (verbose) {
-          cat(sepLine, indent(msg), sep = "\n")
+          cat(sepLine, indent(msg), sepLine, sep = "\n")
         }
         
         Ar[Ar<0] <- 0
@@ -525,12 +565,19 @@
                            periodic = FALSE, bass = bass)[["y"]]
       }
       if (any(Friedman <= 0)) {
-        msg <- gettext("Friedman fits are not all positive -- detrending with Mean which might not be what you want. \nARSTAN would tell you to plot that dirty dog at this point. \nPlot your data and proceed with caution.",
-                       domain = "R-dplR")
-        warning(msg)
-        if (verbose) {
-          cat(sepLine, indent(msg), sep = "\n")
+        msg <- "Fits from method==\'Friedman\' are not all positive. \n  Series will be detrended with method==\'Mean\'. \n  This might not be what you want. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution."
+        if(y.name2==""){
+          msg2 <- gettext(msg, domain = "R-dplR")
         }
+        else {
+          msg2 <- c(gettextf("In raw series %s: ", y.name2, domain = "R-dplR"),
+                    gettext(msg, domain = "R-dplR"))
+        }
+        warning(msg2)
+        if (verbose) {
+          cat(sepLine, indent(msg), sepLine, sep = "\n")
+        }
+        
         
         theMean <- mean(y2)
         Friedman <- rep.int(theMean, nY2)

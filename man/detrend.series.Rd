@@ -278,6 +278,21 @@ series.rwi <- detrend.series(y = series, y.name = names(co021)[4],
                              method=c("ModNegExp", "ModHugershoff"),
                              verbose = TRUE, return.info = TRUE, 
                              make.plot = TRUE)
+                             
+# Note that you are warning if a series has negative values in the 
+# fitted curve. In the case of method=="Spline" the function carries
+# on an applies method=="Mean" as an alternative. Always look very
+# carefully at  each series when detrending. Remeber, frustrations
+# over detrending is the number one cause of dendros going to live as 
+# hermits in the tallgrass prairie, where there are no trees to worry about
+data(nm046)
+series <- nm046[,8]
+names(series) <- rownames(nm046)
+series.rwi <- detrend.series(y = series, y.name = names(nm046)[8],
+                             method="Spline",
+                             make.plot = FALSE)
+
+
 
 }
 \keyword{ manip }

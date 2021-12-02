@@ -1,5 +1,16 @@
 * CHANGES IN dplR VERSION 1.7.3
 
+File: detrend
+----------------
+
+- When dopar is used for the looping, the series name wasn't being passed in. So modified code to take the series name. I think I did it marginally right. But dopar, foreach, and do.call are all prety opaque to me.
+
+File: detrend.series
+----------------
+
+- Went to heroic efforts to improve the warnings that the user sees when there are negative fits from detrending. It was a huge time sink and hassle.
+
+
 File: nm046
 ----------------
 

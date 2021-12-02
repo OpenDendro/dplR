@@ -1,5 +1,15 @@
 * CHANGES IN dplR VERSION 1.7.3
 
+File: nm046
+----------------
+
+- Added new data file, nm046 is a rwl file that has a dirty dog in it (one where spline fits are negative in detrending).
+
+File: ffcsaps
+----------------
+
+- Added `ties = "ordered"` to approx() to avoid warning thrown by regularize.values
+
 File: caps
 ----------------
 

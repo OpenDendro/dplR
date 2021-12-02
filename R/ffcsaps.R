@@ -147,6 +147,6 @@ ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
     res <- tmp2[[2]][tmp2[[1]] %in% x2]
     ## deals with identical() issues via linear approx
     if(length(res) != n)
-        res <- approx(x=tmp[[1]], y=tmp[[2]], xout=x2)$y
+        res <- approx(x=tmp[[1]], y=tmp[[2]], xout=x2, ties = "ordered")$y
     res
 }

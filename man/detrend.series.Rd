@@ -8,8 +8,8 @@
 }
 \usage{
 detrend.series(y, y.name = "", make.plot = TRUE,
-               method = c("Spline", "ModNegExp", 
-               "Mean", "Ar", "Friedman", "ModHugershoff"),
+               method = c("Spline", "ModNegExp", "Mean", 
+               "Ar", "Friedman", "ModHugershoff","AgeDepSpline"),
                nyrs = NULL, f = 0.5, pos.slope = FALSE,
                constrain.nls = c("never", "when.fail", "always"),
                verbose = FALSE, return.info = FALSE,
@@ -27,20 +27,20 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 
   \item{method}{ a \code{character} vector to determine the detrending
     methods.  See details below.  Possible values are all subsets of\cr
-    \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff")}.
+    \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff",
+    "AgeDepSpline")}.
     Defaults to using all the available methods.}
 
   \item{nyrs}{ a number controlling the smoothness of the
-    fitted curve in method \code{"Spline"},
-    defaults to 0.67 of series length if \code{\var{nyrs}} is
-    \code{NULL}. See \code{\link{ffcsaps}}.}
+    fitted curve in methods. See Details.}
   
   \item{f}{ a number between 0 and 1 giving the frequency response or
     wavelength cutoff in method \code{"Spline"}.  Defaults to 0.5. 
     See \code{\link{ffcsaps}}.}
   
   \item{pos.slope}{ a \code{logical} flag.  Will allow for a positive
-    slope to be used in method \code{"ModNegExp"}.  If \code{FALSE} the
+    slope to be used in method \code{"ModNegExp"} or \code{"AgeDepSpline"}.  
+    If \code{FALSE} the
     line will be horizontal. }
 
   \item{constrain.nls}{ a \code{character} string which controls
@@ -87,7 +87,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   (\code{\var{method} = "Friedman"}), or a modified Hugershoff
   curve (\code{\var{method} = "ModHugershoff"}).
 
-  The \code{"Spline"} approach uses an spline where the frequency
+  The \code{"Spline"} approach uses a spline where the frequency
   response is 0.50 at a wavelength of 0.67 * \dQuote{series length in
   years}, unless specified differently using \code{\var{nyrs}} and
   \code{\var{f}} in the function \code{\link{ffcsaps}}. If some of the fitted 
@@ -149,19 +149,28 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   adjusted, but \code{\var{periodic}} is always set to \code{FALSE}. If some of 
   the fitted values are not positive then method \code{"Mean"} is used.
 
+  The \code{"AgeDepSpline"} approach uses an age-dependent spline with an initial
+  stiffness of 50 (code{\var{nyrs}=50}). See \code{\link{ads}}. If some of the fitted 
+  values are not positive then method \code{"Mean"} is used. However, this is
+  extremely unlikely.
+
   These methods are chosen because they are commonly used in
   dendrochronology.  There is a rich literature on detrending
   and many researchers are particularly skeptical of the use of the 
   classic nonlinear model of biological growth (\eqn{f(t) = a e^{b t} + k}{f(t)
   = a exp(b t) + k}) for detrending.  It is, of course, up to the 
   user to determine the best detrending method for their data.
-  
+
+  Note that the user receives a warning if a series has negative values in the  
+  fitted curve. This happens fairly commonly with with the \sQuote{Ar} method 
+  on high-order data. It happens less often with method \sQuote{Spline} but
+  isn't unheard of (see \sQuote{Examples}). If this happens, users should look
+  carefully at their data beofre continuing. Automating detrending and not 
+  evaluating each series individually is folly. Remeber, frustration over 
+  detrending is the number one cause of dendros going to live as hermits in 
+  the tallgrass prairie, where there are no trees to worry about.  
 
   See the references below for further details on detrending. It's a dark art.
-  
-  Automoating detrending and not evaluating each series individually is folly.
-
-
 }
 \value{
 
@@ -210,7 +219,8 @@ detrend.series(y, y.name = "", make.plot = TRUE,
         \code{\var{constrain.nls}} is set to \code{"when.fail"}. }
 
       \item{nyrs}{ The value of \code{\var{nyrs}} used for
-        \code{\link{ffcsaps}}.  Only for method \code{"Spline"}. }
+        \code{\link{ffcsaps}}. For methods \code{"Spline"} and
+         \code{"AgeDepSpline"}. }
 
       \item{order}{ The order of the autoregressive model, selected by
         AIC (Akaike information criterion).  Only for method
@@ -279,12 +289,9 @@ series.rwi <- detrend.series(y = series, y.name = names(co021)[4],
                              verbose = TRUE, return.info = TRUE, 
                              make.plot = TRUE)
                              
-# Note that you are warning if a series has negative values in the 
-# fitted curve. In the case of method=="Spline" the function carries
-# on an applies method=="Mean" as an alternative. Always look very
-# carefully at  each series when detrending. Remeber, frustrations
-# over detrending is the number one cause of dendros going to live as 
-# hermits in the tallgrass prairie, where there are no trees to worry about
+# A dirty dog.
+# In the case of method=="Spline" the function carries-on
+# and applies method=="Mean" as an alternative. 
 data(nm046)
 series <- nm046[,8]
 names(series) <- rownames(nm046)

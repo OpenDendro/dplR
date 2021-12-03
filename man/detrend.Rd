@@ -9,7 +9,7 @@
 \usage{
 detrend(rwl, y.name = names(rwl), make.plot = FALSE,
         method = c("Spline", "ModNegExp", "Mean", "Ar", "Friedman",
-                   "ModHugershoff"),
+                   "ModHugershoff", "AgeDepSpline"),
         nyrs = NULL, f = 0.5, pos.slope = FALSE,
         constrain.nls = c("never", "when.fail", "always"),
         verbose = FALSE, return.info = FALSE,
@@ -29,7 +29,8 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   
   \item{method}{ a \code{character} vector to determine the detrending
     methods.  See details below.  Possible values are all subsets of\cr
-    \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff")}.
+    \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff",
+    "AgeDepSpline")}.
     Defaults to using all the available methods.}
   
   \item{nyrs}{ a number giving the rigidity of the smoothing spline,

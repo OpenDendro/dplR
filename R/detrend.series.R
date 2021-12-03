@@ -1,6 +1,7 @@
 `detrend.series` <-
   function(y, y.name = "", make.plot = TRUE,
-           method = c("Spline", "ModNegExp", "Mean", "Ar", "Friedman","ModHugershoff"),
+           method = c("Spline", "ModNegExp", "Mean", "Ar", "Friedman",
+                      "ModHugershoff", "AgeDepSpline"),
            nyrs = NULL, f = 0.5, pos.slope = FALSE,
            constrain.nls = c("never", "when.fail", "always"),
            verbose = FALSE, return.info = FALSE,
@@ -13,7 +14,8 @@
       y.name2 <- as.character(y.name)[1]
       stopifnot(Encoding(y.name2) != "bytes")
     }
-    known.methods <- c("Spline", "ModNegExp", "Mean", "Ar", "Friedman","ModHugershoff")
+    known.methods <- c("Spline", "ModNegExp", "Mean", "Ar", "Friedman",
+                       "ModHugershoff", "AgeDepSpline")
     constrain2 <- match.arg(constrain.nls)
     method2 <- match.arg(arg = method,
                          choices = known.methods,
@@ -29,9 +31,9 @@
       sepLine <-
         indent(paste0(rep.int("~", max(1, widthOpt - 2 * indentSize)),
                       collapse = ""))
-      cat(sepLine,sepLine,
-          gettext("Verbose output: ", domain="R-dplR"), y.name2, "\n",
-          sep = "")
+      cat(sepLine,
+          gettext("Verbose output: ", domain="R-dplR"), y.name2,
+          sep = "\n")
       wt.description <- if (wt.missing) "default" else deparse(wt)
       opts <- c("make.plot" = make.plot,
                 "method(s)" = deparse(method2),
@@ -98,7 +100,11 @@
     resids <- list()
     curves <- list()
     modelStats <- list()
+    ################################################################################    
+    ################################################################################    
+    # Ok. Let's start the methods
     
+    ################################################################################    
     if("ModNegExp" %in% method2){
       ## Nec or lm
       nec.func <- function(Y, constrain) {
@@ -266,7 +272,7 @@
     } else {
       do.mne <- FALSE
     }
-    
+    ################################################################################    
     if("ModHugershoff" %in% method2){
       ## hug or lm
       hug.func <- function(Y, constrain) {
@@ -437,7 +443,51 @@
     } else {
       do.hug <- FALSE
     }
-    
+    ################################################################################    
+    if("AgeDepSpline" %in% method2){
+      ## Age dep smoothing spline with nyrs (50 default) as the init stiffness
+      ## are NULL
+      if(is.null(nyrs))
+        nyrs2 <- 50
+      else
+        nyrs2 <- nyrs
+      if (verbose) {
+        cat("", sepLine, sep = "\n")
+        cat(indent(c(gettext(c("Detrend by age-dependent spline.",
+                               "Spline parameters"), domain = "R-dplR"),
+                     paste0("nyrs = ", nyrs2, ", pos.slope = ", pos.slope))),
+            sep = "\n")
+      }
+      AgeDepSpline <- ads(y=y2, nyrs0=nyrs2, pos.slope = pos.slope)
+      if (any(AgeDepSpline <= 0)) {
+        msg <- "Fits from method==\'AgeDepSpline\' are not all positive. \n  This is extremely rare. Series will be detrended with method==\'Mean\'. \n  This might not be what you want. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution."
+        if(y.name2==""){
+          msg2 <- gettext(msg, domain = "R-dplR")
+        }
+        else {
+          msg2 <- c(gettextf("In raw series %s: ", y.name2, domain = "R-dplR"),
+                    gettext(msg, domain = "R-dplR"))
+        }
+        warning(msg2)
+        if (verbose) {
+          cat(sepLine, indent(msg), sepLine, sep = "\n")
+        }
+        theMean <- mean(y2)
+        AgeDepSpline <- rep.int(theMean, nY2)
+        AgeDepSplineStats <- list(method = "Mean", mean = theMean)
+      } else {
+        AgeDepSplineStats <- list(method = "Age-Dep Spline", nyrs = nyrs2, pos.slope=pos.slope)
+      }
+      if(difference){ resids$AgeDepSpline <- y2 - AgeDepSpline }
+      else{ resids$AgeDepSpline <- y2 / AgeDepSpline }
+      curves$AgeDepSpline <- AgeDepSpline
+      modelStats$AgeDepSpline <- AgeDepSplineStats
+      
+      do.ads <- TRUE
+    } else {
+      do.ads <- FALSE
+    }
+    ################################################################################    
     if("Spline" %in% method2){
       ## Smoothing spline
       ## "n-year spline" as the spline whose frequency response is
@@ -483,7 +533,7 @@
     } else {
       do.spline <- FALSE
     }
-    
+    ################################################################################    
     if("Mean" %in% method2){
       ## Fit a horiz line
       theMean <- mean(y2)
@@ -503,7 +553,7 @@
     } else {
       do.mean <- FALSE
     }
-    
+    ################################################################################    
     if("Ar" %in% method2){
       ## Fit an ar model - aka prewhiten
       Ar <- ar.func(y2, model = TRUE)
@@ -544,7 +594,7 @@
     } else {
       do.ar <- FALSE
     }
-    
+    ################################################################################    
     if ("Friedman" %in% method2) {
       if (is.null(wt.description)) {
         wt.description <- if (wt.missing) "default" else deparse(wt)
@@ -597,6 +647,8 @@
     } else {
       do.friedman <- FALSE
     }
+    ################################################################################    
+    ################################################################################    
     
     resids <- data.frame(resids)
     curves <- data.frame(curves)
@@ -627,7 +679,7 @@
     }
     
     if(make.plot){
-      cols <- c("#8c510a","#d8b365","#f6e8c3","#c7eae5","#5ab4ac","#01665e")
+      cols <- c("#24492e","#015b58","#2c6184","#59629b","#89689d","#ba7999","#e69b99")
       op <- par(no.readonly=TRUE)
       on.exit(par(op))
       n.methods <- ncol(resids)
@@ -642,11 +694,14 @@
                     matrix(c(1,2,3,4), nrow=2, ncol=2, byrow=TRUE),
                     matrix(c(1,1,2,3,4,5), nrow=3, ncol=2, byrow=TRUE),
                     matrix(c(1,1,1,2,3,4,5,6,0), nrow=3, ncol=3, byrow=TRUE),
-                    matrix(c(1,1,1,2,3,4,5,6,7), nrow=3, ncol=3, byrow=TRUE))
+                    matrix(c(1,1,1,2,3,4,5,6,7), nrow=3, ncol=3, byrow=TRUE),
+                    matrix(c(1,2,3,4,5,6,7,8), nrow=4, ncol=2, byrow=TRUE))
+      
       layout(mat,
              widths=rep.int(0.5, ncol(mat)),
              heights=rep.int(1, nrow(mat)))
       
+      # 1
       plot(y2, type="l", ylab="mm", col = "grey",
            xlab=gettext("Age (Yrs)", domain="R-dplR"),
            main=gettextf("Raw Series %s", y.name2, domain="R-dplR"))
@@ -655,7 +710,9 @@
       if(do.mean) lines(Mean, col=cols[3], lwd=2)
       if(do.friedman) lines(Friedman, col=cols[5], lwd=2)
       if(do.hug) lines(ModHugershoff, col=cols[6], lwd=2)
+      if(do.ads) lines(AgeDepSpline, col=cols[7], lwd=2)
       
+      # 1
       if(do.spline){
         plot(resids$Spline, type="l", col=cols[1],
              main=gettext("Spline", domain="R-dplR"),
@@ -664,7 +721,7 @@
         if(difference){ abline(h=0) }
         else{ abline(h=1) }
       }
-      
+      # 2
       if(do.mne){
         plot(resids$ModNegExp, type="l", col=cols[2],
              main=gettext("Neg. Exp. Curve or Straight Line",
@@ -675,7 +732,7 @@
         else{ abline(h=1) }
         
       }
-      
+      # 3
       if(do.mean){
         plot(resids$Mean, type="l", col=cols[3],
              main=gettext("Horizontal Line (Mean)", domain="R-dplR"),
@@ -685,6 +742,7 @@
         else{ abline(h=1) }
         
       }
+      # 4
       if(do.ar){
         plot(resids$Ar, type="l", col=cols[4],
              main=gettextf("Ar", domain="R-dplR"),
@@ -694,7 +752,7 @@
         else{ abline(h=1) }
         mtext(text="(Not plotted with raw series)",side=3,line=-1,cex=0.75)
       }
-      
+      # 5
       if (do.friedman) {
         plot(resids$Friedman, type="l", col=cols[5],
              main=gettext("Friedman's Super Smoother", domain="R-dplR"),
@@ -704,6 +762,7 @@
         else{ abline(h=1) }
         
       }
+      # 6
       if(do.hug){
         plot(resids$ModHugershoff, type="l", col=cols[6],
              main=gettext("Hugershoff or Straight Line",
@@ -714,32 +773,43 @@
         else{ abline(h=1) }
         
       }
+      # 7
+      if(do.ads){
+        plot(resids$AgeDepSpline, type="l", col=cols[7],
+             main=gettext("Age Dep Spline",
+                          domain="R-dplR"),
+             xlab=gettext("Age (Yrs)", domain="R-dplR"),
+             ylab=gettext("RWI", domain="R-dplR"))
+        if(difference){ abline(h=0) }
+        else{ abline(h=1) }
+        
+      }
+    }
+      # Done
+      resids2 <- matrix(NA, ncol=ncol(resids), nrow=length(y))
+      resids2 <- data.frame(resids2)
+      names(resids2) <- names(resids)
+      if(!is.null(names(y))) row.names(resids2) <- names(y)
+      resids2[good.y, ] <- resids
       
+      curves2 <- matrix(NA, ncol=ncol(curves), nrow=length(y))
+      curves2 <- data.frame(curves2)
+      names(curves2) <- names(curves)
+      if(!is.null(names(y))) row.names(curves2) <- names(y)
+      curves2[good.y, ] <- curves
+      ## Reorder columns of output to match the order of the argument
+      ## "method".
+      resids2 <- resids2[, method2]
+      curves2 <- curves2[, method2]
+      ## Make sure names (years) are included if there is only one method
+      if(!is.data.frame(resids2)) names(resids2) <- names(y)
+      if (return.info) {
+        list(series = resids2,
+             curves = curves2,
+             model.info = modelStats[method2],
+             data.info = dataStats)
+      } else {
+        resids2
+      }
     }
     
-    resids2 <- matrix(NA, ncol=ncol(resids), nrow=length(y))
-    resids2 <- data.frame(resids2)
-    names(resids2) <- names(resids)
-    if(!is.null(names(y))) row.names(resids2) <- names(y)
-    resids2[good.y, ] <- resids
-    
-    curves2 <- matrix(NA, ncol=ncol(curves), nrow=length(y))
-    curves2 <- data.frame(curves2)
-    names(curves2) <- names(curves)
-    if(!is.null(names(y))) row.names(curves2) <- names(y)
-    curves2[good.y, ] <- curves
-    ## Reorder columns of output to match the order of the argument
-    ## "method".
-    resids2 <- resids2[, method2]
-    curves2 <- curves2[, method2]
-    ## Make sure names (years) are included if there is only one method
-    if(!is.data.frame(resids2)) names(resids2) <- names(y)
-    if (return.info) {
-      list(series = resids2,
-           curves = curves2,
-           model.info = modelStats[method2],
-           data.info = dataStats)
-    } else {
-      resids2
-    }
-  }

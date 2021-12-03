@@ -1,6 +1,7 @@
 `detrend` <-
     function(rwl, y.name = names(rwl), make.plot = FALSE,
-             method=c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff"),
+             method=c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", 
+                      "ModHugershoff", "AgeDepSpline"),
              nyrs = NULL, f = 0.5, pos.slope = FALSE,
              constrain.nls = c("never", "when.fail", "always"),
              verbose = FALSE, return.info = FALSE,
@@ -10,7 +11,8 @@
               identical(pos.slope, FALSE) || identical(pos.slope, TRUE),
               identical(verbose, TRUE) || identical(verbose, FALSE),
               identical(return.info, TRUE) || identical(return.info, FALSE))
-    known.methods <- c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff")
+    known.methods <- c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", 
+                       "ModHugershoff", "AgeDepSpline")
     constrain2 <- match.arg(constrain.nls)
     method2 <- match.arg(arg = method,
                          choices = known.methods,

@@ -6,23 +6,28 @@
   The fabled signal free method
 }
 \usage{
-ssf(rwl, maxIterations = 50, MADthreshold = 5e-4,
-    method="AgeDepSpline",difference = FALSE, 
+ssf(rwl, method="AgeDepSpline", 
+    nyrs = NULL, pos.slope = TRUE, difference = FALSE, 
+    maxIterations = 50, MADthreshold = 5e-4,
     return.info = FALSE, verbose = TRUE)
 }
 \arguments{
 
   \item{rwl}{ stuff }
 
+  \item{method}{ a \code{character} vector to determine the detrending
+    method.  See details below.  Possible values are \cr \code{c("Spline",
+    "AgeDepSpline")}.}
+    
+    \item{nyrs}{ a number controlling the smoothness of the
+    fitted curve in methods. See Details.}
+  
+  \item{pos.slope}{ a \code{logical} flag.  Will allow for a positive
+    slope in method \code{"AgeDepSpline"}.}
+
   \item{maxIterations}{ stuff }
 
   \item{MADthreshold}{ stuff }
-
-  \item{method}{ a \code{character} vector to determine the detrending
-    methods.  See details below.  Possible values are all subsets of\cr
-    \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff",
-    "AgeDepSpline")}.}
-
 
   \item{verbose}{ a \code{logical} flag.  Write out details to the screen? }
 
@@ -35,6 +40,8 @@ ssf(rwl, maxIterations = 50, MADthreshold = 5e-4,
 
 }
 \details{
+  Follows Melvin mostly with Cookian differences.
+  
   See the references below for further details on detrending. It's a dark art.
 }
 \value{

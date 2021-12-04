@@ -1,3 +1,7 @@
+o [andybunn]  allow values of nyrs between 0 and 1 to be %N for splines?
+
+o [andybunn]  swap out ffcsaps for caps? need to test
+
 o [andybunn]  Improve duplicate series error in read.tucson
 
 o [andybunn]  Implement ARSTAN. Algo is done.

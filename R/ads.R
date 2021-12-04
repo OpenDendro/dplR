@@ -24,11 +24,14 @@
   }
   
   # If the user wants to constrain a positive slope at the end of the series
+  # But what do you do if all the diffs are positive? 
+  # E.g. increasing slope for
+  # whole spline? use first value?
   if(!pos.slope){
     # 1. Calc first diff of the existing spline (ySpl)
-    ySplDiff <- c(NA,diff(ySpl))
+    ySplDiff <- c(0,diff(ySpl))
     # 2. Determine the last index where the spline changes slope
-    ySplCutoff <- max(which(ySplDiff < 0))
+    ySplCutoff <- max(which(ySplDiff <= 0))
     # 3. Set the spline values from the cutoff to the end
     #    as the value at cuttoff.
     ySpl[ySplCutoff:nobs] <- ySpl[ySplCutoff]

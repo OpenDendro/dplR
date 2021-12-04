@@ -165,8 +165,8 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   fitted curve. This happens fairly commonly with with the \sQuote{Ar} method 
   on high-order data. It happens less often with method \sQuote{Spline} but
   isn't unheard of (see \sQuote{Examples}). If this happens, users should look
-  carefully at their data beofre continuing. Automating detrending and not 
-  evaluating each series individually is folly. Remeber, frustration over 
+  carefully at their data before continuing. Automating detrending and not 
+  evaluating each series individually is folly. Remember, frustration over 
   detrending is the number one cause of dendros going to live as hermits in 
   the tallgrass prairie, where there are no trees to worry about.  
 

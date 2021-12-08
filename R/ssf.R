@@ -2,12 +2,16 @@
                   method="AgeDepSpline", 
                   nyrs = NULL,
                   pos.slope = TRUE,
-                  difference = FALSE,
                   maxIterations = 50, 
                   MADthreshold = 5e-4,
                   return.info = FALSE, 
                   verbose = TRUE)
 {
+  
+  if(maxIterations > 50){
+    warning("Having to set maxIterations > 50 in order to meet a stopping criteria  is generally a sign that the data are not ideal for signal free detrending.")
+  }
+  
   # make a copy of rwl just in case we change it.
   dat <- rwl
   
@@ -16,6 +20,11 @@
     warning("Input data needs to be class \"rwl\". Attempting to coerce.")
     dat <- as.rwl(dat)
   }
+  
+  # get some detrending options
+  method2 <- match.arg(arg = method,
+                       choices = c("Spline", "AgeDepSpline"),
+                       several.ok = FALSE)
   
   # useful vars
   nSeries <- dim(dat)[2]
@@ -46,13 +55,9 @@
   # detrend.series(). The issue with using detrend() is that negative values are
   # not allowed for the detrend funcs. Maybe they should be (e.g., z-scored 
   # data) but they aren't as of right now. So here is a simplified detrend function.
-  getCurve <- function(y,method="AgeDepSpline",
+  getCurve <- function(y,method=method2,
                        nyrs=NULL,
                        pos.slope=pos.slope){
-    
-    method2 <- match.arg(arg = method,
-                         choices = c("Spline", "AgeDepSpline"),
-                         several.ok = FALSE)
     
     
     ## Remove NA from the data (they will be reinserted later)
@@ -107,17 +112,12 @@
   # STEP 1 - GET AN INITIAL CHRONOLOGY
   # fit curves
   datCurves <- apply(dat,2,getCurve,
-                     method=method,
+                     method=method2,
                      nyrs=nyrs,
                      pos.slope=pos.slope)
   
   # get RWI
-  if(difference) {
-    datRWI <- dat - datCurves
-  }
-  else {
-    datRWI <- dat / datCurves
-  }
+  datRWI <- dat / datCurves
   # and initial chron
   datCrn <- chron(datRWI,biweight = TRUE)
   # Check for zeros in the chronology. This can happen in VERY sensitive
@@ -153,16 +153,11 @@
   
   # STEP 5 - Fit curves to signal free measurements
   SFRescaledCurves_out[,,1] <- apply(SFRescaled_out[,,1],2,getCurve,
-                                     method=method,
+                                     method=method2,
                                      nyrs=nyrs,
                                      pos.slope=pos.slope)
   
-  #tmp <- detrend(rwl = as.rwl(SFRescaled_out[,,1]),
-  ##               method = method,pos.slope=TRUE,
-  #               difference = FALSE,
-  #               return.info=TRUE)
-  #SFRescaledCurves_out[,,1] <- as.matrix(tmp$curves)
-  
+
   # STEP 6 - divide original measurements by curve obtained from signal free measurements fitting
   SFRWI_out[,,1] <- as.matrix(dat/SFRescaledCurves_out[,,1])
   
@@ -207,14 +202,11 @@
     
     # STEP 5 - fit curves to signal free measurements
     SFRescaledCurves_out[,,k] <- apply(SFRescaled_out[,,k],2,getCurve,
-                                       method=method,
+                                       method=method2,
                                        nyrs=nyrs,
                                        pos.slope=pos.slope)
     
-    #tmp <- detrend(rwl = as.rwl(SFRescaled_out[,,k]),pos.slope=TRUE,
-    #               method = method, difference = FALSE, return.info=TRUE)
-    #SFRescaledCurves_out[,,k] <- as.matrix(tmp$curves)
-    
+
     # STEP 6 - divide original measurements by curve obtained from signal free curves
     SFRWI_out[,,k] <- as.matrix(dat/SFRescaledCurves_out[,,k])
     
@@ -232,9 +224,9 @@
     # Now look at diffs in fit using median abs diff in the high freq resids
     # This is the (high freq) resids from the current iter minus the resids from prior iter
     hp1 <- SFCrn_mat[,k] - caps(SFCrn_mat[,k],
-                                   nyrs = floor(medianSegLength))
+                                nyrs = floor(medianSegLength))
     hp2 <- SFCrn_mat[,k-1] - caps(SFCrn_mat[,k-1],
-                                     nyrs = floor(medianSegLength))
+                                  nyrs = floor(medianSegLength))
     
     hfCrnResids_out[,k-1] <- hp1 - hp2
     # calculate the median absolute differences weighted by the normalized sample depth
@@ -275,8 +267,36 @@
   row.names(finalCrn) <- row.names(dat)
   class(finalCrn) <- c("crn", "data.frame")
   
+  if(method2 == "AgeDepSpline"){
+    infoList <- list(method=method2, 
+                     nyrs = nyrs, 
+                     pos.slope = pos.slope,
+                     maxIterations = maxIterations, 
+                     MADthreshold = MADthreshold)
+  }
+  else {
+    infoList <- list(method=method2, 
+                     nyrs = nyrs, 
+                     maxIterations = maxIterations, 
+                     MADthreshold = MADthreshold)
+  }
+  
+  if(verbose){ 
+    cat("Simple Signal Free Complete",sep="\n")
+    cat(paste0("Detrending method: ", method2),sep = "\n")
+    cat(paste0("nyrs: ", nyrs),sep = "\n")
+    if(method2 == "AgeDepSpline"){
+      cat(paste0("pos.slope: ", pos.slope),sep = "\n")
+    }
+    cat(paste0("maxIterations: ", maxIterations),sep = "\n")
+    cat(paste0("MADthreshold: ", MADthreshold),sep = "\n")
+  }
+  
+  
+  
   if(return.info){
-    res <- list(crn = finalCrn,
+    res <- list(infoList = infoList,
+                crn = finalCrn,
                 # The SF measurements
                 SF_out = SF_out,
                 # The rescaled SF measurements
@@ -284,7 +304,7 @@
                 # The rescaled SF curves
                 SFRescaledCurves_out = SFRescaledCurves_out,
                 # The SF RWI
-                SFRWI_out <- SFRWI_out,
+                SFRWI_out = SFRWI_out,
                 # The SF crn
                 SFCrn_mat = SFCrn_mat,
                 # The high freq chronology residuals
@@ -294,6 +314,7 @@
     return(res)
   }
   else{
+    
     return(finalCrn)
   }
 }

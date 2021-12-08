@@ -7,7 +7,7 @@
 }
 \usage{
 ssf(rwl, method="AgeDepSpline", 
-    nyrs = NULL, pos.slope = TRUE, difference = FALSE, 
+    nyrs = NULL, pos.slope = TRUE,
     maxIterations = 50, MADthreshold = 5e-4,
     return.info = FALSE, verbose = TRUE)
 }
@@ -29,15 +29,12 @@ ssf(rwl, method="AgeDepSpline",
 
   \item{MADthreshold}{ stuff }
 
-  \item{verbose}{ a \code{logical} flag.  Write out details to the screen? }
-
   \item{return.info}{ a \code{logical} flag.  If \code{TRUE}, details
     about models and data will be added to the return value.  See
     \sQuote{Value}. }
+    
+  \item{verbose}{ a \code{logical} flag.  Write out details to the screen? }
   
-
-  \item{difference}{ a \code{logical} flag.  Compute residuals by substraction if TRUE, otherwise use division. }
-
 }
 \details{
   Follows Melvin mostly with Cookian differences.

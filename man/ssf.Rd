@@ -8,7 +8,7 @@
 \usage{
 ssf(rwl, method="AgeDepSpline", 
     nyrs = NULL, pos.slope = TRUE,
-    maxIterations = 50, MADthreshold = 5e-4,
+    maxIterations = 50, madThreshold = 5e-4,
     return.info = FALSE, verbose = TRUE)
 }
 \arguments{
@@ -27,7 +27,7 @@ ssf(rwl, method="AgeDepSpline",
 
   \item{maxIterations}{ stuff }
 
-  \item{MADthreshold}{ stuff }
+  \item{madThreshold}{ stuff }
 
   \item{return.info}{ a \code{logical} flag.  If \code{TRUE}, details
     about models and data will be added to the return value.  See

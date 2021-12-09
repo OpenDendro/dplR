@@ -3,7 +3,7 @@
                   nyrs = NULL,
                   pos.slope = TRUE,
                   maxIterations = 50, 
-                  MADthreshold = 5e-4,
+                  madThreshold = 5e-4,
                   return.info = FALSE, 
                   verbose = TRUE)
 {
@@ -181,7 +181,7 @@
   
   iterationNumber <- 2 # Start on 2 b/c we did one above
   
-  while(medianAbsDiff > MADthreshold){
+  while(medianAbsDiff > madThreshold){
     k = iterationNumber
     
     # STEP 2 - Divide each series of measurements by the last SF chronology
@@ -235,11 +235,11 @@
     MAD_out[k-1] <- medianAbsDiff
     if(verbose){
       cat("Iteration: ", k, " Median Abs Diff: ",round(medianAbsDiff,5),
-          " (",round(MADthreshold/medianAbsDiff * 100,5),"% of threshold)\n",
+          " (",round(madThreshold/medianAbsDiff * 100,5),"% of threshold)\n",
           sep = "")
     }
     
-    if(iterationNumber==maxIterations & medianAbsDiff > MADthreshold){
+    if(iterationNumber==maxIterations & medianAbsDiff > madThreshold){
       cat("Reached maximum iterations. Stopping criteria not satisfied.\n")
       cat("Unless the final median absolute difference is very close to meeting the threshold,\n")
       cat("this is generally a bad sign and you should strongly consider another standardization method.\n")
@@ -272,13 +272,13 @@
                      nyrs = nyrs, 
                      pos.slope = pos.slope,
                      maxIterations = maxIterations, 
-                     MADthreshold = MADthreshold)
+                     madThreshold = madThreshold)
   }
   else {
     infoList <- list(method=method2, 
                      nyrs = nyrs, 
                      maxIterations = maxIterations, 
-                     MADthreshold = MADthreshold)
+                     madThreshold = madThreshold)
   }
   
   if(verbose){ 
@@ -289,7 +289,7 @@
       cat(paste0("pos.slope: ", pos.slope),sep = "\n")
     }
     cat(paste0("maxIterations: ", maxIterations),sep = "\n")
-    cat(paste0("MADthreshold: ", MADthreshold),sep = "\n")
+    cat(paste0("madThreshold: ", madThreshold),sep = "\n")
   }
   
   

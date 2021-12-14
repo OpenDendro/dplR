@@ -11,7 +11,7 @@
 chron(x, prefix = "xxx", biweight = TRUE, prewhiten = FALSE, \dots)
 }
 \arguments{
-  \item{x}{a \code{data.frame} of ring widths with
+  \item{x}{a \code{data.frame} of (usually detrended) ring widths with
     \code{rownames(\var{x})} containing years and \code{colnames(x)}
     containing each series \acronym{ID} such as produced by
     \code{\link{read.rwl}}}

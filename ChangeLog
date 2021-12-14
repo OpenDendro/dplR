@@ -1,5 +1,15 @@
 * CHANGES IN dplR VERSION 1.7.3
 
+File: ssf
+----------------
+
+- A simple signal free implementation.
+
+File: chron.ars
+----------------
+
+- The ARSTAN chronology at long last.
+
 File: detrend
 ----------------
 

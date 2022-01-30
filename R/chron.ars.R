@@ -9,7 +9,7 @@
     # remove the mean of each series (yes this does columns, I checked.)
     x <- scale(x, center = TRUE, scale = FALSE)
 
-    # Init the product sum structure.
+    # Init the product sum structure. Doesn't need to be a matrix really
     productSumMat <- matrix(0,maxLag+1,1)
 
     # start at lag 0 (index 1 is lag0)

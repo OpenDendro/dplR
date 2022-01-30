@@ -41,9 +41,9 @@ chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE, verbose = TRUE)
 }
 \examples{library(graphics)
 library(utils)
-data(ca533)
-ca533.rwi <- detrend(rwl = ca533, method = "AgeDepSpline")
-ca533.crn <- chron.ars(ca533.rwi)
-plot(ca533.crn,xlab="Year",ylab="RWI")
+data(wa082)
+wa082.rwi <- detrend(rwl = wa082, method = "AgeDepSpline")
+wa082.crn <- chron.ars(wa082.rwi)
+plot(wa082.crn,xlab="Year",ylab="RWI",add.spline=TRUE,nyrs=20)
 }
 \keyword{ manip }

@@ -64,7 +64,8 @@
     if(add.spline) {
       ## Only possibly NULL in the first round of the for loop
       if(is.null(nyrs2)) nyrs2 <- length(tmp)*0.33
-      spl[!is.na(spl)] <- ffcsaps(y=tmp, x=seq_along(tmp), nyrs=nyrs2, f=f)
+      #spl[!is.na(spl)] <- ffcsaps(y=tmp, x=seq_along(tmp), nyrs=nyrs2, f=f)
+      spl[!is.na(spl)] <- caps(y=tmp, nyrs=nyrs2, f=f)
       lines(yr.vec, spl, col=spline.line.col, lwd=spline.lwd)
     }
     axis(1)

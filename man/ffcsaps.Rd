@@ -70,6 +70,11 @@ legend("topright",
 ## Compare to caps
 all.equal(caps(series),ffcsaps(series))
 
+## Note behavior when NA is encountered and
+## take appropriate measures as demonstrated above
+y <- c(NA,NA,rnorm(100))
+ffcsaps(y)
+
 }
 
 \keyword{ smooth }

@@ -36,7 +36,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   
   \item{f}{ a number between 0 and 1 giving the frequency response or
     wavelength cutoff in method \code{"Spline"}.  Defaults to 0.5. 
-    See \code{\link{ffcsaps}}.}
+    See \code{\link{caps}}.}
   
   \item{pos.slope}{ a \code{logical} flag.  Will allow for a positive
     slope to be used in method \code{"ModNegExp"} or \code{"AgeDepSpline"}.  
@@ -79,7 +79,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   
   There are currently six methods available for
   detrending although more are certainly possible.  The methods
-  implemented are a smoothing spline via \code{\link{ffcsaps}}
+  implemented are a smoothing spline via \code{\link{caps}}
   (\code{\var{method} = "Spline"}), a modified negative exponential
   curve (\code{\var{method} = "ModNegExp"}), a simple horizontal line
   (\code{\var{method} = "Mean"}), the residuals of an AR model
@@ -90,7 +90,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   The \code{"Spline"} approach uses a spline where the frequency
   response is 0.50 at a wavelength of 0.67 * \dQuote{series length in
   years}, unless specified differently using \code{\var{nyrs}} and
-  \code{\var{f}} in the function \code{\link{ffcsaps}}. If some of the fitted 
+  \code{\var{f}} in the function \code{\link{caps}}. If some of the fitted 
   values are not positive then method \code{"Mean"} is used.
 
   The \code{"ModNegExp"} approach attempts to fit a classic nonlinear
@@ -219,7 +219,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
         \code{\var{constrain.nls}} is set to \code{"when.fail"}. }
 
       \item{nyrs}{ The value of \code{\var{nyrs}} used for
-        \code{\link{ffcsaps}}. For methods \code{"Spline"} and
+        \code{\link{caps}}. For methods \code{"Spline"} and
          \code{"AgeDepSpline"}. }
 
       \item{order}{ The order of the autoregressive model, selected by

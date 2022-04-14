@@ -504,7 +504,8 @@
                      paste0("nyrs = ", nyrs2, ", f = ", f))),
             sep = "\n")
       }
-      Spline <- ffcsaps(y=y2, x=seq_len(nY2), nyrs=nyrs2, f=f)
+      #Spline <- ffcsaps(y=y2, x=seq_len(nY2), nyrs=nyrs2, f=f)
+      Spline <- caps(y=y2, nyrs=nyrs2, f=f)
       if (any(Spline <= 0)) {
         msg <- "Fits from method==\'Spline\' are not all positive. \n  Series will be detrended with method==\'Mean\'. \n  This might not be what you want. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution."
         if(y.name2==""){

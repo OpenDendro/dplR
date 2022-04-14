@@ -28,7 +28,7 @@ crn.plot(crn, add.spline = FALSE, nyrs = NULL, f = 0.5,
     \code{"samp.depth"}.  If the data are produced via \code{\link{chron}}
     the object will be of class "crn" and the generic plot method can be used }
   \item{add.spline}{ a \code{logical} flag.  Will add a line with a
-    smoothing spline using \code{\link{ffcsaps} } }
+    smoothing spline using \code{\link{caps} } }
   \item{nyrs}{ a number giving the rigidity of the smoothing spline.
     Defaults to 0.33 times the length of the first chronology if
     \code{\var{nyrs}} is \code{NULL} }

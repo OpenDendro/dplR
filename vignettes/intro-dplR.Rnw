@@ -326,7 +326,7 @@ yy <- c(-1, 3, 3, -1)
 polygon(xx, yy, col = "grey80")
 abline(h = 1, lwd = 1.5)
 lines(yrs, ca533.crn[, 1], col = "grey50")
-lines(yrs, ffcsaps(ca533.crn[, 1], nyrs = 32), col = "red",
+lines(yrs, caps(ca533.crn[, 1], nyrs = 32), col = "red",
       lwd = 2)
 axis(1); axis(2); axis(3);
 par(new = TRUE)
@@ -346,7 +346,7 @@ plot(yrs2, ca533.crn2[, 1], type = "n",
      xlab = "Year", ylab = "RWI", axes=FALSE)
 abline(h = 1, lwd = 1.5)
 lines(yrs2, ca533.crn2[, 1], col = "grey50")
-lines(yrs2, ffcsaps(ca533.crn2[, 1], nyrs = 32),
+lines(yrs2, caps(ca533.crn2[, 1], nyrs = 32),
       col = "red", lwd = 2)
 axis(1); axis(2); axis(3); axis(4)
 box()

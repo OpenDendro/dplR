@@ -55,7 +55,7 @@ rcs(rwl, po, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE,
   The spline approach uses an n-year spline where the frequency response
   is 0.50 at a wavelength of 10 percent of the maximum cambial age
   unless specified differently using \code{\var{nyrs}} and
-  \code{\var{f}} in the function \code{\link{ffcsaps}}.
+  \code{\var{f}} in the function \code{\link{caps}}.
 
   This attempts to remove the low frequency variability that is due to
   biological or stand effects.  See the references below for further
@@ -92,7 +92,7 @@ rcs(rwl, po, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE,
   dplR by Andy Bunn.  Patched and improved by Mikko Korpela.
 }
 \seealso{ \code{\link{detrend}}, \code{\link{chron}}, \code{\link{cms}},
-  \code{\link{ffcsaps}} }
+  \code{\link{caps}} }
 \examples{library(utils)
 data(gp.rwl)
 data(gp.po)

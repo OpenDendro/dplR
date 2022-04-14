@@ -211,7 +211,8 @@ wavelet.plot <-
         } else {
             nyrs2 <- nyrs
         }
-        tmp <- ffcsaps(y = tmp, x = seq_along(tmp), nyrs = nyrs2, f = f)
+        #tmp <- ffcsaps(y = tmp, x = seq_along(tmp), nyrs = nyrs2, f = f)
+        tmp <- caps(y = tmp, nyrs = nyrs2, f = f)
         spl[!is.na(spl)] <- tmp
         lines(x, spl, col = "red", lwd = 2)
     }

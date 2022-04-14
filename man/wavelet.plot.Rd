@@ -37,7 +37,7 @@ wavelet.plot(wave.list,
   \item{key.cols}{A vector of colors for the wavelets and the key.}
   \item{key.lab}{Label for key.}
   \item{add.spline}{A \code{logical} flag.  Add a spline to the
-    time-series plot using \code{\link{ffcsaps}}?. }
+    time-series plot using \code{\link{caps}}?. }
   \item{nyrs}{ A number giving the rigidity of the smoothing spline,
     defaults to 0.33 of series length if \code{\var{nyrs}} is
     \code{NULL}. }
@@ -93,7 +93,7 @@ wavelet.plot(wave.list,
 \href{https://web.archive.org/web/20141216211516/https://paos.colorado.edu/research/wavelets/software.html}{Internet Archive Wayback Machine}.
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
-\seealso{ \code{\link{morlet}}, \code{\link{ffcsaps}}}
+\seealso{ \code{\link{morlet}}, \code{\link{caps}}}
 \examples{library(stats)
 library(utils)
 data(ca533)
@@ -104,6 +104,7 @@ CAMstd <- ca533.crn[, 1]
 out.wave <- morlet(y1 = CAMstd, x1 = Years, p2 = 9, dj = 0.1,
                    siglvl = 0.99)
 wavelet.plot(out.wave, useRaster = NA)
+\dontrun{
 # Alternative palette with better separation of colors
 # via: rev(RColorBrewer::brewer.pal(10, "Spectral"))
 specCols <- c("#5E4FA2", "#3288BD", "#66C2A5", "#ABDDA4", "#E6F598", 
@@ -114,5 +115,6 @@ wavelet.plot(out.wave, key.cols=specCols,useRaster = NA)
 levs <- quantile(out.wave$Power, probs = c(0, 0.5, 0.75, 0.9, 0.99))
 wavelet.plot(out.wave, wavelet.levels = levs, add.sig = FALSE,
              key.cols = c("#FFFFFF", "#ABDDA4", "#FDAE61", "#D7191C"), useRaster = NA)
+             }
 }
 \keyword{ hplot }

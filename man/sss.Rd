@@ -81,7 +81,7 @@ yy <- c(-1, 3, 3, -1)
 polygon(xx, yy, col = "grey80")
 abline(h = 1, lwd = 1.5)
 lines(yr, ca533.crn[, 1], col = "grey50")
-lines(yr, ffcsaps(ca533.crn[, 1], nyrs = 32), col = "red", lwd = 2)
+lines(yr, caps(ca533.crn[, 1], nyrs = 32), col = "red", lwd = 2)
 axis(1); axis(2); axis(3);
 par(new = TRUE)
 ## Add SSS

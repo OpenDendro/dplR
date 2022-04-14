@@ -366,6 +366,7 @@ write.tridas(rwl.df = NULL, fname, crn = NULL, prec = NULL, ids = NULL,
   \code{\link{read.tridas}} }
 
 \examples{library(utils)
+\dontrun{
 ## Write raw ring widths
 data(co021)
 fname1 <- write.tridas(rwl.df = co021,
@@ -392,5 +393,6 @@ fname2 <- write.tridas(crn = ca533.crn,
 print(fname2) # tempfile used for output
 
 unlink(c(fname1, fname2)) # remove the files
+}
 }
 \keyword{ IO }

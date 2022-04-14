@@ -17,6 +17,7 @@ chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE, verbose = TRUE)
     \code{\link{read.rwl}}}
   \item{biweight}{\code{logical} flag.  If \acronym{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}.}}
+  \item{maxLag}{an \code{integer} giving the maximum lag to consider in the AR pooling.}  
   \item{firstAICmin}{\code{logical} flag.  If \acronym{TRUE} each series is
     whitened using \code{\link{ar}} prior to averaging.}
   \item{verbose}{\code{logical} flag.  If \acronym{TRUE} the function is chatty.}

@@ -83,6 +83,6 @@ yrs <- time(bar.crn)
 plot(yrs, bar.crn[, 1], type = "n",
      xlab = "Year", ylab = expression(mm^2))
 lines(yrs, bar.crn[, 1], col = "grey", lty = "dashed")
-lines(yrs, ffcsaps(bar.crn[, 1], nyrs = 32), col = "red", lwd = 2)
+lines(yrs, caps(bar.crn[, 1], nyrs = 32), col = "red", lwd = 2)
 }
 \keyword{ manip }

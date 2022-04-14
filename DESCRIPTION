@@ -3,7 +3,7 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.7.3
-Date: 2021-12-02
+Date: 2022-04-14
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "bunna@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "cph", "trl")), person("Franco", "Biondi",
@@ -11,14 +11,16 @@ Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         c("aut", "cph")), person("Pierre", "Mérian", role = c("aut",
         "cph")), person("Fares", "Qeadan", role = c("aut", "cph")),
         person("Christian", "Zang", role = c("aut", "cph")),
-        person("Allan", "Buras", role = "ctb"), person("Jacob",
+        person("Allan", "Buras", role = "ctb"), person("Alice",
         "Cecile", role = "ctb"), person("Manfred", "Mudelsee", role =
         "ctb"), person("Michael", "Schulz", role = "ctb"),
-        person("Klesse","Stefan", role = "ctb"), 
-        person("Frank","David", role = "ctb"), 
-        person("Visser","Ronald", role = "ctb"))
+        person("Stefan","Klesse", role = "ctb"), 
+        person("David", "Frank",role = "ctb"), 
+        person("Ronald","Visser", role = "ctb"),
+        person("Ed","Cook", role = "ctb"),
+        person("Kevin","Anchukaitis", role = "ctb"))
 Copyright: Authors and file inst/COPYRIGHTS
-Depends: R (>= 2.15.2)
+Depends: R (>= 3.5.0)
 Imports: graphics, grDevices, grid, stats, utils, lattice (>= 0.13-6),
         Matrix (>= 1.0-3), digest (>= 0.2.3), matrixStats (>= 0.50.2),
         png (>= 0.1-2), R.utils (>= 1.32.1), stringi (>= 0.2-3),

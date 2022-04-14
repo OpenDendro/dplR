@@ -29,6 +29,8 @@ caps(y, nyrs = length(y)/2, f = 0.5)
   This applies the classic smoothing spline from Cook and Peters (1981). The rigidity of the spline has a frequency response of 50\% at a wavelength of \code{\var{nyrs}}. The references, of course, have more information.
   
   This funciton was introduced to \code{\var{dplR}} in version 1.7.3 and essentially replaces \code{\link{ffcsaps}} for most uses. Where \code{\link{ffcsaps}} is written entirely in R, \code{\var{caps}} is a wrapper for a Fortran subroutine from Ed Cook's ARSTAN program that is thousands of times faster.
+  
+  Note: like \code{\link{ffcsaps}}, \code{caps} returns \code{NA} if there are any \code{NA} values in \code{y}. See examples.
 }
 \value{
   A filtered vector.
@@ -66,6 +68,11 @@ legend("topright",
 
 ## Compare to ffcsaps
 all.equal(caps(series),ffcsaps(series))
+
+## Note behavior when NA is encountered and
+## take appropriate measures as demonstrated above
+y <- c(NA,NA,rnorm(100))
+caps(y)
 
 }
 \keyword{ smooth }

@@ -22,7 +22,7 @@ fill.internal.NA(x, fill = c("Mean", "Spline", "Linear"))
 \details{
   There are occasionally data gaps within a tree-ring series.  Some of
   the functions in dplR will fail
-  when an internal \code{NA} is encountered (e.g. \code{\link{ffcsaps}}).  This
+  when an internal \code{NA} is encountered (e.g. \code{\link{caps}}).  This
   function fills internal \code{NA} values with either a given numeric value
   (e.g., \code{0}) or through crude imputation.  The latter can be calculated as 
   the mean of the series (\code{fill="Mean"}) or calculated by fitting a cubic spline

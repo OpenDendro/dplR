@@ -55,9 +55,6 @@ msgstr "Viive"
 msgid "Correlation"
 msgstr "Korrelaatio"
 
-msgid "'prefix' must be a character string with less than 4 characters"
-msgstr "’prefix’in täytyy olla alle 4‐merkkinen merkkijono"
-
 msgid "'po' must be a data.frame"
 msgstr "’po’:n täytyy olla data.frame"
 

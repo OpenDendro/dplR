@@ -8,6 +8,7 @@
                        crn.lwd=1, spline.lwd=1.5,
                        abline.pos=1, abline.col='black',
                        abline.lty=1, abline.lwd=1,
+                       include.names = TRUE,
                        xlab="Time",ylab="RWI",
                        ...) {
   #if(!is.data.frame(crn)) stop("'crn' must be a data.frame")
@@ -23,6 +24,8 @@
   nCrn <- ncol(crn)
   ## Check to see if the crn has sample depth
   sd.exist <- crn.names[nCrn] == "samp.depth"
+
+  # make args lists to pass to plot
   args0 <- list(...)
   args1 <- args0
   args1[["ylim2"]] <- NULL
@@ -38,7 +41,9 @@
     sdargs[["ylim"]] <- args0[["ylim2"]]
     sdargs[["y"]] <- samp.depth
   }
-  if(nCrn > 1) layout(matrix(seq_len(nCrn), nrow=nCrn, ncol=1))
+  if(nCrn > 1) { 
+    layout(matrix(seq_len(nCrn), nrow=nCrn, ncol=1)) 
+    }
   # strike these?
 #  text.years <- gettext("Years", domain="R-dplR")
 #  text.rwi <- gettext("RWI", domain="R-dplR")
@@ -46,6 +51,9 @@
   for(i in seq_len(nCrn)){
     spl <- crn[[i]]
     do.call("plot", args1)
+    if(include.names) {
+      mtext(text = toupper(crn.names[i]),side = 3,line = 1.25,adj=0,cex=0.9)
+    }
     if(sd.exist) {
       par(new=TRUE)
       do.call("plot", sdargs)

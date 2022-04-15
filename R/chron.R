@@ -1,16 +1,7 @@
 `chron` <-
-    function(x, prefix="xxx", biweight=TRUE, prewhiten=FALSE, ...)
+    function(x, biweight=TRUE, prewhiten=FALSE, ...)
 {
     check.flags(biweight, prewhiten)
-    if (length(prefix) == 0) {
-        prefix.str <- ""
-    } else {
-        prefix.str <- as.character(prefix)[1]
-        if (is.na(prefix.str) || Encoding(prefix.str) == "bytes" ||
-            nchar(prefix.str) > 3) {
-            stop("'prefix' must be a character string with less than 4 characters")
-        }
-    }
     samps <- rowSums(!is.na(x))
     if (!biweight) {
         std <- rowMeans(x, na.rm=TRUE)
@@ -26,12 +17,12 @@
         }
         res[is.nan(res)] <- NA
         out <- data.frame(std, res, samps)
-        names(out) <- c(paste0(prefix.str, "std"),
-                        paste0(prefix.str, "res"),
+        names(out) <- c("std",
+                        "res",
                         "samp.depth")
     } else {
         out <- data.frame(std, samps)
-        names(out) <- c(paste0(prefix.str, "std"), "samp.depth")
+        names(out) <- c("std", "samp.depth")
     }
     row.names(out) <- row.names(x)
     class(out) <- c("crn", "data.frame")

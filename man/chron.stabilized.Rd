@@ -55,7 +55,7 @@ co021.crn2 <- chron.stabilized(co021.rwi,
                                 biweight = TRUE,
                                 running.rbar = FALSE)
 yrs <- time(co021)
-plot(yrs,co021.crn$xxxstd,type="l",col="grey")
+plot(yrs,co021.crn$std,type="l",col="grey")
 lines(yrs,co021.crn2$adj.crn,col="red")
 }
 \keyword{ manip }

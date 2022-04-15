@@ -106,7 +106,7 @@ function which also has a \code{plot} method. This defaults to building a mean-v
 chronology by averaging the rows of the \code{rwi} data using Tukey's biweight robust
 mean (function \code{tbrm} in \code{dplR}). The result is plotted in Figure~\ref{fig:crn.plot} with a 30-year smoothing spline for visualization.
 <<d, fig=TRUE>>=
-wa082.crn <- chron(wa082.rwi, prefix="HUR")
+wa082.crn <- chron(wa082.rwi)
 tail(wa082.crn)
 plot(wa082.crn, add.spline=TRUE, nyrs=30)
 @
@@ -125,7 +125,7 @@ the \code{wa082.std.resid} object has two columns with chronologies as well as t
 depth in a third column. The result is plotted in 
 Figure~\ref{fig:crn.plot.resid}. 
 <<e, fig=TRUE>>=
-wa082.std.resid <- chron(wa082.rwi, prefix="HUR", prewhiten = TRUE)
+wa082.std.resid <- chron(wa082.rwi, prewhiten = TRUE)
 tail(wa082.std.resid)
 plot(wa082.std.resid, add.spline=TRUE, nyrs=30)
 @
@@ -164,7 +164,7 @@ It would likely be more robust to recalculate the \code{rwi} object by truncatin
 commands via:
 <<g>>=
 wa082.trunc2 <- chron(detrend(wa082[wa082.crn$samp.depth > 5,], 
-                              method="Spline"), prefix="HUR")
+                              method="Spline"))
 @
 
 The result in this case is likely to be virtually identical to truncating after calculating
@@ -283,7 +283,7 @@ improvement in EPS (Figure~\ref{fig:crn.plot.strip}).
 <<j, fig=TRUE>>=
 wa082.strip.rwl <- strip.rwl(wa082, ids = wa082.ids)
 wa082.rwi.strip <- detrend(wa082.strip.rwl, method="Spline")
-wa082.crn.strip <- chron(wa082.rwi.strip, prefix = "HUR")
+wa082.crn.strip <- chron(wa082.rwi.strip)
 wa082.crn.strip <- subset(wa082.crn.strip, samp.depth > 5)
 plot(wa082.crn.strip, add.spline=TRUE, nyrs=30)
 @

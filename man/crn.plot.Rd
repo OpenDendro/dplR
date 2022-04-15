@@ -15,6 +15,7 @@ crn.plot(crn, add.spline = FALSE, nyrs = NULL, f = 0.5,
          crn.lwd=1,spline.lwd=1.5,
          abline.pos=1,abline.col='black',
          abline.lty=1,abline.lwd=1,
+         include.names = TRUE,
          xlab="Time",ylab="RWI",...)
 
 \method{plot}{crn}(x, ...)
@@ -46,6 +47,7 @@ crn.plot(crn, add.spline = FALSE, nyrs = NULL, f = 0.5,
   \item{abline.col}{ color for the reference abline (if added) }
   \item{abline.lty}{ line type the reference abline (if added) }
   \item{abline.lwd}{ line width for the reference abline (if added)}
+  \item{include.names}{ a \code{logical} flag.  Will add the chronology names (e.g., "STD", "RES") to the plot if TRUE. }
   \item{xlab}{ default label for x axis }
   \item{ylab}{ default label for y axis }
   \item{\dots}{ Additional arguments to pass to \code{\link{plot}}. The
@@ -53,7 +55,7 @@ crn.plot(crn, add.spline = FALSE, nyrs = NULL, f = 0.5,
     argument \code{ylim2}. }
 }
 \details{
-  This makes a plot of one or more tree-ring chronologies.
+  This makes a crude plot of one or more tree-ring chronologies.
 }
 \value{
   None.  Invoked for side effect (plot).
@@ -74,7 +76,7 @@ cana157.mod$samp.depth <- NULL
 crn.plot(cana157.mod, add.spline = TRUE)
 ## A raw ring-width chronology with prewhitening
 data(ca533)
-ca533.raw.crn <- chron(ca533, prefix = "CAM", prewhiten=TRUE)
+ca533.raw.crn <- chron(ca533, prewhiten=TRUE)
 plot(ca533.raw.crn,ylab='mm',
      abline.pos=mean(ca533.raw.crn[,1],na.rm = TRUE))  
 

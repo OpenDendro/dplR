@@ -56,9 +56,6 @@ msgstr ""
 msgid "Correlation"
 msgstr ""
 
-msgid "'prefix' must be a character string with less than 4 characters"
-msgstr ""
-
 msgid "'po' must be a data.frame"
 msgstr ""
 

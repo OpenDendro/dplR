@@ -276,7 +276,7 @@ the years of the rwi object. In dplR the function for doing this is
 \code{chron} which by default uses Tukey's biweight robust mean (an average 
 that is unaffected by outliers).
 <<>>=
-ca533.crn <- chron(ca533.rwi, prefix = "CAM")
+ca533.crn <- chron(ca533.rwi)
 @
 This object has the same number of rows as the rwi object that was used as the 
 input and two columns. The first gives the chronology and the second the 

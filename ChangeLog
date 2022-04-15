@@ -4,7 +4,12 @@ File: Various
 ----------------
 
 - Replaced ffcsaps with caps in most instances across the package.
+- Removing prefix argument from chron.
 
+File: crn.plot
+----------------
+
+- Added crn names to plot. helpful for ars crn and var stab crn plotting.
 
 File: ssf
 ----------------

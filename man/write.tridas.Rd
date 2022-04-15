@@ -382,7 +382,7 @@ print(fname1) # tempfile used for output
 ## Write mean value chronology of detrended ring widths
 data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
-ca533.crn <- chron(ca533.rwi, prefix = "CAM", prewhiten = TRUE)
+ca533.crn <- chron(ca533.rwi, prewhiten = TRUE)
 fname2 <- write.tridas(crn = ca533.crn,
     fname = tempfile(fileext=".xml"),
     taxon = "Pinus longaeva D.K. Bailey",

@@ -104,7 +104,7 @@ each series with a frequency response of 50\% at a wavelength of 2/3 of
 each series's length. The chronology is plotted in Figure~\ref{fig:crn.plot}.
 <<b, fig=TRUE>>=
 co021.rwi <- detrend(co021, method="Spline")
-co021.crn <- chron(co021.rwi, prefix="MES")
+co021.crn <- chron(co021.rwi)
 plot(co021.crn, add.spline=TRUE, nyrs=64)
 @
 \begin{figure}[ht]

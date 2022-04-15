@@ -35,7 +35,7 @@ gini.coef(x)
 library(utils)
 data(ca533)
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
-ca533.crn <- chron(ca533.rwi, prefix = "CAM")
+ca533.crn <- chron(ca533.rwi)
 gini.coef(ca533.crn)
 }
 \keyword{ univar }

@@ -1,14 +1,15 @@
 \encoding{UTF-8}
 \name{chron.ars}
 \alias{chron.ars}
-\title{Build Mean Value Chronology}
+\title{Build ARSTAN Chronology}
 \description{
-  This function builds three varieties of a mean value chronology, typically from a
+  This function builds three varieties of the mean value chronology, including 
+  the ARSTAN chronology, typically from a
   \code{data.frame} of detrended ring widths as produced by
   \code{\link{detrend}}.
 }
 \usage{
-chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE, verbose = TRUE)
+chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE, verbose=TRUE)
 }
 \arguments{
   \item{x}{a \code{data.frame} of (usually detrended) ring widths with
@@ -23,7 +24,10 @@ chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE, verbose = TRUE)
   \item{verbose}{\code{logical} flag.  If \acronym{TRUE} the function is chatty.}
 }
 \details{
-  This produces three mean value chronnologies: standard, residual, and ARSTAN. More details to follow but important to note that this is different than the existing chron function in terms of the way the residual chron is calculated and the ARSTAN chron is new.
+  This produces three mean value chronnologies: standard, residual, and ARSTAN. 
+  
+  It's important to note that residual chronology produced here is different than the simple
+  residual chronology produced by \code{\link{chron}}.See pp 153-154 in Cook's dissertation.
 }
 \value{
   A \code{data.frame} with the standard, residual, and ARSTAN chronologies. The sample depth is also included.
@@ -33,12 +37,11 @@ chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE, verbose = TRUE)
     Dendrochronology: Applications in the Environmental Sciences}.
     Springer.  \acronym{ISBN-13}: 978-0-7923-0586-6.
 
-  Fritts, H. C. (2001) \emph{Tree Rings and Climate}.  Blackburn.
-  \acronym{ISBN-13}: 978-1-930665-39-2.
+  Cook, E. R. (1985). A Time Series Analysis Approach to Tree Ring 
+    Standardization. PhD thesis, The University of Arizona.
 }
-\author{ Andy Bunn. Add in KJA and Ed Cook. }
-\seealso{ \code{\link{chron}}, \code{\link{detrend}},
-  \code{\link{ar}}, \code{\link{crn.plot}}
+\author{ Andy Bunn with contributions from Kevin Achukaitis and Ed Cook. }
+\seealso{ \code{\link{chron}}, \code{\link{crn.plot}} }
 }
 \examples{library(graphics)
 library(utils)

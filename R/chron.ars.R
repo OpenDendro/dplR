@@ -1,7 +1,7 @@
 `chron.ars` <- function(x, biweight=TRUE, maxLag=10,
                      firstAICmin=TRUE, verbose = TRUE){
   # helpers
-  pooledAR <- function(x, maxLag=10, firstAICmin=TRUE){
+  pooledAR <- function(x, maxLag=maxLag, firstAICmin=TRUE){
 
     nYrs <- dim(x)[1] # num years
     nSeries <- dim(x)[2] # num series
@@ -157,10 +157,20 @@
   # model order
   p <- outAR$orderOut
   # do some verbose output here
+  if(verbose){
+    cat("Pooled AR Summary\n")
+    cat("ACF\n")
+    print(outAR$ACF)
+    cat("AR Coefs\n")
+    print(outAR$ARcoefs)
+    cat("AIC\n")
+    print(outAR$aic,digits=4)
+    cat("Selected Order\n")
+    print(outAR$orderOut)
+  }
 
   ###  Prewhiten each RWI series individually using the model order
   RWIclean <- apply(x,2,prewhiten,p=p)
-
 
   ### Make a chron using the prewhitened series (RES)
   # Note that the final RES chron needs to be prewhitened again out to `p`.
@@ -170,7 +180,6 @@
   } else {
     resCrn <- prewhiten(apply(RWIclean,1,tbrm, C=9),p=p)
   }
-
 
   ### Post-redden the prewhitened series
   phi <- outAR$ARcoefs[p,][1:p]

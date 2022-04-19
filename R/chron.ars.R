@@ -1,6 +1,7 @@
 `chron.ars` <- function(x, biweight=TRUE, maxLag=10,
                      firstAICmin=TRUE, verbose = TRUE){
   # helpers
+  # this is a time killer. needs to be vectorized.
   pooledAR <- function(x, maxLag=maxLag, firstAICmin=TRUE){
 
     nYrs <- dim(x)[1] # num years
@@ -23,17 +24,21 @@
           # Common data interval between series
           mask <- which(rowSums(!is.na(series))==2)
           # if no overlap, bail out
+          #print(c(i,j,k))
           if(length(mask)==0) { break }
           # Subset series to mask
           series1 <- x[mask,j]
           series2 <- x[mask,i]
           # Lag the i'th series (series2) by k lags
-          series2 <- series2[1:(length(series2)-k)]
+          # check overlap to avoid negative subscripts if
+          # lagged series2 has would have length 0
+          if(length(series2)<=k) { break } 
+          series2 <- series2[1:(length(series2)-k)] ## check overlap
           series2 <- c(rep(NA,k),series2)
           # Find period where series overlap again.
           mask2 <- which(rowSums(!is.na(cbind(series1,series2)))==2)
           # if no overlap, bail out
-          if(length(mask)==0) { break }
+          if(length(mask2)==0) { break }
           # And add the pairwise product sum to the matrix.
           productSumMat[k+1,1] = productSumMat[k+1,1] +
             t(series1[mask2]) %*% series2[mask2]
@@ -135,8 +140,10 @@
   prewhiten <- function(x,p){
     mask <- is.na(x)
     x2 <- x[!mask]
-    # put arima into a tryCatch wrapper in case of convergence issues?
-    out <- arima(x2,order = c(p,0,0),method = "ML")
+    # put arima into a tryCatch wrapper in case 
+    # of convergence issues?
+    out <- arima(x2,order = c(p,0,0),method = "ML",
+                 optim.control = list(maxit = 1000))
     x[!mask] <- out$residuals + mean(x2)
     return(x)
   }

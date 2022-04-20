@@ -26,21 +26,39 @@ chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE, verbose=TRUE)
   information from the AR modeling to the screen.}
 }
 \details{
-  This produces three mean-value chronnologies: standard, residual, and ARSTAN. 
+  This produces three mean-value chronologies: standard, residual, and ARSTAN. 
+  Users unfamiliar with the concept behind the ARSTAN method should look to
+  Cook (1985) for background and inspiration.
+  
   The standard chronology is the (biweight) mean value across rows and identical 
-  to \code{\link{chron}}. The residual chronology is the prewhitened chronology as 
-  described by Cook (1985). It's important to note that residual chronology 
-  produced here is different than the simple residual chronology produced by 
+  to \code{\link{chron}}. 
+  
+  The residual chronology is the prewhitened chronology as 
+  described by Cook (1985) and uses uses multivariate autoregressive modeling 
+  to determine the order of the AR process. It's important to note that 
+  residual chronology produced here is different than the simple residual 
+  chronology produced by 
   \code{\link{chron}} which returns the residuals of an AR process 
-  using a naive call to \code{\link{ar}}.  But in parctice the results will be 
-  very similar. For more on the residual chronology in this function, see 
-  pp. 153-154 in Cook's 1985 dissertation. The ARSTAN chronology builds on the 
-  residual chronology but returns a rewhitened chronology where the pooled AR 
-  coeficents are reintroduced.
+  using a naive call to \code{\link{ar}}.  But in practice the results will be 
+  similar. For more on the residual chronology in this function, see 
+  pp. 153-154 in Cook's 1985 dissertation. 
+  
+  The ARSTAN chronology  builds on the residual chronology but 
+  returns a re-whitened chronology where the pooled AR 
+  coefficients drom the multivariate autoregressive modeling are 
+  reintroduced. See references for details.
 
+  Some other details:
+  
   The order of the AR model is selected by AIC using either the first 
   (local) AIC minimum otherwise or the overall minimum considering the 
   maximum lag.
+  
+  Once the AR order is determined an AR(p) model is fit using 
+  \code{\link{arima}} via conditional-sum-of-squares to find starting 
+  values, then maximum likelihood. It is possible that the model will not
+  converge in which case a warning is produced.
+  
 }
 \value{
   A \code{data.frame} with the standard, residual, and ARSTAN chronologies. The sample depth is also included.
@@ -56,7 +74,7 @@ chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE, verbose=TRUE)
 \author{ Andy Bunn with contributions from Kevin Achukaitis and Ed Cook.
          Much of the function is a port of Cook's FORTRAN code. }
 \seealso{ \code{\link{chron}}, \code{\link{crn.plot}} }
-}
+
 \examples{library(graphics)
 library(utils)
 data(co021)

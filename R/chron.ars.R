@@ -24,7 +24,6 @@
           # Common data interval between series
           mask <- which(rowSums(!is.na(series))==2)
           # if no overlap, bail out
-          #print(c(i,j,k))
           if(length(mask)==0) { break }
           # Subset series to mask
           series1 <- x[mask,j]
@@ -47,7 +46,7 @@
     }
     productSumMat <- t(productSumMat)
     r0 <- productSumMat[1,1]
-    xAcf <- productSumMat / r0;
+    xAcf <- productSumMat / r0
     A <- acf2AR(xAcf) * -1
     vp_shortcut <- c(r0,c(r0 - -1*A %*% matrix(t(productSumMat)[-1,])))
     aic2 <- nYrs * log(vp_shortcut) + 2.0 * 1:(maxLag+1)
@@ -142,7 +141,7 @@
     x2 <- x[!mask]
     # put arima into a tryCatch wrapper in case 
     # of convergence issues?
-    out <- arima(x2,order = c(p,0,0),method = "ML",
+    out <- arima(x2,order = c(p,0,0),method = "CSS-ML", #"ML",
                  optim.control = list(maxit = 1000))
     x[!mask] <- out$residuals + mean(x2)
     return(x)

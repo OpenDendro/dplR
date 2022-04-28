@@ -1,5 +1,6 @@
 `chron.ars` <- function(x, biweight=TRUE, maxLag=10,
-                     firstAICmin=TRUE, verbose = TRUE){
+                     firstAICmin=TRUE, verbose = TRUE,
+                     prewhitenMethod=c("ar.yw","arima.CSS-ML")){
   # helpers
   # this is a time killer. needs to be vectorized.
   pooledAR <- function(x, maxLag=maxLag, firstAICmin=TRUE){
@@ -16,7 +17,8 @@
     # start at lag 0 (index 1 is lag0)
     # i renamed the loops since (in my mind) lags are always k
     # should do a c implementation of this for speed. 
-    # Take forever!
+    # Takes forever! Should be possible to vectorize. Need
+    # to build a single object of all the pairs with lags.
     for(k in 0:maxLag){
       for(j in 1:nSeries){
         for(i in 1:nSeries){
@@ -104,8 +106,8 @@
     xRevPad <- c(rep(0, nPhi), xRev)
 
     # step 3 -- vectorize this and the other loops.
-    for (i in 1:nx) {
-      for (j in 1:nPhi) {
+    for(i in 1:nx) {
+      for(j in 1:nPhi) {
         xRevPad[i + nPhi] <-  xRevPad[i + nPhi] + phi[j] * xRevPad[i + nPhi - j]
       }
     }
@@ -113,10 +115,10 @@
     xRevInit <- xRevPad[-c(1:nPhi)]
 
     # step 5 -- do it again. This backcast gets better initial values
-    for (i in 1:nPhi) {
+    for(i in 1:nPhi) {
       cntr <- nPhi - i + 1
       xRevInit[cntr] <- 0 # get first few obs.
-      for (j in 1:nPhi) {
+      for(j in 1:nPhi) {
         xRevInit[cntr] <- xRevInit[cntr] + phi[j] * xRevInit[cntr + j]
       }
     }
@@ -125,8 +127,8 @@
     # AR model. With the new init values we can now roll forward now.
     xAR <- c(xRevInit[1:nPhi],x)
 
-    for (i in 1:length(xRevInit)) {
-      for (j in 1:nPhi) {
+    for(i in 1:length(xRevInit)) {
+      for(j in 1:nPhi) {
         xAR[i + nPhi] <-  xAR[i + nPhi] + phi[j] * xAR[i + nPhi - j]
       }
     }
@@ -136,23 +138,36 @@
     return(x0)
   }
 
-  prewhiten <- function(x,p){
+  # Uses ar and defaults to yule-walker
+  prewhitenAR <- function(x,p){
     mask <- is.na(x)
     x2 <- x[!mask]
-    # put arima into a tryCatch wrapper in case 
-    # of convergence issues?
+    out <- ar(x2,aic = FALSE, order.max = p,demean=TRUE)
+    x[!mask] <- out$resid + mean(x2)
+    return(x)
+  }
+  
+  # Uses arima and CSS-ML. this is slower. requires optim
+  prewhitenARIMA <- function(x,p){
+    mask <- is.na(x)
+    x2 <- x[!mask]
     out <- arima(x2,order = c(p,0,0),method = "CSS-ML", #"ML",
                  optim.control = list(maxit = 1000))
     x[!mask] <- out$residuals + mean(x2)
     return(x)
   }
-
   # end helpers
 
+  known.prewhitenMethods <- c("ar.yw","arima.CSS-ML")
+  prewhitenMethod2 <- match.arg(arg = prewhitenMethod,
+                       choices = known.prewhitenMethods,
+                       several.ok = FALSE)
+  
+  
   samps <- rowSums(!is.na(x))
 
   # calc std chronology
-  if (!biweight) {
+  if(!biweight) {
     stdCrn <- rowMeans(x, na.rm=TRUE)
   } else {
     stdCrn <- apply(x, 1, tbrm, C=9)
@@ -176,15 +191,33 @@
   }
 
   ###  Prewhiten each RWI series individually using the model order
-  RWIclean <- apply(x,2,prewhiten,p=p)
+  if(prewhitenMethod2 == "ar.yw") {
+    RWIclean <- apply(x,2,prewhitenAR,p=p)  
+  }
+  if(prewhitenMethod2 == "arima.CSS-ML") {
+    RWIclean <- apply(x,2,prewhitenARIMA,p=p)  
+  }
+  
 
   ### Make a chron using the prewhitened series (RES)
   # Note that the final RES chron needs to be prewhitened again out to `p`.
   # See pp 153-154 in Ed's dissertation.
-  if (!biweight) {
-    resCrn <- prewhiten(rowMeans(RWIclean, na.rm=TRUE),p=p)
+  if(!biweight) {
+    if(prewhitenMethod2 == "ar.yw") {
+      resCrn <- prewhitenAR(rowMeans(RWIclean, na.rm=TRUE),p=p)
+    }
+    if(prewhitenMethod2 == "arima.CSS-ML") {
+      resCrn <- prewhitenARIMA(rowMeans(RWIclean, na.rm=TRUE),p=p)  
+    }
+    
   } else {
-    resCrn <- prewhiten(apply(RWIclean,1,tbrm, C=9),p=p)
+    if(prewhitenMethod2 == "ar.yw") {
+      resCrn <- prewhitenAR(apply(RWIclean,1,tbrm, C=9),p=p)
+    }
+    if(prewhitenMethod2 == "arima.CSS-ML") {
+      resCrn <- prewhitenARIMA(apply(RWIclean,1,tbrm, C=9),p=p)
+    }
+    
   }
 
   ### Post-redden the prewhitened series
@@ -193,7 +226,7 @@
 
 
   ### 10. Make the ARSTAN chronology (ARS)
-  if (!biweight) {
+  if(!biweight) {
     arsCrn <- rowMeans(RWIar, na.rm=TRUE)
   } else {
     arsCrn <- apply(RWIar, 1, tbrm, C=9)

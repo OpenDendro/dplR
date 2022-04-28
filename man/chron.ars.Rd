@@ -9,7 +9,8 @@
   \code{\link{detrend}}.
 }
 \usage{
-chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE, verbose=TRUE)
+chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE, 
+  verbose=TRUE, prewhitenMethod=c("ar.yw","arima.CSS-ML"))
 }
 \arguments{
   \item{x}{a \code{data.frame} of (usually detrended) ring widths with
@@ -24,6 +25,9 @@ chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE, verbose=TRUE)
     overall minimum.}
   \item{verbose}{\code{logical} flag.  If \acronym{TRUE} the function prints 
   information from the AR modeling to the screen.}
+  \item{prewhitenMethod}{ a \code{character} vector to determine the AR model 
+    fitting. See details below.  Possible values are either "ar.yw" or 
+    "arima.CSS-ML". Can be abbreviated. Defaults to "ar.yw".}
 }
 \details{
   This produces three mean-value chronologies: standard, residual, and ARSTAN. 

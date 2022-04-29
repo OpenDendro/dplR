@@ -37,8 +37,8 @@ chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE,
   The standard chronology is the (biweight) mean value across rows and identical 
   to \code{\link{chron}}. 
   
-  The residual chronology is the prewhitened chronology as 
-  described by Cook (1985) and uses uses multivariate autoregressive modeling 
+  The residual chronology is the prewhitened chronology as described by Cook 
+  (1985) and uses uses multivariate autoregressive modeling 
   to determine the order of the AR process. It's important to note that 
   residual chronology produced here is different than the simple residual 
   chronology produced by 
@@ -54,18 +54,21 @@ chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE,
 
   Some other details:
   
-  The order of the AR model is selected by AIC using either the first 
-  (local) AIC minimum otherwise or the overall minimum considering the 
-  maximum lag.
+  The order of the AR model is selected from the pooled AR coefficients by 
+  AIC using either the first (local) AIC minimum otherwise or the overall 
+  minimum considering the maximum lag (argument \code{maxLag}).
   
-  Once the AR order is determined an AR(p) model is fit using 
-  \code{\link{arima}} via conditional-sum-of-squares to find starting 
-  values, then maximum likelihood. It is possible that the model will not
-  converge in which case a warning is produced.
+  Once the AR order is determined an AR(p) model is fit using either
+  \code{\link{ar}} via the Yule-Walker method or by \code{\link{arima}} 
+  via conditional-sum-of-squares to find starting values, then 
+  maximum likelihood. It is possible that the model will not
+  converge in which case a warning is produced. The AR fitting is determined
+  via \code{prewhitenMethod} and defaults to using \code{\link{ar}}.
   
 }
 \value{
-  A \code{data.frame} with the standard, residual, and ARSTAN chronologies. The sample depth is also included.
+  A \code{data.frame} with the standard, residual, and ARSTAN chronologies. 
+  The sample depth is also included.
 }
 \references{
   Cook, E. R. and Kairiukstis, L. A., editors (1990) \emph{Methods of
@@ -77,7 +80,8 @@ chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE,
 }
 \author{ Andy Bunn with contributions from Kevin Achukaitis and Ed Cook.
          Much of the function is a port of Cook's FORTRAN code. }
-\seealso{ \code{\link{chron}}, \code{\link{crn.plot}} }
+\seealso{ \code{\link{chron}}, \code{\link{crn.plot}},
+          \code{\link{ar}}, \code{\link{arima}} }
 
 \examples{library(graphics)
 library(utils)

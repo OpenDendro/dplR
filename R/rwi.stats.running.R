@@ -309,19 +309,25 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
         treesPresent <- unique(treeIds[coresPresent])
         nCores <- length(coresPresent)
         nTrees <- length(treesPresent)
-        if (period.common) {
-            ## If period is "common", we are only looking at the rows
-            ## with no missing values (if any, so all or nothing).
-            n <- nTrees
-        } else {
-            ## Number of trees averaged over the years in the window.
-            ## We keep this number separate of the correlation
-            ## estimates, i.e. the data from some tree / year may
-            ## contribute to n without taking part in the correlation
-            ## estimates.
-            n <- mean(n.trees.by.year[year.idx])
-        }
-
+        # if (period.common) {
+        #     ## If period is "common", we are only looking at the rows
+        #     ## with no missing values (if any, so all or nothing).
+        #     n <- nTrees
+        # } else {
+        #     ## Number of trees averaged over the years in the window.
+        #     ## We keep this number separate of the correlation
+        #     ## estimates, i.e. the data from some tree / year may
+        #     ## contribute to n without taking part in the correlation
+        #     ## estimates.
+        #     n <- mean(n.trees.by.year[year.idx])
+        # }
+        
+        # AGB May 2022
+        # Setting n to be be nTrees for the EPS calc based on a comment from
+        # S Klesse via github https://github.com/AndyBunn/dplR/issues/11
+        # After consulting with him and Mikko we decided to revert back to this
+        # value of n. Hence the code chunk commented out above.
+        n <- nTrees
         ## Expressed population signal
         if (n.wt == 0) {
             if (n.bt > 0) {

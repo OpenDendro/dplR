@@ -327,7 +327,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
         # S Klesse via github https://github.com/AndyBunn/dplR/issues/11
         # After consulting with him and Mikko we decided to revert back to this
         # value of n. Hence the code chunk commented out above.
-        n <- nTrees
+        n<-length(good.trees)
         ## Expressed population signal
         if (n.wt == 0) {
             if (n.bt > 0) {

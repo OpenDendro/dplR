@@ -22,10 +22,58 @@ library(dplR)
 ## Introduction
 This is it.
 
+We will demonstrate with the Bristlecone pine ring width data from Campito Mountain. Note the `class` of the object.
 
 ```{r}
 data(ca533)
-foo <- ssf(ca533)
-plot(foo)
+class(ca533)
 ```
 
+And we can adjust the sample depth to a minimum of five.
+
+
+```{r}
+samps <- rowSums(!is.na(ca533))
+ca533Trunc <- ca533[samps > 4,]
+
+```
+Now we do it.
+
+```{r,fig.width=6}
+foo <- ssf(rwl = ca533Trunc,method = "AgeDepSpline",pos.slope = FALSE)
+plot(foo,add.spline=TRUE,spline.line.col='darkred',nyrs=50)
+```
+
+Vs.
+
+```{r,fig.width=6}
+foo <- ssf(rwl = ca533Trunc,method = "Spl",pos.slope = TRUE)
+plot(foo,add.spline=TRUE,spline.line.col='darkred',nyrs=50)
+```
+
+
+Vs.
+
+```{r,fig.width=6}
+foo <- chron(detrend(rwl = ca533Trunc,method = "Spl"))
+plot(foo,add.spline=TRUE,spline.line.col='darkred',nyrs=50)
+```
+
+Vs
+
+```{r,fig.width=6}
+foo <- chron(detrend(rwl = ca533Trunc,method = "AgeD"))
+plot(foo,add.spline=TRUE,spline.line.col='darkred',nyrs=50)
+```
+
+
+Let's see all the stuff.
+
+```{r,fig.width=6}
+foo <- ssf(rwl = ca533Trunc,
+           method = "AgeDepSpline",
+           pos.slope = FALSE,
+           return.info = TRUE)
+str(foo)
+plot(foo,add.spline=TRUE,spline.line.col='darkred',nyrs=50)
+```

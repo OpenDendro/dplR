@@ -33,8 +33,7 @@ chron(x, biweight = TRUE, prewhiten = FALSE, \dots)
   a slightly different method for determining AR order.
 }
 \value{
-  A \code{data.frame} with the standard chronology, residual chronology (if
-  prewhitening was performed), and the sample depth.
+  An object of of class \code{crn} and \code{data.frame} with the standard chronology, residual chronology (if prewhitening was performed), and the sample depth. The years are stored as row numbers.
 }
 \references{
   Cook, E. R. and Kairiukstis, L. A., editors (1990) \emph{Methods of

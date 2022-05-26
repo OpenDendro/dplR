@@ -7,7 +7,7 @@
 }
 \usage{
 ssf(rwl, method="AgeDepSpline", 
-    nyrs = NULL, pos.slope = TRUE,
+    nyrs = NULL, pos.slope = FALSE,
     maxIterations = 50, madThreshold = 5e-4,
     return.info = FALSE, verbose = TRUE)
 }
@@ -45,7 +45,28 @@ ssf(rwl, method="AgeDepSpline",
   See the references below for further details on detrending. It's a dark art.
 }
 \value{
-  Stuff
+    An object of of class \code{crn} and \code{data.frame} with the signal-free chronology and the sample depth. The years are stored as row numbers.
+    
+    If \code{return.info} is \code{TRUE} a \code{list} containing at least the following components: 
+    
+    \item{infoList}{ a \code{list} with information on the arguments used in the function call. } 
+    
+    \item{sfc}{ the signal-free chronology as above. } 
+
+    \item{SF_out}{ an \code{array} of years by series by iterations that holds the signal free measurements. }     
+
+    \item{SFRescaled_out}{ an \code{array} of years by series by iterations that holds the rescaled signal free measurements. }     
+
+    \item{SFRescaled_out}{ an \code{array} of years by series by iterations that holds the rescaled signal free curve fits. }     
+
+    \item{SFRWI_out}{ an \code{array} of years by series by iterations that holds the detrended signal free measurements. }     
+
+    \item{SFCrn_mat}{ a \code{matrix} of years by iterations that holds the calculated chronology. }     
+
+    \item{SFCrn_mat}{ a \code{matrix} of years by iterations-1 that holds the differences between the kth and the kth-1 high frequency chronology residuals. }   
+    
+    \item{MAD_out}{ a \code{vector} containing the median absolute difference between iteration k and k-1. }
+
 }
 \references{
   Stuff

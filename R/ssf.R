@@ -1,7 +1,7 @@
 `ssf` <- function(rwl, 
                   method="AgeDepSpline", 
                   nyrs = NULL,
-                  pos.slope = TRUE,
+                  pos.slope = FALSE,
                   maxIterations = 50, 
                   madThreshold = 5e-4,
                   return.info = FALSE, 

@@ -2,10 +2,10 @@
 
 `crn.plot` <- function(crn, add.spline=FALSE, nyrs=NULL, f=0.5,
                        crn.line.col='grey50',
-                       spline.line.col='red',
+                       spline.line.col='darkred',
                        samp.depth.col='grey90',
                        samp.depth.border.col='grey80',
-                       crn.lwd=1, spline.lwd=1.5,
+                       crn.lwd=1, spline.lwd=1.75,
                        abline.pos=1, abline.col='black',
                        abline.lty=1, abline.lwd=1,
                        include.names = TRUE,

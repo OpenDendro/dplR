@@ -8,7 +8,7 @@
     stop("there must be at least 3 data points")
   }
   if (nobs > 1e4) {
-    stop("y shouldn't be longer than 1e4. ask for help.")
+    stop("y shouldn't be longer than 1e4. ask for help. the f77 code will need to be recompiled. ")
   }
   if(!is.numeric(nyrs0) || length(nyrs0) != 1 || nyrs0 <= 1){
     stop("'nyrs0' must be an integer greater than 1")

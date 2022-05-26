@@ -1,0 +1,31 @@
+---
+title: "Simple Signal Free Detrending and Chronology Building"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{my-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(dplR)
+```
+
+
+## Introduction
+This is it.
+
+
+```{r}
+data(ca533)
+foo <- ssf(ca533)
+plot(foo)
+```
+

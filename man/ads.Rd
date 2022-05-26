@@ -16,14 +16,14 @@ ads(y, nyrs0 = 50, pos.slope = TRUE)
     rigid spline.}
   \item{pos.slope}{ a \code{logical} flag.  Will allow for a positive
     slope at the end of fitted value. If \code{FALSE} the
-    line will be horizontal. }
+    line will be horizontal. See details. }
 }
 \details{
-This implements the age-dependent smoothing spline similar to that described by Melvin (2004). In this implementation a cubic smoothing spline is fit to \code{\var{y}} with an initial stiffness of \code{\var{nyrs0}}. For each succesive measurement, the siffness ring age is incremented by that ring age plus four. This results in a spline is \code{\var{nyrs0}} flexible at the start of the series and grows progressively stiffer. This can help capture the initial fast growth of a juvinielle tree with a flexible spline that then progresses to a stiffer spline that can better model the constant growth commonly found in mature trees. In its details, the cubic smoothing spline follows the Cook and Peters (1981) spline with a 50\% frequency cutoff. See Cook and Kairiukstis (1990) for more information.
+This implements the age-dependent smoothing spline similar to that described by Melvin (2004). In this implementation a cubic smoothing spline (\code{\link{caps}}) is fit to \code{\var{y}} with an initial stiffness of \code{\var{nyrs0}}. For each succesive measurement, the siffness is incremented by that ring index. This results in a spline is \code{\var{nyrs0}} flexible at the start of the series and grows progressively stiffer. This can help capture the initial fast growth of a juvinielle tree with a flexible spline that then progresses to a stiffer spline that can better model the constant growth commonly found in mature trees. In its details, the cubic smoothing spline follows the Cook and Peters (1981) spline with a 50\% frequency cutoff. See Cook and Kairiukstis (1990) for more information.
 
 The default setting for \code{\var{nyrs0}} is 50 years which is approprite for trees with a classic growth model but a value of 10 or 20 might be more appropriate for a Hugershoff-like initial increase in growth. Cook (pers comm) suggests a value of 20 for RCS.
 
-If \code{\var{pos.slope}} is TRUE, the function will attempt to prevent a postive slope at the end of the series. In some cases when \code{\var{ads}} is used for detrending, a postive slope can be considered considered biologically unlikely. In those cases, the user can contrain the positive slope in the slpine. This works by calculating the spline and taking the first difference. Then we find the last (outside) index where the spline changes slope and fixr the spline values from the that point to the end. Finally the spline is rerun along this contrained curve. See examples for details.
+If \code{\var{pos.slope}} is TRUE, the function will attempt to prevent a postive slope at the end of the series. In some cases when \code{\var{ads}} is used for detrending, a postive slope can be considered considered biologically unlikely. In those cases, the user can contrain the positive slope in the slpine. This works by calculating the spline and taking the first difference. Then the function finds the last (outside) index where the spline changes slope and fixes the spline values from the that point to the end. Finally the spline is rerun along this contrained curve. See examples for details. The wisdom of contraining the slope in this manner depends very much on expert knowledge of the system.
 }
 
 \value{

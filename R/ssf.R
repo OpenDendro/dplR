@@ -11,6 +11,10 @@
   if(maxIterations > 50){
     warning("Having to set maxIterations > 50 in order to meet a stopping criteria  is generally a sign that the data are not ideal for signal free detrending.")
   }
+
+  if(madThreshold < 1e-04 |  1e-03 < madThreshold){
+    warning("The stopping criteria should probably be between 1e-5 and 1e-4 unless you have a good reason to think otherwise.")
+  }
   
   # make a copy of rwl just in case we change it.
   dat <- rwl

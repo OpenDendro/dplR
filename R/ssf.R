@@ -11,7 +11,7 @@
   if(maxIterations > 50){
     warning("Having to set maxIterations > 50 in order to meet a stopping criteria  is generally a sign that the data are not ideal for signal free detrending.")
   }
-
+  
   if(madThreshold < 1e-04 |  1e-03 < madThreshold){
     warning("The stopping criteria should probably be between 1e-5 and 1e-4 unless you have a good reason to think otherwise.")
   }
@@ -40,20 +40,22 @@
   # Make some storage objects
   # These are arrays of [nYrs,nSeries,maxIterations]
   # Array to hold the SF measurements
-  SF_out <- array(NA,dim=c(nYrs,nSeries,maxIterations))
+  sfRW_Array <- array(NA,dim=c(nYrs,nSeries,maxIterations))
   # Array to hold the rescaled SF measurements
-  SFRescaled_out <- array(NA,dim=c(nYrs,nSeries,maxIterations))
+  sfRWRescaled_Array <- array(NA,dim=c(nYrs,nSeries,maxIterations))
   # Array to hold the rescaled SF curves
-  SFRescaledCurves_out <- array(NA,dim=c(nYrs,nSeries,maxIterations))
+  sfRWRescaledCurves_Array <- array(NA,dim=c(nYrs,nSeries,maxIterations))
   # Array to hold the SF RWI
-  SFRWI_out <- array(NA,dim=c(nYrs,nSeries,maxIterations))
+  sfRWI_Array <- array(NA,dim=c(nYrs,nSeries,maxIterations))
   # Array (2d though) to hold the SF Crn
-  SFCrn_mat <- array(NA,dim=c(nYrs,maxIterations))
+  sfCrn_Mat <- array(NA,dim=c(nYrs,maxIterations))
+  # Array (2d though) to hold the HF Crn
+  hfCrn_Mat <- array(NA,dim=c(nYrs,maxIterations))
   # Vector for storing median absolute difference (mad)
-  MAD_out <- numeric(maxIterations-1)
+  MAD_Vec <- numeric(maxIterations-1)
   # Array (2d though) to hold the differences between the kth
   # and the kth-1 high freq chronology residuals
-  hfCrnResids_out <- matrix(NA,nrow = nYrs,ncol=maxIterations-1)
+  hfCrnResids_Mat <- matrix(NA,nrow = nYrs,ncol=maxIterations-1)
   
   # Let's do it. First, here is a simplish detrending function modified from
   # detrend.series(). The issue with using detrend() is that negative values are
@@ -93,7 +95,7 @@
       
     }  
     
-    # Age Dep Spl  
+    # CAPS  
     if("Spline" %in% method2){
       if(is.null(nyrs))
         nyrs2 <- length(y2) * 0.6667
@@ -138,46 +140,50 @@
   datCrn <- datCrn[,1] # just keep the chron
   
   # STEP 2 - Divide each series of measurements by the chronology
-  # NB: THis can produce some very very funky values when datCrn is near zero.
-  # E.g., in co021 row 615 has a tbrm RWI of 0.0044 whihc makes for sime huge SF
-  SF_out[,,1] <- as.matrix(dat/datCrn)
+  # NB: This can produce some very very funky values when datCrn is near zero.
+  # E.g., in co021 row 615 has a tbrm RWI of 0.0044 which makes for some huge SF
+  sfRW_Array[,,1] <- as.matrix(dat/datCrn)
   # STEP 3 - Rescale to the original mean
-  colMeansMatdatSF <- matrix(colMeans(SF_out[,,1],na.rm = TRUE),
-                             nrow = nrow(SF_out[,,1]),
-                             ncol = ncol(SF_out[,,1]),
+  colMeansMatdatSF <- matrix(colMeans(sfRW_Array[,,1],na.rm = TRUE),
+                             nrow = nrow(sfRW_Array[,,1]),
+                             ncol = ncol(sfRW_Array[,,1]),
                              byrow = TRUE)
   colMeansMatdat <- matrix(colMeans(dat,na.rm = TRUE),
                            nrow = nrow(dat),
                            ncol = ncol(dat),
                            byrow = TRUE)
-  SFRescaled_out[,,1] <- (SF_out[,,1] - colMeansMatdatSF) + colMeansMatdat
+  sfRWRescaled_Array[,,1] <- (sfRW_Array[,,1] - colMeansMatdatSF) + colMeansMatdat
   
   # STEP 4 - Replace signal-free measurements with original measurements when samp depth is 1
-  SFRescaled_out[datSampDepth==1,,1] <- as.matrix(dat[datSampDepth==1,]) # can this break if there is no sampDelth==1?
+  sfRWRescaled_Array[datSampDepth==1,,1] <- as.matrix(dat[datSampDepth==1,]) # can this break if there is no sampDepth==1?
   
   # STEP 5 - Fit curves to signal free measurements
-  SFRescaledCurves_out[,,1] <- apply(SFRescaled_out[,,1],2,getCurve,
-                                     method=method2,
-                                     nyrs=nyrs,
-                                     pos.slope=pos.slope)
+  sfRWRescaledCurves_Array[,,1] <- apply(sfRWRescaled_Array[,,1],2,getCurve,
+                                         method=method2,
+                                         nyrs=nyrs,
+                                         pos.slope=pos.slope)
   
-
+  
   # STEP 6 - divide original measurements by curve obtained from signal free measurements fitting
-  SFRWI_out[,,1] <- as.matrix(dat/SFRescaledCurves_out[,,1])
+  sfRWI_Array[,,1] <- as.matrix(dat/sfRWRescaledCurves_Array[,,1])
   
   # STEP 7 - create 1st signal-free chronology
-  SFCrn_mat[,1] <- chron(SFRWI_out[,,1],biweight = TRUE)[,1]
+  sfCrn_Mat[,1] <- chron(sfRWI_Array[,,1],biweight = TRUE)[,1]
   # Check for zeros in the chronology. This can happen in VERY sensitive
   # chrons with years that mostly zeros if the chron is built with tukey's
   # biweight robust mean (e.g., co021). This causes problems with div0 later on
   # so if there are any zeros in the chron, switch straight mean which should
   # head off any zeros in the chron unless the data themseleves are bunk
-  if(any(SFCrn_mat[,1]==0)){
-    SFCrn_mat[,1] <- chron(SFRWI_out[,,],biweight = FALSE)[,1]
+  if(any(sfCrn_Mat[,1]==0)){
+    sfCrn_Mat[,1] <- chron(sfRWI_Array[,,],biweight = FALSE)[,1]
   }
   
+  # And calc the high freq crn that will be used to determine MAD stopping crit
+  hfCrn_Mat[,1] <- sfCrn_Mat[,1] - caps(sfCrn_Mat[,1], #empty?
+                                        nyrs = floor(medianSegLength))
   
-  # STEP 8 - Repeat (2) through (6) until the MAD threshold
+  
+  # STEP 8 - Repeat (2) through (7) until the MAD threshold
   # is reached or we hit maxIter
   if(verbose){
     cat("Data read. First iteration done.\n")
@@ -189,54 +195,52 @@
     k = iterationNumber
     
     # STEP 2 - Divide each series of measurements by the last SF chronology
-    SF_out[,,k] = as.matrix(dat/SFCrn_mat[,k-1]) # this can produce problems Inf or nan
+    sfRW_Array[,,k] = as.matrix(dat/sfCrn_Mat[,k-1]) # this can produce problems Inf or nan
     
     # STEP 3 - Rescale to the original mean
-    colMeansMatdatSF <- matrix(colMeans(SF_out[,,k],na.rm = TRUE),
-                               nrow = nrow(SF_out[,,k]),
-                               ncol = ncol(SF_out[,,k]),
+    colMeansMatdatSF <- matrix(colMeans(sfRW_Array[,,k],na.rm = TRUE),
+                               nrow = nrow(sfRW_Array[,,k]),
+                               ncol = ncol(sfRW_Array[,,k]),
                                byrow = TRUE)
-    tmp <- (SF_out[,,k] - colMeansMatdatSF) + colMeansMatdat
+    tmp <- (sfRW_Array[,,k] - colMeansMatdatSF) + colMeansMatdat
     
     # can get a nan if unlucky. set to? zero?
     tmp[is.nan(tmp)] <- 0
-    SFRescaled_out[,,k] <- tmp
+    sfRWRescaled_Array[,,k] <- tmp
     # STEP 4 - Replace signal-free measurements with original measurements when sample depth is one
-    SFRescaled_out[datSampDepth==1,,k] <- as.matrix(dat[datSampDepth==1,])
+    sfRWRescaled_Array[datSampDepth==1,,k] <- as.matrix(dat[datSampDepth==1,])
     
     # STEP 5 - fit curves to signal free measurements
-    SFRescaledCurves_out[,,k] <- apply(SFRescaled_out[,,k],2,getCurve,
-                                       method=method2,
-                                       nyrs=nyrs,
-                                       pos.slope=pos.slope)
+    sfRWRescaledCurves_Array[,,k] <- apply(sfRWRescaled_Array[,,k],2,getCurve,
+                                           method=method2,
+                                           nyrs=nyrs,
+                                           pos.slope=pos.slope)
     
-
+    
     # STEP 6 - divide original measurements by curve obtained from signal free curves
-    SFRWI_out[,,k] <- as.matrix(dat/SFRescaledCurves_out[,,k])
+    sfRWI_Array[,,k] <- as.matrix(dat/sfRWRescaledCurves_Array[,,k])
     
-    # STEP 7 - create 1st signal-free chronology
-    SFCrn_mat[,k] <- chron(SFRWI_out[,,k],biweight = TRUE)[,1]
+    # STEP 7 - create kth signal-free chronology
+    sfCrn_Mat[,k] <- chron(sfRWI_Array[,,k],biweight = TRUE)[,1]
     # Check for zeros in the chronology. This can happen in VERY sensitive
     # chrons with years that mostly zeros if the chron is built with tukey's
     # biweight robust mean (e.g., co021). This causes problems with div0 later on
     # so if there are any zeros in the chron, switch straight mean which should
     # head off any zeros in the chron unless the data themseleves are bunk
-    if(any(SFCrn_mat[,k]==0)){
-      SFCrn_mat[,k] <- chron(SFRWI_out[,,k],biweight = FALSE)[,1]
+    if(any(sfCrn_Mat[,k]==0)){
+      sfCrn_Mat[,k] <- chron(sfRWI_Array[,,k],biweight = FALSE)[,1]
     }
     
     # Now look at diffs in fit using median abs diff in the high freq resids
     # This is the (high freq) resids from the current iter minus the resids from prior iter
-    hp1 <- SFCrn_mat[,k] - caps(SFCrn_mat[,k],
-                                nyrs = floor(medianSegLength))
-    hp2 <- SFCrn_mat[,k-1] - caps(SFCrn_mat[,k-1],
-                                  nyrs = floor(medianSegLength))
+    hfCrn_Mat[,k] <- sfCrn_Mat[,k] - caps(sfCrn_Mat[,k], #empty?
+                                          nyrs = floor(medianSegLength))
     
-    hfCrnResids_out[,k-1] <- hp1 - hp2
+    hfCrnResids_Mat[,k-1] <- hfCrn_Mat[,k] - hfCrn_Mat[,k-1]
     # calculate the median absolute differences weighted by the normalized sample depth
-    medianAbsDiff <- median(abs(hp1*normalizedSampleDepth - hp2*normalizedSampleDepth))
+    medianAbsDiff <- median(abs(hfCrn_Mat[,k]*normalizedSampleDepth - hfCrn_Mat[,k-1]*normalizedSampleDepth))
     
-    MAD_out[k-1] <- medianAbsDiff
+    MAD_Vec[k-1] <- medianAbsDiff
     if(verbose){
       cat("Iteration: ", k, " Median Abs Diff: ",round(medianAbsDiff,5),
           " (",round(madThreshold/medianAbsDiff * 100,5),"% of threshold)\n",
@@ -253,21 +257,21 @@
   }
   # Remove empty NAs from output that aren't needed anymore.
   # Trim the SF measurements
-  SF_out <- SF_out[,,1:k]
+  sfRW_Array <- sfRW_Array[,,1:k]
   # Trim the rescaled SF measurements
-  SFRescaled_out <- SFRescaled_out[,,1:k]
+  sfRWRescaled_Array <- sfRWRescaled_Array[,,1:k]
   # Trim the rescaled SF curves
-  SFRescaledCurves_out <- SFRescaledCurves_out[,,1:k]
+  sfRWRescaledCurves_Array <- sfRWRescaledCurves_Array[,,1:k]
   # Trim the SF RWI
-  SFRWI_out <- SFRWI_out[,,1:k]
+  sfRWI_Array <- sfRWI_Array[,,1:k]
   # Trim the SF crn
-  SFCrn_mat <- SFCrn_mat[,1:k]
+  sfCrn_Mat <- sfCrn_Mat[,1:k]
   # Trim the differences
-  MAD_out <- MAD_out[1:(k-1)]
-  hfCrnResids_out <- hfCrnResids_out[,1:(k-1)]
+  MAD_Vec <- MAD_Vec[1:(k-1)]
+  hfCrnResids_Mat <- hfCrnResids_Mat[,1:(k-1)]
   
   ### return
-  finalCrn <- data.frame(sfc=SFCrn_mat[,k],samp.depth=datSampDepth)
+  finalCrn <- data.frame(sfc=sfCrn_Mat[,k],samp.depth=datSampDepth)
   row.names(finalCrn) <- row.names(dat)
   class(finalCrn) <- c("crn", "data.frame")
   
@@ -286,7 +290,8 @@
   }
   
   if(verbose){ 
-    cat("Simple Signal Free Complete",sep="\n")
+    cat("Simple Signal Free Chronology Complete",sep="\n")
+    cat("ssf was called with these arguments",sep="\n")
     cat(paste0("Detrending method: ", method2),sep = "\n")
     cat(paste0("nyrs: ", nyrs),sep = "\n")
     if(method2 == "AgeDepSpline"){
@@ -302,19 +307,21 @@
     res <- list(infoList = infoList,
                 crn = finalCrn,
                 # The SF measurements
-                SF_out = SF_out,
+                sfRW_Array = sfRW_Array,
                 # The rescaled SF measurements
-                SFRescaled_out = SFRescaled_out,
+                sfRWRescaled_Array = sfRWRescaled_Array,
                 # The rescaled SF curves
-                SFRescaledCurves_out = SFRescaledCurves_out,
+                sfRWRescaledCurves_Array = sfRWRescaledCurves_Array,
                 # The SF RWI
-                SFRWI_out = SFRWI_out,
+                sfRWI_Array = sfRWI_Array,
                 # The SF crn
-                SFCrn_mat = SFCrn_mat,
+                sfCrn_Mat = sfCrn_Mat,
+                # The high freq chronology
+                hfCrn_Mat = hfCrn_Mat,
                 # The high freq chronology residuals
-                hfCrnResids_out = hfCrnResids_out,
+                hfCrnResids_Mat = hfCrnResids_Mat,
                 # The median abs diff
-                MAD_out = MAD_out)
+                MAD_Vec = MAD_Vec)
     return(res)
   }
   else{

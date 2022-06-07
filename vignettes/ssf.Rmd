@@ -21,7 +21,7 @@ This vignette is an initial draft that demonstrates how to build a simple signal
 
 ## Packages
 
-This was built with `R` version `r getRversion()` and `RStudio` version `r rstudioapi::versionInfo()$version` with the current CRAN versions of all packages as of `r Sys.Date()`.
+This was built with `R` version `r getRversion()` with the current CRAN versions of all packages as of `r Sys.Date()`.
 
 Here are the packages we will use during this vignette. If not installed readers can get them from CRAN using `install.packages`.
 
@@ -139,8 +139,7 @@ MAD_Vec <- ssfCrn$MAD_Vec
 This is the initial, naive chronology at iteration zero.
 
 ```{r init crn}
-initChron <- chron(detrend(datTrunc,method="AgeDep"))
-plot(initChron,add.spline=TRUE,nyrs=50,
+plot(ssfCrn$iter0Crn,add.spline=TRUE,nyrs=50,
      crn.line.col=divColors[4],spline.line.col=divColors[2],
      crn.lwd=1.5,spline.lwd=2)
 ```

@@ -3,7 +3,7 @@ Package: dplR
 Type: Package
 Title: Dendrochronology Program Library in R
 Version: 1.7.3
-Date: 2022-04-14
+Date: 2022-06-17
 Authors@R: c(person("Andy", "Bunn", role = c("aut", "cph",
         "cre", "trl"), email = "bunna@wwu.edu"), person("Mikko",
         "Korpela", role = c("aut", "cph", "trl")), person("Franco", "Biondi",
@@ -38,7 +38,11 @@ Suggests:
     rmarkdown,
     testthat (>= 0.8),
     tikzDevice,
-    waveslim
+    waveslim,
+    tidyverse,
+    cowplot,
+    ggExtra,
+    PNWColors
 Description: Perform tree-ring analyses such as detrending, chronology
         building, and cross dating.  Read and write standard file formats
         used in dendrochronology.

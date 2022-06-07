@@ -2,14 +2,14 @@
                   method="AgeDepSpline", 
                   nyrs = NULL,
                   pos.slope = FALSE,
-                  maxIterations = 50, 
+                  maxIterations = 25, 
                   madThreshold = 5e-4,
                   return.info = FALSE, 
                   verbose = TRUE)
 {
   
-  if(maxIterations > 50){
-    warning("Having to set maxIterations > 50 in order to meet a stopping criteria  is generally a sign that the data are not ideal for signal free detrending.")
+  if(maxIterations > 25){
+    warning("Having to set maxIterations > 25 in order to meet a stopping criteria  is generally a sign that the data are not ideal for signal free detrending.")
   }
   
   if(madThreshold < 1e-04 |  1e-03 < madThreshold){
@@ -124,25 +124,25 @@
   
   # get RWI
   datRWI <- dat / datCurves
-  # and initial chron
-  datCrn <- chron(datRWI,biweight = TRUE)
+  # and initial chron at iter0
+  iter0Crn <- chron(datRWI,biweight = TRUE)
   # Check for zeros in the chronology. This can happen in VERY sensitive
   # chrons with years that mostly zeros if the chron is built with tukey's
   # biweight robust mean (e.g., co021). This causes problems with div0 later on
   # so if there are any zeros in the chron, switch straight mean which should
   # head off any zeros in the chron unless the data themseleves are bunk
-  if(any(datCrn[,1]==0)){
-    datCrn <- chron(datRWI,biweight = FALSE)
+  if(any(iter0Crn[,1]==0)){
+    iter0Crn <- chron(datRWI,biweight = FALSE)
   }
   
-  datSampDepth <- datCrn$samp.depth # for later
+  datSampDepth <- iter0Crn$samp.depth # for later
   normalizedSampleDepth <- sqrt(datSampDepth-1)/sqrt(max(datSampDepth-1)) # for later
-  datCrn <- datCrn[,1] # just keep the chron
+  iter0Crn <- iter0Crn[,1] # just keep the chron
   
   # STEP 2 - Divide each series of measurements by the chronology
-  # NB: This can produce some very very funky values when datCrn is near zero.
+  # NB: This can produce some very very funky values when iter0Crn is near zero.
   # E.g., in co021 row 615 has a tbrm RWI of 0.0044 which makes for some huge SF
-  sfRW_Array[,,1] <- as.matrix(dat/datCrn)
+  sfRW_Array[,,1] <- as.matrix(dat/iter0Crn)
   # STEP 3 - Rescale to the original mean
   colMeansMatdatSF <- matrix(colMeans(sfRW_Array[,,1],na.rm = TRUE),
                              nrow = nrow(sfRW_Array[,,1]),
@@ -270,7 +270,12 @@
   MAD_Vec <- MAD_Vec[1:(k-1)]
   hfCrnResids_Mat <- hfCrnResids_Mat[,1:(k-1)]
   
-  ### return
+  ### return final crn and add in the OG crn too for completeness
+  
+  iter0Crn <- data.frame(std=iter0Crn,samp.depth=datSampDepth)
+  row.names(iter0Crn) <- row.names(dat)
+  class(iter0Crn) <- c("crn", "data.frame")
+  
   finalCrn <- data.frame(sfc=sfCrn_Mat[,k],samp.depth=datSampDepth)
   row.names(finalCrn) <- row.names(dat)
   class(finalCrn) <- c("crn", "data.frame")
@@ -305,7 +310,8 @@
   
   if(return.info){
     res <- list(infoList = infoList,
-                crn = finalCrn,
+                iter0Crn = iter0Crn,
+                ssfCrn = finalCrn,
                 # The SF measurements
                 sfRW_Array = sfRW_Array,
                 # The rescaled SF measurements

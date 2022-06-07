@@ -8,7 +8,7 @@
 \usage{
 ssf(rwl, method="AgeDepSpline", 
     nyrs = NULL, pos.slope = FALSE,
-    maxIterations = 50, madThreshold = 5e-4,
+    maxIterations = 25, madThreshold = 5e-4,
     return.info = FALSE, verbose = TRUE)
 }
 \arguments{
@@ -61,7 +61,9 @@ ssf(rwl, method="AgeDepSpline",
     
     \item{infoList}{ a \code{list} with information on the arguments used in the function call. } 
     
-    \item{sfc}{ the signal-free chronology as above. } 
+    \item{iter0Crn}{ the original naive chronology at iteration 0. } 
+
+    \item{ssfCrn}{ the signal-free chronology as above. } 
 
     \item{sfRW_Array}{ an \code{array} of years by series by iterations that holds the signal free measurements. }     
 

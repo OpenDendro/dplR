@@ -49,7 +49,7 @@ chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE,
   
   The ARSTAN chronology  builds on the residual chronology but 
   returns a re-whitened chronology where the pooled AR 
-  coefficients drom the multivariate autoregressive modeling are 
+  coefficients from the multivariate autoregressive modeling are 
   reintroduced. See references for details.
 
   Some other details:

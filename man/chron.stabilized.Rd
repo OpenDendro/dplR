@@ -15,7 +15,7 @@ chron.stabilized(x, winLength, biweight = TRUE, running.rbar = FALSE)
     \code{rownames(\var{x})} containing years and \code{colnames(x)}
     containing each series \acronym{ID} such as produced by
     \code{\link{read.rwl}}}
-  \item{winLength}{a odd \code{integer} specifiying the window length.}
+  \item{winLength}{a odd \code{integer} specifying the window length.}
   \item{biweight}{\code{logical} flag.  If \acronym{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}.}}
   \item{running.rbar}{\code{logical} flag.  If \acronym{TRUE} the running interseries correlation is returned as well. }
@@ -27,7 +27,7 @@ chron.stabilized(x, winLength, biweight = TRUE, running.rbar = FALSE)
   
   The basic correction centers around the use of the effective independent sample size, \code{Neff}, which considers sample replication and mean interseries correlation between the samples at every time. This is defined as: \code{Neff = n(t) / 1+(n(t)-1)rbar(t)}
 
-where \code{n(t)} is the number of series at time \code{t}, and \code{rbar} is the interseries correlation (see \code{\link{interseries.cor}}). Multiplication of the mean timeseries with the square root of \code{Neff} at every time \code{t} theoretically results in variance that is independent of sample size. In the limiting cases, when the \code{rbar} is zero or unity, \code{Neff} obtains values of the true sample size and unity, respectively.
+where \code{n(t)} is the number of series at time \code{t}, and \code{rbar} is the interseries correlation (see \code{\link{interseries.cor}}). Multiplication of the mean time series with the square root of \code{Neff} at every time \code{t} theoretically results in variance that is independent of sample size. In the limiting cases, when the \code{rbar} is zero or unity, \code{Neff} obtains values of the true sample size and unity, respectively.
 
 
 }

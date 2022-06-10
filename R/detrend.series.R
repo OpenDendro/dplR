@@ -174,7 +174,7 @@
         cat(indent(gettext("Trying to fit nls model...\n",
                            domain = "R-dplR")))
       }
-      if (mneNotPositive || class(ModNegExp) == "try-error") {
+      if (mneNotPositive || inherits(ModNegExp,"try-error")) {
         if (verbose) {
           cat(indent(gettext("nls failed... fitting linear model...",
                              domain = "R-dplR")))
@@ -344,7 +344,7 @@
         cat(indent(gettext("Trying to fit nls model...\n",
                            domain = "R-dplR")))
       }
-      if (hugNotPositive || class(ModHugershoff) == "try-error") {
+      if (hugNotPositive || inherits(ModHugershoff,"try-error")) {
         if (verbose) {
           cat(indent(gettext("nls failed... fitting linear model...",
                              domain = "R-dplR")))

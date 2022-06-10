@@ -23,7 +23,8 @@
       real(kind = c_double), intent(in)  :: y !input, nyrs
       integer(kind = c_int), intent(in)  :: n,stiffness !input
       real(kind = c_double), intent(out) :: res  !output
-      real*8 :: v,arg,rn,d1,d2,a,c1,c2,p,pct,pi,sum
+      integer, parameter :: dp = kind(1d0)
+      real(dp) :: v,arg,rn,d1,d2,a,c1,c2,p,pct,pi,sum
       integer :: i,j,k,l,m,imncp1,i1,i2,iw,k1,kl,jm1,n1,nm2,nc,nc1,ncp1
 
       dimension a(9001,4),c1(4),c2(3),p(9001),stiffness(9001),res(n),y(n)

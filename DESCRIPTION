@@ -26,7 +26,6 @@ Imports: graphics, grDevices, grid, stats, utils, lattice (>= 0.13-6),
         png (>= 0.1-2), R.utils (>= 1.32.1), stringi (>= 0.2-3),
         stringr (>= 0.4), XML (>= 2.1-0), plyr (>= 1.8), signal
 Suggests: 
-    Biobase,
     Cairo (>= 1.5-0),
     dichromat (>= 1.2-3),
     foreach,

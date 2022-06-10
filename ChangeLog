@@ -5,6 +5,14 @@ File: Various
 
 - Replaced ffcsaps with caps in most instances across the package.
 - Removing prefix argument from chron.
+- Removing all vingettes and pointing to Learning to Love dplR on startup
+- Typos and code cleanup in several files
+
+File: zzz
+----------------
+
+- Adding startup message when dplR is loaded
+
 
 File: crn.plot
 ----------------

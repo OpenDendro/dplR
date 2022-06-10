@@ -58,10 +58,7 @@ xskel.ccf.plot(rwl, series, series.yrs = as.numeric(names(series)),
   \code{ccf(x=master, y=series, lag.max=lag.max, plot=FALSE)} if \code{series.x} is 
   \code{FALSE} and as \code{ccf(x=series, y=master, lag.max=lag.max, plot=FALSE)} if 
   \code{series.x} is \code{TRUE}.  This argument was introduced in dplR version 1.7.0.
-  Different users have different expectations about how missing or extra rings are 
-  notated. If \code{switch.x = FALSE} the behavior will be like COFECHA where a missing 
-  ring in a series produces a negative lag in the plot rather than a positive lag. See the 
-  crossdating vignette \code{xdate-dplR}for more information.
+  Different users have different expectations about how missing or extra rings are notated. If \code{switch.x = FALSE} the behavior will be like COFECHA where a missing ring in a series produces a negative lag in the plot rather than a positive lag.
   
 
   The plot is built using the \link[grid]{Grid} package which

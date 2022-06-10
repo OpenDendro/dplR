@@ -25,12 +25,8 @@ The development version can be installed with devtools
 devtools::install_github("andybunn/dplR")
 ```
 
-## Vignettes
+## Getting Started
 
-There are several vignettes for working with dplR. These cover common data task like I/O, detrending, chronology building, some time-series analysis and so on.
-
-```R
-browseVignettes(package = "dplR")
-```
+New users of dplR can begin by working with the introductory chapters in [Learning to Love dplR](https://opendendro.github.io/dplR-workshop/) which contains instructional material for using `dplR`.
 
 Users interested in crossdating should visit the [`xDater` app](https://andybunn.shinyapps.io/xDateR/). 

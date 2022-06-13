@@ -11,24 +11,36 @@
   
 ## Overview
 
-Perform tree-ring analyses such as detrending, chronology building,
-and crossdating. Read and write standard file formats used in
-dendrochronology.
+Perform tree-ring analyses such as detrending, chronology building, and crossdating. Read and write standard file formats used in dendrochronology.
 
 ## Installation
 
-The latest release version of dplR is installed from CRAN as follows:
+### CRAN
+
+The latest, stable, release version of `dplR` can be installed from [The Comprehensive R Archive Network (CRAN)](https://cran.r-project.org/) as follows:
 
 ```R
 install.packages("dplR")
 ```
 
-The development version can be installed with devtools
-(`install.packages("devtools")`):
+This is the officially released version of `dplR`.
+
+### Develoment Version
+The code here on GitHub is the version of `dplR` that is currently being developed. It might be unstable.
+
+You can install the development version using `r-universe`.
+
+```R
+install.packages("dplR", repos = "https://andybunn.r-universe.dev/")
+```
+
+Alternatively, the development version can be installed from the source code with the `devtools` package.
 
 ```R
 devtools::install_github("andybunn/dplR")
 ```
+
+Because `dplR` includes both C and Fortran code, you will need the appropriate compilers installed on your system to build from source.
 
 ## Getting Started
 

@@ -4,6 +4,11 @@
 [![CRAN_version_badge](https://www.r-pkg.org/badges/version/dplR)](https://cran.r-project.org/package=dplR)
 
 [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/last-month/dplR?color=blue)](https://r-pkg.org/pkg/dplR)
+
+  <!-- badges: start -->
+  [![R-CMD-check](https://github.com/andybunn/dplR/workflows/R-CMD-check/badge.svg)](https://github.com/andybunn/dplR/actions)
+  <!-- badges: end -->
+  
 ## Overview
 
 Perform tree-ring analyses such as detrending, chronology building,

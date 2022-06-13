@@ -32,3 +32,4 @@ README.md
 ^.*-tikzDictionary$
 ^.*/auto$
 ^revdep$
+^\.github$

@@ -3,13 +3,8 @@
 
 <!-- badges: start -->
 [![CRAN_version_badge](https://www.r-pkg.org/badges/version/dplR)](https://cran.r-project.org/package=dplR)
-
 [![CRAN_last_release_badge](https://www.r-pkg.org/badges/last-release/dplR)](https://cran.r-project.org/package=dplR)
-
-
 [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/last-month/dplR?color=blue)](https://r-pkg.org/pkg/dplR)
-
-
 [![R-CMD-check](https://github.com/andybunn/dplR/workflows/R-CMD-check/badge.svg)](https://github.com/andybunn/dplR/actions)
 
 <!-- badges: end -->

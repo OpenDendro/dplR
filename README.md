@@ -1,13 +1,18 @@
 
 # dplR <img src="https://github.com/AndyBunn/dplR/blob/master/dplR_Sticker.png" width="220" align="right" />
 
+<!-- badges: start -->
 [![CRAN_version_badge](https://www.r-pkg.org/badges/version/dplR)](https://cran.r-project.org/package=dplR)
+
+[![CRAN_last_release_badge](https://www.r-pkg.org/badges/last-release/dplR)](https://cran.r-project.org/package=dplR)
+
 
 [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/last-month/dplR?color=blue)](https://r-pkg.org/pkg/dplR)
 
-  <!-- badges: start -->
-  [![R-CMD-check](https://github.com/andybunn/dplR/workflows/R-CMD-check/badge.svg)](https://github.com/andybunn/dplR/actions)
-  <!-- badges: end -->
+
+[![R-CMD-check](https://github.com/andybunn/dplR/workflows/R-CMD-check/badge.svg)](https://github.com/andybunn/dplR/actions)
+
+<!-- badges: end -->
   
 ## Overview
 

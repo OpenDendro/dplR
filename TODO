@@ -1,3 +1,5 @@
+o [andybunn]  implement diff boot.ci types in chron.ci
+
 o [andybunn]  allow values of nyrs between 0 and 1 to be %N for splines?
 
 o [andybunn]  Improve duplicate series error in read.tucson

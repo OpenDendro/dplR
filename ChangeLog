@@ -1,3 +1,10 @@
+* CHANGES IN dplR VERSION 1.7.4
+
+File: chron.ci
+----------------
+
+- New functionthat calculates conf intervals for a chron via boot
+
 * CHANGES IN dplR VERSION 1.7.3
 
 File: Various

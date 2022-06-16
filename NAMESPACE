@@ -45,6 +45,8 @@ importFrom(plyr, alply)
 
 importFrom(signal, butter, filtfilt)
 
+importFrom(boot, boot, boot.ci)
+
 ###############################################################
 #
 ## Methods
@@ -75,8 +77,9 @@ export("ads",
        "bai.out",
        "caps",
        "ccf.series.rwl",
-       "chron.ars",
        "chron",
+       "chron.ars",
+       "chron.ci",
        "chron.stabilized",
        "cms",
        "combine.rwl",

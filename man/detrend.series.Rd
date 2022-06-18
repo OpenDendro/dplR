@@ -71,7 +71,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   \item{bass}{ a \code{numeric} value controlling the smoothness of the
     fitted curve in method \code{"Friedman"}. See \code{\link{supsmu}}. }
 
-  \item{difference}{ a \code{logical} flag.  Compute residuals by substraction if TRUE, otherwise use division. }
+  \item{difference}{ a \code{logical} flag.  Compute residuals by subtraction if TRUE, otherwise use division. }
 
 }
 \details{

@@ -572,7 +572,7 @@
       # Also, this can (and does!) produce negative RWI values.
       # See example using CAM011. Thus:
       if (any(Ar <= 0, na.rm = TRUE)) {
-        msg <- "Fits from method==\'Ar\' are not all positive. \n  Setting values <0 to 0.  \n  This might not be what you want. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution."
+        msg <- "Fits from method==\'Ar\' are not all positive. \n  Setting values <0 to 0 before rescaling.  \n  This might not be what you want. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution."
         if(y.name2==""){
           msg2 <- gettext(msg, domain = "R-dplR")
         }
@@ -587,7 +587,7 @@
         
         Ar[Ar<0] <- 0
       }
-      if(difference){ Ar - mean(Ar,na.rm=TRUE) }
+      if(difference){ resids$Ar <- Ar - mean(Ar,na.rm=TRUE) }
       else{ resids$Ar <- Ar / mean(Ar,na.rm=TRUE) }
       curves$Ar <- mean(Ar,na.rm=TRUE)
       modelStats$Ar <- arStats

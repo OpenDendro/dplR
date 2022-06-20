@@ -3,7 +3,12 @@
 File: chron.ci
 ----------------
 
-- New functionthat calculates conf intervals for a chron via boot
+- New function that calculates conf intervals for a chron via boot
+
+File: detrend.series
+----------------
+
+- Fixed bug with method Ar using difference.
 
 * CHANGES IN dplR VERSION 1.7.3
 

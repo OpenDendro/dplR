@@ -8,6 +8,8 @@
            wt, span = "cv", bass = 0, difference = FALSE)
   {
     check.flags(make.plot, pos.slope, verbose, return.info)
+    dirtyDog <- FALSE # this will be used to warn the user in any fits are <0
+    
     if (length(y.name) == 0) {
       y.name2 <- ""
     } else {
@@ -181,6 +183,7 @@
         }
         ## Straight line via linear regression
         if (mneNotPositive) {
+          dirtyDog <- TRUE
           msg <- gettext("Fits from method==\'ModNegExp\' are not all positive. \n  See constrain.nls argument in detrend.series. \n  ARSTAN would tell you to plot that dirty dog at this point.\n  Proceed with caution.",
                          domain = "R-dplR")
           if(y.name2==""){
@@ -214,6 +217,7 @@
           useMean <- !isTRUE(ModNegExp[1] > 0 &&
                                ModNegExp[nY2] > 0)
           if (useMean) {
+            dirtyDog <- TRUE
             msg <- gettext("Linear fit (backup of method==\'ModNegExp\') is not all positive. \n  Proceed with caution. \n  ARSTAN would tell you to plot that dirty dog at this point.",
                            domain = "R-dplR")
             if(y.name2==""){
@@ -351,6 +355,7 @@
         }
         ## Straight line via linear regression
         if (hugNotPositive) {
+          dirtyDog <- TRUE
           msg <- gettext("Fits from method==\'ModHugershoff\' are not all positive. \n  See constrain.nls argument in detrend.series. \n  ARSTAN would tell you to plot that dirty dog at this point.\n  Proceed with caution.",
                          domain = "R-dplR")
           if(y.name2==""){
@@ -384,6 +389,7 @@
           useMean <- !isTRUE(ModHugershoff[1] > 0 &&
                                ModHugershoff[nY2] > 0)
           if (useMean) {
+            dirtyDog <- TRUE
             msg <- gettext("Linear fit (backup of method==\'ModHugershoff\') is not all positive. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution.",
                            domain = "R-dplR")
             if(y.name2==""){
@@ -460,6 +466,7 @@
       }
       AgeDepSpline <- ads(y=y2, nyrs0=nyrs2, pos.slope = pos.slope)
       if (any(AgeDepSpline <= 0)) {
+        dirtyDog <- TRUE
         msg <- "Fits from method==\'AgeDepSpline\' are not all positive. \n  This is extremely rare. Series will be detrended with method==\'Mean\'. \n  This might not be what you want. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution."
         if(y.name2==""){
           msg2 <- gettext(msg, domain = "R-dplR")
@@ -507,6 +514,7 @@
       #Spline <- ffcsaps(y=y2, x=seq_len(nY2), nyrs=nyrs2, f=f)
       Spline <- caps(y=y2, nyrs=nyrs2, f=f)
       if (any(Spline <= 0)) {
+        dirtyDog <- TRUE
         msg <- "Fits from method==\'Spline\' are not all positive. \n  Series will be detrended with method==\'Mean\'. \n  This might not be what you want. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution."
         if(y.name2==""){
           msg2 <- gettext(msg, domain = "R-dplR")
@@ -572,6 +580,7 @@
       # Also, this can (and does!) produce negative RWI values.
       # See example using CAM011. Thus:
       if (any(Ar <= 0, na.rm = TRUE)) {
+        dirtyDog <- TRUE
         msg <- "Fits from method==\'Ar\' are not all positive. \n  Setting values <0 to 0 before rescaling.  \n  This might not be what you want. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution."
         if(y.name2==""){
           msg2 <- gettext(msg, domain = "R-dplR")
@@ -616,6 +625,7 @@
                            periodic = FALSE, bass = bass)[["y"]]
       }
       if (any(Friedman <= 0)) {
+        dirtyDog <- TRUE
         msg <- "Fits from method==\'Friedman\' are not all positive. \n  Series will be detrended with method==\'Mean\'. \n  This might not be what you want. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution."
         if(y.name2==""){
           msg2 <- gettext(msg, domain = "R-dplR")
@@ -786,7 +796,7 @@
         
       }
     }
-      # Done
+      # Done get output
       resids2 <- matrix(NA, ncol=ncol(resids), nrow=length(y))
       resids2 <- data.frame(resids2)
       names(resids2) <- names(resids)
@@ -808,7 +818,8 @@
         list(series = resids2,
              curves = curves2,
              model.info = modelStats[method2],
-             data.info = dataStats)
+             data.info = dataStats,
+             dirtyDog = dirtyDog)
       } else {
         resids2
       }

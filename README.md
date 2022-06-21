@@ -2,9 +2,11 @@
 # dplR <img src="https://github.com/AndyBunn/dplR/blob/master/dplR_Sticker.png" width="220" align="right" />
 
 <!-- badges: start -->
+#### Release Version
 [![CRAN_version_badge](https://www.r-pkg.org/badges/version/dplR)](https://cran.r-project.org/package=dplR)
 [![CRAN_last_release_badge](https://www.r-pkg.org/badges/last-release/dplR)](https://cran.r-project.org/package=dplR)
 [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/last-month/dplR?color=blue)](https://r-pkg.org/pkg/dplR)
+#### Development Version
 [![R-CMD-check](https://github.com/andybunn/dplR/workflows/R-CMD-check/badge.svg)](https://github.com/andybunn/dplR/actions)
 [![dplR status badge](https://andybunn.r-universe.dev/badges/dplR)](https://andybunn.r-universe.dev)
 
@@ -18,18 +20,16 @@ Perform tree-ring analyses such as detrending, chronology building, and crossdat
 
 ### CRAN
 
-The latest, stable, release version of `dplR` can be installed from [The Comprehensive R Archive Network (CRAN)](https://cran.r-project.org/) as follows:
+The latest, stable, release version of `dplR` can be installed from [The Comprehensive R Archive Network (CRAN)](https://cran.r-project.org/) from the R prompt:
 
 ```R
 install.packages("dplR")
 ```
 
-This is the officially released version of `dplR`.
-
 ### Develoment Version
-The code here on GitHub is the version of `dplR` that is currently being developed. It might be unstable.
+The code on GitHub is the version of `dplR` that is currently being developed. It might be unstable.
 
-You can install the development version using `r-universe`.
+You can install a binary of the development version using `r-universe` from the R prompt:
 
 ```R
 install.packages("dplR", repos = "https://andybunn.r-universe.dev/")
@@ -41,7 +41,7 @@ Alternatively, the development version can be installed from the source code wit
 devtools::install_github("andybunn/dplR")
 ```
 
-Because `dplR` includes both C and Fortran code, you will need the appropriate compilers installed on your system to build from source.
+Because `dplR` includes both C and Fortran code, you will need the appropriate compilers installed on your system to build from source. This option is only reccomended for developers.
 
 ## Getting Started
 

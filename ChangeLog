@@ -9,6 +9,7 @@ File: detrend.series
 ----------------
 
 - Fixed bug with method Ar using difference.
+- Added in a flag for dirtyDogs to return.info
 
 * CHANGES IN dplR VERSION 1.7.3
 

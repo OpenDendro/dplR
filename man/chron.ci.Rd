@@ -4,7 +4,7 @@
 \title{Build Mean Value Chronology with Confidence Intervals}
 \description{
   This function builds a mean value chronology with bootstrapped confidence 
-  intervales, typically from a \code{data.frame} of detrended ring widths as produced by
+  intervals, typically from a \code{data.frame} of detrended ring widths as produced by
   \code{\link{detrend}}.
 }
 \usage{

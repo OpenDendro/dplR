@@ -77,52 +77,38 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 \details{
   This detrends and standardizes a tree-ring series.  The detrending is the estimation and removal of the tree\enc{’}{'}s natural biological growth trend.  The default standardization is done by dividing each series by the growth trend to produce units in the dimensionless ring-width index (\acronym{RWI}).  If \code{difference} is TRUE, the index is calculated by subtraction. Values of zero (typically missing rings) in \code{y} are set to 0.001. 
   
-  There are currently six methods available for
+  There are currently seven methods available for
   detrending although more are certainly possible.  The methods
-  implemented are a smoothing spline via \code{\link{caps}}
-  (\code{\var{method} = "Spline"}), a modified negative exponential
-  curve (\code{\var{method} = "ModNegExp"}), a simple horizontal line
-  (\code{\var{method} = "Mean"}), the residuals of an AR model
+  implemented are an age-dependent spline via \code{\link{ads}} 
+  (\code{\var{method} = "AgeDepSpline"}), the residuals of an AR model
   (\code{\var{method} = "Ar"}), Friedman's Super Smoother 
-  (\code{\var{method} = "Friedman"}), or a modified Hugershoff
-  curve (\code{\var{method} = "ModHugershoff"}).
+  (\code{\var{method} = "Friedman"}), a simple horizontal line
+  (\code{\var{method} = "Mean"}),  or a modified Hugershoff
+  curve (\code{\var{method} = "ModHugershoff"}), a modified negative exponential
+  curve (\code{\var{method} = "ModNegExp"}), and a smoothing spline via \code{\link{caps}} (\code{\var{method} = "Spline"}).
 
-  The \code{"Spline"} approach uses a spline where the frequency
-  response is 0.50 at a wavelength of 0.67 * \dQuote{series length in
-  years}, unless specified differently using \code{\var{nyrs}} and
-  \code{\var{f}} in the function \code{\link{caps}}. If some of the fitted 
-  values are not positive then method \code{"Mean"} is used.
-
-  The \code{"ModNegExp"} approach attempts to fit a classic nonlinear
-  model of biological growth of the form \eqn{f(t) = a e^{b t} + k}{f(t)
-  = a exp(b t) + k}, where the argument of the function is time, using
-  \code{\link{nls}}.  See Fritts (2001) for details about the
-  parameters.  Option \code{\var{constrain.nls}} gives a
-  possibility to constrain the parameters of the modified negative
-  exponential function.  If the constraints are enabled, the nonlinear
-  optimization algorithm is instructed to keep the parameters in the
-  following ranges: \eqn{a \ge 0}{a >= 0}, \eqn{b \le 0}{b <= 0} and
-  \eqn{k \ge 0}{k >= 0}.  The default is to not constrain the parameters
-  (\code{\var{constrain.nls} = "never"}) for  \code{\link{nls}} but
-  warn the user when the parameters go out of range.
-  
-  If a suitable nonlinear model cannot be fit
-  (function is non-decreasing or some values are not positive) then a
-  linear model is fit.  That linear model can have a positive slope
-  unless \code{\var{pos.slope}} is \code{FALSE} in which case method
-  \code{"Mean"} is used.
-
-  The \code{"Mean"} approach fits a horizontal line using the mean of
-  the series.  This method is the fallback solution in cases where the
-  \code{"Spline"} or the linear fit (also a fallback solution itself)
-  contains zeros or negative values, which would lead to invalid
-  ring-width indices.
+  The \code{"AgeDepSpline"} approach uses an age-dependent spline with an initial
+  stiffness of 50 (code{\var{nyrs}=50}). See \code{\link{ads}}. If some of the fitted 
+  values are not positive then method \code{"Mean"} is used. However, this is
+  extremely unlikely.
 
   The \code{"Ar"} approach is also known as prewhitening where the detrended 
   series is the residuals of an \code{\link{ar}} model divided by the
   mean of those residuals to yield a series with white noise and a mean of one.
   This method removes all but the high frequency variation in the series
   and should only be used as such.
+
+  The \code{"Friedman"} approach uses Friedman\enc{’}{'}s \sQuote{super
+  smoother} as implemented in \code{\link{supsmu}}.  The parameters
+  \code{\var{wt}}, \code{\var{span}} and \code{\var{bass}} can be
+  adjusted, but \code{\var{periodic}} is always set to \code{FALSE}. If some of 
+  the fitted values are not positive then method \code{"Mean"} is used.
+
+  The \code{"Mean"} approach fits a horizontal line using the mean of
+  the series.  This method is the fallback solution in cases where the
+  \code{"Spline"} or the linear fit (also a fallback solution itself)
+  contains zeros or negative values, which would lead to invalid
+  ring-width indices.
   
   The \code{"ModHugershoff"} approach attempts to fit a Hugershoff
   model of biological growth of the form \eqn{f(t) = a t^b e^{-g t} + d}{f(t)
@@ -143,16 +129,30 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   unless \code{\var{pos.slope}} is \code{FALSE} in which case method
   \code{"Mean"} is used.
 
-  The \code{"Friedman"} approach uses Friedman\enc{’}{'}s \sQuote{super
-  smoother} as implemented in \code{\link{supsmu}}.  The parameters
-  \code{\var{wt}}, \code{\var{span}} and \code{\var{bass}} can be
-  adjusted, but \code{\var{periodic}} is always set to \code{FALSE}. If some of 
-  the fitted values are not positive then method \code{"Mean"} is used.
+  The \code{"ModNegExp"} approach attempts to fit a classic nonlinear
+  model of biological growth of the form \eqn{f(t) = a e^{b t} + k}{f(t)
+  = a exp(b t) + k}, where the argument of the function is time, using
+  \code{\link{nls}}.  See Fritts (2001) for details about the
+  parameters.  Option \code{\var{constrain.nls}} gives a
+  possibility to constrain the parameters of the modified negative
+  exponential function.  If the constraints are enabled, the nonlinear
+  optimization algorithm is instructed to keep the parameters in the
+  following ranges: \eqn{a \ge 0}{a >= 0}, \eqn{b \le 0}{b <= 0} and
+  \eqn{k \ge 0}{k >= 0}.  The default is to not constrain the parameters
+  (\code{\var{constrain.nls} = "never"}) for  \code{\link{nls}} but
+  warn the user when the parameters go out of range.
+  
+  If a suitable nonlinear model cannot be fit
+  (function is non-decreasing or some values are not positive) then a
+  linear model is fit.  That linear model can have a positive slope
+  unless \code{\var{pos.slope}} is \code{FALSE} in which case method
+  \code{"Mean"} is used.
 
-  The \code{"AgeDepSpline"} approach uses an age-dependent spline with an initial
-  stiffness of 50 (code{\var{nyrs}=50}). See \code{\link{ads}}. If some of the fitted 
-  values are not positive then method \code{"Mean"} is used. However, this is
-  extremely unlikely.
+  The \code{"Spline"} approach uses a spline where the frequency
+  response is 0.50 at a wavelength of 0.67 * \dQuote{series length in
+  years}, unless specified differently using \code{\var{nyrs}} and
+  \code{\var{f}} in the function \code{\link{caps}}. If some of the fitted 
+  values are not positive then method \code{"Mean"} is used.
 
   These methods are chosen because they are commonly used in
   dendrochronology.  There is a rich literature on detrending
@@ -240,7 +240,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
     values.  If the locations are in a \code{character} vector, they are
     years.  Otherwise they are indices to the input series. }
     
-  \item{dirtDog}{ A logical flag indicating whether the requested method resulted in neagtive values for the curve fit. }
+  \item{dirtDog}{ A logical flag indicating whether the requested method resulted in neagtive values for the curve fit, what Cook's ARSTAN called a Dirty Dog. }
 
 
 }
@@ -253,7 +253,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   Blackburn.  \acronym{ISBN-13}: 978-1-930665-39-2.
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela.  A bug fix
-  related to negative output values is based on work by Jacob Cecile. }
+  related to negative output values is based on work by Alice Cecile. }
 \seealso{ \code{\link{detrend}} }
 \examples{library(stats)
 library(utils)
@@ -302,8 +302,6 @@ names(series) <- rownames(nm046)
 series.rwi <- detrend.series(y = series, y.name = names(nm046)[8],
                              method="Spline",
                              make.plot = FALSE)
-
-
 
 }
 \keyword{ manip }

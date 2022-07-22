@@ -1,3 +1,10 @@
+* CHANGES IN dplR VERSION 1.7.5
+
+File: powt.series
+----------------
+
+- Adding function so that a power transform can be done on a single series alone
+
 * CHANGES IN dplR VERSION 1.7.4
 
 File: chron.ci

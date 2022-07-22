@@ -1,9 +1,16 @@
 powt <- function (rwl, rescale = FALSE) 
 {
+  # add a check for negative nums
+  if(any(rwl <0, na.rm = TRUE)) {
+    stop("'rwl' values must be greater than zero")
+  }
+  
     if (!is.data.frame(rwl)) 
         stop("'rwl' must be a data.frame")
     if (!is.logical(rescale))
         stop("'rescale' must be either FALSE (the default) or TRUE")
+  
+    # used to set min numb to zeros.
     getprec <- function(rwl) {
         rwl.num <- as.numeric(as.matrix(rwl))
         rwl.num <- rwl.num[!is.na(rwl.num) & rwl.num != 0]

@@ -1,6 +1,10 @@
+o [andybunn]  SK has a new func. As does Victoria H for EW/LW. Look at those when you get a chance.
+
 o [andybunn]  implement diff boot.ci types in chron.ci
 
-o [andybunn]  right now mean is used on negative fits even when the user uses differencing. Should that be the case? Or does it make sense?
+o [andybunn]  json
+
+o [andybunn]  use the prec function in pwt to find a minimum recode value for zeros. Should be the smallest possible value for the precision of the data?
 
 o [andybunn]  allow values of nyrs between 0 and 1 to be %N for splines?
 

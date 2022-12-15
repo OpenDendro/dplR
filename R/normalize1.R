@@ -6,7 +6,15 @@ normalize1 <- function(rwl, n, prewhiten){
         master.stats <- colMeans(rwl.mat, na.rm=TRUE)
         master.mat <- sweep(rwl.mat, 2, master.stats, "/")
     } else {
-        master.stats <- apply(rwl.mat, 2, hanning, n)
+        #master.stats <- apply(rwl.mat, 2, hanning, n)
+        ## 15-dec-2022 AGB found a bug where a div0 was resulting in Nan. So recoding zeros.
+        ## Apply hanning
+        ## Recode any zero values to 0.001 -- here or after prewhiten? Same div0 bug should apply?
+        master.stats <- apply(rwl.mat, 2, function(x){
+          x2 <- hanning(x,n=n)
+          x2[x2==0] <- 0.001
+          x2
+        })
         master.mat <- rwl.mat / master.stats
     }
     ## Apply ar if prewhiten

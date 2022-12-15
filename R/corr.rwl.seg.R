@@ -1,5 +1,5 @@
-corr.rwl.seg <- function(rwl, seg.length=50, bin.floor=100, n=NULL,
-                         prewhiten = TRUE, pcrit=0.05, biweight=TRUE,
+corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
+                         prewhiten = TRUE, pcrit=0.05, biweight = TRUE,
                          method = c("spearman", "pearson", "kendall"),
                          make.plot = TRUE, label.cex=1,
                          floor.plus1 = FALSE, master = NULL,

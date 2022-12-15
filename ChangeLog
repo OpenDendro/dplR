@@ -1,5 +1,11 @@
 * CHANGES IN dplR VERSION 1.7.5
 
+File: normalize1
+----------------
+
+- Found a bug so that when hanning was used (in say corr.rel.seg) a div0 error could occur resulting in a Nan that got propogated forward. Dealt with in the same way as detrend.series by setting 0 to 0.001.
+
+
 File: powt.series
 ----------------
 

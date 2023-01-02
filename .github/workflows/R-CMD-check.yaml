@@ -22,10 +22,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-#          - {os: macos-latest,   r: 'release'}
-#          - {os: windows-latest, r: 'release'}
-#          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-# testthat throwing errors for ubuntu release at the check-r-package@v2 stage. 
+          - {os: macos-latest,   r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+# testthat throwing errors for ubuntu release at the check-r-package@v2 stage. so removed testing
           - {os: ubuntu-latest,   r: 'release'}
 
     env:
@@ -50,6 +50,6 @@ jobs:
 
       - uses: r-lib/actions/check-r-package@v2
         with:
-          args: 'c("--no-manual", "--as-cran", "--no-tests")'
+          args: 'c("--no-manual", "--as-cran", "--no-tests")' # removed testthat
           error-on: '"error"'
           

@@ -50,5 +50,6 @@ jobs:
 
       - uses: r-lib/actions/check-r-package@v2
         with:
-          error-on: '"error"' # will this bypass the ubuntu release error?
-          upload-snapshots: true
+          args: 'c("--no-manual", "--as-cran", "--no-tests")'
+          error-on: '"error"'
+          

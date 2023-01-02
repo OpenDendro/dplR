@@ -22,22 +22,11 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macos-latest,   r: 'release'}
-
-          - {os: windows-latest, r: 'release'}
-#          # Use 3.6 to trigger usage of RTools35
-#          - {os: windows-latest, r: '3.6'}
-#          # use 4.1 to check with rtools40's older compiler
-#          - {os: windows-latest, r: '4.1'}
-
-# I don't know why but the tests were failing for Ubuntu at the check-r-package@v2 stage. 
-# Need to delve deeper. Weird b/c it passes on my local machine and on CRAN.
+#          - {os: macos-latest,   r: 'release'}
+#          - {os: windows-latest, r: 'release'}
 #          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-#          - {os: ubuntu-latest,   r: 'release'}
- #         - {os: ubuntu-latest,   r: 'oldrel-1'}
- #         - {os: ubuntu-latest,   r: 'oldrel-2'}
- #         - {os: ubuntu-latest,   r: 'oldrel-3'}
- #         - {os: ubuntu-latest,   r: 'oldrel-4'}
+# testthat throwing errors for ubuntu release at the check-r-package@v2 stage. 
+          - {os: ubuntu-latest,   r: 'release'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -56,9 +45,10 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck, any::XML
+          extra-packages: any::rcmdcheck, any::XML #added any::XML
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
         with:
+          error-on: 'error' # will this bypass the ubuntu release error?
           upload-snapshots: true

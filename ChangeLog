@@ -1,5 +1,15 @@
 * CHANGES IN dplR VERSION 1.7.5
 
+File: csv2rwl
+----------------
+
+- Added a stop error and message when there are duplicate series IDs
+
+File: read.tucson
+----------------
+
+- Changed error message when there are duplicate series IDs to be more informative
+
 File: normalize1
 ----------------
 

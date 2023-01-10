@@ -1,5 +1,10 @@
 * CHANGES IN dplR VERSION 1.7.5
 
+File: read.rwl
+----------------
+
+- Edited function to look for commas (",") in lower blocks of data as opposed to the header
+
 File: csv2rwl
 ----------------
 

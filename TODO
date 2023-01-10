@@ -12,8 +12,6 @@ o [andybunn]  use the prec function in pwt to find a minimum recode value for ze
 
 o [andybunn]  allow values of nyrs between 0 and 1 to be %N for splines?
 
-o [andybunn]  Improve duplicate series error in read.tucson
-
 o [andybunn]  Where did the math pdf go? Get it back and make it a vingette? Ah. See here https://github.com/r-lib/pkgbuild/issues/58 So, if Mikko is game, it would be nice to have the math-dplR.Rnw done as a vignette using caps rather than ffscaps which should compile quickly. My guess is that Mikko will have many questions and horrified looks when he sees the fortran code.
 
 

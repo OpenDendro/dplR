@@ -48,7 +48,7 @@ read.rwl <-
                                domain="R-dplR"))
                    read.tridas(fname, ...)
                  } 
-                 else if(grepl(",", l1)){
+                 else if(any(grepl(",", more.lines))){
                    cat(gettext("Detected a csv file.\n",
                                domain="R-dplR"))
                    csv2rwl(fname, ...)

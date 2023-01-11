@@ -1,5 +1,10 @@
 * CHANGES IN dplR VERSION 1.7.5
 
+File: read.fh
+----------------
+
+- Ron Visser added a BC correction to the function.
+
 File: read.rwl
 ----------------
 

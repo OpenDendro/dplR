@@ -7,11 +7,12 @@
   ring widths (.fh).
 }
 \usage{
-read.fh(fname)
+read.fh(fname, BC_correction = FALSE)
 }
 \arguments{
   \item{fname}{ a \code{character} vector giving the file name of the fh
     file. }
+  \item{BC_correction}{ a \code{logical}. If TRUE the correction moves BC-dates one year forward. }
 }
 \details{
   This reads in a fh-file with ring widths in blocks (decadal format) or
@@ -32,7 +33,7 @@ read.fh(fname)
   \item{po}{A \code{data.frame} containing pith offsets, formatted for
     use in \code{\link{rcs}}.}
 }
-\author{ Christian Zang.  New features and patches by Mikko Korpela. }
+\author{ Christian Zang.  New features and patches by Mikko Korpela and Ronald Visser. }
 \seealso{ \code{\link{read.rwl}} }
 
 \references{ Rinn, F. (2003) \emph{TSAP-Win User Reference Manual.}

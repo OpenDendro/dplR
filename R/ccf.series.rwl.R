@@ -33,7 +33,7 @@ ccf.series.rwl <- function(rwl, series,
 
     series2 <- tmp$series
     series.yrs2 <- as.numeric(names(series2))
-    ## trim series in case it was submitted stright from the rwl
+    ## trim series in case it was submitted straight from the rwl
     idx.good <- !is.na(series2)
     series.yrs2 <- series.yrs2[idx.good]
     series2 <- series2[idx.good]

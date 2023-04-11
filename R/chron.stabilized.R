@@ -70,14 +70,15 @@
                           center=-mean.x, scale=FALSE)[,1]
     # make output
     if(running.rbar){
-      res <- data.frame(adj.crn = xCrnAdjusted,
+      res <- data.frame(vsc = xCrnAdjusted,
                         running.rbar = movingRbarVec,
                         samp.depth = nSamps)
     }
     else{
-      res <- data.frame(adj.crn = xCrnAdjusted,
+      res <- data.frame(vsc = xCrnAdjusted,
                         samp.depth = nSamps)
     }  
     rownames(res)<-rownames(x0)
+    class(res) <- c("crn", "data.frame")
     return(res)
   }

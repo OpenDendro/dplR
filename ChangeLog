@@ -1,5 +1,25 @@
 * CHANGES IN dplR VERSION 1.7.5
 
+File: ssf
+----------------
+
+- Changed output to be class(crn) for list with long output
+
+File: chron.ci
+----------------
+
+- Changed output to be class(crn)
+
+File: crn.plot and plot.crn
+----------------
+
+- Finally reconciled the misnaming of crn.plot vs plot.crn etc. The new default plot method is simpler and cleaner. Help pages updated and a warning crn.plot is called directly.
+
+File: chron.stabilized
+----------------
+
+- Added class crn to returned value as per github issue #18
+
 File: read.fh
 ----------------
 

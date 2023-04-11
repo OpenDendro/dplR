@@ -32,7 +32,7 @@ where \code{n(t)} is the number of series at time \code{t}, and \code{rbar} is t
 
 }
 \value{
-  A \code{data.frame} with the variance stabilized chronology, running interseries correlation (`if \code{running.bar=TRUE}), and the sample depth.
+  An object of of class \code{crn} and \code{data.frame} with the variance stabilized chronology, running interseries correlation (`if \code{running.bar=TRUE}), and the sample depth.
 }
 \references{
   Frank, D, Esper, J, Cook, E, (2006) \emph{On variance adjustments in tree-ring chronology development}. Tree rings in archaeology, climatology and ecology, TRACE 4, 56–66

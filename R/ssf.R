@@ -248,10 +248,8 @@
     }
     
     if(iterationNumber==maxIterations & medianAbsDiff > madThreshold){
-      cat("Reached maximum iterations. Stopping criteria not satisfied.\n")
-      cat("Unless the final median absolute difference is very close to meeting the threshold,\n")
-      cat("this is generally a bad sign and you should strongly consider another standardization method.\n")
-      break
+      bad <- "Reached maximum iterations with stopping criteria not satisfied.\n  Data are not likely appropriate for the signal-free method.\n  Exiting."
+      stop(bad)
     }
     iterationNumber <- iterationNumber + 1
   }
@@ -328,6 +326,8 @@
                 hfCrnResids_Mat = hfCrnResids_Mat,
                 # The median abs diff
                 MAD_Vec = MAD_Vec)
+    comment(res) <- "ssfLong"
+    class(res) <- c("crn","data.frame")
     return(res)
   }
   else{

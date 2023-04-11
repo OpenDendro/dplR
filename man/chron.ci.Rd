@@ -43,6 +43,7 @@ wa082RWI <- detrend(wa082Trunc, method="AgeDepSpline")
 wa082Crn <- chron.ci(wa082RWI, biweight = TRUE, R = 100, conf = 0.99)
 head(wa082Crn)
 # plot (this is so much easier in ggplot!)
+wa082Crn$yrs <- time(wa082Crn)
 xx <- c(wa082Crn$yrs,rev(wa082Crn$yrs))
 yy <- c(wa082Crn$lowerCI,rev(wa082Crn$upperCI))
 plot(wa082Crn$yrs,wa082Crn$std,type="n",ylim=range(yy),

@@ -38,6 +38,9 @@
                           lowerCI = x1$normal[2], upperCI = x1$normal[3])
       }))
     }
-    res <- data.frame(yrs=yrs,res,samp.depth=samps)
+    res <- data.frame(res,samp.depth=samps)
+    rownames(res) <- yrs
+    class(res) <- c("crn", "data.frame")
+    comment(res) <- "ci"
     return(res)
 }

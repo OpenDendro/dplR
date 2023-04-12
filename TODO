@@ -1,10 +1,6 @@
 o [andybunn]  This is a biggie. In preparation for reconciling dplR and the developing dplPy this is a good time to revisit many of the "small" choices that exist in dplR. The first discussed by me and KJA is the high freq standardization threshold used in the xdating functions. We should maybe just ape COFECHA directly. 32-yr spline followed by AR with a max lag of five. Any change of this magnitude (and there will be others I expect) should wait for dplR 2.0 timed to the release of dplPy. Sigh. 
 
-o [andybunn]  For the love of god, rename `master` in normalize1. It's not a master chron and therefore the word is confusing. It's realy rwi.
-
 o [andybunn]  SK has a new func. As does Victoria H for EW/LW. Look at those when you get a chance.
-
-o [andybunn]  implement diff boot.ci types in chron.ci
 
 o [andybunn]  json
 

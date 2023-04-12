@@ -69,7 +69,7 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
       
       ## normalize all series (columns in master matrix)
       tmp <- normalize1(master.inc, n, prewhiten)
-      master.norm <- tmp$master[, tmp$idx.good, drop=FALSE]
+      master.norm <- tmp$rwi.mat[, tmp$idx.good, drop=FALSE]
       
       ## compute master series by normal mean or robust mean
       if (!biweight) {
@@ -146,7 +146,7 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   ## normalize all series
   norm.one <- normalize1(rwl2, n, prewhiten)
   ## rwi for segments altered by normalizing
-  rwi <- norm.one$master # is a matrix
+  rwi <- norm.one$rwi.mat # is a matrix
   idx.good <- norm.one$idx.good
   
   ## loop through series

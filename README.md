@@ -28,13 +28,13 @@ install.packages("dplR")
 
 ### Develoment Version
 
-CRAN releases of dplR are relatively infrequent. However, the development version of `dplR` is available here as source code and as binaries. Most users who want the development version are best off getting it via `r-universe` from the R prompt:
+CRAN releases of dplR are relatively infrequent. However, the development version of `dplR` is available here as source code and as binaries. Most users who want the development version are best off getting the **binary** via `r-universe` from the R prompt:
 
 ```R
 install.packages("dplR", repos = "https://andybunn.r-universe.dev/")
 ```
 
-Alternatively, the development version can be installed from the source code with the `devtools` package.
+Alternatively, the development version can be installed from the **source code** with the `devtools` package.
 
 ```R
 devtools::install_github("andybunn/dplR")

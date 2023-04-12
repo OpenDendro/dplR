@@ -26,5 +26,5 @@ normalize1 <- function(rwl, n, prewhiten){
     } else {
         idx.good <- rep(TRUE, ncol(master.mat))
     }
-    list(master=master.mat, idx.good=idx.good)
+    list(rwi.mat=master.mat, idx.good=idx.good)
 }

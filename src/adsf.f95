@@ -40,7 +40,7 @@
 ! here is where the stiffness vector stiffness is converted into a p vector
 ! that the spline routine actually needs for calculating the spline
       do i=1,nm2
-        v=dfloat(stiffness(i))                                   
+        v=dble(stiffness(i))                                   
         arg=(2.d0*pi)/v
         p(i)=(6.d0*(cos(arg)-1.d0)**2.d0)/(cos(arg)+2.d0)
       enddo
@@ -56,7 +56,7 @@
       a(2,1)=c2(1)
       nc=2
 ! begin ludapb
-      rn=dble(1.d0/(dfloat(nm2)*16.d0))
+      rn=dble(1.d0/(dble(nm2)*16.d0))
       d1=1.d0
       d2=0.d0
       ncp1=nc+1

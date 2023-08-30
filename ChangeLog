@@ -3,7 +3,7 @@
 File: adsf.f95 and capsf.f95
 ----------------
 
-- Replaced DFLOAT with DBLE as per BDR's reasonable suggestion.
+- Replaced DFLOAT with DBLE as per BDR's reasonable demand.
 
 File: ssf
 ----------------

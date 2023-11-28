@@ -27,4 +27,18 @@ read.compact(fname)
 \seealso{ \code{\link{read.rwl}}, \code{\link{read.tucson}},
   \code{\link{read.tridas}}, \code{\link{read.fh}},
   \code{\link{write.compact}}}
+  
+\examples{
+\dontrun{
+data(co021)
+fname <- write.compact(rwl.df = co021,
+                       fname = tempfile(fileext=".rwl"),
+                       append = FALSE, prec = 0.001)
+foo <- read.compact(fname)
+str(foo)
+str(co021)
+all.equal(foo,co021)
+unlink(fname)
+}
+}
 \keyword{ IO }

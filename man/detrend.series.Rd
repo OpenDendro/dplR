@@ -88,7 +88,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   curve (\code{\var{method} = "ModNegExp"}), and a smoothing spline via \code{\link{caps}} (\code{\var{method} = "Spline"}).
 
   The \code{"AgeDepSpline"} approach uses an age-dependent spline with an initial
-  stiffness of 50 (code{\var{nyrs}=50}). See \code{\link{ads}}. If some of the fitted 
+  stiffness of 50 (\code{\var{nyrs}=50}). See \code{\link{ads}}. If some of the fitted 
   values are not positive then method \code{"Mean"} is used. However, this is
   extremely unlikely.
 

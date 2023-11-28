@@ -1,5 +1,20 @@
 * CHANGES IN dplR VERSION 1.7.5
 
+File: read.compact.Rd
+----------------
+
+- Added an example.
+
+File: read.compact.c
+----------------
+
+- warning on # of args in two spots. Looked at it after email from Kurt H
+
+File: detrend.series.Rd
+----------------
+
+- missing \ in man page
+
 File: adsf.f95 and capsf.f95
 ----------------
 

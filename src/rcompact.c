@@ -223,7 +223,7 @@ SEXP rcompact(SEXP filename){
 	    n_found = TRUE;
 	    if(read_int <= 0){
 		fclose(f);
-		error(_("Series %d: Length of series must be at least one (%ld seen)"),
+		error(_("Series %d: Length of series must be at least one (%lld seen)"),
 		      n+1, read_int);
 	    }
 	    this->n = (int) read_int;
@@ -267,7 +267,7 @@ SEXP rcompact(SEXP filename){
 	} else if(field_id == 'N'){
 	    if(read_int <= 0){
 		fclose(f);
-		error(_("Series %d: Length of series must be at least one (%ld seen)"),
+		error(_("Series %d: Length of series must be at least one (%lld seen)"),
 		      n+1, read_int);
 	    }
 	    this->n = (int) read_int;

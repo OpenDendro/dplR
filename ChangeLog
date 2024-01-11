@@ -1,3 +1,11 @@
+* CHANGES IN dplR VERSION 1.7.6
+
+File: caps.R
+----------------
+
+- Added a % option to the spline so that values of nyrs between 0 and 1 are a percentage of the length of y.
+- Changed the default otion for nyrs to a 2/3 spline
+
 * CHANGES IN dplR VERSION 1.7.5
 
 File: read.compact.Rd

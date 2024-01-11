@@ -8,22 +8,12 @@
   of \code{\var{nyrs}} years.
 }
 \usage{
-caps(y, nyrs = length(y)/2, f = 0.5)
+caps(y, nyrs = length(y) * 2/3, f = 0.5)
 }
 \arguments{
   \item{y}{ a \code{numeric} vector, typically a tree-ring series. }
-  \item{nyrs}{ a number greater than 1, affecting the rigidity of the
-    spline.  When \code{\var{f}} is kept constant, a larger
-    \code{\var{nyrs}} produces a more rigid spline.  Defaults to
-    \code{length(\var{y})/2}. }
-  \item{f}{ a number between 0 and 1 giving the frequency response at a
-    wavelength of \code{\var{nyrs}} years.  When \code{\var{nyrs}} is
-    kept constant, a smaller \code{\var{f}} produces a more rigid
-    spline: At one extreme, \code{\var{f} = 0} causes the function to
-    return the least-squares straight line fit to the data.  At the
-    other extreme, as \code{\var{f}} approaches 1 the result approaches 
-    the natural spline, i.e. the function outputs \code{\var{y}}.  
-    The default value is 0.5 and shouldn't be changed without a good reason.}
+  \item{nyrs}{ a number greater than zero, affecting the rigidity of the spline.  If \code{nyrs} is between zero and one it will be treated as percentage of the length of the series. E.g., a value of 0.667 would 0.667 * length(y) or what is often called a 2/3 spline in the tree-ring literature (this is the default). When \code{\var{f}} is kept constant, a larger \code{\var{nyrs}} produces a more rigid spline.}
+  \item{f}{ a number between 0 and 1 giving the frequency response at a wavelength of \code{\var{nyrs}} years.  When \code{\var{nyrs}} is kept constant, a smaller \code{\var{f}} produces a more rigid spline: At one extreme, \code{\var{f} = 0} causes the function to return the least-squares straight line fit to the data.  At the other extreme, as \code{\var{f}} approaches 1 the result approaches the natural spline, i.e. the function outputs \code{\var{y}}. The default value is 0.5 and shouldn't be changed without a good reason.}
 }
 \details{
   This applies the classic smoothing spline from Cook and Peters (1981). The rigidity of the spline has a frequency response of 50\% at a wavelength of \code{\var{nyrs}}. The references, of course, have more information.
@@ -59,15 +49,13 @@ series <- series[!is.na(series)]
 plot(series, type = "l", ylab = "Ring Width (mm)", col = "grey")
 lines(caps(series, nyrs = 10), col = "red", lwd = 2)
 lines(caps(series, nyrs = 100), col = "green", lwd = 2)
-## nyrs defaults to 0.5*length(series) = 347
+# A 2/3 spline, the default, 462.6667 yrs here
 lines(caps(series), col = "blue", lwd = 2)
 legend("topright",
        c("Series", "nyrs=10", "nyrs=100",
-         paste("Default nyrs (", length(series) / 2, ")", sep="")),
+         paste("Default nyrs (", floor(length(series) * 2/3), ")", sep="")),
        fill=c("grey", "red", "green", "blue"))
 
-## Compare to ffcsaps
-all.equal(caps(series),ffcsaps(series))
 
 ## Note behavior when NA is encountered and
 ## take appropriate measures as demonstrated above

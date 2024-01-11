@@ -1,3 +1,7 @@
+o [andybunn] multiple RCS
+
+o [andybunn]  reader for *-rwl-noaa.txt
+
 o [andybunn]  In preparation for reconciling dplR and the developing dplPy this is a good time to revisit many of the "small" choices that exist in dplR. The first discussed by me and KJA is the high freq standardization threshold used in the xdating functions. We should maybe just ape COFECHA directly. 32-yr spline followed by AR with a max lag of five. Any change of this magnitude (and there will be others I expect) should wait for dplR 2.0 timed to the release of dplPy. Sigh. 
 
 o [andybunn]  SK has a new func. As does Victoria H for EW/LW. Look at those when you get a chance.
@@ -6,9 +10,7 @@ o [andybunn]  json
 
 o [andybunn]  use the prec function in pwt to find a minimum recode value for zeros. Should be the smallest possible value for the precision of the data?
 
-o [andybunn]  allow values of nyrs between 0 and 1 to be %N for splines?
+o [andybunn]  alias ffcsaps to caps. No need to have that anymore.
 
 o [andybunn]  Where did the math pdf go? Get it back and make it a vingette? Ah. See here https://github.com/r-lib/pkgbuild/issues/58 So, if Mikko is game, it would be nice to have the math-dplR.Rnw done as a vignette using caps rather than ffscaps which should compile quickly. My guess is that Mikko will have many questions and horrified looks when he sees the fortran code.
-
-
 

@@ -12,8 +12,8 @@
     warning("Having to set maxIterations > 25 in order to meet a stopping criteria  is generally a sign that the data are not ideal for signal free detrending.")
   }
   
-  if(madThreshold < 1e-04 |  1e-03 < madThreshold){
-    warning("The stopping criteria should probably be between 1e-5 and 1e-4 unless you have a good reason to think otherwise.")
+  if(madThreshold < 0.0001 | madThreshold > 0.001){
+    warning("The stopping criteria, madThreshold,  is outside the recommended range of 0.0001 to 0.001.")
   }
   
   # make a copy of rwl just in case we change it.
@@ -294,12 +294,6 @@
   
   if(verbose){ 
     cat("Simple Signal Free Chronology Complete",sep="\n")
-    cat("ssf was called with these arguments",sep="\n")
-    cat(paste0("Detrending method: ", method2),sep = "\n")
-    cat(paste0("nyrs: ", nyrs),sep = "\n")
-    if(method2 == "AgeDepSpline"){
-      cat(paste0("pos.slope: ", pos.slope),sep = "\n")
-    }
     cat(paste0("maxIterations: ", maxIterations),sep = "\n")
     cat(paste0("madThreshold: ", madThreshold),sep = "\n")
   }

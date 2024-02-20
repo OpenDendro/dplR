@@ -130,9 +130,16 @@
   # chrons with years that mostly zeros if the chron is built with tukey's
   # biweight robust mean (e.g., co021). This causes problems with div0 later on
   # so if there are any zeros in the chron, switch straight mean which should
-  # head off any zeros in the chron unless the data themseleves are bunk
+  # head off any zeros in the chron unless the data themseleves are bunk.
+  # e.g., UT024.
   if(any(iter0Crn[,1]==0)){
     iter0Crn <- chron(datRWI,biweight = FALSE)
+  }
+  # Additional check. If there are still zeros it should mean that the OG data were passed in with zeros. 
+  if(any(iter0Crn[,1]==0)){
+    print(which(iter0Crn[,1]==0))
+    bad <- "Input data contain at least one row with all zero creating div0 problems. These data are not appropriate for the SSF approach.\n  Exiting."
+    stop(bad)
   }
   
   datSampDepth <- iter0Crn$samp.depth # for later

@@ -1,3 +1,10 @@
+* CHANGES IN dplR VERSION 1.7.7
+
+File: ssf.R
+----------------
+
+- Found a bug where input data with rows of all zero caused div0 problems. Added a check to stop program if input has all zero rows.
+
 * CHANGES IN dplR VERSION 1.7.6
 
 File: caps.R

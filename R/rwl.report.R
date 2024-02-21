@@ -19,14 +19,19 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
   res$interrbar.sd <- sd(interseries.cor(rwl)[,1])
   
   # missing rings
-  zeds <- rwl == 0
-  res$nzeros <- table(zeds)["TRUE"] 
-  zeds <- apply(zeds,2,which)
+  zedsLogical <- rwl == 0
+  res$nzeros <- table(zedsLogical)["TRUE"] 
+  zeds <- apply(zedsLogical,2,which)
   zeds <- sapply(zeds, function(x) {as.numeric(names(x))} )
   zeds <- zeds[lapply(zeds,length)>0]
   if(length(zeds)<1) res$zeros <- numeric(0)
   else res$zeros <- zeds
   
+  # any years with all zeros?
+  samps <- rowSums(!is.na(rwl))
+  pctSeriesZero <- rowSums(zedsLogical,na.rm = TRUE)/samps
+  res$allZeroYears <- which(pctSeriesZero==1)
+  print(res$allZeroYears)
   # internal NA
   internalNAs <- alply(rwl, 2, find.internal.na) # like apply but forces a list
   names(internalNAs) <- names(rwl)
@@ -65,6 +70,8 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
 print.rwl.report <- function(x, ...){
   cat("Number of dated series:",x$nseries,"\n")
   cat("Number of measurements:",x$n,"\n")
+  cat("Number of missing rings: ", x$nzeros, 
+      " (", round(x$nzeros/x$n * 100, 3),"%)\n",sep="")    
   cat("Avg series length:",x$segbar,"\n")
   cat("Range: ", x$yr1 - x$yr0 + 1, "\n")
   cat("Span: ",x$yr0, "-", x$yr1, "\n")
@@ -72,6 +79,14 @@ print.rwl.report <- function(x, ...){
       x$interrbar.sd,")\n",sep="")
   cat("Mean (Std dev) AR1: ",x$ar1bar, " (", 
       x$ar1bar.sd,")\n",sep="")
+  cat("-------------\n")
+  cat("Years with where all rings are missing\n")
+  if(length(x$allZeroYears)==0) cat("    None \n")
+  else{
+    cat("Warning: Having years with all zeros is atypical. \n It can break dplR functions (e.g. ssf) with div0 issues resulting in Inf and NaN \n")
+    cat(x$allZeroYears,"\n")
+  }
+  
   cat("-------------\n")
   cat("Years with absent rings listed by series \n")
   if(length(x$zeros)==0) cat("    None \n")
@@ -82,7 +97,6 @@ print.rwl.report <- function(x, ...){
       cat("    Series", names(x$zeros)[i],"--",tmp,"\n",  
           sep = " ")
     }
-    cat(x$nzeros, " absent rings (", round(x$nzeros/x$n * 100, 3),"%)\n", sep="")    
   }
   cat("-------------\n")
   cat("Years with internal NA values listed by series \n")

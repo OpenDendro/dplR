@@ -1,5 +1,10 @@
 * CHANGES IN dplR VERSION 1.7.7
 
+File: rwl.report.R
+----------------
+
+- Added in years with all zeros in the report. And a warning that it can break dplR.
+
 File: ssf.R
 ----------------
 

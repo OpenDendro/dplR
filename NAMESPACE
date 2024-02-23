@@ -41,8 +41,6 @@ import(Matrix)
 
 importFrom(XML, xmlEventParse)
 
-importFrom(plyr, alply)
-
 importFrom(signal, butter, filtfilt)
 
 importFrom(boot, boot, boot.ci)

@@ -4,6 +4,9 @@ File: rwl.report.R
 ----------------
 
 - Added in years with all zeros in the report. And a warning that it can break dplR.
+- Removing plyr as an import -- very simple fix to get rid of alply
+- Setting a new ouptput for consecutive zeros. Those make me nervous.
+- Removing invisible so the rwl report can be useful as an object.
 
 File: ssf.R
 ----------------

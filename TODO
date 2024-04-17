@@ -1,3 +1,5 @@
+o [andybunn] for ssf. change output. already did. change help. but change further to have the arrays be 0:nIter and remove the iter0 outputs.
+
 o [andybunn] write a generic rwl check -- see common.interval for a start
 
 o [andybunn] look at rwl.report for problem children like cana209.fname <- "https://www.ncei.noaa.gov/pub/data/paleo/treering/measurements/northamerica/canada/cana209.rwl"

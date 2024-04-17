@@ -25,6 +25,24 @@
     dat <- as.rwl(dat)
   }
   
+  # Additional check. Can't have all zeros across the board for a year. This is
+  # a conservative check but if there are zeros for a year, the chron can eval to zero
+  # which causes headaches with div0.
+  # check for all zeros in dat
+  zeroRowCheck <- apply(dat,1,function(x){sum(x,na.rm=TRUE)==0})
+  if(any(zeroRowCheck)){
+    print(which(zeroRowCheck))
+    bad <- "Input data contain at least one row (year) with all zero values, creating div0 problems. These data are not appropriate for the SSF approach.\n  Exiting."
+    stop(bad)
+  }
+  # Heck look for zeros in series too. Never know what kind of silliness users come up with.
+  zeroColCheck <- apply(dat,2,function(x){sum(x,na.rm=TRUE)==0})
+  if(any(zeroColCheck)){
+    print(which(zeroColCheck))
+    bad <- "Input data contain at least one series with all zero values. These data are not appropriate for the SSF approach.\n  Exiting."
+    stop(bad)
+  }
+  
   # get some detrending options
   method2 <- match.arg(arg = method,
                        choices = c("Spline", "AgeDepSpline"),
@@ -56,7 +74,7 @@
   # Array (2d though) to hold the differences between the kth
   # and the kth-1 high freq chronology residuals
   hfCrnResids_Mat <- matrix(NA,nrow = nYrs,ncol=maxIterations-1)
-  
+
   # Let's do it. First, here is a simplish detrending function modified from
   # detrend.series(). The issue with using detrend() is that negative values are
   # not allowed for the detrend funcs. Maybe they should be (e.g., z-scored 
@@ -75,7 +93,7 @@
     }
     y2 <- y[good.y]
     nY2 <- length(y2)
-    ## Recode any zero values to 0.001
+    ## Recode any zero values to 0.001 to avoid div0
     y2[y2 == 0] <- 0.001
     
     
@@ -109,7 +127,14 @@
       # Put NA back in
       Curve2 <- rep(NA, length(y))
       Curve2[good.y] <- Curve
-    }  
+    }
+    
+    if(any(Curve2 <= 0,na.rm = TRUE)){
+      msg <- gettext("The signal free detrending curve has values <= 0 creating either negative RWI or a div0 problem. \n  ssf() is a bad choice for these data. Stopping. \n",
+                     domain = "R-dplR")
+      stop(msg)
+    }
+    
     return(Curve2)
   }
   
@@ -121,6 +146,7 @@
                      method=method2,
                      nyrs=nyrs,
                      pos.slope=pos.slope)
+  rownames(datCurves) <- time(dat)
   
   # get RWI
   datRWI <- dat / datCurves
@@ -135,10 +161,10 @@
   if(any(iter0Crn[,1]==0)){
     iter0Crn <- chron(datRWI,biweight = FALSE)
   }
-  # Additional check. If there are still zeros it should mean that the OG data were passed in with zeros. 
+  # Additional check. If there are still zeros it should mean that the OG data were passed in with zeros.
   if(any(iter0Crn[,1]==0)){
     print(which(iter0Crn[,1]==0))
-    bad <- "Input data contain at least one row with all zero creating div0 problems. These data are not appropriate for the SSF approach.\n  Exiting."
+    bad <- "The initial chronology contains at least one row (Year) with a zero, creating div0 problems. These data are not appropriate for the SSF approach.\n  Exiting."
     stop(bad)
   }
   
@@ -162,7 +188,7 @@
   sfRWRescaled_Array[,,1] <- (sfRW_Array[,,1] - colMeansMatdatSF) + colMeansMatdat
   
   # STEP 4 - Replace signal-free measurements with original measurements when samp depth is 1
-  sfRWRescaled_Array[datSampDepth==1,,1] <- as.matrix(dat[datSampDepth==1,]) # can this break if there is no sampDepth==1?
+  sfRWRescaled_Array[datSampDepth==1,,1] <- as.matrix(dat[datSampDepth==1,])
   
   # STEP 5 - Fit curves to signal free measurements
   sfRWRescaledCurves_Array[,,1] <- apply(sfRWRescaled_Array[,,1],2,getCurve,
@@ -309,6 +335,9 @@
   
   if(return.info){
     res <- list(infoList = infoList,
+                iter0RW_Mat = dat, # the original data
+                iter0Curve_Mat = datCurves, # the initial curves
+                iter0RWI_Mat = datRWI, # the initial RWI
                 iter0Crn = iter0Crn,
                 ssfCrn = finalCrn,
                 # The SF measurements

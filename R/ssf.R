@@ -48,6 +48,9 @@
                        several.ok = FALSE)
   
   # useful vars
+  yrs <- time(dat)
+  seriesNames <- names(dat)
+  
   nSeries <- dim(dat)[2]
   nYrs <- dim(dat)[1]
   medianAbsDiff <- 1 #init only
@@ -296,16 +299,15 @@
   sfRWI_Array <- sfRWI_Array[,,1:k]
   # Trim the SF crn
   sfCrn_Mat <- sfCrn_Mat[,1:k]
+  # Trim the HF crn
+  hfCrn_Mat <- hfCrn_Mat[,1:k]
+  # Trim the hfCrnResids
+  hfCrnResids_Mat <- hfCrnResids_Mat[,1:k]
+  
   # Trim the differences
   MAD_Vec <- MAD_Vec[1:(k-1)]
-  hfCrnResids_Mat <- hfCrnResids_Mat[,1:(k-1)]
-  
-  ### return final crn and add in the OG crn too for completeness
-  
-  iter0Crn <- data.frame(std=iter0Crn,samp.depth=datSampDepth)
-  row.names(iter0Crn) <- row.names(dat)
-  class(iter0Crn) <- c("crn", "data.frame")
-  
+
+  ### return final crn in class(crn)
   finalCrn <- data.frame(sfc=sfCrn_Mat[,k],samp.depth=datSampDepth)
   row.names(finalCrn) <- row.names(dat)
   class(finalCrn) <- c("crn", "data.frame")
@@ -333,24 +335,65 @@
   
   
   if(return.info){
+    # add the original data to the arrays and mats
+    # the original data
+    #dat 
+    nIter <- dim(sfRW_Array)[3]
+    arrayDims <- dim(sfRW_Array)
+    arrayDims[3] <- arrayDims[3] + 1
+    
+    # get final outputs setup
+    #sfRW_Array
+    sfRW_Array2 <- array(data = NA,dim=arrayDims)
+    sfRW_Array2[,,1] <- as.matrix(dat)
+    sfRW_Array2[,,2:arrayDims[3]] <- sfRW_Array
+    dimnames(sfRW_Array2) <- list(yrs,seriesNames,0:nIter)
+    
+    #sfRWRescaled_Array
+    sfRWRescaled_Array2 <- array(data = NA,dim=arrayDims)
+    sfRWRescaled_Array2[,,1] <- as.matrix(dat)
+    sfRWRescaled_Array2[,,2:arrayDims[3]] <- sfRWRescaled_Array
+    dimnames(sfRWRescaled_Array2) <- list(yrs,seriesNames,0:nIter)
+    
+    #sfRWRescaledCurves_Array
+    sfRWRescaledCurves_Array2 <- array(data = NA,dim=arrayDims)
+    sfRWRescaledCurves_Array2[,,1] <- as.matrix(datCurves)
+    sfRWRescaledCurves_Array2[,,2:arrayDims[3]] <- sfRWRescaledCurves_Array
+    dimnames(sfRWRescaledCurves_Array2) <- list(yrs,seriesNames,0:nIter)
+    
+    #sfRWI_Array
+    sfRWI_Array2 <- array(data = NA,dim=arrayDims)
+    sfRWI_Array2[,,1] <- as.matrix(datRWI)
+    sfRWI_Array2[,,2:arrayDims[3]] <- sfRWI_Array
+    dimnames(sfRWI_Array2) <- list(yrs,seriesNames,0:nIter)
+    
+    sfCrn_Mat2 <- cbind(iter0Crn,sfCrn_Mat)
+    rownames(sfCrn_Mat2) <- yrs
+    colnames(sfCrn_Mat2) <- 0:nIter
+    
+    #hfCrn_Mat
+    #iter0
+    tmp <- iter0Crn - caps(iter0Crn,
+                                nyrs = floor(medianSegLength))
+    hfCrn_Mat2 <- cbind(tmp,hfCrn_Mat)
+    rownames(hfCrn_Mat2) <- yrs
+    colnames(hfCrn_Mat2) <- 0:nIter
+    
+    
     res <- list(infoList = infoList,
-                iter0RW_Mat = dat, # the original data
-                iter0Curve_Mat = datCurves, # the initial curves
-                iter0RWI_Mat = datRWI, # the initial RWI
-                iter0Crn = iter0Crn,
                 ssfCrn = finalCrn,
                 # The SF measurements
-                sfRW_Array = sfRW_Array,
+                sfRW_Array = sfRW_Array2,
                 # The rescaled SF measurements
-                sfRWRescaled_Array = sfRWRescaled_Array,
+                sfRWRescaled_Array = sfRWRescaled_Array2,
                 # The rescaled SF curves
-                sfRWRescaledCurves_Array = sfRWRescaledCurves_Array,
+                sfRWRescaledCurves_Array = sfRWRescaledCurves_Array2,
                 # The SF RWI
-                sfRWI_Array = sfRWI_Array,
+                sfRWI_Array = sfRWI_Array2,
                 # The SF crn
-                sfCrn_Mat = sfCrn_Mat,
+                sfCrn_Mat = sfCrn_Mat2,
                 # The high freq chronology
-                hfCrn_Mat = hfCrn_Mat,
+                hfCrn_Mat = hfCrn_Mat2,
                 # The high freq chronology residuals
                 hfCrnResids_Mat = hfCrnResids_Mat,
                 # The median abs diff

@@ -31,15 +31,19 @@
   zeroRowCheck <- apply(dat,1,function(x){sum(x,na.rm=TRUE)==0})
   if(any(zeroRowCheck)){
     print(which(zeroRowCheck))
-    bad <- "Input data contain at least one row (year) with all zero values, creating div0 problems. These data are not appropriate for the SSF approach.\n  Exiting."
-    stop(bad)
+    msg <- gettext("Input data contain at least one row (year) with all zero 
+                   values, creating div0 problems. These data are not appropriate for the SSF approach.\n  Stopping.",
+                   domain = "R-dplR")
+    stop(msg)
   }
   # Heck look for zeros in series too. Never know what kind of silliness users come up with.
   zeroColCheck <- apply(dat,2,function(x){sum(x,na.rm=TRUE)==0})
   if(any(zeroColCheck)){
     print(which(zeroColCheck))
-    bad <- "Input data contain at least one series with all zero values. These data are not appropriate for the SSF approach.\n  Exiting."
-    stop(bad)
+    msg <- gettext("Input data contain at least one series with all zero values. 
+                   Stopping.",
+                   domain = "R-dplR")
+    stop(msg)
   }
   
   # get some detrending options
@@ -76,7 +80,7 @@
   # Array (2d though) to hold the differences between the kth
   # and the kth-1 high freq chronology residuals
   hfCrnResids_Mat <- matrix(NA,nrow = nYrs,ncol=maxIterations-1)
-
+  
   # Let's do it. First, here is a simplish detrending function modified from
   # detrend.series(). The issue with using detrend() is that negative values are
   # not allowed for the detrend funcs. Maybe they should be (e.g., z-scored 
@@ -131,16 +135,9 @@
       Curve2[good.y] <- Curve
     }
     
-    if(any(Curve2 <= 0,na.rm = TRUE)){
-      msg <- gettext("The signal free detrending curve has values <= 0 creating either negative RWI or a div0 problem. \n  ssf() is a bad choice for these data. Stopping. \n",
-                     domain = "R-dplR")
-      stop(msg)
-    }
     
     return(Curve2)
   }
-  
-  
   
   # STEP 1 - GET AN INITIAL CHRONOLOGY
   # fit curves
@@ -149,6 +146,17 @@
                      nyrs=nyrs,
                      pos.slope=pos.slope)
   rownames(datCurves) <- time(dat)
+  
+  if(any(datCurves <= 0,na.rm = TRUE)){
+    print(which(any(datCurves <= 0,na.rm = TRUE)))
+    msg <- gettext("The signal free detrending curve has values <= 0 during the
+    initial curve fitting which would create either negative RWI values or a 
+                   div0 problem. ARSTAN would tell you to plot that dirty dog.
+                   Stopping.",
+                   domain = "R-dplR")
+    stop(msg)
+  }
+  
   
   # get RWI
   datRWI <- dat / datCurves
@@ -166,8 +174,11 @@
   # Additional check. If there are still zeros it should mean that the OG data were passed in with zeros.
   if(any(iter0Crn[,1]==0)){
     print(which(iter0Crn[,1]==0))
-    bad <- "The initial chronology contains at least one row (Year) with a zero, creating div0 problems. These data are not appropriate for the SSF approach.\n  Exiting."
-    stop(bad)
+    msg <- gettext("The initial chronology contains at least one row (year) 
+    with a zero, creating div0 problems. These data are not 
+    appropriate for ssf.\n  Stopping.",
+                   domain = "R-dplR")
+    stop(msg)
   }
   
   datSampDepth <- iter0Crn$samp.depth # for later
@@ -198,6 +209,13 @@
                                          nyrs=nyrs,
                                          pos.slope=pos.slope)
   
+  if(any(sfRWRescaledCurves_Array[,,1] <= 0,na.rm = TRUE)){
+    print(which(any(sfRWRescaledCurves_Array[,,1] <= 0,na.rm = TRUE)))
+    msg <- gettext("The signal free detrending curve has values <= 0 which would 
+    create either negative RWI values or a div0 problem. Stopping.",
+                   domain = "R-dplR")
+    stop(msg)
+  }
   
   # STEP 6 - divide original measurements by curve obtained from signal free measurements fitting
   sfRWI_Array[,,1] <- as.matrix(dat/sfRWRescaledCurves_Array[,,1])
@@ -251,6 +269,13 @@
                                            nyrs=nyrs,
                                            pos.slope=pos.slope)
     
+    if(any(sfRWRescaledCurves_Array[,,k] <= 0,na.rm = TRUE)){
+      print(which(any(sfRWRescaledCurves_Array[,,k] <= 0,na.rm = TRUE)))
+      msg <- gettext("The signal free detrending curve has values <= 0 which would 
+      create either negative RWI values or a div0 problem. Stopping.",
+                     domain = "R-dplR")
+      stop(msg)
+    }
     
     # STEP 6 - divide original measurements by curve obtained from signal free curves
     sfRWI_Array[,,k] <- as.matrix(dat/sfRWRescaledCurves_Array[,,k])
@@ -283,8 +308,12 @@
     }
     
     if(iterationNumber==maxIterations & medianAbsDiff > madThreshold){
-      bad <- "Reached maximum iterations with stopping criteria not satisfied.\n  Data are not likely appropriate for the signal-free method.\n  Exiting."
-      stop(bad)
+      
+      msg <- gettext("Reached maximum iterations and stopping criteria are not 
+                     satisfied. Stopping.",
+                     domain = "R-dplR")
+      stop(msg)
+      
     }
     iterationNumber <- iterationNumber + 1
   }
@@ -306,7 +335,7 @@
   
   # Trim the differences
   MAD_Vec <- MAD_Vec[1:(k-1)]
-
+  
   ### return final crn in class(crn)
   finalCrn <- data.frame(sfc=sfCrn_Mat[,k],samp.depth=datSampDepth)
   row.names(finalCrn) <- row.names(dat)
@@ -338,7 +367,7 @@
     # add the original data to the arrays and mats
     # the original data
     #dat 
-    nIter <- dim(sfRW_Array)[3]
+    #nIter <- dim(sfRW_Array)[3]
     arrayDims <- dim(sfRW_Array)
     arrayDims[3] <- arrayDims[3] + 1
     
@@ -347,40 +376,41 @@
     sfRW_Array2 <- array(data = NA,dim=arrayDims)
     sfRW_Array2[,,1] <- as.matrix(dat)
     sfRW_Array2[,,2:arrayDims[3]] <- sfRW_Array
-    dimnames(sfRW_Array2) <- list(yrs,seriesNames,0:nIter)
+    dimnames(sfRW_Array2) <- list(yrs,seriesNames,0:k)
     
     #sfRWRescaled_Array
     sfRWRescaled_Array2 <- array(data = NA,dim=arrayDims)
     sfRWRescaled_Array2[,,1] <- as.matrix(dat)
     sfRWRescaled_Array2[,,2:arrayDims[3]] <- sfRWRescaled_Array
-    dimnames(sfRWRescaled_Array2) <- list(yrs,seriesNames,0:nIter)
+    dimnames(sfRWRescaled_Array2) <- list(yrs,seriesNames,0:k)
     
     #sfRWRescaledCurves_Array
     sfRWRescaledCurves_Array2 <- array(data = NA,dim=arrayDims)
     sfRWRescaledCurves_Array2[,,1] <- as.matrix(datCurves)
     sfRWRescaledCurves_Array2[,,2:arrayDims[3]] <- sfRWRescaledCurves_Array
-    dimnames(sfRWRescaledCurves_Array2) <- list(yrs,seriesNames,0:nIter)
+    dimnames(sfRWRescaledCurves_Array2) <- list(yrs,seriesNames,0:k)
     
     #sfRWI_Array
     sfRWI_Array2 <- array(data = NA,dim=arrayDims)
     sfRWI_Array2[,,1] <- as.matrix(datRWI)
     sfRWI_Array2[,,2:arrayDims[3]] <- sfRWI_Array
-    dimnames(sfRWI_Array2) <- list(yrs,seriesNames,0:nIter)
+    dimnames(sfRWI_Array2) <- list(yrs,seriesNames,0:k)
     
     sfCrn_Mat2 <- cbind(iter0Crn,sfCrn_Mat)
     rownames(sfCrn_Mat2) <- yrs
-    colnames(sfCrn_Mat2) <- 0:nIter
+    colnames(sfCrn_Mat2) <- 0:k
     
     #hfCrn_Mat
     #iter0
     tmp <- iter0Crn - caps(iter0Crn,
-                                nyrs = floor(medianSegLength))
+                           nyrs = floor(medianSegLength))
     hfCrn_Mat2 <- cbind(tmp,hfCrn_Mat)
     rownames(hfCrn_Mat2) <- yrs
-    colnames(hfCrn_Mat2) <- 0:nIter
+    colnames(hfCrn_Mat2) <- 0:k
     
     
     res <- list(infoList = infoList,
+                k = k,
                 ssfCrn = finalCrn,
                 # The SF measurements
                 sfRW_Array = sfRW_Array2,

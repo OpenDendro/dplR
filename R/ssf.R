@@ -1,7 +1,8 @@
 `ssf` <- function(rwl, 
-                  method="AgeDepSpline", 
+                  method="Spline", 
                   nyrs = NULL,
-                  pos.slope = FALSE,
+                  pos.slope = TRUE,
+                  difference = FALSE,
                   maxIterations = 25, 
                   madThreshold = 5e-4,
                   return.info = FALSE, 
@@ -60,6 +61,20 @@
   medianAbsDiff <- 1 #init only
   datSummary <- rwl.stats(dat)
   medianSegLength <- median(datSummary$year)
+  
+  if(method2 == "AgeDepSpline"){
+    infoList <- list(method=method2, 
+                     nyrs = nyrs, 
+                     pos.slope = pos.slope,
+                     maxIterations = maxIterations, 
+                     madThreshold = madThreshold)
+  }
+  else {
+    infoList <- list(method=method2, 
+                     nyrs = nyrs, 
+                     maxIterations = maxIterations, 
+                     madThreshold = madThreshold)
+  }
   
   # Make some storage objects
   # These are arrays of [nYrs,nSeries,maxIterations]
@@ -159,7 +174,8 @@
   
   
   # get RWI
-  datRWI <- dat / datCurves
+  if(difference){ datRWI <- dat - datCurves }
+  else { datRWI <- dat / datCurves }
   # and initial chron at iter0
   iter0Crn <- chron(datRWI,biweight = TRUE)
   # Check for zeros in the chronology. This can happen in VERY sensitive
@@ -188,7 +204,9 @@
   # STEP 2 - Divide each series of measurements by the chronology
   # NB: This can produce some very very funky values when iter0Crn is near zero.
   # E.g., in co021 row 615 has a tbrm RWI of 0.0044 which makes for some huge SF
-  sfRW_Array[,,1] <- as.matrix(dat/iter0Crn)
+  if(difference){ sfRW_Array[,,1] <- as.matrix(dat - iter0Crn) }
+  else { sfRW_Array[,,1] <- as.matrix(dat/iter0Crn) }
+
   # STEP 3 - Rescale to the original mean
   colMeansMatdatSF <- matrix(colMeans(sfRW_Array[,,1],na.rm = TRUE),
                              nrow = nrow(sfRW_Array[,,1]),
@@ -218,7 +236,8 @@
   }
   
   # STEP 6 - divide original measurements by curve obtained from signal free measurements fitting
-  sfRWI_Array[,,1] <- as.matrix(dat/sfRWRescaledCurves_Array[,,1])
+  if(difference){ sfRWI_Array[,,1] <- as.matrix(dat - sfRWRescaledCurves_Array[,,1]) }
+  else { sfRWI_Array[,,1] <- as.matrix(dat/sfRWRescaledCurves_Array[,,1]) }
   
   # STEP 7 - create 1st signal-free chronology
   sfCrn_Mat[,1] <- chron(sfRWI_Array[,,1],biweight = TRUE)[,1]
@@ -239,7 +258,9 @@
   # STEP 8 - Repeat (2) through (7) until the MAD threshold
   # is reached or we hit maxIter
   if(verbose){
-    cat("Data read. First iteration done.\n")
+    cat("Data read. Running ssf with \n") 
+    print(unlist(infoList))
+    cat("\nFirst iteration done.\n")
   }
   
   iterationNumber <- 2 # Start on 2 b/c we did one above
@@ -248,7 +269,10 @@
     k = iterationNumber
     
     # STEP 2 - Divide each series of measurements by the last SF chronology
-    sfRW_Array[,,k] = as.matrix(dat/sfCrn_Mat[,k-1]) # this can produce problems Inf or nan
+    
+    if(difference){ sfRW_Array[,,k] = as.matrix(dat - sfCrn_Mat[,k-1]) }
+    else { sfRW_Array[,,k] = as.matrix(dat/sfCrn_Mat[,k-1]) }
+    
     
     # STEP 3 - Rescale to the original mean
     colMeansMatdatSF <- matrix(colMeans(sfRW_Array[,,k],na.rm = TRUE),
@@ -278,7 +302,8 @@
     }
     
     # STEP 6 - divide original measurements by curve obtained from signal free curves
-    sfRWI_Array[,,k] <- as.matrix(dat/sfRWRescaledCurves_Array[,,k])
+    if(difference){ sfRWI_Array[,,k] <- as.matrix(dat - sfRWRescaledCurves_Array[,,k]) }
+    else { sfRWI_Array[,,k] <- as.matrix(dat/sfRWRescaledCurves_Array[,,k]) }
     
     # STEP 7 - create kth signal-free chronology
     sfCrn_Mat[,k] <- chron(sfRWI_Array[,,k],biweight = TRUE)[,1]
@@ -341,24 +366,8 @@
   row.names(finalCrn) <- row.names(dat)
   class(finalCrn) <- c("crn", "data.frame")
   
-  if(method2 == "AgeDepSpline"){
-    infoList <- list(method=method2, 
-                     nyrs = nyrs, 
-                     pos.slope = pos.slope,
-                     maxIterations = maxIterations, 
-                     madThreshold = madThreshold)
-  }
-  else {
-    infoList <- list(method=method2, 
-                     nyrs = nyrs, 
-                     maxIterations = maxIterations, 
-                     madThreshold = madThreshold)
-  }
-  
   if(verbose){ 
-    cat("Simple Signal Free Chronology Complete",sep="\n")
-    cat(paste0("maxIterations: ", maxIterations),sep = "\n")
-    cat(paste0("madThreshold: ", madThreshold),sep = "\n")
+    cat("Simple Signal Free Chronology Complete \n")
   }
   
   

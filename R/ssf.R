@@ -17,7 +17,23 @@
     warning("The stopping criteria, madThreshold,  is outside the recommended range of 0.0001 to 0.001.")
   }
   
-  # make a copy of rwl just in case we change it.
+  # error msgs for later
+  negCurveMsg <- gettext("[1] The signal free detrending curve has values <= 0. See help (?ssf).",
+                         domain = "R-dplR")
+  
+  maxIterMsg <- gettext("[2] Reached maximum iterations and stopping criteria are not satisfied. See help (?ssf).",
+                        domain = "R-dplR")
+
+  crn0Msg <- gettext("[3] The initial chronology contains at least one row (year) with a zero, creating div0 problems. See help (?ssf).",
+                 domain = "R-dplR")
+  
+  input0Msg <- gettext("[4] Input data contain at least one row (year) with all zero values, creating div0 problems. See help (?ssf).",
+                       domain = "R-dplR")
+  
+  zeroColMsg <- gettext("[5] Input data contain at least one series with all zero values. See help (?ssf).",
+                        domain = "R-dplR")
+
+    # make a copy of rwl just in case we change it.
   dat <- rwl
   
   # error checks
@@ -31,20 +47,12 @@
   # which causes headaches with div0.
   zeroRowCheck <- apply(dat,1,function(x){sum(x,na.rm=TRUE)==0})
   if(any(zeroRowCheck)){
-    print(which(zeroRowCheck))
-    msg <- gettext("Input data contain at least one row (year) with all zero 
-                   values, creating div0 problems. These data are not appropriate for the SSF approach.\n  Stopping.",
-                   domain = "R-dplR")
-    stop(msg)
+    stop(input0Msg)
   }
   # Heck look for zeros in series too. Never know what kind of silliness users come up with.
   zeroColCheck <- apply(dat,2,function(x){sum(x,na.rm=TRUE)==0})
   if(any(zeroColCheck)){
-    print(which(zeroColCheck))
-    msg <- gettext("Input data contain at least one series with all zero values. 
-                   Stopping.",
-                   domain = "R-dplR")
-    stop(msg)
+    stop(zeroColMsg)
   }
   
   # get some detrending options
@@ -163,13 +171,7 @@
   rownames(datCurves) <- time(dat)
   
   if(any(datCurves <= 0,na.rm = TRUE)){
-    print(which(any(datCurves <= 0,na.rm = TRUE)))
-    msg <- gettext("The signal free detrending curve has values <= 0 during the
-    initial curve fitting which would create either negative RWI values or a 
-                   div0 problem. ARSTAN would tell you to plot that dirty dog.
-                   Stopping.",
-                   domain = "R-dplR")
-    stop(msg)
+    stop(negCurveMsg)
   }
   
   
@@ -189,12 +191,7 @@
   }
   # Additional check. If there are still zeros it should mean that the OG data were passed in with zeros.
   if(any(iter0Crn[,1]==0)){
-    print(which(iter0Crn[,1]==0))
-    msg <- gettext("The initial chronology contains at least one row (year) 
-    with a zero, creating div0 problems. These data are not 
-    appropriate for ssf.\n  Stopping.",
-                   domain = "R-dplR")
-    stop(msg)
+    stop(crn0Msg)
   }
   
   datSampDepth <- iter0Crn$samp.depth # for later
@@ -206,7 +203,7 @@
   # E.g., in co021 row 615 has a tbrm RWI of 0.0044 which makes for some huge SF
   if(difference){ sfRW_Array[,,1] <- as.matrix(dat - iter0Crn) }
   else { sfRW_Array[,,1] <- as.matrix(dat/iter0Crn) }
-
+  
   # STEP 3 - Rescale to the original mean
   colMeansMatdatSF <- matrix(colMeans(sfRW_Array[,,1],na.rm = TRUE),
                              nrow = nrow(sfRW_Array[,,1]),
@@ -228,11 +225,7 @@
                                          pos.slope=pos.slope)
   
   if(any(sfRWRescaledCurves_Array[,,1] <= 0,na.rm = TRUE)){
-    print(which(any(sfRWRescaledCurves_Array[,,1] <= 0,na.rm = TRUE)))
-    msg <- gettext("The signal free detrending curve has values <= 0 which would 
-    create either negative RWI values or a div0 problem. Stopping.",
-                   domain = "R-dplR")
-    stop(msg)
+    stop(negCurveMsg)
   }
   
   # STEP 6 - divide original measurements by curve obtained from signal free measurements fitting
@@ -294,11 +287,7 @@
                                            pos.slope=pos.slope)
     
     if(any(sfRWRescaledCurves_Array[,,k] <= 0,na.rm = TRUE)){
-      print(which(any(sfRWRescaledCurves_Array[,,k] <= 0,na.rm = TRUE)))
-      msg <- gettext("The signal free detrending curve has values <= 0 which would 
-      create either negative RWI values or a div0 problem. Stopping.",
-                     domain = "R-dplR")
-      stop(msg)
+      stop(negCurveMsg)
     }
     
     # STEP 6 - divide original measurements by curve obtained from signal free curves
@@ -333,12 +322,7 @@
     }
     
     if(iterationNumber==maxIterations & medianAbsDiff > madThreshold){
-      
-      msg <- gettext("Reached maximum iterations and stopping criteria are not 
-                     satisfied. Stopping.",
-                     domain = "R-dplR")
-      stop(msg)
-      
+      stop(maxIterMsg)
     }
     iterationNumber <- iterationNumber + 1
   }
@@ -356,7 +340,7 @@
   # Trim the HF crn
   hfCrn_Mat <- hfCrn_Mat[,1:k]
   # Trim the hfCrnResids
-  hfCrnResids_Mat <- hfCrnResids_Mat[,1:k]
+  hfCrnResids_Mat <- hfCrnResids_Mat[,1:(k-1)]
   
   # Trim the differences
   MAD_Vec <- MAD_Vec[1:(k-1)]

@@ -3,18 +3,19 @@
                   nyrs = NULL,
                   pos.slope = TRUE,
                   difference = FALSE,
-                  maxIterations = 25, 
-                  madThreshold = 5e-4,
+                  max.iterations = 25, 
+                  mad.threshold = 5e-4,
+                  recode.zeros = FALSE,
                   return.info = FALSE, 
                   verbose = TRUE)
 {
   
-  if(maxIterations > 25){
-    warning("Having to set maxIterations > 25 in order to meet a stopping criteria  is generally a sign that the data are not ideal for signal free detrending.")
+  if(max.iterations > 25){
+    warning("Having to set max.iterations > 25 in order to meet a stopping criteria  is generally a sign that the data are not ideal for signal free detrending.")
   }
   
-  if(madThreshold < 0.0001 | madThreshold > 0.001){
-    warning("The stopping criteria, madThreshold,  is outside the recommended range of 0.0001 to 0.001.")
+  if(mad.threshold < 0.0001 | mad.threshold > 0.001){
+    warning("The stopping criteria, mad.threshold,  is outside the recommended range of 0.0001 to 0.001.")
   }
   
   # error msgs for later
@@ -35,6 +36,9 @@
 
     # make a copy of rwl just in case we change it.
   dat <- rwl
+  
+  # recode zeros to 0.001 if asked.
+  if(recode.zeros){dat[dat==0] <- 0.001}
   
   # error checks
   if(!any(class(dat) %in% "rwl")) {
@@ -74,35 +78,35 @@
     infoList <- list(method=method2, 
                      nyrs = nyrs, 
                      pos.slope = pos.slope,
-                     maxIterations = maxIterations, 
-                     madThreshold = madThreshold)
+                     max.iterations = max.iterations, 
+                     mad.threshold = mad.threshold)
   }
   else {
     infoList <- list(method=method2, 
                      nyrs = nyrs, 
-                     maxIterations = maxIterations, 
-                     madThreshold = madThreshold)
+                     max.iterations = max.iterations, 
+                     mad.threshold = mad.threshold)
   }
   
   # Make some storage objects
-  # These are arrays of [nYrs,nSeries,maxIterations]
+  # These are arrays of [nYrs,nSeries,max.iterations]
   # Array to hold the SF measurements
-  sfRW_Array <- array(NA,dim=c(nYrs,nSeries,maxIterations))
+  sfRW_Array <- array(NA,dim=c(nYrs,nSeries,max.iterations))
   # Array to hold the rescaled SF measurements
-  sfRWRescaled_Array <- array(NA,dim=c(nYrs,nSeries,maxIterations))
+  sfRWRescaled_Array <- array(NA,dim=c(nYrs,nSeries,max.iterations))
   # Array to hold the rescaled SF curves
-  sfRWRescaledCurves_Array <- array(NA,dim=c(nYrs,nSeries,maxIterations))
+  sfRWRescaledCurves_Array <- array(NA,dim=c(nYrs,nSeries,max.iterations))
   # Array to hold the SF RWI
-  sfRWI_Array <- array(NA,dim=c(nYrs,nSeries,maxIterations))
+  sfRWI_Array <- array(NA,dim=c(nYrs,nSeries,max.iterations))
   # Array (2d though) to hold the SF Crn
-  sfCrn_Mat <- array(NA,dim=c(nYrs,maxIterations))
+  sfCrn_Mat <- array(NA,dim=c(nYrs,max.iterations))
   # Array (2d though) to hold the HF Crn
-  hfCrn_Mat <- array(NA,dim=c(nYrs,maxIterations))
+  hfCrn_Mat <- array(NA,dim=c(nYrs,max.iterations))
   # Vector for storing median absolute difference (mad)
-  MAD_Vec <- numeric(maxIterations-1)
+  MAD_Vec <- numeric(max.iterations-1)
   # Array (2d though) to hold the differences between the kth
   # and the kth-1 high freq chronology residuals
-  hfCrnResids_Mat <- matrix(NA,nrow = nYrs,ncol=maxIterations-1)
+  hfCrnResids_Mat <- matrix(NA,nrow = nYrs,ncol=max.iterations-1)
   
   # Let's do it. First, here is a simplish detrending function modified from
   # detrend.series(). The issue with using detrend() is that negative values are
@@ -258,7 +262,7 @@
   
   iterationNumber <- 2 # Start on 2 b/c we did one above
   
-  while(medianAbsDiff > madThreshold){
+  while(medianAbsDiff > mad.threshold){
     k = iterationNumber
     
     # STEP 2 - Divide each series of measurements by the last SF chronology
@@ -317,11 +321,11 @@
     MAD_Vec[k-1] <- medianAbsDiff
     if(verbose){
       cat("Iteration: ", k, " Median Abs Diff: ",round(medianAbsDiff,5),
-          " (",round(madThreshold/medianAbsDiff * 100,5),"% of threshold)\n",
+          " (",round(mad.threshold/medianAbsDiff * 100,5),"% of threshold)\n",
           sep = "")
     }
     
-    if(iterationNumber==maxIterations & medianAbsDiff > madThreshold){
+    if(iterationNumber==max.iterations & medianAbsDiff > mad.threshold){
       stop(maxIterMsg)
     }
     iterationNumber <- iterationNumber + 1

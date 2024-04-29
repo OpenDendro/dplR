@@ -6,11 +6,16 @@
   A simple implentation of the signal-free chronology
 }
 \usage{
-ssf(rwl, method="Spline", 
-    nyrs = NULL, pos.slope = TRUE,
+ssf(rwl, 
+    method="Spline", 
+    nyrs = NULL, 
+    pos.slope = TRUE,
     difference = FALSE,
-    maxIterations = 25, madThreshold = 5e-4,
-    return.info = FALSE, verbose = TRUE)
+    max.iterations = 25, 
+    mad.threshold = 5e-4,
+    recode.zeros = FALSE,
+    return.info = FALSE, 
+    verbose = TRUE)
 }
 \arguments{
 
@@ -31,9 +36,11 @@ ssf(rwl, method="Spline",
   if TRUE, otherwise use division. See \sQuote{Details} 
   in \code{\link{detrend.series}} }
 
-  \item{maxIterations}{ a \code{numeric}. The maximum number of iterations to be used in the fitting process. See \sQuote{Details}. }
+  \item{max.iterations}{ a \code{numeric}. The maximum number of iterations to be used in the fitting process. See \sQuote{Details}. }
 
-  \item{madThreshold}{ a \code{numeric}. The median absolute difference threshold used for a stopping criteria. See \sQuote{Details}. }
+  \item{mad.threshold}{ a \code{numeric}. The median absolute difference threshold used for a stopping criteria. See \sQuote{Details}. }
+
+  \item{recode.zeros}{ a \code{logical} flag.  Replace values of zero in \code{rwl} with 0.001 if TRUE. }
 
   \item{return.info}{ a \code{logical} flag.  If \code{TRUE}, details
     about models and data will be added to the return value.  See

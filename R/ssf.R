@@ -33,20 +33,28 @@
   
   zeroColMsg <- gettext("[5] Input data contain at least one series with all zero values. See help (?ssf).",
                         domain = "R-dplR")
-
-    # make a copy of rwl just in case we change it.
+  inputNAmsg <- gettext("[6] Input data contain at least one row (year) with all NA values, creating div0 problems. See help (?ssf).",
+                       domain = "R-dplR")
+  
+  # make a copy of rwl just in case we change it.
   dat <- rwl
-  
-  # recode zeros to 0.001 if asked.
-  if(recode.zeros){dat[dat==0] <- 0.001}
-  
-  # error checks
+
+  # check class of rwl
   if(!any(class(dat) %in% "rwl")) {
     warning("Input data needs to be class \"rwl\". Attempting to coerce.")
     dat <- as.rwl(dat)
   }
   
-  # Additional check. Can't have all zeros across the board for a year. This is
+  # recode zeros to 0.001 if asked.
+  if(recode.zeros){dat[dat==0] <- 0.001}
+  
+  # error checks
+  
+  # Look for any rows where all the values are NA -- unconnected floaters
+  if(any(rowSums(is.na(dat)) == ncol(dat))){
+    stop(inputNAmsg)
+  }
+  # Can't have all zeros across the board for a year. This is
   # a conservative check but if there are zeros for a year, the chron can eval to zero
   # which causes headaches with div0.
   zeroRowCheck <- apply(dat,1,function(x){sum(x,na.rm=TRUE)==0})
@@ -58,6 +66,7 @@
   if(any(zeroColCheck)){
     stop(zeroColMsg)
   }
+  
   
   # get some detrending options
   method2 <- match.arg(arg = method,

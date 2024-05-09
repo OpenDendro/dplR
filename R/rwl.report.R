@@ -22,15 +22,11 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
   res$meanAR1 <- mean(tmp.sum$ar1)
   res$sdAR1 <- sd(tmp.sum$ar1)
   
-  # parse IDs? Or look for odd IDs?
-  
   # unconnected spans
   naRowSum <- apply(rwl,1,function(x) { sum(is.na(x))})
   unconnectedFlag <- naRowSum == res$nSeries
   res$unconnected <- any(unconnectedFlag)
   res$unconnectedYrs <- time(rwl)[which(unconnectedFlag)]
-  
-
   
   # missing rings
   zedsLogical <- rwl == 0

@@ -7,7 +7,8 @@
 }
 \usage{
 read.tucson(fname, header = NULL, long = FALSE,
-            encoding = getOption("encoding"), edge.zeros = TRUE)
+            encoding = getOption("encoding"), 
+            edge.zeros = TRUE, verbose = TRUE)
 }
 \arguments{
   \item{fname}{ a \code{character} vector giving the file name of the
@@ -31,6 +32,7 @@ read.tucson(fname, header = NULL, long = FALSE,
     trailing zeros in series will be preserved (when the flag is
     \code{TRUE}, the default) or discarded, i.e. marked as \code{NA}
     (when \code{FALSE}). }
+  \item{verbose}{ \code{logical} flag, print info on data. }
 }
 \details{
   This reads in a standard rwl file as defined according to the

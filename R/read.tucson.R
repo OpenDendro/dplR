@@ -1,6 +1,6 @@
 `read.tucson` <- function(fname, header = NULL, long = FALSE,
                           encoding = getOption("encoding"),
-                          edge.zeros = TRUE)
+                          edge.zeros = TRUE,verbose=TRUE)
 {
   ## Checks that the input is good. The input variables are vectors
   ## ('series', 'decade.yr') or matrices ('x') containing most of
@@ -83,7 +83,6 @@
     }
     extra.vals <- which(val.count > 1, arr.ind=TRUE)
     n.extra <- nrow(extra.vals)
-    print(n.extra)
     # if (n.extra > 0) {
     #   warn.fmt <-
     #     ngettext(n.bad,
@@ -199,11 +198,15 @@
       }
     }
     if (is.head) {
+      if(verbose){
       cat(gettext("There appears to be a header in the rwl file\n",
                   domain="R-dplR"))
+      }
     } else {
+      if(verbose){
       cat(gettext("There does not appear to be a header in the rwl file\n",
                   domain="R-dplR"))
+      }
     }
   } else if (!is.logical(header) || length(header) != 1 || is.na(header)) {
     stop("'header' must be NULL, TRUE or FALSE")
@@ -469,18 +472,19 @@
   series.min.char <- format(series.min, scientific=FALSE, trim=TRUE)
   series.max.char <- format(series.max, scientific=FALSE, trim=TRUE)
   seq.series.char <- format(seq_len(nseries), scientific=FALSE, trim=TRUE)
-  cat(sprintf(ngettext(nseries,
-                       "There is %d series\n",
-                       "There are %d series\n",
-                       domain="R-dplR"),
-              nseries))
-  cat(paste0(format(seq.series.char, width=5), "\t",
-             format(series.ids, width=8), "\t",
-             format(series.min.char, width=5, justify="right"), "\t",
-             format(series.max.char, width=5, justify="right"), "\t",
-             format(1/prec.rproc, scientific=FALSE,drop0trailing=TRUE),"\n"),
-      sep="")
-  
+  if(verbose){
+    cat(sprintf(ngettext(nseries,
+                         "There is %d series\n",
+                         "There are %d series\n",
+                         domain="R-dplR"),
+                nseries))
+    cat(paste0(format(seq.series.char, width=5), "\t",
+               format(series.ids, width=8), "\t",
+               format(series.min.char, width=5, justify="right"), "\t",
+               format(series.max.char, width=5, justify="right"), "\t",
+               format(1/prec.rproc, scientific=FALSE,drop0trailing=TRUE),"\n"),
+        sep="")
+  }
   ## trim the front and back of the output to remove blank rows
   good.series <- !is.na(series.min)
   if (!any(good.series)) {

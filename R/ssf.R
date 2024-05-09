@@ -1,7 +1,6 @@
 `ssf` <- function(rwl, 
                   method="Spline", 
                   nyrs = NULL,
-                  pos.slope = TRUE,
                   difference = FALSE,
                   max.iterations = 25, 
                   mad.threshold = 5e-4,
@@ -86,7 +85,7 @@
   if(method2 == "AgeDepSpline"){
     infoList <- list(method=method2, 
                      nyrs = nyrs, 
-                     pos.slope = pos.slope,
+                     pos.slope = TRUE,
                      max.iterations = max.iterations, 
                      mad.threshold = mad.threshold)
   }
@@ -123,7 +122,7 @@
   # data) but they aren't as of right now. So here is a simplified detrend function.
   getCurve <- function(y,method=method2,
                        nyrs=NULL,
-                       pos.slope=pos.slope){
+                       pos.slope=TRUE){
     
     
     ## Remove NA from the data (they will be reinserted later)
@@ -148,7 +147,7 @@
       else
         nyrs2 <- nyrs
       
-      Curve <- ads(y=y2, nyrs0=nyrs2, pos.slope = pos.slope)
+      Curve <- ads(y=y2, nyrs0=nyrs2, pos.slope = TRUE)
       # Put NA back in
       Curve2 <- rep(NA, length(y))
       Curve2[good.y] <- Curve
@@ -180,7 +179,7 @@
   datCurves <- apply(dat,2,getCurve,
                      method=method2,
                      nyrs=nyrs,
-                     pos.slope=pos.slope)
+                     pos.slope=TRUE)
   rownames(datCurves) <- time(dat)
   
   if(any(datCurves <= 0,na.rm = TRUE)){
@@ -235,7 +234,7 @@
   sfRWRescaledCurves_Array[,,1] <- apply(sfRWRescaled_Array[,,1],2,getCurve,
                                          method=method2,
                                          nyrs=nyrs,
-                                         pos.slope=pos.slope)
+                                         pos.slope=TRUE)
   
   if(any(sfRWRescaledCurves_Array[,,1] <= 0,na.rm = TRUE)){
     stop(negCurveMsg)
@@ -297,7 +296,7 @@
     sfRWRescaledCurves_Array[,,k] <- apply(sfRWRescaled_Array[,,k],2,getCurve,
                                            method=method2,
                                            nyrs=nyrs,
-                                           pos.slope=pos.slope)
+                                           pos.slope=TRUE)
     
     if(any(sfRWRescaledCurves_Array[,,k] <= 0,na.rm = TRUE)){
       stop(negCurveMsg)

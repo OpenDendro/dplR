@@ -9,7 +9,6 @@
 ssf(rwl, 
     method="Spline", 
     nyrs = NULL, 
-    pos.slope = TRUE,
     difference = FALSE,
     max.iterations = 25, 
     mad.threshold = 5e-4,
@@ -28,10 +27,6 @@ ssf(rwl,
   \item{nyrs}{ a number controlling the smoothness of the
     fitted curve in methods. See \sQuote{Details} in \code{\link{detrend.series}}.}
   
-  \item{pos.slope}{ a \code{logical} flag.  Allow for a positive
-    slope in method \code{"AgeDepSpline"}? See \sQuote{Details} 
-    in \code{\link{detrend.series}} }
-    
   \item{difference}{ a \code{logical} flag.  Compute residuals by subtraction 
   if TRUE, otherwise use division. See \sQuote{Details} 
   in \code{\link{detrend.series}} }

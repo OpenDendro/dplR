@@ -12,7 +12,7 @@ bai.in(rwl, d2pith = NULL)
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as
     rows such as that produced by \code{\link{read.rwl}} }
-  \item{d2pith}{ an optional \code{vector} containing two variables.  If
+  \item{d2pith}{ an optional \code{data.frame} containing two variables.  If
     present, then variable one (\code{series} in the example below)
     gives the series \acronym{ID} as either \code{characters} or
     \code{factors}.  These must exactly match

@@ -1,5 +1,15 @@
 * CHANGES IN dplR VERSION 1.7.7
 
+File: bakker.R .Rd, zo.rwl, zo.anc
+----------------
+
+- Added SK's bakker func
+
+File: read.tucson.R
+----------------
+
+- Added a verbose flag
+
 File: rwl.report.R
 ----------------
 
@@ -7,11 +17,22 @@ File: rwl.report.R
 - Removing plyr as an import -- very simple fix to get rid of alply
 - Setting a new ouptput for consecutive zeros. Those make me nervous.
 - Removing invisible so the rwl report can be useful as an object.
+- Adding a new check for unconnected flaoters
+- Changing arg names to better match dplR conventions
 
 File: ssf.R
 ----------------
 
 - Found a bug where input data with rows of all zero caused div0 problems. Added a check to stop program if input has all zero rows.
+- Removing pos.slope as an argument and hardcoding to TRUE.
+- Changed default to caps rather than ads.
+- Added a difference option for making rwi.
+- Changed output so that iter0 is incuded in the output arrays when return.info is true
+
+File: caps.R
+----------------
+
+- Added arg so that nyrs can be between 0 and 1 and then treated as a %. Changed default to be 2/3 rather than 1/2 of n
 
 * CHANGES IN dplR VERSION 1.7.6
 

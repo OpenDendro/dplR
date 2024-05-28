@@ -2,29 +2,15 @@
 \name{zof.anc}
 \docType{data}
 \alias{zof.anc}
-\title{ Ponderosa Pine Pith Offsets Corresponding to \code{\link{zof.rwl}} }
+\title{ Ancillary Data Corresponding to \code{\link{zof.rwl}} }
 \description{
-  This data set gives the pith offsets that match the ring widths for
-  \code{\link{zof.rwl}} \enc{–}{-} a data set of ponderosa pine (\emph{Pinus
-  ponderosa}) from the Gus Pearson Natural Area (\acronym{GPNA}) in
-  northern Arizona, \acronym{USA}.  Data are further described by Biondi
-  and Qeadan (2008) and references therein.
+  This data set gives the pith offsets, distance to pith, and diameter that match the ring widths for \code{\link{zof.rwl}} \enc{–}{-} a data set of XXXX (\emph{XXXX}) from the XXXX in XXXX.
 }
 \usage{data(zof.anc)}
 \format{
-  A \code{data.frame} containing series \acronym{ID}s in column 1
-  (\code{\var{series}}) and the number of years between the beginning of
-  that series in \code{\link{zof.rwl}} and the pith of the tree
-  (\code{\var{pith.offset}}).  This can be used together with the ring
-  widths to calculate the cambial age of each ring.
+  A \code{data.frame} containing four columns. Column one gives the series ID. Column two (\code{PO}) gives the number of rings estimated to be missing to the pith. Column three (\code{d2pith}) gives the estimated distance to the pith (mm). Column four (\code{diam}) gives the diameter at breast height (DBH) in cm.
 }
 \source{
-  DendroLab, University of Nevada Reno, \acronym{USA}.
-  \url{https://dendrolaborg.wordpress.com/}
-}
-\references{
-  Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring
-  standardization: Defining the biological trend from expected basal area
-  increment.  \emph{Tree-Ring Research}, \bold{64}(2), 81\enc{–}{--}96.
+Stefan Klesse
 }
 \keyword{datasets}

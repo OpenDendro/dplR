@@ -1,5 +1,5 @@
 
-# dplR <img src="https://github.com/AndyBunn/dplR/blob/master/dplR_Sticker.png" width="220" align="right" />
+# dplR <img src="https://github.com/opendendro/dplR/blob/master/dplR_Sticker.png" width="220" align="right" />
 
 <!-- badges: start -->
 #### Release Version
@@ -7,8 +7,8 @@
 [![CRAN_last_release_badge](https://www.r-pkg.org/badges/last-release/dplR)](https://cran.r-project.org/package=dplR)
 [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/last-month/dplR?color=blue)](https://r-pkg.org/pkg/dplR)
 #### Development Version
-[![R-CMD-check](https://github.com/andybunn/dplR/workflows/R-CMD-check/badge.svg)](https://github.com/andybunn/dplR/actions)
-[![dplR status badge](https://andybunn.r-universe.dev/badges/dplR)](https://andybunn.r-universe.dev)
+[![R-CMD-check](https://github.com/opendendro/dplR/workflows/R-CMD-check/badge.svg)](https://github.com/opendendro/dplR/actions)
+[![dplR status badge](https://opendendro.r-universe.dev/badges/dplR)](https://opendendro.r-universe.dev)
 
 <!-- badges: end -->
   
@@ -31,13 +31,13 @@ install.packages("dplR")
 CRAN releases of dplR are relatively infrequent. However, the development version of `dplR` is available here as source code and as binaries. Most users who want the development version are best off getting the **binary** via `r-universe` from the R prompt:
 
 ```R
-install.packages("dplR", repos = "https://andybunn.r-universe.dev/")
+install.packages("dplR", repos = "https://openDendro.r-universe.dev/")
 ```
 
 Alternatively, the development version can be installed from the **source code** with the `devtools` package.
 
 ```R
-devtools::install_github("andybunn/dplR")
+devtools::install_github("openDendro/dplR")
 ```
 
 This should be straightforward for Linux users (if any still exist) but because `dplR` includes both C and Fortran code, you will need the appropriate compilers installed on your system to build from source. Configuring these is relatively easy for Mac and less so for Windows. Unless there is a good reason to want to build from source (e.g., you are a geek or a developer) it's more typical to install a binary.
@@ -50,7 +50,7 @@ New users of dplR can begin by working with the introductory chapters in [Learni
 
 Some dendro tasks might be done more easily interactively. As such, we have two modest apps using Shiny and `dplR` as the back-end.
 
-* Statistical crossdating: [`xDater`](https://andybunn.shinyapps.io/xDateR/)
-* Interactive detrending: [`iDetrend`](https://andybunn.shinyapps.io/iDetrend/)
+* Statistical crossdating: [`xDater`](https://viz.datascience.arizona.edu/xDateR/)
+* Interactive detrending: [`iDetrend`](https://viz.datascience.arizona.edu/iDetrend/)
 
 

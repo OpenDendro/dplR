@@ -32,4 +32,8 @@ typedef long double dplr_ldouble;
 #define R_INT_MAX 2147483647
 #define R_INT_MIN -R_INT_MAX
 
+#if R_VERSION < R_Version(4, 4, 1)
+SEXP allocLang(int n);
+#endif
+
 #endif

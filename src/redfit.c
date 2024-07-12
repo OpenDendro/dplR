@@ -94,16 +94,14 @@ void rmtrend(SEXP x, SEXP y, SEXP lengthfun, SEXP lmfit) {
     Rboolean mismatch = TRUE;
 
     /* dplR: call lm.fit(x, y) */
-    PROTECT(tmp = lmcall = allocList(3));
-    SET_TYPEOF(lmcall, LANGSXP);
+    PROTECT(tmp = lmcall = allocLang(3));
     SETCAR(tmp, lmfit); tmp = CDR(tmp);
     SETCAR(tmp, x); tmp = CDR(tmp);
     SETCAR(tmp, y);
     PROTECT(lmres = eval(lmcall, R_EmptyEnv));
 
     /* dplR: get residuals from the list given by lm.fit(x, y) */
-    PROTECT(tmp = ncall = allocList(2));
-    SET_TYPEOF(ncall, LANGSXP);
+    PROTECT(tmp = ncall = allocLang(2));
     SETCAR(tmp, lengthfun); tmp = CDR(tmp);
     lmnames = getAttrib(lmres, R_NamesSymbol);
     SETCAR(tmp, lmnames);
@@ -121,8 +119,7 @@ void rmtrend(SEXP x, SEXP y, SEXP lengthfun, SEXP lmfit) {
     }
 
     /* dplR: compare length of y with length of residuals */
-    PROTECT(tmp = ncall = allocList(2));
-    SET_TYPEOF(ncall, LANGSXP);
+    PROTECT(tmp = ncall = allocLang(2));
     SETCAR(tmp, lengthfun); tmp = CDR(tmp);
     SETCAR(tmp, y);
     PROTECT_WITH_INDEX(sn = eval(ncall, R_BaseEnv), &ipx);
@@ -195,8 +192,7 @@ SEXP spectr(SEXP t, SEXP x, SEXP np, SEXP ww, SEXP tsin, SEXP tcos, SEXP wtau,
      * dimensions greater than 2^31 - 1 if that is allowed in future
      * versions of R.  I don't see that limit becoming a problem,
      * though.*/
-    PROTECT(tmp = cbindcall = allocList(3));
-    SET_TYPEOF(cbindcall, LANGSXP);
+    PROTECT(tmp = cbindcall = allocLang(3));
     SETCAR(tmp, install("cbind")); tmp = CDR(tmp);
     SETCAR(tmp, ScalarReal(1.0)); tmp = CDR(tmp);
     SETCAR(tmp, twk);

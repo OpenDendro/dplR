@@ -1,6 +1,9 @@
 * CHANGES IN dplR VERSION 1.7.8
 
-File: 
+File: dplR.c .h, redfit.c
+----------------
+
+- Resolved R CMD check NOTE by using a well documented, conditionally backported function instead of a non-API entrypoint
 
 * CHANGES IN dplR VERSION 1.7.7
 

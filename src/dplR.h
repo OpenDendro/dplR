@@ -15,9 +15,7 @@ size_t dplRlength(SEXP x);
 #define dngettext(pkg, String, StringP, N) (N > 1 ? StringP: String)
 #endif
 
-#if defined(R_VERSION) && R_VERSION >= R_Version(3, 0, 0)
 #define DPLR_RGEQ3
-#endif
 
 /*
   dplr_ldouble is a 64 or 80 bit floating point type
@@ -33,5 +31,9 @@ typedef long double dplr_ldouble;
 
 #define R_INT_MAX 2147483647
 #define R_INT_MIN -R_INT_MAX
+
+#if R_VERSION < R_Version(4, 4, 1)
+SEXP allocLang(int n);
+#endif
 
 #endif

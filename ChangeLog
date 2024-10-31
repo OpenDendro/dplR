@@ -1,5 +1,22 @@
 * CHANGES IN dplR VERSION 1.7.8
 
+
+File: detrend.series
+----------------
+
+- Small change to Ar method to get mean right. See https://github.com/OpenDendro/dplR/issues/22
+
+File: read.fh
+----------------
+
+- Added an extra check for the end and start date, in case there is an error in the FH-file, with the end date before the start date.
+
+File: ffcsaps
+----------------
+
+- ffcsaps is defunct as it has been replaced with caps
+
+
 File: dplR.c .h, redfit.c
 ----------------
 

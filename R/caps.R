@@ -1,4 +1,4 @@
-`caps` <- function(y, nyrs=length(y) * 2/3, f= 0.5)
+`caps` <- function(y, nyrs=32, f= 0.5)
 {
   y <- as.numeric(y)
   ## If as.numeric() does not signal an error, it is unlikely that
@@ -15,7 +15,9 @@
   
   if(!is.numeric(nyrs) || length(nyrs) != 1 || nyrs <= 0)
     stop("'nyrs' must be a number greater than 0")
-  
+
+  if(nyrs > nobs)
+    warning("Spline stiffness (nyrs) is greater than the length of series (y)")
   # if nyrs is between 0 and 1 treat it as % spline.
   # e,g, nyrs = 0.667 would be a 2/3 spline
   if(nyrs <= 1 & nyrs > 0)

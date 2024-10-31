@@ -459,23 +459,23 @@ test.corr.series.seg <- function() {
     })
 }
 test.corr.series.seg()
-test.ffcsaps <- function() {
+test.caps <- function() {
     ## Setup
     n <- 100
     x <- seq_len(n)
     y <- x + 10 * sin(pi / 15 * x) + 5 * rnorm(n)
     lm.y <- lm(y ~ x)
     fitted.y <- fitted(lm.y)
-    res.1 <- ffcsaps(y, f=0, nyrs=30)
-    res.2 <- ffcsaps(y, f=0.9, nyrs=30)
-    res.3 <- ffcsaps(y, f=0.9, nyrs=5)
-    res.4 <- ffcsaps(y, f=1, nyrs=30)
-    res.5 <- ffcsaps(x)
+    res.1 <- caps(y, f=0, nyrs=30)
+    res.2 <- caps(y, f=0.9, nyrs=30)
+    res.3 <- caps(y, f=0.9, nyrs=5)
+    res.4 <- caps(y, f=1, nyrs=30)
+    res.5 <- caps(x)
     error.1 <- sum((y - res.1)^2)
     error.2 <- sum((y - res.2)^2)
     error.3 <- sum((y - res.3)^2)
     ## Test
-    test_that("ffcsaps handles special cases", {
+    test_that("caps handles special cases", {
         expect_equivalent(res.1, fitted.y)
         expect_equal(res.4, y)
         expect_equal(res.5, x)
@@ -484,13 +484,13 @@ test.ffcsaps <- function() {
         expect_true(error.1 > error.2)
         expect_true(error.2 > error.3)
     })
-    test_that("ffcsaps stops on bad parameters", {
-        expect_error(ffcsaps(y, f=-1), "between 0 and 1")
-        expect_error(ffcsaps(y, f=2), "between 0 and 1")
-        expect_error(ffcsaps(y, nyrs=0), "greater than 1")
+    test_that("caps stops on bad parameters", {
+        expect_error(caps(y, f=-1), "between 0 and 1")
+        expect_error(caps(y, f=2), "between 0 and 1")
+        expect_error(caps(y, nyrs=0), "'nyrs' must be a number greater than 0")
     })
 }
-test.ffcsaps()
+test.caps()
 test.gini.coef <- function() {
     ## Setup
     MAX.SIZE <- 1000

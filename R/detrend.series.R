@@ -596,8 +596,18 @@
         
         Ar[Ar<0] <- 0
       }
-      if(difference){ resids$Ar <- Ar - mean(Ar,na.rm=TRUE) }
-      else{ resids$Ar <- Ar / mean(Ar,na.rm=TRUE) }
+      if(difference){ 
+        # changed per issue 22
+        # https://github.com/OpenDendro/dplR/issues/22
+        #resids$Ar <- Ar - mean(Ar,na.rm=TRUE) 
+        resids$Ar <- Ar - mean(y2, na.rm = TRUE) 
+        }
+      else{ 
+        # changed per issue 22
+        # https://github.com/OpenDendro/dplR/issues/22
+        #resids$Ar <- Ar / mean(Ar,na.rm=TRUE) 
+        resids$Ar <- Ar/mean(y2, na.rm = TRUE)
+        }
       curves$Ar <- mean(Ar,na.rm=TRUE)
       modelStats$Ar <- arStats
       do.ar <- TRUE

@@ -64,7 +64,7 @@ latexify(x, doublebackslash = TRUE, dashdash = TRUE,
 
   Before applying the substitutions described above, input elements with
   \code{\link{Encoding}} set to \code{"bytes"} are printed and the
-  output is stored using \code{\link{captureOutput}}.  The result of
+  output is stored using \code{\link[R.utils]{captureOutput}}.  The result of
   this intermediate stage is \acronym{ASCII} text where some characters
   are shown as their byte codes using a hexadecimal pair prefixed with
   \code{"\\x"}.  This set includes tabs, newlines and control

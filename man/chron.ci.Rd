@@ -30,7 +30,7 @@ chron.ci(x, biweight=TRUE, conf=0.95, R=100)
 
 \author{ Andy Bunn.}
 \seealso{ \code{\link{read.rwl}}, \code{\link{detrend}},
-  \code{\link{boot}}, \code{\link{boot.ci}}
+  \code{\link[boot]{boot}}, \code{\link[boot]{boot.ci}}
 }
 \examples{library(graphics)
 library(utils)

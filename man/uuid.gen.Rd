@@ -78,7 +78,7 @@ uuid.gen(more.state = "")
   Mikko Korpela
 }
 \seealso{
-  \code{\link{digest}}, \code{\link{Random}}
+  \code{\link[digest]{digest}}, \code{\link{Random}}
 }
 \examples{
 ## Normal use

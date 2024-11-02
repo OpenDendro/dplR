@@ -25,9 +25,9 @@ pass.filt(y, W, type = c("low", "high", "stop", "pass"),
 }
 
 \details{
-  This function applies either a Butterworth or a Chebyshev type I filter of order \code{\var{n}} to a signal and is nothing more than a wrapper for  functions in the \code{signal} package. The filters are dsigned via \code{\link{butter}} and \code{\link{cheby1}}. The filter is applied via \code{\link{filtfilt}}. 
+  This function applies either a Butterworth or a Chebyshev type I filter of order \code{\var{n}} to a signal and is nothing more than a wrapper for  functions in the \code{signal} package. The filters are designed via \code{\link[signal]{butter}} and \code{\link[signal]{cheby1}}. The filter is applied via \code{\link[signal]{filtfilt}}. 
   
-  The input data (\code{y}) has the mean value subtracted and is then padded via reflection at the start and the end to a distance of twice the maximum period. The padded data and the filter are passed to \code{\link{filtfilt}} after which the data are unpadded and returned afer the mean is added back. 
+  The input data (\code{y}) has the mean value subtracted and is then padded via reflection at the start and the end to a distance of twice the maximum period. The padded data and the filter are passed to \code{\link[signal]{filtfilt}} after which the data are unpadded and returned afer the mean is added back. 
   
   The argumement \code{\var{W}} can be given in either frequency between 0 and 0.5 or, for convenience, period (minimum value of 2). For low-pass and high-pass filters, \code{\var{W}} must have a length of one. For low-pass and high-pass filters \code{\var{W}} must be a two-element vector (\code{c(low, high)}) specifying the lower and upper boundaries of the filter. 
   

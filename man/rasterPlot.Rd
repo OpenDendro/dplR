@@ -93,7 +93,7 @@ rasterPlot(expr, res = 150, region = c("plot", "figure"), antialias,
   If \code{\var{draw}} is \code{FALSE}, an object of class
   \code{"nativeRaster"} is returned.  The object can be used as input
   for \code{\link{rasterImage}} or \code{\link{grid.raster}}.  See
-  \code{\link{readPNG}}.  If no bitmap device is available
+  \code{\link[png]{readPNG}}.  If no bitmap device is available
   (see \sQuote{Note}), \code{NULL} is returned.
 }
 \author{

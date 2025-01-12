@@ -1,6 +1,11 @@
 * CHANGES IN dplR VERSION 1.7.8
 
 
+File: glk
+----------------
+
+- Man file updated to improve example. See https://github.com/OpenDendro/dplR/issues/26
+
 File: detrend.series
 ----------------
 

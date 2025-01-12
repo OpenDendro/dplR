@@ -69,8 +69,10 @@
   data(ca533)
   ca533.glklist <- glk(ca533)
   ca533.glk_mat <- ca533.glklist$glk_mat
-  mean(ca533.glk_mat, na.rm = TRUE) # calculating the mean GLK including self-similarities
-  mean(ca533.glk_mat[upper.tri(ca533.glk_mat)], na.rm = TRUE) # calculating the mean GLK excluding self-similarities
+  # calculating the mean GLK including self-similarities
+  mean(ca533.glk_mat, na.rm = TRUE) 
+  # calculating the mean GLK excluding self-similarities
+  mean(ca533.glk_mat[upper.tri(ca533.glk_mat)], na.rm = TRUE) 
 
 }
 

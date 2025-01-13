@@ -45,6 +45,9 @@ importFrom(signal, butter, filtfilt)
 
 importFrom(boot, boot, boot.ci)
 
+importFrom(lme4, lmer, fixef, ranef)
+
+
 ###############################################################
 #
 ## Methods
@@ -148,6 +151,7 @@ export("ads",
        "time<-",
        "treeMean",
        "tridas.vocabulary",
+       "universalPOWT",
        "uuid.gen",
        "wavelet.plot",
        "wc.to.po",

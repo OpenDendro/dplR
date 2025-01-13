@@ -1,6 +1,17 @@
 * CHANGES IN dplR VERSION 1.7.8
 
 
+File: universalPOWT
+----------------
+
+- Added SK's universalPOWT function
+
+File: rwl.stats
+----------------
+
+- Added kurtosis to summary stats
+
+
 File: glk
 ----------------
 

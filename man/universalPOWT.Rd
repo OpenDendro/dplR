@@ -48,4 +48,8 @@
   #compare to
   zof.pt.old <- powt(zof.rwl)
   # as an example why the old powt version should not be used anymore.
+  
+  hist(summary(zof.rwl)$skew)
+  hist(summary(zof.pt)$skew)
+  hist(summary(zof.pt.old)$skew)
 }

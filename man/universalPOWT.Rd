@@ -48,4 +48,11 @@
   #compare to
   zof.pt.old <- powt(zof.rwl)
   # as an example why the old powt version should not be used anymore.
+  
+  hist(summary(zof.rwl)$skew,breaks = seq(-2.25,2.25,by=0.25),
+       main="Raw Data",xlab="Skew")
+  hist(summary(zof.pt)$skew,breaks = seq(-2.25,2.25,by=0.25),
+       main="universalPOWT()",xlab="Skew")
+  hist(summary(zof.pt.old)$skew,breaks = seq(-2.25,2.25,by=0.25),
+       main=" powt()",xlab="Skew")
 }

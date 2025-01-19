@@ -33,7 +33,6 @@ universalPOWT<-function (rwl, rescale = FALSE, return.power=FALSE)
     for(i in 1:ncol(rwl)){
       n <- length(rwl[,i])
       
-      
       drop.1 <- rwl[,i][-1]
       drop.n <- rwl[,i][-n]
       runn.M[,i] <- (drop.1 + drop.n)/2

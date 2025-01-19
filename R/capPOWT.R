@@ -1,4 +1,4 @@
-capPOWT <- function (rwl, rescale = FALSE) 
+capPOWT <- function (rwl, rescale = FALSE, return.power=FALSE) 
 {
   # add a check for negative nums
   if(any(rwl <0, na.rm = TRUE)) {
@@ -47,13 +47,17 @@ capPOWT <- function (rwl, rescale = FALSE)
         X.nna <- which(!is.na(x))
         X <- na.omit(x)
         p <- abs(fit.lm(X))
+        
         X2 <- X^p
         Xt[X.nna] <- X2
-        Xt
+        res <- list(Xt=Xt,p=p) 
+        return(res)
     }
     prec <- getprec(rwl)
     
-    xt <- lapply(rwl, FUN = transf)
+    #xt <- lapply(rwl, FUN = transf)
+    xt <- lapply(rwl, FUN = function(x) transf(x)[[1]])
+    p <- unlist(lapply(rwl, FUN = function(x) transf(x)[['p']]))
     if (rescale) {
         sds <- lapply(rwl, FUN = function(x) sd(x, na.rm = TRUE))
         means <- lapply(rwl, FUN = function(x) mean(x, na.rm = TRUE))
@@ -65,5 +69,9 @@ capPOWT <- function (rwl, rescale = FALSE)
     res <- data.frame(xt, row.names = row.names(rwl), check.names = FALSE)
     class(res) <- c("rwl", "data.frame")
     
+    if(return.power==TRUE){ #optional output of the power coefficient, default is FALSE
+      res <- list(transformed.data=res,power=p)
+    }
+      
     return(res)
 }

@@ -28,15 +28,18 @@ powt <- function (rwl, method = "universal", rescale = FALSE,
   
   # call function
   if (is.vector(rwl) && method2 == "cook") {
-    res <- powt.series(series = rwl, rescale = rescale)
+    res <- capPOWTseries(series = rwl, rescale = rescale, 
+                         return.power = return.power)
   }
   
   if (is.data.frame(rwl) && method2 == "cook") {
-    res <- capPOWT(rwl = rwl, rescale = rescale)
+    res <- capPOWT(rwl = rwl, rescale = rescale, 
+                   return.power = return.power)
   }
   
   if (is.data.frame(rwl) && method2 == "universal") {
-    res <- universalPOWT(rwl = rwl, rescale = rescale, return.power = return.power)
+    res <- universalPOWT(rwl = rwl, rescale = rescale, 
+                         return.power = return.power)
   }
   
   return(res)

@@ -1,4 +1,4 @@
-powt.series <- function (series, rescale = FALSE)
+capPOWTseries <- function (series, rescale = FALSE, return.power=FALSE) 
 {
   
   # add a check for negative nums
@@ -54,20 +54,24 @@ powt.series <- function (series, rescale = FALSE)
     p <- abs(fit.lm(X))
     X2 <- X^p
     Xt[X.nna] <- X2
-    Xt
+    res <- list(Xt=Xt,p=p) 
+    return(res)
   }
   
   prec <- getprec(series)
   
-  xt <- transf(series)
-  
+  xt <- transf(series)[['Xt']]
+  p <-  transf(series)[['p']]
   if(rescale){
     xtNames <- names(xt)
     xt <- c(scale(xt) * sd(series,na.rm = TRUE) + mean(series,na.rm = TRUE))
     names(xt) <- xtNames
   }
   res <- xt
+  
+  if(return.power==TRUE){ #optional output of the power coefficient, default is FALSE
+    res <- list(transformed.data=res,power=p)
+  }
+  
   return(res)
 }
-
-

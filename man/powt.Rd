@@ -1,22 +1,24 @@
 \encoding{UTF-8}
 \name{powt}
 \alias{powt}
-\alias{powt.series}
 \title{Power Transformation of Tree-Ring Data}
 \description{
   Perform power transformation for raw tree-ring width.
 }
 \usage{
-powt(rwl, rescale = FALSE)
-powt.series(series, rescale = FALSE)
+powt(rwl, method = "universal", rescale = FALSE,
+     return.power=FALSE)
 }
 \arguments{
   \item{rwl}{a \code{data.frame} of raw tree-ring widths series, such as that
     produced by \code{\link{read.rwl}} or \code{\link{read.fh}}}
     
-  \item{series}{ a \code{numeric} vector, usually a tree-ring series. }
-    
+  \item{method}{ a \code{character} vector to determine the transform
+    method.  See details below.  Possible values are either "universal" or "cook."}
+
   \item{rescale}{ \code{logical} flag.  If \code{TRUE} then each transformed series is rescaled to have the orginal mean and standard deviation of the input data. }
+
+  \item{return.power}{ \code{logical} flag.  If \code{TRUE} then the power estimate is returned (only applies to "universal"" method). }
 }
 \value{
   Either an object of class \code{c("rwl", "data.frame")} containing the power transformed ring width series with the series in columns and the years as rows or in the case of a single series, a possibly named vector of the same. With \code{rwl}, the series \acronym{ID}s are the column names and the years are the row names.
@@ -43,18 +45,11 @@ powt.series(series, rescale = FALSE)
 \seealso{\code{\link{rcs}}
 }
 \examples{library(utils)
-# many series at once
 data(gp.rwl)
 gp.pt <- powt(gp.rwl)
 hist(summary(gp.rwl)$skew)
 hist(summary(gp.pt)$skew)
 
-# single series
-gp01A <- gp.rwl[, "01A"]
-names(gp01A) <- rownames(gp.rwl)
-gp01A.pt <- powt.series(gp01A,rescale=TRUE)
-plot(gp01A.pt,gp01A)
-abline(c(0,1))
 }
 \author{
   Christian Zang.  Patched and improved by Mikko Korpela.

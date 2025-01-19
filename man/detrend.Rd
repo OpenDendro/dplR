@@ -113,9 +113,9 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
 data(ca533)
 ## Detrend using modified exponential decay. Returns a data.frame
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
-## Detrend using a slines on power transformed data and compute
+## Detrend using splines and compute
 ## residuals via subtraction
-ca533.rwi <- detrend(rwl = powt(ca533), method = "Spline",
+ca533.rwi <- detrend(rwl = ca533, method = "Spline",
                      difference = TRUE)
 
 ## Detrend using modified Hugershoff curve and return info on the model

@@ -1,6 +1,11 @@
 # https://github.com/OpenDendro/dplR/pull/25
-universalPOWT<-function (rwl,return.power=FALSE)  
+universalPOWT<-function (rwl, rescale = FALSE, return.power=FALSE)  
 {
+  # add a check for negative nums
+  if(any(rwl <0, na.rm = TRUE)) {
+    stop("'rwl' values cannot be negative")
+  }
+  
   if (!is.data.frame(rwl)) 
     stop("'rwl' must be a data.frame")
   getprec <- function(rwl) {
@@ -61,11 +66,22 @@ universalPOWT<-function (rwl,return.power=FALSE)
   
   p<-fit.lm(rwl)
   xt <-lapply(rwl, function(x)transf(x,p$power))
+  
+  if (rescale) {
+    sds <- lapply(rwl, FUN = function(x) sd(x, na.rm = TRUE))
+    means <- lapply(rwl, FUN = function(x) mean(x, na.rm = TRUE))
+    rescale_ <- function(x, .sd, .mean) {
+      scale(x) * .sd + .mean
+    }
+    xt <- mapply(rescale_, xt, sds, means)
+  }
+  
   res <- data.frame(xt, row.names = row.names(rwl), check.names = FALSE)
   class(res) <- c("rwl", "data.frame")
   
-  if(return.power==T){ #optional output of the power coefficient, default is FALSE
-    list(transformed.data=res,power=p$power)
-  }else{res}
-  
+  if(return.power==TRUE){ #optional output of the power coefficient, default is FALSE
+    res <- list(transformed.data=res,power=p$power)
+  }
+
+  return(res)
 }

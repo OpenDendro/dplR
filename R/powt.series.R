@@ -1,16 +1,15 @@
 powt.series <- function (series, rescale = FALSE)
 {
-
+  
   # add a check for negative nums
-  if(any(series <0,na.rm = TRUE)) {
-    stop("'series' values must be greater than zero")
+  if(any(series < 0,na.rm = TRUE)) {
+    stop("'series' values cannot be negative")
   }
-
-
-   #  check rescale
+  
+  #  check rescale
   if (!is.logical(rescale))
     stop("'rescale' must be either FALSE (the default) or TRUE")
-
+  
   # helpers
   # used to set min numb to zeros.
   getprec <- function(series) {
@@ -32,7 +31,7 @@ powt.series <- function (series, rescale = FALSE)
       10^-maxdig
     }
   }
-
+  
   # to get p
   fit.lm <- function(series) {
     n <- length(series)
@@ -46,7 +45,7 @@ powt.series <- function (series, rescale = FALSE)
     b <- mod[["coefficients"]][2]
     1 - b
   }
-
+  
   # do the trans
   transf <- function(x) {
     Xt <- x
@@ -57,17 +56,18 @@ powt.series <- function (series, rescale = FALSE)
     Xt[X.nna] <- X2
     Xt
   }
-
+  
   prec <- getprec(series)
-
+  
   xt <- transf(series)
-
+  
   if(rescale){
     xtNames <- names(xt)
     xt <- c(scale(xt) * sd(series,na.rm = TRUE) + mean(series,na.rm = TRUE))
     names(xt) <- xtNames
   }
-  xt
+  res <- xt
+  return(res)
 }
 
 

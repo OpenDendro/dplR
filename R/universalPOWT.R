@@ -32,7 +32,6 @@ universalPOWT<-function (rwl, rescale = FALSE, return.power=FALSE)
     runn.S<-matrix(NA,ncol=ncol(rwl),nrow=nrow(rwl)-1)
     for(i in 1:ncol(rwl)){
       n <- length(rwl[,i])
-      
       drop.1 <- rwl[,i][-1]
       drop.n <- rwl[,i][-n]
       runn.M[,i] <- (drop.1 + drop.n)/2
@@ -40,13 +39,15 @@ universalPOWT<-function (rwl, rescale = FALSE, return.power=FALSE)
     }
     
     prec <- getprec(rwl)
-    runn.S[runn.M == 0] <- prec
+    # AGB -- note typo corrected that let 0 get passed to log resulting in Inf
+    #runn.S[runn.M == 0] <- prec
+    runn.M[runn.M == 0] <- prec
     runn.S[runn.S == 0] <- prec
     
     
     df<-data.frame(run.M=c(log(runn.M)),
                    run.S=c(log(runn.S)),
-                   year=rownames(rwl)[-1],
+                   year=rownames(rwl)[-1], 
                    ID=rep(colnames(rwl),each=nrow(rwl)-1))
     
     lmm<-lmer(run.S~run.M+(1|year),df,REML=FALSE)

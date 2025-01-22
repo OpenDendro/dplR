@@ -55,8 +55,7 @@ capPOWT <- function (rwl, rescale = FALSE, return.power=FALSE)
     }
     prec <- getprec(rwl)
     
-    #xt <- lapply(rwl, FUN = transf)
-    xt <- lapply(rwl, FUN = function(x) transf(x)[[1]])
+    xt <- lapply(rwl, FUN = function(x) transf(x)[['Xt']])
     p <- unlist(lapply(rwl, FUN = function(x) transf(x)[['p']]))
     if (rescale) {
         sds <- lapply(rwl, FUN = function(x) sd(x, na.rm = TRUE))

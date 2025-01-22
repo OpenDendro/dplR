@@ -70,6 +70,7 @@ capPOWTseries <- function (series, rescale = FALSE, return.power=FALSE)
   res <- xt
   
   if(return.power==TRUE){ #optional output of the power coefficient, default is FALSE
+    names(p) <- NULL
     res <- list(transformed.data=res,power=p)
   }
   

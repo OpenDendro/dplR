@@ -70,6 +70,7 @@ capPOWT <- function (rwl, rescale = FALSE, return.power=FALSE)
     class(res) <- c("rwl", "data.frame")
     
     if(return.power==TRUE){ #optional output of the power coefficient, default is FALSE
+      names(p) <- names(rwl)
       res <- list(transformed.data=res,power=p)
     }
       

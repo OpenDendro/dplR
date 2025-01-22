@@ -49,7 +49,7 @@ universalPOWT<-function (rwl, rescale = FALSE, return.power=FALSE)
                    year=rownames(rwl)[-1],
                    ID=rep(colnames(rwl),each=nrow(rwl)-1))
     
-    lmm<-lmer(run.S~run.M+(1|year),df,REML=F)
+    lmm<-lmer(run.S~run.M+(1|year),df,REML=FALSE)
     b <- fixef(lmm)[2]
     list(intercept=fixef(lmm)[1],power=1 - b,model=lmm,mean=ranef(lmm)$ID)
   }
@@ -79,6 +79,7 @@ universalPOWT<-function (rwl, rescale = FALSE, return.power=FALSE)
   class(res) <- c("rwl", "data.frame")
   
   if(return.power==TRUE){ #optional output of the power coefficient, default is FALSE
+    names(p$power) <- NULL
     res <- list(transformed.data=res,power=p$power)
   }
 

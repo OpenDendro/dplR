@@ -3,7 +3,7 @@
 \alias{powt}
 \title{Power Transformation of Tree-Ring Data}
 \description{
-  Perform power transformation for raw tree-ring width.
+  Power transformation of tree-ring width.
 }
 \usage{
 powt(rwl, method = "universal", rescale = FALSE,
@@ -17,8 +17,9 @@ powt(rwl, method = "universal", rescale = FALSE,
     method.  See details below.  Possible values are either "universal" or 
     "cook." Pattern matching is used.}
 
-  \item{rescale}{ \code{logical} flag.  If \code{TRUE} then each transformed series 
-  is rescaled to have the orginal mean and standard deviation of the input data. }
+  \item{rescale}{ \code{logical} flag.  If \code{TRUE} then each transformed 
+  series is rescaled to have the orginal mean and standard deviation of the 
+  input data. See details. }
 
   \item{return.power}{ \code{logical} flag.  If \code{TRUE} then the power 
   estimate(s) is returned. }
@@ -52,10 +53,15 @@ powt(rwl, method = "universal", rescale = FALSE,
 
   The procedure above is modified with \code{method="universal"} where all samples 
   are used simultaneously in a linear mixed-effects model with time (year)
-  as a random effect: \code{lmer(S~M+(1|year)}. This "universal" or 
+  as a random effect: \code{lmer(log S ~ log M + (1|year)}. This "universal" or 
   "singal free" approach accounts for the common year effect across all of the 
   series in \code{rwl} and should address that not every year has the same 
   change in environmental conditions to the previous year. 
+  
+  The \code{rescale} argument will return the series with a mean and standard
+  deviation that matches the input data. While this is a common convention,
+  users should note that this can produce negative values which can be confusing
+  if thought of as "ring widths."
 
 }
 \references{

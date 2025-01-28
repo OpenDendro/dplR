@@ -54,7 +54,7 @@ powt(rwl, method = "universal", rescale = FALSE,
   The procedure above is modified with \code{method="universal"} where all samples 
   are used simultaneously in a linear mixed-effects model with time (year)
   as a random effect: \code{lmer(log S ~ log M + (1|year)}. This "universal" or 
-  "singal free" approach accounts for the common year effect across all of the 
+  "signal free" approach accounts for the common year effect across all of the 
   series in \code{rwl} and should address that not every year has the same 
   change in environmental conditions to the previous year. 
   
@@ -71,7 +71,7 @@ powt(rwl, method = "universal", rescale = FALSE,
 }
 
 \author{
-  Christian Zang impemented the Cook and Peters method. Stefan Klesse conceived
+  Christian Zang implemented the Cook and Peters method. Stefan Klesse conceived
   and wrote the universal method. Patched and improved by Mikko Korpela and 
   Andy Bunn.
 }

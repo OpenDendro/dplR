@@ -31,7 +31,7 @@ File: read.fh
 File: ffcsaps
 ----------------
 
-- ffcsaps is defunct as it has been replaced with caps
+- ffcsaps is deprecated as it has been replaced with caps. Will be defunct after 1.7.8
 
 
 File: dplR.c .h, redfit.c

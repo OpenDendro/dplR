@@ -47,6 +47,8 @@ importFrom(boot, boot, boot.ci)
 
 importFrom(lme4, lmer, fixef, ranef)
 
+importFrom(lifecycle, deprecate_warn, deprecate_stop)
+
 
 ###############################################################
 #

@@ -1,6 +1,8 @@
 ffcsaps <- function(y, x=seq_along(y), nyrs=length(y)/2, f=0.5) {
   # for v 1.7.8
-  .Deprecated(new = "caps",msg = "ffcsaps is deprecated as of version 1.7.8. Please use caps instead. ffcsaps will be defunct as of version 1.7.9")
+  #.Deprecated(new = "caps",msg = "ffcsaps is deprecated as of version 1.7.8. Please use caps instead. ffcsaps will be defunct as of version 1.7.9")
+  deprecate_warn(when = "1.7.8", what = "ffcsaps()", with = "caps()")
+  caps(y,nyrs,f)  # Forward arguments to caps()
   # for v 1.7.9
   #.Defunct(new = "caps",msg = "ffcsaps is defunct as of version 1.7.9. Please use caps instead.")
 }

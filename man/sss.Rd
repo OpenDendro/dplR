@@ -22,21 +22,46 @@ sss(rwi, ids = NULL)
     \code{data.frame(tree=1:ncol(\var{rwi}), core=rep(1, ncol(\var{rwi})))}. }
 }
 \details{
-  This calculates subsample signal strength (sss) following equation 3.50 in Cook and Kairiukstis (1990) but using notation from Buras (2017) because writing the prime unicode symbol seems too difficult. The function calls \code{\link{rwi.stats}} and passes it the arguments \code{ids} and \code{prewhiten}. 
+  This calculates subsample signal strength (sss) following equation 3.50 in 
+  Cook and Kairiukstis (1990) but using notation from Buras (2017) because 
+  writing the prime unicode symbol seems too difficult. The function 
+  calls \code{\link{rwi.stats}} and passes it the arguments \code{ids} 
+  and \code{prewhiten}. 
   
-    To make better use of variation in growth within and between series, an appropriate mask (parameter \code{\var{ids}}) should be provided that identifies each series with a tree as it is common for dendrochronologists to take more than one core per tree.  The function \code{\link{read.ids}} is helpful for creating a mask based on the series \acronym{ID}.
+  To make better use of variation in growth within and between series, an 
+  appropriate mask (parameter \code{\var{ids}}) should be provided that 
+  identifies each series with a tree as it is common for dendrochronologists 
+  to take more than one core per tree.  The function \code{\link{read.ids}} is 
+  helpful for creating a mask based on the series \acronym{ID}.
 
-  Subsample signal strength is calculated as \eqn{\frac{n[1+(N-1)\bar{r}]}{N[1+(n-1)\bar{r}]}}{n*(1+(N-1)*rbar) / N*(1+(n-1)*rbar)} where \code{n} and \code{N} are the number of cores or trees in the subsample and sample respectively and \code{rbar} is mean interseries correlation. If there is only one core per tree \code{n} is the sample depth in a given year (\code{rowSums(!is.na(rwi))}), \code{N} is the number of cores (\code{n.cores} as given by \code{\link{rwi.stats}}), and \code{rbar} is the mean interseries correlation between all series (\code{r.bt} as given by \code{\link{rwi.stats}}). If there are multiple cores per tree \code{n} is the number of trees present in a given year, \code{N} is the number of trees (\code{n.trees} as given by \code{\link{rwi.stats}}), and \code{rbar} is the effective mean interseries correlation (\code{r.eff} as given by \code{\link{rwi.stats}}).
+  Subsample signal strength is calculated as \eqn{\frac{n[1+(N-1)\bar{r}]}{N[1+(n-1)\bar{r}]}}{n*(1+(N-1)*rbar) / N*(1+(n-1)*rbar)} 
+  where \code{n} and \code{N} are the number of cores or trees in the 
+  subsample and sample respectively and \code{rbar} is mean interseries 
+  correlation. If there is only one core per tree \code{n} is the sample 
+  depth in a given year (\code{rowSums(!is.na(rwi))}), \code{N} is the 
+  number of cores (\code{n.cores} as given by \code{\link{rwi.stats}}), 
+  and \code{rbar} is the mean interseries correlation between all series 
+  (\code{r.bt} as given by \code{\link{rwi.stats}}). If there are multiple 
+  cores per tree \code{n} is the number of trees present in a given year, 
+  \code{N} is the number of trees (\code{n.trees} as given by 
+  \code{\link{rwi.stats}}), and \code{rbar} is the effective mean interseries 
+  correlation (\code{r.eff} as given by \code{\link{rwi.stats}}).
 
-Readers interested in the differences between subsample signal strength and the more commonly used (running) expressed population signal should look at Buras (2017) on the common misuse of the expressed population signal as well as Cook and Pederson (2011) for a more general approach to categorizing variability in tree-ring data.
+  Readers interested in the differences between subsample signal strength and 
+  the more commonly used (running) expressed population signal should look at 
+  Buras (2017) on the common misuse of the expressed population signal as well 
+  as Cook and Pederson (2011) for a more general approach to categorizing 
+  variability in tree-ring data.
 
 }
 
-\value{ A \code{numeric} containing the subsample signal strength that is the same as number if rows of\code{rwi}. 
+\value{ A \code{numeric} containing the subsample signal strength that is 
+the same as number if rows of\code{rwi}. 
 }
 \references{
 
-  Buras, A. (2017) A comment on the Expressed Population Signal. Dendrochronologia 44:130-132. 
+  Buras, A. (2017) A comment on the Expressed Population Signal. 
+  Dendrochronologia 44:130-132. 
   
   Cook, E. R. and Kairiukstis, L. A., editors (1990) \emph{Methods of
     Dendrochronology: Applications in the Environmental Sciences}.

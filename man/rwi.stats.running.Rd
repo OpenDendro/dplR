@@ -133,7 +133,11 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
   output.  The signal-to-noise ratio is calculated following Cook and 
   Pederson (2011).
   
-  Note that Buras (2017) cautions against using the expressed population signal as a statistic to determine the whether a chronology correctly represents the population signal of a data set. He reccomends the use of subsample signal strength (\code{\link{sss}}) over EPS.
+  Please note that Buras (2017) cautions against the use of expressed 
+  population signal (EPS) for evaluating the climate-reconstruction potential 
+  of a tree-ring sample. Instead, he recommends the use of subsample signal 
+  strength (\code{\link{sss}}) for evaluating the loss of predictive power 
+  back in time when sample replication drops.
 
   If desired, the \code{\var{rwi}} can be filtered in the same manner
   as the family of cross-dating functions using \code{\var{prewhiten}} and

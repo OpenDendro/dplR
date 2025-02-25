@@ -49,7 +49,8 @@ sss(rwi, ids = NULL)
 
   Readers interested in the differences between subsample signal strength and 
   the more commonly used (running) expressed population signal should look at 
-  Buras (2017) on the frequently mis-used citation of Wigley et al. (1984) of the expressed population signal threshold EPS=0.85 as well 
+  Buras (2017) on the frequently mis-used citation of Wigley et al. (1984) 
+  of the expressed population signal threshold EPS=0.85 as well 
   as Cook and Pederson (2011) for a more general approach to categorizing 
   variability in tree-ring data.
 
@@ -72,6 +73,11 @@ the same as number if rows of\code{rwi}.
   Diaz, H. F., editors, \emph{Dendroclimatology: Progress and
   Prospects}, pages 77\enc{–}{--}112.  Springer.  \acronym{ISBN-13}:
   978-1-4020-4010-8.
+  
+  Wigley, T. M., Briffa, K. R. and Jones, P. D. (1984) On the average 
+  value of correlated time series, with applications in dendroclimatology 
+  and hydrometeorology. Journal of Applied Meteorology and Climatology 
+  23: 201-213.
 
 }
 

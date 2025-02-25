@@ -49,7 +49,7 @@ sss(rwi, ids = NULL)
 
   Readers interested in the differences between subsample signal strength and 
   the more commonly used (running) expressed population signal should look at 
-  Buras (2017) on the common misuse of the expressed population signal as well 
+  Buras (2017) on the frequently mis-used citation of Wigley et al. (1984) of the expressed population signal threshold EPS=0.85 as well 
   as Cook and Pederson (2011) for a more general approach to categorizing 
   variability in tree-ring data.
 

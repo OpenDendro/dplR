@@ -81,7 +81,9 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
             stop("'window.length' is smaller than 'min.corr.overlap'")
         }
     }
-    tmp <- normalize1(rwi, n, prewhiten)
+    rwi.mean<-round(mean(unlist(rwi),na.rm=T)) 
+    if(rwi.mean==0){rwi<-rwi+100} #this is a check whether your dataset has been detrended using difference=T, thus having a grand mean of 0. If so, it needs to be transposed by an arbitrary positive number, otherwise normalize1() messes up the dataset and can divide a series by a slightly negative value.
+    tmp <- normalize1(rwi, n, prewhiten) 
     if(!all(tmp$idx.good)) {
         warning("after prewhitening, 'rwi' contains column(s) without at least four observations",
                 call.=FALSE)

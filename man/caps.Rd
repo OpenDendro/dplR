@@ -37,7 +37,7 @@ caps(y, nyrs = 32, f = 0.5)
   Klesse, S. (2021) Critical Note on the Application of the "Two-Third"" Spline. Dendrochronologia Volume 65: 125786
 }
 \author{
-  Fotran code provided by Ed Cook and adapted for dplR by Andy Bunn.
+  Fortran code provided by Ed Cook and adapted for dplR by Andy Bunn.
 }
 
 \seealso{ \code{\link{ads}} }

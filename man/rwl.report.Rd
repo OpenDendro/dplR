@@ -39,16 +39,16 @@ rwl.report(rwl,small.thresh=NA,big.thresh=NA)
   \item{meanAR1}{a \code{numeric} with the mean AR1 value of all series.}
   \item{sdAR1}{a \code{numeric} with the standard deviation of the AR1 values of all series.}
   \item{unconnected}{a \code{logical} indicating if there are rows (years) with all NA values.}
-  \item{unconnectedYrs}{a \code{numeric} vector with unconnceted years.}
+  \item{unconnectedYrs}{a \code{numeric} vector with unconnected years.}
   \item{nZeros}{a \code{numeric} with number of zeros in the data. }
   \item{zeros}{ a \code{list} containing series and years with zeros or a \code{numeric} of 0.}
   \item{allZeroYears}{a \code{numeric} indicating rows (years) with all zero values. }
-  \item{consecutiveZeros}{ a \code{list} containing series and years with consecuative zeros or a \code{numeric} of 0. }
+  \item{consecutiveZeros}{ a \code{list} containing series and years with consecutive zeros or a \code{numeric} of 0. }
   \item{meanInterSeriesCor}{a \code{numeric} with the mean interseries correlation.}
   \item{sdInterSeriesCor}{a \code{numeric} with the standard deviation of the interseries correlations.}
   \item{internalNAs}{a \code{list} containing series and years with internal NA values or a \code{numeric} of 0.}
   \item{smallRings}{a \code{list} containing series and years with small rings or a \code{numeric} of 0.}
-  \item{bigRings}{a \code{list} containing series and years with small rings or a \code{numeric} of 0.}
+  \item{bigRings}{a \code{list} containing series and years with large rings or a \code{numeric} of 0.}
 
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }

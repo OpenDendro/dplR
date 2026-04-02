@@ -240,7 +240,7 @@ detrend.series(y, y.name = "", make.plot = TRUE,
     values.  If the locations are in a \code{character} vector, they are
     years.  Otherwise they are indices to the input series. }
     
-  \item{dirtDog}{ A logical flag indicating whether the requested method resulted in neagtive values for the curve fit, what Cook's ARSTAN called a Dirty Dog. }
+  \item{dirtDog}{ A logical flag indicating whether the requested method resulted in negative values for the curve fit, what Cook's ARSTAN called a Dirty Dog. }
 
 
 }

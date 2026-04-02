@@ -3,7 +3,7 @@
 \alias{ssf}
 \title{ Simple Signal Free Standardization }
 \description{
-  A simple implentation of the signal-free chronology
+  A simple implementation of the signal-free chronology
 }
 \usage{
 ssf(rwl, 

@@ -23,7 +23,7 @@ treeMean(rwl, ids, na.rm=FALSE)
 \details{
   This function averages together multiple cores to give a mean value of growth.
   It is very common in dendrochronology to take more than one core per tree. In
-  those cases it is occassionally desirable to have an average of the cores.
+  those cases it is occasionally desirable to have an average of the cores.
   This function merely loops through the \code{rwl} object and calculates the
   \code{\link{rowMeans}} for each tree. If \code{na.rm=TRUE} trees with >1 
   sample will be averaged only over the period where the samples overlap. 

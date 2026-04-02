@@ -37,7 +37,7 @@ read.tucson(fname, header = NULL, long = FALSE,
 \details{
   This reads in a standard rwl file as defined according to the
   standards of the \acronym{ITRDB} at
-  \url{https://www1.ncdc.noaa.gov/pub/data/paleo/treering/treeinfo.txt}.  Despite the
+  \url{https://www.ncei.noaa.gov/pub/data/paleo/treering/treeinfo.txt}.  Despite the
   standards at the \acronym{ITRDB}, this occasionally fails due to
   formatting problems.
 }

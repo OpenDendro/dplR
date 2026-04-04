@@ -1,10 +1,36 @@
 * CHANGES IN dplR VERSION 1.7.9
 
 
-File: rwi.stats ans sss help
+File: xdate.floater.R .Rd
 ----------------
 
-* Changed verbiage after emails with Stefan Klesse and Allan Buras
+- Major refactor of xdate.floater. Function now returns a `floater` S3 class
+  object (a list with series.name, floaterCorStats, rwlCombined, rwlOut).
+- Added print.floater() and plot.floater() S3 methods.
+- plot.floater() now includes an interseries correlation quantile envelope
+  (5th-95th percentile of the master) and median interseries correlation line
+  for context when evaluating floater placement.
+- Changed default for return.rwl from FALSE to TRUE.
+- Results are now filtered to exclude future dates.
+- Code cleanup: improved spacing, comments, and readability throughout.
+
+
+File: sss.Rd, rwi.stats.running.Rd
+----------------
+
+- Updated sss help to clarify the frequently mis-cited EPS=0.85 threshold
+  from Wigley et al. (1984) following discussion with Stefan Klesse and
+  Allan Buras.
+- Added Wigley, Briffa and Jones (1984) to references.
+- Reformatted details section for readability.
+
+
+File: Various man files
+----------------
+
+- Minor documentation updates across multiple help files (ads, caps,
+  ccf.series.rwl, chron.stabilized, csv2rwl, detrend.series, read.crn,
+  read.tucson, rwl.report, ssf, treeMean, write.crn, write.tucson).
 
 
 File: powt

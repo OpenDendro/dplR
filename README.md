@@ -42,7 +42,7 @@ Alternatively, the development version can be installed from the **source code**
 devtools::install_github("openDendro/dplR")
 ```
 
-This should be straightforward for Linux users (if any still exist) but because `dplR` includes both C and Fortran code, you will need the appropriate compilers installed on your system to build from source. Configuring these is relatively easy for Mac and less so for Windows. Unless there is a good reason to want to build from source (e.g., you are a geek or a developer) it's more typical to install a binary.
+This should be straightforward for Linux users (if any still exist) but because `dplR` includes both C and Fortran code, you will need the appropriate compilers installed on your system to build from source. Configuring these is relatively easy for Mac and less so for Windows. Unless there is a good reason to build from source (e.g., you are a geek or a developer) it's more typical to install a binary.
 
 ## Getting Started
 

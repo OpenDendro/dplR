@@ -11,3 +11,4 @@ src/*.mod
 src/symbols.rds
 inst/doc
 .claude/
+.positai

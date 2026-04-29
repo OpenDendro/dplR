@@ -33,3 +33,5 @@ README.md
 ^.*/auto$
 ^revdep$
 ^\.github$
+^\.positai$
+^\.claude$

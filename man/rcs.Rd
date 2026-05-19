@@ -32,11 +32,15 @@ rcs(rwl, po, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE,
     calculated by subtraction. }
   \item{rc.out}{ \code{logical} flag.  Returns the regional curve along
     with the ring-width indices if \code{TRUE}. }
-  \item{make.plot}{ \code{logical} flag.  Makes plots of the raw data and
-    regional curve if \code{TRUE}. }
+  \item{make.plot}{ \code{logical} flag.  Makes a plot of the raw
+    ring-width series by cambial age, the biweight mean, and the regional
+    curve if \code{TRUE}. }
   \item{\dots}{ other arguments passed to
     \code{\link[graphics]{plot}}. }
-  \item{rc.in}{ for internal use. }
+  \item{rc.in}{ an optional \code{numeric} vector giving a pre-built
+    regional curve to use instead of computing one from \code{\var{rwl}}.
+    If \code{NULL} (the default) the regional curve is calculated from
+    the data. }
   \item{check}{ a \code{logical} flag. Bypass input checks by setting
     this to \code{FALSE}. }
 }
@@ -85,7 +89,6 @@ rcs(rwl, po, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE,
   Fritts, H. C. (2001) \emph{Tree Rings and Climate}.
   Blackburn.  \acronym{ISBN-13}: 978-1-930665-39-2.
 }
-\note{ DendroLab website: \url{https://dendrolaborg.wordpress.com/} }
 \author{
   Code provided by DendroLab based on programming by F. Qeadan and
   F. Biondi, University of Nevada Reno, \acronym{USA} and adapted for

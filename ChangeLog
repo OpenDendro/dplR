@@ -1,5 +1,18 @@
 * CHANGES IN dplR VERSION 1.7.9
 
+File: rcs.R .Rd
+----------------
+ - Fixed a bug in the `pooledAR` helper inside `chron.ars` where three guard conditions in the innermost loop used `break` instead of `next`. In R, `break` exits the entire enclosing loop rather than skipping only the current iteration, so when a series pair had no temporal overlap the code was silently discarding all remaining pairs for that iteration of the outer loop. For datasets with staggered series (a normal condition in dendrochronology where early and late series do not share a common interval) this caused the pooled lag-product sums to be underestimated, producing incorrect ACF estimates, wrong AR order selection, and biased residual and ARSTAN chronologies. Also fixed three related edge cases: `prewhitenAR` and `prewhitenARIMA` now return the series unchanged when the selected AR order is zero rather than passing `order.max = 0` to `ar` or `arima`, which would error; `postAR` now returns the series unchanged when passed an empty coefficient vector for the same reason; and `chron.ars` now stops with an informative message when `firstAICmin = TRUE` and the pooled AIC decreases monotonically across all tested lags without reaching a local minimum, rather than attempting to proceed with an undefined AR order.
+
+File: rcs.R .Rd
+----------------
+ - Fixed a bug where the rwca matrix was allocated using the full row count
+of rwl rather than the length of the longest series, causing indexing errors
+with floating series. The per-series loop now uses each series' actual ring
+count rather than a global nrow. Plot improvements: individual series lines
+are now semi-transparent with alpha scaled by series count, drawing order
+updated so the regional curve is topmost, mean line reduced in weight, right
+and top margins reduced, legend added.
 
 File: xdate.floater.R .Rd
 ----------------

@@ -1,4 +1,4 @@
-xdate.floater <- function(rwl, series, series.name = "Unk", min.overlap = 50,
+xdate.floater <- function(rwl, series, series.name = "Unknown", min.overlap = 50,
                           n = NULL, prewhiten = TRUE, biweight = TRUE,
                           method = c("spearman", "pearson", "kendall"),
                           make.plot = TRUE, return.rwl = TRUE, verbose = TRUE) {

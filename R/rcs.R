@@ -26,14 +26,24 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, ratios=TRUE,
   rwl2 <- rwl
   rownames(rwl2) <- rownames(rwl2) # guard against NULL names funniness
   
+  max.series.length <- max(colSums(!is.na(rwl)))
+  max.series.length.plus.po <- max.series.length + max(po[, 2])
+  
   rwl.ord <- apply(rwl2, 2, sortByIndex)
+  
   rwca <- matrix(NA,
                  ncol=n.col,
-                 nrow=sum(nrow(rwl.ord) + max(po[, 2])))
-  nrow.m1 <- nrow(rwl.ord) - 1
+                 nrow=max.series.length.plus.po)
+  
+  # nrow.m1 <- nrow(rwl.ord) - 1
+  # for (i in seq.cols) {
+  #   yrs2pith <- po[po[, 1] %in% col.names[i], 2]
+  #   rwca[yrs2pith:(yrs2pith + nrow.m1), i] <- rwl.ord[, i]
+  # }
   for (i in seq.cols) {
     yrs2pith <- po[po[, 1] %in% col.names[i], 2]
-    rwca[yrs2pith:(yrs2pith + nrow.m1), i] <- rwl.ord[, i]
+    series.length <- sum(!is.na(rwl[[i]]))
+    rwca[yrs2pith:(yrs2pith + series.length - 1), i] <- rwl.ord[1:series.length, i]
   }
   
   if (is.null(rc.in) || make.plot) {
@@ -79,14 +89,19 @@ rcs <- function(rwl, po, nyrs=NULL, f=0.5, biweight=TRUE, ratios=TRUE,
     rwi[[i]][yrs %in% first:last] <- tmp
   }
   if (make.plot) {
-    par(mar = c(4, 4, 4, 4) + 0.1, mgp = c(1.25, 0.25, 0), tcl = 0.25)
+    par(mar = c(4, 4, 0.5, 0.5) + 0.1, mgp = c(1.25, 0.25, 0), tcl = 0.25)
     plot(rwca[, 1], ylim=range(rwca, na.rm=TRUE), type="n", ylab="mm",
          xlab=gettext("Cambial Age (Years)", domain="R-dplR"), ...)
     for (i in seq.cols) {
-      lines(rwca[, i], col="grey")
+      lines(rwca[, i], col=adjustcolor("grey20", alpha.f=min(0.15, 5/n.col)))
     }
-    lines(ca.m, lwd=1.5, col="black")
-    lines(rc, lwd=2, col="red")
+    lines(ca.m, lwd=1, col="grey30")
+    lines(rc, lwd=2.5, col="steelblue")
+    legend("topright",
+           legend=c("Series", "Mean", "Regional Curve"),
+           col=c(adjustcolor("grey20", alpha.f=0.5), "black", "steelblue"),
+           lwd=c(1, 1.5, 2.5),
+           bty="n")
   }
   if (rc.out) {
     list(rwi=rwi, rc=rc)

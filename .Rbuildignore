@@ -1,37 +1,41 @@
-# This is a list of files/directories that are useful
-# for development but are not (cannot, should not) be included in 
-# the build. This needs some cleaning up as of March 2022.
-# Leave out the sticker
-dplR_Sticker.png
-# Leave out README.md
-README.md
-# Designates the directory as an RStudio Project
-^.*\.Rproj$
-# Used by RStudio for temporary files
-^\.Rproj\.user$
-# An Rmd file used to generate README.md
+# Files and directories useful for development but excluded from the
+# CRAN tarball. Uses Perl-compatible regular expressions.
+
+# Package sticker
+^dplR_Sticker\.png$
+
+# README source and rendered file
 ^README\.Rmd$
-# All the git stuff
-^\.git$
-# The files in .R
+^README\.md$
+
+# RStudio project files
+^.*\.Rproj$
+^\.Rproj\.user$
+
+# Local R build configuration (Makevars, build.Renviron, check.Renviron)
 ^\.R$
-# Examples? NOT NEEDED?
-^dplR-Ex\.R$
-# Shell scripts NOT NEEDED?
-^[^/]*\.sh$
-# Andy README-developer files
-^(|.*[^[:alpha:]])README-developer(|[^[:alpha:]].*)$
-# Andy pdfs if the vignettes were knit
-^vignettes/Rplots.*\.pdf$
-# No idea from here down. I don't think these come into
-# play on my setup. Maybe they do on Mikko's system? 
-^(.*/)?\..+$      
-^inst/doc/cache(/.*)?$
-^inst/doc/figure(/.*)?$
-^inst/doc/.*\.(Rnw|Rout|aux|bbl|blg|fdb_latexmk|fls|glo|gls|glg|idx|ind|ilg|lof|log|lot|out|synctex.gz|tex|toc)$
-^.*-tikzDictionary$
-^.*/auto$
-^revdep$
+
+# GitHub Actions workflows
 ^\.github$
+
+# IDE-specific directories
 ^\.positai$
 ^\.claude$
+
+# Developer docs and release checklist
+^00_README-developer$
+^00_CRAN-release$
+
+# Reverse dependency check directory (created by revdepcheck package)
+^revdep$
+
+# R CMD check artifact
+^dplR-Ex\.R$
+
+# LaTeX and knitr vignette build artifacts (relevant if building vignettes locally)
+^vignettes/Rplots.*\.pdf$
+^inst/doc/cache(/.*)?$
+^inst/doc/figure(/.*)?$
+^inst/doc/.*\.(Rnw|Rout|aux|bbl|blg|fdb_latexmk|fls|glo|gls|glg|idx|ind|ilg|lof|log|lot|out|synctex\.gz|tex|toc)$
+^.*-tikzDictionary$
+^.*/auto$

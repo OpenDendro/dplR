@@ -1,0 +1,123 @@
+# dplR CRAN Release Checklist
+#
+# This file lives in the repo root alongside 00_README-developer.
+# It is a checklist to step through manually, not a shell script.
+# Many steps involve waiting on external systems (GH Actions, rhub, CRAN)
+# so this is intentionally piecemeal.
+#
+# Repo: https://github.com/OpenDendro/dplR
+# Working directory for R CMD build: one level above the repo, i.e.,
+# /Users/andybunn/Documents/research/openDendro/dplR_dev/
+
+
+##################################
+#
+## Step 1 - Bump version and update metadata
+#
+##################################
+
+# In DESCRIPTION:
+#   - Set Version: X.X.X
+#   - Set Date: to today
+#
+# Update ChangeLog with a summary of changes since the last release.
+#
+# Commit and push to master.
+
+
+##################################
+#
+## Step 2 - Confirm R-CMD-check passes on GitHub
+#
+##################################
+
+# The R-CMD-check workflow runs automatically on every push to master.
+# It checks on: macOS release, Windows release, Ubuntu devel, Ubuntu release.
+# All run with --as-cran.
+#
+# Check the Actions tab on GitHub and confirm all 4 matrix jobs are green
+# before proceeding:
+# https://github.com/OpenDendro/dplR/actions/workflows/R-CMD-check.yaml
+#
+# Note: tests are skipped in this workflow (--no-tests) due to a known
+# testthat issue on Ubuntu. That is a known acceptable limitation.
+
+
+##################################
+#
+## Step 3 - Run rhub checks
+#
+##################################
+
+# rhub runs --as-cran on infrastructure that closely mirrors what CRAN
+# actually uses. Run this from within the dplR project in R:
+
+rhub::rhub_check(platforms = c("linux", "macos-arm64", "windows"))
+
+# This triggers the rhub GH Actions workflow. Monitor results at:
+# https://github.com/OpenDendro/dplR/actions/workflows/rhub.yaml
+#
+# All three platforms must pass before submitting to CRAN.
+# If rhub_doctor() ever reports a problem, re-run rhub::rhub_setup()
+# and follow the prompts.
+
+
+##################################
+#
+## Step 4 - Build the tarball and submit to CRAN
+#
+##################################
+
+# Build the tarball from one level above the repo:
+R CMD build /Users/andybunn/Documents/research/openDendro/dplR_dev/dplR
+
+# This produces dplR_1.7.X.tar.gz in the current directory.
+# The .Rbuildignore file controls what gets excluded - check it periodically.
+#
+# Submit the tarball here:
+# https://cran.r-project.org/submit.html
+#
+# CRAN will send a confirmation email. Click the link in it.
+# Then wait. CRAN review can take days to a few weeks.
+
+
+##################################
+#
+## Step 5 - After CRAN accepts
+#
+##################################
+
+# Tag a release on GitHub. Go to:
+# https://github.com/OpenDendro/dplR/releases/new
+#
+# - Tag: vX.X.X
+# - Title: dplR version X.X.X
+# - Release notes: copy the relevant section from ChangeLog or "see ChangeLog"
+#
+# Wait until CRAN actually publishes the package before tagging,
+# in case they come back with changes.
+#
+# r-universe picks up the new version automatically. No action needed there.
+#
+# Finally, bump DESCRIPTION to the next dev version (e.g., 1.8.01),
+# commit, and push.
+
+
+##################################
+#
+## Optional - Reverse dependency check
+# Use this if making breaking changes that could affect downstream packages.
+#
+##################################
+
+# Find all CRAN packages that depend on dplR and get maintainer emails:
+dplRdeps <- tools::package_dependencies("dplR", which = "strong", reverse = TRUE)$dplR
+dplRdeps
+maintainers <- sapply(dplRdeps, maintainer, USE.NAMES = TRUE)
+names(maintainers) <- NULL
+maintainers
+emails <- sapply(maintainers, function(text) sub(".*<(.*)>.*", "\\1", text))
+names(emails) <- NULL
+emails
+
+# Use these emails to notify maintainers before the release goes live.

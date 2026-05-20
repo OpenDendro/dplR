@@ -6,14 +6,19 @@ File: rcs.R .Rd
 
 File: rcs.R .Rd
 ----------------
- - Fixed a bug where the rwca matrix was allocated using the full row count
-of rwl rather than the length of the longest series, causing indexing errors
-with floating series. The per-series loop now uses each series' actual ring
-count rather than a global nrow. Plot improvements: individual series lines
-are now semi-transparent with alpha scaled by series count, drawing order
-updated so the regional curve is topmost, mean line reduced in weight, right
-and top margins reduced, legend added.
+Here's the updated entry:
 
+---
+
+File: rcs.R .Rd
+----------------
+ - Fixed a bug where the rwca matrix was allocated using the full row count of rwl rather than the length of the longest series, causing indexing errors with floating series. The per-series loop now uses each series' actual ring count rather than a global nrow. Plot improvements: individual series lines are now semi-transparent with alpha scaled by series count, drawing order updated so the regional curve is topmost, mean line reduced in weight, right and top margins reduced, legend added.
+ - Added `method` argument accepting `"caps"` (default, preserving existing behavior) or `"ads"` to fit the regional curve using an age-dependent spline via `ads`. Added `pos.slope` argument passed through to `ads`; ignored when `method = "caps"`. The default for `nyrs` now differs by method: 10% of RC length for `"caps"`, 50 for `"ads"`.
+ - Added `min.n` argument to truncate the regional curve at the last cambial age where sample depth meets or exceeds the threshold. Indices for rings beyond the truncated curve are returned as `NA`. Fixed the calendar-year re-alignment loop to map directly from cambial age space using `yrs2pith` rather than `na.omit`, which produced length mismatches when truncation left interior `NA` values in the index matrix.
+ - Removed `rc.in` and `check` arguments. Note: this is a breaking change for code that used either argument.
+  - po now defaults to NULL. When NULL, a pith offset of 1 is assumed for all series. This is unrealistic for most datasets but is provided as a convenience when pith offset data are unavailable.
+ - Updated documentation: new arguments described, details section expanded to cover both smoothers and truncation behavior, `ads` added to `\seealso`, examples expanded.
+ 
 File: xdate.floater.R .Rd
 ----------------
 

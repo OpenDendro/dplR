@@ -58,10 +58,15 @@ universalPOWT<-function (rwl, rescale = FALSE, return.power=FALSE)
     Xt <- x
     X.nna <- which(!is.na(x))
     X <- na.omit(x)
-    X2 <- X^p
+    if(p <= 0){
+      warning("Power estimate is <= 0 (p = ", round(p, 3), "). Using log transformation as a fallback.",
+              call.=FALSE)
+      X2 <- log(X)
+    } else {
+      X2 <- X^p
+    }
     Xt[X.nna] <- X2
     Xt
-    
   }
   
   p<-fit.lm(rwl)
@@ -83,6 +88,6 @@ universalPOWT<-function (rwl, rescale = FALSE, return.power=FALSE)
     names(p$power) <- NULL
     res <- list(transformed.data=res,power=p$power)
   }
-
+  
   return(res)
 }

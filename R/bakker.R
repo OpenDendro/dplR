@@ -92,10 +92,10 @@ bakker <- function (rwl, ancillary) {
     
     
     r0 <- dat2/2*10 #if dbh in cm, if dbh in mm, then remove *10; /2 to convert to radius
-    bai <- pi * (diff(r0 * r0))
+    bai <- c(pi*(r0[1]*r0[1]),pi * (diff(r0 * r0)))
     na <- attributes(dat2)$na.action
     no.na <- n.vec[!n.vec %in% na]
-    out[no.na[-1], i] <-  bai
+    out[no.na, i] <-  bai
   }
   
   if(nrow(rwl_filled)-nrow(rwl)==0){
@@ -113,6 +113,3 @@ bakker <- function (rwl, ancillary) {
   #Never got to it, though.
   
 }
-
-
-

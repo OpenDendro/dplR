@@ -20,18 +20,40 @@ File: rcs.R .Rd
  - Updated documentation: new arguments described, details section expanded to cover both smoothers and truncation behavior, `ads` added to `\seealso`, examples expanded.
  
 File: xdate.floater.R .Rd
-----------------
-
-- Major refactor of xdate.floater. Function now returns a `floater` S3 class
+ - Major refactor of xdate.floater. Function now returns a `floater` S3 class
   object (a list with series.name, floaterCorStats, rwlCombined, rwlOut).
-- Added print.floater() and plot.floater() S3 methods.
-- plot.floater() now includes an interseries correlation quantile envelope
+ - Added print.floater() and plot.floater() S3 methods.
+ - plot.floater() now includes an interseries correlation quantile envelope
   (5th-95th percentile of the master) and median interseries correlation line
   for context when evaluating floater placement.
-- Changed default for return.rwl from FALSE to TRUE.
-- Results are now filtered to exclude future dates.
-- Code cleanup: improved spacing, comments, and readability throughout.
+ - Changed default for return.rwl from FALSE to TRUE.
+ - Results are now filtered to exclude future dates.
+ - Code cleanup: improved spacing, comments, and readability throughout.
 
+File: universalPOWT.R
+----------------
+
+ - Fixed a bug where a non-positive power estimate would cause X^p to 
+  return nonsensical results. Function now falls back to a log 
+  transformation when p <= 0, which is the standard Box-Cox limiting 
+  case. A warning is issued so the user knows the fallback was triggered. 
+  Hat tip to Stefan Klesse for the fix. See https://github.com/OpenDendro/dplR/pull/32
+  
+File: bakker.R
+----------------
+
+ - Fixed a bug where the BAI was miscalculated in the first row because diff() returns n-1 values, leaving the first year unassigned. Fix prepends pi*r0[1]^2 as the first year's BAI, consistent with assuming pith radius of zero. Hat tip to Stefan Klesse for the fix. See https://github.com/OpenDendro/dplR/pull/33
+
+File: rwi.stats.running
+----------------
+
+ - Added a stop() with an informative error message when rwi has a non-positive grand mean. This can occur when rwi has been detrended using difference=TRUE, which produces first differences rather than ring widths. Dividing by a near-zero or negative grand mean in normalize1() returns incorrect rbar and eps values. Hat tip to SK for identifying the bug. See https://github.com/OpenDendro/dplR/pull/34
+
+
+File: ads.Rd
+----------------
+
+ - Fixed description of pos.slope argument: behavior is triggered when pos.slope=FALSE, not TRUE. Fixed several typos. Hat tip to SK for the catch. See https://github.com/OpenDendro/dplR/pull/35
 
 File: sss.Rd, rwi.stats.running.Rd
 ----------------

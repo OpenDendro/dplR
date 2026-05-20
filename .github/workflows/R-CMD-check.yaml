@@ -36,7 +36,10 @@ jobs:
 
       - name: Install gettext (macOS)
         if: runner.os == 'macOS'
-        run: brew install gettext && brew link gettext --force
+        run: |
+          brew install gettext
+          echo "CPPFLAGS=-I$(brew --prefix gettext)/include" >> $GITHUB_ENV
+          echo "LDFLAGS=-L$(brew --prefix gettext)/lib" >> $GITHUB_ENV  
 
       - uses: r-lib/actions/setup-pandoc@v2
 

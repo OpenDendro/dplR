@@ -1,7 +1,6 @@
 bai.out <- function(rwl, diam = NULL) {
   
-  if(!is.data.frame(rwl))
-    stop("'rwl' must be a data.frame")
+  rwl <- check.rwl(rwl)
   if(!is.null(diam)) {
     if(ncol(rwl) != nrow(diam))
       stop("dimension problem: ", "'ncol(rw)' != 'nrow(diam)'")

@@ -2,6 +2,7 @@
     function(x, biweight=TRUE, prewhiten=FALSE, ...)
 {
     check.flags(biweight, prewhiten)
+    x <- check.rwl(x)
     samps <- rowSums(!is.na(x))
     if (!biweight) {
         std <- rowMeans(x, na.rm=TRUE)

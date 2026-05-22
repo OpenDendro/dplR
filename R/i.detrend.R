@@ -1,8 +1,7 @@
 `i.detrend` <- function(rwl, y.name=names(rwl), nyrs = NULL, f = 0.5,
                         pos.slope = FALSE)
 {
-    if(!is.data.frame(rwl))
-        stop("'rwl' must be a data.frame")
+    rwl <- check.rwl(rwl)
     out <- rwl
     n.col <- ncol(rwl)
     fmt <- gettext("Detrend series %d of %d\n", domain="R-dplR")

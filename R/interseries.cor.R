@@ -1,6 +1,7 @@
-interseries.cor <- function(rwl, n=NULL, prewhiten=TRUE, biweight=TRUE, 
+interseries.cor <- function(rwl, n=NULL, prewhiten=TRUE, biweight=TRUE,
                        method = c("spearman", "pearson", "kendall")) {
     method2 <- match.arg(method)
+    rwl <- check.rwl(rwl)
     nseries <- length(rwl)
     res.cor <- numeric(nseries)
     p.val <- numeric(nseries)

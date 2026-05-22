@@ -13,10 +13,8 @@ pointer <- function(rwl, rgv.thresh=10, nseries.thresh=75,
     if (nseries.thresh < 0 || nseries.thresh > 100) {
         stop("'nseries.thresh' must range from 0 to 100")
     }
+    rwl <- check.rwl(rwl)
     rwl2 <- as.matrix(rwl)
-    if (!is.matrix(rwl2)) {
-        stop("'rwl' must be coercible to a matrix")
-    }
     rnames <- rownames(rwl2)
     if (is.null(rnames)) {
         stop("'rwl' must have explicit row names")

@@ -10,8 +10,7 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
         list(indices=err6, c.val=med)
     }
 ### main func
-    if(!is.data.frame(rwl))
-        stop("'rwl' must be a data.frame")
+    rwl <- check.rwl(rwl)
     if(!is.data.frame(po))
         stop("'po' must be a data.frame")
     rwl2 <- rwl

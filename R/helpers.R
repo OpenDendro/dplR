@@ -422,10 +422,10 @@ find.internal.na <- function(x) {
     internal.na <- 0 # NA, NULL?
     return(internal.na)
   }
-  
+
   first.ok <- x.ok[1]
   last.ok <- x.ok[n.ok]
-  
+
   if (last.ok - first.ok + 1 > n.ok) {
     first.to.last <- first.ok:last.ok
     x.notok <- which(x.na)
@@ -434,6 +434,29 @@ find.internal.na <- function(x) {
   else {
     internal.na <- 0 # NA, NULL?
   }
-  internal.na    
+  internal.na
+}
+
+### Validate (and if necessary coerce) an rwl object.
+### Called at the top of every public function that takes rwl.
+check.rwl <- function(rwl) {
+  if (!inherits(rwl, "rwl")) {
+    warning("'rwl' is not class \"rwl\". Attempting to coerce.",
+            call. = FALSE)
+    rwl <- as.rwl(rwl)  # stops with a clear message if structure is wrong
+  }
+  # Check for internal NAs per series, warn strongly if found
+  has.internal.na <- vapply(rwl, function(x) any(find.internal.na(x) != 0),
+                            FALSE, USE.NAMES = TRUE)
+  if (any(has.internal.na)) {
+    bad.series <- names(rwl)[has.internal.na]
+    warning("Internal NA values found in the following series: ",
+            paste(bad.series, collapse = ", "), ".\n",
+            "  Internal NAs are not standard practice and can cause ",
+            "functions in dplR to fail or produce incorrect results.\n",
+            "  Consider using fill.internal.NA() to address this before proceeding.",
+            call. = FALSE)
+  }
+  rwl
 }
 

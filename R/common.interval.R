@@ -1,22 +1,8 @@
 common.interval <- function(rwl, type=c("series", "years", "both"),
                             make.plot=TRUE) {
 
-    if (!is.data.frame(rwl)) {
-        stop("'rwl' must be a data.frame")
-    }
-
-    if (!all(vapply(rwl, is.numeric, FALSE, USE.NAMES=FALSE))) {
-        stop("'rwl' must have numeric columns")
-    }
-    rnames <- row.names(rwl)
-    if (is.null(rnames)) {
-        stop("'rwl' must have row names")
-    }
-    yrs <- as.numeric(rnames)
-    if (!is.numeric(yrs) || any(is.na(yrs)) || any(round(yrs) != yrs)) {
-        stop("row names of 'rwl' must be interpretable as years")
-    }
-
+    rwl <- check.rwl(rwl)
+    yrs <- as.numeric(row.names(rwl))
     check.flags(make.plot)
     type2 <- match.arg(type, c("series", "years", "both"))
 

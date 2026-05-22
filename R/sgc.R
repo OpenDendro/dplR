@@ -2,9 +2,7 @@
   function(x, overlap = 50, prob = TRUE) 
 {
   # checks class rwl and correct overlap
-  if(!("rwl" %in% class(x))) {
-    warning("'x' is not class rwl")
-  }
+  x <- check.rwl(x)
   if(any(length(overlap)!=1 | !is.numeric(overlap) | 
          overlap%%1!=0 | overlap < 3)){
     stop("'overlap' should be a single integer >=3")

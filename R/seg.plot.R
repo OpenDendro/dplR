@@ -1,9 +1,7 @@
 `seg.plot` <-
     function(rwl, ...)
 {
-    if (!is.data.frame(rwl)) {
-        stop("'rwl' must be a data.frame")
-    }
+    rwl <- check.rwl(rwl)
     yr <- as.numeric(row.names(rwl))
     first.year <- as.matrix(apply(rwl, 2, yr.range, yr.vec=yr))[1, ]
     last.year <- as.matrix(apply(rwl, 2, yr.range, yr.vec=yr))[2, ]

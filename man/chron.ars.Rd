@@ -9,14 +9,14 @@
   \code{\link{detrend}}.
 }
 \usage{
-chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE, 
+chron.ars(rwi, biweight=TRUE, maxLag=10, firstAICmin=TRUE,
   verbose=TRUE, prewhitenMethod=c("ar.yw","arima.CSS-ML"))
 }
 \arguments{
-  \item{x}{a \code{data.frame} of (usually detrended) ring widths with
-    \code{rownames(\var{x})} containing years and \code{colnames(x)}
+  \item{rwi}{a \code{data.frame} of (usually detrended) ring widths with
+    \code{rownames(\var{rwi})} containing years and \code{colnames(rwi)}
     containing each series \acronym{ID} such as produced by
-    \code{\link{read.rwl}}}
+    \code{\link{detrend}}}
   \item{biweight}{\code{logical} flag.  If \acronym{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}.}}
   \item{maxLag}{an \code{integer} giving the maximum lag to consider in
@@ -98,7 +98,7 @@ chron.ars(x, biweight=TRUE, maxLag=10, firstAICmin=TRUE,
   \item{samp.depth}{the number of series with non-missing values in
     each year.}
 
-  Row names are the years taken from \code{rownames(x)}.
+  Row names are the years taken from \code{rownames(rwi)}.
 }
 \references{
   Cook, E. R. and Kairiukstis, L. A., editors (1990) \emph{Methods of

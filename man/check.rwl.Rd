@@ -54,10 +54,13 @@ data(ca533)
 ca533.checked <- check.rwl(ca533)
 identical(ca533, ca533.checked)
 
-## A plain data.frame is coerced with a warning
+## A plain data.frame is coerced with a warning.
+## suppressWarnings() is used here to keep R CMD check clean since the
+## warning is expected. Remove it to see the coercion warning.
 ca533.df <- ca533
 class(ca533.df) <- "data.frame"
 ca533.rwl <- suppressWarnings(check.rwl(ca533.df))
+#ca533.rwl <- check.rwl(ca533.df)
 class(ca533.rwl)
 }
 \keyword{ manip }

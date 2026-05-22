@@ -8,13 +8,13 @@
   \code{\link{detrend}}.
 }
 \usage{
-chron(x, biweight = TRUE, prewhiten = FALSE, \dots)
+chron(rwi, biweight = TRUE, prewhiten = FALSE, \dots)
 }
 \arguments{
-  \item{x}{a \code{data.frame} of (usually detrended) ring widths with
-    \code{rownames(\var{x})} containing years and \code{colnames(x)}
+  \item{rwi}{a \code{data.frame} of (usually detrended) ring widths with
+    \code{rownames(\var{rwi})} containing years and \code{colnames(rwi)}
     containing each series \acronym{ID} such as produced by
-    \code{\link{read.rwl}}}
+    \code{\link{detrend}}}
   \item{biweight}{\code{logical} flag.  If \acronym{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}.}}
   \item{prewhiten}{\code{logical} flag.  If \acronym{TRUE} each series is

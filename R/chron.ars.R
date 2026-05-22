@@ -1,4 +1,4 @@
-`chron.ars` <- function(x, biweight=TRUE, maxLag=10,
+`chron.ars` <- function(rwi, biweight=TRUE, maxLag=10,
                         firstAICmin=TRUE, verbose = TRUE,
                         prewhitenMethod=c("ar.yw","arima.CSS-ML")){
   # helpers
@@ -182,19 +182,17 @@
   prewhitenMethod2 <- match.arg(arg = prewhitenMethod,
                                 choices = known.prewhitenMethods,
                                 several.ok = FALSE)
-  x <- check.rwl(x)
+  samps <- rowSums(!is.na(rwi))
 
-  samps <- rowSums(!is.na(x))
-  
   # calc std chronology
   if(!biweight) {
-    stdCrn <- rowMeans(x, na.rm=TRUE)
+    stdCrn <- rowMeans(rwi, na.rm=TRUE)
   } else {
-    stdCrn <- apply(x, 1, tbrm, C=9)
+    stdCrn <- apply(rwi, 1, tbrm, C=9)
   }
-  
+
   ### Get the pooled ACF and AR coefs from the RWI
-  outAR <- pooledAR(x,firstAICmin = firstAICmin, maxLag = maxLag)
+  outAR <- pooledAR(rwi, firstAICmin = firstAICmin, maxLag = maxLag)
   # model order
   p <- outAR$orderOut
   # do some verbose output here
@@ -212,10 +210,10 @@
   
   ###  Prewhiten each RWI series individually using the model order
   if(prewhitenMethod2 == "ar.yw") {
-    RWIclean <- apply(x,2,prewhitenAR,p=p)  
+    RWIclean <- apply(rwi, 2, prewhitenAR, p=p)
   }
   if(prewhitenMethod2 == "arima.CSS-ML") {
-    RWIclean <- apply(x,2,prewhitenARIMA,p=p)  
+    RWIclean <- apply(rwi, 2, prewhitenARIMA, p=p)  
   }
   
   
@@ -257,7 +255,7 @@
   
   out <- data.frame(std=stdCrn,res=resCrn,
                     ars=arsCrn,samp.depth=samps)
-  row.names(out) <- row.names(x)
+  row.names(out) <- row.names(rwi)
   class(out) <- c("crn", "data.frame")
   return(out)
 }

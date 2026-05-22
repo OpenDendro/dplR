@@ -1,20 +1,19 @@
 `chron` <-
-    function(x, biweight=TRUE, prewhiten=FALSE, ...)
+    function(rwi, biweight=TRUE, prewhiten=FALSE, ...)
 {
     check.flags(biweight, prewhiten)
-    x <- check.rwl(x)
-    samps <- rowSums(!is.na(x))
+    samps <- rowSums(!is.na(rwi))
     if (!biweight) {
-        std <- rowMeans(x, na.rm=TRUE)
+        std <- rowMeans(rwi, na.rm=TRUE)
     } else {
-        std <- apply(x, 1, tbrm, C=9)
+        std <- apply(rwi, 1, tbrm, C=9)
     }
     if (prewhiten) {
-        x.ar <- apply(x, 2, ar.func, ...)
+        rwi.ar <- apply(rwi, 2, ar.func, ...)
         if (!biweight) {
-            res <- rowMeans(x.ar, na.rm=TRUE)
+            res <- rowMeans(rwi.ar, na.rm=TRUE)
         } else {
-            res <- apply(x.ar, 1, tbrm, C=9)
+            res <- apply(rwi.ar, 1, tbrm, C=9)
         }
         res[is.nan(res)] <- NA
         out <- data.frame(std, res, samps)
@@ -25,7 +24,7 @@
         out <- data.frame(std, samps)
         names(out) <- c("std", "samp.depth")
     }
-    row.names(out) <- row.names(x)
+    row.names(out) <- row.names(rwi)
     class(out) <- c("crn", "data.frame")
     out
 }

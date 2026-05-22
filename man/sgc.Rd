@@ -10,11 +10,11 @@
 }
 
 \usage{
-  sgc(x,overlap = 50, prob = TRUE)
+  sgc(rwl, overlap = 50, prob = TRUE)
 }
 
 \arguments{
-  \item{x}{ a \code{data.frame} of tree-ring data with records in columns, and years as rows. }
+  \item{rwl}{ an \code{rwl} object such as that produced by \code{\link{read.rwl}}. Also accepts a \code{data.frame} with series in columns and years as row names. }
   \item{overlap}{ integer value with minimal length of overlapping growth changes (compared number of tree rings - 1). Comparisons with less overlap are not compared.}
   \item{prob}{if \code{TRUE} then the probability of exceedence of the sgc will be calculated}
 }
@@ -36,7 +36,7 @@
     }
   The matrices can be extracted from the list by selecting the name or the index number. Comparisons are only compared if the overlap is above the set theshold and if no threshold is set, this defaults to 50 years.If no comparison can be compared, \code{NA} is returned.
   
-  To calculate the global sgc of the dataset (assuming \code{x.sgc <- sgc(x)}: \code{mean(x.sgc$sgc_mat, na.rm = TRUE))}. For the global ssgc use: \code{mean(x.sgc$ssgc_mat, na.rm = TRUE)}.
+  To calculate the global sgc of the dataset (assuming \code{x.sgc <- sgc(rwl)}: \code{mean(x.sgc$sgc_mat, na.rm = TRUE))}. For the global ssgc use: \code{mean(x.sgc$ssgc_mat, na.rm = TRUE)}.
                                               
 }
 

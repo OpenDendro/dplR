@@ -1,9 +1,9 @@
-`sgc` <- 
-  function(x, overlap = 50, prob = TRUE) 
+`sgc` <-
+  function(rwl, overlap = 50, prob = TRUE)
 {
   # checks class rwl and correct overlap
-  x <- check.rwl(x)
-  if(any(length(overlap)!=1 | !is.numeric(overlap) | 
+  rwl <- check.rwl(rwl)
+  if(any(length(overlap)!=1 | !is.numeric(overlap) |
          overlap%%1!=0 | overlap < 3)){
     stop("'overlap' should be a single integer >=3")
   }
@@ -14,14 +14,14 @@
     stop("'prob' must be either TRUE (the default) or FALSE")
   }
   # function starts here
-  n <- dim(x)[2]
+  n <- dim(rwl)[2]
   sgc_mat <- matrix(NA_real_, nrow = n, ncol = n)
   ssgc_mat <- matrix(NA_real_, nrow = n, ncol = n)
   overlap_n <- matrix(NA_real_, nrow = n, ncol = n)
-  rownames(sgc_mat) <- colnames(sgc_mat) <- names(x)
-  rownames(ssgc_mat) <- colnames(ssgc_mat) <- names(x)
-  rownames(overlap_n) <- colnames(overlap_n) <- names(x)
-  treering_sign <- apply(x, 2, diff)
+  rownames(sgc_mat) <- colnames(sgc_mat) <- names(rwl)
+  rownames(ssgc_mat) <- colnames(ssgc_mat) <- names(rwl)
+  rownames(overlap_n) <- colnames(overlap_n) <- names(rwl)
+  treering_sign <- apply(rwl, 2, diff)
   treering_sign <- sign(treering_sign)
   for (i in 1:n) {
     treering_GC <- abs(treering_sign[,i]-treering_sign)

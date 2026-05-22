@@ -441,9 +441,16 @@ find.internal.na <- function(x) {
 ### Called at the top of every public function that takes rwl.
 check.rwl <- function(rwl) {
   if (!inherits(rwl, "rwl")) {
-    warning("'rwl' is not class \"rwl\". Attempting to coerce.",
+    rwl <- tryCatch(
+      as.rwl(rwl),
+      error = function(e) {
+        stop("'rwl' is not class \"rwl\" and coercion failed: ",
+             conditionMessage(e), call. = FALSE)
+      }
+    )
+    # only reached if coercion succeeded
+    warning("'rwl' is not class \"rwl\". Coerced successfully.",
             call. = FALSE)
-    rwl <- as.rwl(rwl)  # stops with a clear message if structure is wrong
   }
   # Check for internal NAs per series, warn strongly if found
   has.internal.na <- vapply(rwl, function(x) any(find.internal.na(x) != 0),

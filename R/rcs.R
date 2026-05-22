@@ -4,7 +4,8 @@ rcs <- function(rwl, po = NULL, nyrs = NULL, f = 0.5, biweight = TRUE,
                 pos.slope = TRUE, ...) {
   
   method <- match.arg(method)
-  
+  rwl <- check.rwl(rwl)
+
   if (is.null(po)) {
     po <- data.frame(series = names(rwl),
                      pith.offset = rep(1L, ncol(rwl)),

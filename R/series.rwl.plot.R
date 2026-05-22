@@ -3,6 +3,7 @@ series.rwl.plot <-
              seg.length=100, bin.floor=100, n=NULL, prewhiten = TRUE,
              biweight=TRUE, floor.plus1 = FALSE) {
 
+    rwl <- check.rwl(rwl)
     ## Handle different types of 'series'
     tmp <- pick.rwl.series(rwl, series, series.yrs)
     rwl2 <- tmp[[1]]

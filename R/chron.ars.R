@@ -182,8 +182,8 @@
   prewhitenMethod2 <- match.arg(arg = prewhitenMethod,
                                 choices = known.prewhitenMethods,
                                 several.ok = FALSE)
-  
-  
+  x <- check.rwl(x)
+
   samps <- rowSums(!is.na(x))
   
   # calc std chronology

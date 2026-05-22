@@ -4,6 +4,7 @@ xdate.floater <- function(rwl, series, series.name = "Unknown", min.overlap = 50
                           make.plot = TRUE, return.rwl = TRUE, verbose = TRUE) {
 
   method2 <- match.arg(method)
+  rwl <- check.rwl(rwl)
 
   # Trim series in case it has NAs (e.g., submitted straight from an rwl)
   idx.good <- !is.na(series)

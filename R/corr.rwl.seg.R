@@ -10,6 +10,7 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
                          }),
                          ...) {
   method2 <- match.arg(method)
+  rwl <- check.rwl(rwl)
   ## run error checks
   qa.xdate(rwl, seg.length, n, bin.floor)
   

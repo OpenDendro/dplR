@@ -1,5 +1,6 @@
 spag.plot <- function(rwl, zfac=1, useRaster = FALSE, res = 150, ...){
     stopifnot(is.logical(useRaster), length(useRaster) == 1)
+    rwl <- check.rwl(rwl)
     nseries <- ncol(rwl)
     if (nseries == 0) {
         stop("empty 'rwl' given, nothing to draw")

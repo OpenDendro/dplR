@@ -15,9 +15,7 @@
 strip.rwl <- function(rwl, ids = NULL, verbose = FALSE, comp.plot = FALSE,
                       legacy.eps = FALSE) {
 
-    if (!is.data.frame(rwl)) {
-        stop("'rwl' must be a data.frame")
-    }
+    rwl <- check.rwl(rwl)
     names.rwl <- names(rwl)
     if (is.null(names.rwl) || anyDuplicated(names.rwl) ||
         any(is.na(names.rwl))) {

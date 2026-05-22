@@ -17,8 +17,7 @@
     method2 <- match.arg(arg = method,
                          choices = known.methods,
                          several.ok = TRUE)
-    if(!is.data.frame(rwl))
-        stop("'rwl' must be a data.frame")
+    rwl <- check.rwl(rwl)
     rn <- row.names(rwl)
 
     detrend.args <- c(alist(rwl.i),

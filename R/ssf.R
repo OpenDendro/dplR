@@ -35,14 +35,8 @@
   inputNAmsg <- gettext("[6] Input data contain at least one row (year) with all NA values, creating div0 problems. See help (?ssf).",
                        domain = "R-dplR")
   
-  # make a copy of rwl just in case we change it.
-  dat <- rwl
-
-  # check class of rwl
-  if(!any(class(dat) %in% "rwl")) {
-    warning("Input data needs to be class \"rwl\". Attempting to coerce.")
-    dat <- as.rwl(dat)
-  }
+  # validate and copy rwl
+  dat <- check.rwl(rwl)
   
   # recode zeros to 0.001 if asked.
   if(recode.zeros){dat[dat==0] <- 0.001}

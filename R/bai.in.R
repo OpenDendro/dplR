@@ -1,8 +1,6 @@
 bai.in <- function(rwl, d2pith = NULL) {
     
-    if(!is.data.frame(rwl))
-        stop("'rwl' must be a data.frame")
-    
+    rwl <- check.rwl(rwl)
     if(!is.null(d2pith)) {
         if(ncol(rwl) != nrow(d2pith))
             stop("dimension problem: ", "'ncol(rw)' != 'nrow(d2pith)'")

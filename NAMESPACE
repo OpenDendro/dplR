@@ -76,6 +76,7 @@ S3method("time<-", crn)
 
 export("ads",
        "as.rwl",
+       "check.rwl",
        "autoread.ids",
        "bakker",
        "bai.in",

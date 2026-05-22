@@ -1,3 +1,57 @@
+* CHANGES IN dplR VERSION 1.8.0
+
+File: helpers.R, NAMESPACE
+--------------------------
+ - Added check.rwl(), a new exported function that validates an object as
+   a proper rwl. If the input is not already class "rwl", coercion is
+   attempted via as.rwl(): on success a warning is issued; on failure a
+   single informative error is raised that describes both the class
+   problem and the structural reason coercion failed. After class
+   validation, check.rwl() warns about any internal NA values (NAs
+   sandwiched between real values within a series) and names the affected
+   series, directing the user to fill.internal.NA().
+
+File: as.rwl.R
+--------------
+ - Added a check that all columns are numeric. Previously as.rwl() would
+   accept a data.frame with character columns and silently assign the rwl
+   class to an invalid object.
+
+File: bai.in.R, bai.out.R, ccf.series.rwl.R, cms.R, common.interval.R,
+       corr.rwl.seg.R, corr.series.seg.R, detrend.R, i.detrend.R,
+       interseries.cor.R, pointer.R, rcs.R, rwl.stats.R, seg.plot.R,
+       series.rwl.plot.R, spag.plot.R, ssf.R, strip.rwl.R,
+       xdate.floater.R
+-----------------------------------------------------------------------
+ - Replaced ad-hoc rwl validation (bare is.data.frame() checks or
+   warning-only class checks) with check.rwl() at the top of each
+   function, providing uniform, informative validation across all
+   public functions that accept an rwl object.
+
+File: sgc.R, sgc.Rd
+--------------------
+ - Renamed the first argument from x to rwl for consistency with the
+   rest of the package. Updated documentation accordingly.
+
+File: chron.R, chron.Rd
+------------------------
+ - Renamed the first argument from x to rwi to correctly reflect that
+   chron() expects detrended ring-width indices, not raw ring widths.
+   Updated documentation accordingly.
+
+File: chron.ars.R, chron.ars.Rd
+---------------------------------
+ - Renamed the first argument from x to rwi for the same reason as
+   chron(). Inner helper functions (pooledAR, postAR, prewhitenAR,
+   prewhitenARIMA) retain their own local x arguments, which are
+   unchanged. Updated documentation accordingly.
+
+File: tests/testthat/test-check.rwl.R
+--------------------------------------
+ - Added 17 new tests covering check.rwl() and as.rwl(): happy path,
+   coercion with warning, structural failure messages, internal NA
+   detection, and all as.rwl() error conditions.
+
 * CHANGES IN dplR VERSION 1.7.9
 
 File: chron.ars.R

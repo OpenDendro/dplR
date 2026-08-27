@@ -40,7 +40,7 @@
     }
   
   The matrices can be extracted from the list by selecting the name or index number. If two curves have less than 3 years of overlap, \enc{Gleichläufigkeit}{Gleichlaeufigkeit} cannot be computed, and \code{NA} is returned.
-  To calculate the global glk of the dataset \code{mean(x$glk_mat, na.rm = TRUE)}.
+  To calculate the global glk of the dataset \code{mean(x$glk_mat, na.rm = TRUE)}. See examples for calculating the the global glk without self-similarities (i.e., the ones on the diagonal).
 }
 
 \author{ Christian Zang.  Patched and improved by Mikko Korpela.

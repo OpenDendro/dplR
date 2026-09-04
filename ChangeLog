@@ -1,5 +1,67 @@
 * CHANGES IN dplR VERSION 1.8.0
 
+File: read.tucson.R, read.tucson.legacy.R, read.rwl.R, NAMESPACE,
+       DESCRIPTION
+-----------------------------------------------------------------
+ - Replaced read.tucson() with a new implementation, originally written
+   by Hung Nguyen and reworked by Andy Bunn. The previous reader is
+   retained unchanged as read.tucson.legacy(), following the naming of
+   glk.legacy() and rwi.stats.legacy(). read.rwl() routes to the new
+   reader for format = "tucson" and for auto-detection.
+
+ - IMPORTANT: interior gaps are no longer filled with zero. Where a file
+   records no measurement for a stretch of years inside a series, the
+   old reader silently wrote zeros in the C readloop. A ring width of
+   zero means a locally absent ring, which is a real observation about a
+   tree in a year; a gap means the ring was not measured, which is a
+   statement about the data. The reader no longer substitutes one for
+   the other. The new fill.internal.NA argument controls this, and
+   fill.internal.NA = 0 reproduces the old values exactly.
+
+   Note that detrend() and other functions that reject NA inside a
+   series will fail on data with interior gaps. Such gaps must now be
+   filled deliberately rather than by the reader's default.
+
+ - The new reader also: reads files the old one refuses; reports
+   malformed lines rather than guessing at them, returning a line as NA
+   when its fixed-width and whitespace readings disagree; reports
+   repeated series IDs and renames them when their records overlap,
+   instead of silently welding them into one series; expands tab
+   characters to 8-column stops before measuring any column position;
+   and determines the header and the column layout per line rather than
+   per file.
+
+ - Determining the column layout per line means years before -999 and
+   8-character series IDs can occur in the same file, which the old
+   reader could not represent: it used the per-file 'long' switch, and a
+   mixed file was read wrongly whichever way that switch was set.
+
+ - New arguments: comment.char, fix.dup.char, fill.internal.NA, strict.
+   strict = TRUE turns every recoverable problem into an error so that a
+   pipeline can refuse a file rather than carry a warned guess forward.
+
+ - The header, long and encoding arguments are accepted and ignored, and
+   warn when supplied, so that existing code and read.rwl()'s
+   pass-through of ... do not fail with an "unused argument" error. The
+   first six arguments keep their old positions, so positional calls
+   still bind correctly. encoding is a genuine gap rather than merely an
+   unused argument: the new reader has no encoding handling and reads
+   the file as it stands. read.tucson.legacy() still honours it.
+
+ - Columns are returned in the order the series appear in the file.
+
+ - Added data.table to Imports. The reader is built on it, and the
+   importFrom(data.table, ...) block in NAMESPACE is load-bearing:
+   data.table's cedta() check decides whether `[.data.table` dispatches
+   correctly, and it answers on the basis of a package's imports. Remove
+   that block and every := in read.tucson() breaks silently.
+
+File: test-read.tucson.R, test-io.R
+-----------------------------------
+ - Added a test suite for the new reader. The existing read.tucson tests
+   in test-io.R were written against the old reader's behaviour and now
+   target read.tucson.legacy().
+
 File: helpers.R, NAMESPACE
 --------------------------
  - Added check.rwl(), a new exported function that validates an object as

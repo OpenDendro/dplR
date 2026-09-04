@@ -1,5 +1,10 @@
 context("input / output functions")
-test.read.tucson <- function() {
+## This suite exercises read.tucson.legacy(), the reader dplR shipped through
+## version 1.7.9. It was written against that reader's behaviour -- including
+## its zero-filling of interior gaps, its "failed to read" errors and the
+## 'header' and 'long' arguments -- so it stays pointed at it. The replacement
+## reader is covered in test-read.tucson.R.
+test.read.tucson.legacy <- function() {
     MISSINGVAL <- 0
 
     ## Invalid file
@@ -9,8 +14,8 @@ test.read.tucson <- function() {
     writeLines("TEST1A  1734  1230   456   789    12    34    56     7     6",
                fh)
     close(fh)
-    test_that("read.tucson catches lines that are too long", {
-        expect_error(read.tucson(tf), "failed to read")
+    test_that("read.tucson.legacy catches lines that are too long", {
+        expect_error(read.tucson.legacy(tf), "failed to read")
     })
 
     ## Precision 0.01
@@ -19,8 +24,8 @@ test.read.tucson <- function() {
     on.exit(unlink(tf2), add=TRUE)
     writeLines("TEST2A  1734  1230   456   789    12    34   999", fh2)
     close(fh2)
-    test_that("read.tucson can handle data with precision 0.01", {
-        res.tf2 <- read.tucson(tf2)
+    test_that("read.tucson.legacy can handle data with precision 0.01", {
+        res.tf2 <- read.tucson.legacy(tf2)
         expect_true(is.data.frame(res.tf2))
         expect_named(res.tf2, "TEST2A")
         expect_equal(row.names(res.tf2), as.character(1734:1738))
@@ -33,8 +38,8 @@ test.read.tucson <- function() {
     on.exit(unlink(tf3), add=TRUE)
     writeLines("TEST3A  1734  1230   456   789    12    34 -9999", fh3)
     close(fh3)
-    test_that("read.tucson can handle data with precision 0.001", {
-        res.tf3 <- read.tucson(tf3)
+    test_that("read.tucson.legacy can handle data with precision 0.001", {
+        res.tf3 <- read.tucson.legacy(tf3)
         expect_true(is.data.frame(res.tf3))
         expect_named(res.tf3, "TEST3A")
         expect_equal(row.names(res.tf3), as.character(1734:1738))
@@ -48,8 +53,8 @@ test.read.tucson <- function() {
     writeLines(c("TEST4A  1734  1230   456   789    12    34     5",
                  "TEST4A  1740   678   999"), fh4, sep="\r\r\n")
     close(fh4)
-    test_that("read.tucson works with unusual line separators", {
-        res.tf4 <- read.tucson(tf4)
+    test_that("read.tucson.legacy works with unusual line separators", {
+        res.tf4 <- read.tucson.legacy(tf4)
         expect_true(is.data.frame(res.tf4))
         expect_named(res.tf4, "TEST4A")
         expect_equal(row.names(res.tf4), as.character(1734:1740))
@@ -62,8 +67,8 @@ test.read.tucson <- function() {
     on.exit(unlink(tf5), add=TRUE)
     writeLines("TEST5A\t1734\t1230\t456\t789\t12\t34\t999", fh5)
               close(fh5)
-    test_that("read.tucson works with tab delimited data", {
-        res.tf5 <- read.tucson(tf5)
+    test_that("read.tucson.legacy works with tab delimited data", {
+        res.tf5 <- read.tucson.legacy(tf5)
         expect_true(is.data.frame(res.tf5))
         expect_named(res.tf5, "TEST5A")
         expect_equal(row.names(res.tf5), as.character(1734:1738))
@@ -77,8 +82,8 @@ test.read.tucson <- function() {
     writeLines(c("TEST6A  1734   123   123   123   123   123   123",
                  "TEST6A  1740   123   123   123   123   123   123   123   123   123   123 -9999"), fh6)
     close(fh6)
-    test_that("read.tucson accepts stop marker in extra column", {
-        res.tf6 <- read.tucson(tf6)
+    test_that("read.tucson.legacy accepts stop marker in extra column", {
+        res.tf6 <- read.tucson.legacy(tf6)
         expect_true(is.data.frame(res.tf6))
         expect_named(res.tf6, "TEST6A")
         expect_equal(row.names(res.tf6), as.character(1734:1749))
@@ -91,8 +96,8 @@ test.read.tucson <- function() {
     on.exit(unlink(tf7), add=TRUE)
     writeLines("TEST7A  1734  1230   456     .    12    34   999", fh7)
     close(fh7)
-    test_that("read.tucson accepts dot as missing data marker", {
-        res.tf7 <- read.tucson(tf7)
+    test_that("read.tucson.legacy accepts dot as missing data marker", {
+        res.tf7 <- read.tucson.legacy(tf7)
         expect_true(is.data.frame(res.tf7))
         expect_named(res.tf7, "TEST7A")
         expect_equal(row.names(res.tf7), as.character(1734:1738))
@@ -106,8 +111,8 @@ test.read.tucson <- function() {
     writeLines(c("TEST8A  1734  1230   456   789    12    34   999",
                  "TEST8A  1730  1230   456   789    12    34   999"), fh8)
     close(fh8)
-    test_that("read.tucson stops on overlapping data", {
-        expect_error(read.tucson(tf8), "failed to read")
+    test_that("read.tucson.legacy stops on overlapping data", {
+        expect_error(read.tucson.legacy(tf8), "failed to read")
     })
 
     ## Non-standard file with missing decade
@@ -117,8 +122,8 @@ test.read.tucson <- function() {
     writeLines(c("TEST9A  1734   123   123   123   123   123   123",
                  "TEST9A  1750   123   123   123   123   123   123   123   123   123 -9999"), fh9)
     close(fh9)
-    test_that("read.tucson marks missing decades", {
-        res.tf9 <- read.tucson(tf9)
+    test_that("read.tucson.legacy marks missing decades", {
+        res.tf9 <- read.tucson.legacy(tf9)
         expect_true(is.data.frame(res.tf9))
         expect_named(res.tf9, "TEST9A")
         expect_equal(row.names(res.tf9), as.character(1734:1758))
@@ -134,8 +139,8 @@ test.read.tucson <- function() {
     writeLines(c("TST10A  1734  1230  1230  1230  1230  1230 -9999",
                  "TST10B  1732   123   123   123   123   999"), fh10)
     close(fh10)
-    test_that("read.tucson supports mixed precisions", {
-        res.tf10 <- read.tucson(tf10)
+    test_that("read.tucson.legacy supports mixed precisions", {
+        res.tf10 <- read.tucson.legacy(tf10)
         expect_true(is.data.frame(res.tf10))
         expect_named(res.tf10, c("TST10A", "TST10B"))
         expect_equal(row.names(res.tf10), as.character(1732:1738))
@@ -149,13 +154,13 @@ test.read.tucson <- function() {
     on.exit(unlink(tf11), add=TRUE)
     writeLines("TST11A -1734  1230   456   789   999", fh11)
     close(fh11)
-    test_that("read.tucson argument 'long' works", {
-        res.tf11a <- read.tucson(tf11)
+    test_that("read.tucson.legacy argument 'long' works", {
+        res.tf11a <- read.tucson.legacy(tf11)
         expect_true(is.data.frame(res.tf11a))
         expect_named(res.tf11a, "TST11A -")
         expect_equal(row.names(res.tf11a), as.character(1734:1736))
         expect_equal(res.tf11a[[1]], c(12.3, 4.56, 7.89))
-        res.tf11b <- read.tucson(tf11, long=TRUE)
+        res.tf11b <- read.tucson.legacy(tf11, long=TRUE)
         expect_true(is.data.frame(res.tf11b))
         expect_named(res.tf11b, "TST11A")
         expect_equal(row.names(res.tf11b), as.character(-1734:-1732))
@@ -169,8 +174,8 @@ test.read.tucson <- function() {
     writeLines(c("Tst12A  1734  1230   456   789    12    34     5",
                  "TST12A  1740   678   999"), fh12)
     close(fh12)
-    test_that("read.tucson corrects mixed case typos", {
-        res.tf12 <- read.tucson(tf12)
+    test_that("read.tucson.legacy corrects mixed case typos", {
+        res.tf12 <- read.tucson.legacy(tf12)
         expect_true(is.data.frame(res.tf12))
         expect_named(res.tf12, "TST12A")
         expect_equal(row.names(res.tf12), as.character(1734:1740))
@@ -184,8 +189,8 @@ test.read.tucson <- function() {
     on.exit(unlink(tf13), add=TRUE)
     writeLines("TST13A  1734", fh13)
     close(fh13)
-    test_that("read.tucson gives empty result when appropriate", {
-        expect_equal(0, nrow(read.tucson(tf13, header = FALSE)))
+    test_that("read.tucson.legacy gives empty result when appropriate", {
+        expect_equal(0, nrow(read.tucson.legacy(tf13, header = FALSE)))
     })
 
     tf14 <- tempfile()
@@ -198,8 +203,8 @@ test.read.tucson <- function() {
                  "TST14C  1906     0   200   100   200",
                  "TST14C  1910   300   200   100     0   999"), fh14)
     close(fh14)
-    test_that("read.tucson (by default) preserves edge zeros", {
-        res.tf14 <- read.tucson(tf14)
+    test_that("read.tucson.legacy (by default) preserves edge zeros", {
+        res.tf14 <- read.tucson.legacy(tf14)
         expect_true(is.data.frame(res.tf14))
         expect_named(res.tf14, c("TST14A", "TST14B", "TST14C"))
         expect_equal(row.names(res.tf14), as.character(1905:1914))
@@ -209,7 +214,7 @@ test.read.tucson <- function() {
                      c(3, 2, 1, 2, 3, 2, 1, 0, 0, NA_real_))
         expect_equal(res.tf14[[3]],
                      c(NA_real_, 0, 2, 1, 2, 3, 2, 1, 0, NA_real_))
-        res.tf14B <- read.tucson(tf14, edge.zeros=FALSE)
+        res.tf14B <- read.tucson.legacy(tf14, edge.zeros=FALSE)
         expect_true(is.data.frame(res.tf14B))
         expect_named(res.tf14B, c("TST14A", "TST14B", "TST14C"))
         expect_equal(row.names(res.tf14B), as.character(1905:1914))
@@ -224,5 +229,5 @@ test.read.tucson <- function() {
     })
 
 }
-test.read.tucson()
+test.read.tucson.legacy()
 ### We should write tests for other I/O functions, also

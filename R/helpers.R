@@ -459,8 +459,8 @@ check.rwl <- function(rwl) {
     bad.series <- names(rwl)[has.internal.na]
     warning("Internal NA values found in the following series: ",
             paste(bad.series, collapse = ", "), ".\n",
-            "  Internal NAs are not standard practice and can cause ",
-            "functions in dplR to fail or produce incorrect results.\n",
+            "  Internal NAs can cause functions in dplR to fail or ",
+            "produce incorrect results.\n",
             "  Consider using fill.internal.NA() to address this before proceeding.",
             call. = FALSE)
   }

@@ -41,7 +41,8 @@ read.rwl(fname,
   information.
 }
 \author{ Mikko Korpela }
-\seealso{ \code{\link{read.tucson}}, \code{\link{read.compact}},
+\seealso{ \code{\link{read.tucson}},
+  \code{\link{read.tucson.legacy}}, \code{\link{read.compact}},
   \code{\link{read.tridas}}, \code{\link{read.fh}}, \code{\link{csv2rwl}}, 
   \code{\link{write.rwl}} }
 \keyword{ IO }

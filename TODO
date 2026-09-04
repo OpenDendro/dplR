@@ -1,3 +1,11 @@
+o [andybunn] wire read.tucson2 into dev
+
+o [andybunn] fix write.tucson to deal with internal NA. urns interior NA back into 0 with no argument to stop it, so a read → write cycle re-introduces exactly the zeros the NULL default removes.
+
+o [andybunn] csv to rwl
+
+o [andybunn] rwl.report not finding some internal NA
+
 o [andybunn] write a generic rwl check -- see common.interval for a start
 
 o [andybunn] look at rwl.report for problem children like cana209.fname <- "https://www.ncei.noaa.gov/pub/data/paleo/treering/measurements/northamerica/canada/cana209.rwl"
@@ -10,11 +18,9 @@ o [andybunn]  In preparation for reconciling dplR and the developing dplPy this 
 
 o [andybunn]  SK has a new func. As does Victoria H for EW/LW. Look at those when you get a chance.
 
-o [andybunn]  json
+o [andybunn]  json readers and writers?
 
 o [andybunn]  use the prec function in pwt to find a minimum recode value for zeros. Should be the smallest possible value for the precision of the data?
-
-o [andybunn]  alias ffcsaps to caps. No need to have that anymore.
 
 o [andybunn]  Where did the math pdf go? Get it back and make it a vingette? Ah. See here https://github.com/r-lib/pkgbuild/issues/58 So, if Mikko is game, it would be nice to have the math-dplR.Rnw done as a vignette using caps rather than ffscaps which should compile quickly. My guess is that Mikko will have many questions and horrified looks when he sees the fortran code.
 

@@ -50,6 +50,17 @@ importFrom(lme4, lmer, fixef, ranef)
 
 importFrom(lifecycle, deprecate_warn, deprecate_stop)
 
+## read.tucson() is built on data.table.  These imports are not merely a
+## convenience: data.table's cedta() check decides whether `[.data.table`
+## dispatches to the data.table method or falls back to `[.data.frame`, and it
+## answers TRUE for a package only if that package imports data.table in its
+## NAMESPACE.  Without this block the `:=` calls inside read.tucson() would
+## silently do the wrong thing.  See
+## vignette("datatable-importing", package = "data.table").
+importFrom(data.table, data.table, as.data.table, fread, melt, dcast,
+           rbindlist, setorder, setcolorder, uniqueN, fifelse, copy,
+           ":=", ".SD", ".N", ".I")
+
 
 ###############################################################
 #
@@ -130,6 +141,7 @@ export("ads",
        "read.rwl",
        "read.tridas",
        "read.tucson",
+       "read.tucson.legacy",
        "redfit",
        "runcrit",
        "rwi.stats",

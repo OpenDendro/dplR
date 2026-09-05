@@ -56,6 +56,40 @@ File: read.tucson.R, read.tucson.legacy.R, read.rwl.R, NAMESPACE,
    correctly, and it answers on the basis of a package's imports. Remove
    that block and every := in read.tucson() breaks silently.
 
+File: read.tucson.R
+-------------------
+ - A stop marker now ends a record. Previously read.tucson() inferred that
+   one series ID held more than one record from file order alone: a new
+   block began only where the ID changed or the decade label failed to
+   advance. That caught a second record written out of order and missed an
+   identical one written in order, so the same structure was reported in
+   some files and passed over in silence in others. ut542 shows both
+   shapes: of eight series holding a mid-record -9999 followed by more data
+   under the same ID, only six were reported. The stop marker is the
+   format's own statement that a record has ended, so it is now what cuts
+   the block.
+
+   This changes no values and merges nothing differently -- ut542 returns
+   an identical object -- but the "entered as N separately terminated
+   records" report now fires consistently.
+
+ - Reworded that report. Entering one core as several terminated records
+   with gaps between them is allowable and usually deliberate; the old
+   wording said the reading was wrong, which overstated it.
+
+ - The verbose interior-gap list now prints one line per series rather than
+   one per gap, so its length matches the series count in the header above
+   it; the individual gaps are still given, on the series' own line. It is
+   also ordered to match the columns of the returned object rather than
+   alphabetically, so the list reads in the same order as the data.
+
+File: helpers.R
+---------------
+ - Softened the internal-NA warning in check.rwl(). It described internal
+   NAs as "not standard practice", which the new read.tucson() default now
+   contradicts: a gap where a file records no measurement is the correct
+   result, not a deviation.
+
 File: test-read.tucson.R, test-io.R
 -----------------------------------
  - Added a test suite for the new reader. The existing read.tucson tests

@@ -474,8 +474,41 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   blockInfo <- NULL
   if (nrow(raw) > 0L) {
     nr  <- nrow(raw)
+
+    ## AGB Sep 2026: does each LINE end with a stop marker? This used to be
+    ## computed per block, after the blocks were cut, and only to classify a
+    ## break that had been found some other way. It is now computed per line and
+    ## used to make the break, because the stop marker is the format's own
+    ## statement that a record has ended: the next decade line under the same ID
+    ## begins a new record, and that is true whatever the decade labels say.
+    ##
+    ## The old rule inferred "two records" from file ORDER alone -- a new block
+    ## started only where the ID changed or the decade label failed to advance.
+    ## That caught a second record written out of order, and missed an identical
+    ## one written in order. ut542 has both shapes and showed the inconsistency
+    ## plainly: eight series there hold a mid-record -9999 followed by more data
+    ## under the same ID, but only six were reported. CC1-2 ends at 1841 and
+    ## restarts at 1353, so its decade label goes backwards and the old rule
+    ## fired; CC16 resumes 1740 -> 1748 and CC20 1690 -> 1700, decade labels
+    ## advancing, so the old rule saw one continuous record and said nothing.
+    ## Same file, same structure, different diagnosis, decided by nothing more
+    ## than the order the author happened to write the records in.
+    ##
+    ## This does not change what is merged. Blocks cut here are still joined
+    ## under one name unless their years actually collide, which is right: one
+    ## ID entered as several terminated records with gaps between them is
+    ## allowable, and usually means exactly what it looks like. What changes is
+    ## that the reader now says so consistently.
+    lineTerm <- vapply(raw$V1, function(v) {
+      tk <- strsplit(trimws(substr(v, 13, 72)), '[[:space:]]+')[[1]]
+      tk <- tk[nzchar(tk)]
+      length(tk) > 0L && tk[length(tk)] %in% c('999', '-9999')
+    }, TRUE, USE.NAMES = FALSE)
+
     brk <- if (nr == 1L) TRUE else
-      c(TRUE, raw$core[-1L] != raw$core[-nr] | raw$startYear[-1L] <= raw$startYear[-nr])
+      c(TRUE, raw$core[-1L] != raw$core[-nr] |
+              raw$startYear[-1L] <= raw$startYear[-nr] |
+              lineTerm[-nr])
     raw[, segId := cumsum(brk)]
 
     blocks  <- raw[, .(core = core[1L], decades = list(startYear)), by = segId]
@@ -498,20 +531,15 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
                                       id, min(dec), max(dec) + 9L, cand))
     }
 
-    ## AGB Sep 2026: does each block end with a stop marker? Computed here, in
-    ## file order, while segId is still contiguous and V1 still exists. This is
-    ## the fact that tells a merge worth making from one worth questioning, and
-    ## it is structural rather than a heuristic: a block with no stop marker is
-    ## a record that has not ended, so a later block under the same ID is its
-    ## continuation. Measured over the archive the split is clean -- all 5
-    ## merges whose blocks abut exactly have an unterminated block, and all 122
-    ## whose blocks each terminate leave a real hole, up to 351 years.
-    blockTerm <- raw[, {
-      v <- V1[.N]
-      tk <- strsplit(trimws(substr(v, 13, 72)), '[[:space:]]+')[[1]]
-      tk <- tk[nzchar(tk)]
-      .(term = length(tk) > 0L && tk[length(tk)] %in% c('999', '-9999'))
-    }, by = segId]
+    ## Does each block end with a stop marker? Read straight off lineTerm now,
+    ## at the last line of each block. This still tells a merge worth making
+    ## from one worth questioning: a block with no stop marker is a record that
+    ## has not ended, so a later block under the same ID is its continuation and
+    ## the merge is unremarkable. With the terminator now cutting blocks, every
+    ## block except the last of a series terminates by construction; the last
+    ## one need not, which is what still distinguishes the two shapes.
+    blockTerm <- data.table::data.table(segId = raw$segId, term = lineTerm)[
+      , .(term = term[.N]), by = segId]
 
     raw[, core := newName[segId]]
     ## segId is kept, not dropped. The merged-block report needs the years each
@@ -896,8 +924,10 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
                  if (length(gaps) == 1L)
                    paste0('a ', gaps, '-year gap')
                  else paste0('gaps of ', paste(gaps, collapse = ' and '), ' years'),
-                 ' where the file records nothing. If these are two different ',
-                 'cores that share an ID, that reading is wrong -- check the file.')
+                 ' where the file records nothing. Entering one core as ',
+                 'several terminated records is allowable and usually means ',
+                 'just that. Worth a look only to rule out the other reading, ',
+                 'that these are different cores sharing an ID.')
         } else if (verbose) {
           cat('Series ', m, ' is entered in ', nrow(r), ' parts (', parts,
               '); at least one does not end with a stop marker, so they are ',
@@ -1019,7 +1049,15 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
       g[is.na(held), held := 'no value in the file']
 
       ## Adjacent years that were lost the same way are one event, so report them
-      ## as one line rather than one line each.
+      ## as one run rather than one line each.
+      ##
+      ## AGB Sep 2026: sorted in FILE order, not alphabetically. The columns of
+      ## the returned object are in file order, so an alphabetical list here
+      ## read in a different order from the data it describes -- in ut542 that
+      ## put CC11-3 between CC1-4 and CC16, and sorted CC4-3 and CC5-2 to the
+      ## end. Making core a factor over names(out) sorts the runs into column
+      ## order while leaving the run-break test below unchanged.
+      g[, core := factor(core, levels = names(out))]
       data.table::setorder(g, core, year)
       ng <- nrow(g)
       g[, brk := c(TRUE, g$core[-1L] != g$core[-ng] |
@@ -1028,16 +1066,37 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
       runs <- g[, .(from = min(year), to = max(year), n = .N,
                     held = paste(unique(held), collapse = ' / ')), by = .(grp, core)]
 
+      ## AGB Sep 2026: one line per SERIES, not one per run. The header says how
+      ## many series have gaps, and a per-run list disagreed with it whenever a
+      ## series had more than one gap: ut542 says "8 of 43 series" and then
+      ## printed ten lines, because CC16 and CC5-2 have two gaps each. The runs
+      ## are still given individually, on the series' own line.
+      byCore <- runs[, .(years = sum(n), ngaps = .N,
+                         spans = paste(sprintf('%s (%d)',
+                                               mapply(yr_range, from, to), n),
+                                       collapse = ', '),
+                         held  = paste(unique(unlist(
+                                   strsplit(held, ' / ', fixed = TRUE))),
+                                 collapse = ' / ')), by = core]
+
       cat('Interior gaps: ', nGapCells, ' year(s) with no measurement, in ',
           nGapSeries, ' of ', ncol(out), ' series.\n', sep = '')
       ## AGB Sep 2026: not truncated. A cap of 20 was tried and it silently hid
       ## part of the answer on 403 files; the worst, russ221, has 637 separate
       ## gaps. verbose is opt-in and the series summary below it is not capped
-      ## either, so a long list here is consistent rather than surprising.
-      for (i in seq_len(nrow(runs)))
-        cat('  ', runs$core[i], '  ', yr_range(runs$from[i], runs$to[i]),
-            '  (', runs$n[i], if (runs$n[i] == 1L) ' year, file holds ' else ' years, file holds ',
-            runs$held[i], ')\n', sep = '')
+      ## either, so a long list here is consistent rather than surprising. The
+      ## line is not wrapped either: strwrap() collapses runs of spaces, which
+      ## destroys the column alignment below. A terminal soft-wraps a long line
+      ## perfectly well, and alignment helps on every ordinary file.
+      cores <- as.character(byCore$core)
+      yrTxt <- paste0(byCore$years, ifelse(byCore$years == 1L, ' year', ' years'))
+      gpTxt <- paste0(byCore$ngaps, ifelse(byCore$ngaps == 1L, ' gap:', ' gaps:'))
+      cPad  <- formatC(cores, width = -max(nchar(cores)))   # left-aligned names
+      yPad  <- formatC(yrTxt, width =  max(nchar(yrTxt)))   # right-aligned counts
+      gPad  <- formatC(gpTxt, width = -max(nchar(gpTxt)))
+      for (i in seq_len(nrow(byCore)))
+        cat('  ', cPad[i], '  ', yPad[i], ' in ', gPad[i], ' ', byCore$spans[i],
+            '  file holds ', byCore$held[i], '\n', sep = '')
       cat(if (is.null(fill.internal.NA))
             paste0('  Returned as NA. The file records no measurement for these years,\n',
                    '  which is not the same as a ring width of zero.\n',

@@ -183,3 +183,65 @@ test_that("verbose reports interior gaps and what the file held", {
     expect_match(paste(out, collapse = " "), "1910-1919")
     expect_match(paste(out, collapse = " "), "-999")
 })
+
+test_that("a stop marker ends a record even when the decade label advances", {
+    ## Two terminated records under one ID, written in ascending decade order.
+    ## Detecting the split by file order alone missed this shape: 1740 -> 1748
+    ## advances, so nothing looked out of place. The stop marker is what says
+    ## the first record ended. ut542's CC16 and CC20 are the real cases.
+    f <- tuc(c("CC16    1730   155    68   106   231   277   155   214   163   342   163",
+               "CC16    1740   226   140   205   173 -9999",
+               "CC16    1748   144   206",
+               "CC16    1750   275    92   136   174   199   207   153   352   312   279",
+               "CC16    1760   335   445   350   322   415   218   459   520   388 -9999"))
+    expect_warning(r <- read.tucson(f, verbose = FALSE),
+                   "separately terminated records")
+    ## Still one series: the records do not overlap, so they are merged, not
+    ## renamed. The author meant one core with a gap.
+    expect_named(r, "CC16")
+    expect_true(all(is.na(r[as.character(1744:1747), "CC16"])))
+    expect_equal(r["1743", "CC16"], 0.173)
+    expect_equal(r["1748", "CC16"], 0.144)
+})
+
+test_that("an unterminated block is a continuation, not a second record", {
+    ## A first partial decade written after the rest of the record, so the
+    ## decade label goes backwards and the blocks split. The 1780 block carries
+    ## no stop marker, so that record never ended and the other block is its
+    ## continuation. Merging is unremarkable and must stay a verbose line, not
+    ## a warning -- otherwise every file written slightly out of order becomes
+    ## noisy. newz016's OKA724 is the real case.
+    f <- tuc(c("OKA724  1790   160   170   180   190   200   210   220   230   240   250",
+               "OKA724  1800   260   999",
+               "OKA724  1780   100   110   120   130   140   150"))
+    expect_silent(r <- read.tucson(f, verbose = FALSE))
+    expect_named(r, "OKA724")
+    expect_equal(range(as.integer(row.names(r))), c(1780, 1800))
+    ## and with verbose it reports the merge without warning
+    out <- capture.output(read.tucson(f, verbose = TRUE))
+    expect_match(paste(out, collapse = " "), "read as one continuous record")
+})
+
+test_that("the verbose gap list prints one line per series, in file order", {
+    ## The header counts series, so the list must too: a per-run list printed
+    ## more lines than the header promised whenever a series had several gaps.
+    ## ut542 is the case that surfaced it -- "8 of 43 series", ten lines.
+    f <- tuc(c("ZZB     1900   100   110  -999  -999   140   150   160   170   180   190",
+               "ZZB     1910   200  -999   220   999",
+               "AAA     1900   100   110   120  -999   140   150   160   170   180   190",
+               "AAA     1910   200   999"))
+    out <- capture.output(suppressWarnings(read.tucson(f, verbose = TRUE)))
+    ## the indented per-series lines only, not the "Interior gaps:" header
+    gapLines <- grep("^ +\\S+ +[0-9]+ years? in [0-9]+ gaps?:", out, value = TRUE)
+    expect_length(gapLines, 2L)
+    ## ZZB has two gaps but still one line, and both runs are on it
+    zzb <- grep("ZZB", gapLines, value = TRUE)
+    expect_length(zzb, 1L)
+    expect_match(zzb, "2 gaps:")
+    expect_match(zzb, "1902-1903 \\(2\\)")
+    expect_match(zzb, "1911 \\(1\\)")
+    ## AAA has one gap: singular wording
+    expect_match(grep("AAA", gapLines, value = TRUE), "1 gap:")
+    ## file order, not alphabetical: ZZB is written first
+    expect_true(grep("ZZB", gapLines) < grep("AAA", gapLines))
+})

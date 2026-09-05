@@ -57,7 +57,7 @@ read.tucson(fname, header = NULL, long = FALSE,
 
   This function was replaced in dplR 1.8.0.  The previous implementation is
   still available, unchanged, as \code{\link{read.tucson.legacy}}.  The two
-  differ in three ways that matter.
+  differ in at least three important ways.
 
   \emph{Interior gaps are no longer filled with zero.}  This is the change
   most likely to alter your numbers.  Where a file records no measurement
@@ -94,6 +94,30 @@ read.tucson(fname, header = NULL, long = FALSE,
   are still accepted, in their original positions, so that existing code and
   \code{\link{read.rwl}}'s pass-through of \code{\dots} do not fail with an
   \dQuote{unused argument} error; passing either one warns.
+  
+  Editorial: A closing word on the format itself.  The Tucson decadal format 
+  dates from the era of the punch card.  It is nominally fixed-width,
+  yet files in the \acronym{ITRDB} arrive with tab characters sitting in the
+  measurement fields, and a tab has no defined width at all.  Column 8
+  belongs to the series \acronym{ID} unless the year is earlier than -999, in
+  which case the year claims it, and nothing but a minus sign distinguishes
+  the two readings.  A negative number marks missing data, except when it
+  marks the end of a record; \code{999} ends a record in a 0.01 mm file, so a
+  genuine 9.99 mm ring cannot be told apart from a terminator.  A single
+  \acronym{ID} may carry several records written in any order at all: in
+  \acronym{ITRDB} \file{ut542.rwl} a series runs to 1841 and then starts over at 
+  1353 further
+  down the file.  A decade line may resume off its boundary and quietly
+  swallow the years it skipped, as \file{chil012.rwl} does at 1242 for series
+  \code{AGU034}.  None of
+  this is the fault of the people who made these data available, and the
+  tree-ring community deserves credit for sharing its measurements
+  openly long before most of science thought to do so.  But we are still
+  paying for a format built around eighty columns of cardboard.  
+  \code{read.tucson} tries to read
+  what the file says, to report plainly what it did, and to refuse
+  rather than guess when a line admits two readings.  Even so, and despite
+  our best efforts, this format can and does fail.
 }
 \value{
   An object of class \code{c("rwl", "data.frame")} with the series in

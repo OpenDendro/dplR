@@ -8,7 +8,8 @@
 \usage{
 write.tucson(rwl.df, fname, header = NULL, append = FALSE,
              prec = 0.01, mapping.fname = "", mapping.append = FALSE,
-             long.names = FALSE, \dots)
+             long.names = FALSE, fill.internal.NA = NULL,
+             extra.chars = c("-", "_", "."), \dots)
 }
 \arguments{
   \item{rwl.df}{ a \code{data.frame} containing tree-ring ring widths
@@ -37,6 +38,27 @@ write.tucson(rwl.df, fname, header = NULL, append = FALSE,
   \item{long.names}{ \code{logical} flag indicating whether to allow
     long series \acronym{ID}s (7 or 8 characters) to be written to the
     output.  The default is to only allow 6 characters. }
+  \item{fill.internal.NA}{ what to do with interior \code{NA}, i.e. years
+    between a series' first and last measurement where \code{\var{rwl.df}}
+    holds no value.  The default, \code{NULL}, invents nothing and writes
+    them as the missing-data sentinel \code{-999} (see Details).  Anything
+    else is passed to \code{\link{fill.internal.NA}} before the file is
+    written, so \code{\var{fill.internal.NA} = 0} fills the gaps with zero
+    and \code{"Mean"}, \code{"Spline"} or \code{"Linear"} interpolate.
+    This is the same argument, with the same meaning and default, as in
+    \code{\link{read.tucson}}. }
+  \item{extra.chars}{ a \code{character} vector of characters to allow in
+    series \acronym{ID}s in addition to \code{a}--\code{z},
+    \code{A}--\code{Z} and \code{0}--\code{9}.  The default allows the
+    hyphen, the underscore and the period, all of which occur routinely in
+    \acronym{ITRDB} \acronym{ID}s.  Given either as single characters or as one string,
+    so \code{c("-", "_")} and \code{"-_"} are the same request.  Use
+    \code{\var{extra.chars} = character(0)} to allow nothing beyond
+    alphanumerics, which is what \pkg{dplR} did before version 1.8.0.
+    Whitespace, control characters and \code{"#"} are refused: the first
+    two break the fixed-width layout, and \code{"#"} is the default
+    \code{\var{comment.char}} of \code{\link{read.tucson}}, which
+    discards any line containing it. }
   \item{\dots}{ Unknown arguments are accepted but not used. }
 }
 \details{
@@ -80,10 +102,55 @@ write.tucson(rwl.df, fname, header = NULL, append = FALSE,
 
   The function is capable of altering excessively long and/or duplicate
   series \acronym{ID}s to fit the Tucson specification.  Additionally,
-  characters other than numbers or English letters will be removed.  If
-  series \acronym{ID}s are changed, one or more warnings are shown.  In
-  that case, the user may wish to print a list of the renamings (see
+  characters outside \code{a}--\code{z}, \code{A}--\code{Z},
+  \code{0}--\code{9} and \code{\var{extra.chars}} will be removed.  If
+  series \acronym{ID}s are changed, a single warning is shown giving the
+  reasons and the first few renamings as \code{old -> new}.  The user may
+  also wish to print the full list (see \code{\var{mapping.fname}} in
   Arguments).
+
+  Renaming is worth attention because it is not confined to the series
+  that prompted it.  Removing a character shortens a name, and a shortened
+  name can collide with one that needed no change; the duplicate pass then
+  renames \emph{both}.  Before \pkg{dplR} 1.8.0, a file holding
+  \code{"CC1-1"} and \code{"CC11"} was written out as \code{"CC110"} and
+  \code{"CC111"}, neither of which is an \acronym{ID} in the input.
+
+  The Tucson format does not restrict the character set of a series
+  \acronym{ID}: the \acronym{ITRDB} description names only the columns
+  the \acronym{ID} occupies.  Hyphens, underscores and periods are common in
+  real \acronym{ID}s, they do not disturb the fixed-width layout, and
+  \code{\link{read.tucson}} reads them back unchanged, so they are
+  written as they stand rather than removed.  There is one position where
+  a hyphen cannot go: column 8, which is where a minus sign distinguishes
+  a 5-character year before -999 from an 8-character series
+  \acronym{ID}.  An 8-character \acronym{ID} ending in a hyphen is
+  therefore shortened by that hyphen, with a warning.  This can only
+  arise when \code{\var{long.names} = TRUE}; at the default width an
+  \acronym{ID} stops at column 6.
+
+  Interior \code{NA} -- years between a series' first and last measurement
+  where \code{\var{rwl.df}} records nothing -- are written as \code{-999},
+  the negative value the Tucson format uses to mark missing data, at both
+  precisions.  \code{\link{read.tucson}} reads any negative value that is
+  not the stop marker back as \code{NA}, so a
+  \code{\link{read.tucson}}--\code{write.tucson}--\code{\link{read.tucson}}
+  cycle preserves the gaps.  Note that \code{\link{read.tucson.legacy}}, and
+  other dendrochronology programs, will read those cells as a ring width of
+  zero.  A message is given whenever gaps are written.
+
+  Before \pkg{dplR} 1.8.0 interior \code{NA} were written as \code{-999} at
+  \code{\var{prec} = 0.01} but as \code{0} at \code{\var{prec} = 0.001}.
+  A zero ring width is a locally absent ring, which is a real observation
+  about a tree in a year, and it is not the same statement as "not
+  measured"; the two are no longer conflated.  Use
+  \code{\var{fill.internal.NA} = 0} to get the old \code{\var{prec} =
+  0.001} output.  Files with no interior \code{NA} are written exactly as
+  before.
+
+  A series that is entirely \code{NA} has nothing to write.  It is skipped
+  with a warning naming the series, and the rest of the file is written
+  normally.
 
   Setting \code{\var{long.names} = TRUE} allows series \acronym{ID}s to
   be 8 characters long, or 7 in case there are year numbers using 5
@@ -98,6 +165,7 @@ write.tucson(rwl.df, fname, header = NULL, append = FALSE,
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{write.crn}}, \code{\link{read.tucson}},
+  \code{\link{read.tucson.legacy}}, \code{\link{fill.internal.NA}},
   \code{\link{write.rwl}}, \code{\link{write.compact}},
   \code{\link{write.tridas}}
 }
@@ -114,5 +182,35 @@ fname <- write.tucson(rwl.df = co021, fname = tempfile(fileext=".rwl"),
 print(fname) # tempfile used for output
 
 unlink(fname) # remove the file
+
+## Interior NA survive a write and a read
+gappy <- data.frame(SER01 = round(seq(0.5, 2, length.out = 40), 3),
+                    row.names = 1901:1940)
+gappy[15:19, 1] <- NA  # five years with no measurement
+fname2 <- write.tucson(gappy, tempfile(fileext=".rwl"), prec = 0.001)
+back <- read.tucson(fname2, verbose = FALSE)
+identical(is.na(back$SER01), is.na(gappy$SER01)) # TRUE
+
+## The old behaviour, if you want it: gaps filled with zero
+fname3 <- write.tucson(gappy, tempfile(fileext=".rwl"), prec = 0.001,
+                       fill.internal.NA = 0)
+read.tucson(fname3, verbose = FALSE)$SER01[15:19] # zeros, not NA
+
+unlink(c(fname2, fname3))
+
+## Hyphens and underscores in series IDs survive a round trip
+dashed <- data.frame(`CC1-1` = 1:5, CC11 = 6:10, `CC_5` = 11:15,
+                     `CC.7` = 16:20,
+                     check.names = FALSE, row.names = 1901:1905)
+fname4 <- write.tucson(dashed, tempfile(fileext=".rwl"))
+names(read.tucson(fname4, verbose = FALSE))
+
+## The pre-1.8.0 rule, if you want it: note that stripping the hyphen from
+## CC1-1 collides with CC11, so both series are renamed
+fname5 <- write.tucson(dashed, tempfile(fileext=".rwl"),
+                       extra.chars = character(0))
+names(read.tucson(fname5, verbose = FALSE))
+
+unlink(c(fname4, fname5))
 }
 \keyword{ IO }

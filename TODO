@@ -1,7 +1,5 @@
 o [andybunn] wire read.tucson2 into dev
 
-o [andybunn] fix write.tucson to deal with internal NA. urns interior NA back into 0 with no argument to stop it, so a read → write cycle re-introduces exactly the zeros the NULL default removes.
-
 o [andybunn] csv to rwl
 
 o [andybunn] rwl.report not finding some internal NA

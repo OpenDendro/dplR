@@ -56,6 +56,86 @@ File: read.tucson.R, read.tucson.legacy.R, read.rwl.R, NAMESPACE,
    correctly, and it answers on the basis of a package's imports. Remove
    that block and every := in read.tucson() breaks silently.
 
+File: write.tucson.R
+--------------------
+ - write.tucson() now writes interior NA faithfully, so that a
+   read.tucson() -> write.tucson() -> read.tucson() cycle preserves the
+   gaps instead of re-introducing exactly the zeros the new reader's
+   default removes.
+
+   Years between a series' first and last measurement where the data hold
+   no value are written as -999, the negative value the Tucson format uses
+   to mark missing data, at both precisions. This is what prec = 0.01
+   already did; prec = 0.001 wrote 0 there, which claims a locally absent
+   ring where the data said the ring was not measured. Files with no
+   interior NA are written byte-for-byte as before, at both precisions.
+   Note that read.tucson.legacy(), and other dendrochronology programs,
+   read the sentinel back as a ring width of zero. A message is given
+   whenever gaps are written.
+
+ - New argument fill.internal.NA, the same argument with the same meaning
+   and the same NULL default as in read.tucson(). NULL invents nothing;
+   anything else is passed to fill.internal.NA() before the file is
+   written, so fill.internal.NA = 0 gives the old prec = 0.001 output and
+   "Mean", "Spline" and "Linear" interpolate.
+
+ - A series that is entirely NA is now skipped with a warning naming it.
+   Previously it produced "'from' must be a finite number" from inside
+   seq(), after the preceding series had already been written to the file.
+
+ - Series IDs keep their hyphens and underscores. write.tucson() removed
+   every character outside a-z, A-Z and 0-9, which is dplR's rule and not
+   the format's: the ITRDB description names only the columns a series ID
+   occupies and says nothing about its character set. Hyphens and
+   underscores are common in real IDs, do not disturb the fixed-width
+   layout, and are read back unchanged by read.tucson(), which read CC11-3
+   and wrote CC113.
+
+   The removal was not merely cosmetic. Shortening a name can collide with
+   a name that needed no change, and the duplicate pass then renames both:
+   a file holding CC1-1 and CC11 was written out as CC110 and CC111,
+   neither of which is an ID in the input.
+
+   New argument extra.chars names the characters allowed beyond
+   alphanumerics, defaulting to "-", "_" and ".". extra.chars =
+   character(0) restores the old rule. Whitespace and control characters are still
+   removed, and "#" is refused outright because it is read.tucson()'s
+   default comment.char and would make the whole line disappear.
+
+ - One position is exempt: a hyphen may not be the 8th character of a
+   series ID, because a minus sign in column 8 is what tells a 5-character
+   year before -999 from an 8-character ID. Such an ID is shortened by
+   that hyphen, with a warning. Only reachable with long.names = TRUE.
+
+File: helpers.R
+---------------
+ - fix.names() gained an extra.chars argument, empty by default, naming
+   characters to allow beyond a-z, A-Z and 0-9. write.tucson() passes "-",
+   "_" and "."; write.compact() keeps the default. Characters that cannot
+   be placed safely in a bracket expression for both regex engines the
+   function uses, along with whitespace and control characters, are refused.
+
+ - fix.names() now reports a renaming once, not three or four times. The
+   character-removal, over-length and duplicate conditions each used to
+   raise their own warning as they were found, so a single renamed series
+   could produce three warnings that between them never said which series
+   was renamed or what it became. They are now collected and reported in
+   one warning that gives both the reasons and the first few renamings as
+   old -> new, and points at mapping.fname for the full list.
+
+   That was least helpful in the case that matters most: a rename that
+   collides drags in a series the caller never touched, and that series
+   then leaves under a name appearing nowhere in the input.
+
+   The three old message strings are gone, so their Finnish translations
+   need regenerating.
+
+File: write.tucson.R
+--------------------
+ - An all-NA series is reported once for the whole file rather than once
+   per series. A data frame left empty by subsetting can have dozens of
+   such columns.
+
 File: read.tucson.R
 -------------------
  - A stop marker now ends a record. Previously read.tucson() inferred that

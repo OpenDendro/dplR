@@ -1,9 +1,9 @@
 \encoding{UTF-8}
 \name{write.rwl}
 \alias{write.rwl}
-\title{ Write Chronology File }
+\title{ Write Ring Width File }
 \description{
-  This function writes a chronology to a file in one of the available
+  This function writes a \code{rwl} object to a file in one of the available
   formats.
 }
 \usage{

@@ -196,7 +196,7 @@ compose.name <- function(orig.name, alphabet, idx, limit) {
 ### approach should be good enough for all but the most pathological
 ### cases. The output vector keeps the names of the input vector.
 fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
-                      basic.charset=TRUE) {
+                      basic.charset=TRUE, extra.chars=character(0)) {
     fn <- mapping.fname
     if (!is.character(fn) || is.na(fn[1]) || Encoding(fn[1]) == "bytes") {
         fn <- ""
@@ -207,11 +207,49 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
     n.x <- length(x)
     x.cut <- x
     rename.flag <- rep(FALSE, n.x)
+    ## AGB Sep 2026: 'extra.chars' widens the allowed set beyond a-z, A-Z, 0-9.
+    ## It is empty by default, which is the behaviour this function has always
+    ## had and is what write.compact() still gets. write.tucson() passes "-" and
+    ## "_": the Tucson format does not restrict the character set -- NOAA's
+    ## treeinfo.txt names only the columns -- and ITRDB series IDs routinely
+    ## carry both, so deleting them renamed series that were perfectly legal.
+    extra <- unique(unlist(strsplit(as.character(extra.chars), "",
+                                    fixed=TRUE)))
+    extra <- setdiff(extra, c(LETTERS, letters, as.character(0:9)))
+    ## The class below is built by enumerating every allowed character, so it
+    ## contains no ranges -- unless an added "-" ends up with a character on
+    ## each side of it, which would silently open a range and let a swathe of
+    ## punctuation through. Sorting "-" to the end, immediately before the "]",
+    ## makes it a literal in both POSIX and PCRE. That matters because the two
+    ## calls on 'bad.chars' below use different engines: grep(perl=TRUE) and
+    ## gsub() without perl. A "]" or a "\\" cannot be placed safely in both at
+    ## once, and neither belongs in a series ID, so they are refused outright.
+    if (length(extra) > 0) {
+        illegal <- extra %in% c("]", "\\") |
+            grepl("[[:space:][:cntrl:]]", extra)
+        if (any(illegal)) {
+            stop(gettextf("'extra.chars' cannot contain whitespace, control characters, %s or %s",
+                          sQuote("]"), sQuote("\\")))
+        }
+        extra <- c(setdiff(extra, "-"), intersect(extra, "-"))
+    }
+    ## AGB Sep 2026: the three conditions below used to warn as they were found,
+    ## and then the duplicate pass warned again, so one renamed series could
+    ## produce three warnings that between them never said which series or what
+    ## it became. They are collected here instead and reported once, at the end,
+    ## together with the renamings they caused. The old message strings are gone
+    ## with them; their Finnish translations go stale and need regenerating.
+    reasons <- character(0)
     if (basic.charset) {
-        bad.chars <- paste(c("[^",LETTERS,letters,0:9,"]"),collapse="")
+        bad.chars <- paste(c("[^",LETTERS,letters,0:9,extra,"]"),collapse="")
         idx.bad <- grep(bad.chars, x.cut, perl=TRUE)
         if (length(idx.bad) > 0) {
-            warning("characters outside a-z, A-Z, 0-9 present: renaming series")
+            reasons <- c(reasons, if (length(extra) > 0) {
+                gettextf("characters outside a-z, A-Z, 0-9, %s",
+                         paste(extra, collapse=" "))
+            } else {
+                gettext("characters outside a-z, A-Z, 0-9")
+            })
             if (nzchar(fn)) {
                 write.map <- TRUE
             }
@@ -224,7 +262,8 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
     if (!is.null(limit)) {
         over.limit <- nchar(x.cut) > limit
         if (any(over.limit)) {
-            warning("some names are too long: renaming series")
+            reasons <- c(reasons,
+                         gettextf("names longer than %d characters", limit))
             if (nzchar(fn)) {
                 write.map <- TRUE
             }
@@ -240,7 +279,9 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
     if (n.unique == n.x) {
         y <- x.cut
     } else {
-        warning("duplicate names present: renaming series")
+        ## Reached when shortening has made two names the same, or when the
+        ## input held duplicates to begin with.
+        reasons <- c(reasons, gettext("duplicate names"))
         if (nzchar(fn)) {
             write.map <- TRUE
         }
@@ -307,6 +348,33 @@ fix.names <- function(x, limit=NULL, mapping.fname="", mapping.append=FALSE,
             }
         }
         close(map.file)
+    }
+    ## AGB Sep 2026: one warning, saying what actually happened. What was
+    ## missing before was the renaming itself: the caller was told that some
+    ## unnamed series had become some unnamed other thing. That is least helpful
+    ## in the case that matters most, because a name shortened by character
+    ## removal or truncation can collide with a name that was already fine, and
+    ## the duplicate pass then renames BOTH of them -- so a series the caller
+    ## never touched leaves under a name that appears nowhere in the input.
+    ## Listing the mapping makes that visible without a mapping file.
+    changed <- which(x != y)
+    if (length(changed) > 0) {
+        n.changed <- length(changed)
+        n.show <- min(n.changed, 5L)
+        shown <- paste0(x[changed[seq_len(n.show)]], " -> ",
+                        y[changed[seq_len(n.show)]], collapse = ", ")
+        if (n.changed > n.show) {
+            shown <- paste0(shown,
+                            gettextf(", ... and %d more", n.changed - n.show))
+        }
+        why <- paste(reasons, collapse = "; ")
+        if (nzchar(fn)) {
+            warning(gettextf("%d series renamed (%s): %s. Full mapping written to %s",
+                             n.changed, why, shown, sQuote(fn)))
+        } else {
+            warning(gettextf("%d series renamed (%s): %s. Use 'mapping.fname' to record the full mapping",
+                             n.changed, why, shown))
+        }
     }
     y
 }

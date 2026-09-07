@@ -131,16 +131,18 @@ read.tucson(fname, header = NULL, long = FALSE,
   \code{old} and \code{new}), the interior gaps and what the file held at
   each, and one row per recoverable problem found while parsing. Most of this
   cannot be recovered from the returned data or by reading the file again, and
-  \code{\link{rwl.check}} reports on it. Note that R drops the attribute on
-  column subsetting and in functions such as \code{\link{detrend}}, so it
-  describes the read rather than travelling with the data indefinitely.
+  \code{\link{rwl.check}} reports on it. Subsetting an \code{rwl} object with
+  \code{\link{[.rwl}} carries the record along and cuts it down to the series
+  and years that are left, but functions that return a new object, such as
+  \code{\link{detrend}}, drop it, so it describes the read rather than
+  travelling with the data indefinitely.
 }
 \author{ Original reader by Hung Nguyen.  Reworked and extended by Andy
   Bunn. }
 \seealso{ \code{\link{read.tucson.legacy}}, \code{\link{read.rwl}},
   \code{\link{read.compact}}, \code{\link{read.tridas}},
   \code{\link{read.fh}}, \code{\link{write.tucson}},
-  \code{\link{fill.internal.NA}} }
+  \code{\link{fill.internal.NA}}, \code{\link{[.rwl}} }
 \examples{
 ## A short file with an interior gap: the 1910s are marked -999,
 ## i.e. not measured.

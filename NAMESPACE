@@ -68,6 +68,8 @@ importFrom(data.table, data.table, as.data.table, fread, melt, dcast,
 #
 ###############################################################
 
+S3method("[", rwl)
+S3method(subset, rwl)
 S3method(plot, crn)
 S3method(plot, crs)
 S3method(plot, rwl)

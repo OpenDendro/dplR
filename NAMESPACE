@@ -31,7 +31,7 @@ importFrom(png, readPNG)
 
 importFrom(R.utils, captureOutput)
 
-importFrom(stringi, stri_trans_nfc, stri_trans_nfd)
+importFrom(stringi, stri_trans_nfc, stri_trans_nfd, stri_enc_detect)
 
 importFrom(stringr, str_pad, str_trim)
 
@@ -147,6 +147,7 @@ export("ads",
        "read.fh",
        "read.ids",
        "read.rwl",
+       "read.sheet",
        "read.tridas",
        "read.tucson",
        "read.tucson.legacy",
@@ -180,6 +181,7 @@ export("ads",
        "write.compact",
        "write.crn",
        "write.rwl",
+       "write.sheet",
        "write.tridas",
        "write.tucson",
        "xdate.floater",

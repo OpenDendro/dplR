@@ -111,6 +111,10 @@ rwl.check.catalogue <- function() {
       "a measurement field is not numeric and was left as NA"),
     c("RWL_NO_MEASUREMENT", "provenance", "note",
       "a line holds no measurement and was skipped"),
+    c("RWL_ENCODING_ASSUMED", "provenance", "warning",
+      "the file is not valid UTF-8 and was read as latin1, no encoding having been declared"),
+    c("RWL_ENCODING_DECLARED", "provenance", "note",
+      "the file is not valid UTF-8 and was read using the declared encoding"),
     c("RWL_CHECK_ERROR", "engine", "error",
       "a check failed to run")
   )

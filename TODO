@@ -1,12 +1,8 @@
-o [andybunn] write a subset rwl method
-
 o [andybunn] csv to rwl
 
 o [andybunn] rwl.check() is in, and reads read.tucson()'s provenance
   attribute. The crossdating thresholds are calibrated on a 1,000-file
-  ITRDB sample; see the comment above rwl.check.control(). Note the
-  subset method above: once [.rwl exists it should subset the provenance
-  record alongside the data rather than dropping it.
+  ITRDB sample; see the comment above rwl.check.control().
 
 o [andybunn] multiple RCS
 

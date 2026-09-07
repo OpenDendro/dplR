@@ -1,5 +1,73 @@
 * CHANGES IN dplR VERSION 1.8.0
 
+File: Extract.rwl.R, man/Extract.rwl.Rd, tests/testthat/test-Extract.rwl.R
+-----------------------------------------------------------------
+ - There is now a `[` method for rwl objects. Subsetting used to fall
+   through to `[.data.frame`, which kept the class and then did two
+   things wrong with it, and left a third undone.
+
+   It dropped the provenance record. read.tucson() attaches what it saw
+   to the object, and any attribute `[.data.frame` does not know about
+   goes on a column subset, so cutting a collection down to a few series
+   threw away the header, the precisions, the gaps and, worst of all,
+   the renames -- which exist nowhere else, so a subset holding a
+   renamed series carried an id that appears in no file and nothing left
+   to say so. The record now travels with the data and is cut down to
+   fit: series-level rows are kept for the series that remain, gaps
+   outside the years that remain are dropped, mixed.precision is
+   recomputed, and a subset element records the series and the first and
+   last year in hand, with all.series saying whether the file's full set
+   of series is still there. Anything that cannot be matched by name is
+   dropped rather than carried, so a record never describes series that
+   are not in the object.
+
+   And it did not check the years. An rwl object promises one row per
+   year in order, and every function that reads a date off a row name --
+   time(), plot(), detrend(), chron(), rwl.stats(), the crossdating
+   functions -- assumes the next row is the next year. ca533[c(1, 5, 9), ]
+   returned an object of class rwl whose years were 626, 630 and 634,
+   and all of those then read it as three consecutive years beginning in
+   626, silently. When row subsetting leaves years that are not
+   consecutive and increasing -- rows taken from the middle, repeated,
+   or reversed -- the result is now returned as a plain data.frame with
+   a warning saying what it would have broken. No values change; what is
+   withdrawn is the claim that the result is a set of dated series. A
+   run of years, which is what head(), tail(), subset() and
+   common.interval() produce, is unaffected and stays an rwl object.
+
+ - Selecting series now trims the years that the remaining series do
+   not cover. Collections are ragged, so a subset of the series nearly
+   always leaves empty years at one or both ends: ca533[, 1:3] used to
+   span 626-1983, because one of the 31 series it dropped reached back
+   to 626, and every summary of the result then described a span that
+   nothing in it was measured over. Only the leading and trailing empty
+   years go; an empty year inside the span stays, since taking it out
+   would leave the years no longer consecutive. A subset in which
+   nothing at all is measured is left whole rather than reduced to
+   nothing, and rwl.check() reports it.
+
+   The trimming happens only when the call does not index rows. Name
+   years -- x[i, ], x[i, j], head(), common.interval() -- and exactly
+   those rows come back, empty or not: a year window is how an rwl
+   object gets lined up against something else, and quietly returning
+   fewer rows than were asked for would put that alignment out by
+   however many years happened to be empty at the edge. Name only
+   series and you get the years those series cover. A single series
+   taken with drop = TRUE is a numeric vector, which carries no years,
+   so it is returned at full length and still lines up with the object
+   it came from; drop = FALSE gives a trimmed one-series rwl object.
+
+   common.interval() is unaffected and is still the way to cut a
+   collection down to the years its series share, which is a different
+   question from the years they cover between them.
+
+ - There is a subset() method for rwl objects. subset.data.frame()
+   worked already -- it ends in x[r, vars, drop = drop], which reaches
+   the method above -- but it always passes a row index, so
+   subset(x, select = 1:3) would have kept the empty years that
+   x[, 1:3] trims. The method passes a row index only when the call
+   made one, so the two agree.
+
 File: data/ca533.rda, data/co021.rda, data/nm046.rda, data/wa082.rda,
        man/ca533.Rd, man/co021.Rd, man/nm046.Rd, man/wa082.Rd
 -----------------------------------------------------------------

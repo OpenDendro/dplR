@@ -1206,10 +1206,12 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   ## what each interior gap actually held.
   ##
   ## It is an attribute rather than a changed return value so that read.rwl()
-  ## and every existing caller keep working untouched. Note that R drops it on
-  ## column subsetting and on detrend(), which is the safe direction to fail:
-  ## provenance describing 43 series would be wrong on a 3-series subset, so it
-  ## goes absent rather than stale. See the subset method in TODO.
+  ## and every existing caller keep working untouched. `[.rwl` carries it
+  ## through a subset and cuts it down to the series and years that are left;
+  ## anything else that builds a new object, detrend() among them, drops it,
+  ## which is the safe direction to fail -- provenance describing 43 series
+  ## would be wrong on a 3-series subset, so it goes absent rather than
+  ## stale.
   prov.gaps <- if (nGapCells > 0L && exists("runs", inherits = FALSE))
     as.data.frame(runs[, .(series = as.character(core), year.from = from,
                            year.to = to, n = n, held = held)])

@@ -1,12 +1,12 @@
-o [andybunn] wire read.tucson2 into dev
+o [andybunn] write a subset rwl method
 
 o [andybunn] csv to rwl
 
-o [andybunn] rwl.report not finding some internal NA
-
-o [andybunn] write a generic rwl check -- see common.interval for a start
-
-o [andybunn] look at rwl.report for problem children like cana209.fname <- "https://www.ncei.noaa.gov/pub/data/paleo/treering/measurements/northamerica/canada/cana209.rwl"
+o [andybunn] rwl.check() is in, and reads read.tucson()'s provenance
+  attribute. The crossdating thresholds are calibrated on a 1,000-file
+  ITRDB sample; see the comment above rwl.check.control(). Note the
+  subset method above: once [.rwl exists it should subset the provenance
+  record alongside the data rather than dropping it.
 
 o [andybunn] multiple RCS
 

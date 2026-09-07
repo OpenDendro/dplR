@@ -124,6 +124,16 @@ read.tucson(fname, header = NULL, long = FALSE,
   columns and the years as rows.  The series \acronym{ID}s are the
   column names and the years are the row names.  Columns are returned in
   the order the series appear in the file.
+
+  The returned object carries a \code{"dplR.provenance"} attribute recording
+  what the reader saw: the header lines, the precision each series was measured
+  at and whether the file mixes them, any series the reader renamed (as
+  \code{old} and \code{new}), the interior gaps and what the file held at
+  each, and one row per recoverable problem found while parsing. Most of this
+  cannot be recovered from the returned data or by reading the file again, and
+  \code{\link{rwl.check}} reports on it. Note that R drops the attribute on
+  column subsetting and in functions such as \code{\link{detrend}}, so it
+  describes the read rather than travelling with the data indefinitely.
 }
 \author{ Original reader by Hung Nguyen.  Reworked and extended by Andy
   Bunn. }

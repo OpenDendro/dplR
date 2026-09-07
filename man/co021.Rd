@@ -24,4 +24,19 @@
   Contribution Series 1983-CO021.RWL.  \acronym{NOAA}/\acronym{NCDC}
   Paleoclimatology Program, Boulder, Colorado, \acronym{USA}.
 }
+\examples{
+library(utils)
+data(co021)
+
+## Where the data came from. read.tucson() records what it saw and attaches
+## it to what it returns; this data set carries that record.
+prov <- attr(co021, "dplR.provenance")
+prov$file          # the archived file it was read from
+prov$precision     # the precision each series was measured at
+prov$gaps          # interior gaps, if any -- this file has none
+prov$events        # problems found while reading -- none here either
+
+## rwl.report() puts the file and precision at the head of its report
+rwl.report(co021)
+}
 \keyword{datasets}

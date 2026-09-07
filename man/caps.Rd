@@ -22,7 +22,7 @@ caps(y, nyrs = 32, f = 0.5)
   
   The default value of \code{\var{nyrs}} was changed to 32 from 2/3 length of \code{\var{y}} in version 1.7.8 based on a suggestion from Klesse (2021).
   
-  Note: \code{\var{caps}} returns \code{NA} if there are any \code{NA} values in \code{y}. See examples.
+  Note: \code{\var{caps}} stops if there are any \code{NA} values in \code{\var{y}}. A smoothing spline through a series with missing values is not defined, and the caller has to decide what to do about the gap rather than have one chosen silently. Before version 1.8.0 such a call returned a vector of \code{NA}, which looked like an answer and was not. See examples, and \code{\link{fill.internal.NA}}.
 }
 \value{
   A filtered vector.
@@ -52,18 +52,21 @@ series <- series[!is.na(series)]
 plot(series, type = "l", ylab = "Ring Width (mm)", col = "grey")
 lines(caps(series, nyrs = 10), col = "red", lwd = 2)
 lines(caps(series, nyrs = 100), col = "green", lwd = 2)
-# A 2/3 spline, the default, 462.6667 yrs here
+# The default, a 32-year spline since version 1.7.8
 lines(caps(series), col = "blue", lwd = 2)
 legend("topright",
-       c("Series", "nyrs=10", "nyrs=100",
-         paste("Default nyrs (", floor(length(series) * 2/3), ")", sep="")),
+       c("Series", "nyrs=10", "nyrs=100", "Default nyrs (32)"),
        fill=c("grey", "red", "green", "blue"))
 
 
-## Note behavior when NA is encountered and
-## take appropriate measures as demonstrated above
-y <- c(NA,NA,rnorm(100))
-caps(y)
+## caps() needs a series with no missing values. Note that the example
+## above drops the NA padding before fitting. A gap inside the measured
+## span has to be dealt with deliberately: drop the series, or close the
+## gap with fill.internal.NA().
+y <- c(NA, NA, rnorm(100))
+try(caps(y))
+## fit over the measured values instead
+head(caps(y[!is.na(y)]))
 
 }
 \keyword{ smooth }

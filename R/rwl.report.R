@@ -10,6 +10,29 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
   res <- list()
   res$small.thresh <- small.thresh
   res$big.thresh <- big.thresh
+
+  ## AGB Sep 2026: where the data came from, if the object still knows. A report
+  ## that opens with a count of series says nothing about which collection is
+  ## being counted, and once a few of these are on screen they are hard to tell
+  ## apart. read.tucson() records the file, the header and the precision, so
+  ## use them. An object built by hand, read by read.tucson.legacy(), or
+  ## subsetted by column has no such record and simply gets no header block --
+  ## the report is otherwise unchanged.
+  prov <- attr(rwl, "dplR.provenance")
+  if (!is.null(prov)) {
+    hdr <- tryCatch(itrdb.header(prov$header), error = function(e) NULL)
+    res$provenance <- list(
+      file = prov$file,
+      site.id = hdr$site.id, site.name = hdr$site.name,
+      species.code = hdr$species.code,
+      declared.first = hdr$first, declared.last = hdr$last,
+      precision = sort(unique(prov$precision$precision)),
+      mixed.precision = isTRUE(prov$mixed.precision),
+      fill.internal.NA = prov$fill.internal.NA,
+      n.gaps = nrow(prov$gaps),
+      n.renames = nrow(prov$renames),
+      n.events = nrow(prov$events))
+  }
   
   
   # start with a summary
@@ -21,6 +44,21 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
   res$lastYear <- max(tmp.sum$last)
   res$meanAR1 <- mean(tmp.sum$ar1)
   res$sdAR1 <- sd(tmp.sum$ar1)
+
+  # years of the rwl object. used below to convert row indices to years.
+  # note that lapply() is used throughout instead of apply() when building
+  # the per-series lists. apply() simplifies its result to a vector or matrix
+  # when every series returns the same number of hits (e.g., a single series
+  # with a single internal NA and all others with none) which silently
+  # dropped the year labels and made those hits disappear from the report.
+  yrs <- time(rwl)
+  # helper: turn a logical matrix (or data.frame) of flagged cells into a
+  # per-series list of years. comparisons like rwl == 0 return a matrix, so
+  # split it back into columns before working series by series.
+  flaggedYears <- function(x) {
+    x <- as.data.frame(x, check.names = FALSE)
+    lapply(x, function(y) {yrs[which(y)]})
+  }
   
   # unconnected spans
   naRowSum <- apply(rwl,1,function(x) { sum(is.na(x))})
@@ -30,17 +68,16 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
   
   # missing rings
   zedsLogical <- rwl == 0
-  res$nZeros <- table(zedsLogical)["TRUE"] 
-  zeds <- apply(zedsLogical,2,which)
-  zeds <- sapply(zeds, function(x) {as.numeric(names(x))} )
-  zeds <- zeds[lapply(zeds,length)>0]
+  res$nZeros <- sum(zedsLogical, na.rm = TRUE)
+  zeds <- flaggedYears(zedsLogical)
+  zeds <- zeds[lengths(zeds)>0]
   if(length(zeds)<1) res$zeros <- numeric(0)
   else res$zeros <- zeds
   
   # any years with all zeros?
   samps <- rowSums(!is.na(rwl))
   pctSeriesZero <- rowSums(zedsLogical,na.rm = TRUE)/samps
-  res$allZeroYears <- which(pctSeriesZero==1)
+  res$allZeroYears <- yrs[which(pctSeriesZero==1)]
   
   # Any places with >1 consecutive zeros?
   # Find runs of consecutive zeros
@@ -55,22 +92,20 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
     
     # Create a logical vector of length x indicating where there are >1 consecutive zeros
     consecutive_zeros_logical <- logical(length(x))
+    run_ends <- cumsum(run_lengths)
     for (i in consecutive_zeros_indices) {
-      consecutive_zeros_logical[(sum(run_lengths[1:(i-1)]) + 1):(sum(run_lengths[1:i]))] <- TRUE
+      consecutive_zeros_logical[(run_ends[i] - run_lengths[i] + 1):run_ends[i]] <- TRUE
     }
     consecutive_zeros_logical
   }
   
-  consecutiveZerosLogical <- apply(rwl,2,consecutiveZerosVec)
-  rownames(consecutiveZerosLogical) <- time(rwl)
-  # make a list where every series is an element
-  consecutiveZerosLogicalList <- apply(consecutiveZerosLogical,2,which)
-  # get years from names instead of indices
-  consecutiveZerosLogicalList <- sapply(consecutiveZerosLogicalList, 
-                                       function(x) {as.numeric(names(x))})
+  # a list where every series is an element
+  consecutiveZerosLogicalList <- lapply(rwl, function(x) {
+    yrs[which(consecutiveZerosVec(x))]
+  })
   # drop series without consec zeroes 
-  mask <- lapply(consecutiveZerosLogicalList,length)>0
-  consecutiveZerosLogicalList <- consecutiveZerosLogicalList[mask]
+  consecutiveZerosLogicalList <- 
+    consecutiveZerosLogicalList[lengths(consecutiveZerosLogicalList)>0]
   # clean up for output
   if(length(consecutiveZerosLogicalList)<1) res$consecutiveZeros <- numeric(0)
   else res$consecutiveZeros <- consecutiveZerosLogicalList
@@ -89,10 +124,13 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
   # names(internalNAs) <- names(rwl)
   # internalNAs <- sapply(internalNAs, function(x) {as.numeric(rownames(rwl)[x])} )
   # internalNAs <- internalNAs[lapply(internalNAs,length)>0]
-  internalNAs <- as.list(apply(rwl, 2, find.internal.na))
-  names(internalNAs) <- names(rwl)
-  internalNAs <- sapply(internalNAs, function(x) {as.numeric(names(x))} )
-  internalNAs <- internalNAs[lapply(internalNAs,length)>0]
+  # find.internal.na() returns 0 (not integer(0)) when a series has none
+  internalNAs <- lapply(rwl, function(x) {
+    idx <- find.internal.na(x)
+    idx <- idx[idx > 0]
+    yrs[idx]
+  })
+  internalNAs <- internalNAs[lengths(internalNAs)>0]
   
   if(length(internalNAs)<1) res$internalNAs <- numeric(0)
   else res$internalNAs <- internalNAs
@@ -101,9 +139,8 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
   if(is.na(small.thresh)) res$smallRings <- numeric(0)
   else {
     smallRings <- rwl > 0 & rwl < small.thresh
-    smallRings <- apply(smallRings,2,which)
-    smallRings <- sapply(smallRings, function(x) {as.numeric(names(x))} )
-    smallRings <- smallRings[lapply(smallRings,length)>0]
+    smallRings <- flaggedYears(smallRings)
+    smallRings <- smallRings[lengths(smallRings)>0]
     if(length(smallRings)<1) res$smallRings <- numeric(0)
     else res$smallRings <- smallRings
   }
@@ -112,9 +149,8 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
   if(is.na(big.thresh)) res$bigRings <- numeric(0)
   else {
     bigRings <- rwl > big.thresh
-    bigRings <- apply(bigRings,2,which)
-    bigRings <- sapply(bigRings, function(x) {as.numeric(names(x))} )
-    bigRings <- bigRings[lapply(bigRings,length)>0]
+    bigRings <- flaggedYears(bigRings)
+    bigRings <- bigRings[lengths(bigRings)>0]
     if(length(bigRings)<1) res$bigRings <- numeric(0)
     else res$bigRings <- bigRings
   }
@@ -125,6 +161,47 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
 }
 
 print.rwl.report <- function(x, ...){
+  p <- x$provenance
+  if (!is.null(p)) {
+    cat("File: ", basename(p$file), "\n", sep = "")
+    ## Say when there is no site line rather than leaving a gap where one
+    ## would be. Three of the four ITRDB collections shipped with dplR begin at
+    ## their first data line, and a report that simply omits the site reads as
+    ## though the site were unknown, or as though something had gone wrong --
+    ## when in fact the file never carried one.
+    if (!is.null(p$site.name) && nzchar(p$site.name))
+      cat("Site: ", p$site.id, " ", p$site.name,
+          if (!is.null(p$species.code)) paste0(" (", p$species.code, ")"),
+          "\n", sep = "")
+    else
+      cat("Site: not given; the file carries no header\n", sep = "")
+    cat("Precision: ",
+        if (p$mixed.precision)
+          paste0("mixed (", paste(p$precision, collapse = " and "), " mm)")
+        else paste0(p$precision, " mm"), "\n", sep = "")
+    ## The header's own claim about the span, said here rather than checked.
+    ## rwl.check() is the place that calls a disagreement a finding; this is a
+    ## report, and the two numbers side by side are usually enough.
+    if (!is.null(p$declared.first))
+      cat("Header declares: ", p$declared.first, "-", p$declared.last, "\n", sep = "")
+    ## Only when there were gaps to fill. The setting is recorded whether or
+    ## not it did anything, and saying "interior gaps filled with 0" about a
+    ## file that has no interior gaps states something untrue about the data.
+    if (!is.null(p$fill.internal.NA) && p$n.gaps > 0L)
+      cat("Interior gaps filled with: ", p$fill.internal.NA, ", in ", p$n.gaps,
+          if (p$n.gaps == 1L) " place" else " places",
+          " (these are not measurements)\n", sep = "")
+    if (p$n.renames > 0L)
+      cat("Note: ", p$n.renames, " series ",
+          if (p$n.renames == 1L) "was" else "were",
+          " renamed by the reader; ids here are not the file's. ",
+          "See rwl.check().\n", sep = "")
+    if (p$n.events > 0L)
+      cat("Note: ", p$n.events,
+          if (p$n.events == 1L) " problem was" else " problems were",
+          " found while reading this file. See rwl.check().\n", sep = "")
+    cat("-------------\n")
+  }
   cat("Number of dated series:",x$nSeries,"\n")
   cat("Number of measurements:",x$n,"\n")
   cat("Number of missing (0) rings: ", x$nZeros, 

@@ -1,5 +1,213 @@
 * CHANGES IN dplR VERSION 1.8.0
 
+File: data/ca533.rda, data/co021.rda, data/nm046.rda, data/wa082.rda,
+       man/ca533.Rd, man/co021.Rd, man/nm046.Rd, man/wa082.Rd
+-----------------------------------------------------------------
+ - The four data sets that come from the ITRDB now carry the provenance
+   record described below, so they name the archived file they were read
+   from, the precision they were measured at, and, for wa082, the one
+   interior gap the old reader filled with a zero. The measurements are
+   unchanged: each was checked against its archived file first, and the
+   record was attached to the shipped values rather than replacing them.
+   Each help file gained an example showing how to read it.
+
+   anos1, gp.rwl and zof.rwl are not from the ITRDB and are unchanged.
+   Three of the four ITRDB files carry no header at all -- ca533, co021
+   and nm046 begin at the first data line -- so their record has an empty
+   header, which is what the files say.
+
+File: read.tucson.R, man/read.tucson.Rd
+-----------------------------------------------------------------
+ - read.tucson() now records what it saw and attaches it to what it
+   returns, as attr(x, "dplR.provenance"). It holds the header lines, the
+   precision each series was measured at and whether the file mixes them,
+   any series the reader renamed as old and new, the interior gaps and
+   what the file held at each, and one row per recoverable problem found
+   while parsing, each under a stable event id.
+
+   All of this was computed and thrown away. Everything the reader
+   noticed became a message and then nothing, so rwl.check() had to
+   reopen the file to recover a fraction of it, and the parts that are
+   not in the file in any readable form could not be recovered at all.
+   The clearest of those is renaming: where a file gives two cores the
+   same id, the reader renames one, and after that the object carries a
+   series name that appears nowhere in the file, with nothing to say so.
+
+   It is an attribute rather than a changed return value, so read.rwl()
+   and existing callers are untouched. R drops it on column subsetting
+   and in functions such as detrend(), which is the safe direction:
+   provenance describing 43 series would be wrong on a 3-series subset,
+   so it goes absent rather than stale.
+
+ - The interior-gap runs are now worked out whether or not verbose is
+   set. They were built inside the verbose branch, so
+   read.tucson(verbose = FALSE) would have returned a provenance record
+   claiming the file had no gaps. A record must not depend on a display
+   setting.
+
+ - No timestamp is recorded. Stamping the read time was tried and
+   removed: it made two reads of one file unequal, so all.equal() on the
+   objects stopped working and any comparison of a fresh read against a
+   stored one always showed a difference.
+
+File: caps.R, man/caps.Rd
+-----------------------------------------------------------------
+ - caps() now stops when given a series containing NA. It used to carry
+   the NA through the spline and return a full-length vector of NA, which
+   looks like an answer and is not: a caller dividing by it gets a series
+   of NA and no indication why. A smoothing spline through a series with
+   missing values is not defined, and the caller is the one who has to
+   decide what to do about the gap. This was documented behaviour, so the
+   help file and its example have been updated.
+
+ - The caps() example still described the default as a 2/3 spline and
+   computed 2/3 of the series length for its legend, though the default
+   became 32 in version 1.7.8. It now says 32.
+
+File: rwl.check.R, rwl.report.R, NAMESPACE, man/rwl.check.Rd,
+       tests/testthat/test-rwl.check.R
+-----------------------------------------------------------------
+ - New function rwl.check(), with a new class of the same name, plus
+   rwl.check.control(), rwl.check.catalogue(), and print, summary and
+   as.data.frame methods. Where rwl.report() describes a collection for
+   a reader, rwl.check() looks for defects and returns them as rows, so
+   that examining one file and sweeping an archive are the same
+   operation. as.data.frame() gives one row per finding; summary() gives
+   one row per file with a count column per check, and those rows rbind
+   across files into a triage table.
+
+   Every finding carries a stable check ID and a severity of error,
+   warning or note. rwl.check.catalogue() lists them. The IDs are meant
+   as a contract: they are what a sweep filters on and what two runs are
+   compared by.
+
+   No check can stop the report. rwl.report() dies outright on a
+   single-series collection, on a zero-variance series, and on series
+   that do not overlap, because interseries.cor() throws; those are
+   exactly the files worth looking at. Every check in rwl.check() runs
+   inside tryCatch() and a check that fails becomes a finding.
+
+   A "provenance" group reads read.tucson()'s record and reports what no
+   amount of looking at the file or the data could show, including
+   RWL_ID_RENAMED, RWL_MIXED_PRECISION, RWL_YEAR_CLASH and
+   RWL_COLUMN_LAYOUT. The group is silent for an object that carries no
+   such record, including one read by read.tucson.legacy().
+
+   Checks that nothing in dplR previously made: series misdated by a
+   whole number of years (found by cross-correlating each series against
+   a master over a range of lags); a series archived twice under two
+   IDs; constant stretches standing in for measurements; series ids that
+   break the file's dominant pattern or carry a different site code; and,
+   when given a path rather than an object, line endings, stray tabs,
+   non-ASCII bytes, and the span declared in the ITRDB header against the
+   span the measurements actually cover.
+
+   The crossdating checks run on data high-pass filtered with caps() at
+   the COFECHA stiffness of 32 years, so they agree with corr.rwl.seg()
+   and detrend(method = "Spline") rather than inventing their own idea of
+   a common signal. Correlating raw ring widths measures the agreement of
+   age trends instead: on wa082 the raw and filtered measures agree at
+   only r = 0.15, and filtered, the correlation tracks interseries.cor()
+   at r = 0.90.
+
+   A series with a gap inside its measured span cannot be detrended and
+   is reported as RWL_UNCHECKABLE rather than being filtered across the
+   gap, which would fit the curve to a series that was never measured.
+
+   They also ask whether a series fits the collection it is in rather than
+   whether it clears a fixed correlation, because what counts as a good
+   correlation is a property of the site. Over a 1,000-file ITRDB sample a
+   fixed cut at 0.2 spent 44% of its flags on series that were merely in
+   low-correlation collections, and said nothing about 556 obvious
+   outliers in 301 files. Judged against its own collection the check
+   flags a comparable number of series but no longer depends on series
+   length, and fires more often in well-dated collections than in loose
+   ones, which is the right way round.
+
+   A collection with little common signal is reported once, as
+   RWL_WEAK_COLLECTION and as a note. Some collections legitimately have
+   little of it -- ecological samples taken for growth rather than for a
+   climate signal -- so it is not a fault, but it decides whether the
+   series can be crossdated or carry a chronology.
+
+   Thresholds were calibrated on a 1,000-file sample of the ITRDB. At the
+   defaults 3.8% of files raise an error, 36% raise a warning and 62% are
+   clean.
+
+File: man/wa082.Rd
+-----------------------------------------------------------------
+ - Documented that wa082 holds a zero for series 712011 in 1900, where
+   the source file records -999, i.e. no measurement. The data set was
+   built with the old reader, which filled interior gaps with zero. The
+   values are unchanged, for continuity; the help file now says so and
+   notes that read.tucson(fill.internal.NA = 0) reproduces them.
+
+   The other data sets were checked against their sources at the same
+   time. ca533, co021 and nm046 contain no interior gaps at all, so the
+   reader change does not affect them, and all three still match their
+   archived files exactly. anos1 and zof.rwl contain no zeros and so
+   cannot be carrying a filled gap. gp.rwl is not from the ITRDB and has
+   no file to check against.
+
+File: rwl.report.R, man/rwl.report.Rd
+-----------------------------------------------------------------
+ - rwl.report() says when a file carried no header rather than omitting
+   the site line. Three of the four ITRDB collections shipped with dplR
+   begin at their first data line, and silently dropping the line read as
+   though the site were unknown or as though something had failed.
+
+ - rwl.report() no longer says interior gaps were filled when the file
+   has no interior gaps. The fill setting is recorded whether or not it
+   did anything, and reporting it unconditionally stated something untrue
+   about the data.
+
+ - rwl.report() opens with a header naming the file, the site and species
+   from the ITRDB header, the declared precision, and the span the header
+   claims -- worth seeing beside the span the data covers, since cana209
+   declares 1459-1960 and measures 1713-2001. It also notes when the
+   reader renamed a series, so the ids in the report are not the file's,
+   and when interior gaps were filled. It is taken from the provenance
+   record, so an object without one is reported exactly as before.
+
+File: read.tucson.R
+-----------------------------------------------------------------
+ - The header kept in the provenance record is taken from the lines as
+   read, not after truncation at column 72. The ITRDB header carries its
+   declared span at about columns 68 to 77, so truncating lost the end
+   year: cana209's header came back reading 1459 with no second year,
+   which was the one thing it was being kept for.
+
+File: rwl.report.R
+-----------------------------------------------------------------
+ - RWL_INTERNAL_NA carries the consequence, not just the fact. An
+   interior gap is not a fault -- the file records no measurement for
+   those years, which is worth keeping -- but it decides what can be done
+   next, so the finding names the functions that will fail on it and
+   points at fill.internal.NA(). It is reported once per series rather
+   than once per gap.
+
+ - rwl.report() failed to report internal NA values, missing rings,
+   consecutive zeros, and small and large rings whenever every series in
+   the object produced the same number of hits. The per-series lists were
+   built with apply(), which simplifies its result to a vector or matrix
+   in that case, and the years were then recovered from names that
+   simplification had discarded. The commonest instance was the plainest
+   one: a single series with a single internal NA, where every series
+   returns one value, which reported "None". Rebuilt with lapply() and an
+   explicit year lookup.
+
+ - rwl.report() reported allZeroYears as row indices rather than years.
+   On co021 it gave 320, 331, 409 and 410 for the years 1495, 1506, 1584
+   and 1585.
+
+ - The count of missing rings was NA, printing "Number of missing (0)
+   rings: NA (NA%)", for any collection with no zeros at all. It was
+   read out of a table() by name, and the name is absent when the count
+   is zero. cana209 is such a file.
+
+ - Fixed the run-start index in the consecutive-zeros helper, which was
+   wrong for a run beginning at the first ring of a series.
+
 File: read.tucson.R, read.tucson.legacy.R, read.rwl.R, NAMESPACE,
        DESCRIPTION
 -----------------------------------------------------------------

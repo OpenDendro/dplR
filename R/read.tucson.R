@@ -113,8 +113,26 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   ## site. Conditions that cannot be localised to a line, such as a file mixing
   ## precision flags, still stop() unconditionally: there is no sensible reading
   ## to hand back, strict or not.
-  report <- function(...) {
+  ## AGB Sep 2026: report() now records as well as emits. Everything the reader
+  ## notices used to be pasted into a message and thrown away, so nothing
+  ## downstream could act on it -- rwl.check() had to re-open the file to
+  ## recover a fraction of it, and the things that are not visible in the file
+  ## at all, such as which series IDs this reader renamed, were unreachable by
+  ## any means. The structured row costs nothing to keep and travels back with
+  ## the data as attr(x, "dplR.provenance").
+  ##
+  ## `event` is a stable id, not prose: it is what a sweep over many files
+  ## filters and counts on. The message stays the human-readable form of the
+  ## same fact.
+  prov.events <- list()
+  prov.renames <- list()
+  prov.header <- character(0)
+  report <- function(..., event = NA_character_, series = NA_character_,
+                     n = NA_integer_) {
     msg <- paste0(...)
+    prov.events[[length(prov.events) + 1L]] <<-
+      data.frame(event = event, series = series, n = n, message = msg,
+                 stringsAsFactors = FALSE)
     if (isTRUE(strict)) stop(msg, call. = FALSE)
     warning(msg, call. = FALSE)
   }
@@ -190,6 +208,10 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   ## so every reference to V1 below would fail on the column rather than on the
   ## file. Refuse it here instead.
   if (is.null(raw) || nrow(raw) == 0L || !('V1' %in% names(raw))) no_measurements()
+
+  ## Keep the opening lines exactly as read, before any trimming or truncation,
+  ## so the header can be recovered intact further down.
+  prov.raw.head <- utils::head(raw$V1, 12L)
 
   # Clean up ----------------------------------------------------------------------
   # Sometimes the file has mixed EOL chars, esp. between the headers and the body, and fread can fail.
@@ -276,7 +298,8 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
              'tab stops, which puts the measurements back onto the format\'s ',
              '6-character columns; if the file was written against different tab ',
              'stops, the columns will be wrong. First one: ',
-             gsub('\t', '<tab>', trimws(firstTabbed), fixed = TRUE))
+             gsub('\t', '<tab>', trimws(firstTabbed), fixed = TRUE),
+             event = 'TAB_IN_DATA', n = sum(interiorTab))
   }
 
   ## AGB Aug 2026: the overflow past column 72 is reported further down, once
@@ -298,6 +321,18 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   # Some files use NaN to mark missing rings
   # So we say a data line should not have "too many" letters
   # How many is too many? Let's keep it at 3 (as it is now with the problematic files).
+  ## AGB Sep 2026: keep the header before dropping it. Until now it was read
+  ## only to find where the data starts and was then discarded, so nothing
+  ## downstream could compare what the header claims against what the file
+  ## holds -- cana209 declares 1459-1960 and measures 1713-2001, which no
+  ## reader of the returned object could possibly notice.
+  ##
+  ## Taken from the lines as they were read, not from raw: by this point raw
+  ## has been truncated at column 72, and the ITRDB header carries its declared
+  ## span at about columns 68 to 77. Truncating cost the end year -- cana209's
+  ## header came back reading 1459 with no second year at all, which is the one
+  ## thing the header was being kept for.
+  prov.header <- prov.raw.head[count_letters(prov.raw.head) > 3]
   raw <- raw[count_letters(V1) <= 3]
 
   ## AGB Aug 2026: report what truncating at column 72 threw away, but only when
@@ -318,12 +353,14 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   if (any(cutNumber))
     report('In ', fname, ', ', sum(cutNumber), ' line(s) run past column 72 with a ',
            'measurement split across the boundary, so the truncation at column 72 ',
-           'drops part of a number. First one: ', trimws(raw$V1[cutNumber][1]))
+           'drops part of a number. First one: ', trimws(raw$V1[cutNumber][1]),
+           event = 'PAST_COL72', n = sum(cutNumber))
   if (any(secondRec))
     report('In ', fname, ', ', sum(secondRec), ' line(s) appear to hold a second ',
            'record appended after column 72, which means a missing line break. ',
            'The appended record is discarded. First one: ',
-           trimws(raw$V1[secondRec][1]), ' <<overflow>> ', trimws(raw$ovf[secondRec][1]))
+           trimws(raw$V1[secondRec][1]), ' <<overflow>> ', trimws(raw$ovf[secondRec][1]),
+           event = 'SECOND_RECORD', n = sum(secondRec))
   ## drop before the duplicate check below, which compares whole rows
   raw[, ovf := NULL]
 
@@ -370,7 +407,8 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
                   ifelse(show > 1L, paste0('   (', show + 1L, ' copies in all)'), ''),
                   collapse = '\n'),
            if (length(tab) > 10L)
-             paste0('\n  ... and ', length(tab) - 10L, ' other line(s).'))
+             paste0('\n  ... and ', length(tab) - 10L, ' other line(s).'),
+           event = 'DUPLICATE_LINE', n = sum(tab))
     raw <- raw[!dups]
   }
 
@@ -443,7 +481,8 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
            'has already passed the header and length filters, so check whether it ',
            'is a stray header or a data line whose columns are shifted:\n',
            paste0('  ', show, collapse = '\n'),
-           if (sum(badYear) > 10L) paste0('\n  ... and ', sum(badYear) - 10L, ' more.'))
+           if (sum(badYear) > 10L) paste0('\n  ... and ', sum(badYear) - 10L, ' more.'),
+           event = 'BAD_YEAR', n = sum(badYear))
   }
   raw <- raw[!badYear]
   if (nrow(raw) == 0L) no_measurements()
@@ -526,9 +565,13 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
       }
       newName[i]      <- cand
       claimed[[cand]] <- c(claimed[[cand]], dec)
-      if (!identical(cand, id))
+      if (!identical(cand, id)) {
+        prov.renames[[length(prov.renames) + 1L]] <-
+          data.frame(old = id, new = cand, why = 'overlapping years',
+                     stringsAsFactors = FALSE)
         renamed <- c(renamed, sprintf('  %s  decades %d-%d  ->  %s',
                                       id, min(dec), max(dec) + 9L, cand))
+      }
     }
 
     ## Does each block end with a stop marker? Read straight off lineTerm now,
@@ -559,7 +602,8 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
       report(paste0('In ', fname, ', ', length(renamed),
                      ' repeated series ID(s) had overlapping years and were ',
                      'renamed so that no measurements are lost:\n'),
-              paste(renamed, collapse = '\n'))
+              paste(renamed, collapse = '\n'),
+              event = 'ID_RENAMED', n = length(renamed))
   }
 
   ## AGB Aug 2026: remember the order in which series first appear in the file,
@@ -671,7 +715,8 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
       ## AGB Aug 2026: was message(); now goes through report() so strict can
       ## refuse the file. A decade line holding no measurement at all is not
       ## something to mention in passing.
-      report('In ', fname, ', a line holds no measurement and was skipped: ', trimws(V1))
+      report('In ', fname, ', a line holds no measurement and was skipped: ', trimws(V1),
+             event = 'NO_MEASUREMENT', series = core, n = 1L)
       tailNums <- rep(NA, 10)
     } else {
       # Check for non-numeric in measurements
@@ -682,7 +727,8 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
         ## message is worse than no message, because it tells the reader zeros
         ## in their data are expected. Corrected, and routed through report().
         report('In ', fname, ', core ', core, ', decade starting ', startYear, ': ',
-               sum(hasNA), ' measurement(s) are not numeric and are left as NA.')
+               sum(hasNA), ' measurement(s) are not numeric and are left as NA.',
+               event = 'NON_NUMERIC', series = core, n = sum(hasNA))
       }
 
       # Check for very large numbers
@@ -725,7 +771,8 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
                'to the Tucson column layout and cannot be read unambiguously. ',
                'Returned as NA. Columns give (',
                paste(fixedNums, collapse = ' '), '); whitespace gives (',
-               paste(cmpNums, collapse = ' '), '). Line: ', trimws(V1))
+               paste(cmpNums, collapse = ' '), '). Line: ', trimws(V1),
+               event = 'COLUMN_LAYOUT', series = core, n = 1L)
         tailNums <- rep(NA_real_, 10)
         N <- 10L
       }
@@ -833,6 +880,9 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
             cand <- paste0(cand, fix.dup.char)
           owned[[cand]] <- c(owned[[cand]], yrs)
           if (!identical(cand, cc)) {
+            prov.renames[[length(prov.renames) + 1L]] <-
+              data.frame(old = cc, new = cand, why = 'repeated series ID',
+                         stringsAsFactors = FALSE)
             renamed <- c(renamed, sprintf('  %s  %s  ->  %s', cc,
                                           yr_range(min(yrs), max(yrs)), cand))
             taken <- c(taken, cand)
@@ -847,7 +897,8 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
                       'file holds more than one record for them. Each extra record ',
                       'was renamed rather than merged, so no measurement is lost. ',
                       'Check which one you meant to keep:\n'),
-               paste(renamed, collapse = '\n'))
+               paste(renamed, collapse = '\n'),
+               event = 'ID_RENAMED', n = length(renamed))
     }
   }
 
@@ -875,7 +926,8 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
                    'the second discarded; check these lines by hand:\n'),
             paste(sprintf('  %s  %d  kept %s, discarded %s', clash$core,
                           clash$year, format(clash$kept), format(clash$dropped)),
-                  collapse = '\n'))
+                  collapse = '\n'),
+            event = 'YEAR_CLASH', n = nrow(clash))
     parsed <- parsed[!dupIdx]
   }
 
@@ -927,7 +979,8 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
                  ' where the file records nothing. Entering one core as ',
                  'several terminated records is allowable and usually means ',
                  'just that. Worth a look only to rule out the other reading, ',
-                 'that these are different cores sharing an ID.')
+                 'that these are different cores sharing an ID.',
+                 event = 'SPLIT_RECORD', series = m, n = nrow(r))
         } else if (verbose) {
           cat('Series ', m, ' is entered in ', nrow(r), ' parts (', parts,
               '); at least one does not end with a stop marker, so they are ',
@@ -1030,7 +1083,12 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   nGapSeries <- if (nGapCells) data.table::uniqueN(gapCells$core) else 0L
 
   if (nGapSeries > 0L) {
-    if (verbose) {
+    ## AGB Sep 2026: the runs are worked out whether or not anything is printed.
+    ## They used to live inside the verbose branch, which made the provenance
+    ## record depend on how chatty the call was -- read.tucson(verbose = FALSE)
+    ## would hand back an object claiming the file had no gaps. The work is
+    ## trivial and the answer must not vary with a display setting.
+    {
       ## Expand the per-line zap notes into one row per discarded cell, then put
       ## them beside the gaps they caused. A gap with no matching note is one the
       ## file never had a field for at all: a short line, or a decade the series
@@ -1065,7 +1123,9 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
       g[, grp := cumsum(brk)]
       runs <- g[, .(from = min(year), to = max(year), n = .N,
                     held = paste(unique(held), collapse = ' / ')), by = .(grp, core)]
+    }
 
+    if (verbose) {
       ## AGB Sep 2026: one line per SERIES, not one per run. The header says how
       ## many series have gaps, and a per-run list disagreed with it whenever a
       ## series had more than one gap: ut542 says "8 of 43 series" and then
@@ -1135,6 +1195,50 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   ## was storing them as numeric. The years matched, but all.equal() then reported
   ## an attribute difference on every file, which is noise in any comparison.
   rownames(out) <- as.character(rownames(out))
+
+  ## AGB Sep 2026: everything the reader learned, travelling back with the data.
+  ##
+  ## What is here is what cannot be recovered downstream. Some of it is not in
+  ## the file in any readable form -- the renames in particular: after this
+  ## function returns, the IDs on the object are not the IDs in the file, and
+  ## without this nothing says so. The rest is in the file but only before it
+  ## was parsed: the header, the line-level defects, the precision flag, and
+  ## what each interior gap actually held.
+  ##
+  ## It is an attribute rather than a changed return value so that read.rwl()
+  ## and every existing caller keep working untouched. Note that R drops it on
+  ## column subsetting and on detrend(), which is the safe direction to fail:
+  ## provenance describing 43 series would be wrong on a 3-series subset, so it
+  ## goes absent rather than stale. See the subset method in TODO.
+  prov.gaps <- if (nGapCells > 0L && exists("runs", inherits = FALSE))
+    as.data.frame(runs[, .(series = as.character(core), year.from = from,
+                           year.to = to, n = n, held = held)])
+  else data.frame(series = character(0), year.from = integer(0),
+                  year.to = integer(0), n = integer(0), held = character(0),
+                  stringsAsFactors = FALSE)
+
+  prec.by.series <- unique(parsed[, .(series = core, precision)])
+  attr(out, "dplR.provenance") <- list(
+    ## No timestamp here. It was tried and taken out: stamping the read time
+    ## makes two reads of the same file unequal, so all.equal() on the objects
+    ## stops working and a user comparing a fresh read against a stored one
+    ## always sees a difference. Provenance describes the file, not the moment.
+    file      = fname,
+    reader    = "read.tucson",
+    fill.internal.NA = fill.internal.NA,
+    header    = prov.header,
+    precision = as.data.frame(prec.by.series),
+    mixed.precision = data.table::uniqueN(parsed$precision) > 1L,
+    renames   = if (length(prov.renames))
+                  do.call(rbind, prov.renames)
+                else data.frame(old = character(0), new = character(0),
+                                why = character(0), stringsAsFactors = FALSE),
+    gaps      = prov.gaps,
+    events    = if (length(prov.events))
+                  do.call(rbind, prov.events)
+                else data.frame(event = character(0), series = character(0),
+                                n = integer(0), message = character(0),
+                                stringsAsFactors = FALSE))
 
   # AGB making the output class rwl as well as df for dplR compatibility.
   class(out) <- c("rwl","data.frame")

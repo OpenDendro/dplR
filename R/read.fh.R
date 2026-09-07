@@ -1,6 +1,25 @@
-read.fh <- function(fname, BC_correction = FALSE) {
+read.fh <- function(fname, BC_correction = FALSE, encoding = NULL) {
   inp <- readLines(fname, ok=TRUE, warn=FALSE)
-  
+
+  ## AGB Sep 2026: encoding triage, before any grep() runs over these lines.
+  ## The Heidelberg format is the one where this matters most in practice: it
+  ## is favoured in European dendroarchaeology, its HEADER blocks are full of
+  ## free text -- site names, species, project and operator names -- and those
+  ## come from contributors typing German, Czech and Polish on machines that
+  ## were not writing UTF-8. A single umlaut in a KeyCode or Location field
+  ## used to take this function out at the first grep() with "input string N is
+  ## invalid in this locale", naming neither the file nor the cause.
+  ##
+  ## read.fh() has no provenance record to write an event into, so the tiers
+  ## report through plain conditions instead: a declared encoding is obeyed
+  ## silently, since the caller asked for it, and an assumed one warns. The
+  ## triage itself is the same one read.tucson() and read.sheet() use, so all
+  ## the readers say the same thing about the same file. See R/encoding.R.
+  enc.res <- enc.resolve(inp, encoding = encoding, fname = fname)
+  inp <- enc.res$lines
+  if (identical(enc.res$status, "assumed"))
+    warning(enc.message(enc.res, fname), call. = FALSE)
+
   ## Get start and end positions of headers and data blocks
   header.begin <- grep("^HEADER:$", inp)
   header.end <- grep("^DATA:(Tree|Single)$", inp)

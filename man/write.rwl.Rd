@@ -7,7 +7,7 @@
   formats.
 }
 \usage{
-write.rwl(rwl.df, fname, format = c("tucson", "compact", "tridas"), \dots)
+write.rwl(rwl.df, fname, format = c("tucson", "compact", "tridas", "sheet", "csv"), \dots)
 }
 \arguments{
 
@@ -21,8 +21,10 @@ write.rwl(rwl.df, fname, format = c("tucson", "compact", "tridas"), \dots)
     rwl file. }
 
   \item{format}{ a \code{character} vector giving the format.  This must
-    be \code{"tucson"}, \code{"compact"}, or \code{"tridas"}.  Tucson
-    format is the default. }
+    be \code{"tucson"}, \code{"compact"}, \code{"tridas"} or
+    \code{"sheet"}.  Tucson format is the default.  \code{"sheet"} is handled
+    by \code{\link{write.sheet}}, and \code{"csv"} is accepted as a synonym
+    for it. }
 
   \item{\dots}{ arguments specific to the function implementing the
     operation for the chosen format. }
@@ -36,7 +38,7 @@ write.rwl(rwl.df, fname, format = c("tucson", "compact", "tridas"), \dots)
   \code{\var{fname}}
 }
 \author{ Mikko Korpela }
-\seealso{ \code{\link{write.crn}}, \code{\link{write.tucson}},
+\seealso{ \code{\link{write.crn}}, \code{\link{write.tucson}}, \code{\link{write.sheet}},
   \code{\link{write.compact}}, \code{\link{write.tridas}},
   \code{\link{read.rwl}}
 }

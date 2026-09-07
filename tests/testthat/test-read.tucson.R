@@ -138,17 +138,18 @@ test_that("read.tucson reads a single series with a single value", {
     expect_equal(r[[1]], 1.23)
 })
 
-test_that("header, long and encoding are accepted, ignored and warned about", {
+test_that("header and long are accepted, ignored and warned about", {
     f <- tuc("TEST2A  1734  1230   456   789    12    34   999")
     expected <- read.tucson(f, verbose = FALSE)
     expect_warning(a <- read.tucson(f, verbose = FALSE, header = TRUE),
                    "'header' is ignored")
     expect_warning(b <- read.tucson(f, verbose = FALSE, long = TRUE),
                    "'long' is ignored")
-    expect_warning(d <- read.tucson(f, verbose = FALSE, encoding = "latin1"),
-                   "'encoding' is ignored")
     expect_equal(a, expected)
     expect_equal(b, expected)
+    ## encoding is no longer ignored, but on an ASCII file it has nothing to do
+    ## and must stay silent whether or not it is supplied.
+    expect_silent(d <- read.tucson(f, verbose = FALSE, encoding = "latin1"))
     expect_equal(d, expected)
     ## Defaults, however they arrive, must stay quiet.
     expect_silent(read.tucson(f, verbose = FALSE))

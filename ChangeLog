@@ -1,5 +1,355 @@
 * CHANGES IN dplR VERSION 1.8.0
 
+File: encoding.R (new), read.rwl.R, read.tucson.R, read.sheet.R,
+      rwl.check.R, NAMESPACE, tests/testthat/test-encoding.R (new),
+      man/read.tucson.Rd, man/read.sheet.Rd
+-----------------------------------------------------------------
+ - The readers no longer die on a file that is not valid UTF-8, and
+   read.tucson()'s encoding argument now does something.
+
+   A single accented byte anywhere in the first 30 lines of a file --
+   an investigator's name in a header comment, which is the ITRDB norm
+   -- killed all three of the new readers, and killed them badly.
+   read.rwl(fname) died in sniff.rwl(), at trimws(), with "input string
+   3 is invalid UTF-8", before a reader had even been chosen.
+   read.tucson() died inside data.table with "invalid multibyte string,
+   element 3". read.sheet() died at the BOM strip. None of the three
+   messages named the file, the line or the cause, none of the files
+   contained a single non-ASCII ring width, and read.tucson()'s
+   encoding argument -- the obvious remedy -- was accepted and then
+   warned to be ignored. read.sheet() had no such argument at all.
+
+   Note what was NOT wrong: nothing returned mojibake or a wrong
+   measurement. It crashed. The defect was the diagnosis, not the
+   safety, so the loudness is kept and the explanation added.
+
+   Encoding is now resolved in three tiers, in encoding.R, shared by
+   sniff.rwl(), read.tucson() and read.sheet() so that all three say the
+   same thing about the same file:
+
+     1. Is it valid UTF-8? A decision, not a guess -- UTF-8 is
+        self-validating, and ASCII passes -- so virtually every file
+        takes this path and nothing is reported.
+     2. Not UTF-8, and encoding was supplied? Use it, and record an
+        ENCODING_DECLARED note. A declared encoding that does not fit
+        the file is an error, not a transcode into replacement
+        characters.
+     3. Not UTF-8, nothing supplied? Read as latin1, record an
+        ENCODING_ASSUMED event, and warn with the line number and the
+        decoded text the assumption produced. strict = TRUE makes it an
+        error.
+
+   read.sheet() gains an encoding argument to match. Both events are in
+   rwl.check.catalogue(), so a sweep over an archive can count them.
+
+   The fallback guesses rather than detecting, and that was measured
+   rather than assumed. stringi is already an Import, so ICU's charset
+   detector was free to use, and it does not work on this corpus: it is
+   a byte-frequency language model needing a volume of non-ASCII text
+   that a file of ring widths never has. On a rwl that is ASCII apart
+   from one accented name it scored the right answer at 0.16 and ranked
+   UTF-16BE alongside it; on a cp1252 file and on a latin2 file the
+   right answer was not in its top three at all. Only on dense prose
+   (480 non-ASCII bytes of French) did it return a usable 0.76. Wiring a
+   0.16-confidence guess into a decision behind a confident-looking API
+   is precisely the plausible-looking garbage this package refuses to
+   produce, so the detector is used only to enrich a message, never to
+   decide, and stays quiet below 0.7. It also reports the charset only,
+   not the language: at 0.5 it volunteered "language da" for a German
+   name.
+
+   latin1 is the fallback because two properties matter more than being
+   right. It is total -- all 255 bytes decode, so it can never fail --
+   and it is lossless, the round trip being byte-identical, so a wrong
+   guess discards nothing and the file can be re-read with encoding
+   set. The usual alternatives destroy the byte for good: iconv(sub="")
+   turns "M\xfcller" into "Mller" and sub="?" into "M?ller".
+
+   One structural note. In read.tucson() the validity TEST runs on what
+   fread() already returned, so a UTF-8 or ASCII file pays one vectorised
+   call and takes the old fread(fname) path bit-for-bit unchanged. The
+   conversion, however, re-reads with readLines(), because fread() was
+   given blank.lines.skip = TRUE and an index into its result is not a
+   line number in the file: converting in place reported "line 3" for
+   what was line 5 of a file with two blank lines above it. A message
+   that confidently names the wrong line is worse than one that names
+   none.
+
+   read.fh() gets the same treatment and an encoding argument. This is
+   the format where it matters most in practice: Heidelberg files are
+   favoured in European dendroarchaeology, their HEADER blocks are full
+   of free text -- site, species, project and operator names -- and that
+   text is typed in German, Czech and Polish on machines that were not
+   writing UTF-8. A single umlaut in a Location field used to take
+   read.fh() out at its first grep() with "input string N is invalid in
+   this locale". read.fh() keeps no provenance record, so the tiers
+   report through plain conditions there: a declared encoding is obeyed
+   silently and an assumed one warns.
+
+   read.crn() and read.tucson.legacy() already honoured encoding and are
+   unchanged. read.tridas() is deliberately untouched: it parses through
+   libxml2, which reads the encoding from the XML declaration and
+   transcodes to UTF-8 itself. A declared ISO-8859-1 TRiDaS file already
+   reads correctly, and undeclared 8-bit bytes are already rejected by
+   the parser, so a check of our own would only break working files.
+   read.compact() does not have the check.
+
+File: read.rwl.R, tests/testthat/test-sniff.rwl.R, man/read.rwl.Rd
+-----------------------------------------------------------------
+ - Format detection for read.rwl(format = "auto") is now its own
+   function, sniff.rwl(), and has its own tests.
+
+   It was untestable where it was. The only way to ask what dplR thought
+   a file was had been to read the file and see which reader's output
+   came back, which conflates a detection bug with a parsing bug and
+   requires a fixture to be a valid file of its type before the question
+   can even be put. None of the fixtures in test-sniff.rwl.R is a valid
+   file of anything.
+
+   Pulling it out found a bug. The test for a csv fired on ANY comma in
+   lines 2-21. It skipped line 1 so that a Tucson header carrying a
+   comma would not be read as a csv (issue #16), but that fixed only the
+   header case: a Tucson file with a comma anywhere BELOW line 1 -- a
+   note in a series field -- was still detected as a csv and handed to
+   read.sheet(), which then refused it. Detection now asks whether every
+   line splits into the same number of fields, which a stray comma in
+   prose does not, so the Tucson cases are excluded on better grounds.
+   The old and new rules were compared directly on that file to confirm
+   it rather than reasoned about.
+
+   The sheet test also reuses read.sheet()'s own separator detector
+   rather than carrying a second, worse implementation of the same
+   question.
+
+   A NOAA/NCEI template is now named by the detector, so read.rwl() says
+   what the file is instead of handing it to read.tucson() to fail on.
+   auto still looks for commas only: a tab separated file may be a NOAA
+   template whose header went unrecognised, and that is not a guess for
+   a dispatcher to make. format = "sheet" with a sep argument is one
+   argument away.
+
+   sniff.rwl() returns the evidence for its answer as well as the
+   answer. When detection picks the wrong reader the useful question is
+   what it saw, and nothing could answer that before.
+
+File: read.rwl.R, write.rwl.R, man/read.rwl.Rd, man/write.rwl.Rd,
+      tests/testthat/test-write.sheet.R
+-----------------------------------------------------------------
+ - read.rwl() and write.rwl() take format = "sheet", which is the name
+   of the thing: the reader is read.sheet() and the format value now
+   says so, as every other one does.
+
+   "csv" stays as a synonym. It has been a valid value of read.rwl()'s
+   format since long before read.sheet() existed and cannot be taken
+   away from anyone. It is also the less accurate of the two now:
+   read.sheet() reads tab, semicolon and pipe separated files, so
+   format = "csv" with sep = "\t" is a perfectly ordinary call and
+   reads oddly. New code should say "sheet".
+
+   The detection line in format = "auto" now reads "Detected a comma
+   separated sheet", which is what it detected -- auto still looks for
+   commas only, deliberately, since a tab separated file may be a NOAA
+   template and that guess is not one to make in a dispatcher.
+
+File: read.sheet.R, write.sheet.R, man/read.sheet.Rd, man/write.sheet.Rd,
+      tests/testthat/test-read.sheet.R, tests/testthat/test-write.sheet.R
+-----------------------------------------------------------------
+ - read.sheet() and write.sheet() handle comma, tab, semicolon and pipe
+   separators and either decimal mark. Each of the four round trips
+   ca533 identically, both with the separator given and with it
+   detected. A semicolon separated file with decimal commas -- the
+   European Excel default, and a recurring source of confusion for those
+   users -- now reads without any argument at all.
+
+   The separator is detected by consistency rather than frequency. A
+   comma count is easy to fool, since a species note or a header line
+   holds commas and no structure, whereas a real separator gives every
+   line the same number of fields; among the candidates that manage
+   that, the one carving the file into the most fields wins, which is
+   what keeps a semicolon file with decimal commas from being read as
+   twice as many comma-separated columns.
+
+   Two things the counting has to get right, both found by tests rather
+   than by reasoning. It counts the separator instead of splitting on
+   it, because strsplit() discards trailing empty fields: a sheet where
+   one series ends before the others -- which is most collections --
+   then looks inconsistent line to line and no separator is found at
+   all. And it blanks quoted spans before counting, because a series id
+   may legally contain the separator, in which case the header line
+   carries one more comma than every data row.
+
+   The detected separator and decimal mark are recorded in the
+   provenance record, as SEP_GUESS and DEC_COMMA, but they do not warn
+   and strict does not escalate them. They are decisions the reader
+   made, not defects in the file, and sep = NULL is the default -- so
+   warning would put a warning on every ordinary call.
+
+ - The NOAA guard is now independent of comment.char. It shipped in
+   place before tab support for the reason that matters here: a NOAA
+   template file is a commented metadata block above a tab separated
+   data table, and as of this release that table parses perfectly well.
+   Reading one would return the ring widths and silently discard the
+   coordinates, species, investigators and DOI above them. The guard
+   scans the file's leading lines rather than the parsed comment block,
+   so someone reading with comment.char = "" cannot slip past it, and it
+   is tested against a tab separated NOAA fixture under both settings.
+
+File: read.sheet.R, write.sheet.R, man/read.sheet.Rd, man/write.sheet.Rd,
+      tests/testthat/test-read.sheet.R, tests/testthat/test-write.sheet.R
+-----------------------------------------------------------------
+ - read.sheet() and write.sheet() gain long = TRUE, for "long" or
+   "tidy" files of series, year, value triples.
+
+   Both sides gained it together rather than only the reader. Long is
+   the layout that arrives FROM somewhere else -- a database export, a
+   collaborator's script -- so reading it is the half that earns its
+   keep, and pivoting one into a valid rwl is the step people get wrong.
+   But with a reader and no writer the long path could only have been
+   tested against hand-built fixtures, which tests the fixture as much
+   as the code. With both, ca533, co021 and nm046 each survive
+   write.sheet(long = TRUE) followed by read.sheet(long = TRUE)
+   identically, the same way they do wide.
+
+   Long columns are taken by position, which is what write.sheet()
+   emits. If the header names all three of series, year and value, in
+   any case and any order, the names win instead: a file from elsewhere
+   need not be in our order. Anything in between is position.
+
+   On read, the year span runs from the earliest to the latest year in
+   the file, so a year no series measured comes back as a row of NA and
+   is reported -- years with no data at all break several dplR
+   functions, and in the wide layout that same file would have carried
+   an explicit blank row. One series may hold only one value per year;
+   in the wide layout that is impossible by construction, here it is
+   checked.
+
+ - A note on what long format can and cannot represent, because the
+   obvious statement of it is wrong. A year in which every series is NA
+   has no rows in a long file, but only a LEADING or TRAILING such year
+   is actually lost: an interior one survives, because the reader
+   rebuilds the span from the earliest and latest year present and the
+   year reappears as a row of NA exactly where it was. Only an edge year
+   has nothing outside it to pin the span. write.sheet(long = TRUE)
+   therefore warns for edge all-NA years and stays quiet for interior
+   ones, rather than warning about every case and crying wolf on the
+   ones that round trip perfectly well.
+
+File: write.sheet.R, write.rwl.R, man/write.sheet.Rd, man/write.rwl.Rd,
+      tests/testthat/test-write.sheet.R
+-----------------------------------------------------------------
+ - There is a new writer, write.sheet(), the other half of read.sheet().
+   write.rwl() gains format = "csv", which dispatches to it and, like
+   every other branch of that switch, returns fname.
+
+   A csv has no format specification to conform to, so every default is
+   a decision rather than a reading of somebody's spec. The one that
+   earns its keep is prec. A ring width read at 0.001 mm is a double,
+   and writing it with R's default formatting puts 0.5670000000000001 in
+   the file -- ugly, and a lie about how precisely the ring was measured.
+   prec = NULL reads the precision back off the provenance record that
+   read.sheet() and read.tucson() attach, falling back to inferring it
+   from the data. This is the first thing to make practical use of that
+   record.
+
+   A derived precision is checked against the data before it is used and
+   a given one is not, which is the right way round and easy to get
+   backwards. rwl.granularity() rounds to three decimals before taking
+   its gcd, so on an object holding something finer it answers 0.001 and
+   rounding there would discard real digits; provenance can be stale for
+   the same reason, since it describes the file the object was read from
+   and the object may have been through arithmetic since. Neither is an
+   instruction from the caller, so if rounding would lose data the file
+   is written at full precision with a warning. A prec passed explicitly
+   IS an instruction and is obeyed: prec = 0.1 rounds. Unlike
+   write.tucson(), prec is not restricted to 0.01 and 0.001 -- that
+   restriction belongs to the decadal format's six-column field and
+   two-valued flag, and a csv has neither.
+
+   A ring width of zero is written as a zero and a missing value as an
+   empty cell. Those are different statements about a tree in a year and
+   are never written the same way. Trailing zeros are kept, so at
+   prec = 0.001 a width of 0.51 is written 0.510. Series ids are written
+   verbatim, quoted with the ordinary csv escape if one contains the
+   separator or a quote.
+
+   The wide round trip is exact: ca533, co021 and nm046 each survive
+   write.sheet() followed by read.sheet() identically. Provenance is
+   dropped from both sides before comparing, not just from the object
+   that came back -- the stored datasets carry a record of their own,
+   and in any case provenance describes the file an object was read
+   from, so a fresh read of a freshly written file legitimately has a
+   different path and a different reader. The data is what must survive.
+
+   This release writes the wide, comma separated layout. Long format and
+   separators other than the comma refuse, matching read.sheet(): a tab
+   file that this package cannot read back is worse to ship than a clear
+   refusal.
+
+File: read.sheet.R, csv2rwl.R, read.rwl.R, man/read.sheet.Rd,
+      man/read.rwl.Rd, tests/testthat/test-read.sheet.R
+-----------------------------------------------------------------
+ - There is a new reader for spreadsheet-shaped ring width files,
+   read.sheet(). Years down the rows, series across the columns, years
+   in the first column -- the layout people actually have in Excel.
+
+   It replaces csv2rwl(), which is deprecated and now forwards to it.
+   The problem with csv2rwl() was not that it was small; it was that it
+   was unverified. It set class "rwl" directly, which routed around
+   as.rwl() and its requirement that the row names be consecutive
+   integers, so it accepted files and returned objects that were wrong
+   in ways nothing downstream detects: a year column running 1901, 1902,
+   1905 was taken whole and time() then reported a discontinuous span
+   for the life of the object; a stray text column was carried into the
+   rwl and sat there until some later function died on it, far from the
+   cause; and series ids went through read.table(check.names = TRUE), so
+   "1A" came back as "X1A" and "LF-2B" as "LF.2B", silently. Series ids
+   are data, and a reader that alters them without saying so is losing
+   data.
+
+   read.sheet() therefore checks more than read.tucson() does, not less:
+   a Tucson file at least has a format to violate, while a sheet has no
+   discipline beyond what the person who saved it happened to do. Years
+   must be whole, ascending, unique and consecutive; every column after
+   the first must be numeric, and offending cells are named rather than
+   the whole column being called text; ids are read verbatim, with a
+   stripped byte order mark or a resolved duplicate reported and
+   recorded rather than done quietly. Duplicated ids are renamed and
+   recorded, as read.tucson() does, instead of stopping.
+
+   It returns the same nine-field provenance record as read.tucson(), in
+   the same shape and with the same event ids where a condition means
+   the same thing, so nothing downstream has to ask which reader made an
+   object. Precision is inferred from the data rather than read off a
+   flag, since a sheet carries none.
+
+   A NOAA/NCEI template file is refused rather than half-read. Those are
+   a commented metadata block above a tab separated data table, and that
+   table is exactly the shape this reader is built for -- so a reader
+   that skipped comments in the ordinary way would parse one and
+   silently discard the coordinates, species, investigators and DOI. The
+   refusal is in place now, before tab support arrives, because it has
+   to be there before the parsing can reach those files rather than
+   after.
+
+   This release reads the wide, comma separated layout. Long format and
+   separators other than the comma refuse with a message naming what
+   they are waiting on, rather than doing something adjacent.
+
+ - csv2rwl() is deprecated as of 1.8.0. It warns on every call rather
+   than once per session, which is not lifecycle's default: this
+   deprecation changes what the function accepts, not just its name, so
+   someone reading a directory of sheets in a loop would otherwise get
+   one warning and then silence while individual files were refused. A
+   file that csv2rwl() used to read may now stop with an error. That is
+   the deprecation working -- the object it returned for those files was
+   invalid. There is deliberately no csv2rwl.legacy():
+   read.tucson.legacy() exists because the old reader's behaviour is
+   different and occasionally wanted, which is not the case here.
+
+ - read.rwl() now calls read.sheet() for format = "csv" and for csv
+   files found by format = "auto", so a user who never typed csv2rwl()
+   is not told it is deprecated.
+
 File: Extract.rwl.R, man/Extract.rwl.Rd, tests/testthat/test-Extract.rwl.R
 -----------------------------------------------------------------
  - There is now a `[` method for rwl objects. Subsetting used to fall

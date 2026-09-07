@@ -44,7 +44,7 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
 ##    "Spline" and "Linear" are available for anyone who wants to interpolate.
 ##    Either way verbose names every gap and what the file held there.
 ##
-##  - header, long and encoding are accepted and ignored, and warn when
+##  - header and long are accepted and ignored, and warn when
 ##    supplied. They exist so that scripts written against the old reader --
 ##    and read.rwl(), which passes its ... straight through -- do not fail with
 ##    "unused argument". The argument order of the first six arguments is the
@@ -63,9 +63,11 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
 ##        the two layouts, since a digit in column 8 could equally be the end
 ##        of an 8-character ID or the start of a 5-character year. Do not let a
 ##        long argument override the per-line detection.
-##      * encoding is a real gap rather than merely an unused argument: this
-##        reader has no encoding handling at all and reads the file as it
-##        stands. A file in a non-default encoding may need converting first.
+##    encoding, by contrast, was a real gap rather than an unused argument, and
+##    is now implemented: the file is checked against UTF-8, read using this
+##    argument if it is not valid UTF-8 and one was supplied, and otherwise read
+##    as latin1 with an ENCODING_ASSUMED event saying so. See R/encoding.R for
+##    why the fallback guesses rather than running a charset detector.
 ##
 ##  - fix.duplicates from the development script was dropped, and there is no
 ##    sensible FALSE to implement. When one core has two measurements for the
@@ -102,11 +104,7 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
             "now detected per line, so 8-character series IDs and years ",
             "before -999 can coexist in one file. Use read.tucson.legacy() ",
             "for the old behaviour.", call. = FALSE)
-  if (!missing(encoding) && !identical(encoding, getOption("encoding")))
-    warning("'encoding' is ignored by read.tucson(): the file is read as it ",
-            "stands. If it is not in the default encoding, convert it first ",
-            "or use read.tucson.legacy(), which does honour this argument.",
-            call. = FALSE)
+  ## encoding is honoured; see the encoding block further down and R/encoding.R.
 
   ## AGB Aug 2026: every recoverable problem now goes through report(), so the
   ## strict switch lives in one place instead of being repeated at each call
@@ -135,6 +133,21 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
                  stringsAsFactors = FALSE)
     if (isTRUE(strict)) stop(msg, call. = FALSE)
     warning(msg, call. = FALSE)
+  }
+
+  ## A note is something the reader DECIDED, not something wrong with the file.
+  ## Identical in shape to read.sheet()'s, deliberately: it belongs in the
+  ## record, because a sweep wants to know the decision was taken, but it is
+  ## not a defect, so it must not warn and strict must not escalate it. Used
+  ## for ENCODING_DECLARED, where the user told us the encoding and we obeyed.
+  note <- function(..., event = NA_character_, series = NA_character_,
+                   n = NA_integer_) {
+    msg <- paste0(...)
+    prov.events[[length(prov.events) + 1L]] <<-
+      data.frame(event = event, series = series, n = n, message = msg,
+                 stringsAsFactors = FALSE)
+    if (verbose) cat(msg, "\n", sep = "")
+    invisible(NULL)
   }
 
   ## AGB Sep 2026: one refusal, used by every path that ends up with nothing to
@@ -208,6 +221,44 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   ## so every reference to V1 below would fail on the column rather than on the
   ## file. Refuse it here instead.
   if (is.null(raw) || nrow(raw) == 0L || !('V1' %in% names(raw))) no_measurements()
+
+  ## Encoding, before anything measures or matches a column ------------------
+  ##
+  ## AGB Sep 2026: fread() itself reads a latin1 file without complaint -- it
+  ## hands back the bytes unmarked -- and the failure came later, on the first
+  ## nchar()/substr()/regexpr() over V1, as "invalid multibyte string, element
+  ## 3" from inside data.table. See R/encoding.R for the tiers and for why the
+  ## fallback guesses rather than running a charset detector.
+  ##
+  ## The validity TEST is cheap and runs on what fread already returned, so a
+  ## UTF-8 or ASCII file -- virtually every file -- pays one vectorised call
+  ## and takes the fread(fname) path above bit-for-bit unchanged. Only a file
+  ## that would previously have crashed takes the branch below.
+  ##
+  ## That branch re-reads with readLines() rather than converting raw$V1 in
+  ## place, and the reason is the line NUMBER in the message. fread() was given
+  ## blank.lines.skip = TRUE, so raw$V1 has already lost the file's blank lines
+  ## and its indices are not the file's line numbers: on a file with two blank
+  ## lines above the offending one, converting in place reported "line 3" for
+  ## what is line 5 in the file. A message that confidently names the wrong
+  ## line is worse than one that names none. readLines() keeps every line, so
+  ## the numbers are the file's own, and fread(text=) with these same arguments
+  ## was checked to return exactly what fread(fname) returns -- blank lines and
+  ## leading whitespace included.
+  if (any(!validUTF8(raw$V1))) {
+    enc.lines <- readLines(fname, warn = FALSE)
+    enc.res <- enc.resolve(enc.lines, encoding = encoding, fname = fname)
+    raw <- data.table::fread(text = enc.res$lines, header = FALSE, sep = '\n',
+                             blank.lines.skip = TRUE, strip.white = FALSE)
+    if (is.null(raw) || nrow(raw) == 0L || !('V1' %in% names(raw)))
+      no_measurements()
+    if (identical(enc.res$status, 'declared'))
+      note(enc.message(enc.res, fname), event = 'ENCODING_DECLARED',
+           n = length(enc.res$bad))
+    else
+      report(enc.message(enc.res, fname), event = 'ENCODING_ASSUMED',
+             n = length(enc.res$bad))
+  }
 
   ## Keep the opening lines exactly as read, before any trimming or truncation,
   ## so the header can be recovered intact further down.

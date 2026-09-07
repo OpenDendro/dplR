@@ -22,10 +22,12 @@ read.tucson(fname, header = NULL, long = FALSE,
     fail.  The two possible column layouts are now detected per line, so
     8-character series \acronym{ID}s and years before -999 may occur in the
     same file.  See \sQuote{Details}. }
-  \item{encoding}{ ignored, and accepted only so that existing calls do not
-    fail.  The file is read as it stands.  If your file is not in the
-    default encoding, convert it first or use
-    \code{\link{read.tucson.legacy}}, which does honour this argument. }
+  \item{encoding}{ the encoding of the file, used only if the file is not
+    valid \acronym{UTF}-8.  Any name \code{\link[base]{iconv}} accepts will do,
+    e.g. \code{"latin1"} or \code{"ISO-8859-2"}.  The default,
+    \code{getOption("encoding")}, means no encoding has been declared: the
+    reader then falls back to \code{"latin1"} and says so.  See
+    \sQuote{Encoding} below. }
   \item{edge.zeros}{ \code{logical} flag indicating whether leading or
     trailing zeros in series will be preserved (when the flag is
     \code{TRUE}, the default) or discarded, i.e. marked as \code{NA}
@@ -118,6 +120,37 @@ read.tucson(fname, header = NULL, long = FALSE,
   what the file says, to report plainly what it did, and to refuse
   rather than guess when a line admits two readings.  Even so, and despite
   our best efforts, this format can and does fail.
+}
+\section{Encoding}{
+  Ring widths are digits, but the header lines and occasionally the series
+  \acronym{ID}s are not, and archived files carry accented site names and
+  investigator names in whatever 8-bit encoding the contributor's machine
+  used.  \code{read.tucson} resolves this in three steps.
+
+  First, the file is tested against \acronym{UTF}-8.  This is a decision and
+  not a guess: \acronym{UTF}-8 is self-validating, and plain \acronym{ASCII}
+  passes, so virtually every file takes this path and nothing is reported.
+
+  If the file is not valid \acronym{UTF}-8 and \code{encoding} was supplied,
+  that encoding is used and an \code{ENCODING_DECLARED} event is recorded.
+  If the declared encoding does not fit the file, \code{read.tucson} stops
+  rather than transcode into replacement characters.
+
+  If the file is not valid \acronym{UTF}-8 and no encoding was supplied, it
+  is read as \code{"latin1"} and an \code{ENCODING_ASSUMED} event is
+  recorded, with a warning naming the line and quoting the text the
+  assumption produced, so the guess can be judged at a glance.  Under
+  \code{strict = TRUE} this becomes an error.
+
+  The fallback guesses rather than running a charset detector because
+  detectors do not work on this kind of file.  They are byte-frequency
+  language models and need a volume of non-\acronym{ASCII} text that a file
+  of ring widths never has; on a rwl that is \acronym{ASCII} apart from one
+  accented name, \acronym{ICU}'s detector scores the right answer at 0.16
+  and ranks \acronym{UTF}-16 alongside it.  \code{"latin1"} is used instead
+  because it is total (every byte decodes, so it cannot fail) and lossless
+  (the round trip is byte-identical, so a wrong guess discards nothing and
+  the file can simply be re-read with \code{encoding} set).
 }
 \value{
   An object of class \code{c("rwl", "data.frame")} with the series in

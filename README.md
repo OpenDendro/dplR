@@ -30,7 +30,7 @@ install.packages("dplR")
 
 ### Develoment Version
 
-CRAN releases of dplR are relatively infrequent. However, the development version of `dplR` is available here as source code and as binaries. Most users who want the development version are best off getting the **binary** via `r-universe` from the R prompt:
+CRAN releases of dplR are relatively infrequent. However, the development version of `dplR` is available here as source code and as binaries. Most users who want the development version are best off getting the **binary** via `r-universe`. To do so, start a fresh R session  remove dplR if it's already part of your R installation (`remove.packages("dplR")`), and then from the R prompt:
 
 ```R
 install.packages("dplR", repos = "https://openDendro.r-universe.dev/")

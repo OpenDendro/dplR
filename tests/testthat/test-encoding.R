@@ -128,12 +128,12 @@ test_that("a series id, not just a header, survives latin1", {
 test_that("sniff.rwl no longer dies on a non-UTF-8 file", {
     ## The regression: this used to error in trimws(), inside the sheet test,
     ## before any reader had been chosen.
-    expect_silent(s <- sniff.rwl(tuc.enc(l1)))
+    expect_silent(s <- dplR:::sniff.rwl(tuc.enc(l1)))
     expect_equal(s$format, "tucson")
     ## and detection still works on a latin1 file of another format
     csv <- bytes.file(c("Year,AB\xe91,ABC2", "1900,1.0,2.0", "1901,1.1,2.1"),
                       ".csv")
-    expect_equal(sniff.rwl(csv)$format, "sheet")
+    expect_equal(dplR:::sniff.rwl(csv)$format, "sheet")
 })
 
 test_that("read.sheet applies the same tiers", {
@@ -210,7 +210,7 @@ test_that("read.fh: the measurements survive the encoding detour", {
 
 test_that("read.rwl routes a latin1 Heidelberg file through and warns", {
     f <- fh.file(fh.loc.l1)
-    expect_equal(sniff.rwl(f)$format, "heidelberg")
+    expect_equal(dplR:::sniff.rwl(f)$format, "heidelberg")
     expect_warning(x <- suppressMessages(read.rwl(f)), "not valid UTF-8")
     expect_equal(names(x), "ABC01")
     ## and encoding reaches read.fh() through read.rwl()'s dots
@@ -234,12 +234,12 @@ test_that("enc.declared() treats the readers' default as no declaration", {
     ## read.tucson()'s encoding argument defaults to getOption("encoding"),
     ## which is "native.enc". If that counted as a declaration, every ordinary
     ## call would take the tier 2 path and iconv from a meaningless name.
-    expect_false(enc.declared(getOption("encoding")))
-    expect_false(enc.declared(NULL))
-    expect_false(enc.declared(NA_character_))
-    expect_false(enc.declared(""))
-    expect_true(enc.declared("latin1"))
-    expect_true(enc.declared("ISO-8859-2"))
+    expect_false(dplR:::enc.declared(getOption("encoding")))
+    expect_false(dplR:::enc.declared(NULL))
+    expect_false(dplR:::enc.declared(NA_character_))
+    expect_false(dplR:::enc.declared(""))
+    expect_true(dplR:::enc.declared("latin1"))
+    expect_true(dplR:::enc.declared("ISO-8859-2"))
 })
 
 test_that("the detector never decides, and stays quiet when unsure", {

@@ -46,13 +46,17 @@ File: Extract.rwl.R, man/Extract.rwl.Rd, tests/testthat/test-Extract.rwl.R
    nothing at all is measured is left whole rather than reduced to
    nothing, and rwl.check() reports it.
 
-   The trimming happens only when the call does not index rows. Name
-   years -- x[i, ], x[i, j], head(), common.interval() -- and exactly
-   those rows come back, empty or not: a year window is how an rwl
-   object gets lined up against something else, and quietly returning
-   fewer rows than were asked for would put that alignment out by
-   however many years happened to be empty at the edge. Name only
-   series and you get the years those series cover. A single series
+   The trimming happens only where a series actually went away and the
+   call does not index rows. Name years -- x[i, ], x[i, j], head(),
+   common.interval() -- and exactly those rows come back, empty or not:
+   a year window is how an rwl object gets lined up against something
+   else, and quietly returning fewer rows than were asked for would put
+   that alignment out by however many years happened to be empty at the
+   edge. A call that keeps every series, such as the reordering
+   x[, order(...)] that xdate.floater() does before it draws its
+   segment plot, has dropped nothing to trim for and leaves the years
+   alone. Drop series and you
+   get the years the rest of them cover. A single series
    taken with drop = TRUE is a numeric vector, which carries no years,
    so it is returned at full length and still lines up with the object
    it came from; drop = FALSE gives a trimmed one-series rwl object.

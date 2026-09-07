@@ -42,24 +42,27 @@
   \code{\link{data.frame}}, with \code{i} indexing years and \code{j}
   indexing series.  Three things are different.
 
-  \emph{Selecting series returns the years those series cover.}  A
+  \emph{Dropping series returns the years the remaining series cover.}  A
   collection is ragged, and the years at the ends of an \code{rwl} object
-  usually belong to a few long series, so a subset of the series ordinarily
-  leaves years in which nothing that remains was measured.  The result runs
+  usually belong to a few long series, so dropping some of the series
+  ordinarily leaves years in which nothing that remains was measured.  The result runs
   from the first year to the last year in which any of the selected series
   has a measurement.  Empty years between those two are kept: an
   \code{rwl} object holds one row per year, and an interior year cannot be
   dropped without breaking the sequence.
 
-  This applies to calls that select series without indexing years --
+  This applies to calls that drop series without indexing years --
   \code{x[, j]}, \code{x[j]}, and \code{subset} given only \code{select}.
-  A call that indexes years returns exactly the years it asks for, measured
-  or not:
-  \code{x[i, ]}, \code{x[i, j]}, \code{\link{head}}, \code{\link{tail}},
+  Two kinds of call leave the years alone.  A call that indexes years
+  returns exactly the years it asks for, measured or not: \code{x[i, ]},
+  \code{x[i, j]}, \code{\link{head}}, \code{\link{tail}},
   \code{\link{common.interval}}, and \code{subset} with its \code{subset}
   argument.  A year window is how an \code{rwl} object is aligned with
   something else, such as a climate series or a second collection, and
   returning fewer years than were asked for would put that alignment out.
+  And a call that keeps every series, such as the reordering
+  \code{x[, order(names(x))]} or \code{x[]}, has dropped nothing to trim
+  for, whatever empty years the object already held.
 
   Two results are not trimmed.  A subset holding no measurement in any year
   is returned whole rather than emptied, and \code{\link{rwl.check}} reports
@@ -107,8 +110,8 @@
   An object of class \code{c("rwl", "data.frame")}, or a \code{numeric}
   vector when one column is selected and \code{drop} is \code{TRUE}, or a
   \code{data.frame} when row subsetting has left the years no longer
-  consecutive.  When series are selected and years are not, the result runs
-  only over the years those series cover.
+  consecutive.  When series are dropped and years are not indexed, the
+  result runs only over the years the remaining series cover.
 
 }
 \author{ Andy Bunn }

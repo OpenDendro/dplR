@@ -35,14 +35,17 @@
 ###     over. Selecting series now trims the leading and trailing years in
 ###     which nothing left is measured.
 ###
-###     It trims only when the call does not index rows. If the caller names
-###     rows -- x[i, ], x[i, j], head(), common.interval() -- they get the
-###     rows they named and no others, because a year window is how an rwl
-###     object gets lined up against something else (a climate series, a
-###     second collection) and quietly returning fewer rows than were asked
-###     for would put that alignment out by however many years were empty at
-###     the edge. So: name years and you get those years; name only series
-###     and you get the years those series cover.
+###     It trims only when a series actually went away and the call does not
+###     index rows. If the caller names rows -- x[i, ], x[i, j], head(),
+###     common.interval() -- they get the rows they named and no others,
+###     because a year window is how an rwl object gets lined up against
+###     something else (a climate series, a second collection) and quietly
+###     returning fewer rows than were asked for would put that alignment out
+###     by however many years were empty at the edge. And a call that keeps
+###     every series -- x[, order(...)], x[] -- has dropped no years to trim
+###     for, whatever empty years the object already had. So: name years and
+###     you get those years; drop series and you get the years the rest of
+###     them cover.
 ###
 ### Row subsetting that keeps years consecutive -- a year window, head(),
 ### tail(), common.interval() -- is untouched and stays an rwl.
@@ -71,7 +74,14 @@
     ## the object stops being an rwl object. A subset in which nothing at all
     ## is measured is left whole, since trimming it to nothing would replace
     ## one thing to notice with a harder one; rwl.check() reports it.
-    if (!rows.given && ncol(out) > 0L && nrow(out) > 0L) {
+    ##
+    ## Nothing is trimmed unless a series actually went away. x[, order(...)]
+    ## reorders the columns and keeps them all, and so does x[]; the years of
+    ## an object whose series are all still in it are not this method's to
+    ## shorten, and shortening them breaks callers that hold a year vector
+    ## taken before the reorder -- xdate.floater() is one.
+    if (!rows.given && ncol(out) > 0L && nrow(out) > 0L &&
+        !all(names(x) %in% names(out))) {
         measured <- Reduce(`|`, lapply(out, function(z) !is.na(z)))
         first <- match(TRUE, measured)
         if (!is.na(first)) {

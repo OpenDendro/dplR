@@ -12,3 +12,4 @@ src/symbols.rds
 inst/doc
 .positai
 *.Rcheck
+00_PLAN-read.sheet.md

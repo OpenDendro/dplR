@@ -45,10 +45,14 @@ gp.ids <- read.ids(gp.rwl, stc = c(0, 2, 1))
 gp.treeMean <- treeMean(gp.rwl, gp.ids)
 gp.treeMean2 <- treeMean(gp.rwl, gp.ids, na.rm=TRUE)
 
-# look at an example of a single tree with different averaging periods
-tree40 <- data.frame(gp.rwl[, c("40A","40B")],
-                     gp.treeMean[, "40", drop=FALSE],
-                     gp.treeMean2[, "40", drop=FALSE])
+# look at an example of a single tree with different averaging periods.
+# The years are named on every subset so that the cores and the two tree
+# means stay on one grid: selecting series alone would give each of them
+# only the years it covers, and the three spans are not the same.
+yrs <- rownames(gp.rwl)
+tree40 <- data.frame(gp.rwl[yrs, c("40A","40B")],
+                     gp.treeMean[yrs, "40", drop=FALSE],
+                     gp.treeMean2[yrs, "40", drop=FALSE])
 names(tree40) <- c("coreA", "coreB", "treeMean1", "treeMean2")
 head(tree40,50)
 

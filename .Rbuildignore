@@ -21,9 +21,10 @@
 # IDE-specific directories
 ^\.positai$
 
-# Developer docs and release checklist
+# Developer docs, implementation plans, and release checklist
 ^00_README-developer$
 ^00_CRAN-release$
+^00_PLAN-.*$
 
 # Reverse dependency check directory (created by revdepcheck package)
 ^revdep$

@@ -105,13 +105,27 @@ test_that("selecting series trims years the remaining series do not cover", {
     expect_equal(range(time(x[, 1:3])), c(1901, 1980))
 })
 
+test_that("nothing is trimmed when every series is kept", {
+    ## Reordering the columns, which is what xdate.floater() does before it
+    ## draws its segment plot, keeps every series. There are no dropped years
+    ## to trim for, and a caller holding a year vector taken before the
+    ## reorder needs the rows to still line up.
+    x <- mk.rwl(k = 3, yrs = 1901:1980)
+    x[1:10, ] <- NA
+    x[76:80, ] <- NA
+    expect_equal(nrow(x[, 3:1]), 80L)
+    expect_equal(nrow(x[, order(names(x))]), 80L)
+    expect_equal(nrow(x[]), 80L)
+    expect_equal(nrow(x[, names(x)]), 80L)
+    ## Dropping one does trim.
+    expect_equal(nrow(x[, 1:2]), 65L)
+})
+
 test_that("only the leading and trailing empty years go", {
     ## An empty year in the middle has to stay: without it the years are no
     ## longer consecutive and the object is no longer an rwl object.
-    x <- mk.rwl(k = 2, yrs = 1901:1980)
-    x[1:10, ] <- NA
-    x[41:45, ] <- NA
-    x[71:80, ] <- NA
+    x <- mk.rwl(k = 3, yrs = 1901:1980)
+    x[c(1:10, 41:45, 71:80), 1:2] <- NA
     y <- x[, 1:2]
     expect_equal(range(time(y)), c(1911, 1970))
     expect_equal(time(y), 1911:1970)

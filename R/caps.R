@@ -5,6 +5,16 @@
   ## the result would not be numeric, but...
   if(!is.numeric(y)) stop("'y' must be coercible to a numeric vector")
   
+  ## AGB Sep 2026: refuse NA rather than propagating it. The spline routine
+  ## carries NA through and hands back a full-length vector of NA, which looks
+  ## like an answer and is not one -- a caller that divides by it gets a series
+  ## of NA and no indication why. A smoothing spline through a series with
+  ## missing values is not defined, and the caller is the one who has to decide
+  ## what to do about the gap: drop the series, fill it with
+  ## fill.internal.NA(), or fit over a complete span. This is the same contract
+  ## detrend() has always had, stated one level down where the curve is fitted.
+  if (anyNA(y)) stop("'y' must not contain NA")
+
   nobs <- length(y)
   
   ## quick error check

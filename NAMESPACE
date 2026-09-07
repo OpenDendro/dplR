@@ -73,6 +73,9 @@ S3method(plot, crs)
 S3method(plot, rwl)
 S3method(print, redfit)
 S3method(print, rwl.report)
+S3method(print, rwl.check)
+S3method(summary, rwl.check)
+S3method(as.data.frame, rwl.check)
 S3method(summary, rwl)
 S3method(time, rwl)
 S3method(time, crn)
@@ -132,6 +135,9 @@ export("ads",
        "powt",
        "print.redfit",
        "print.rwl.report",
+       "rwl.check",
+       "rwl.check.control",
+       "rwl.check.catalogue",
        "rasterPlot",
        "rcs",
        "read.compact",

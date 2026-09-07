@@ -9,6 +9,13 @@ tuc <- function(lines) {
     tf
 }
 
+## read.tucson() attaches a provenance record that read.tucson.legacy() has no
+## equivalent of, so comparisons of the data between the two strip it first.
+no.prov <- function(x) {
+    attr(x, "dplR.provenance") <- NULL
+    x
+}
+
 test_that("read.tucson reads both precisions", {
     r1 <- read.tucson(tuc("TEST2A  1734  1230   456   789    12    34   999"),
                       verbose = FALSE)
@@ -41,7 +48,7 @@ test_that("fill.internal.NA = 0 reproduces read.tucson.legacy", {
                "TST01A  1910  -999  -999  -999  -999  -999  -999  -999  -999  -999  -999",
                "TST01A  1920   211   222   233   244   255   266   277   288   299   300",
                "TST01A  1930   311   999"))
-    expect_equal(read.tucson(f, verbose = FALSE, fill.internal.NA = 0),
+    expect_equal(no.prov(read.tucson(f, verbose = FALSE, fill.internal.NA = 0)),
                  read.tucson.legacy(f, verbose = FALSE))
 })
 

@@ -26,6 +26,17 @@ rwl.report(rwl,small.thresh=NA,big.thresh=NA)
   This generates information about a \code{rwl} object including the number of series, the mean length of all the series, the first year, last year, the mean first-order  autocorrelation (via \code{\link{summary.rwl}}), the mean interseries  correlation (via \code{\link{interseries.cor}}), the years where a series has a missing ring (zero), internal NA, very small ring, very large rings, etc.  
 
   This output of this function is not typically meant for the user to access but has a \code{print} method for the user.
+
+  When the object still carries the record \code{\link{read.tucson}} attaches
+  to what it returns, the printed report opens with a short header naming the
+  file, the site and species from the \acronym{ITRDB} header, the precision the
+  file declares, and the span the header claims, which is worth seeing beside
+  the span the measurements actually cover. It also notes when the reader
+  renamed a series, so the ids in the report are not the file's, and when
+  interior gaps were filled. An object with no such record -- one built by
+  hand, read by \code{\link{read.tucson.legacy}}, or subsetted by column --
+  is reported exactly as before. Use \code{\link{rwl.check}} to have any of
+  this reported as findings rather than as context.
 }
 \value{
   A \code{list} with elements containing descriptive information on the \code{rwl} object. Specifically:
@@ -47,6 +58,7 @@ rwl.report(rwl,small.thresh=NA,big.thresh=NA)
   \item{meanInterSeriesCor}{a \code{numeric} with the mean interseries correlation.}
   \item{sdInterSeriesCor}{a \code{numeric} with the standard deviation of the interseries correlations.}
   \item{internalNAs}{a \code{list} containing series and years with internal NA values or a \code{numeric} of 0.}
+  \item{provenance}{a \code{list} of details taken from the record attached by \code{\link{read.tucson}}, or absent when the object carries no such record.}
   \item{smallRings}{a \code{list} containing series and years with small rings or a \code{numeric} of 0.}
   \item{bigRings}{a \code{list} containing series and years with large rings or a \code{numeric} of 0.}
 

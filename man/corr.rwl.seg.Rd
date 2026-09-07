@@ -141,6 +141,13 @@ names(crs)
 head(crs$overall)
 ## Average correlation for each bin
 crs$avg.seg.rho
+## note that COFECHA applies a 32-yr spline to data before running correlations.
+## that logcl can be applied via:
+co021.rwi <- detrend(co021,method="Spline",nyrs = 32)
+crsSpline <- corr.rwl.seg(co021.rwi, seg.length = 100, plot=FALSE)
+## Average correlation for each bin
+crsSpline$avg.seg.rho
+
 }
 \keyword{ manip }
 

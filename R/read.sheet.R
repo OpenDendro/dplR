@@ -233,7 +233,10 @@ sniff.sep <- function(lines, cands) {
   ## Strip it defensively as well: on a platform where readLines() did not,
   ## it is still sitting on the front of the year column's name.
   if (had.bom && length(lines))
-    lines[1L] <- sub("^﻿", "", lines[1L], useBytes = FALSE)
+    ## \uFEFF, not a literal BOM: R CMD check refuses non-ASCII in code,
+    ## and a literal here is an invisible character inside a regex, which
+    ## is unreadable and one careless edit away from vanishing.
+    lines[1L] <- sub("^\uFEFF", "", lines[1L], useBytes = FALSE)
 
   ## Comment lines are kept, not discarded: they are the only part of the file
   ## that is unreadable once it has been parsed.
@@ -474,7 +477,7 @@ sniff.sep <- function(lines, cands) {
 
     if (had.bom) {
       prov.renames[[length(prov.renames) + 1L]] <-
-        data.frame(old = paste0("﻿", hdr[1L]), new = hdr[1L],
+        data.frame(old = paste0("\uFEFF", hdr[1L]), new = hdr[1L],
                    why = "UTF-8 byte order mark stripped",
                    stringsAsFactors = FALSE)
       report("a UTF-8 byte order mark was stripped from the head of ", fname,

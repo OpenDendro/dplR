@@ -18,7 +18,7 @@ caps(y, nyrs = 32, f = 0.5)
 \details{
   This applies the classic smoothing spline from Cook and Peters (1981). The rigidity of the spline has a frequency response of 50\% at a wavelength of \code{\var{nyrs}}. The references, of course, have more information.
   
-  This function was introduced to \code{\var{dplR}} in version 1.7.3 and replaces the now defunct \code{\var{ffcsaps}}. Where \code{\var{ffcsaps}} was written entirely in R, \code{\var{caps}} is a wrapper for a Fortran subroutine from Ed Cook's ARSTAN program that is thousands of times faster.
+  This function was introduced to \code{\var{dplR}} in version 1.7.3 and replaces the now defunct \code{\var{ffcsaps}}. Where \code{\var{ffcsaps}} was written entirely in R, \code{\var{caps}} is a wrapper for a Fortran subroutine from Ed Cook's ARSTAN program that is hundreds of times faster.
   
   The default value of \code{\var{nyrs}} was changed to 32 from 2/3 length of \code{\var{y}} in version 1.7.8 based on a suggestion from Klesse (2021).
   

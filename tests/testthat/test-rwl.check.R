@@ -224,8 +224,10 @@ test.rwl.check <- function() {
     test_that("RWL_TAB fires, and consistent CRLF alone does not", {
         fname <- tempfile(fileext = ".rwl")
         on.exit(unlink(fname), add = TRUE)
-        writeLines(c("ABC01A  1880   100   110\tx", "ABC01A  1890   120   130"),
-                   sep = "\r\n", con = fname)
+        ## Binary: on Windows a text connection would turn each "\n" into
+        ## "\r\n", writing "\r\r\n" and making this a mixed-ending file.
+        writeChar("ABC01A  1880   100   110\tx\r\nABC01A  1890   120   130\r\n",
+                  fname, eos = NULL)
         f <- as.data.frame(rwl.check(good, file = fname, checks = "file"))
         expect_true("RWL_TAB" %in% f$check)
         expect_false("RWL_MIXED_EOL" %in% f$check)

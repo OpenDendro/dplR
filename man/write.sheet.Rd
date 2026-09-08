@@ -7,8 +7,9 @@
   down the rows, series across the columns, and the years in the first column.
 }
 \usage{
-write.sheet(rwl.df, fname, sep = ",", dec = ".", long = FALSE,
-            prec = NULL, na.string = "", year.name = "Year", \dots)
+write.sheet(rwl.df, fname, sep = ",", dec = ".",
+            layout = c("wide", "long"), prec = NULL, na.string = "",
+            year.name = "Year")
 }
 \arguments{
 
@@ -22,9 +23,12 @@ write.sheet(rwl.df, fname, sep = ",", dec = ".", long = FALSE,
   \item{dec}{ the decimal mark, \code{"."} or \code{","}. May not be the
     same character as \code{sep}. }
 
-  \item{long}{ \code{logical} flag. If \code{TRUE}, write a \dQuote{long} or
-    \dQuote{tidy} file of \code{series}, \code{year}, \code{value} triples
-    instead of the wide layout. }
+  \item{layout}{ the shape to write. \code{"wide"}, the default, is years
+    down the rows and series across the columns. \code{"long"} is a
+    \dQuote{long} or \dQuote{tidy} file of \code{series}, \code{year},
+    \code{value} triples.  Note that this is unrelated to the \code{long}
+    argument of \code{\link{read.crn}} and \code{\link{read.tucson}}, which
+    refers to a wider fixed-width year field. }
 
   \item{prec}{ the precision to write, in mm, or \code{NULL} to take it from
     the object. Unlike \code{\link{write.tucson}} this is not restricted to
@@ -35,8 +39,6 @@ write.sheet(rwl.df, fname, sep = ",", dec = ".", long = FALSE,
 
   \item{year.name}{ \code{character} string used as the header of the first
     column. }
-
-  \item{\dots}{ currently unused. }
 
 }
 \details{
@@ -66,7 +68,7 @@ write.sheet(rwl.df, fname, sep = ",", dec = ".", long = FALSE,
 
   \subsection{Long format}{
 
-    With \code{long = TRUE} the file holds one row per observation --- the
+    With \code{layout = "long"} the file holds one row per observation --- the
     series \acronym{ID}, the year and the value --- with missing values left
     out. Rows are written one series at a time, years ascending within a
     series. \code{year.name} names the year column here too.
@@ -77,7 +79,7 @@ write.sheet(rwl.df, fname, sep = ",", dec = ".", long = FALSE,
     year in the file and the year reappears as a row of \code{NA} in its
     original place. A \strong{leading or trailing} one has nothing outside it
     to pin the span and is lost; \code{write.sheet} warns when it writes a
-    file in that state. Write the wide layout to keep those years.
+    file in that state. Write with \code{layout = "wide"} to keep those years.
 
   }
 

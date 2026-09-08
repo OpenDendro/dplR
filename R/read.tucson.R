@@ -63,6 +63,17 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
 ##        the two layouts, since a digit in column 8 could equally be the end
 ##        of an 8-character ID or the start of a 5-character year. Do not let a
 ##        long argument override the per-line detection.
+##        AGB Sep 2026: the formal stays even though it does nothing, and not
+##        only for the "unused argument" reason above. Removing it shifts the
+##        positional binding of everything after it: read.tucson(f, NULL,
+##        FALSE, "latin1", TRUE) would then bind encoding = FALSE and
+##        edge.zeros = "latin1" and read the file under the wrong encoding
+##        with the edge zeros mangled, silently. Two dead formals are cheap
+##        insurance against that. The name collision this used to have with
+##        read.sheet() was resolved on the other side: that argument is now
+##        layout = c("wide", "long"), so `long` in dplR means a wider
+##        fixed-width year field and nothing else -- here and in read.crn(),
+##        where it is still live.
 ##    encoding, by contrast, was a real gap rather than an unused argument, and
 ##    is now implemented: the file is checked against UTF-8, read using this
 ##    argument if it is not valid UTF-8 and one was supplied, and otherwise read
@@ -102,8 +113,11 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   if (!missing(long) && !identical(long, FALSE))
     warning("'long' is ignored by read.tucson(): the two column layouts are ",
             "now detected per line, so 8-character series IDs and years ",
-            "before -999 can coexist in one file. Use read.tucson.legacy() ",
-            "for the old behaviour.", call. = FALSE)
+            "before -999 can coexist in one file. If you meant a long-format ",
+            "sheet -- one row per observation -- that is ",
+            "read.sheet(layout = \"long\"), a different thing entirely. Use ",
+            "read.tucson.legacy() for the old behaviour of this argument.",
+            call. = FALSE)
   ## encoding is honoured; see the encoding block further down and R/encoding.R.
 
   ## AGB Aug 2026: every recoverable problem now goes through report(), so the

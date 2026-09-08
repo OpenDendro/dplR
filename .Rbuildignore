@@ -34,9 +34,12 @@
 ^dplR-Ex\.R$
 
 # LaTeX and knitr vignette build artifacts (relevant if building vignettes locally)
+# NB: do not exclude inst/doc/*.Rnw -- R CMD build puts the vignette source
+# there on purpose, and check WARNs if it is missing.
 ^vignettes/Rplots.*\.pdf$
+^vignettes/figure(/.*)?$
+^vignettes/.*\.(aux|bbl|blg|fdb_latexmk|fls|log|out|synctex\.gz|tex|toc)$
 ^inst/doc/cache(/.*)?$
 ^inst/doc/figure(/.*)?$
-^inst/doc/.*\.(Rnw|Rout|aux|bbl|blg|fdb_latexmk|fls|glo|gls|glg|idx|ind|ilg|lof|log|lot|out|synctex\.gz|tex|toc)$
-^.*-tikzDictionary$
+^inst/doc/.*\.(Rout|aux|bbl|blg|fdb_latexmk|fls|glo|gls|glg|idx|ind|ilg|lof|log|lot|out|synctex\.gz|toc)$
 ^.*/auto$

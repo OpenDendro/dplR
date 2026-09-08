@@ -270,8 +270,8 @@ test_that("long round trip is exact on real collections", {
         data(list = d, envir = environment())
         z <- get(d, envir = environment())
         f <- tempfile(fileext = ".csv")
-        invisible(write.sheet(z, f, long = TRUE))
-        back <- read.sheet(f, long = TRUE, verbose = FALSE)
+        invisible(write.sheet(z, f, layout = "long"))
+        back <- read.sheet(f, layout = "long", verbose = FALSE)
         expect_true(identical(no.prov(back), no.prov(z)), info = d)
     }
 })
@@ -279,7 +279,7 @@ test_that("long round trip is exact on real collections", {
 test_that("the long file is series, year, value with NA rows left out", {
     x <- mk(); x[2, 1] <- NA
     f <- tempfile(fileext = ".csv")
-    invisible(write.sheet(x, f, long = TRUE))
+    invisible(write.sheet(x, f, layout = "long"))
     l <- readLines(f)
     expect_equal(l[1], "series,Year,value")
     expect_equal(l[2], "LF-1A,1901,0.51")
@@ -291,7 +291,7 @@ test_that("the long file is series, year, value with NA rows left out", {
 
 test_that("year.name applies to the long layout too", {
     f <- tempfile(fileext = ".csv")
-    invisible(write.sheet(mk(), f, long = TRUE, year.name = "year"))
+    invisible(write.sheet(mk(), f, layout = "long", year.name = "year"))
     expect_equal(readLines(f)[1], "series,year,value")
 })
 
@@ -301,8 +301,8 @@ test_that("an INTERIOR all-NA year survives the long round trip", {
     ## it was. No warning is due here.
     x <- mk(); x[2, ] <- NA
     f <- tempfile(fileext = ".csv")
-    expect_silent(invisible(write.sheet(x, f, long = TRUE)))
-    expect_warning(back <- read.sheet(f, long = TRUE, verbose = FALSE),
+    expect_silent(invisible(write.sheet(x, f, layout = "long")))
+    expect_warning(back <- read.sheet(f, layout = "long", verbose = FALSE),
                    "no observation in any series")
     expect_true(identical(no.prov(back), no.prov(x)))
     expect_equal(rownames(back), as.character(1901:1904))
@@ -313,40 +313,52 @@ test_that("a LEADING or TRAILING all-NA year is lost, and is warned about", {
     ## one case long format genuinely cannot represent.
     x <- mk(); x[1, ] <- NA
     f <- tempfile(fileext = ".csv")
-    expect_warning(write.sheet(x, f, long = TRUE), "start or end")
-    expect_warning(write.sheet(x, f, long = TRUE), "will not come back")
-    back <- suppressWarnings(read.sheet(f, long = TRUE, verbose = FALSE))
+    expect_warning(write.sheet(x, f, layout = "long"), "start or end")
+    expect_warning(write.sheet(x, f, layout = "long"), "will not come back")
+    back <- suppressWarnings(read.sheet(f, layout = "long", verbose = FALSE))
     expect_equal(rownames(back), as.character(1902:1904))
     expect_false(identical(no.prov(back), no.prov(x)))
 
     y <- mk(); y[4, ] <- NA
-    expect_warning(write.sheet(y, f, long = TRUE), "start or end")
+    expect_warning(write.sheet(y, f, layout = "long"), "start or end")
 })
 
 test_that("an object with no measurements at all cannot be written long", {
     x <- mk(); x[] <- NA_real_
     f <- tempfile(fileext = ".csv")
-    expect_error(write.sheet(x, f, long = TRUE), "no measurements at all")
+    expect_error(write.sheet(x, f, layout = "long"), "no measurements at all")
 })
 
 test_that("long and wide give the same object back", {
     f1 <- tempfile(fileext = ".csv"); f2 <- tempfile(fileext = ".csv")
     invisible(write.sheet(mk(), f1))
-    invisible(write.sheet(mk(), f2, long = TRUE))
+    invisible(write.sheet(mk(), f2, layout = "long"))
     expect_equal(no.prov(read.sheet(f1, verbose = FALSE)),
-                 no.prov(read.sheet(f2, long = TRUE, verbose = FALSE)))
+                 no.prov(read.sheet(f2, layout = "long", verbose = FALSE)))
 })
 
 test_that("prec applies in long format as well", {
     f <- tempfile(fileext = ".csv")
-    invisible(write.sheet(mk(), f, long = TRUE, prec = 0.001))
+    invisible(write.sheet(mk(), f, layout = "long", prec = 0.001))
     expect_equal(readLines(f)[2], "LF-1A,1901,0.510")
 })
 
-test_that("'long' must be a single TRUE or FALSE", {
+test_that("'layout' must be \"wide\" or \"long\"", {
     f <- tempfile(fileext = ".csv")
-    expect_error(write.sheet(mk(), f, long = NA), "TRUE or FALSE")
-    expect_error(write.sheet(mk(), f, long = c(TRUE, TRUE)), "TRUE or FALSE")
+    expect_error(write.sheet(mk(), f, layout = NA), "wide")
+    expect_error(write.sheet(mk(), f, layout = "tidy"), "wide")
+    expect_error(write.sheet(mk(), f, layout = TRUE), "wide")
+    expect_error(write.sheet(mk(), f, layout = c("long", "wide")), "wide")
+})
+
+## write.sheet() takes no ..., so an argument it does not have -- `long`, which
+## became `layout`, or anything misspelt -- is rejected by name before the body
+## runs rather than dropped in silence and a file written anyway.
+test_that("an argument write.sheet does not have is refused, not ignored", {
+    f <- tempfile(fileext = ".csv")
+    expect_error(write.sheet(mk(), f, long = TRUE), "unused argument")
+    expect_error(write.sheet(mk(), f, na.strng = "NA"), "unused argument")
+    expect_false(file.exists(f))
 })
 
 
@@ -393,8 +405,8 @@ test_that("sep and dec are validated", {
 
 test_that("long format round trips with other separators", {
     f <- tempfile(fileext = ".txt")
-    invisible(write.sheet(mk(), f, sep = "\t", long = TRUE))
-    back <- read.sheet(f, long = TRUE, verbose = FALSE)
+    invisible(write.sheet(mk(), f, sep = "\t", layout = "long"))
+    back <- read.sheet(f, layout = "long", verbose = FALSE)
     expect_equal(no.prov(back), no.prov(mk()))
 })
 

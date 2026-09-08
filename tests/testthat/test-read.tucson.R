@@ -145,6 +145,11 @@ test_that("header and long are accepted, ignored and warned about", {
                    "'header' is ignored")
     expect_warning(b <- read.tucson(f, verbose = FALSE, long = TRUE),
                    "'long' is ignored")
+    ## The likeliest caller of read.tucson(long = TRUE) is no longer somebody
+    ## with an old script but somebody who read the read.sheet() docs and
+    ## guessed, so the warning has to point at read.sheet(layout = "long").
+    expect_warning(read.tucson(f, verbose = FALSE, long = TRUE),
+                   'read\\.sheet\\(layout = "long"\\)')
     expect_equal(a, expected)
     expect_equal(b, expected)
     ## encoding is no longer ignored, but on an ASCII file it has nothing to do

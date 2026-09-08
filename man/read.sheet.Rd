@@ -9,9 +9,10 @@
   the rows, series across the columns, and the years in the first column.
 }
 \usage{
-read.sheet(fname, sep = NULL, dec = ".", long = FALSE, transpose = FALSE,
-           comment.char = "#", fill.internal.NA = NULL, fix.dup.char = "X",
-           encoding = NULL, verbose = TRUE, strict = FALSE, \dots)
+read.sheet(fname, sep = NULL, dec = ".", layout = c("wide", "long"),
+           transpose = FALSE, comment.char = "#", fill.internal.NA = NULL,
+           fix.dup.char = "X", encoding = NULL, verbose = TRUE,
+           strict = FALSE, \dots)
 
 csv2rwl(fname, \dots)
 }
@@ -26,9 +27,12 @@ csv2rwl(fname, \dots)
   \item{dec}{ the decimal mark, \code{"."} or \code{","}. A decimal comma is
     detected automatically when the separator is a semicolon. }
 
-  \item{long}{ \code{logical} flag. If \code{TRUE}, read a \dQuote{long} or
-    \dQuote{tidy} file of \code{series}, \code{year}, \code{value} triples
-    instead of the wide layout. }
+  \item{layout}{ the shape of the file. \code{"wide"}, the default, is years
+    down the rows and series across the columns. \code{"long"} is a
+    \dQuote{long} or \dQuote{tidy} file of \code{series}, \code{year},
+    \code{value} triples.  Note that this is unrelated to the \code{long}
+    argument of \code{\link{read.crn}} and \code{\link{read.tucson}}, which
+    refers to a wider fixed-width year field. }
 
   \item{transpose}{ \code{logical} flag. Set to \code{TRUE} for a file with the
     series in rows and the years in columns. }
@@ -109,8 +113,8 @@ etc...
 
   \subsection{Long format}{
 
-    With \code{long = TRUE} the file holds one row per observation rather than
-    a rectangle: a series \acronym{ID}, a year and a value. Columns are taken
+    With \code{layout = "long"} the file holds one row per observation rather
+    than a rectangle: a series \acronym{ID}, a year and a value. Columns are taken
     by position, which is what \code{\link{write.sheet}} writes; if the header
     names all three of \code{series}, \code{year} and \code{value}, in any
     case and any order, the names are used instead.

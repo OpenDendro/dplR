@@ -21,7 +21,10 @@ read.tucson(fname, header = NULL, long = FALSE,
   \item{long}{ ignored, and accepted only so that existing calls do not
     fail.  The two possible column layouts are now detected per line, so
     8-character series \acronym{ID}s and years before -999 may occur in the
-    same file.  See \sQuote{Details}. }
+    same file.  As in \code{\link{read.crn}}, \code{long} here means a wider
+    fixed-width year field; it is unrelated to the \dQuote{long} or
+    \dQuote{tidy} layout of \code{\link{read.sheet}}, which is selected with
+    \code{layout = "long"}.  See \sQuote{Details}. }
   \item{encoding}{ the encoding of the file, used only if the file is not
     valid \acronym{UTF}-8.  Any name \code{\link[base]{iconv}} accepts will do,
     e.g. \code{"latin1"} or \code{"ISO-8859-2"}.  The default,

@@ -1,0 +1,784 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%\VignetteIndexEntry{Mathematical Details of Functions in dplR}
+%\VignetteEngine{knitr::knitr}
+%\VignettePackage{dplR}
+%
+% Requirements for building this vignette:
+%
+% 1. R packages: dplR (this package), knitr, Matrix.
+%
+% 2. LaTeX: a modern TeX distribution providing amsmath, amsfonts,
+%    hyperref and tikz (with the decorations.pathreplacing library).
+%    All are present in a standard TeX Live installation.
+%
+% There is deliberately no dependency on tikzDevice and no external
+% (non-free) software.  The document compiles in a few seconds.
+
+\documentclass[a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing}
+\usepackage{hyperref}
+\hypersetup{
+  pdfauthor = {Mikko Korpela and Andy Bunn},
+}
+\makeatletter
+\AtBeginDocument{
+  \hypersetup{
+    pdftitle = {\@title},
+    pdfsubject = {Dendrochronology Program Library in R},
+    pdfkeywords = {dendrochronology, dplR, R, Gini, Spline},
+  }
+}
+\makeatother
+
+\title{Mathematical Details of Functions in dplR}
+\author{Mikko Korpela with edits by Andy Bunn}
+
+<<"knitr-init", echo=FALSE, cache=FALSE, purl=FALSE>>=
+## Use xcolor instead of color.  This kludge removes the following
+## warning:
+##   Package xcolor Warning: Incompatible color definition on input line xx.
+## where xx is a line number of the .tex file produced by knitr.  The
+## tikz package loads xcolor, so the two can otherwise collide.
+knitr::knit_hooks$set(document = function(x) {
+  sub("(\\usepackage(\\[[^]]*\\])?)\\{color\\}", "\\1{xcolor}", x)
+})
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(cache = FALSE)
+@
+
+<<"packages", echo=FALSE, results="hide", message=FALSE>>=
+library(dplR)   # caps(), latexify(), latexDate()
+library(Matrix) # the legacy ffcsaps() used sparse matrices
+library(graphics)
+library(stats)
+latexify2 <- function(x) latexify(x, doublebackslash = FALSE)
+@
+
+\date{\small Processed in \Sexpr{latexify2(R.version.string)} on
+  \Sexpr{latexDate()}}
+
+\begin{document}
+\maketitle
+
+<<"knitr-init-fig", echo=FALSE, cache=FALSE>>=
+PAGE_WIDTH <- 4.74
+PAGE_HEIGHT <- 8.22
+knitr::opts_template$set(
+    myfigures = list(fig.path = "figure/", fig.pos = "tbp",
+                     fig.align = "center", fig.lp = "fig:"))
+## A colour-blind-safe palette (Okabe and Ito)
+COLOR_SIM  <- "#0072B2" # blue
+COLOR_ALT  <- "#D55E00" # vermillion
+COLOR_LINE <- "#009E73" # bluish green
+COLOR_REF  <- "#999999" # grey
+@
+
+<<"response-init">>=
+##  Cook, E. R. and Kairiukstis, L. A. (1990) Methods of
+##  Dendrochronology: Applications in the Environmental Sciences.
+##  Cook, E. R. and Peters, K. (1981) The smoothing spline: a new
+##  approach to standardizing forest interior tree-ring width series
+##  for dendroclimatic studies.
+
+## Smoothing parameter p as a function of the period (nyrs) at which a
+## frequency response of f is desired.  This is equation (2) below,
+## and it is what the Fortran behind caps() computes.
+pCook <- function(nyrs, f = 0.5) {
+    6 * f * (cos(2 * pi / nyrs) - 1)^2 / ((1 - f) * (cos(2 * pi / nyrs) + 2))
+}
+
+## Frequency response according to Cook and Kairiukstis (citing Cook
+## and Peters).  This is equation (1) below.
+respCook <- function(f, p) {
+    pif2 <- 2 * pi * f
+    1 - 1 / (1 + (p * (cos(pif2) + 2)) / (6 * (cos(pif2) - 1)^2))
+}
+@
+
+\section{Introduction}
+
+This document presents mathematical details about the Dendrochronology
+Program Library in R (dplR)~\cite{Bunn2008115,Bunn2010251} which is an
+add-on package for R~\cite{Rman}.  Section~\ref{sec:caps} deals with
+the spline smoothing function \texttt{caps} whereas
+section~\ref{sec:gini.coef} covers the computation of Gini
+coefficients in \texttt{gini.coef}.
+
+The original implementations of the functions covered here were not
+written by the author of this document.  Therefore the functions were
+analyzed with a reverse engineering approach.
+
+This document was first written when spline smoothing in dplR was
+performed by \texttt{ffcsaps}, a pure R function.  As of dplR version
+1.7.3 that role belongs to \texttt{caps}, a wrapper around a Fortran
+subroutine from Ed Cook's ARSTAN, and \texttt{ffcsaps} is deprecated.
+The two functions parameterize the spline differently but, as
+section~\ref{sec:equivalence} demonstrates, they compute the same
+spline.  The analysis below has been rewritten around \texttt{caps},
+with the \texttt{ffcsaps} parameterization retained in
+section~\ref{sec:ffcsaps-note} because it explains a factor of two
+that a reader comparing the two implementations will otherwise trip
+over.
+
+\section{Spline Smoothing Parameters in caps}
+\label{sec:caps}
+
+The \texttt{caps} function fits a cubic smoothing spline to a given
+data vector.  In the manual (Rd file) of the function~\cite{dplRman},
+it is stated that the frequency response of the spline is \texttt{f}
+at a wavelength (period) of \texttt{nyrs} years\footnote{assuming that
+  the sampling rate is once per year}, where these two are parameters
+of the function.  We aim to clarify how they relate to the single
+smoothing parameter of the spline and what that parameter stands for.
+
+The manual of the \texttt{caps} function cites~\cite{cook1990methods}.
+On page 111, they give the following frequency (amplitude) response
+function for the spline:
+\begin{equation}
+\label{eq:response}
+u(f)=1-\frac{1}{1 + \frac{p(\cos (2\pi f) +2)}{6(\cos (2\pi f) -1)^2}}
+\quad ,
+\end{equation}
+where \(f\) is frequency and \(p\) is stated to be the Lagrange
+multiplier of the spline, the single parameter that determines the
+frequency response.  However, the exact definition of the optimization
+problem is absent.  Neither is it given in~\cite{cook1981smoothing},
+the reference used by~\cite{cook1990methods}.  I did not find a copy
+of~\cite{peters1981cubic} when trying to follow the chain of
+references further.
+
+Note that the relationship between frequency and period using mixed
+notation of \texttt{caps} and~\eqref{eq:response} is \(f =
+1/\mathtt{nyrs}\).  Setting parameters \texttt{f} and \texttt{nyrs} in
+\texttt{caps} is equivalent to the following directive: set the
+smoothing parameter to a value that fulfills \(u(1/\mathtt{nyrs}) =
+\mathtt{f}\).  By making the variable substitutions and
+rearranging~\eqref{eq:response} we get the following equation for
+\(p\):
+\begin{equation}
+\label{eq:p.book}
+p = \frac{6 \mathtt{f} (\cos (2\pi / \mathtt{nyrs}) -1)^2}{(1 -
+  \mathtt{f})(\cos (2\pi / \mathtt{nyrs}) +2)} \quad .
+\end{equation}
+
+\subsection{What the code computes}
+\label{sec:caps-code}
+
+The Fortran subroutine called by \texttt{caps} (\texttt{caps\_f} in
+\texttt{src/capsf.f95}) sets its smoothing parameter with the
+following line, where \texttt{pct} is \texttt{f} and \texttt{v} is
+\texttt{nyrs}:
+\begin{verbatim}
+p=((1.d0/(1.d0-pct)-1.d0)*6.d0*(cos(pi*2.d0/v)-1.d0)**2)
+                                       /(cos(pi*2.d0/v)+2.d0)
+\end{verbatim}
+Since
+\begin{equation}
+\label{eq:fovers}
+\frac{1}{1 - \mathtt{f}} - 1 = \frac{\mathtt{f}}{1 - \mathtt{f}}
+\quad ,
+\end{equation}
+that line is exactly~\eqref{eq:p.book}.  In other words,
+\texttt{caps} uses the Lagrange multiplier of~\cite{cook1990methods}
+directly, with no reparameterization.  This is a pleasant state of
+affairs: the quantity named \texttt{p} in the source code and the
+quantity named \(p\) in the book are the same number.  As
+section~\ref{sec:ffcsaps-note} describes, that was not true of the
+\texttt{ffcsaps} implementation that \texttt{caps} replaced.
+
+\subsection{Empirical frequency response}
+\label{sec:empirical}
+
+Whether the fitted spline actually has the advertised frequency
+response is a separate question from whether the code implements
+\eqref{eq:p.book} correctly, and it is worth checking.  We smooth
+\Sexpr{500} independent series of \Sexpr{1536} i.i.d.\ standard normal
+samples, take the ratio of the modulus of the discrete Fourier
+transform of the smoothed series to that of the input, and average
+over the repeats.
+
+<<"response-comp", message=FALSE>>=
+N <- 1536
+K <- 500
+NYRS <- c(4, 16, 64)
+nFreq <- N / 2 + 1
+halfseq <- seq_len(nFreq)
+
+ratio1 <- array(NA_real_, c(nFreq, K, length(NYRS)))
+
+if (!exists(".Random.seed", globalenv(), mode = "numeric")) {
+    foo <- sample(TRUE)
+}
+seed <- get(".Random.seed", globalenv())
+set.seed(123)
+
+for (k in seq_len(K)) {
+    x <- rnorm(N)
+    fftx <- abs(fft(x))[halfseq]
+    for (j in seq_along(NYRS)) {
+        fft1 <- abs(fft(caps(x, nyrs = NYRS[j], f = 0.5)))[halfseq]
+        ratio1[, k, j] <- fft1 / fftx
+    }
+}
+
+assign(".Random.seed", seed, globalenv())
+
+response1 <- matrix(NA_real_, nFreq, length(NYRS))
+colnames(response1) <- NYRS
+for (j in seq_along(NYRS)) {
+    response1[, j] <- rowMeans(ratio1[, , j])
+}
+fftFreq <- seq(from = 0, to = 0.5, length.out = nFreq)
+
+## Simulated response at the nominal cutoff frequency
+atCutoff <- vapply(seq_along(NYRS),
+                   function(j) approx(fftFreq, response1[, j],
+                                      xout = 1 / NYRS[j])$y,
+                   numeric(1))
+@
+
+<<"caps-caption", cache=FALSE>>=
+CAPS_CAPTION <-
+    paste("Theoretical frequency response of the spline filter",
+          "(equations 1 and 2, green line) versus the response measured",
+          "with i.i.d. normal series of 1536 samples, mean of 500",
+          "repeats, using \\texttt{caps} (blue circles).  The legend on",
+          "the bottom panel applies to all panels.")
+@
+<<"response", opts.label="myfigures", fig.width=PAGE_WIDTH, fig.height=PAGE_HEIGHT-0.95, fig.cap=CAPS_CAPTION>>=
+op <- par(mfcol = c(3, 1), mgp = c(2, 0.75, 0), mar = par("mar") - 1)
+LWD <- 3
+PCH_1 <- 1
+## The simulation has one value per Fourier frequency, which is far too
+## dense to plot as points.  Show every SUBth one so that the theoretical
+## curve underneath stays visible.
+SUB <- seq(from = 1, to = nFreq, by = 10)
+for (j in seq_along(NYRS)) {
+    plot(fftFreq, response1[, j], type = "n", ylim = c(0, 1),
+         xlab = "Frequency (1 / year)", ylab = "Amplitude response",
+         main = sprintf("nyrs = %d, f = 0.5", NYRS[j]))
+    lines(fftFreq, respCook(fftFreq, pCook(NYRS[j])), col = COLOR_LINE,
+          lwd = LWD)
+    points(fftFreq[SUB], response1[SUB, j], pch = PCH_1, col = COLOR_SIM,
+           cex = 0.8, lwd = 1.5)
+    abline(h = 0.5, lty = "dashed")
+    abline(v = 1 / NYRS[j], lty = "dashed")
+    text(0.35, 0.5, "50% response", pos = 1, offset = 1)
+    text(1 / NYRS[j], 0.6, sprintf("%d yr period", NYRS[j]),
+         pos = 4, srt = 90, offset = 1)
+}
+legend("topright", bg = "white",
+       legend = c("Simulation (caps)", "Theoretical (Cook and Peters)"),
+       col = c(COLOR_SIM, COLOR_LINE),
+       lty = c(NA, "solid"), pch = c(PCH_1, NA), lwd = c(1, LWD))
+par(op)
+@
+
+Figure~\ref{fig:response} shows the result.  Theory meets practice
+well, particularly for low frequencies.  The measured response at the
+nominal cutoff frequency \(1/\mathtt{nyrs}\) is
+\Sexpr{sprintf("%.3f", atCutoff[1])},
+\Sexpr{sprintf("%.3f", atCutoff[2])} and
+\Sexpr{sprintf("%.3f", atCutoff[3])} for \(\mathtt{nyrs} =
+\Sexpr{NYRS[1]}\), \Sexpr{NYRS[2]} and \Sexpr{NYRS[3]} respectively,
+against a nominal \(\mathtt{f} = 0.5\).  It must be noted that the
+theoretical result does not take into account the effect of having a
+series of finite length, which is why the agreement degrades as
+\texttt{nyrs} grows toward the length of the series.
+
+\section{Equivalence of caps and the legacy ffcsaps}
+\label{sec:equivalence}
+
+Users with results produced by dplR 1.7.2 or earlier will want to know
+whether \texttt{caps} changed any numbers.  It did not, with one
+documented exception.  Below, the pure R implementation of
+\texttt{ffcsaps} as it stood in dplR 1.6.9 is reproduced as
+\texttt{ffcsaps.legacy} and compared against \texttt{caps}.
+
+<<"ffcsaps-legacy", echo=FALSE>>=
+## Helper used by ffcsaps.legacy()
+inc <- function(from, to) {
+    if (is.numeric(to) && is.numeric(from) && to >= from) {
+        seq(from = from, to = to)
+    } else {
+        integer(length = 0)
+    }
+}
+
+## The pure R implementation of ffcsaps() as it stood in dplR 1.6.9,
+## before caps() replaced it.  Reproduced here only so that the two
+## implementations can be compared; use caps() for real work.
+ffcsaps.legacy <- function(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5) {
+    ffppual <- function(breaks, c1, c2, c3, c4, x, left) {
+        if (left) {
+            ix <- order(x)
+            x2 <- x[ix]
+        } else {
+            x2 <- x
+        }
+        n.breaks <- length(breaks)
+        if (left) {
+            index <- pmax(ffsorted(breaks[-n.breaks], x2), 1)
+        } else {
+            index <- ffsorted2(breaks[-1], x2)
+        }
+        x2 <- x2 - breaks[index]
+        v <- x2 * (x2 * (x2 * c1[index] + c2[index]) + c3[index]) + c4[index]
+        if (left) v[ix] <- v
+        v
+    }
+    ffsorted <- function(meshsites, sites) {
+        index <- order(c(meshsites, sites))
+        which(index > length(meshsites)) - seq_along(sites)
+    }
+    ffsorted2 <- function(meshsites, sites) {
+        index <- order(c(sites, meshsites))
+        which(index <= length(sites)) - seq(from = 0, to = length(sites) - 1)
+    }
+    ## Similar in function to spdiags(B, d, n, n) in MATLAB
+    spdiags <- function(B, d, n) {
+        n.d <- length(d)
+        A <- matrix(0, n.d * n, 3)
+        count <- 0
+        for (k in seq_len(n.d)) {
+            this.diag <- d[k]
+            i <- inc(max(1, 1 - this.diag), min(n, n - this.diag))
+            n.i <- length(i)
+            if (n.i > 0) {
+                j <- i + this.diag
+                row.idx <- seq(from = count + 1, by = 1, length.out = n.i)
+                A[row.idx, 1] <- i
+                A[row.idx, 2] <- j
+                A[row.idx, 3] <- B[j, k]
+                count <- count + n.i
+            }
+        }
+        A <- A[A[, 3] != 0, , drop = FALSE]
+        A[order(A[, 2], A[, 1]), , drop = FALSE]
+    }
+    y2 <- as.numeric(y)
+    x2 <- as.numeric(x)
+    n <- length(x2)
+    if (n < 3) stop("there must be at least 3 data points")
+    ix <- order(x2)
+    zz1 <- n - 1
+    xi <- x2[ix]
+    zz2 <- n - 2
+    diff.xi <- diff(xi)
+    if (any(diff.xi == 0)) stop("the data abscissae must be distinct")
+    if (n != length(y2))
+        stop("abscissa and ordinate vector must be of the same length")
+    arg2 <- -1:1
+    odx <- 1 / diff.xi
+    R <- spdiags(cbind(c(diff.xi[-c(1, zz1)], 0),
+                       2 * (diff.xi[-1] + diff.xi[-zz1]),
+                       c(0, diff.xi[-c(1, 2)])), arg2, zz2)
+    R2 <- spdiags(cbind(c(odx[-zz1], 0, 0),
+                        c(0, -(odx[-1] + odx[-zz1]), 0),
+                        c(0, 0, odx[-1])), arg2, n)
+    R2[, 1] <- R2[, 1] - 1
+    forR <- Matrix(0, zz2, zz2, sparse = TRUE)
+    forR2 <- Matrix(0, zz2, n, sparse = TRUE)
+    forR[R[, 1:2, drop = FALSE]] <- R[, 3]
+    forR2[R2[, 1:2, drop = FALSE]] <- R2[, 3]
+    ## This is equation (6): the ffcsaps parameterization
+    p.inv <- (1 - f) * (cos(2 * pi / nyrs) + 2) /
+        (12 * f * (cos(2 * pi / nyrs) - 1)^2) + 1
+    yi <- y2[ix]
+    p <- 1 / p.inv
+    mplier <- 6 - 6 / p.inv
+    u <- as.numeric(solve(mplier * tcrossprod(forR2) + forR * p,
+                          diff(diff(yi) / diff.xi)))
+    yi <- yi - mplier * diff(c(0, diff(c(0, u, 0)) / diff.xi, 0))
+    test0 <- xi[-c(1, n)]
+    c3 <- c(0, u / p.inv, 0)
+    x3 <- c(test0, seq(from = xi[1], to = xi[n], length = 101))
+    cc.1 <- diff(c3) / diff.xi
+    cc.2 <- 3 * c3[-n]
+    cc.3 <- diff(yi) / diff.xi - diff.xi * (2 * c3[-n] + c3[-1])
+    cc.4 <- yi[-n]
+    to.sort <- c(test0, x3)
+    ix.final <- order(to.sort)
+    tmp <- unique(data.frame(
+        to.sort[ix.final],
+        c(ffppual(xi, cc.1, cc.2, cc.3, cc.4, test0, FALSE),
+          ffppual(xi, cc.1, cc.2, cc.3, cc.4, x3, TRUE))[ix.final]))
+    tmp2 <- tmp
+    tmp2[[1]] <- round(tmp2[[1]], 5)
+    res <- tmp2[[2]][tmp2[[1]] %in% x2]
+    if (length(res) != n)
+        res <- approx(x = tmp[[1]], y = tmp[[2]], xout = x2,
+                      ties = "ordered")$y
+    res
+}
+@
+
+<<"equiv-comp", message=FALSE, warning=FALSE>>=
+if (!exists(".Random.seed", globalenv(), mode = "numeric")) {
+    foo <- sample(TRUE)
+}
+seed <- get(".Random.seed", globalenv())
+set.seed(42)
+
+data(ca533)
+cam011 <- as.numeric(na.omit(ca533[, "CAM011"]))
+cases <- list(
+    "i.i.d. normal, n = 200" = rnorm(200, 100, 20),
+    "noisy sine wave, n = 100" =
+        5 * sin(seq(from = 0, to = 6 * pi, length.out = 101)[-101]) +
+        rnorm(100) + 20,
+    "AR(1), phi = 0.7, n = 500" =
+        as.numeric(arima.sim(list(ar = 0.7), 500)) + 50,
+    "ca533 series CAM011" = cam011)
+
+assign(".Random.seed", seed, globalenv())
+
+equivGrid <- expand.grid(case = names(cases), nyrs = c(10, 32),
+                         f = c(0.5, 0.9), stringsAsFactors = FALSE)
+equivGrid$maxdiff <- vapply(seq_len(nrow(equivGrid)), function(i) {
+    y <- cases[[equivGrid$case[i]]]
+    max(abs(ffcsaps.legacy(y, nyrs = equivGrid$nyrs[i], f = equivGrid$f[i]) -
+            caps(y, nyrs = equivGrid$nyrs[i], f = equivGrid$f[i])))
+}, numeric(1))
+worstInteger <- max(equivGrid$maxdiff)
+
+## The one place the two differ: caps() coerces nyrs to an integer
+fracNyrs <- 2 * length(cam011) / 3
+diffFrac <- max(abs(ffcsaps.legacy(cam011, nyrs = fracNyrs, f = 0.5) -
+                    caps(cam011, nyrs = fracNyrs, f = 0.5)))
+diffTrunc <- max(abs(ffcsaps.legacy(cam011, nyrs = trunc(fracNyrs), f = 0.5) -
+                     caps(cam011, nyrs = fracNyrs, f = 0.5)))
+camRange <- diff(range(cam011))
+@
+
+<<"equiv-table", results="asis">>=
+cat("\\begin{table}[tbp]\n\\centering\n")
+cat("\\caption{Largest absolute difference between",
+    "\\texttt{ffcsaps.legacy} and \\texttt{caps} over all fitted values,",
+    "for integer \\texttt{nyrs}.}\n")
+cat("\\label{tab:equiv}\n")
+cat("\\begin{tabular}{lrrr}\n\\toprule\n")
+cat("Series & \\texttt{nyrs} & \\texttt{f} &",
+    "max.\\ abs.\\ difference \\\\\n\\midrule\n")
+ord <- order(match(equivGrid$case, names(cases)), equivGrid$nyrs, equivGrid$f)
+for (i in ord) {
+    cat(sprintf("%s & %d & %.1f & %.2e \\\\\n",
+                latexify(equivGrid$case[i], doublebackslash = FALSE),
+                equivGrid$nyrs[i], equivGrid$f[i], equivGrid$maxdiff[i]))
+}
+cat("\\bottomrule\n\\end{tabular}\n\\end{table}\n")
+@
+
+Table~\ref{tab:equiv} gives the largest absolute difference between
+the two implementations across four test series, two values of
+\texttt{nyrs} and two values of \texttt{f}.  The worst case is
+\Sexpr{sprintf("%.1e", worstInteger)}, which is floating-point noise.
+For integer \texttt{nyrs}, \texttt{caps} and \texttt{ffcsaps} compute
+the same spline.
+
+There is one genuine difference.  \texttt{caps} passes \texttt{nyrs}
+to Fortran as an integer, so a fractional \texttt{nyrs} is truncated,
+whereas \texttt{ffcsaps} used it as given.  Fitting series CAM011 of
+the \texttt{ca533} data set with \(\mathtt{nyrs} =
+\Sexpr{sprintf("%.2f", fracNyrs)}\), two thirds of the series length,
+the two differ by \Sexpr{sprintf("%.2e", diffFrac)}, which is
+\Sexpr{sprintf("%.2f", 100 * diffFrac / camRange)}\% of the range of
+the series.  Passing the truncated value \(\Sexpr{trunc(fracNyrs)}\)
+to \texttt{ffcsaps} instead brings the difference back down to
+\Sexpr{sprintf("%.1e", diffTrunc)}, confirming that truncation is the
+whole of the discrepancy.
+
+This is reachable in ordinary use, by two routes.  A \texttt{nyrs}
+between 0 and 1 selects the proportion-of-series-length shorthand, and
+\texttt{caps} multiplies it by the series length, which will rarely
+land on a whole number.  Internally, \texttt{plot.crn},
+\texttt{wavelet.plot} and \texttt{ssf} pass a fractional
+\texttt{nyrs} of their own, computed as a fixed proportion of the
+series length; \texttt{detrend.series} and \texttt{rcs} apply
+\texttt{floor} first and so are unaffected.  The effect on the fitted
+curve is small, but it is not zero.
+
+<<"equiv-caption", cache=FALSE>>=
+EQUIV_CAPTION <-
+    paste("Top: series CAM011 of the \\texttt{ca533} data set (grey)",
+          "with a 32-year spline fitted by \\texttt{caps} (blue) and by",
+          "the legacy \\texttt{ffcsaps} (vermillion, dashed); the two",
+          "curves are indistinguishable.  Bottom: the difference",
+          "between the two fitted curves, in ring-width units.")
+@
+<<"equiv-fig", opts.label="myfigures", fig.width=PAGE_WIDTH, fig.height=PAGE_WIDTH*1.1, fig.cap=EQUIV_CAPTION>>=
+capsFit <- caps(cam011, nyrs = 32, f = 0.5)
+ffFit <- ffcsaps.legacy(cam011, nyrs = 32, f = 0.5)
+op <- par(mfcol = c(2, 1), mgp = c(2, 0.75, 0), mar = par("mar") - 1)
+plot(cam011, type = "l", col = COLOR_REF,
+     xlab = "Index", ylab = "Ring width (mm)",
+     main = "CAM011 with a 32-year spline")
+lines(capsFit, col = COLOR_SIM, lwd = 3)
+lines(ffFit, col = COLOR_ALT, lwd = 2, lty = "dashed")
+legend("topright", bty = "n", cex = 0.85,
+       legend = c("data", "caps", "ffcsaps (legacy)"),
+       col = c(COLOR_REF, COLOR_SIM, COLOR_ALT),
+       lty = c("solid", "solid", "dashed"), lwd = c(1, 3, 2))
+plot(capsFit - ffFit, type = "l", col = COLOR_SIM,
+     xlab = "Index", ylab = "caps - ffcsaps",
+     main = "Difference between the two fits")
+abline(h = 0, lty = "dashed", col = COLOR_REF)
+par(op)
+@
+
+Figure~\ref{fig:equiv-fig} shows the two fits on a real ring-width
+series together with their difference, which is at the level of the
+floating-point representation.
+
+\section{A note on the ffcsaps parameterization}
+\label{sec:ffcsaps-note}
+
+The deprecated \texttt{ffcsaps} contained code lines corresponding to
+the equation
+\begin{equation}
+\label{eq:pinv.code}
+\mathtt{p.inv} = \frac{1}{\mathtt{p}} = \frac{(1 - \mathtt{f})(\cos
+  (2\pi / \mathtt{nyrs}) +2)}{12 \mathtt{f} (\cos (2\pi /
+  \mathtt{nyrs}) -1)^2} + 1 \quad ,
+\end{equation}
+where \(\mathtt{p}\) and its inverse \(\mathtt{p.inv}\) are variables
+used in the code.  Writing~\eqref{eq:p.book} for the inverse,
+\begin{equation}
+\label{eq:pinv.book}
+\frac{1}{p} = \frac{(1 - \mathtt{f})(\cos (2\pi / \mathtt{nyrs})
+  +2)}{6 \mathtt{f} (\cos (2\pi / \mathtt{nyrs}) -1)^2} \quad ,
+\end{equation}
+we find that~\eqref{eq:pinv.book} and~\eqref{eq:pinv.code} are
+connected by
+\begin{equation}
+\label{eq:pp.inv}
+\frac{1}{p} = 2 \left(\frac{1}{\mathtt{p}} - 1\right)
+\end{equation}
+or equivalently
+\begin{equation}
+\label{eq:pp}
+\frac{\mathtt{p}}{1 - \mathtt{p}} = 2 p \quad .
+\end{equation}
+So the variable named \texttt{p} in \texttt{ffcsaps} and the
+Lagrange multiplier \(p\) of~\cite{cook1990methods} were not the same
+quantity, despite sharing a name.  They are two parameterizations of
+the same penalty, related by~\eqref{eq:pp}.  This is the factor of two
+that a reader comparing \texttt{src/capsf.f95}
+against \texttt{ffcsaps} would otherwise have to discover the hard
+way.
+
+The \texttt{ffcsaps} form is the convex-combination parameterization,
+in which the spline minimizes
+\begin{equation}
+\label{eq:sum}
+\mathtt{p} \times \text{Error} + (1 - \mathtt{p}) \times
+\text{Roughness}
+\end{equation}
+with \(\mathtt{p} \in [0, 1]\).  Following from~\eqref{eq:pp}
+and~\eqref{eq:sum}, the splines described in~\cite{cook1990methods},
+and hence those computed by \texttt{caps}, are the result of
+minimizing
+\begin{equation}
+\label{eq:cooksum}
+2 p \times \text{Error} + \text{Roughness} \quad ,
+\end{equation}
+with the same definitions of Error and Roughness, details of which are
+omitted here.  Section~\ref{sec:equivalence} confirms empirically that
+the two forms give the same fitted curve.
+
+\section{Formulation of Gini Coefficient in gini.coef}
+\label{sec:gini.coef}
+
+The \texttt{gini.coef} function computes the Gini coefficient (Gini
+index) of a given data vector.  The manual (Rd file) of the function
+has a reference to~\cite{biondi2008inequality} which uses the
+following formula for the Gini coefficient (\(G\)):
+\begin{equation}
+  \label{eq:rmd}
+  G = \frac{1}{2 n \sum_{i=1}^{n} x_i} \sum_{i=1}^{n} \sum_{j=1}^{n}
+  \left| x_i - x_j \right| \quad .
+\end{equation}
+In~\eqref{eq:rmd}, the Gini coefficient is defined in terms of
+pairwise differences between all pairs of observations (\(x_i\text{,
+}i \in 1, \dots, n\)). More specifically, the Gini coefficient is one
+half of the relative mean difference, which is defined as the mean of
+the absolute pairwise distances divided by the mean of the
+observations.
+
+The C source code of the \texttt{gini.coef} function uses the
+following formula for the Gini index:
+\begin{equation}
+  \label{eq:lorenz}
+  G = \left(X_n (n - 1) - 2 \sum_{i=1}^{n-1}X_i\right) / (X_n n) \quad ,
+\end{equation}
+where \(n\) is the number of observations and \(X_i\) is the
+\(i\text{:th}\) cumulative sum
+\begin{equation}
+  \label{eq:cumsum}
+  X_i = \sum_{j=1}^{i} x_j
+\end{equation}
+of sorted observations \(x_j\):
+\begin{equation}
+  \label{eq:sorted}
+  \forall i: i < j \Rightarrow x_i \leq x_j \quad .
+\end{equation}
+\eqref{eq:lorenz} can be reformulated as
+\begin{equation}
+  \label{eq:lorenz2}
+  G = 1 - \frac{1}{n} - \frac{2}{X_n n} \sum_{i=1}^{n-1}X_i
+\end{equation}
+or as
+\begin{equation}
+  \label{eq:lorenz3}
+  G = \left(\frac{1}{2} - \left(\frac{1}{2n} + \frac{1}{X_n n}
+      \sum_{i=1}^{n-1}X_i\right)\right) / \frac{1}{2} \quad .
+\end{equation}
+When we assign
+\begin{equation}
+  \label{eq:AB}
+  A + B = \frac{1}{2}
+\end{equation}
+and
+\begin{equation}
+  \label{eq:B}
+  B = B_1 + B_2 = \frac{1}{2n} + \frac{1}{X_n n} \sum_{i=1}^{n-1}X_i
+  \quad ,
+\end{equation}
+\eqref{eq:lorenz3} becomes
+\begin{equation}
+  \label{eq:lorenzsymb}
+  G = A / (A + B)
+\end{equation}
+or equivalently
+\begin{equation}
+  \label{eq:lorenzsymb2}
+  G = 1 - 2 B \quad .
+\end{equation}
+
+Figure~\ref{fig:lorenz} is a graphical representation of the Gini
+coefficient using an example data set of the following six observed
+values: \(\{0.2, 0.4, 0.75, 0.95, 1.2, 2.5\}\). It shows the
+definition of the Gini coefficient as the ratio of the area above the
+Lorenz curve~\cite{lorenz1905} to the total area of the
+triangle~\cite{xu2003has}.  The Lorenz curve is defined by the
+cumulative distribution function of the empirical probability
+distribution of the observations.  The sides of the triangle
+corresponding to the axes are normalized to length 1.
+
+Comparing Figure~\ref{fig:lorenz} to \eqref{eq:B}, \(B_2 =
+\sum_{i=1}^{n-1}X_i / (X_n n)\) is obviously the sum of the areas of
+the \textcolor{cyan}{cyan} bars.  Summing the areas of the
+\textcolor{teal}{teal} triangles, we get
+\begin{equation}
+\label{eq:B1}
+\sum_{i=1}^{n}\left( \frac{1}{2} \frac{1}{n} \frac{x_i}{X_n} \right) =
+\frac{1}{2 n X_n}\sum_{i=1}^{n} x_i = \frac{1}{2 n} = B_1 \quad .
+\end{equation}
+Note that \(B_1\) only depends on the number of observations, not on
+their values.  From~\eqref{eq:B} and~\eqref{eq:lorenzsymb2} we find
+that the value of the Gini coefficient at maximum inequality (winner
+takes all) is \(G_{\text{max}}(n)=1 - 1 / n\).  When all observed
+values are equal, the Lorenz curve matches the line of equality
+(Figure~\ref{fig:lorenz}), and the Gini coefficient is
+\(G_{\text{min}}=0\).  We have assumed that all values \(x_i\) are
+non-negative.
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    % define points
+    \coordinate (origin) at (0,0);
+    \coordinate (A) at (1,0.2);
+    \coordinate (B) at (2,0.6);
+    \coordinate (C) at (3,1.35);
+    \coordinate (D) at (4,2.3);
+    \coordinate (E) at (5,3.5);
+    \coordinate (F) at (6,6);
+    % fills
+    \fill[pink] (origin) -- (A) -- (B) -- (C) -- (D) -- (E) -- (F);
+    \fill[teal] (origin) -- +(1,0) -- (A);
+    \fill[teal] (A) -- +(1,0) -- (B);
+    \fill[teal] (B) -- +(1,0) -- (C);
+    \fill[teal] (C) -- +(1,0) -- (D);
+    \fill[teal] (D) -- +(1,0) -- (E);
+    \fill[teal] (E) -- +(1,0) -- (F);
+    \fill[cyan] (1,0) -- (A) -- +(1,0) -- (B) -- +(1,0) -- (C) --
+    +(1,0) -- (D) -- +(1,0) -- (E) -- +(1,0) -- (6,0);
+    % triangle
+    \draw (0,0) -- (6,0) -- (6,6) -- cycle;
+    % x axis ticks
+    \foreach \x in {1,2,3,4,5,6} \draw (\x,-1pt) -- (\x,1pt);
+    % draw points
+    \foreach \coord in {(A),(B),(C),(D),(E),(F)}
+    \draw \coord circle [radius=2pt];
+    % draw lines
+    \draw (origin) -- (A) -- (B) -- (C) -- (D) -- (E) -- (F);
+    \draw (1,0) -- (A) -- +(1,0) -- (B) -- +(1,0) -- (C) -- +(1,0) --
+    (D) -- +(1,0) -- (E) -- +(1,0);
+    % legend
+    \draw (0.5,5.5) node[fill=pink] {}; \draw(1, 5.5) node {\(A\)};
+    \draw (0.5,5) node[fill=teal] {};   \draw(1, 5) node {\(B_1\)};
+    \draw (0.5,4.5) node[fill=cyan] {}; \draw(1, 4.5) node {\(B_2\)};
+    \draw [decoration={brace},decorate] (1.4,5.2) -- (1.4,4.3);
+    \draw(1.8, 4.75) node {\(B\)};
+    % axis tick labels
+    \draw (0,-7pt) node[above=-6pt] {\(0\)};
+    \draw (1,-7pt) node {\(1/6\)};
+    \draw (2,-7pt) node {\(2/6\)};
+    \draw (3,-7pt) node {\(3/6\)};
+    \draw (4,-7pt) node {\(4/6\)};
+    \draw (5,-7pt) node {\(5/6\)};
+    \draw (6,-7pt) node[above=-6pt] {\(1\)};
+    \draw (6cm+7pt,0) node[rotate=90] {\(0\)};
+    \draw (6cm+7pt,6) node[rotate=90] {\(1\)};
+    % axis titles
+    \draw (3,-26pt) node[align=center]
+    {Cumulative portion of population\\(ordered from lowest to highest
+    value)};
+    \draw (6cm+22pt,3) node[align=center,rotate=90]
+    {Cumulative sum of values\\divided by total};
+    % text for Lorenz curve
+    \draw (D)+(-7pt,7pt) node[rotate=47] {Lorenz curve};
+    % text for Line of equality
+    \draw (3,3)+(-7pt,7pt) node[rotate=45] {Line of equality};
+  \end{tikzpicture}
+  \caption{Graphical representation of the Gini coefficient based on
+    areas defined by the Lorenz curve (\(n=6\)).  See
+    equations~\eqref{eq:AB}, \eqref{eq:B}, \eqref{eq:lorenzsymb}
+    and~\eqref{eq:lorenzsymb2}. }
+  \label{fig:lorenz}
+\end{figure}
+
+The equivalence of different definitions of the Gini coefficient is
+reviewed in~\cite{xu2003has}.  One of the results shown in the paper
+is that the geometric definition~\eqref{eq:lorenzsymb} used by the
+\texttt{gini.coef} function is equivalent to the definition based on
+the relative mean difference~\eqref{eq:rmd}.  This can be
+experimentally verified by comparing the results of the following R
+function to those of \texttt{gini.coef}.
+<<gini-rmd, echo=TRUE, tidy=FALSE>>=
+## Gini index is one half of relative mean difference.
+## x should not have NA values.
+gini.rmd <- function(x) {
+    mean(abs(outer(x, x, "-"))) / mean(x) * 0.5
+}
+@
+<<"gini-check", echo=TRUE>>=
+giniMax <- max(abs(vapply(ca533, function(x) {
+    x <- x[!is.na(x)]
+    gini.rmd(x) - gini.coef(x)
+}, numeric(1))))
+giniMax
+@
+Over all \Sexpr{ncol(ca533)} series of the \texttt{ca533} data set the
+two agree to \Sexpr{sprintf("%.1e", giniMax)}.
+
+\bibliography{math-dplR}
+\bibliographystyle{abbrv}
+\end{document}

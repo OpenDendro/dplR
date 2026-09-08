@@ -22,6 +22,13 @@ caps(y, nyrs = 32, f = 0.5)
   
   The default value of \code{\var{nyrs}} was changed to 32 from 2/3 length of \code{\var{y}} in version 1.7.8 based on a suggestion from Klesse (2021).
   
+  Note: \code{\var{nyrs}} is passed to the Fortran subroutine as an
+  integer, so a fractional \code{\var{nyrs}} is truncated. This matters
+  when \code{\var{nyrs}} is given as a proportion of series length, which
+  is rarely a whole number. The effect on the fitted curve is small but not
+  zero; see the \dQuote{Mathematical Details} vignette for a worked
+  comparison.
+
   Note: \code{\var{caps}} stops if there are any \code{NA} values in \code{\var{y}}. A smoothing spline through a series with missing values is not defined, and the caller has to decide what to do about the gap rather than have one chosen silently. Before version 1.8.0 such a call returned a vector of \code{NA}, which looked like an answer and was not. See examples, and \code{\link{fill.internal.NA}}.
 }
 \value{
@@ -41,6 +48,14 @@ caps(y, nyrs = 32, f = 0.5)
 }
 
 \seealso{ \code{\link{ads}} }
+
+\note{
+  The mathematical relationship between \code{\var{nyrs}},
+  \code{\var{f}} and the spline's smoothing parameter, together with an
+  empirical check of the frequency response and a demonstration that
+  \code{\var{caps}} reproduces the deprecated \code{\var{ffcsaps}}, is
+  given in the vignette: \code{vignette("math-dplR", package = "dplR")}.
+}
 
 \examples{library(graphics)
 library(utils)

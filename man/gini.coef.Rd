@@ -31,6 +31,13 @@ gini.coef(x)
 }
 \author{ Mikko Korpela, based on original by Andy Bunn }
 \seealso{ \code{\link{rwl.stats}} }
+
+\note{
+  The equivalence between the Lorenz-curve formula used in the C code and
+  the relative-mean-difference definition of the Gini coefficient is
+  derived in the vignette:
+  \code{vignette("math-dplR", package = "dplR")}.
+}
 \examples{
 library(utils)
 data(ca533)

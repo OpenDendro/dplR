@@ -10,21 +10,35 @@
 ##
 ## Every separator this writes, read.sheet() reads back: the round trip is
 ## tested for each of comma, tab, semicolon and pipe, detected and given.
+##
+## AGB Sep 2026: there is deliberately no ... here. It used to take one and use
+## it for nothing, which made the argument list a sink: anything misspelt, or
+## named for an argument this function no longer has, was dropped in silence
+## and a file written anyway. `long`, which became `layout`, is exactly that
+## case -- write.sheet(x, f, long = TRUE) would have written WIDE and said
+## nothing. Without the ... R rejects the call by name before the body runs.
+## Do not add one back to smooth over write.rwl()'s pass-through: a Tucson
+## argument arriving at the sheet writer is a caller error worth hearing about.
 
 `write.sheet` <- function(rwl.df, fname,
                           sep = ",",
                           dec = ".",
-                          long = FALSE,
+                          layout = c("wide", "long"),
                           prec = NULL,
                           na.string = "",
-                          year.name = "Year",
-                          ...) {
+                          year.name = "Year") {
 
   ## ------------------------------------------------------------------
   ## Deferred phases.
   ## ------------------------------------------------------------------
-  if (!is.logical(long) || length(long) != 1L || is.na(long))
-    stop("'long' must be TRUE or FALSE", call. = FALSE)
+  ## AGB Sep 2026: renamed from `long`. See the note in read.sheet(): dplR
+  ## already spends `long` on read.crn()'s and read.tucson()'s wider
+  ## fixed-width year field, and read.rwl() routes ... to either family.
+  if (identical(layout, c("wide", "long"))) layout <- "wide"
+  if (!is.character(layout) || length(layout) != 1L || is.na(layout) ||
+      !layout %in% c("wide", "long"))
+    stop("'layout' must be \"wide\" or \"long\"", call. = FALSE)
+
   if (!is.character(sep) || length(sep) != 1L || is.na(sep) || nchar(sep) != 1L)
     stop("'sep' must be a single character", call. = FALSE)
   if (!is.character(dec) || length(dec) != 1L || is.na(dec) ||
@@ -202,7 +216,7 @@
 
   yr.chr <- format(yr, trim = TRUE, scientific = FALSE)
 
-  if (isTRUE(long)) {
+  if (layout == "long") {
     ## One row per observation, missing values left out. Series-major, years
     ## ascending within a series, which is the order tidy exports use and the
     ## order a person reads a collection in.
@@ -216,7 +230,7 @@
     depth <- rowSums(keep)
     if (!any(depth > 0L))
       stop("'rwl.df' holds no measurements at all, so there is nothing to ",
-           "write in long format", call. = FALSE)
+           "write with layout = \"long\"", call. = FALSE)
     meas <- which(depth > 0L)
     lost <- c(seq_len(meas[1L] - 1L),
               if (meas[length(meas)] < length(yr))
@@ -225,9 +239,9 @@
       warning(length(lost), " year(s) at the start or end of 'rwl.df' hold no ",
               "measurement in any series (", yr.chr[lost[1L]],
               if (length(lost) > 1L) paste0(" to ", yr.chr[lost[length(lost)]]),
-              "). Long format has no row for them, so they will not come back ",
-              "on a read. Interior all-NA years are unaffected. Write the wide ",
-              "layout to keep them.", call. = FALSE)
+              "). The long layout has no row for them, so they will not come ",
+              "back on a read. Interior all-NA years are unaffected. Write ",
+              "with layout = \"wide\" to keep them.", call. = FALSE)
 
     idx <- which(keep, arr.ind = TRUE)
     idx <- idx[order(idx[, "col"], idx[, "row"]), , drop = FALSE]

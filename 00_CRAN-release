@@ -68,11 +68,18 @@ rhub::rhub_check(platforms = c("linux", "macos-arm64", "windows"))
 #
 ##################################
 
-# Build the tarball from one level above the repo:
-R CMD build /Users/andybunn/Documents/research/openDendro/dplR_dev/dplR
+# Build the tarball from one level above the repo.  Use
+# --compact-vignettes=both: pdflatex embeds full font sets, which pushes
+# inst/doc/math-dplR.pdf to ~380Kb and trips the "sizes of PDF files under
+# inst/doc" WARNING under --as-cran.  gs+qpdf brings it to ~120Kb.
+# Requires ghostscript on PATH (R_GSCMD).
+R CMD build --compact-vignettes=both /Users/andybunn/Documents/research/openDendro/dplR_dev/dplR
 
-# This produces dplR_1.7.X.tar.gz in the current directory.
+# This produces dplR_1.X.X.tar.gz in the current directory.
 # The .Rbuildignore file controls what gets excluded - check it periodically.
+# Do NOT add inst/doc/*.Rnw to .Rbuildignore: R CMD build puts the vignette
+# source there deliberately, and check WARNs about build/vignette.rds if it
+# is missing.
 #
 # Submit the tarball here:
 # https://cran.r-project.org/submit.html

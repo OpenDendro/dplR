@@ -215,7 +215,7 @@ test.rwl.check <- function() {
             site.id = "ABC", site.name = "Test Site", spp.code = "PCGL",
             state.country = "Testland", spp = "Spruce", elev = "100M",
             lat = 45, long = -120, first.yr = min(yrs), last.yr = max(yrs),
-            lead.invs = "Nobody", comp.date = "2026"), long = FALSE)
+            lead.invs = "Nobody", comp.date = "2026"))
         r <- rwl.check(fname)
         expect_s3_class(r, "rwl.check")
         expect_equal(r$meta$n.series, 6)

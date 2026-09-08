@@ -399,7 +399,7 @@ test_that("read.sheet reads a long file", {
     f <- sheet(c("series,Year,value",
                  "A,1901,0.5", "A,1902,0.6", "A,1903,0.7",
                  "B,1901,0.4", "B,1903,0.2"))
-    x <- read.sheet(f, long = TRUE, verbose = FALSE)
+    x <- read.sheet(f, layout = "long", verbose = FALSE)
     expect_s3_class(x, "rwl")
     expect_named(x, c("A", "B"))
     expect_equal(rownames(x), as.character(1901:1903))
@@ -411,13 +411,13 @@ test_that("long columns are taken by position, or by name when all three match",
     ## write.sheet() guarantees position; a file from elsewhere may not.
     byname <- sheet(c("value,series,Year",
                       "0.5,A,1901", "0.6,A,1902"))
-    x <- read.sheet(byname, long = TRUE, verbose = FALSE)
+    x <- read.sheet(byname, layout = "long", verbose = FALSE)
     expect_named(x, "A")
     expect_equal(x[["A"]], c(0.5, 0.6))
 
     ## unrecognised headers fall back to position
     bypos <- sheet(c("core,yr,rw", "A,1901,0.5", "A,1902,0.6"))
-    y <- read.sheet(bypos, long = TRUE, verbose = FALSE)
+    y <- read.sheet(bypos, layout = "long", verbose = FALSE)
     expect_named(y, "A")
     expect_equal(y[["A"]], c(0.5, 0.6))
 })
@@ -425,38 +425,38 @@ test_that("long columns are taken by position, or by name when all three match",
 test_that("long series keep the order they first appear in", {
     f <- sheet(c("series,Year,value",
                  "Z,1901,0.5", "A,1901,0.4", "Z,1902,0.6", "A,1902,0.3"))
-    expect_named(read.sheet(f, long = TRUE, verbose = FALSE), c("Z", "A"))
+    expect_named(read.sheet(f, layout = "long", verbose = FALSE), c("Z", "A"))
 })
 
 test_that("long refuses a file that is not three columns", {
     f <- sheet(c("series,Year,value,extra", "A,1901,0.5,x"))
-    expect_error(read.sheet(f, long = TRUE, verbose = FALSE),
+    expect_error(read.sheet(f, layout = "long", verbose = FALSE),
                  "exactly three columns")
 })
 
 test_that("YEAR_CLASH: one series cannot hold two values for a year", {
     f <- sheet(c("series,Year,value",
                  "A,1901,0.5", "A,1901,0.6", "A,1902,0.7"))
-    expect_error(read.sheet(f, long = TRUE, verbose = FALSE),
+    expect_error(read.sheet(f, layout = "long", verbose = FALSE),
                  "more than once")
-    expect_error(read.sheet(f, long = TRUE, verbose = FALSE), "A in 1901")
+    expect_error(read.sheet(f, layout = "long", verbose = FALSE), "A in 1901")
 })
 
 test_that("long refuses bad years, bad values and empty series IDs", {
     expect_error(read.sheet(sheet(c("series,Year,value", "A,not-a-year,0.5")),
-                            long = TRUE, verbose = FALSE), "do not parse")
+                            layout = "long", verbose = FALSE), "do not parse")
     expect_error(read.sheet(sheet(c("series,Year,value", "A,1901.5,0.5")),
-                            long = TRUE, verbose = FALSE), "non-integer")
+                            layout = "long", verbose = FALSE), "non-integer")
     expect_error(read.sheet(sheet(c("series,Year,value", "A,1901,zzz")),
-                            long = TRUE, verbose = FALSE), "not numeric")
+                            layout = "long", verbose = FALSE), "not numeric")
     expect_error(read.sheet(sheet(c("series,Year,value", ",1901,0.5")),
-                            long = TRUE, verbose = FALSE), "empty series ID")
+                            layout = "long", verbose = FALSE), "empty series ID")
 })
 
 test_that("ALL_NA_YEAR: a year absent from a long file is reported", {
     f <- sheet(c("series,Year,value",
                  "A,1901,0.5", "A,1903,0.7", "B,1901,0.4", "B,1903,0.2"))
-    expect_warning(x <- read.sheet(f, long = TRUE, verbose = FALSE),
+    expect_warning(x <- read.sheet(f, layout = "long", verbose = FALSE),
                    "no observation in any series")
     expect_true("ALL_NA_YEAR" %in% events(x))
     expect_equal(rownames(x), as.character(1901:1903))
@@ -465,16 +465,27 @@ test_that("ALL_NA_YEAR: a year absent from a long file is reported", {
 
 test_that("long provenance has the same shape as wide", {
     f <- sheet(c("series,Year,value", "A,1901,0.5", "A,1902,0.6"))
-    x <- read.sheet(f, long = TRUE, verbose = FALSE)
+    x <- read.sheet(f, layout = "long", verbose = FALSE)
     expect_equal(names(prov(x)), names(prov(read.sheet(sheet(ok.lines),
                                                        verbose = FALSE))))
     expect_equal(prov(x)$reader, "read.sheet")
 })
 
-test_that("'long' must be a single TRUE or FALSE", {
+test_that("'layout' must be \"wide\" or \"long\"", {
     f <- sheet(ok.lines)
-    expect_error(read.sheet(f, long = NA), "TRUE or FALSE")
-    expect_error(read.sheet(f, long = c(TRUE, TRUE)), "TRUE or FALSE")
+    expect_error(read.sheet(f, layout = NA), "wide")
+    expect_error(read.sheet(f, layout = "tidy"), "wide")
+    expect_error(read.sheet(f, layout = TRUE), "wide")
+    expect_error(read.sheet(f, layout = c("long", "wide")), "wide")
+})
+
+## The old name for `layout`. read.sheet() passes ... to fread(), so without
+## this guard a stale long = TRUE fails with a message about fread's arguments
+## rather than about this one.
+test_that("the old 'long' argument says what to write instead", {
+    f <- sheet(ok.lines)
+    expect_error(read.sheet(f, long = TRUE), "now 'layout'")
+    expect_error(read.sheet(f, long = TRUE), 'layout = "long"')
 })
 
 
@@ -584,7 +595,7 @@ test_that("an ordinary tab sheet with a comment header still reads", {
 
 test_that("long format works with other separators", {
     f <- sheet(c("series\tYear\tvalue", "A\t1901\t0.5", "A\t1902\t0.6"))
-    x <- read.sheet(f, long = TRUE, verbose = FALSE)
+    x <- read.sheet(f, layout = "long", verbose = FALSE)
     expect_equal(x[["A"]], c(0.5, 0.6))
 })
 

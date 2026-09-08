@@ -44,5 +44,6 @@ Description: Perform tree-ring analyses such as detrending, chronology
         used in dendrochronology.
 LazyData: no
 License: GPL (>= 2)
+VignetteBuilder: knitr
 URL: https://github.com/OpenDendro/dplR
 

@@ -72,7 +72,7 @@ sniff.sep <- function(lines, cands) {
 `read.sheet` <- function(fname,
                          sep = NULL,
                          dec = ".",
-                         long = FALSE,
+                         layout = c("wide", "long"),
                          transpose = FALSE,
                          comment.char = "#",
                          fill.internal.NA = NULL,
@@ -146,8 +146,29 @@ sniff.sep <- function(lines, cands) {
   if (!file.exists(fname))
     stop("file not found: ", fname, call. = FALSE)
 
-  if (!is.logical(long) || length(long) != 1L || is.na(long))
-    stop("'long' must be TRUE or FALSE", call. = FALSE)
+  ## AGB Sep 2026: this was `long = FALSE`, and the name was wrong for the
+  ## package rather than for the concept. dplR already had two `long`s --
+  ## read.crn(long = TRUE) and the ignored read.tucson(long = TRUE) -- and both
+  ## mean a wider fixed-width year field, which has nothing to do with one row
+  ## per observation. read.rwl() passes its ... to whichever reader sniff.rwl()
+  ## picks, so the same name reached two functions meaning two things. The word
+  ## everybody uses for this shape survives; the argument name now says which
+  ## axis it refers to.
+  ##
+  ## match.arg() would do this validation, but its error says 'arg' rather than
+  ## 'layout', which is no help to the person reading it.
+  if (identical(layout, c("wide", "long"))) layout <- "wide"
+  if (!is.character(layout) || length(layout) != 1L || is.na(layout) ||
+      !layout %in% c("wide", "long"))
+    stop("'layout' must be \"wide\" or \"long\"", call. = FALSE)
+
+  ## The ... below goes to fread(), which would reject a stale `long` with a
+  ## message naming fread rather than this function. Catch the old name here so
+  ## it says what to write instead.
+  if ("long" %in% names(list(...)))
+    stop("'long' is now 'layout': read.sheet(layout = \"long\"). Renamed ",
+         "because read.crn() and read.tucson() use 'long' for a wider ",
+         "fixed-width year field, which is a different thing.", call. = FALSE)
 
   ## sep = NULL means "sniff" in the finished reader. Today it resolves to a
   ## comma. The default is NULL now rather than "," so that adding the sniff
@@ -351,14 +372,15 @@ sniff.sep <- function(lines, cands) {
   ## a collaborator's script -- far more often than it is chosen deliberately.
   ## Pivoting it into a valid rwl is the step people get wrong, which is why it
   ## is worth doing here rather than leaving to the caller.
-  if (isTRUE(long)) {
+  if (layout == "long") {
     if (ncol(raw) != 3L)
-      refuse("long = TRUE expects exactly three columns -- series, year and ",
-             "value -- but this file has ", ncol(raw), ".")
+      refuse("layout = \"long\" expects exactly three columns -- series, year ",
+             "and value -- but this file has ", ncol(raw), ".")
 
-    ## Columns are taken by position, which is what write.sheet(long = TRUE)
-    ## emits. A file from elsewhere may order them differently, so if the
-    ## header names all three (any case, any order) the names win instead.
+    ## Columns are taken by position, which is what write.sheet() emits with
+    ## layout = "long". A file from elsewhere may order them differently, so
+    ## if the header names all three (any case, any order) the names win
+    ## instead.
     ## Anything in between is position, and position is what write.sheet
     ## guarantees.
     want <- c("series", "year", "value")

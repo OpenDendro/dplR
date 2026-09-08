@@ -1,0 +1,693 @@
+---
+title: "Mathematical Details of Functions in dplR"
+author: "Mikko Korpela and Andy Bunn"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  rmarkdown::html_vignette:
+    math_method: mathml
+    toc: true
+bibliography: math-dplR.bib
+vignette: >
+  %\VignetteIndexEntry{Mathematical Details of Functions in dplR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, message = FALSE, warning = FALSE,
+  fig.width = 7, fig.height = 4.5, fig.align = "center",
+  dev = "png", dpi = 96
+)
+library(dplR)   # caps()
+library(Matrix) # the legacy ffcsaps() used sparse matrices
+## A colour-blind-safe palette (Okabe and Ito)
+COLOR_SIM  <- "#0072B2" # blue
+COLOR_ALT  <- "#D55E00" # vermillion
+COLOR_LINE <- "#009E73" # bluish green
+COLOR_REF  <- "#999999" # grey
+```
+
+```{r response-init}
+##  Cook, E. R. and Kairiukstis, L. A. (1990) Methods of
+##  Dendrochronology: Applications in the Environmental Sciences.
+##  Cook, E. R. and Peters, K. (1981) The smoothing spline: a new
+##  approach to standardizing forest interior tree-ring width series
+##  for dendroclimatic studies.
+
+## Smoothing parameter p as a function of the period (nyrs) at which a
+## frequency response of f is desired.  This is equation (2) below, and
+## it is what the Fortran behind caps() computes.
+pCook <- function(nyrs, f = 0.5) {
+    6 * f * (cos(2 * pi / nyrs) - 1)^2 / ((1 - f) * (cos(2 * pi / nyrs) + 2))
+}
+
+## Frequency response according to Cook and Kairiukstis (citing Cook
+## and Peters).  This is equation (1) below.
+respCook <- function(f, p) {
+    pif2 <- 2 * pi * f
+    1 - 1 / (1 + (p * (cos(pif2) + 2)) / (6 * (cos(pif2) - 1)^2))
+}
+```
+
+# Introduction
+
+This document presents mathematical details about the Dendrochronology
+Program Library in R (dplR) [@Bunn2008115; @Bunn2010251] which is an add-on
+package for R [@Rman]. The first half deals with the spline smoothing
+function `caps`; the second covers the computation of Gini coefficients in
+`gini.coef`.
+
+The original implementations of the functions covered here were not written
+by the author of this document. Therefore the functions were analyzed with a
+reverse engineering approach.
+
+This document was first written when spline smoothing in dplR was performed
+by `ffcsaps`, a pure R function. As of dplR version 1.7.3 that role belongs
+to `caps`, a wrapper around a Fortran subroutine from Ed Cook's ARSTAN, and
+`ffcsaps` is deprecated. The two functions parameterize the spline
+differently but, as the section on equivalence demonstrates, they compute the
+same spline. The analysis below has been rewritten around `caps`, with the
+`ffcsaps` parameterization retained at the end because it explains a factor
+of two that a reader comparing the two implementations will otherwise trip
+over.
+
+# Spline smoothing parameters in `caps`
+
+The `caps` function fits a cubic smoothing spline to a given data vector. In
+the manual (Rd file) of the function [@dplRman], it is stated that the
+frequency response of the spline is `f` at a wavelength (period) of `nyrs`
+years[^1], where these two are parameters of the function. We aim to clarify
+how they relate to the single smoothing parameter of the spline and what that
+parameter stands for.
+
+[^1]: assuming that the sampling rate is once per year
+
+The manual of the `caps` function cites @cook1990methods. On page 111, they
+give the following frequency (amplitude) response function for the spline:
+
+$$
+u(f)=1-\frac{1}{1 + \frac{p(\cos (2\pi f) +2)}{6(\cos (2\pi f) -1)^2}}
+\qquad (1)
+$$
+
+where \(f\) is frequency and \(p\) is stated to be the Lagrange multiplier of
+the spline, the single parameter that determines the frequency response.
+However, the exact definition of the optimization problem is absent. Neither
+is it given in @cook1981smoothing, the reference used by @cook1990methods. I
+did not find a copy of @peters1981cubic when trying to follow the chain of
+references further.
+
+Note that the relationship between frequency and period using mixed notation
+of `caps` and equation (1) is \(f = 1/\mathtt{nyrs}\). Setting parameters `f`
+and `nyrs` in `caps` is equivalent to the following directive: set the
+smoothing parameter to a value that fulfills \(u(1/\mathtt{nyrs}) =
+\mathtt{f}\). By making the variable substitutions and rearranging equation
+(1) we get the following equation for \(p\):
+
+$$
+p = \frac{6 \mathtt{f} (\cos (2\pi / \mathtt{nyrs}) -1)^2}{(1 -
+  \mathtt{f})(\cos (2\pi / \mathtt{nyrs}) +2)}
+\qquad (2)
+$$
+
+## What the code computes
+
+The Fortran subroutine called by `caps` (`caps_f` in `src/capsf.f95`) sets
+its smoothing parameter with the following line, where `pct` is `f` and `v`
+is `nyrs`:
+
+```fortran
+p=((1.d0/(1.d0-pct)-1.d0)*6.d0*(cos(pi*2.d0/v)-1.d0)**2)/(cos(pi*2.d0/v)+2.d0)
+```
+
+Since
+
+$$
+\frac{1}{1 - \mathtt{f}} - 1 = \frac{\mathtt{f}}{1 - \mathtt{f}}
+\qquad (3)
+$$
+
+that line is exactly equation (2). In other words, `caps` uses the Lagrange
+multiplier of @cook1990methods directly, with no reparameterization. This is
+a pleasant state of affairs: the quantity named `p` in the source code and
+the quantity named \(p\) in the book are the same number. As the last section
+describes, that was not true of the `ffcsaps` implementation that `caps`
+replaced.
+
+## Empirical frequency response
+
+Whether the fitted spline actually has the advertised frequency response is a
+separate question from whether the code implements equation (2) correctly,
+and it is worth checking. We smooth 500 independent series of 1536 i.i.d.
+standard normal samples, take the ratio of the modulus of the discrete
+Fourier transform of the smoothed series to that of the input, and average
+over the repeats.
+
+```{r response-comp}
+N <- 1536
+K <- 500
+NYRS <- c(4, 16, 64)
+nFreq <- N / 2 + 1
+halfseq <- seq_len(nFreq)
+
+ratio1 <- array(NA_real_, c(nFreq, K, length(NYRS)))
+
+if (!exists(".Random.seed", globalenv(), mode = "numeric")) {
+    foo <- sample(TRUE)
+}
+seed <- get(".Random.seed", globalenv())
+set.seed(123)
+
+for (k in seq_len(K)) {
+    x <- rnorm(N)
+    fftx <- abs(fft(x))[halfseq]
+    for (j in seq_along(NYRS)) {
+        fft1 <- abs(fft(caps(x, nyrs = NYRS[j], f = 0.5)))[halfseq]
+        ratio1[, k, j] <- fft1 / fftx
+    }
+}
+
+assign(".Random.seed", seed, globalenv())
+
+response1 <- matrix(NA_real_, nFreq, length(NYRS))
+colnames(response1) <- NYRS
+for (j in seq_along(NYRS)) {
+    response1[, j] <- rowMeans(ratio1[, , j])
+}
+fftFreq <- seq(from = 0, to = 0.5, length.out = nFreq)
+
+## Simulated response at the nominal cutoff frequency
+atCutoff <- vapply(seq_along(NYRS),
+                   function(j) approx(fftFreq, response1[, j],
+                                      xout = 1 / NYRS[j])$y,
+                   numeric(1))
+```
+
+```{r response, fig.height=8, fig.cap="**Figure 1.** Theoretical frequency response of the spline filter (equations 1 and 2, green line) versus the response measured with i.i.d. normal series of 1536 samples, mean of 500 repeats, using `caps` (blue circles). The legend on the bottom panel applies to all panels."}
+op <- par(mfcol = c(3, 1), mgp = c(2, 0.75, 0), mar = c(4, 4, 2.5, 1))
+LWD <- 3
+PCH_1 <- 1
+## The simulation has one value per Fourier frequency, which is far too
+## dense to plot as points.  Show every SUBth one so that the theoretical
+## curve underneath stays visible.
+SUB <- seq(from = 1, to = nFreq, by = 10)
+for (j in seq_along(NYRS)) {
+    plot(fftFreq, response1[, j], type = "n", ylim = c(0, 1),
+         xlab = "Frequency (1 / year)", ylab = "Amplitude response",
+         main = sprintf("nyrs = %d, f = 0.5", NYRS[j]))
+    lines(fftFreq, respCook(fftFreq, pCook(NYRS[j])), col = COLOR_LINE,
+          lwd = LWD)
+    points(fftFreq[SUB], response1[SUB, j], pch = PCH_1, col = COLOR_SIM,
+           cex = 0.8, lwd = 1.5)
+    abline(h = 0.5, lty = "dashed")
+    abline(v = 1 / NYRS[j], lty = "dashed")
+    text(0.35, 0.5, "50% response", pos = 1, offset = 1)
+    text(1 / NYRS[j], 0.6, sprintf("%d yr period", NYRS[j]),
+         pos = 4, srt = 90, offset = 1)
+}
+legend("topright", bg = "white",
+       legend = c("Simulation (caps)", "Theoretical (Cook and Peters)"),
+       col = c(COLOR_SIM, COLOR_LINE),
+       lty = c(NA, "solid"), pch = c(PCH_1, NA), lwd = c(1, LWD))
+par(op)
+```
+
+Figure 1 shows the result. Theory meets practice well, particularly for low
+frequencies. The measured response at the nominal cutoff frequency
+\(1/\mathtt{nyrs}\) is `r sprintf("%.3f", atCutoff[1])`,
+`r sprintf("%.3f", atCutoff[2])` and `r sprintf("%.3f", atCutoff[3])` for
+\(\mathtt{nyrs} = `r NYRS[1]`\), `r NYRS[2]` and `r NYRS[3]` respectively,
+against a nominal \(\mathtt{f} = 0.5\). It must be noted that the theoretical
+result does not take into account the effect of having a series of finite
+length, which is why the agreement degrades as `nyrs` grows toward the length
+of the series.
+
+# Equivalence of `caps` and the legacy `ffcsaps`
+
+Users with results produced by dplR 1.7.2 or earlier will want to know
+whether `caps` changed any numbers. It did not, with one documented
+exception. Below, the pure R implementation of `ffcsaps` as it stood in dplR
+1.6.9 is reproduced as `ffcsaps.legacy` and compared against `caps`.
+
+```{r ffcsaps-legacy}
+## Helper used by ffcsaps.legacy()
+inc <- function(from, to) {
+    if (is.numeric(to) && is.numeric(from) && to >= from) {
+        seq(from = from, to = to)
+    } else {
+        integer(length = 0)
+    }
+}
+
+## The pure R implementation of ffcsaps() as it stood in dplR 1.6.9,
+## before caps() replaced it.  Reproduced here only so that the two
+## implementations can be compared; use caps() for real work.
+ffcsaps.legacy <- function(y, x = seq_along(y), nyrs = length(y)/2, f = 0.5) {
+    ffppual <- function(breaks, c1, c2, c3, c4, x, left) {
+        if (left) {
+            ix <- order(x)
+            x2 <- x[ix]
+        } else {
+            x2 <- x
+        }
+        n.breaks <- length(breaks)
+        if (left) {
+            index <- pmax(ffsorted(breaks[-n.breaks], x2), 1)
+        } else {
+            index <- ffsorted2(breaks[-1], x2)
+        }
+        x2 <- x2 - breaks[index]
+        v <- x2 * (x2 * (x2 * c1[index] + c2[index]) + c3[index]) + c4[index]
+        if (left) v[ix] <- v
+        v
+    }
+    ffsorted <- function(meshsites, sites) {
+        index <- order(c(meshsites, sites))
+        which(index > length(meshsites)) - seq_along(sites)
+    }
+    ffsorted2 <- function(meshsites, sites) {
+        index <- order(c(sites, meshsites))
+        which(index <= length(sites)) - seq(from = 0, to = length(sites) - 1)
+    }
+    ## Similar in function to spdiags(B, d, n, n) in MATLAB
+    spdiags <- function(B, d, n) {
+        n.d <- length(d)
+        A <- matrix(0, n.d * n, 3)
+        count <- 0
+        for (k in seq_len(n.d)) {
+            this.diag <- d[k]
+            i <- inc(max(1, 1 - this.diag), min(n, n - this.diag))
+            n.i <- length(i)
+            if (n.i > 0) {
+                j <- i + this.diag
+                row.idx <- seq(from = count + 1, by = 1, length.out = n.i)
+                A[row.idx, 1] <- i
+                A[row.idx, 2] <- j
+                A[row.idx, 3] <- B[j, k]
+                count <- count + n.i
+            }
+        }
+        A <- A[A[, 3] != 0, , drop = FALSE]
+        A[order(A[, 2], A[, 1]), , drop = FALSE]
+    }
+    y2 <- as.numeric(y)
+    x2 <- as.numeric(x)
+    n <- length(x2)
+    if (n < 3) stop("there must be at least 3 data points")
+    ix <- order(x2)
+    zz1 <- n - 1
+    xi <- x2[ix]
+    zz2 <- n - 2
+    diff.xi <- diff(xi)
+    if (any(diff.xi == 0)) stop("the data abscissae must be distinct")
+    if (n != length(y2))
+        stop("abscissa and ordinate vector must be of the same length")
+    arg2 <- -1:1
+    odx <- 1 / diff.xi
+    R <- spdiags(cbind(c(diff.xi[-c(1, zz1)], 0),
+                       2 * (diff.xi[-1] + diff.xi[-zz1]),
+                       c(0, diff.xi[-c(1, 2)])), arg2, zz2)
+    R2 <- spdiags(cbind(c(odx[-zz1], 0, 0),
+                        c(0, -(odx[-1] + odx[-zz1]), 0),
+                        c(0, 0, odx[-1])), arg2, n)
+    R2[, 1] <- R2[, 1] - 1
+    forR <- Matrix(0, zz2, zz2, sparse = TRUE)
+    forR2 <- Matrix(0, zz2, n, sparse = TRUE)
+    forR[R[, 1:2, drop = FALSE]] <- R[, 3]
+    forR2[R2[, 1:2, drop = FALSE]] <- R2[, 3]
+    ## This is equation (4): the ffcsaps parameterization
+    p.inv <- (1 - f) * (cos(2 * pi / nyrs) + 2) /
+        (12 * f * (cos(2 * pi / nyrs) - 1)^2) + 1
+    yi <- y2[ix]
+    p <- 1 / p.inv
+    mplier <- 6 - 6 / p.inv
+    u <- as.numeric(solve(mplier * tcrossprod(forR2) + forR * p,
+                          diff(diff(yi) / diff.xi)))
+    yi <- yi - mplier * diff(c(0, diff(c(0, u, 0)) / diff.xi, 0))
+    test0 <- xi[-c(1, n)]
+    c3 <- c(0, u / p.inv, 0)
+    x3 <- c(test0, seq(from = xi[1], to = xi[n], length = 101))
+    cc.1 <- diff(c3) / diff.xi
+    cc.2 <- 3 * c3[-n]
+    cc.3 <- diff(yi) / diff.xi - diff.xi * (2 * c3[-n] + c3[-1])
+    cc.4 <- yi[-n]
+    to.sort <- c(test0, x3)
+    ix.final <- order(to.sort)
+    tmp <- unique(data.frame(
+        to.sort[ix.final],
+        c(ffppual(xi, cc.1, cc.2, cc.3, cc.4, test0, FALSE),
+          ffppual(xi, cc.1, cc.2, cc.3, cc.4, x3, TRUE))[ix.final]))
+    tmp2 <- tmp
+    tmp2[[1]] <- round(tmp2[[1]], 5)
+    res <- tmp2[[2]][tmp2[[1]] %in% x2]
+    if (length(res) != n)
+        res <- approx(x = tmp[[1]], y = tmp[[2]], xout = x2,
+                      ties = "ordered")$y
+    res
+}
+```
+
+```{r equiv-comp}
+if (!exists(".Random.seed", globalenv(), mode = "numeric")) {
+    foo <- sample(TRUE)
+}
+seed <- get(".Random.seed", globalenv())
+set.seed(42)
+
+data(ca533)
+cam011 <- as.numeric(na.omit(ca533[, "CAM011"]))
+cases <- list(
+    "i.i.d. normal, n = 200" = rnorm(200, 100, 20),
+    "noisy sine wave, n = 100" =
+        5 * sin(seq(from = 0, to = 6 * pi, length.out = 101)[-101]) +
+        rnorm(100) + 20,
+    "AR(1), phi = 0.7, n = 500" =
+        as.numeric(arima.sim(list(ar = 0.7), 500)) + 50,
+    "ca533 series CAM011" = cam011)
+
+assign(".Random.seed", seed, globalenv())
+
+equivGrid <- expand.grid(case = names(cases), nyrs = c(10, 32),
+                         f = c(0.5, 0.9), stringsAsFactors = FALSE)
+equivGrid$maxdiff <- vapply(seq_len(nrow(equivGrid)), function(i) {
+    y <- cases[[equivGrid$case[i]]]
+    max(abs(ffcsaps.legacy(y, nyrs = equivGrid$nyrs[i], f = equivGrid$f[i]) -
+            caps(y, nyrs = equivGrid$nyrs[i], f = equivGrid$f[i])))
+}, numeric(1))
+worstInteger <- max(equivGrid$maxdiff)
+
+## The one place the two differ: caps() coerces nyrs to an integer
+fracNyrs <- 2 * length(cam011) / 3
+diffFrac <- max(abs(ffcsaps.legacy(cam011, nyrs = fracNyrs, f = 0.5) -
+                    caps(cam011, nyrs = fracNyrs, f = 0.5)))
+diffTrunc <- max(abs(ffcsaps.legacy(cam011, nyrs = trunc(fracNyrs), f = 0.5) -
+                     caps(cam011, nyrs = fracNyrs, f = 0.5)))
+camRange <- diff(range(cam011))
+```
+
+```{r equiv-table}
+ord <- order(match(equivGrid$case, names(cases)), equivGrid$nyrs, equivGrid$f)
+tab <- equivGrid[ord, c("case", "nyrs", "f", "maxdiff")]
+tab$maxdiff <- sprintf("%.2e", tab$maxdiff)
+names(tab) <- c("Series", "nyrs", "f", "max. abs. difference")
+knitr::kable(tab, row.names = FALSE, align = "lrrr",
+             caption = paste("**Table 1.** Largest absolute difference",
+                             "between `ffcsaps.legacy` and `caps` over all",
+                             "fitted values, for integer `nyrs`."))
+```
+
+Table 1 gives the largest absolute difference between the two implementations
+across four test series, two values of `nyrs` and two values of `f`. The
+worst case is `r sprintf("%.1e", worstInteger)`, which is floating-point
+noise. For integer `nyrs`, `caps` and `ffcsaps` compute the same spline.
+
+There is one genuine difference. `caps` passes `nyrs` to Fortran as an
+integer, so a fractional `nyrs` is truncated, whereas `ffcsaps` used it as
+given. Fitting series CAM011 of the `ca533` data set with \(\mathtt{nyrs} =
+`r sprintf("%.2f", fracNyrs)`\), two thirds of the series length, the two
+differ by `r sprintf("%.2e", diffFrac)`, which is
+`r sprintf("%.2f", 100 * diffFrac / camRange)`% of the range of the series.
+Passing the truncated value \(`r trunc(fracNyrs)`\) to `ffcsaps` instead
+brings the difference back down to `r sprintf("%.1e", diffTrunc)`, confirming
+that truncation is the whole of the discrepancy.
+
+This is reachable in ordinary use, by two routes. A `nyrs` between 0 and 1
+selects the proportion-of-series-length shorthand, and `caps` multiplies it
+by the series length, which will rarely land on a whole number. Internally,
+`plot.crn`, `wavelet.plot` and `ssf` pass a fractional `nyrs` of their own,
+computed as a fixed proportion of the series length; `detrend.series` and
+`rcs` apply `floor` first and so are unaffected. The effect on the fitted
+curve is small, but it is not zero.
+
+```{r equiv-fig, fig.height=6, fig.cap="**Figure 2.** Top: series CAM011 of the `ca533` data set (grey) with a 32-year spline fitted by `caps` (blue) and by the legacy `ffcsaps` (vermillion, dashed); the two curves are indistinguishable. Bottom: the difference between the two fitted curves, in ring-width units."}
+capsFit <- caps(cam011, nyrs = 32, f = 0.5)
+ffFit <- ffcsaps.legacy(cam011, nyrs = 32, f = 0.5)
+op <- par(mfcol = c(2, 1), mgp = c(2, 0.75, 0), mar = c(4, 4, 2.5, 1))
+plot(cam011, type = "l", col = COLOR_REF,
+     xlab = "Index", ylab = "Ring width (mm)",
+     main = "CAM011 with a 32-year spline")
+lines(capsFit, col = COLOR_SIM, lwd = 3)
+lines(ffFit, col = COLOR_ALT, lwd = 2, lty = "dashed")
+legend("topright", bty = "n", cex = 0.85,
+       legend = c("data", "caps", "ffcsaps (legacy)"),
+       col = c(COLOR_REF, COLOR_SIM, COLOR_ALT),
+       lty = c("solid", "solid", "dashed"), lwd = c(1, 3, 2))
+plot(capsFit - ffFit, type = "l", col = COLOR_SIM,
+     xlab = "Index", ylab = "caps - ffcsaps",
+     main = "Difference between the two fits")
+abline(h = 0, lty = "dashed", col = COLOR_REF)
+par(op)
+```
+
+Figure 2 shows the two fits on a real ring-width series together with their
+difference, which is at the level of the floating-point representation.
+
+# A note on the `ffcsaps` parameterization
+
+The deprecated `ffcsaps` contained code lines corresponding to the equation
+
+$$
+\mathtt{p.inv} = \frac{1}{\mathtt{p}} = \frac{(1 - \mathtt{f})(\cos
+  (2\pi / \mathtt{nyrs}) +2)}{12 \mathtt{f} (\cos (2\pi /
+  \mathtt{nyrs}) -1)^2} + 1
+\qquad (4)
+$$
+
+where \(\mathtt{p}\) and its inverse \(\mathtt{p.inv}\) are variables used in
+the code. Writing equation (2) for the inverse,
+
+$$
+\frac{1}{p} = \frac{(1 - \mathtt{f})(\cos (2\pi / \mathtt{nyrs})
+  +2)}{6 \mathtt{f} (\cos (2\pi / \mathtt{nyrs}) -1)^2}
+\qquad (5)
+$$
+
+we find that equations (5) and (4) are connected by
+
+$$
+\frac{1}{p} = 2 \left(\frac{1}{\mathtt{p}} - 1\right)
+\qquad (6)
+$$
+
+or equivalently
+
+$$
+\frac{\mathtt{p}}{1 - \mathtt{p}} = 2 p
+\qquad (7)
+$$
+
+So the variable named `p` in `ffcsaps` and the Lagrange multiplier \(p\) of
+@cook1990methods were not the same quantity, despite sharing a name. They are
+two parameterizations of the same penalty, related by equation (7). This is
+the factor of two that a reader comparing `src/capsf.f95` against `ffcsaps`
+would otherwise have to discover the hard way.
+
+The `ffcsaps` form is the convex-combination parameterization, in which the
+spline minimizes
+
+$$
+\mathtt{p} \times \text{Error} + (1 - \mathtt{p}) \times \text{Roughness}
+\qquad (8)
+$$
+
+with \(\mathtt{p} \in [0, 1]\). Following from equations (7) and (8), the
+splines described in @cook1990methods, and hence those computed by `caps`,
+are the result of minimizing
+
+$$
+2 p \times \text{Error} + \text{Roughness}
+\qquad (9)
+$$
+
+with the same definitions of Error and Roughness, details of which are
+omitted here. The section above confirms empirically that the two forms give
+the same fitted curve.
+
+# Formulation of the Gini coefficient in `gini.coef`
+
+The `gini.coef` function computes the Gini coefficient (Gini index) of a
+given data vector. The manual (Rd file) of the function has a reference to
+@biondi2008inequality which uses the following formula for the Gini
+coefficient (\(G\)):
+
+$$
+G = \frac{1}{2 n \sum_{i=1}^{n} x_i} \sum_{i=1}^{n} \sum_{j=1}^{n}
+  \left| x_i - x_j \right|
+\qquad (10)
+$$
+
+In equation (10), the Gini coefficient is defined in terms of pairwise
+differences between all pairs of observations (\(x_i,\ i \in 1, \dots, n\)).
+More specifically, the Gini coefficient is one half of the relative mean
+difference, which is defined as the mean of the absolute pairwise distances
+divided by the mean of the observations.
+
+The C source code of the `gini.coef` function uses the following formula for
+the Gini index:
+
+$$
+G = \left(X_n (n - 1) - 2 \sum_{i=1}^{n-1}X_i\right) / (X_n n)
+\qquad (11)
+$$
+
+where \(n\) is the number of observations and \(X_i\) is the \(i\)th
+cumulative sum
+
+$$
+X_i = \sum_{j=1}^{i} x_j
+\qquad (12)
+$$
+
+of sorted observations \(x_j\):
+
+$$
+\forall i: i < j \Rightarrow x_i \leq x_j
+\qquad (13)
+$$
+
+Equation (11) can be reformulated as
+
+$$
+G = 1 - \frac{1}{n} - \frac{2}{X_n n} \sum_{i=1}^{n-1}X_i
+\qquad (14)
+$$
+
+or as
+
+$$
+G = \left(\frac{1}{2} - \left(\frac{1}{2n} + \frac{1}{X_n n}
+      \sum_{i=1}^{n-1}X_i\right)\right) / \frac{1}{2}
+\qquad (15)
+$$
+
+When we assign
+
+$$
+A + B = \frac{1}{2}
+\qquad (16)
+$$
+
+and
+
+$$
+B = B_1 + B_2 = \frac{1}{2n} + \frac{1}{X_n n} \sum_{i=1}^{n-1}X_i
+\qquad (17)
+$$
+
+equation (15) becomes
+
+$$
+G = A / (A + B)
+\qquad (18)
+$$
+
+or equivalently
+
+$$
+G = 1 - 2 B
+\qquad (19)
+$$
+
+Figure 3 is a graphical representation of the Gini coefficient using an
+example data set of the following six observed values: \(\{0.2, 0.4, 0.75,
+0.95, 1.2, 2.5\}\). It shows the definition of the Gini coefficient as the
+ratio of the area above the Lorenz curve [@lorenz1905] to the total area of
+the triangle [@xu2003has]. The Lorenz curve is defined by the cumulative
+distribution function of the empirical probability distribution of the
+observations. The sides of the triangle corresponding to the axes are
+normalized to length 1.
+
+```{r lorenz, fig.width=6, fig.height=6, fig.cap="**Figure 3.** Graphical representation of the Gini coefficient based on areas defined by the Lorenz curve (n = 6). See equations (16), (17), (18) and (19)."}
+xg <- sort(c(0.2, 0.4, 0.75, 0.95, 1.2, 2.5))
+ng <- length(xg)
+Xg <- cumsum(xg)
+px <- c(0, seq_len(ng) / ng)   # cumulative portion of population
+py <- c(0, Xg / Xg[ng])        # cumulative sum of values / total
+
+COL_A  <- "#FFC0CB" # pink
+COL_B1 <- "#008080" # teal
+COL_B2 <- "#00FFFF" # cyan
+
+op <- par(mar = c(5, 5, 1, 3), pty = "s")
+plot(NA, xlim = c(0, 1), ylim = c(0, 1), asp = 1, axes = FALSE,
+     xlab = "Cumulative portion of population\n(ordered from lowest to highest value)",
+     ylab = "Cumulative sum of values\ndivided by total")
+
+## A: between the line of equality and the Lorenz curve
+polygon(c(px, rev(px)), c(py, rev(px)), col = COL_A, border = NA)
+## B2: the staircase of bars under the curve, height = left endpoint
+for (i in seq_len(ng)) {
+    rect(px[i], 0, px[i + 1], py[i], col = COL_B2, border = NA)
+}
+## B1: the triangles capping each bar
+for (i in seq_len(ng)) {
+    polygon(c(px[i], px[i + 1], px[i + 1]),
+            c(py[i], py[i],     py[i + 1]), col = COL_B1, border = NA)
+}
+
+## Outlines
+polygon(c(0, 1, 1), c(0, 0, 1))            # the triangle
+lines(px, py, lwd = 1.5)                   # Lorenz curve
+points(px[-1], py[-1], pch = 21, bg = "white", cex = 0.9)
+for (i in seq_len(ng)) {                   # staircase outline
+    lines(c(px[i], px[i + 1], px[i + 1]), c(py[i], py[i], py[i + 1]),
+          col = "grey30", lwd = 0.6)
+}
+
+axis(1, at = px, labels = c("0", paste0(seq_len(ng), "/", ng)), cex.axis = 0.85)
+axis(4, at = c(0, 1), labels = c("0", "1"), las = 1, cex.axis = 0.85)
+
+text(0.42, 0.60, "Line of equality", srt = 45, cex = 0.9)
+text(0.55, 0.33, "Lorenz curve",     srt = 44, cex = 0.9)
+legend("topleft", bty = "n", cex = 0.9,
+       legend = c("A", expression(B[1]), expression(B[2])),
+       fill = c(COL_A, COL_B1, COL_B2), border = NA)
+par(op)
+```
+
+Comparing Figure 3 to equation (17), \(B_2 = \sum_{i=1}^{n-1}X_i / (X_n n)\)
+is the sum of the areas of the cyan bars. Summing the areas of the teal
+triangles, we get
+
+$$
+\sum_{i=1}^{n}\left( \frac{1}{2} \frac{1}{n} \frac{x_i}{X_n} \right) =
+\frac{1}{2 n X_n}\sum_{i=1}^{n} x_i = \frac{1}{2 n} = B_1
+\qquad (20)
+$$
+
+Note that \(B_1\) only depends on the number of observations, not on their
+values. From equations (17) and (19) we find that the value of the Gini
+coefficient at maximum inequality (winner takes all) is
+\(G_{\text{max}}(n)=1 - 1 / n\). When all observed values are equal, the
+Lorenz curve matches the line of equality, and the Gini coefficient is
+\(G_{\text{min}}=0\). We have assumed that all values \(x_i\) are
+non-negative.
+
+The equivalence of different definitions of the Gini coefficient is reviewed
+in @xu2003has. One of the results shown in the paper is that the geometric
+definition (18) used by the `gini.coef` function is equivalent to the
+definition based on the relative mean difference (10). This can be
+experimentally verified by comparing the results of the following R function
+to those of `gini.coef`.
+
+```{r gini-rmd, echo=TRUE}
+## Gini index is one half of relative mean difference.
+## x should not have NA values.
+gini.rmd <- function(x) {
+    mean(abs(outer(x, x, "-"))) / mean(x) * 0.5
+}
+```
+
+```{r gini-check, echo=TRUE}
+giniMax <- max(abs(vapply(ca533, function(x) {
+    x <- x[!is.na(x)]
+    gini.rmd(x) - gini.coef(x)
+}, numeric(1))))
+giniMax
+```
+
+Over all `r ncol(ca533)` series of the `ca533` data set the two agree to
+`r sprintf("%.1e", giniMax)`.
+
+# References

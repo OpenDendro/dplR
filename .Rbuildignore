@@ -33,13 +33,10 @@
 # R CMD check artifact
 ^dplR-Ex\.R$
 
-# LaTeX and knitr vignette build artifacts (relevant if building vignettes locally)
-# NB: do not exclude inst/doc/*.Rnw -- R CMD build puts the vignette source
-# there on purpose, and check WARNs if it is missing.
-^vignettes/Rplots.*\.pdf$
+# Vignette build artifacts left behind by rendering math-dplR.Rmd in place.
+# R CMD build makes its own copies under inst/doc; these are just local litter.
+# NB: do not exclude inst/doc/*.Rmd -- R CMD build puts the vignette source
+# there on purpose, and check WARNs about build/vignette.rds if it is missing.
+^vignettes/.*\.html$
 ^vignettes/figure(/.*)?$
-^vignettes/.*\.(aux|bbl|blg|fdb_latexmk|fls|log|out|synctex\.gz|tex|toc)$
-^inst/doc/cache(/.*)?$
-^inst/doc/figure(/.*)?$
-^inst/doc/.*\.(Rout|aux|bbl|blg|fdb_latexmk|fls|glo|gls|glg|idx|ind|ilg|lof|log|lot|out|synctex\.gz|toc)$
-^.*/auto$
+^vignettes/Rplots.*\.pdf$

@@ -28,17 +28,13 @@ Imports: graphics, grDevices, grid, stats, utils, lattice (>= 0.13-6),
         data.table (>= 1.14.0)
 Suggests: 
     Cairo (>= 1.5-0),
-    dichromat (>= 1.2-3),
     foreach,
-    forecast (>= 3.6),
     gmp (>= 0.5-5),
     iterators,
     knitr,
     RColorBrewer,
-    rmarkdown,
-    testthat (>= 0.8),
-    tikzDevice,
-    waveslim
+    rmarkdown (>= 2.12),
+    testthat (>= 0.8)
 Description: Perform tree-ring analyses such as detrending, chronology
         building, and cross dating.  Read and write standard file formats
         used in dendrochronology.

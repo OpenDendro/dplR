@@ -1,5 +1,80 @@
 * CHANGES IN dplR VERSION 1.8.0
 
+File: read.tucson.R, rwl.check.R, tests/testthat/test-read.tucson.R
+-----------------------------------------------------------------
+ - read.tucson() no longer drops a series in silence.
+
+   Every refusal in the reader works one cell at a time: a value that
+   cannot be read becomes NA, and the NA rows are then filtered out
+   before the data is cast to wide. A series whose every cell was
+   refused loses every row it had, so no column is ever created for it.
+   The file names the series, the reader read its lines and refused
+   each of them for a stated reason, and the caller got an object with
+   one fewer series in it and nothing anywhere saying which one left.
+
+   can697 is the case: 94 series in the file, 92 in the returned
+   object, 27 warnings about decade lines, and not one word about B22B1
+   or B22B1b. Which two had gone missing was something the caller had
+   to work out by counting columns against the file. can712 is the same
+   shape, 74 series returned of 78.
+
+   The per-line reasons were already reported. What is added is the
+   consequence, which is the part that cannot be reconstructed from the
+   returned object: a SERIES_DROPPED event naming the series and how
+   many lines each had, and saying that they are not in what you were
+   handed. rwl.check() reports it as RWL_SERIES_DROPPED.
+
+ - read.tucson() reported a measurement split across column 72 on
+   lines where nothing was split.
+
+   The check exists for a measurement cut in half by the column
+   boundary: a digit in column 72 and another in column 73, so that
+   truncating at 72 eats a digit. mar047's TIZ19A 1900 line turns 116
+   into 11 that way, 1.16 mm reported as 0.11 mm.
+
+   The test for the column-72 side was made on a right-trimmed string,
+   so it asked whether the last non-blank character ANYWHERE in columns
+   1-72 was a digit. Data lines end in a measurement, so that is nearly
+   always true, and the predicate collapsed to "there is a digit at
+   column 73". A trailing per-line count column beginning at column 73
+   fired it with column 72 blank and nothing split at all -- which is
+   exactly the disposable overflow the check was written to ignore.
+   Now tested at the character that sits at column 72.
+
+ - read.tucson()'s refusal of a series terminated at two precisions
+   now says what is wrong with the file.
+
+   It said "core(s) kok3a have different precision flags", which is a
+   fact about a variable inside the parser. It does not say where in
+   the series the disagreement is, which two precisions are involved,
+   what reading the file anyway would cost, or what to do about it.
+
+   kyrg014's kok3a is the case and the only one in the ITRDB archive:
+   one ID entered as two records, 1642-1898 ending in -9999 and
+   1900-2005 ending in 999. Read as one series, one half comes out ten
+   times the size of the other. The refusal stays unconditional, and
+   should: there is no reading to hand back, and either choice produces
+   ring widths that are wrong by a factor of ten while looking
+   perfectly ordinary. What is added is the diagnosis -- the marker,
+   its year, both precisions, the cost of guessing, and the remedy,
+   which is to enter each record under its own series ID.
+
+ - The series recorded in read.tucson()'s provenance events was the
+   wrong one for every event raised while parsing a decade line.
+
+   Three events -- COLUMN_LAYOUT, NON_NUMERIC and NO_MEASUREMENT -- are
+   raised from inside a data.table j-expression. data.table evaluates j
+   once per group in one reused environment and writes each group's
+   column value into one reused vector, in place. Storing that vector
+   in the event row stored a reference to it, so every such row ended
+   up holding the last group's series id: can697's COLUMN_LAYOUT event
+   came back filed under the alphabetically last series in the file.
+
+   The message was right throughout, because paste0() had already
+   copied the characters into a new string. Only the structured field
+   was wrong, which is the field a sweep over many files filters on.
+   The values are now copied before they are stored.
+
 File: encoding.R (new), read.rwl.R, read.tucson.R, read.sheet.R,
       rwl.check.R, NAMESPACE, tests/testthat/test-encoding.R (new),
       man/read.tucson.Rd, man/read.sheet.Rd

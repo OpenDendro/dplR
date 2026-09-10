@@ -110,9 +110,82 @@ test_that("read.tucson refuses a line it cannot read unambiguously", {
     f <- tuc(c("RH17A   19421  351   123   999",
                "RH17B   1942   123   134   145   999"))
     expect_warning(r <- read.tucson(f, verbose = FALSE), "does not conform")
-    ## The unreadable line comes back as NA; the conforming series is unharmed.
-    expect_true(all(is.na(r[["RH17A"]])))
+    ## RH17A's only line was refused, so RH17A holds nothing and is not in the
+    ## returned object at all. This used to be asserted as
+    ## all(is.na(r[["RH17A"]])), which passes on a column that is not there:
+    ## r[["RH17A"]] is NULL and all(is.na(NULL)) is TRUE. Assert the absence.
+    expect_false("RH17A" %in% names(r))
+    ## The conforming series is unharmed.
     expect_equal(r[["RH17B"]][1:3], c(1.23, 1.34, 1.45))
+    ## And the event is filed under the series the message names, not under
+    ## some other series in the file.
+    ev <- attr(r, "dplR.provenance")$events
+    expect_equal(ev$series[ev$event == "COLUMN_LAYOUT"], "RH17A")
+})
+
+test_that("content past column 72 is only reported when it splits a number", {
+    ## The check exists for a measurement cut in half by the column boundary,
+    ## i.e. a digit in column 72 AND a digit in column 73. A trailing count
+    ## column that begins at column 73 while column 72 is blank splits nothing
+    ## and must be silent -- the truncation throws away something the format
+    ## does not define anyway.
+    ##
+    ## This was the bug: V1 is right-trimmed before the test, so asking whether
+    ## it ENDS in a digit asked "is the last non-blank character anywhere in
+    ## columns 1-72 a digit", which is true of nearly every data line. The
+    ## predicate collapsed to "there is a digit at column 73".
+    f <- tuc(paste0("TST01A  1900   123   134   145   156   167   999",
+                    strrep(" ", 24), "12"))
+    expect_identical(substr(readLines(f), 72, 73), " 1")   # blank at 72
+    expect_silent(r <- read.tucson(f, verbose = FALSE))
+    expect_equal(r[[1]], c(1.23, 1.34, 1.45, 1.56, 1.67))
+
+    ## A measurement that really does straddle the boundary still reports: the
+    ## tenth field is seven characters wide, so 11600 is truncated to 1160 and
+    ## 1.16 mm is returned as 11.6 mm with nothing said.
+    f2 <- tuc(c(paste0("TST02A  1900   123   134   145   156   167",
+                       "   178   189   150   141  11600"),
+                "TST02A  1910   211   999"))
+    expect_identical(substr(readLines(f2)[1], 72, 73), "00")  # digits both sides
+    expect_warning(r2 <- read.tucson(f2, verbose = FALSE), "run past column 72")
+    expect_equal(attr(r2, "dplR.provenance")$events$event, "PAST_COL72")
+})
+
+test_that("a series that contributes no measurement is named, not dropped in silence", {
+    ## Every refusal in the reader works one cell at a time. A series whose
+    ## every cell was refused loses every row it had and never becomes a
+    ## column, so the caller gets an object with one fewer series in it and
+    ## nothing anywhere saying which one left. can697 is the real case: 94
+    ## series in the file, 92 returned, 27 warnings about decade lines and not
+    ## one word about B22B1 or B22B1b.
+    f <- tuc(c("GOOD1A  1900   123   134   145   999",
+               "BAD1A   1900  490 750 780 1000 520 40"))
+    expect_warning(read.tucson(f, verbose = FALSE), "does not conform")
+    ww <- withCallingHandlers(read.tucson(f, verbose = FALSE),
+                              warning = function(e) invokeRestart("muffleWarning"))
+    expect_named(ww, "GOOD1A")
+
+    msgs <- character(0)
+    withCallingHandlers(read.tucson(f, verbose = FALSE),
+                        warning = function(e) {
+                            msgs <<- c(msgs, conditionMessage(e))
+                            invokeRestart("muffleWarning")
+                        })
+    dropped <- grep("hold no readable measurement", msgs, value = TRUE)
+    expect_length(dropped, 1L)
+    ## The message has to carry the consequence: which series, how many lines,
+    ## and that it is not in what you were handed.
+    expect_match(dropped, "1 of the 2 series IDs")
+    expect_match(dropped, "BAD1A \\(1 line\\(s\\)\\)")
+    expect_match(dropped, "NOT in the returned object")
+
+    ev <- attr(ww, "dplR.provenance")$events
+    expect_true("SERIES_DROPPED" %in% ev$event)
+    expect_equal(ev$series[ev$event == "SERIES_DROPPED"], "BAD1A")
+    expect_equal(ev$n[ev$event == "SERIES_DROPPED"], 1L)
+
+    ## strict = TRUE refuses the file, as it does for every other report().
+    expect_error(read.tucson(f, verbose = FALSE, strict = TRUE))
 })
 
 test_that("strict = TRUE turns recoverable problems into errors", {
@@ -257,4 +330,31 @@ test_that("the verbose gap list prints one line per series, in file order", {
     expect_match(grep("AAA", gapLines, value = TRUE), "1 gap:")
     ## file order, not alphabetical: ZZB is written first
     expect_true(grep("ZZB", gapLines) < grep("AAA", gapLines))
+})
+
+test_that("a series terminated at two precisions is refused, and the message says which", {
+    ## kyrg014's kok3a: one ID entered as two records, the first ending -9999
+    ## (0.001 mm) and the second 999 (0.01 mm). The flag is taken per series
+    ## from its last record, so the earlier record's marker survives the
+    ## per-line pass as a negative and is caught here.
+    ##
+    ## This is refused whatever `strict` says, and the message has to carry the
+    ## whole diagnosis, because it is all the caller gets: where the marker is,
+    ## which two precisions, what reading it anyway would cost, and what to do.
+    ## It used to say only "core(s) KOK3A have different precision flags",
+    ## which is a fact about a variable inside the parser.
+    f <- tuc(c("KOK3A   1900   123   134   145 -9999",
+               "KOK3A   1910   211   222   999"))
+    err <- tryCatch(read.tucson(f, verbose = FALSE), error = conditionMessage)
+    expect_match(err, "series KOK3A")
+    ## where, and which two precisions
+    expect_match(err, "stop marker of -9999, which declares 0.001 mm, at 1903")
+    expect_match(err, "span of 1900-1911")
+    expect_match(err, "ends with 999, which declares 0.01 mm")
+    ## what it would cost, and what to do about it
+    expect_match(err, "ten times the size")
+    expect_match(err, "its own series ID, one per precision")
+    expect_match(err, "read.tucson.legacy()", fixed = TRUE)
+    ## strict has nothing to do with it: there is no reading to hand back.
+    expect_error(read.tucson(f, verbose = FALSE, strict = FALSE), "0.001 mm")
 })

@@ -141,6 +141,20 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   prov.header <- character(0)
   report <- function(..., event = NA_character_, series = NA_character_,
                      n = NA_integer_) {
+    ## AGB Sep 2026: [1L] is a copy, and the copy is the point. Three of these
+    ## calls are made from inside a data.table j-expression with `series =
+    ## core`. data.table evaluates j once per group in ONE reused environment,
+    ## and the group's value of a column is written into ONE reused vector, in
+    ## place. Storing that vector in the row below stores a reference to it, so
+    ## every row written from inside the j-expression ended up holding whatever
+    ## the LAST group's core was: the COLUMN_LAYOUT event for can697's B22B1
+    ## came back filed under the alphabetically last series in the file. The
+    ## message was right, because paste0() had already copied the characters
+    ## into a new string; only the structured field was wrong -- which is the
+    ## field a sweep over many files filters on, so this was wrong exactly
+    ## where it was going to be believed. force() does not help: forcing hands
+    ## back the same mutable vector. Subsetting allocates a new one.
+    event <- event[1L]; series <- series[1L]; n <- n[1L]
     msg <- paste0(...)
     prov.events[[length(prov.events) + 1L]] <<-
       data.frame(event = event, series = series, n = n, message = msg,
@@ -156,6 +170,8 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   ## for ENCODING_DECLARED, where the user told us the encoding and we obeyed.
   note <- function(..., event = NA_character_, series = NA_character_,
                    n = NA_integer_) {
+    ## Same copy as report(), for the same reason.
+    event <- event[1L]; series <- series[1L]; n <- n[1L]
     msg <- paste0(...)
     prov.events[[length(prov.events) + 1L]] <<-
       data.frame(event = event, series = series, n = n, message = msg,
@@ -413,7 +429,22 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   ##      drop FR-002's first decade without a word. NOAA's own template file
   ##      for az621 has the same ten measurements missing, so their converter
   ##      hit it too.
-  cutNumber <- grepl('[0-9]$', raw$V1) & grepl('^[0-9]', raw$ovf)
+  ##
+  ## AGB Sep 2026: the column-72 test has to be made on the character that sits
+  ## AT column 72, not on the last character of the line. V1 was right-trimmed
+  ## a few lines up, so grepl('[0-9]$', V1) asked "is the last non-blank
+  ## character in columns 1-72 a digit", which is true of very nearly every
+  ## data line -- they end in a measurement. The predicate therefore collapsed
+  ## to "there is something at column 73 that starts with a digit", which is
+  ## the disposable trailing count column this check exists to ignore: a line
+  ## whose measurements stop at column 60 and whose count column starts at 73
+  ## fired it, with column 72 blank and nothing split at all.
+  ##
+  ## After the trim, "the last non-blank character is at column 72" is exactly
+  ## nchar(V1) == 72, so that is the test. ovf begins at column 73 by
+  ## construction and is not trimmed, so its own test was already right.
+  cutNumber <- nchar(raw$V1) == 72L & grepl('[0-9]$', raw$V1) &
+               grepl('^[0-9]', raw$ovf)
   secondRec <- grepl('^[[:space:]]*-?[0-9]+[[:space:]]*$', substr(raw$ovf, 9, 12))
   if (any(cutNumber))
     report('In ', fname, ', ', sum(cutNumber), ' line(s) run past column 72 with a ',
@@ -874,7 +905,14 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
     measure.vars = cols,
     variable.name = 'yearOrder',
     variable.factor = FALSE,
-    value.name = 'rw')[order(core, startYear)][!is.na(rw)]
+    value.name = 'rw')[order(core, startYear)]
+
+  ## AGB Sep 2026: the series the file names, taken BEFORE the NA rows are
+  ## dropped. The silent-drop check below needs it and it cannot be recovered
+  ## afterwards -- that is the whole shape of the bug it is there to catch.
+  coresRead <- unique(parsed$core)
+
+  parsed <- parsed[!is.na(rw)]
 
   ## AGB Sep 2026: a file that yields no measurement at all is not a Tucson
   ## file, and an empty rwl is a worse answer than an error, because it passes
@@ -887,11 +925,102 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   ## out. This is not a recoverable problem, so it does not go through report().
   if (nrow(parsed) == 0L) no_measurements()
 
+  ## AGB Sep 2026: never drop a series in silence.
+  ##
+  ## Every refusal above works one cell at a time: a value the line-level
+  ## checks cannot read becomes NA, and the [!is.na(rw)] filter a few lines up
+  ## then removes the row. A core whose every cell was refused loses every row
+  ## it had, so it never reaches the dcast() below and no column is ever
+  ## created for it. The file names the series, the reader read its lines,
+  ## refused each of them for a stated reason -- and the returned object simply
+  ## has one fewer column, with nothing anywhere saying which one or why.
+  ##
+  ## can697 is the case that found this: 94 series in the file, 92 in the
+  ## returned object, 27 warnings about decade lines and not one word about
+  ## B22B1 or B22B1b leaving. Working out which two series went missing meant
+  ## counting columns against the file by hand.
+  ##
+  ## The per-line reasons are already in the warnings and in prov.events; what
+  ## is added here is the consequence, which is the part the caller cannot
+  ## reconstruct. Reported by the ID as the file spells it: a series that
+  ## contributes nothing never reaches the renaming pass further down.
+  coresLost <- setdiff(coresRead, unique(parsed$core))
+  if (length(coresLost) > 0L) {
+    ## One row of raw is one decade line, so .N is the line count. Listed in
+    ## file order, as the verbose gap list is: alphabetical order would put
+    ## the series somewhere other than where the reader's other output does.
+    lost <- raw[core %in% coresLost, .(nlines = .N), by = core]
+    lost <- lost[order(match(core, coreOrder))]
+    report('In ', fname, ', ', length(coresLost), ' of the ', length(coresRead),
+           ' series IDs in the file hold no readable measurement and are NOT in ',
+           'the returned object: ',
+           paste0(lost$core, ' (', lost$nlines, ' line(s))', collapse = ', '),
+           '. Every value on their lines was either unreadable or a ',
+           'missing-ring marker. The per-line detail is in the reports above; ',
+           'run with verbose = TRUE for the ones recorded as notes.',
+           ## The names go in the structured field as well as the message:
+           ## which series left is the whole content of this event, and a
+           ## sweep over many files should not have to parse prose to get it.
+           ## Space separated when there are several, as the precision-flag
+           ## refusal further down already does.
+           event = 'SERIES_DROPPED',
+           series = paste(lost$core, collapse = ' '),
+           n = length(coresLost))
+  }
+
   # At this point, if there is still a -9999 value in rw
   # That means the flag is different from -9999 -> two flags
+  ##
+  ## How a value gets here: the per-line pass turns a negative into NA unless
+  ## it is -9999, and then turns the core's own stop marker into NA. So a
+  ## negative that survives to this point is a -9999 stop marker sitting inside
+  ## a series whose flag was taken as 999. The series is entered as more than
+  ## one record and the records do not agree on precision.
+  ##
+  ## AGB Sep 2026: the message used to read "core(s) kok3a have different
+  ## precision flags", which is a fact about a variable inside this parser. It
+  ## is true, and it tells the person holding the file nothing: not where in
+  ## the series the disagreement is, not which two precisions, not what it
+  ## would cost to read it anyway, and not what to do about it. All four are in
+  ## hand here, so say them.
+  ##
+  ## This stays an unconditional stop, whatever `strict` says, and it should.
+  ## There is no reading to hand back: the two halves of the series are on
+  ## scales that differ by a factor of ten and nothing in the file says which
+  ## one the series was meant to be on. Choosing either produces ring widths
+  ## that are wrong by 10x while looking perfectly ordinary, which is the one
+  ## outcome this reader exists to prevent. kyrg014's kok3a is the case, and
+  ## it is the only one in the ITRDB archive.
   twoFlags <- parsed[rw < 0]
   if (nrow(twoFlags) > 0) {
-    stop('In ', fname, ', core(s) ', paste(twoFlags$core, collapse = ' '), ' have different precision flags.')
+    yearOf  <- function(sy, yo) sy + as.integer(substr(yo, 2, 2))
+    precOf  <- function(f) if (isTRUE(f == 999)) '0.01' else '0.001'
+    clause <- vapply(sort(unique(twoFlags$core)), function(cc) {
+      inTwo <- twoFlags$core == cc
+      inAll <- parsed$core == cc
+      mk    <- sort(unique(yearOf(twoFlags$startYear[inTwo],
+                                  twoFlags$yearOrder[inTwo])))
+      mkVal <- unique(twoFlags$rw[inTwo])
+      yrs   <- yearOf(parsed$startYear[inAll], parsed$yearOrder[inAll])
+      fl    <- parsed$flag[inAll][1L]
+      paste0('series ', cc, ' carries a stop marker of ',
+             paste(format(mkVal, trim = TRUE), collapse = ' and '),
+             ', which declares ', precOf(mkVal[1L]), ' mm, at ',
+             paste(mk, collapse = ' and '), ', part way through its span of ',
+             yr_range(min(yrs), max(yrs)),
+             ', while the last record of the series ends with ', fl,
+             ', which declares ', precOf(fl), ' mm')
+    }, character(1), USE.NAMES = FALSE)
+    stop('In ', fname, ', ', paste(clause, collapse = '; '), '. A series is ',
+         'measured at one precision; these are not, so the file does not say ',
+         'which precision to read them at. Read as one series, the years on ',
+         'one side of the marker come out ten times the size of the years on ',
+         'the other -- a wrong ring width, not a missing one, which is why ',
+         'this is refused rather than warned about. The remedy is in the ',
+         'file: enter each record under its own series ID, one per precision. ',
+         'read.tucson.legacy() will read the file as it stands, treating the ',
+         'internal marker as a measurement; that is the guess this reader ',
+         'will not make.', call. = FALSE)
   }
 
   parsed[, precision := data.table::fifelse(flag == 999, 0.01, 0.001)]

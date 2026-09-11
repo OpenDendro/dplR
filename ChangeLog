@@ -24,6 +24,22 @@ File: read.tucson.R, rwl.check.R, tests/testthat/test-read.tucson.R
    many lines each had, and saying that they are not in what you were
    handed. rwl.check() reports it as RWL_SERIES_DROPPED.
 
+   Worth recording how this survived a test suite that covers the
+   reader closely. The test for a line the reader cannot read asserted
+   all(is.na(r[["RH17A"]])) -- and RH17A is not in the object at all,
+   so that is all(is.na(NULL)), which is TRUE. The assertion passed on
+   the absence it was meant to rule out, and read as documentation it
+   said the silent drop was intended behaviour. It now asserts that
+   the series is absent and that the drop is reported.
+
+   Measured over the ITRDB clone, 10,162 files: two files were losing
+   a series in silence, can697 and can712, six series between them.
+   Both are in the 20 that would newly fail if COLUMN_LAYOUT and
+   PAST_COL72 became fatal, so if that change lands this check has
+   nothing left to fire on archive-wide. It keeps its place for the
+   NON_NUMERIC and NO_MEASUREMENT paths and for files outside the
+   archive, but it is not evidence for the severity change.
+
  - read.tucson() reported a measurement split across column 72 on
    lines where nothing was split.
 
@@ -40,6 +56,44 @@ File: read.tucson.R, rwl.check.R, tests/testthat/test-read.tucson.R
    fired it with column 72 blank and nothing split at all -- which is
    exactly the disposable overflow the check was written to ignore.
    Now tested at the character that sits at column 72.
+
+   Measured over the ITRDB clone, 10,162 files: the false positive
+   occurs on one file, europe/bulg002t-noaa.rwl, whose column 72 is
+   blank, whose content ends at column 68 and which carries a 999 at
+   column 73. That file is one of the NOAA template tables that fail
+   for holding no measurements, so nothing that reads today changes.
+   PAST_COL72 fires on 6 files rather than 7, and the 20 files that
+   would newly fail if it and COLUMN_LAYOUT became fatal are the same
+   20 as before.
+
+ - The PAST_COL72 message no longer asserts that a digit was lost.
+
+   It said a measurement was "split across the boundary, so the
+   truncation at column 72 drops part of a number". That is one of two
+   readings and the line does not say which. Reading all six files in
+   the archive that raise it: in four the line really is misaligned and
+   the truncated value is out of range for its own series -- mex125's
+   NIH14B 1990 truncates 3380 to 338 among neighbours of 2570 to 6940.
+   In the other two, ok049 and ok049l, the ten fields are perfectly
+   aligned, the record is complete at column 72, the file pads every
+   other line to 82 columns with blanks (4,925 of 4,926 lines in
+   ok049), and one stray character sits past the boundary. There the
+   truncated value is the right one, and both readers already return
+   it.
+
+   The message now gives both readings, says the reader takes the
+   shorter one, shows what is past column 72 so the caller can see it,
+   and points at the neighbouring years as the way to tell. What
+   cannot be told from the file, it no longer claims.
+
+   This settled a severity question that was open. All four genuine
+   cases fail the column-conformance check on the same line and the two
+   stray-character cases do not, so COLUMN_LAYOUT catches every real
+   straddle in the archive and PAST_COL72 has no independent true
+   positive anywhere in 10,162 files. Making it fatal, as was proposed,
+   would refuse ok049 and ok049l -- 889 series between them -- on the
+   strength of two stray keystrokes, in the two cases where it is the
+   only voice and it is wrong. It stays a warning.
 
  - read.tucson()'s refusal of a series terminated at two precisions
    now says what is wrong with the file.
@@ -74,6 +128,86 @@ File: read.tucson.R, rwl.check.R, tests/testthat/test-read.tucson.R
    copied the characters into a new string. Only the structured field
    was wrong, which is the field a sweep over many files filters on.
    The values are now copied before they are stored.
+
+ - read.tucson() now reads a line whose year is not in columns 9-12,
+   instead of discarding it.
+
+   va024 is the case. Two of its lines write the id wider than the
+   eight characters the format allows, so the year lands at columns
+   13-16 and columns 9-12 are blank:
+
+     25B     1833   324   386   368      <- every other line
+     25B         1930   108    97    70  <- these two
+
+   The year field did not parse, so the lines were discarded with a
+   BAD_YEAR warning. They are the only lines for 25B's 1930s and 12A's
+   1940s, so the file came back with a ten-year hole in each of those
+   series where it plainly holds data -- twenty measurements.
+   read.tucson.legacy() loses them too, silently.
+
+   This is not the COLUMN_LAYOUT ambiguity and is not treated like it.
+   There, two readings of one line disagree and nothing says which was
+   meant. Here the fixed-column reading is not a reading at all, since
+   it yields no year, so there is one candidate and it is the one any
+   human makes at a glance. The recovery belongs with the dash and
+   bunched-number idioms rather than with guessing.
+
+   The predicate is narrow, because the cost of a wrong recovery is a
+   fabricated measurement. The id must start at column 1, which stops a
+   line with no id from having its first measurement read as the year;
+   the second token must be exactly four digits, so BC years, which sit
+   at columns 8-12, are left alone rather than rebuilt onto a layout
+   somebody chose; every later token must be an integer and there must
+   be between one and ten of them; and nothing may be too wide for the
+   grid. swe347's stray header line "swed347 3 Lie" fails three of
+   these at once and is still discarded. The event is YEAR_MISPLACED,
+   RWL_YEAR_MISPLACED in rwl.check(), and the report quotes the line
+   and the reading taken from it.
+
+   The line is rebuilt into canonical form rather than having its year
+   patched, because the tail parser reads columns 13-72: on a shifted
+   line the measurements are not there either. That also means the
+   recovery has to work from the untruncated line. It did not at first,
+   and va024 showed why within minutes of the code being written: the
+   record is pushed right, so its tenth measurement sits at columns
+   71-76 and truncation at column 72 had already taken it. Nine values
+   came back where the file holds ten. The overflow past column 72 is
+   now kept until after the head parse for exactly this. Keeping it
+   that long means the duplicate-line check names V1 rather than
+   comparing the whole row -- the same comparison it was already
+   making, since V1 and the overflow are the only columns the table has
+   at that point.
+
+   One known limit, recorded rather than papered over: a shifted line
+   that also carried a trailing per-line count column would read the
+   count as a measurement, because once the record is off its columns
+   nothing separates the two. No file in the archive has both at once,
+   and the ten-value ceiling rules out the common shape, a full decade
+   plus a count.
+
+   Measured over the ITRDB clone afterwards, 10,162 files: BAD_YEAR
+   falls from 2 files to 1 -- swe347's stray header line is now the
+   whole of it -- and YEAR_MISPLACED is va024 alone. Every other event
+   family holds exactly the files it held before, no file changed its
+   series count, none changed whether it reads or fails, and no file's
+   warning count moved.
+
+ - The worked example for SECOND_RECORD, in a comment, no longer
+   exists in the data.
+
+   The comment cites az621's FR-001 and FR-002 sharing a line because
+   a line break is missing. The archive copy of az621 now holds exactly
+   one line longer than 72 characters and that line is the site header;
+   the file reads clean, with no warning. Whether NOAA re-issued it or
+   the copy the comment was written against differed cannot be told
+   from here, so the comment now says what is true and does not guess
+   at the cause.
+
+   This matters beyond tidiness. Archive-wide SECOND_RECORD fires on 8
+   files and all 8 are the europe/*-noaa.rwl template tables, which are
+   refused anyway for holding no measurements. The family therefore has
+   no worked example in a file that reads, which is worth knowing
+   before its severity is settled on the strength of one.
 
 File: encoding.R (new), read.rwl.R, read.tucson.R, read.sheet.R,
       rwl.check.R, NAMESPACE, tests/testthat/test-encoding.R (new),

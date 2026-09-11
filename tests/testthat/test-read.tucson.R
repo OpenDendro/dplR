@@ -147,8 +147,16 @@ test_that("content past column 72 is only reported when it splits a number", {
                        "   178   189   150   141  11600"),
                 "TST02A  1910   211   999"))
     expect_identical(substr(readLines(f2)[1], 72, 73), "00")  # digits both sides
-    expect_warning(r2 <- read.tucson(f2, verbose = FALSE), "run past column 72")
+    expect_warning(r2 <- read.tucson(f2, verbose = FALSE),
+                   "digit in column 72 and another in column 73")
     expect_equal(attr(r2, "dplR.provenance")$events$event, "PAST_COL72")
+    ## The message states both readings rather than asserting the digit was
+    ## lost: ok049 and ok049l are complete records with a stray character
+    ## after them, where the truncated value is the right one. It also has to
+    ## show what is out there, since that is what the caller judges on.
+    w <- tryCatch(read.tucson(f2, verbose = FALSE), warning = conditionMessage)
+    expect_match(w, "or the record ends at column 72")
+    expect_match(w, "<<past column 72>> 0")
 })
 
 test_that("a series that contributes no measurement is named, not dropped in silence", {
@@ -357,4 +365,53 @@ test_that("a series terminated at two precisions is refused, and the message say
     expect_match(err, "read.tucson.legacy()", fixed = TRUE)
     ## strict has nothing to do with it: there is no reading to hand back.
     expect_error(read.tucson(f, verbose = FALSE, strict = FALSE), "0.001 mm")
+})
+
+test_that("a line whose year is not in columns 9-12 is read, not discarded", {
+    ## va024's shape: the id field is written wider than the 8 characters the
+    ## format allows, so the year lands at columns 13-16 and columns 9-12 are
+    ## blank. The line used to be discarded, and in va024 the two such lines
+    ## were the only ones for those decades, so the file came back with a
+    ## ten-year hole where it plainly holds data.
+    ##
+    ## This is not the COLUMN_LAYOUT ambiguity: the fixed-column reading yields
+    ## no year at all, so there is one candidate reading, not two competing.
+    f <- tuc(c("SHF01A  1900   100   110   120   130   140   150   160   170   180   190",
+               "SHF01A      1910   200   210   220   230   240   250   260   270   280   290",
+               "SHF01A  1920   300   999"))
+    expect_warning(r <- read.tucson(f, verbose = FALSE), "do not carry the year")
+    ## the recovered decade is present and correct, not a gap
+    expect_equal(r[as.character(1910:1919), "SHF01A"],
+                 c(2.00, 2.10, 2.20, 2.30, 2.40, 2.50, 2.60, 2.70, 2.80, 2.90))
+    expect_false(any(is.na(r[["SHF01A"]])))
+    ev <- attr(r, "dplR.provenance")$events
+    expect_true("YEAR_MISPLACED" %in% ev$event)
+    expect_equal(ev$n[ev$event == "YEAR_MISPLACED"], 1L)
+    ## the report has to show both the line and the reading taken from it
+    w <- tryCatch(read.tucson(f, verbose = FALSE), warning = conditionMessage)
+    expect_match(w, "id SHF01A, year 1910, 10 measurement\\(s\\)")
+})
+
+test_that("the misplaced-year recovery refuses everything it cannot read exactly", {
+    ## Each of these reaches the recovery and must be turned down, leaving the
+    ## line discarded as BAD_YEAR. The cost of a wrong recovery is a fabricated
+    ## measurement, so the predicate is narrow on purpose.
+    bad <- list(
+        ## swe347's stray header line: not four digits, and a word after it
+        header  = "swed347 3 Lie",
+        ## a word among the measurements
+        wordy   = "SHF01A      1910   200   210   ABC   230",
+        ## no id at all: without the column-1 test, 1910 would be read as the
+        ## series name and 1234 as the year
+        noid    = "            1910  1234   210   220   230",
+        ## more than a decade of values
+        toomany = "SHF01A      1910 1 2 3 4 5 6 7 8 9 10 11",
+        ## a value too wide for the six-character grid it would be rebuilt onto
+        toowide = "SHF01A      1910   200   210 1234567")
+    for (nm in names(bad)) {
+        f <- tuc(c("SHF01A  1900   100   110   120   999", bad[[nm]]))
+        w <- tryCatch(read.tucson(f, verbose = FALSE), warning = conditionMessage)
+        expect_match(w, "were discarded", info = nm)
+        expect_false(grepl("do not carry the year", w), info = nm)
+    }
 })

@@ -420,15 +420,40 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   ## it cost us something. Most overflow is a trailing note or a per-line count
   ## column and is genuinely disposable; warning about it buried the real cases.
   ## Two patterns are not disposable:
-  ##   1. a measurement cut in half by the column boundary -- a digit in column
-  ##      72 and another in column 73. mar047's TIZ19A 1900 line is one
-  ##      character over, so the truncation turned 116 into 11, i.e. 1.16 mm
-  ##      reported as 0.11 mm, with nothing said.
-  ##   2. a whole second record appended because a newline is missing. az621's
-  ##      FR-001 and FR-002 share a line, and both this reader and read.tucson
-  ##      drop FR-002's first decade without a word. NOAA's own template file
-  ##      for az621 has the same ten measurements missing, so their converter
-  ##      hit it too.
+  ##   1. a digit in column 72 and another in column 73. mar047's TIZ19A 1900
+  ##      line is one character over, so the truncation turned 116 into 11,
+  ##      i.e. 1.16 mm reported as 0.11 mm, with nothing said.
+  ##
+  ##      AGB Sep 2026: this used to be described, here and in the message, as
+  ##      "a measurement cut in half by the column boundary". That is one of
+  ##      two readings and the line does not say which. Looking at all six
+  ##      files in the archive that raise this: in four the line really is
+  ##      misaligned and the truncated value is out of range for its series
+  ##      (mex125's NIH14B 1990 truncates 3380 to 338 among neighbours of 2570
+  ##      to 6940). In the other two, ok049 and ok049l, the ten fields are
+  ##      perfectly aligned, the record is complete at column 72, the file pads
+  ##      every other line to 82 columns with blanks -- 4,925 of 4,926 in
+  ##      ok049 -- and a single stray character sits past the boundary. There
+  ##      the truncated value is the right one, and both readers already
+  ##      return it.
+  ##
+  ##      So the message states both readings rather than asserting the digit
+  ##      was lost. Note also that all four genuine cases fail the column
+  ##      conformance check on the same line, and the two stray-character cases
+  ##      do not: COLUMN_LAYOUT is what separates them, which is worth knowing
+  ##      before this code is made fatal on its own.
+  ##   2. a whole second record appended because a newline is missing, so the
+  ##      appended record is dropped without a word.
+  ##
+  ##      AGB Sep 2026: az621's FR-001 and FR-002 sharing a line was the worked
+  ##      example here. It is stale. The archive copy of az621 now holds one
+  ##      line longer than 72 characters, and that line is the site header; the
+  ##      file reads clean with no warning at all. Whether NOAA re-issued it or
+  ##      the copy this was written against differed, the example no longer
+  ##      demonstrates anything. Archive-wide the check fires on 8 files, all of
+  ##      them the europe/*-noaa.rwl template tables, which fail anyway for
+  ##      holding no measurements -- so this family currently has no worked
+  ##      example in a file that reads. Kept for the shape, not for the count.
   ##
   ## AGB Sep 2026: the column-72 test has to be made on the character that sits
   ## AT column 72, not on the last character of the line. V1 was right-trimmed
@@ -447,9 +472,16 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
                grepl('^[0-9]', raw$ovf)
   secondRec <- grepl('^[[:space:]]*-?[0-9]+[[:space:]]*$', substr(raw$ovf, 9, 12))
   if (any(cutNumber))
-    report('In ', fname, ', ', sum(cutNumber), ' line(s) run past column 72 with a ',
-           'measurement split across the boundary, so the truncation at column 72 ',
-           'drops part of a number. First one: ', trimws(raw$V1[cutNumber][1]),
+    report('In ', fname, ', ', sum(cutNumber), ' line(s) hold a digit in column 72 ',
+           'and another in column 73. Either the last measurement runs past the ',
+           'column-72 boundary, in which case truncating there drops a digit, or ',
+           'the record ends at column 72 and what follows is not a measurement. ',
+           'The line does not say which, and the reader takes the shorter reading: ',
+           'everything past column 72 is dropped. Worth checking against the ',
+           'neighbouring years, since a value that is out of range for its series ',
+           'is the sign that the digit belonged to it. First one: ',
+           trimws(raw$V1[cutNumber][1]), ' <<past column 72>> ',
+           trimws(raw$ovf[cutNumber][1]),
            event = 'PAST_COL72', n = sum(cutNumber))
   if (any(secondRec))
     report('In ', fname, ', ', sum(secondRec), ' line(s) appear to hold a second ',
@@ -457,8 +489,18 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
            'The appended record is discarded. First one: ',
            trimws(raw$V1[secondRec][1]), ' <<overflow>> ', trimws(raw$ovf[secondRec][1]),
            event = 'SECOND_RECORD', n = sum(secondRec))
-  ## drop before the duplicate check below, which compares whole rows
-  raw[, ovf := NULL]
+  ## AGB Sep 2026: ovf used to be dropped here, before the duplicate check,
+  ## because that check compared whole rows. It is kept until after the head
+  ## parse instead, because the misplaced-year recovery further down needs the
+  ## part of the line that truncation at column 72 removed: a line whose id
+  ## field is over-wide has its whole record pushed right, so its last
+  ## measurement is the bit past 72. va024's two lines each hold ten values and
+  ## the tenth sits at columns 71-76; recovering from the truncated line alone
+  ## silently returned nine.
+  ##
+  ## The duplicate check now names V1 rather than comparing the whole row, which
+  ## is the same comparison it was making before -- V1 and ovf are the only
+  ## columns raw has at this point.
 
   ## AGB Aug 2026: dropped a stray "# Check for header" comment that sat here.
   ## Header removal happens above, by letter count; nothing is checked here.
@@ -491,7 +533,7 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
     tk <- tk[nzchar(tk)]
     length(tk) == 1L && tk %in% c('999', '-9999')
   }, TRUE)
-  dups <- duplicated(raw) & !markerOnly
+  dups <- duplicated(raw$V1) & !markerOnly
   if (any(dups)) {
     ## One entry per distinct line, with a count. A line pasted in fourteen times
     ## should say so once, not fill the console with fourteen copies of itself.
@@ -570,17 +612,102 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
   raw[, ':='(startYear = suppressWarnings(as.integer(startYear)),
              core = trimws(core))]
   badYear <- is.na(raw$startYear)
+
+  ## AGB Sep 2026: before discarding, try to read the line.
+  ##
+  ## va024 is why. Two of its lines write the id twelve characters wide instead
+  ## of eight, so the year sits at columns 13-16 and columns 9-12 are blank:
+  ##
+  ##   25B     1833   324   386   368      <- every other line
+  ##   25B         1930   108    97    70  <- these two
+  ##
+  ## They were discarded, and they are the only lines for 25B's 1930s and 12A's
+  ## 1940s, so the file came back with a ten-year hole in each of those series
+  ## where it plainly holds data. Nineteen measurements. read.tucson.legacy()
+  ## loses them too, without a word.
+  ##
+  ## This is NOT the COLUMN_LAYOUT ambiguity and must not be confused with it.
+  ## There, two readings of the same line disagree and nothing says which was
+  ## meant, so the reader refuses to pick. Here the fixed-column reading is not
+  ## a reading at all -- it yields no year -- so there is exactly one candidate,
+  ## and it is the one any human makes at a glance. Recovering it is of a kind
+  ## with the dash and bunched-number idioms settled further down, not with
+  ## guessing.
+  ##
+  ## The predicate is deliberately narrow, because the cost of a wrong recovery
+  ## is a fabricated measurement:
+  ##   * the id must start at column 1, which rules out a line with no id at all
+  ##     -- otherwise the first measurement could be read as the year;
+  ##   * the second token must be exactly four digits. Negative (BC) years are
+  ##     not recovered: they sit at columns 8-12 rather than 9-12, so rebuilding
+  ##     one means choosing a layout, and no archive file needs it;
+  ##   * every token after the year must be an integer, and there must be
+  ##     between one and ten of them, because that is what a decade line holds;
+  ##   * nothing may be too wide for the grid it is being rebuilt onto.
+  ## Anything else stays discarded. swe347's stray header line "swed347 3 Lie"
+  ## fails on three of these at once.
+  ##
+  ## Known limit: a shifted line that also carried a trailing per-line count
+  ## column would read that count as a measurement, since nothing distinguishes
+  ## the two once the record is off its columns. No file in the archive has both
+  ## at once -- va024 is the only shifted-id file and it has none -- and the ten
+  ## value ceiling stops the common shape, a full decade plus a count, from
+  ## being recovered at all.
+  ##
+  ## The line is rebuilt into canonical form rather than having its year
+  ## patched, because the tail parser reads columns 13-72: on a shifted line the
+  ## measurements are not there either. Rebuilding puts them where every later
+  ## check expects them, and those checks then run on the line normally.
+  if (any(badYear)) {
+    rebuilt <- 0L
+    firstFix <- NA_character_
+    for (i in which(badYear)) {
+      ## V1 plus what truncation at column 72 took off it. V1 has been
+      ## right-trimmed, so pasting them loses the run of spaces between them,
+      ## which does not matter: only the whitespace tokens are used, and the
+      ## line is rebuilt from those rather than patched in place.
+      tok <- strsplit(trimws(paste0(raw$V1[i], raw$ovf[i])), '[[:space:]]+')[[1]]
+      if (length(tok) < 3L || length(tok) > 12L) next
+      if (substr(raw$V1[i], 1L, 1L) == ' ') next
+      if (nchar(tok[1L]) > 8L) next
+      if (!grepl('^[0-9]{4}$', tok[2L])) next
+      vals <- tok[-(1:2)]
+      if (!all(grepl('^-?[0-9]+$', vals))) next
+      if (any(nchar(vals) > 6L)) next
+      line <- paste0(formatC(tok[1L], width = -8L), tok[2L],
+                     paste0(formatC(vals, width = 6L), collapse = ''))
+      if (is.na(firstFix))
+        firstFix <- paste0(trimws(raw$V1[i]), '  ->  id ', tok[1L], ', year ',
+                           tok[2L], ', ', length(vals), ' measurement(s)')
+      data.table::set(raw, i = i, j = 'V1', value = line)
+      data.table::set(raw, i = i, j = 'core', value = tok[1L])
+      data.table::set(raw, i = i, j = 'startYear', value = as.integer(tok[2L]))
+      badYear[i] <- FALSE
+      rebuilt <- rebuilt + 1L
+    }
+    if (rebuilt > 0L)
+      report('In ', fname, ', ', rebuilt, ' line(s) do not carry the year in ',
+             'columns 9-12, the id field being wider than the 8 characters the ',
+             'format allows. They split unambiguously into an id, a four-digit ',
+             'year and nothing but measurements, and the fixed columns give no ',
+             'year at all, so there is no second reading to weigh: they were read ',
+             'that way rather than discarded. First one: ', firstFix,
+             event = 'YEAR_MISPLACED', n = rebuilt)
+  }
+
   if (any(badYear)) {
     show <- utils::head(trimws(raw$V1[badYear]), 10L)
     report('In ', fname, ', ', sum(badYear), ' line(s) were discarded because the ',
-           'year field does not read as a number. A line that reaches this point ',
-           'has already passed the header and length filters, so check whether it ',
-           'is a stray header or a data line whose columns are shifted:\n',
+           'year field does not read as a number and the line could not be read ',
+           'any other way. A line that reaches this point has already passed the ',
+           'header and length filters, so check whether it is a stray header or a ',
+           'data line whose columns are shifted:\n',
            paste0('  ', show, collapse = '\n'),
            if (sum(badYear) > 10L) paste0('\n  ... and ', sum(badYear) - 10L, ' more.'),
            event = 'BAD_YEAR', n = sum(badYear))
   }
   raw <- raw[!badYear]
+  raw[, ovf := NULL]
   if (nrow(raw) == 0L) no_measurements()
 
   ## AGB Aug 2026: resolve repeated series IDs here, before anything else touches

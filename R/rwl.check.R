@@ -107,6 +107,8 @@ rwl.check.catalogue <- function() {
       "a data line contains a tab, which has no defined width in a fixed-width format"),
     c("RWL_BAD_YEAR", "provenance", "warning",
       "a line was discarded because its year field does not read as a number"),
+    c("RWL_YEAR_MISPLACED", "provenance", "warning",
+      "a line carries the year outside columns 9-12 and was read by splitting on whitespace"),
     c("RWL_NON_NUMERIC", "provenance", "warning",
       "a measurement field is not numeric and was left as NA"),
     c("RWL_NO_MEASUREMENT", "provenance", "note",

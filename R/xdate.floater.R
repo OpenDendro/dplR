@@ -1,5 +1,6 @@
 xdate.floater <- function(rwl, series, series.name = "Unknown", min.overlap = 50,
-                          n = NULL, prewhiten = TRUE, biweight = TRUE,
+                          n = NULL, nyrs = NULL, prewhiten = TRUE,
+                          ar.order.max = NULL, biweight = TRUE,
                           method = c("spearman", "pearson", "kendall"),
                           make.plot = TRUE, return.rwl = TRUE, verbose = TRUE) {
 
@@ -17,7 +18,8 @@ xdate.floater <- function(rwl, series, series.name = "Unknown", min.overlap = 50
   on.exit(options(w))
 
   ## Normalize
-  tmp <- normalize.xdate(rwl, series, n, prewhiten, biweight)
+  tmp <- normalize.xdate(rwl, series, n, prewhiten, biweight,
+                         nyrs = nyrs, ar.order.max = ar.order.max)
   master <- tmp$master
   series2 <- tmp$series
   idx.good <- !is.na(series2)

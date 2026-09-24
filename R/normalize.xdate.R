@@ -1,9 +1,21 @@
 normalize.xdate <- function(rwl, series, n, prewhiten, biweight,
-                            leave.one.out = FALSE) {
+                            leave.one.out = FALSE, nyrs = NULL,
+                            ar.order.max = NULL) {
+    check.normalize.args(n, nyrs, prewhiten, ar.order.max)
     loo <- isTRUE(leave.one.out)
-    ## Run hanning filter over the data if n isn't NULL
-    ## divide by mean if n is null
-    if(is.null(n)){
+    ## Run hanning filter over the data if n isn't NULL, divide by a
+    ## smoothing spline if nyrs isn't NULL, divide by mean if both are
+    ## NULL
+    if(!is.null(nyrs)){
+        master.df <- nyrs.rwi.mat(rwl, nyrs)
+        if (is.data.frame(rwl)) {
+            master.df <- as.data.frame(master.df)
+        }
+        if (!loo) {
+            series.out <- nyrs.rwi(series, nyrs, "'series'")
+            names(series.out) <- names(series)
+        }
+    } else if(is.null(n)){
         master.stats <- colMeans(rwl, na.rm=TRUE)
         master.df <- sweep(rwl, 2, master.stats, "/")
         if (!loo) {
@@ -22,7 +34,8 @@ normalize.xdate <- function(rwl, series, n, prewhiten, biweight,
         if(prewhiten){
             ## mark any columns without at least four observations
             goodCol <- colSums(!is.na(master.df)) > 3
-            series.out <-  apply(master.df, 2, ar.func)
+            series.out <-  apply(master.df, 2, ar.prewhiten,
+                                 order.max = ar.order.max)
         } else {
             goodCol <- rep.int(TRUE, nseries)
             series.out <- master.df
@@ -48,8 +61,9 @@ normalize.xdate <- function(rwl, series, n, prewhiten, biweight,
         if(prewhiten){
             ## drop any columns without at least four observations
             master.df <- master.df[, colSums(!is.na(master.df)) > 3, drop=FALSE]
-            master.df <-  apply(master.df, 2, ar.func)
-            series.out <- ar.func(series.out)
+            master.df <-  apply(master.df, 2, ar.prewhiten,
+                                order.max = ar.order.max)
+            series.out <- ar.prewhiten(series.out, order.max = ar.order.max)
         }
 
         if (!biweight) master <- rowMeans(master.df, na.rm=TRUE)

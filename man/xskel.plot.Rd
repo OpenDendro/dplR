@@ -7,8 +7,9 @@
 }
 \usage{
 xskel.plot(rwl, series, series.yrs = as.numeric(names(series)),
-           win.start, win.end = win.start+100, n = NULL, 
-           prewhiten = TRUE, biweight = TRUE)
+           win.start, win.end = win.start+100, n = NULL,
+           nyrs = NULL, prewhiten = TRUE, ar.order.max = NULL,
+           biweight = TRUE)
 }
 \arguments{
   \item{rwl}{ a \code{data.frame} with series as columns and years as rows
@@ -26,8 +27,21 @@ xskel.plot(rwl, series, series.yrs = as.numeric(names(series)),
   \item{n}{ \code{NULL} or an integral value giving the filter length for the
     \code{\link{hanning}} filter used for removal of low frequency
     variation. }
+  \item{nyrs}{ \code{NULL} or a number greater than zero.  If not
+    \code{NULL}, each series is divided by a smoothing spline with this
+    rigidity (see \code{\link{caps}}) to remove low-frequency variation,
+    as \code{\link{detrend}} does with \code{method = "Spline"}.  A value
+    of 1 or less is taken as a proportion of each series' length.
+    Unlike the \code{\link{hanning}} filter, the spline removes no years
+    from the ends of a series.  Cannot be combined with \code{\var{n}}. }
   \item{prewhiten}{ \code{logical} flag.  If \code{TRUE} each series is
     whitened using \code{\link{ar}}. }
+  \item{ar.order.max}{ \code{NULL} or a positive integer giving the
+    maximum order of the \code{\link{ar}} model used to prewhiten.
+    Prewhitening removes as many years from the start of each series as
+    the order of the model.  If \code{NULL}, the order is chosen by AIC
+    up to the \code{\link{ar}} default, which on long series can be 20
+    or more.  Requires \code{\var{prewhiten} = TRUE}. }
   \item{biweight}{ \code{logical} flag.  If \code{TRUE} then a robust
     mean is calculated using \code{\link{tbrm}}. }
 }

@@ -1,6 +1,7 @@
 corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
                             seg.length=50, bin.floor=100, n=NULL,
-                            prewhiten = TRUE, biweight=TRUE,
+                            nyrs = NULL, prewhiten = TRUE,
+                            ar.order.max = NULL, biweight=TRUE,
                             method = c("spearman", "pearson", "kendall"),
                             pcrit=0.05, make.plot = TRUE,
                             floor.plus1 = FALSE, ...) {
@@ -24,7 +25,8 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     seg.lag <- seg.length / 2
 
     ## Normalize.
-    tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight)
+    tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight,
+                           nyrs = nyrs, ar.order.max = ar.order.max)
     master <- tmp$master
 
     ## trim master so there are no NaN like dividing when
@@ -46,9 +48,9 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     ## clip master to series dimensions
     master <- master[yrs %in% series.yrs2]
     yrs <- as.numeric(names(master))
-    nyrs <- length(series.yrs2)
+    n.yrs <- length(series.yrs2)
 
-    if (nyrs < seg.length) {
+    if (n.yrs < seg.length) {
         stop("number of overlapping years is less than 'seg.length'")
     }
     if (is.null(bin.floor) || bin.floor == 0) {
@@ -84,7 +86,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     names(segavg.cor) <- bin.names
 
     ## moving correlation
-    res.mcor <- matrix(NA, nyrs, 2)
+    res.mcor <- matrix(NA, n.yrs, 2)
     colnames(res.mcor) <- c("rho", "p.val")
     rownames(res.mcor) <- series.yrs2
 
@@ -113,7 +115,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
     overall.cor[2] <- tmp$p.val
 
     ## moving correlation
-    for (i in seq_len(nyrs - seg.length + 1)) {
+    for (i in seq_len(n.yrs - seg.length + 1)) {
         mask <- i:(i + seg.length - 1)
         tmp <- cor.test(series2[mask], master[mask],
                         method = method2, alternative = "greater")

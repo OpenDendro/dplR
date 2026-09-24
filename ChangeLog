@@ -1,5 +1,67 @@
 * CHANGES IN dplR VERSION 1.8.0
 
+File: normalize1.R, normalize.xdate.R, helpers.R, corr.rwl.seg.R,
+      corr.series.seg.R, ccf.series.rwl.R, interseries.cor.R,
+      rwi.stats.running.R, series.rwl.plot.R, xskel.plot.R,
+      xskel.ccf.plot.R, xdate.floater.R, tests/testthat/test-normalize.R,
+      man/corr.rwl.seg.Rd, man/corr.series.seg.Rd, man/ccf.series.rwl.Rd,
+      man/interseries.cor.Rd, man/rwi.stats.running.Rd,
+      man/series.rwl.plot.Rd, man/xskel.plot.Rd, man/xskel.ccf.plot.Rd,
+      man/xdate.floater.Rd
+-----------------------------------------------------------------
+ - New arguments 'nyrs' and 'ar.order.max' for every function that
+   normalizes series before correlating them: corr.rwl.seg(),
+   corr.series.seg(), ccf.series.rwl(), interseries.cor(),
+   rwi.stats.running(), series.rwl.plot(), xskel.plot(),
+   xskel.ccf.plot() and xdate.floater(). Both default to NULL, which
+   gives the same results as before. They sit with the arguments they
+   belong with, as n, nyrs, prewhiten, ar.order.max (prewhiten, n,
+   nyrs, ar.order.max in rwi.stats.running()), so a call that passed
+   prewhiten or later arguments by position now shifts. Every such
+   shift lands a logical or character value in 'nyrs' or
+   'ar.order.max', and both refuse it with an error, so no old call
+   runs with a different meaning.
+
+   Of the 12 CRAN packages that depend on or suggest dplR (checked by
+   searching their sources, not by revdepcheck), only measuRing calls
+   any of these functions: crossRings() wraps corr.rwl.seg() and
+   ccf.series.rwl(), and it passes arguments by name through
+   do.call(), so the reordering does not affect it.
+
+   'nyrs' divides each series by a smoothing spline (caps()) before
+   prewhitening, as COFECHA does with a 32-year spline. The indices are
+   the ones detrend(method = "Spline", nyrs = nyrs) gives, so
+   corr.rwl.seg(rwl, nyrs = 32) is the same as detrending first and
+   passing the indices. It cannot be combined with the Hanning filter
+   'n'. Unlike detrend(), a spline that is not all positive stops with
+   the series named, rather than falling back to the mean for that one
+   series, and so does a series with internal NA.
+
+   'ar.order.max' limits the order of the AR model used to prewhiten.
+   The request behind 'nyrs' was to lose fewer years at the start of
+   each series, and the spline does not do that by itself: the years
+   lost at the start equal the AR order, and AIC picks a high order for
+   a spline-filtered series. On co021, ca533, gp.rwl and wa082 the
+   median years lost with nyrs = 32 is 10 to 25.5, against 4 to 15
+   with the old default. With nyrs = 32 and ar.order.max = 3 it is 1 to
+   3.
+
+   corr.rwl.seg(), corr.series.seg() and xskel.plot() each had a local
+   variable called 'nyrs' holding the number of years. In
+   corr.rwl.seg() and xskel.plot() it was assigned before the
+   normalizing step and would have overwritten the new argument: every
+   call would have been divided by a spline with the number of years as
+   its rigidity, whether or not 'nyrs' was set, and a call with 'n' set
+   failed with 'n' and 'nyrs' both set. This was caught during
+   development and never released. The local is renamed 'n.yrs' in
+   corr.series.seg() and xskel.plot(), and removed from corr.rwl.seg(),
+   where it was not used. test-normalize.R checks that the arguments
+   arrive intact.
+
+   The corr.rwl.seg() example that detrended with a spline passed
+   'plot = FALSE', which is not an argument, so it plotted anyway. It
+   now uses 'nyrs' and 'make.plot = FALSE'.
+
 File: read.tucson.R, rwl.check.R, tests/testthat/test-read.tucson.R
 -----------------------------------------------------------------
  - read.tucson() no longer drops a series in silence.

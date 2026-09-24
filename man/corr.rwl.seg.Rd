@@ -7,7 +7,8 @@
 }
 \usage{
 corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
-             prewhiten = TRUE, pcrit = 0.05, biweight = TRUE,
+             nyrs = NULL, prewhiten = TRUE, ar.order.max = NULL,
+             pcrit = 0.05, biweight = TRUE,
              method = c("spearman", "pearson","kendall"),
              make.plot = TRUE, label.cex = 1, floor.plus1 = FALSE,
              master = NULL,
@@ -29,8 +30,21 @@ corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   \item{n}{ \code{NULL} or an integral value giving the filter length
     for the \code{\link{hanning}} filter used for removal of low
     frequency variation. }
+  \item{nyrs}{ \code{NULL} or a number greater than zero.  If not
+    \code{NULL}, each series is divided by a smoothing spline with this
+    rigidity (see \code{\link{caps}}) to remove low-frequency variation,
+    as \code{\link{detrend}} does with \code{method = "Spline"}.  A value
+    of 1 or less is taken as a proportion of each series' length.
+    Unlike the \code{\link{hanning}} filter, the spline removes no years
+    from the ends of a series.  Cannot be combined with \code{\var{n}}. }
   \item{prewhiten}{ \code{logical} flag.  If \code{TRUE} each series is
     whitened using \code{\link{ar}}. }
+  \item{ar.order.max}{ \code{NULL} or a positive integer giving the
+    maximum order of the \code{\link{ar}} model used to prewhiten.
+    Prewhitening removes as many years from the start of each series as
+    the order of the model.  If \code{NULL}, the order is chosen by AIC
+    up to the \code{\link{ar}} default, which on long series can be 20
+    or more.  Requires \code{\var{prewhiten} = TRUE}. }
   \item{pcrit}{ a number between 0 and 1 giving the critical value for
     the correlation test. }
   \item{biweight}{ \code{logical} flag.  If \code{TRUE} then a robust
@@ -101,6 +115,16 @@ corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   series length based on the \code{\link{ar}} model fit.  The effects of
   detrending can be seen with \code{\link{series.rwl.plot}}.
 
+  As an alternative to the \code{\link{hanning}} filter, \code{\var{nyrs}}
+  divides each series by a smoothing spline, which removes no years from
+  the ends of the series.  COFECHA uses a 32-year spline.  The spline
+  alone does not usually save years at the start of a series, because
+  the \code{\link{ar}} model is then fitted to a high-pass filtered series,
+  and AIC tends to choose a high order for it.  Setting
+  \code{\var{ar.order.max}} to a small value (e.g., 3) limits the years
+  lost to prewhitening, and after a spline a low-order model loses little
+  of the fit.
+
   The function is typically invoked to produce a plot where each segment
   for each series is colored by its correlation to the master
   chronology.  Green segments are those that do not overlap completely
@@ -141,12 +165,6 @@ names(crs)
 head(crs$overall)
 ## Average correlation for each bin
 crs$avg.seg.rho
-## note that COFECHA applies a 32-yr spline to data before running correlations.
-## that logcl can be applied via:
-co021.rwi <- detrend(co021,method="Spline",nyrs = 32)
-crsSpline <- corr.rwl.seg(co021.rwi, seg.length = 100, plot=FALSE)
-## Average correlation for each bin
-crsSpline$avg.seg.rho
 
 }
 \keyword{ manip }

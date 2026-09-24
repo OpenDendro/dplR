@@ -1,5 +1,6 @@
 corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
-                         prewhiten = TRUE, pcrit=0.05, biweight = TRUE,
+                         nyrs = NULL, prewhiten = TRUE, ar.order.max = NULL,
+                         pcrit=0.05, biweight = TRUE,
                          method = c("spearman", "pearson", "kendall"),
                          make.plot = TRUE, label.cex=1,
                          floor.plus1 = FALSE, master = NULL,
@@ -69,7 +70,8 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
       }
       
       ## normalize all series (columns in master matrix)
-      tmp <- normalize1(master.inc, n, prewhiten)
+      tmp <- normalize1(master.inc, n, prewhiten, nyrs = nyrs,
+                        ar.order.max = ar.order.max)
       master.norm <- tmp$rwi.mat[, tmp$idx.good, drop=FALSE]
       
       ## compute master series by normal mean or robust mean
@@ -115,7 +117,6 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   }
   
   seg.lag <- seg.length / 2
-  nyrs <- length(yrs)
   if (is.null(bin.floor) || bin.floor == 0) {
     min.bin <- min.yr
   } else if (floor.plus1) {
@@ -145,7 +146,8 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   colnames(overall.cor) <- c("rho", "p-val")
   
   ## normalize all series
-  norm.one <- normalize1(rwl2, n, prewhiten)
+  norm.one <- normalize1(rwl2, n, prewhiten, nyrs = nyrs,
+                         ar.order.max = ar.order.max)
   ## rwi for segments altered by normalizing
   rwi <- norm.one$rwi.mat # is a matrix
   idx.good <- norm.one$idx.good

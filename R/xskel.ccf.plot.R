@@ -1,5 +1,6 @@
 xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
-         win.start, win.width=50, n = NULL, prewhiten = TRUE,
+         win.start, win.width=50, n = NULL, nyrs = NULL,
+         prewhiten = TRUE, ar.order.max = NULL,
          biweight = TRUE, series.x = FALSE) {
   
   ## check to see that win.width is even
@@ -35,7 +36,8 @@ xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
 
   ## normalize.
   names(series2) <- series.yrs2
-  tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight)
+  tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight,
+                           nyrs = nyrs, ar.order.max = ar.order.max)
 
   ## master
   master <- tmp$master

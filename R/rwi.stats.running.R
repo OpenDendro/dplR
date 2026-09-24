@@ -59,6 +59,7 @@ rwi.stats <- function(rwi, ids=NULL, period=c("max", "common"),
 rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
                               method = c("spearman", "pearson", "kendall"),
                               prewhiten=FALSE,n=NULL,
+                              nyrs=NULL, ar.order.max=NULL,
                               running.window=TRUE,
                               window.length=min(50, nrow(rwi)),
                               window.overlap=floor(window.length / 2),
@@ -85,7 +86,8 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
     stop("'rwi' has a non-positive grand mean (mean(unlist(rwi), na.rm=TRUE)), which will cause normalize1() to return incorrect rbar and eps values. This can happen when 'rwi' has been detrended using difference=TRUE, which produces first differences rather than ring widths. To fix this, pass a shifted version of 'rwi' directly into the function call, e.g. rwi.stats.running(rwi + 1, ...). Avoid overwriting your rwi object in your workspace as this can cause problems downstream.",
          call.=FALSE)
   }
-  tmp <- normalize1(rwi, n, prewhiten)
+  tmp <- normalize1(rwi, n, prewhiten, nyrs = nyrs,
+                    ar.order.max = ar.order.max)
   if(!all(tmp$idx.good)) {
     warning("after prewhitening, 'rwi' contains column(s) without at least four observations",
             call.=FALSE)

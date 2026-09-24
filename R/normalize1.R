@@ -1,8 +1,12 @@
-normalize1 <- function(rwl, n, prewhiten){
+normalize1 <- function(rwl, n, prewhiten, nyrs = NULL, ar.order.max = NULL){
+    check.normalize.args(n, nyrs, prewhiten, ar.order.max)
     rwl.mat <- as.matrix(rwl)
-    ## Run hanning filter over the data if n isn't NULL
-    ## divide by mean if n is null
-    if(is.null(n)){
+    ## Run hanning filter over the data if n isn't NULL, divide by a
+    ## smoothing spline if nyrs isn't NULL, divide by mean if both are
+    ## NULL
+    if(!is.null(nyrs)){
+        master.mat <- nyrs.rwi.mat(rwl.mat, nyrs)
+    } else if(is.null(n)){
         master.stats <- colMeans(rwl.mat, na.rm=TRUE)
         master.mat <- sweep(rwl.mat, 2, master.stats, "/")
     } else {
@@ -22,7 +26,8 @@ normalize1 <- function(rwl, n, prewhiten){
         ## take note of, ignore later, any columns without at least
         ## four observations
         idx.good <- colSums(!is.na(master.mat)) > 3
-        master.mat <- apply(master.mat, 2, ar.func)
+        master.mat <- apply(master.mat, 2, ar.prewhiten,
+                            order.max = ar.order.max)
     } else {
         idx.good <- rep(TRUE, ncol(master.mat))
     }

@@ -1,6 +1,7 @@
 series.rwl.plot <-
     function(rwl, series, series.yrs=as.numeric(names(series)),
-             seg.length=100, bin.floor=100, n=NULL, prewhiten = TRUE,
+             seg.length=100, bin.floor=100, n=NULL, nyrs = NULL,
+             prewhiten = TRUE, ar.order.max = NULL,
              biweight=TRUE, floor.plus1 = FALSE) {
 
     rwl <- check.rwl(rwl)
@@ -23,7 +24,8 @@ series.rwl.plot <-
     mask <- !rowAlls(as.matrix(is.na(rwl2)))
     yrs0 <- as.numeric(row.names(rwl2))[mask]
     ## Normalize.
-    tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight)
+    tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight,
+                           nyrs = nyrs, ar.order.max = ar.order.max)
     master <- tmp$master
 
     ## trim master so there are no NaN like dividing when
@@ -108,7 +110,8 @@ series.rwl.plot <-
     tmp <- corr.series.seg(rwl, series, series.yrs = series.yrs,
                     seg.length = seg.length, bin.floor = bin.floor, n = n,
                     prewhiten = prewhiten, biweight = biweight, 
-                    make.plot = FALSE, floor.plus1=floor.plus1)
+                    make.plot = FALSE, floor.plus1=floor.plus1,
+                    nyrs = nyrs, ar.order.max = ar.order.max)
     cors4boxes <- round(tmp[[1]],2)
     
     plot(yrs, series2, type="n", ylim=c(-1, 1), ylab="",
@@ -152,10 +155,15 @@ series.rwl.plot <-
     text(-1, -0.5, txt4, pos=4)
     txt5 <- gettext("Detrending Options:", domain="R-dplR")
     text(-1, -1, txt5, pos=4)
-    if (is.null(n)) {
+    if (!is.null(nyrs)) {
+        txt6 <- paste0("Spline=", nyrs, ",ar=", prewhiten)
+    } else if (is.null(n)) {
         txt6 <- paste0("Hanning=NULL,ar=", prewhiten)
     } else {
         txt6 <- paste0("Hanning=", n, ",ar=", prewhiten)
+    }
+    if (!is.null(ar.order.max)) {
+        txt6 <- paste0(txt6, ",ar.max=", ar.order.max)
     }
     text(-1, -1.5, txt6, pos=4)
 

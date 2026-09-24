@@ -1,5 +1,6 @@
 xskel.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
-         win.start, win.end=win.start+100, n = NULL, prewhiten = TRUE,
+         win.start, win.end=win.start+100, n = NULL, nyrs = NULL,
+         prewhiten = TRUE, ar.order.max = NULL,
          biweight = TRUE) {
 
   ## Handle different types of 'series'
@@ -10,9 +11,9 @@ xskel.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
   master.yrs <- as.numeric(rownames(rwl2))
   series.yrs2 <- as.numeric(names(series2))
   yrs <- seq(from=win.start,to=win.end)
-  nyrs <- length(yrs)
+  n.yrs <- length(yrs)
 
-  if(nyrs > 101){
+  if(n.yrs > 101){
     warning("These plots get crowded with windows longer than 100 years.")
   }
   ## check window overlap with master and series yrs
@@ -37,7 +38,8 @@ xskel.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
 
   ## normalize.
   names(series2) <- series.yrs2
-  tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight)
+  tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight,
+                           nyrs = nyrs, ar.order.max = ar.order.max)
 
   ## master
   master <- tmp$master

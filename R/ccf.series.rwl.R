@@ -1,7 +1,8 @@
 ccf.series.rwl <- function(rwl, series,
                            series.yrs = as.numeric(names(series)),
                            seg.length = 50, bin.floor = 100, n = NULL,
-                           prewhiten = TRUE, biweight = TRUE,
+                           nyrs = NULL, prewhiten = TRUE,
+                           ar.order.max = NULL, biweight = TRUE,
                            pcrit = 0.05, lag.max = 5, make.plot = TRUE,
                            floor.plus1 = FALSE, series.x = FALSE, ...) {
 
@@ -23,7 +24,8 @@ ccf.series.rwl <- function(rwl, series,
     seg.lag <- seg.length / 2
 
     ## Normalize.
-    tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight)
+    tmp <- normalize.xdate(rwl2, series2, n, prewhiten, biweight,
+                           nyrs = nyrs, ar.order.max = ar.order.max)
     master <- tmp$master
 
     ## trim master so there are no NaN like dividing when only one

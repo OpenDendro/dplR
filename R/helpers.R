@@ -107,6 +107,98 @@ ar.func <- function(x, model = FALSE, ...) {
     }
 }
 
+### Prewhitening for normalize1 and normalize.xdate. 'order.max' is the
+### user's limit on the AR order (NULL leaves it to ar()). It is clamped
+### to one less than the number of observations, which is the most ar()
+### will accept, so a short series gets the largest order it can have
+### rather than an error.
+ar.prewhiten <- function(x, order.max = NULL) {
+    if (is.null(order.max)) {
+        ar.func(x)
+    } else {
+        ar.func(x, order.max = min(order.max, sum(!is.na(x)) - 1))
+    }
+}
+
+### Argument checks shared by normalize1 and normalize.xdate, so every
+### function in the crossdating family refuses the same things.
+check.normalize.args <- function(n, nyrs, prewhiten, ar.order.max) {
+    if (!is.null(nyrs)) {
+        if (!is.null(n)) {
+            stop("'n' and 'nyrs' cannot both be set: each removes low-frequency variation before the correlations are computed (a Hanning filter and a smoothing spline, respectively), so use one or the other")
+        }
+        if (!is.numeric(nyrs) || length(nyrs) != 1 || !is.finite(nyrs) ||
+            nyrs <= 0) {
+            stop("'nyrs' must be a single number greater than 0")
+        }
+    }
+    if (!is.null(ar.order.max)) {
+        if (!is.numeric(ar.order.max) || length(ar.order.max) != 1 ||
+            !is.int(ar.order.max) || ar.order.max < 1) {
+            stop("'ar.order.max' must be a single integer of at least 1")
+        }
+        ## Refuse rather than ignore: a limit on the prewhitening model
+        ## with prewhitening off does nothing, and a caller who set it
+        ## expected it to do something.
+        if (!isTRUE(prewhiten)) {
+            stop("'ar.order.max' limits the AR model used for prewhitening, but 'prewhiten' is FALSE, so it would have no effect")
+        }
+    }
+}
+
+### Ring-width index for one series from the 'nyrs' spline, for
+### normalize1 and normalize.xdate. Returns a vector as long as 'x', NA
+### outside the series' span.
+###
+### This is what detrend(method = "Spline") computes, zeros recoded to
+### 0.001 before fitting included, so that passing 'nyrs' gives the
+### same indices as calling detrend() first. Unlike detrend(), which
+### falls back to the mean when a spline is not all positive, this
+### stops. Crossdating with a quietly different detrending for one
+### series would put that series' correlations on a different basis
+### from the rest, with nothing in the output to say so.
+nyrs.rwi <- function(x, nyrs, name) {
+    out <- rep.int(NA_real_, length(x))
+    ok <- which(!is.na(x))
+    if (length(ok) == 0) {
+        return(out)
+    }
+    span <- ok[1]:ok[length(ok)]
+    if (length(ok) != length(span)) {
+        stop(gettextf("series %s has internal NA values, and the 'nyrs' spline needs an unbroken series. Fill them with fill.internal.NA(), remove the series, or use 'n' instead of 'nyrs'",
+                      name, domain = "R-dplR"), call. = FALSE)
+    }
+    if (length(span) < 3) {
+        stop(gettextf("series %s has fewer than 3 values, too few to fit the 'nyrs' spline. Remove the series, or use 'n' instead of 'nyrs'",
+                      name, domain = "R-dplR"), call. = FALSE)
+    }
+    y <- as.numeric(x[span])
+    y[y == 0] <- 0.001
+    fit <- caps(y, nyrs = nyrs)
+    if (any(fit <= 0)) {
+        stop(gettextf("the 'nyrs' spline for series %s is not all positive, so dividing by it would give negative or infinite indices. Remove the series, or detrend the data yourself with detrend() and pass the indices with 'nyrs = NULL'",
+                      name, domain = "R-dplR"), call. = FALSE)
+    }
+    out[span] <- y / fit
+    out
+}
+
+### 'nyrs.rwi' for each column of 'x' (a matrix or data.frame). Returns
+### a matrix with the dimnames of 'x'.
+nyrs.rwi.mat <- function(x, nyrs) {
+    x <- as.matrix(x)
+    nms <- colnames(x)
+    if (is.null(nms)) {
+        nms <- as.character(seq_len(ncol(x)))
+    }
+    res <- vapply(seq_len(ncol(x)),
+                  function(i) nyrs.rwi(x[, i], nyrs, nms[i]),
+                  numeric(nrow(x)))
+    dim(res) <- dim(x)
+    dimnames(res) <- dimnames(x)
+    res
+}
+
 ### Range of years. Used in cms, rcs, rwl.stats, seg.plot, spag.plot, ...
 yr.range <- function(x, yr.vec = as.numeric(names(x))) {
     na.flag <- is.na(x)

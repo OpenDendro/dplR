@@ -1,4 +1,5 @@
-interseries.cor <- function(rwl, n=NULL, prewhiten=TRUE, biweight=TRUE,
+interseries.cor <- function(rwl, n=NULL, nyrs=NULL, prewhiten=TRUE,
+                       ar.order.max=NULL, biweight=TRUE,
                        method = c("spearman", "pearson", "kendall")) {
     method2 <- match.arg(method)
     rwl <- check.rwl(rwl)
@@ -8,7 +9,8 @@ interseries.cor <- function(rwl, n=NULL, prewhiten=TRUE, biweight=TRUE,
     rwl.mat <- as.matrix(rwl)
     tmp <- normalize.xdate(rwl=rwl.mat, n=n,
                            prewhiten=prewhiten, biweight=biweight,
-                           leave.one.out = TRUE)
+                           leave.one.out = TRUE, nyrs = nyrs,
+                           ar.order.max = ar.order.max)
     series <- tmp[["series"]]
     master <- tmp[["master"]]
     for (i in seq_len(nseries)) {

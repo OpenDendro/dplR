@@ -92,6 +92,27 @@ test.xdate.report <- function() {
         expect_true(any(grepl("internal NA", format(r))))
     })
 
+    test_that("a B flag that is weak at every lag is marked as such", {
+        ## the planted missing ring crossdates at -1: not weak
+        fs <- dplR:::report.flagged(rpt)
+        expect_true(all(fs$flag == "B"))
+        expect_false(any(fs$weak))
+        expect_false(any(grepl("weak at every lag", txt[grep("problem segments", txt)])))
+        ## wa082: every B wins only among weak correlations
+        data(wa082, package = "dplR", envir = environment())
+        r <- xdate.report(wa082, check = FALSE)
+        fs <- dplR:::report.flagged(r)
+        B <- fs$flag == "B"
+        expect_true(any(B))
+        expect_identical(fs$weak, B & fs$r.lag < r$settings$r.crit)
+        expect_true(all(fs$weak[B]))
+        expect_true(all(fs$note[fs$weak] == "weak at every lag"))
+        expect_match(grep("problem segments", format(r), value = TRUE)[1],
+                     sprintf("%d of the B weak at every lag", sum(B)), fixed = TRUE)
+        expect_true(any(grepl("weak at every lag", format(r, type = "markdown"),
+                              fixed = TRUE)))
+    })
+
     test_that("summary averages are weighted by years, as COFECHA's are", {
         w <- s$n.years
         sd.line <- grep("Avg standard deviation", txt, value = TRUE)
@@ -127,6 +148,43 @@ test.xdate.report <- function() {
         ## type overrides the file name
         write.xdate.report(rpt, fn, type = "markdown")
         expect_identical(readLines(fn), md)
+    })
+
+    test_that("write.xdate.report saves HTML, escaped and with the flags shaded", {
+        fn <- tempfile(fileext = ".html")
+        on.exit(unlink(fn))
+        write.xdate.report(rpt, fn)
+        h <- readLines(fn)
+        expect_identical(h, format(rpt, type = "html"))
+        expect_identical(h[1], "<!DOCTYPE html>")
+        expect_identical(h[length(h)], "</html>")
+        expect_true(any(grepl("<h2>Correlation of series by segments</h2>", h,
+                              fixed = TRUE)))
+        expect_true(any(grepl(paste0("Report generated using dplR ",
+                                     packageVersion("dplR")), h, fixed = TRUE)))
+        ## one shaded cell per B in the segment table, one in the flagged list
+        n.B <- sum(rpt$flags == "B")
+        expect_equal(sum(lengths(regmatches(h, gregexpr("class=\"num flagB\"", h)))),
+                     n.B)
+        expect_equal(sum(lengths(regmatches(h, gregexpr("class=\"flagB\"", h)))),
+                     n.B)
+        ## text from the data is escaped
+        r2 <- rpt
+        r2$title <- "a <b> & c"
+        h2 <- format(r2, type = "html")
+        expect_true(any(grepl("a &lt;b&gt; &amp; c", h2, fixed = TRUE)))
+        expect_false(any(grepl("a <b> & c", h2, fixed = TRUE)))
+        ## weak B flags carry their own class
+        data(wa082, package = "dplR", envir = environment())
+        hw <- format(xdate.report(wa082, check = FALSE), type = "html")
+        expect_true(any(grepl("class=\"num flagB weak\"", hw, fixed = TRUE)))
+        ## .htm counts too, and type overrides the extension
+        fn2 <- tempfile(fileext = ".htm")
+        on.exit(unlink(fn2), add = TRUE)
+        write.xdate.report(rpt, fn2)
+        expect_identical(readLines(fn2), h)
+        write.xdate.report(rpt, fn2, type = "text")
+        expect_identical(readLines(fn2), txt)
     })
 
     test_that("the rwl.check() findings are included", {

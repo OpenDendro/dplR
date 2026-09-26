@@ -104,7 +104,7 @@ latexify(x, doublebackslash = TRUE, dashdash = TRUE,
 }
 \references{
   INRIA.  Tralics: a LaTeX to XML translator, HTML documentation of all
-  TeX commands.  \url{https://www-sop.inria.fr/marelle/tralics/}.
+  TeX commands.  \url{http://www-sop.inria.fr/marelle/tralics/}.
 
   Levitt, N., Persch, C., and Unicode, Inc. (2013) GNOME Character Map,
   application version 3.10.1.

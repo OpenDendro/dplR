@@ -21,7 +21,7 @@ xdate.report(x, seg.length = 50, bin.floor = 100, nyrs = 32,
              biweight = TRUE, check = TRUE, meta = list(),
              title = NULL)
 
-\method{format}{xdate.report}(x, type = c("text", "markdown"),
+\method{format}{xdate.report}(x, type = c("text", "markdown", "html"),
        bins.per.page = 20, \dots)
 
 \method{print}{xdate.report}(x, \dots)
@@ -73,10 +73,13 @@ write.xdate.report(x, fname, type = NULL, \dots)
   \item{title}{ the title printed on each part.  Defaults to the file
     name without its extension, or the name of the object. }
   \item{type}{ the layout: \code{"text"}, the fixed-width layout of the
-    \acronym{ITRDB} files, or \code{"markdown"}, headings and tables
-    for a page that renders.  For \code{write.xdate.report}, \code{NULL}
-    chooses Markdown for a file name ending in \file{.md} or
-    \file{.markdown} and text otherwise. }
+    \acronym{ITRDB} files; \code{"markdown"}, headings and tables for a
+    page that renders; or \code{"html"}, a single self-contained page
+    with plain tables, the flagged segments shaded and a small inline
+    stylesheet.  For \code{write.xdate.report}, \code{NULL} chooses
+    Markdown for a file name ending in \file{.md} or \file{.markdown},
+    \acronym{HTML} for \file{.html} or \file{.htm}, and text
+    otherwise. }
   \item{fname}{ the name of the file to write. }
   \item{bins.per.page}{ the number of segments printed side by side in
     the correlation table before it continues on a new page, as
@@ -98,7 +101,12 @@ write.xdate.report(x, fname, type = NULL, \dots)
   probably missing from the series.  The report lists each flagged
   segment with its lag and the gain in correlation, because a B flag is
   a hypothesis to check on the wood, and the size of the gain says how
-  seriously to take it.  See \code{\link{corr.rwl.seg}} for how to read
+  seriously to take it.  A B flag whose best correlation is itself under
+  the critical value is marked \dQuote{weak at every lag}: the segment
+  does not crossdate anywhere in the window, the shift only wins among
+  weak correlations, and it is better read as a low correlation than as
+  a dating error.  The letter stays B, as \acronym{COFECHA}\enc{’}{'}s
+  rule has it.  See \code{\link{corr.rwl.seg}} for how to read
   the lags along a series.
 
   The report differs from \acronym{COFECHA} in three ways, and says so in
@@ -173,12 +181,17 @@ rpt <- xdate.report(dat, meta = list(site.name = "Schulman Old Tree No. 1",
 rpt
 ## The flagged segments, as data
 rpt$flags["641143", rpt$flags["641143", ] != ""]
-## Save it as fixed-width text, or as Markdown
+## Save it as fixed-width text, as Markdown, or as HTML
 fn <- tempfile(fileext = ".txt")
 write.xdate.report(rpt, fn)
 fn.md <- tempfile(fileext = ".md")
 write.xdate.report(rpt, fn.md)
 head(readLines(fn.md), 12)
-unlink(c(fn, fn.md))
+fn.html <- tempfile(fileext = ".html")
+write.xdate.report(rpt, fn.html)
+\dontrun{
+utils::browseURL(fn.html)
+}
+unlink(c(fn, fn.md, fn.html))
 }
 \keyword{ manip }

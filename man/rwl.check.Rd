@@ -124,6 +124,13 @@ rwl.check.catalogue()
   fires on none of \code{\link{anos1}}, \code{\link{ca533}},
   \code{\link{co021}}, \code{\link{gp.rwl}}, \code{\link{nm046}} or
   \code{\link{wa082}}, and does fire on a series displaced by two years.
+
+  The \code{value} of an \code{RWL_DATING_LAG} finding is the lag at which
+  the series correlates best with the master, with the sign used by
+  \code{\link{ccf.series.rwl}} (with \code{series.x = FALSE}) and by
+  \code{best.lag} in \code{\link{corr.rwl.seg}}: negative means the series
+  is probably missing rings, positive that it probably has false rings or a
+  ring counted twice.
 }
 \value{
   An object of class \code{"rwl.check"}: a \code{list} with the file name, the

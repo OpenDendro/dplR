@@ -76,6 +76,8 @@ S3method(plot, rwl)
 S3method(print, redfit)
 S3method(print, rwl.report)
 S3method(print, rwl.check)
+S3method(print, xdate.report)
+S3method(format, xdate.report)
 S3method(summary, rwl.check)
 S3method(as.data.frame, rwl.check)
 S3method(summary, rwl)
@@ -184,7 +186,9 @@ export("ads",
        "write.sheet",
        "write.tridas",
        "write.tucson",
+       "write.xdate.report",
        "xdate.floater",
+       "xdate.report",
        "xskel.ccf.plot",
        "xskel.plot")
 

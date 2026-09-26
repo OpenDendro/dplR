@@ -4,6 +4,7 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
                          method = c("spearman", "pearson", "kendall"),
                          make.plot = TRUE, label.cex=1,
                          floor.plus1 = FALSE, master = NULL,
+                         lag.max = 0,
                          master.yrs = as.numeric(if (is.null(dim(master))) {
                            names(master)
                          } else {
@@ -14,6 +15,13 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   rwl <- check.rwl(rwl)
   ## run error checks
   qa.xdate(rwl, seg.length, n, bin.floor)
+  if (!is.numeric(lag.max) || length(lag.max) != 1 || is.na(lag.max) ||
+      lag.max < 0 || lag.max != round(lag.max)) {
+    stop("'lag.max' must be a single non-negative whole number")
+  }
+  if (lag.max >= seg.length) {
+    stop("'lag.max' must be less than 'seg.length'")
+  }
   
   ## turn off warnings for this function
   ## The sig test for spearman's rho often produces warnings.
@@ -141,6 +149,22 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   rownames(res.pval) <- cnames
   colnames(res.pval) <- bin.names
   
+  ## AGB Sep 2026: segments used to be tested at the dated position only,
+  ## so a segment that correlated better shifted a year was never noticed
+  ## if it was significant where it sat. best.lag and best.rho record the
+  ## position within +/- lag.max that correlates best. At lag.max = 0 they
+  ## are 0 and a copy of res.cor, and nothing extra is computed.
+  res.lag <- matrix(NA_integer_, nseries, nbins)
+  rownames(res.lag) <- cnames
+  colnames(res.lag) <- bin.names
+
+  res.best <- matrix(NA_real_, nseries, nbins)
+  rownames(res.best) <- cnames
+  colnames(res.best) <- bin.names
+  lags <- seq_len(lag.max)
+  lags <- c(-rev(lags), lags)
+  nyrs.all <- length(yrs)
+
   overall.cor <- matrix(NA, nseries, 2)
   rownames(overall.cor) <- cnames
   colnames(overall.cor) <- c("rho", "p-val")
@@ -185,6 +209,31 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
       }
       res.cor[i, j] <- bin.cor
       res.pval[i, j] <- bin.pval
+      if (!is.na(bin.cor)) {
+        best.lag <- 0L
+        best.rho <- bin.cor
+        idx <- which(mask)
+        ## Pair each year with its own lagged partner in the master
+        ## (series[t] against master2[t + k]), which is ccf(x = master,
+        ## y = series) at lag k: negative lags mean missing rings in the
+        ## series, as in ccf.series.rwl(series.x = FALSE).  A lag whose
+        ## window is not complete in the master is skipped, the same
+        ## complete-overlap rule as above.  Ties go to the dated position.
+        for (k in lags) {
+          tgt <- idx + k
+          if (tgt[1] < 1 || tgt[length(tgt)] > nyrs.all ||
+              any(is.na(master2[tgt]))) {
+            next
+          }
+          r.k <- cor(series[mask], master2[tgt], method = method2)
+          if (!is.na(r.k) && r.k > best.rho) {
+            best.lag <- k
+            best.rho <- r.k
+          }
+        }
+        res.lag[i, j] <- best.lag
+        res.best[i, j] <- best.rho
+      }
     }
     ## overall correlation
     tmp <- cor.test(series, master2,
@@ -208,7 +257,8 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   res <- list(spearman.rho = res.cor, p.val = res.pval, overall = overall.cor,
               avg.seg.rho = segavg.cor, flags = seg.flags, bins = bins, 
               rwi = rwi, seg.lag = seg.lag, seg.length = seg.length, 
-              pcrit = pcrit, label.cex = label.cex)
+              pcrit = pcrit, label.cex = label.cex,
+              best.lag = res.lag, best.rho = res.best, lag.max = lag.max)
   class(res) <- c("list","crs")
   
   

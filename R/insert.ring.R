@@ -68,9 +68,17 @@ delete.ring <- function(rw.vec, rw.vec.yrs=as.numeric(names(rw.vec)),
         if(fix.last & fix.length){
           rw.vec2 <- c(NA,rw.vec2)
         }
-        
+
         if(!fix.last & fix.length){
           rw.vec2 <- c(rw.vec2,NA)
+        }
+        ## AGB Sep 2026: the NA padded on above had an empty name, so with
+        ## fix.length = TRUE the years read "", 2002, ... instead of 2001,
+        ## 2002, ...: anything taking years from the names got an NA year,
+        ## and insert.ring() refused the result outright. With fix.length
+        ## the output covers the same years as the input, so name it that.
+        if (fix.length) {
+          names(rw.vec2) <- first.yr:last.yr
         }
         rw.vec2
     } else {

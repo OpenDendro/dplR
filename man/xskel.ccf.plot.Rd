@@ -72,7 +72,7 @@ xskel.ccf.plot(rwl, series, series.yrs = as.numeric(names(series)),
   \code{ccf(x=master, y=series, lag.max=lag.max, plot=FALSE)} if \code{series.x} is 
   \code{FALSE} and as \code{ccf(x=series, y=master, lag.max=lag.max, plot=FALSE)} if 
   \code{series.x} is \code{TRUE}.  This argument was introduced in dplR version 1.7.0.
-  Different users have different expectations about how missing or extra rings are notated. If \code{switch.x = FALSE} the behavior will be like COFECHA where a missing ring in a series produces a negative lag in the plot rather than a positive lag.
+  Different users have different expectations about how missing or extra rings are notated. If \code{series.x = FALSE} the behavior will be like COFECHA where a missing ring in a series produces a negative lag in the plot rather than a positive lag.
   
 
   The plot is built using the \link[grid]{Grid} package which
@@ -93,14 +93,17 @@ xskel.ccf.plot(rwl, series, series.yrs = as.numeric(names(series)),
 \examples{library(utils)
 data(co021)
 dat <- co021
-#corrupt a series
+## Create a missing ring: delete the 1500 ring of series 641143 and
+## drop the original from the master.  Dated from the bark, every ring
+## before 1500 now sits one year late.
 bad.series <- dat$"641143"
 names(bad.series) <- rownames(dat)
-bad.series <- delete.ring(bad.series,year=1825)
-# good match
-xskel.ccf.plot(rwl=dat,series=bad.series,win.start=1900,win.width=50)
-# overlap missing ring
-xskel.ccf.plot(rwl=dat,series=bad.series,win.start=1800,win.width=50)
+bad.series <- delete.ring(bad.series, year = 1500)
+dat$"641143" <- NULL
+## after 1500 the dating is right
+xskel.ccf.plot(rwl = dat, series = bad.series, win.start = 1550, win.width = 50)
+## this window straddles the missing ring
+xskel.ccf.plot(rwl = dat, series = bad.series, win.start = 1475, win.width = 50)
 }
 
 \keyword{ hplot }

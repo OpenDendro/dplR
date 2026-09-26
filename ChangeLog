@@ -1,5 +1,146 @@
 * CHANGES IN dplR VERSION 1.8.0
 
+File: xdate.report.R (new), man/xdate.report.Rd (new), NAMESPACE,
+      tests/testthat/test-xdate.report.R (new)
+-----------------------------------------------------------------
+ - New function xdate.report(), with format() and print() methods: a
+   COFECHA-style crossdating report in the layout of the "COFECHA
+   output:" block of the ITRDB correlation-stats files. Chris Guiterman
+   and Ed Gille asked for a way to regenerate that block with dplR. It
+   has the summary header, the correlation of series by segments (with
+   A and B flags), a list of the flagged segments with the lag and the
+   gain in correlation, the descriptive statistics, the errors
+   and warnings from rwl.check(), and notes on how it was made:
+   "Report generated using dplR <version> (R <version>)", the time, the
+   MD5 of the measurement file when given a path, the filtering, the
+   master, the correlation and critical value, the segments, and every
+   setting that had to change to fit the data. write.xdate.report()
+   saves it as fixed-width text or as Markdown, chosen from the file
+   name, and format(x, type = "markdown") gives the Markdown lines. The
+   COFECHA "PART 5:" and "PART 7:" labels are left out.
+
+   The summary and totals averages are weighted by the number of years
+   in each series. That is what COFECHA does: on cana295 the plain mean
+   of its standard deviation column is 0.743, its header says 0.760,
+   and the weighted mean is 0.760, and the same holds for the
+   intercorrelation (0.524) and the autocorrelation (0.895).
+
+   It is built on corr.rwl.seg() with lag.max, nyrs = 32,
+   ar.order.max = 3, pcrit = 0.01 and Pearson correlation, which is COFECHA's, so an A flag is exactly
+   a correlation under the critical value the report prints (0.3281 for
+   50-year segments). It began as a script in the ITRDB clone, and three
+   things changed on the way in: the B flags now require the whole
+   shifted window (the script kept any lag with half its pairs, so it
+   raised false flags at the ends of the record), the 32-year spline its
+   notes described is now applied (it never passed nyrs), and the
+   filtered block of the descriptive statistics is labelled "dplR
+   filtered", because it is
+   not COFECHA's filtered series.
+
+   ar.order.max = 3 is lower than corr.rwl.seg()'s default. After the
+   32-year spline, AIC picks an AR order near 20 (17 to 23 on co021),
+   and prewhitening loses that many years, and the segments with them,
+   at the start of every series; COFECHA's AR column reads 1 or 2. On
+   co021 the cap tests 718 segments instead of 690.
+
+   It differs from COFECHA in ways the report states: only complete
+   segments are tested, where COFECHA also tests partial segments at the
+   ends of a series. A series whose spline cannot be fitted is described
+   but left out of the crossdating, and named with the reason, rather
+   than stopping the report; a record too short for 50-year segments
+   gets shorter ones; and a site with fewer than three usable series
+   gets the descriptive statistics alone.
+
+File: insert.ring.R, tests/testthat/test-insert.ring.R (new),
+      man/corr.rwl.seg.Rd, man/ccf.series.rwl.Rd, man/corr.series.seg.Rd,
+      man/xskel.plot.Rd, man/xskel.ccf.plot.Rd,
+      tests/testthat/test-corr.rwl.seg.R
+-----------------------------------------------------------------
+ - delete.ring() with fix.length = TRUE, the default, gave the NA it
+   pads on an empty name, so the years read "", 2002, ... instead of
+   2001, 2002, .... Anything taking years from the names got an NA
+   year, and insert.ring() refused the result with "input data must
+   have consecutive years", so a missing ring and a false ring could not
+   be chained. With fix.length the output is now named with the input's
+   years. The values are unchanged. insert.ring() did not have the
+   problem. New tests cover both functions, which had none.
+
+ - The crossdating examples now follow one planted fault: the 1500
+   ring deleted from co021 series 641143 with delete.ring().
+   corr.rwl.seg() finds it (-1 in every bin before 1500) and also shows
+   it paired with a false ring from insert.ring(), ccf.series.rwl() and
+   corr.series.seg() confirm it, and xskel.plot() and xskel.ccf.plot()
+   show a window after it and one across it. ccf.series.rwl() and
+   corr.series.seg() already deleted ring 325, which is 1500, by index;
+   their results are the same. xskel.plot() and xskel.ccf.plot()
+   deleted 1825 instead, and passed the rwl with the original 641143
+   still in it, so the master held a correctly dated copy of the series
+   being tested. They now drop it, as the other examples do.
+
+File: rwl.check.R, tests/testthat/test-rwl.check.R, man/rwl.check.Rd,
+      man/xskel.ccf.plot.Rd
+-----------------------------------------------------------------
+ - The lag in rwl.check()'s RWL_DATING_LAG finding had the opposite
+   sign to ccf.series.rwl() and corr.rwl.seg(): a series missing a ring
+   was reported at +1 here and -1 there. It called ccf(series, master);
+   it now calls ccf(master, series), so a negative lag means missing
+   rings in the series throughout dplR. Only the sign of 'value'
+   changes. Which series are flagged, and the correlations in the
+   message, are the same, because the best correlation at lag k one way
+   round is the best at -k the other. The test compared abs(value),
+   which is why this was not caught; it now checks the sign in both
+   directions and against corr.rwl.seg(). rwl.check() is new in this
+   version, so no released output changes.
+
+   The message now says which way the error most likely runs: a missing
+   ring for a negative lag, a false ring or a ring measured twice for a
+   positive one.
+
+ - man/xskel.ccf.plot.Rd named the argument that sets the COFECHA
+   convention 'switch.x'. It is 'series.x'.
+
+File: corr.rwl.seg.R, plot.crs.R, tests/testthat/test-corr.rwl.seg.R,
+      man/corr.rwl.seg.Rd, man/plot.crs.Rd
+-----------------------------------------------------------------
+ - New argument 'lag.max' in corr.rwl.seg(), default 0. Each segment
+   is also correlated against its leave-one-out master shifted by
+   every lag from -lag.max to lag.max, and the best position is
+   returned in two new matrices, 'best.lag' and 'best.rho', with the
+   shape and names of 'spearman.rho'. A third new element, 'lag.max',
+   records the argument. No existing element changes, and 'flags' is
+   still the p-value test alone. At lag.max = 0 no extra correlations
+   are computed, 'best.lag' is 0, 'best.rho' is a copy of
+   'spearman.rho', and the plot is the same as before.
+
+   Until now nothing in corr.rwl.seg() shifted a segment, so a segment
+   that correlated 0.31 as dated and 0.62 at lag -1 was significant
+   where it sat and was not flagged at all. COFECHA separates two
+   cases: A, below the critical value but best where it is dated (weak,
+   not misdated), and B, better at some other position (a dating
+   hypothesis). Over 36 ITRDB sites and 5,301 segments there were 197 A
+   against 395 B. The letters are not stored: B is best.lag != 0 and A
+   is best.lag == 0 & p.val >= pcrit, which the Rd example builds.
+   plot.crs() draws B segments in purple when lag.max > 0.
+
+   The sign matches ccf.series.rwl() with series.x = FALSE: negative
+   lags mean missing rings in the series. Each year of the segment is
+   paired with the master value k years away, and a lag whose window
+   is not complete in the master is not tested, the same rule as at
+   lag 0. So segments within lag.max years of either end of the
+   record are only searched one way, and the Rd says that floaters
+   sit exactly where the test is blind. It also says that a B is a
+   hypothesis: a one-year shift for a 0.05 gain is often noise, which
+   is why the gain is returned and not just the lag.
+
+   The Rd explains how to read the lags along a series: a missing ring
+   carries -1 into every bin before it, so the error is where the lag
+   changes, and a run of -1 with correct dating on both sides is a ring
+   in the wrong place (missing at the later end, extra at the earlier
+   end), which a whole-series test such as rwl.check()'s
+   RWL_DATING_LAG does not see. The example plants both faults in
+   co021 series 641143 and shows each pattern, and the test checks the
+   second on nm046, which is smaller and faster.
+
 File: normalize1.R, normalize.xdate.R, helpers.R, corr.rwl.seg.R,
       corr.series.seg.R, ccf.series.rwl.R, interseries.cor.R,
       rwi.stats.running.R, series.rwl.plot.R, xskel.plot.R,

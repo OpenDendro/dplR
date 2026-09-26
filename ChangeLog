@@ -1,5 +1,14 @@
 * CHANGES IN dplR VERSION 1.8.0
 
+File: man/skel.plot.Rd, man/latexify.Rd
+-----------------------------------------------------------------
+ - Two reference URLs failed CRAN's URL check. skel.plot.Rd cited
+   Meko's Tree-Ring MATLAB Toolbox with the MATLAB Central home page,
+   which answers the checker with 403; it now links the toolbox page
+   itself, https://dmeko.ltrr.arizona.edu/toolbox.html. latexify.Rd
+   linked Tralics over https, where INRIA's certificate has expired; it
+   now uses http, which serves the same page.
+
 File: xdate.report.R (new), man/xdate.report.Rd (new), NAMESPACE,
       tests/testthat/test-xdate.report.R (new)
 -----------------------------------------------------------------
@@ -15,8 +24,12 @@ File: xdate.report.R (new), man/xdate.report.Rd (new), NAMESPACE,
    MD5 of the measurement file when given a path, the filtering, the
    master, the correlation and critical value, the segments, and every
    setting that had to change to fit the data. write.xdate.report()
-   saves it as fixed-width text or as Markdown, chosen from the file
-   name, and format(x, type = "markdown") gives the Markdown lines. The
+   saves it as fixed-width text, as Markdown or as HTML, chosen from the
+   file name (.md, .html) or by 'type', and format(x, type = ) gives the
+   lines. The HTML is one self-contained page in base R, with no new
+   dependency: plain tables, A and B cells shaded, B flags that are weak
+   at every lag greyed, text from the data escaped, and a small inline
+   stylesheet that also prints. The
    COFECHA "PART 5:" and "PART 7:" labels are left out.
 
    The summary and totals averages are weighted by the number of years
@@ -42,6 +55,14 @@ File: xdate.report.R (new), man/xdate.report.Rd (new), NAMESPACE,
    and prewhitening loses that many years, and the segments with them,
    at the start of every series; COFECHA's AR column reads 1 or 2. On
    co021 the cap tests 718 segments instead of 690.
+
+   A B flag whose best-lag correlation is still under the critical
+   value is marked "weak at every lag" in the flagged-segment list, and
+   counted in the summary. On wa082 all four B flags are like this
+   (lags of -9, -9, -8 and +8, best r 0.24 to 0.31), and the ITRDB
+   technician read COFECHA's flags there the same way in 1996: "ALL
+   FLAGS = LOW CORRELATIONS WITH MASTER". On co021 with the planted
+   missing ring, none of the nine B flags is weak. The letter stays B.
 
    It differs from COFECHA in ways the report states: only complete
    segments are tested, where COFECHA also tests partial segments at the

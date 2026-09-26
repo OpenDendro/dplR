@@ -71,7 +71,7 @@ skel.plot(rw.vec, yr.vec = NULL, sname = "", filt.weight = 9,
   \url{https://www.ltrr.arizona.edu/skeletonplot/introcrossdate.htm}.
   
   Meko, D. (2002) Tree-Ring MATLAB Toolbox.
-  \url{https://www.mathworks.com/matlabcentral/}.
+  \url{https://dmeko.ltrr.arizona.edu/toolbox.html}.
   
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }

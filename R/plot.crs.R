@@ -5,6 +5,16 @@ plot.crs <- function(x,...){
   bins <- x$bins
   segs <- x$rwi
   pval <- x$p.val
+  ## AGB Sep 2026: segments used to be coloured on the p-value alone. When
+  ## corr.rwl.seg() was run with lag.max > 0, a segment that correlates
+  ## better at another position (COFECHA's B) is now drawn in its own
+  ## colour, whether or not it is significant as dated. Red is left for
+  ## segments that are weak but best where they are (COFECHA's A). Objects
+  ## without best.lag, or with lag.max = 0, plot exactly as before.
+  best.lag <- x$best.lag
+  if (is.null(best.lag) || is.null(x$lag.max) || x$lag.max == 0) {
+    best.lag <- NULL
+  }
   yrs <- as.numeric(rownames((x$rwi)))
   min.yr <- min(yrs)
   max.yr <- max(yrs)
@@ -30,7 +40,7 @@ plot.crs <- function(x,...){
   nsegs <- ncol(segs)
   op <- par(no.readonly = TRUE)
   on.exit(par(op), add = TRUE)
-  col.pal <- c("#E41A1C", "#377EB8", "#4DAF4A")
+  col.pal <- c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3")
   par(mar = c(4, 5, 4, 5) + 0.1, mgp = c(1.25, 0.25, 0), 
       tcl = 0.25)
   #dev.hold()
@@ -50,15 +60,21 @@ plot.crs <- function(x,...){
     these.bins <- bins[this.seq, , drop = FALSE]
     com.segs <- matrix(NA, ncol = nseries, nrow = nyrs)
     flag.segs <- matrix(NA, ncol = nseries, nrow = nyrs)
+    b.segs <- matrix(NA, ncol = nseries, nrow = nyrs)
     tmp <- pval[neworder, this.seq, drop = FALSE] > 
       pcrit
+    if (!is.null(best.lag)) {
+      tmp.b <- best.lag[neworder, this.seq, drop = FALSE] != 0
+    }
     for (i in seq.series) {
       for (j in seq_len(nrow(these.bins))) {
         mask <- yrs %in% seq(from = these.bins[j, 1], 
                              to = these.bins[j, 2])
         if (!is.na(tmp[i, j])) {
           com.segs[mask, i] <- 1
-          if (tmp[i, j]) {
+          if (!is.null(best.lag) && isTRUE(tmp.b[i, j])) {
+            b.segs[mask, i] <- 1
+          } else if (tmp[i, j]) {
             flag.segs[mask, i] <- 1
           }
         }
@@ -90,6 +106,12 @@ plot.crs <- function(x,...){
         rect(xleft = flag.segs.mat[, 1], ybottom = yb, 
              xright = flag.segs.mat[, 2] + 1, ytop = yt, 
              col = col.pal[1], border = NA)
+      }
+      b.segs.mat <- yr.ranges(b.segs[, i], yrs)
+      if (nrow(b.segs.mat) > 0) {
+        rect(xleft = b.segs.mat[, 1], ybottom = yb,
+             xright = b.segs.mat[, 2] + 1, ytop = yt,
+             col = col.pal[4], border = NA)
       }
       guides.x <- guides.x.base[guides.x.base >= segs.mat[i,1]]
       guides.x <- guides.x[guides.x <= segs.mat[i,2]]

@@ -115,7 +115,29 @@ test.rwl.check <- function() {
         f <- f[f$check == "RWL_DATING_LAG", ]
         expect_equal(nrow(f), 1)
         expect_equal(f$series, "ABC03A")
-        expect_equal(abs(f$value), 2)
+        ## each year holds the ring from two years later: labelled too early,
+        ## so a positive lag, as corr.rwl.seg() and ccf.series.rwl() give it
+        expect_equal(f$value, 2)
+    })
+
+    test_that("RWL_DATING_LAG gives a missing ring a negative lag", {
+        ## drop one ring near the outside and date from the bark: every year
+        ## before it is labelled one year too late
+        z <- good
+        x <- z[, 3]
+        z[, 3] <- c(NA, x[-(n - 10)])
+        class(z) <- c("rwl", "data.frame")
+        f <- as.data.frame(rwl.check(z))
+        f <- f[f$check == "RWL_DATING_LAG", ]
+        expect_equal(nrow(f), 1)
+        expect_equal(f$value, -1)
+        expect_match(f$message, "missing ring")
+        ## and corr.rwl.seg() puts the same series at the same lag
+        crs <- corr.rwl.seg(z, seg.length = 40, bin.floor = 0, lag.max = 3,
+                            make.plot = FALSE)
+        early <- crs$bins[, 2] < yrs[n - 10] & !is.na(crs$best.lag[3, ])
+        expect_true(any(early))
+        expect_true(all(crs$best.lag[3, early] == -1))
     })
 
     test_that("RWL_DATING_LAG does not fire on a collection that dates", {

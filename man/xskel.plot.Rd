@@ -83,14 +83,17 @@ xskel.plot(rwl, series, series.yrs = as.numeric(names(series)),
 \examples{library(utils)
 data(co021)
 dat <- co021
-#corrupt a series
+## Create a missing ring: delete the 1500 ring of series 641143 and
+## drop the original from the master.  Dated from the bark, every ring
+## before 1500 now sits one year late.
 bad.series <- dat$"641143"
 names(bad.series) <- rownames(dat)
-bad.series <- delete.ring(bad.series,year=1825)
-# good match
-xskel.plot(rwl=dat,series=bad.series,win.start=1850)
-# overlap missing ring
-xskel.plot(rwl=dat,series=bad.series,win.start=1800)
+bad.series <- delete.ring(bad.series, year = 1500)
+dat$"641143" <- NULL
+## after 1500 the dating is right
+xskel.plot(rwl = dat, series = bad.series, win.start = 1550)
+## this window straddles the missing ring
+xskel.plot(rwl = dat, series = bad.series, win.start = 1475)
 }
 
 \keyword{ hplot }

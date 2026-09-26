@@ -573,7 +573,13 @@ check.crossdating <- function(rwl, ctl) {
     }
     a <- m[ok, i]; b <- master[ok]
     if (sd(a) == 0 || sd(b) == 0) next   # RWL_ZERO_VARIANCE has it
-    cc <- ccf(a, b, lag.max = ctl$lag.max, plot = FALSE)
+    ## AGB Sep 2026: this was ccf(a, b), series first, which reports the lag
+    ## with the opposite sign to ccf.series.rwl() and corr.rwl.seg(): a
+    ## series missing a ring came out at +1 here and -1 there. With the
+    ## master first, ccf() at lag k correlates series[t] with master[t + k],
+    ## so a negative lag means missing rings in the series everywhere in
+    ## dplR. The old test compared abs(value) and could not see it.
+    cc <- ccf(b, a, lag.max = ctl$lag.max, plot = FALSE)
     k <- which.max(cc$acf)
     r <- cc$acf[k]; lg <- cc$lag[k]
     r0[i] <- cc$acf[cc$lag == 0]
@@ -585,7 +591,9 @@ check.crossdating <- function(rwl, ctl) {
         "RWL_DATING_LAG",
         paste0("correlates best with the master at lag ", lg, " (r = ",
                round(r, 3), " against r = ", round(r0[i], 3),
-               " as dated); the series may be misdated by ", abs(lg), " year(s)"),
+               " as dated); the series may be misdated by ", abs(lg), " year(s), ",
+               if (lg < 0) "most likely a missing ring"
+               else "most likely a false ring or a ring measured twice"),
         series = s, n = nov[i], value = lg)
   }
 

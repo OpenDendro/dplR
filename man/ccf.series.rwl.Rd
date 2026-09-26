@@ -121,10 +121,12 @@ ccf.series.rwl(rwl, series, series.yrs = as.numeric(names(series)),
 library(utils)
 data(co021)
 dat <- co021
-## Create a missing ring by deleting a year of growth in a random series
+## Create a missing ring: delete the 1500 ring of series 641143 and
+## drop the original from the master.  Dated from the bark, every ring
+## before 1500 now sits one year late.
 flagged <- dat$"641143"
-flagged <- c(NA, flagged[-325])
 names(flagged) <- rownames(dat)
+flagged <- delete.ring(flagged, year = 1500)
 dat$"641143" <- NULL
 ccf.100 <- ccf.series.rwl(rwl = dat, series = flagged, seg.length = 100)
 \dontrun{

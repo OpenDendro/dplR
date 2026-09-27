@@ -46,7 +46,7 @@ ssf(rwl,
 }
 
 \details{
-This function creates a simple signal-free chronology that loosely follows the procedures laid out on p75 of Melvin and Briffa (2008). This function is a lighter version of that procedure and users who want more control and refinement should look to the CRUST program decried in Melvin and Briffa (2014). These steps are described in more detail in \href{https://opendendro.github.io/dplR-workshop/}{Learning to Love R}.
+This function creates a simple signal-free chronology that loosely follows the procedures laid out on p75 of Melvin and Briffa (2008). This function is a lighter version of that procedure and users who want more control and refinement should look to the CRUST program described in Melvin and Briffa (2014). These steps are described in more detail in \href{https://opendendro.github.io/dplR-workshop/}{Learning to Love dplR}.
   \enumerate{ 
     \item Detrend each series using the selected method, calculate RWI by division (or subtraction), and create an initial mean-value chronology.
     \item Create signal-free measurements by dividing (or subtracting) each series of measurements by the chronology. If \code{return.info} is invoked these are returned in \code{sfRW_Array}.

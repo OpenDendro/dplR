@@ -1,5 +1,15 @@
 * CHANGES IN dplR VERSION 1.8.0
 
+File: vignettes/intro-dplR.Rmd (new), man/ssf.Rd
+-----------------------------------------------------------------
+ - New vignette, "Getting Started with dplR": reading, describing,
+   detrending, building a chronology and checking crossdating on
+   co021, using dplR and base R only. It points to Learning to Love
+   dplR for more. dplR has had no introductory vignette since the Rnw
+   vignettes were removed in 2022.
+ - ssf.Rd called the workshop book "Learning to Love R", and
+   "decried" is now "described".
+
 File: normalize1.R, normalize.xdate.R, helpers.R, rwi.stats.running.R,
       detrend.series.R, man/rwi.stats.running.Rd, man/corr.rwl.seg.Rd,
       man/detrend.series.Rd, man/detrend.Rd,

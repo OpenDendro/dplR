@@ -1,3 +1,7 @@
+o [andybunn] update readme to have intro vignette
+
+o [andybunn] class for rwi to be applied after detrend. And methods like plot, summarize? what else?
+
 o [andybunn] An evolutive AR spectral analysis program using the Kalman filter? 
 
 o [andybunn] ssf vignette? Better to leave that all in LTLdplR?

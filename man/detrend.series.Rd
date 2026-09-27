@@ -75,7 +75,9 @@ detrend.series(y, y.name = "", make.plot = TRUE,
 
 }
 \details{
-  This detrends and standardizes a tree-ring series.  The detrending is the estimation and removal of the tree\enc{’}{'}s natural biological growth trend.  The default standardization is done by dividing each series by the growth trend to produce units in the dimensionless ring-width index (\acronym{RWI}).  If \code{difference} is TRUE, the index is calculated by subtraction. Values of zero (typically missing rings) in \code{y} are set to 0.001. 
+  This detrends and standardizes a tree-ring series.  The detrending is the estimation and removal of the tree\enc{’}{'}s natural biological growth trend.  The default standardization is done by dividing each series by the growth trend to produce units in the dimensionless ring-width index (\acronym{RWI}).  If \code{difference} is TRUE, the index is calculated by subtraction. Values of zero (typically missing rings) in \code{y} are set to 0.001 when dividing. 
+
+  A curve that is divided by must be positive, so when \code{difference} is FALSE a fit that is not all positive is replaced by a straight line or the mean (or, for \code{"Ar"}, its negative values are set to zero) with a warning.  Subtraction has no such need, so with \code{difference} = TRUE the fits are used as they are, zeros are left alone, and \code{y} may be negative, as log widths or isotope values are. 
   
   There are currently seven methods available for
   detrending although more are certainly possible.  The methods

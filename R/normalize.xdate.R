@@ -3,9 +3,11 @@ normalize.xdate <- function(rwl, series, n, prewhiten, biweight,
                             ar.order.max = NULL) {
     check.normalize.args(n, nyrs, prewhiten, ar.order.max)
     loo <- isTRUE(leave.one.out)
+    has.neg <- check.negative(if (loo) rwl else list(rwl, series), n, nyrs)
     ## Run hanning filter over the data if n isn't NULL, divide by a
     ## smoothing spline if nyrs isn't NULL, divide by mean if both are
-    ## NULL
+    ## NULL. Data with negative values have the mean subtracted
+    ## instead, as in normalize1().
     if(!is.null(nyrs)){
         master.df <- nyrs.rwi.mat(rwl, nyrs)
         if (is.data.frame(rwl)) {
@@ -14,6 +16,12 @@ normalize.xdate <- function(rwl, series, n, prewhiten, biweight,
         if (!loo) {
             series.out <- nyrs.rwi(series, nyrs, "'series'")
             names(series.out) <- names(series)
+        }
+    } else if(is.null(n) && has.neg){
+        master.stats <- colMeans(rwl, na.rm=TRUE)
+        master.df <- sweep(rwl, 2, master.stats, "-")
+        if (!loo) {
+            series.out <- series - mean(series, na.rm=TRUE)
         }
     } else if(is.null(n)){
         master.stats <- colMeans(rwl, na.rm=TRUE)

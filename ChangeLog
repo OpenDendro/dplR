@@ -1,5 +1,45 @@
 * CHANGES IN dplR VERSION 1.8.0
 
+File: normalize1.R, normalize.xdate.R, helpers.R, rwi.stats.running.R,
+      detrend.series.R, man/rwi.stats.running.Rd, man/corr.rwl.seg.Rd,
+      man/detrend.series.Rd, man/detrend.Rd,
+      tests/testthat/test-difference.R (new)
+-----------------------------------------------------------------
+ - Data that can be negative (GitHub issue 22, from Stefan Klesse).
+   rwi.stats() and rwi.stats.running() gave wrong rbar, EPS and SNR,
+   with no warning, for series with a negative mean, as indices from
+   detrend(difference = TRUE) often have. normalize1() divided each
+   series by its mean, which flips a series with a negative mean and
+   every correlation with it. On ca533 detrended with difference =
+   TRUE, subtracting 3 from one series moved rbar.tot from 0.416 to
+   0.373. The grand-mean check added for this only caught data whose
+   mean over all series was negative, and asked users to pass rwi + 1.
+   normalize.xdate(), used by interseries.cor(), corr.series.seg(),
+   ccf.series.rwl() and the other crossdating functions, did the same:
+   on that data, series 1's interseries.cor went from 0.541 to -0.541.
+
+   Both now subtract the mean from data with negative values rather
+   than divide by it. That keeps what the division was for, putting
+   every series on the same level so each counts equally in a master
+   or a tree mean (a biweight mean in particular is not shift-
+   invariant), without flipping signs. Positive data are divided by
+   the mean as before, so results for ring widths and ratio indices
+   are unchanged. The 'n' and 'nyrs' filters divide by a smooth curve,
+   so they now stop on data with negative values rather than return
+   meaningless ratios. The grand-mean check is gone.
+
+ - detrend.series() with difference = TRUE no longer requires the
+   fitted curves to be positive. Positivity is only needed to divide.
+   Before, a Spline, AgeDepSpline or Friedman fit that went below zero
+   was replaced by the mean, an unconstrained ModNegExp or
+   ModHugershoff fit that ended below zero fell back to a line or the
+   mean, and "Ar" set negative values to zero, which turned an
+   all-negative isotope series into a constant. With difference = TRUE
+   these fits are now used as they are, and zeros in the data are no
+   longer recoded to 0.001. constrain.nls = "always" and "when.fail"
+   keep their documented bounds (k >= 0, d >= 0) either way. Division
+   (difference = FALSE) is unchanged.
+
 File: man/skel.plot.Rd, man/latexify.Rd
 -----------------------------------------------------------------
  - Two reference URLs failed CRAN's URL check. skel.plot.Rd cited

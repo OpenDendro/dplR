@@ -157,6 +157,15 @@ rwi.stats.legacy(rwi, ids=NULL, period=c("max", "common"))
   as the family of cross-dating functions using \code{\var{prewhiten}} and
   \code{\var{n}}.  See the help page for \code{\link{corr.rwl.seg}} for
   more details.
+
+  The statistics are correlations, so they do not depend on the level
+  of each series.  \code{\var{rwi}} may hold values that can be
+  negative, such as indices from \code{\link{detrend}} with
+  \code{\var{difference} = TRUE}, log widths or isotope values; each
+  series then has its mean subtracted rather than being divided by it,
+  which would flip a series with a negative mean.  The \code{\var{n}} and \code{\var{nyrs}}
+  filters divide each series by a smooth curve, so they refuse data with
+  negative values.
   
 
 }

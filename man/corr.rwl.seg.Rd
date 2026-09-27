@@ -131,6 +131,15 @@ corr.rwl.seg(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   lost to prewhitening, and after a spline a low-order model loses little
   of the fit.
 
+  With neither filter, each series is divided by its mean before the
+  master is built, so every series counts equally.  Data that can be
+  negative, such as indices from \code{\link{detrend}} with
+  \code{\var{difference} = TRUE}, log widths or isotope values, have
+  the mean subtracted instead, since dividing by a negative mean would
+  flip the series.  The \code{\var{n}} and \code{\var{nyrs}} filters
+  divide by a smooth curve, so they refuse such data.  The same applies
+  to the other crossdating functions.
+
   The function is typically invoked to produce a plot where each segment
   for each series is colored by its correlation to the master
   chronology.  Green segments are those that do not overlap completely

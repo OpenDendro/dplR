@@ -146,6 +146,22 @@ check.normalize.args <- function(n, nyrs, prewhiten, ar.order.max) {
     }
 }
 
+### Data with negative values are differences or transformed values
+### (e.g. detrend(difference = TRUE), log widths, isotopes), not widths
+### or ratio indices. The 'n' and 'nyrs' filters divide by a smooth
+### curve, which is meaningless for such data, so they are refused.
+### Returns TRUE if there are negative values, for the caller to
+### subtract the mean rather than divide by it, which would flip a
+### series with a negative mean. See https://github.com/OpenDendro/dplR/issues/22
+check.negative <- function(x, n, nyrs) {
+    has.neg <- any(unlist(x) < 0, na.rm = TRUE)
+    if (has.neg && (!is.null(n) || !is.null(nyrs))) {
+        stop("the data contain negative values, so they are not ring widths or ratio indices (they may come from detrend(difference = TRUE), or be log widths or isotope values). The 'n' and 'nyrs' filters divide each series by a smooth curve, which is meaningless for such data. Detrend the data yourself and use n = NULL and nyrs = NULL",
+             call. = FALSE)
+    }
+    has.neg
+}
+
 ### Ring-width index for one series from the 'nyrs' spline, for
 ### normalize1 and normalize.xdate. Returns a vector as long as 'x', NA
 ### outside the series' span.

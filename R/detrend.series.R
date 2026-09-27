@@ -97,8 +97,15 @@
         }
       }
     }
-    y2[y2 == 0] <- 0.001
-    
+    ## A zero only needs recoding when it will be divided by. With
+    ## difference = TRUE the data may be log widths or isotope values,
+    ## where zero is an ordinary value, and every fit below may go
+    ## negative. See https://github.com/OpenDendro/dplR/issues/22
+    need.positive <- !difference
+    if (need.positive) {
+      y2[y2 == 0] <- 0.001
+    }
+
     resids <- list()
     curves <- list()
     modelStats <- list()
@@ -150,7 +157,7 @@
             stop()
           }
           fits <- predict(nec)
-          if (fits[nY] <= 0) {
+          if (need.positive && fits[nY] <= 0) {
             ## This error is a special case that needs to be
             ## detected (if only for giving a warning).  Any
             ## smarter way to implement this?
@@ -214,7 +221,7 @@
         if (all(is.finite(coefs)) && (coefs[2] <= 0 || pos.slope)) {
           tm <- cbind(1, x)
           ModNegExp <- drop(tm %*% coefs)
-          useMean <- !isTRUE(ModNegExp[1] > 0 &&
+          useMean <- need.positive && !isTRUE(ModNegExp[1] > 0 &&
                                ModNegExp[nY2] > 0)
           if (useMean) {
             dirtyDog <- TRUE
@@ -321,7 +328,7 @@
             stop()
           }
           fits <- predict(hug)
-          if (fits[nY] <= 0) {
+          if (need.positive && fits[nY] <= 0) {
             ## This error is a special case that needs to be
             ## detected (if only for giving a warning).  Any
             ## smarter way to implement this?
@@ -386,7 +393,7 @@
         if (all(is.finite(coefs)) && (coefs[2] <= 0 || pos.slope)) {
           tm <- cbind(1, x)
           ModHugershoff <- drop(tm %*% coefs)
-          useMean <- !isTRUE(ModHugershoff[1] > 0 &&
+          useMean <- need.positive && !isTRUE(ModHugershoff[1] > 0 &&
                                ModHugershoff[nY2] > 0)
           if (useMean) {
             dirtyDog <- TRUE
@@ -465,7 +472,7 @@
             sep = "\n")
       }
       AgeDepSpline <- ads(y=y2, nyrs0=nyrs2, pos.slope = pos.slope)
-      if (any(AgeDepSpline <= 0)) {
+      if (need.positive && any(AgeDepSpline <= 0)) {
         dirtyDog <- TRUE
         msg <- "Fits from method==\'AgeDepSpline\' are not all positive. \n  This is extremely rare. Series will be detrended with method==\'Mean\'. \n  This might not be what you want. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution."
         if(y.name2==""){
@@ -513,7 +520,7 @@
       }
       #Spline <- ffcsaps(y=y2, x=seq_len(nY2), nyrs=nyrs2, f=f)
       Spline <- caps(y=y2, nyrs=nyrs2, f=f)
-      if (any(Spline <= 0)) {
+      if (need.positive && any(Spline <= 0)) {
         dirtyDog <- TRUE
         msg <- "Fits from method==\'Spline\' are not all positive. \n  Series will be detrended with method==\'Mean\'. \n  This might not be what you want. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution."
         if(y.name2==""){
@@ -579,7 +586,7 @@
       # methods?
       # Also, this can (and does!) produce negative RWI values.
       # See example using CAM011. Thus:
-      if (any(Ar <= 0, na.rm = TRUE)) {
+      if (need.positive && any(Ar <= 0, na.rm = TRUE)) {
         dirtyDog <- TRUE
         msg <- "Fits from method==\'Ar\' are not all positive. \n  Setting values <0 to 0 before rescaling.  \n  This might not be what you want. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution."
         if(y.name2==""){
@@ -634,7 +641,7 @@
         Friedman <- supsmu(x = seq_len(nY2), y = y2, wt = wt, span = span,
                            periodic = FALSE, bass = bass)[["y"]]
       }
-      if (any(Friedman <= 0)) {
+      if (need.positive && any(Friedman <= 0)) {
         dirtyDog <- TRUE
         msg <- "Fits from method==\'Friedman\' are not all positive. \n  Series will be detrended with method==\'Mean\'. \n  This might not be what you want. \n  ARSTAN would tell you to plot that dirty dog at this point. \n  Proceed with caution."
         if(y.name2==""){

@@ -82,10 +82,6 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
       stop("'window.length' is smaller than 'min.corr.overlap'")
     }
   }
-  if(mean(unlist(rwi), na.rm=TRUE) <= 0) {
-    stop("'rwi' has a non-positive grand mean (mean(unlist(rwi), na.rm=TRUE)), which will cause normalize1() to return incorrect rbar and eps values. This can happen when 'rwi' has been detrended using difference=TRUE, which produces first differences rather than ring widths. To fix this, pass a shifted version of 'rwi' directly into the function call, e.g. rwi.stats.running(rwi + 1, ...). Avoid overwriting your rwi object in your workspace as this can cause problems downstream.",
-         call.=FALSE)
-  }
   tmp <- normalize1(rwi, n, prewhiten, nyrs = nyrs,
                     ar.order.max = ar.order.max)
   if(!all(tmp$idx.good)) {

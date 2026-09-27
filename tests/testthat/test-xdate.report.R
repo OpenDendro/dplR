@@ -27,6 +27,28 @@ test.xdate.report <- function() {
         expect_equal(s$n.flag[s$series == "641143"], sum(before))
     })
 
+    test_that("the flagged table has one row per flag, matching the matrix", {
+        fs <- rpt$flagged
+        expect_s3_class(fs, "data.frame")
+        expect_equal(nrow(fs), sum(rpt$flags != ""))
+        expect_true(all(fs$series == "641143"))
+        expect_true(all(fs$flag == "B"))
+        expect_true(all(fs$best.lag == -1))
+        expect_true(all(fs$to < 1500))
+        expect_equal(fs$gain, fs$r.lag - fs$r.dated)
+        expect_identical(rownames(fs), as.character(seq_len(nrow(fs))))
+        ## nothing flagged: no rows, but the columns keep their types
+        r0 <- xdate.report(co021, check = FALSE)
+        expect_equal(nrow(r0$flagged), 0L)
+        expect_identical(vapply(r0$flagged, class, ""),
+                         vapply(fs, class, ""))
+        ## nothing crossdated (two series, no master): NULL, like the flags
+        r1 <- xdate.report(co021[, 1:2], check = FALSE)
+        expect_null(r1$flags)
+        expect_null(r1$flagged)
+        expect_true("flagged" %in% names(r1))
+    })
+
     test_that("the letters are the ones corr.rwl.seg() implies", {
         crs <- rpt$crs
         B <- !is.na(crs$best.lag) & crs$best.lag != 0
@@ -94,14 +116,14 @@ test.xdate.report <- function() {
 
     test_that("a B flag that is weak at every lag is marked as such", {
         ## the planted missing ring crossdates at -1: not weak
-        fs <- dplR:::report.flagged(rpt)
+        fs <- rpt$flagged
         expect_true(all(fs$flag == "B"))
         expect_false(any(fs$weak))
         expect_false(any(grepl("weak at every lag", txt[grep("problem segments", txt)])))
         ## wa082: every B wins only among weak correlations
         data(wa082, package = "dplR", envir = environment())
         r <- xdate.report(wa082, check = FALSE)
-        fs <- dplR:::report.flagged(r)
+        fs <- r$flagged
         B <- fs$flag == "B"
         expect_true(any(B))
         expect_identical(fs$weak, B & fs$r.lag < r$settings$r.crit)

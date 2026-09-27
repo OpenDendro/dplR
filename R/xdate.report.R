@@ -265,6 +265,7 @@ xdate.report <- function(x, seg.length = 50, bin.floor = 100, nyrs = 32,
                 meta = meta,
                 stats = stat,
                 flags = flags,
+                flagged = NULL,
                 crs = cs,
                 excluded = excluded,
                 check = chk,
@@ -282,6 +283,11 @@ xdate.report <- function(x, seg.length = 50, bin.floor = 100, nyrs = 32,
                                   time = Sys.time(),
                                   file = file, file.md5 = file.md5,
                                   object = obj.name))
+    ## Assigning NULL would drop the element, so only fill it when there
+    ## is something to fill.
+    if (do.xdate) {
+        res$flagged <- report.flagged(res)
+    }
     class(res) <- "xdate.report"
     res
 }
@@ -369,7 +375,7 @@ report.fields <- function(x) {
                   "Number dated series" = nrow(s),
                   "Series crossdated" = if (sum(s$crossdated) < nrow(s)) sum(s$crossdated),
                   "Segment length tested" = if (xd) x$settings$seg.used)
-    n.weak <- if (xd) sum(report.flagged(x)$weak) else 0L
+    n.weak <- if (xd) sum(x$flagged$weak) else 0L
     flags <- if (xd) {
         list("Number problem segments" =
                  paste0(gettextf("%d  (A %d, B %d", n.A + n.B, n.A, n.B),
@@ -387,7 +393,9 @@ report.fields <- function(x) {
     list(top = keep(top), stats = keep(stats), flags = keep(flags))
 }
 
-### One row per flagged segment, in series then segment order.
+### One row per flagged segment, in series then segment order. Built once
+### by xdate.report() and kept as its 'flagged' element; the formatters
+### read that element.
 report.flagged <- function(x) {
     fl <- x$flags
     if (is.null(fl)) {
@@ -411,11 +419,14 @@ report.flagged <- function(x) {
                from = x$crs$bins[idx[, 2], 1], to = x$crs$bins[idx[, 2], 2],
                flag = fl[idx], r.dated = rho[idx],
                best.lag = x$crs$best.lag[idx],
-               r.lag = ifelse(isB, x$crs$best.rho[idx], NA_real_),
-               gain = ifelse(isB, x$crs$best.rho[idx] - rho[idx], NA_real_),
+               ## as.numeric() and as.character(): ifelse() on no flags
+               ## returns logical, and the columns should keep their types
+               r.lag = as.numeric(ifelse(isB, x$crs$best.rho[idx], NA_real_)),
+               gain = as.numeric(ifelse(isB, x$crs$best.rho[idx] - rho[idx],
+                                        NA_real_)),
                weak = weak,
-               note = ifelse(weak, "weak at every lag", ""),
-               stringsAsFactors = FALSE)
+               note = as.character(ifelse(weak, "weak at every lag", "")),
+               row.names = NULL, stringsAsFactors = FALSE)
 }
 
 ### The notes at the end, one sentence or paragraph per element, unwrapped.
@@ -556,7 +567,7 @@ report.text <- function(x, bins.per.page = 20) {
                        }, ""), collapse = "")))
         }
 
-        fs <- report.flagged(x)
+        fs <- x$flagged
         add("", paste0(" FLAGGED SEGMENTS: ", x$title), rule)
         if (nrow(fs) == 0L) {
             add(" None.")
@@ -698,7 +709,7 @@ report.md <- function(x, bins.per.page = 20) {
                 "")
         }
 
-        fs <- report.flagged(x)
+        fs <- x$flagged
         add("## Flagged segments", "")
         if (nrow(fs) == 0L) {
             add("None.", "")
@@ -883,7 +894,7 @@ report.html <- function(x, bins.per.page = 20) {
                 "</table></div>")
         }
 
-        fs <- report.flagged(x)
+        fs <- x$flagged
         add("<h2>Flagged segments</h2>")
         if (nrow(fs) == 0L) {
             add("<p>None.</p>")

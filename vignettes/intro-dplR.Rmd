@@ -204,6 +204,13 @@ The flagged segments section is where to start. All nine flags are on
 show.section("Flagged segments")
 ```
 
+The same table is in the report as a data frame, `rpt$flagged`, ready
+for further work:
+
+```{r flagged}
+rpt$flagged[, c("series", "from", "to", "flag", "best.lag", "gain")]
+```
+
 A `B` flag means the segment correlates better at another lag than at
 its dated position. An `A` flag, which does not appear here, means the
 dated position is the segment's best but falls short of significance.

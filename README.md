@@ -46,7 +46,15 @@ This should be straightforward for Linux users (if any still exist) but because 
 
 ## Getting Started
 
-New users of dplR can begin by working with the introductory chapters in [Learning to Love dplR](https://opendendro.github.io/dplR-workshop/) which contains instructional material for using `dplR`.
+New users can start with the package vignette, which walks through reading ring widths, detrending, building a chronology and checking crossdating on data that ship with `dplR`. Once `dplR` is installed, open it with:
+
+```R
+vignette("intro-dplR")
+```
+
+If you installed from GitHub, the vignettes are only there if you asked for them: `devtools::install_github("openDendro/dplR", build_vignettes = TRUE)`.
+
+[Learning to Love dplR](https://opendendro.github.io/dplR-workshop/) covers the same ground and more in depth.
 
 ## Interactive Apps
 

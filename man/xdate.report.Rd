@@ -145,6 +145,18 @@ write.xdate.report(x, fname, type = NULL, \dots)
   \item{flags}{ a \code{character} matrix, series by segment, of
     \code{"A"}, \code{"B"} or \code{""}, or \code{NULL} if nothing was
     crossdated. }
+  \item{flagged}{ a \code{data.frame} with one row per flagged segment,
+    in series then segment order, as in the report's flagged segments
+    table, or \code{NULL} if nothing was crossdated. It has no rows if
+    nothing was flagged. Its columns are \code{seq} and \code{series}
+    (the series' number and name), \code{from} and \code{to} (the
+    segment's first and last years), \code{flag} (\code{"A"} or
+    \code{"B"}), \code{r.dated} (the correlation at the dated position),
+    \code{best.lag} (the lag that correlates best; negative means
+    missing rings), \code{r.lag} and \code{gain} (the correlation at
+    \code{best.lag} and its gain over \code{r.dated}, \code{NA} for an
+    A flag), \code{weak} (\code{TRUE} for a B flag that is under the
+    critical value even at its best lag) and \code{note}. }
   \item{crs}{ the result of \code{\link{corr.rwl.seg}}, or \code{NULL}. }
   \item{excluded}{ a \code{data.frame} of the series left out of the
     crossdating and why. }
@@ -180,7 +192,7 @@ rpt <- xdate.report(dat, meta = list(site.name = "Schulman Old Tree No. 1",
                                      species = "PSME"))
 rpt
 ## The flagged segments, as data
-rpt$flags["641143", rpt$flags["641143", ] != ""]
+rpt$flagged
 ## Save it as fixed-width text, as Markdown, or as HTML
 fn <- tempfile(fileext = ".txt")
 write.xdate.report(rpt, fn)

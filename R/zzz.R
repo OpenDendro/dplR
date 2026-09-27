@@ -7,5 +7,6 @@
                         ".\n",
                         "dplR is part of openDendro https://opendendro.org",
                         ".\n",
-                        "New users can visit https://opendendro.github.io/dplR-workshop/ to get started.")
+                        "New users can start with vignette(\"intro-dplR\") or visit\n",
+                        "https://opendendro.github.io/dplR-workshop/")
 }

@@ -1,12 +1,23 @@
 * CHANGES IN dplR VERSION 1.8.0
 
-File: vignettes/intro-dplR.Rmd (new), man/ssf.Rd
+File: vignettes/intro-dplR.Rmd (new), man/ssf.Rd, README.md, zzz.R,
+      xdate.report.R, man/xdate.report.Rd,
+      tests/testthat/test-xdate.report.R
 -----------------------------------------------------------------
+ - xdate.report() gains a 'flagged' element: a data frame with one row
+   per flagged segment (series, segment years, flag, correlation as
+   dated, best lag, correlation at that lag, gain, and whether a B is
+   weak at every lag). It is the report's flagged segments table as
+   data; before, getting it meant indexing the series-by-segment flags
+   matrix. It has no rows when nothing is flagged, and is NULL when
+   nothing was crossdated, as 'flags' is.
  - New vignette, "Getting Started with dplR": reading, describing,
    detrending, building a chronology and checking crossdating on
    co021, using dplR and base R only. It points to Learning to Love
    dplR for more. dplR has had no introductory vignette since the Rnw
    vignettes were removed in 2022.
+ - README.md and the startup message point new users to the vignette
+   as well as the book.
  - ssf.Rd called the workshop book "Learning to Love R", and
    "decried" is now "described".
 

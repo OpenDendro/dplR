@@ -1,0 +1,244 @@
+---
+title: "Getting Started with dplR"
+author: "Andy Bunn"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Getting Started with dplR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, warning = FALSE,
+  fig.width = 7, fig.height = 4.5, fig.align = "center",
+  dev = "png", dpi = 96
+)
+```
+
+This vignette walks through the core of a tree-ring analysis in
+dplR: reading ring widths, describing them, detrending, building a
+chronology, and checking the crossdating. It uses only dplR and base
+R, and every example runs on data that ship with the package. For a
+longer treatment, with more on each step and on signal-free
+chronologies and time-series analysis, see
+[Learning to Love dplR](https://opendendro.github.io/dplR-workshop/).
+
+```{r load}
+library(dplR)
+```
+
+## Reading ring widths
+
+Ring widths are read with `read.rwl()`, which handles Tucson
+(decadal), compact, Heidelberg, CSV-style spreadsheets and TRiDaS
+files. It guesses the format, but naming it is safer:
+
+```{r read, eval=FALSE}
+dat <- read.rwl("mysite.rwl", format = "tucson")
+```
+
+The result is an `rwl` object: a data frame with one column per
+series and one row per year, with the years as row names and `NA`
+where a series has no ring. Here we use `co021`, 35 Douglas-fir
+series from Mesa Verde, Colorado, which was read from the
+International Tree-Ring Data Bank this way.
+
+```{r data}
+data(co021)
+class(co021)
+dim(co021)
+co021[1:5, 1:4]
+```
+
+## Describing the data
+
+`rwl.report()` gives an overview: number of series, span, mean
+length, mean interseries correlation, and any missing rings or
+suspicious values.
+
+```{r report}
+rwl.report(co021)
+```
+
+`summary()` returns per-series statistics, and `plot()` shows
+where each series sits in time.
+
+```{r describe}
+head(summary(co021))
+plot(co021, plot.type = "spag")
+```
+
+## Detrending
+
+Raw ring widths carry an age-related growth trend and differences in
+mean growth between trees. Detrending fits a curve to each series and
+divides the ring widths by it, giving dimensionless indices with a
+mean of about one. `detrend()` does this for every series;
+`detrend.series()` does one and plots the fit, which is a good way to
+choose a method.
+
+```{r detrend-one}
+x <- co021[, "641114"]
+names(x) <- rownames(co021)
+x.rwi <- detrend.series(x, method = c("Spline", "ModNegExp"),
+                        make.plot = TRUE)
+```
+
+Here we use a cubic smoothing spline with a 50% frequency cutoff at
+two-thirds of each series' length (the default for `"Spline"`).
+
+```{r detrend}
+co021.rwi <- detrend(co021, method = "Spline")
+```
+
+The result is an `rwi` object with the same shape as the `rwl`.
+`rwi.stats()` summarizes how coherent the indices are. `rbar.eff` is
+the mean interseries correlation and `eps` the expressed population
+signal; an `eps` above about 0.85 is the usual rule of thumb for a
+chronology that represents the population.
+
+```{r rwi-stats}
+rwi.stats(co021.rwi)[, c("n.trees", "rbar.eff", "eps", "snr")]
+```
+
+## Building a chronology
+
+`chron()` averages the indices by year, using Tukey's biweight robust
+mean by default. The result is a `crn` object: the chronology and the
+number of series behind each year.
+
+```{r chron}
+co021.crn <- chron(co021.rwi)
+tail(co021.crn)
+plot(co021.crn, add.spline = TRUE, nyrs = 32)
+```
+
+The early part of this chronology rests on few series (fewer than
+five before 1234), so check `samp.depth` before trusting a given year.
+
+## Checking the crossdating
+
+Crossdating assigns each ring its exact calendar year. dplR does not
+replace visual crossdating, but it can check it statistically, the way
+COFECHA does. To see what an error looks like, we plant one: the
+1500 ring of series 641143 is deleted, so every ring before 1500 is
+now dated one year too late.
+
+```{r plant}
+dat <- co021
+x <- dat[, "641143"]
+names(x) <- rownames(dat)
+dat[, "641143"] <- delete.ring(x, year = 1500)
+```
+
+`corr.rwl.seg()` correlates overlapping segments of each series
+against a master built from all the other series. Segments that do not
+correlate significantly are flagged, and with `lag.max` it also finds
+the shift at which each segment correlates best.
+
+```{r crs, fig.height=6}
+crs <- corr.rwl.seg(dat, seg.length = 50, pcrit = 0.01,
+                    lag.max = 10, label.cex = 0.7)
+```
+
+Every tested segment of 641143 that ends before 1500 correlates best
+at a lag of -1, and every later one at a lag of 0.
+In dplR, as in COFECHA, a negative lag means the series is missing a
+ring, so this points to a missing ring near 1500.
+
+```{r best-lag}
+ok <- !is.na(crs$best.lag["641143", ])
+crs$best.lag["641143", ok]
+```
+
+`ccf.series.rwl()` looks at one series in more detail, plotting the
+full cross-correlation with the master for each segment.
+
+```{r ccf, fig.height=6}
+ccf <- ccf.series.rwl(rwl = dat[, colnames(dat) != "641143"],
+                      series = dat[, "641143"],
+                      series.yrs = as.numeric(rownames(dat)),
+                      seg.length = 50, bin.floor = 50)
+```
+
+`xdate.report()` puts all of this into a COFECHA-style report. It
+lists the flagged segments with their best lag and the gain in
+correlation, and records the settings and file checksum so the report
+can be reproduced. Printing it shows the report in the console.
+
+```{r xdate-report, results="hide"}
+rpt <- xdate.report(dat, title = "co021 with a planted fault")
+rpt
+```
+
+```{r report-sections, include=FALSE}
+## Split the Markdown version of the report into its sections so the
+## vignette can show a couple of them as tables. Headings become bold
+## labels, which keeps them out of the table of contents and out of
+## pandoc's section structure.
+md <- format(rpt, type = "markdown")
+md <- sub("^#{1,2} (.*)$", "**\\1**", md)
+sec <- cumsum(grepl("^\\*\\*", md))
+sections <- split(md, sec)
+names(sections) <- sapply(sections, function(s) gsub("\\*", "", s[1]))
+show.section <- function(name) {
+    cat(sections[[name]], sep = "\n")
+    cat("\n")
+}
+```
+
+The report opens with a summary of the collection:
+
+```{r report-summary, echo=FALSE, results="asis"}
+show.section("Summary")
+```
+
+The flagged segments section is where to start. All nine flags are on
+641143, all are `B` flags at a lag of -1, and all end before 1500:
+
+```{r report-flags, echo=FALSE, results="asis"}
+show.section("Flagged segments")
+```
+
+A `B` flag means the segment correlates better at another lag than at
+its dated position. An `A` flag, which does not appear here, means the
+dated position is the segment's best but falls short of significance.
+The report also has a correlation table for every segment of every
+series, descriptive statistics, the output of `rwl.check()`, and notes
+on how each number was computed:
+
+<details>
+<summary>The full report</summary>
+
+<div style="overflow-x: auto;">
+```{r report-full, echo=FALSE, results="asis"}
+cat(md, sep = "\n")
+```
+</div>
+
+</details>
+
+`write.xdate.report()` saves the report as text, Markdown or HTML:
+
+```{r write-report, eval=FALSE}
+write.xdate.report(rpt, "co021-report.html")
+```
+
+The statistics say where to look; the wood says what happened. Having
+found the likely missing ring, you would go back to the sample, and
+once confirmed, fix the series with `insert.ring()`.
+
+## Where to go next
+
+- [Learning to Love dplR](https://opendendro.github.io/dplR-workshop/)
+  covers these steps and more in depth.
+- `vignette("math-dplR")` gives the mathematics behind the smoothing
+  splines, detrending and other functions.
+- `help(package = "dplR")` lists every function. Good next stops are
+  `?detrend`, `?chron`, `?ssf` (signal-free chronologies),
+  `?corr.rwl.seg` and `?xdate.report`.
+- dplR is part of [openDendro](https://opendendro.org).

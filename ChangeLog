@@ -152,6 +152,33 @@ File: as.rwi.R (new), summary.rwi.R (new), rwi.image.R (new),
    helpers.R. strip.rwl() detrends its indices a second time on purpose
    and relabels them first, so it does not warn itself.
 
+File: detrend.R, detrend.series.R, man/detrend.Rd,
+      tests/testthat/test-empty-series.R
+-----------------------------------------------------------------
+ - detrend() drops a series with no values, with a message naming it,
+   as window() and interseries.cor() do. One such series used to stop
+   the whole call with "all values are 'NA'", which from the parallel
+   loop came out as "task 23 failed" and named nothing. The other
+   series' indices are the same as with it removed by hand. 'y.name' is
+   cut down with the series, and must now have one name per series.
+ - detrend.series() names the series (its 'y.name') when it stops on
+   all-NA values or on NA inside the series, and the second message
+   points to fill.internal.NA(). An interior gap given to detrend() now
+   says which series has it, though still inside "task N failed".
+
+File: rcs.R, cms.R, i.detrend.R, man/rcs.Rd, man/cms.Rd,
+      man/i.detrend.Rd, tests/testthat/test-empty-series.R
+-----------------------------------------------------------------
+ - rcs(), cms() and i.detrend() drop a series with no values, with a
+   message naming it, as detrend() now does. rcs() used to stop with
+   "NA/NaN argument"; cms() returned the empty series as a column of NA
+   in the indices; i.detrend() stopped when the series' turn came, and
+   every method already chosen at the keyboard was lost. The other
+   series' indices are the same as with it removed by hand. cms() still
+   requires a 'po' row for every series, empty or not. i.detrend() cuts
+   'y.name' down with the series, and it must now have one name per
+   series.
+
 File: rwl.check.R, tests/testthat/test-rwl.check.R
 -----------------------------------------------------------------
  - New check RWL_EMPTY_SERIES (warning) for a series with no values at

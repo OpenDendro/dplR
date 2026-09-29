@@ -88,6 +88,9 @@ rcs(rwl, po = NULL, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE,
   details on detrending in general, and Biondi and Qeadan (2008) for an
   explanation of \acronym{RCS}.
 
+  A series with no values at all is dropped, with a message naming it,
+  and the rest are standardized as if it had never been there.
+
 }
 \value{
 

@@ -4,6 +4,17 @@
     rwl <- check.rwl(rwl, why = paste(
         "Detrending indices divides out a growth curve that has already",
         "been removed, and the result is indices of indices."))
+    ## AGB Sep 2026: a series with no values is dropped, with a message
+    ## naming it, before any series is shown. It used to stop the call when
+    ## its turn came, and every choice already made at the keyboard was
+    ## lost. 'y.name' is cut down with the series, as in detrend().
+    if (!missing(y.name)) {
+        if (length(y.name) != ncol(rwl)) {
+            stop("'y.name' must have one name per series in 'rwl'")
+        }
+        y.name <- y.name[vapply(rwl, function(z) any(!is.na(z)), logical(1))]
+    }
+    rwl <- drop.empty.series(rwl)
     out <- rwl
     n.col <- ncol(rwl)
     methods <- setNames(character(n.col), names(rwl))

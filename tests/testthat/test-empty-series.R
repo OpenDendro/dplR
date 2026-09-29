@@ -91,3 +91,75 @@ test_that("an AR model is not fitted to fewer than two values", {
                         return.info = TRUE)
     expect_equal(r$model.info$Ar$order, 0L)
 })
+
+test_that("detrend() drops empty series and names them", {
+    expect_message(r <- detrend(x, method = "Mean"),
+                   "4 series have no values and were dropped: CAM132")
+    expect_s3_class(r, "rwi")
+    expect_false(any(empty %in% names(r)))
+    expect_equal(ncol(r), ncol(x) - 4L)
+    ## the other series are detrended as if the empty ones were never there
+    full <- setdiff(names(x), empty)
+    expect_equal(unclass(r)[full],
+                 unclass(detrend(x[, full], method = "Mean"))[full],
+                 ignore_attr = TRUE)
+    ## y.name is cut down with the series
+    nm <- paste0("s", seq_len(ncol(x)))
+    r2 <- suppressMessages(detrend(x, method = "Mean", y.name = nm))
+    expect_identical(names(r2), nm[!names(x) %in% empty])
+    expect_error(suppressMessages(detrend(x, method = "Mean", y.name = "a")),
+                 "one name per series")
+    ## with several methods and with return.info, the empty series are gone
+    expect_false(any(empty %in%
+                     names(suppressMessages(detrend(x, method = c("Mean", "Spline"))))))
+    ri <- suppressMessages(detrend(x, method = "Mean", return.info = TRUE))
+    expect_false(any(empty %in% names(ri$model.info)))
+    ## nothing but empty series is an error that says so
+    expect_error(detrend(x[, empty]), "no series has any values")
+})
+
+test_that("detrend.series() names the series it cannot detrend", {
+    y <- rep(NA_real_, 10)
+    expect_error(detrend.series(y, y.name = "ABC01", make.plot = FALSE),
+                 "series ABC01: all values are 'NA'")
+    y <- c(1, 2, NA, 2, 1, 2, 1, 2)
+    expect_error(detrend.series(y, y.name = "ABC01", make.plot = FALSE,
+                                method = "Mean"),
+                 "series ABC01: 'NA's are not allowed.*fill.internal.NA")
+    ## without a name, as before
+    expect_error(detrend.series(rep(NA_real_, 10), make.plot = FALSE),
+                 "^all values are 'NA'$")
+})
+
+test_that("rcs() and cms() drop empty series and name them", {
+    po <- data.frame(series = names(x), pith.offset = 1L)
+    full <- setdiff(names(x), empty)
+    for (f in list(rcs = function(x, po) rcs(x, po = po, make.plot = FALSE),
+                   cms = function(x, po) cms(x, po = po))) {
+        expect_message(r <- f(x, po),
+                       "4 series have no values and were dropped: CAM132")
+        expect_s3_class(r, "rwi")
+        expect_identical(names(r), full)
+        ## the other series are as with the empty ones removed by hand
+        r0 <- f(x[, full], po[po$series %in% full, ])
+        expect_equal(unclass(r)[full], unclass(r0)[full], ignore_attr = TRUE)
+    }
+    ## a po that does not match the series is still an error in cms()
+    expect_error(cms(x, po = po[-1, ]), "dimension problem")
+})
+
+test_that("i.detrend() drops empty series before asking about any", {
+    ## i.detrend.series() asks at the keyboard; stand in for it.
+    seen <- character(0)
+    local_mocked_bindings(i.detrend.series = function(y, y.name, ...) {
+        seen <<- c(seen, y.name)
+        out <- y / mean(y, na.rm = TRUE)
+        attr(out, "method") <- "Mean"
+        out
+    })
+    expect_message(r <- capture.output(res <- i.detrend(x)),
+                   "4 series have no values and were dropped: CAM132")
+    expect_false(any(empty %in% seen))
+    expect_false(any(empty %in% names(res)))
+    expect_false(any(empty %in% names(attr(res, "dplR.detrend")$method)))
+})

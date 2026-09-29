@@ -58,11 +58,16 @@
     }
     
     ## Remove NA from the data (they will be reinserted later)
+    ## AGB Sep 2026: the stops name the series, which detrend() passes in
+    ## as y.name; from inside detrend()'s parallel loop they otherwise came
+    ## out as "task 23 failed" with no way to tell which series it was.
+    which.y <- if (nzchar(y.name2)) paste0("series ", y.name2, ": ") else ""
     good.y <- which(!is.na(y))
     if(length(good.y) == 0) {
-      stop("all values are 'NA'")
+      stop(which.y, "all values are 'NA'", call. = FALSE)
     } else if(any(diff(good.y) != 1)) {
-      stop("'NA's are not allowed in the middle of the series")
+      stop(which.y, "'NA's are not allowed in the middle of the series. ",
+           "Use fill.internal.NA() to close the gap", call. = FALSE)
     }
     y2 <- y[good.y]
     nY2 <- length(y2)

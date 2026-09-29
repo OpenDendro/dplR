@@ -22,6 +22,15 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
     col.names <- names(rwl2)
     if(!all(sort(po[[1]]) == sort(col.names)))
         stop("series ids in 'po' and 'rwl' do not match")
+    ## AGB Sep 2026: a series with no values is dropped, with a message
+    ## naming it, as in detrend(). It used to come back as a column of NA
+    ## in the indices. 'po' is checked against every series first, so a
+    ## 'po' that does not match the data is still an error.
+    rwl2 <- drop.empty.series(rwl2)
+    po <- po[po[[1]] %in% names(rwl2), , drop = FALSE]
+    rwl <- rwl2
+    n.col <- ncol(rwl2)
+    col.names <- names(rwl2)
     rownames(rwl2) <- rownames(rwl2) # guard against NULL names funniness
     n.row <- nrow(rwl2)
 

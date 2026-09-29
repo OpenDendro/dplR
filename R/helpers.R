@@ -666,14 +666,17 @@ find.internal.na <- function(x) {
 ### Checking what a function was given. There are three kinds of function:
 ###
 ###   check.rwl()     wants ring widths: detrend(), rcs(), cms(), bai.in(),
-###                   rwl.report(), ... Indices (class "rwi") are taken, with
-###                   a warning, and relabelled as widths.
-###   check.rwl.rwi() takes widths or indices alike: the crossdating
-###                   functions, the plots, common.interval(). Either class
-###                   passes quietly and is returned as it came.
+###                   rwl.report(), ... Indices (class "rwi") and basal area
+###                   increment (class "bai") are taken, with a warning, and
+###                   relabelled as widths. 'bai.ok = TRUE' takes "bai"
+###                   quietly, for detrend(): detrending BAI is ordinary.
+###   check.rwl.rwi() takes any kind of series alike: the crossdating
+###                   functions, the plots, common.interval(). Class "rwl",
+###                   "rwi" or "bai" passes quietly and is returned as it came.
 ###   check.rwi()     wants indices: chron(), rwi.stats(), sss(). Warns on
 ###                   class "rwl"; anything else passes quietly, since these
-###                   have always taken a plain data.frame or matrix.
+###                   have always taken a plain data.frame or matrix, and a
+###                   mean of basal area increment is a BAI chronology.
 ###
 ### AGB Sep 2026. Until the rwi class there was nothing to tell widths from
 ### indices by, so nothing could warn: rwi.stats(ca533) gives rbar.eff 0.350
@@ -717,9 +720,19 @@ coerce.rwl <- function(rwl) {
 
 ### Validate (and if necessary coerce) an rwl object of ring widths.
 ### Called at the top of every public function that wants widths.
-check.rwl <- function(rwl, why = NULL) {
+check.rwl <- function(rwl, why = NULL, bai.ok = FALSE) {
   fn <- caller.name()
-  if (inherits(rwl, "rwi")) {
+  if (inherits(rwl, "bai")) {
+    if (!bai.ok) {
+      warning(fn, " wants ring widths, but was given basal area increment ",
+              "(class \"bai\"). It treats the areas as widths, so its ",
+              "results are not what they say. If the values really are ",
+              "widths, relabel them with as.rwl().",
+              call. = FALSE)
+    }
+    rwl <- as.rwl(rwl)
+    attr(rwl, "dplR.bai") <- NULL
+  } else if (inherits(rwl, "rwi")) {
     warning(fn, " wants ring widths, but was given ring-width ",
             "indices (class \"rwi\"). ",
             if (is.null(why)) {
@@ -736,11 +749,12 @@ check.rwl <- function(rwl, why = NULL) {
   rwl
 }
 
-### Validate an object that may hold widths or indices. Either class is
-### returned as it came; anything else is coerced to rwl with a warning, as
-### check.rwl() does.
+### Validate an object that may hold widths, indices or basal area
+### increment. Each class is returned as it came; anything else is coerced
+### to rwl with a warning, as check.rwl() does.
 check.rwl.rwi <- function(rwl) {
-  if (!inherits(rwl, "rwl") && !inherits(rwl, "rwi")) {
+  if (!inherits(rwl, "rwl") && !inherits(rwl, "rwi") &&
+      !inherits(rwl, "bai")) {
     rwl <- coerce.rwl(rwl)
   }
   warn.internal.na(rwl)

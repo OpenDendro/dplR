@@ -2,7 +2,7 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
   # make sure input is class(rwl). AGB Sep 2026: indices are reported on,
   # with a warning, before warnings are turned off below; they used to stop
   # here with the message for any other object.
-  if (inherits(rwl, "rwi")) {
+  if (inherits(rwl, "rwi") || inherits(rwl, "bai")) {
     rwl <- check.rwl(rwl, why = paste(
       "The report describes ring widths: its means, zero rings and",
       "thresholds say nothing useful about indices."))

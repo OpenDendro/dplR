@@ -35,6 +35,9 @@ bai.in <- function(rwl, d2pith = NULL) {
         ## write result
         out[no.na, i] <- bai
     }
-    ## return result
-    out
+    ## AGB Sep 2026: class "bai" (see as.bai.R). 'out' started as a copy of
+    ## the widths and so came back as class "rwl", which chron() and the
+    ## other functions that check their input then took for widths.
+    make.bai(out, from = rwl,
+             how = list(fun = "bai.in", d2pith = !is.null(d2pith)))
 }

@@ -2,9 +2,6 @@ o [andybunn] deprecate i.detrend() and i.detrend.series() in favour of the
   app; rarely used. (1.8.0 gave i.detrend() the rwi class and a record of
   each series' method, the minimum while it is still here.)
 
-o [andybunn] class for basal area increment from bai.in() and bai.out().
-  They are a third kind of series with the same mix-up risk as rwl/rwi.
-
 o [andybunn] An evolutive AR spectral analysis program using the Kalman filter? 
 
 o [andybunn] ssf vignette? Better to leave that all in LTLdplR?

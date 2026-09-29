@@ -96,6 +96,13 @@ S3method("time<-", crn)
 S3method(window, rwl)
 S3method(window, rwi)
 S3method(window, crn)
+S3method("[", bai)
+S3method(subset, bai)
+S3method(time, bai)
+S3method("time<-", bai)
+S3method(window, bai)
+S3method(summary, bai)
+S3method(plot, bai)
 
 ###############################################################
 #
@@ -104,7 +111,7 @@ S3method(window, crn)
 ###############################################################
 
 export("ads",
-       "as.rwi", "as.rwl",
+       "as.bai", "as.rwi", "as.rwl",
        "check.rwl",
        "autoread.ids",
        "bakker",

@@ -58,6 +58,7 @@
 `[.rwl` <- function(x, i, j, drop) {
     prov <- attr(x, "dplR.provenance")
     how <- attr(x, "dplR.detrend")
+    bai.how <- attr(x, "dplR.bai")
     old.rn <- attr(x, "row.names")
     ## Whether rows were indexed, worked out the way `[.data.frame` works out
     ## the same thing: x[j] and x[] name no rows, and neither does x[, j].
@@ -107,6 +108,9 @@
     if (!is.null(how)) {
         attr(out, "dplR.detrend") <- how
     }
+    if (!is.null(bai.how)) {
+        attr(out, "dplR.bai") <- bai.how
+    }
     rows.changed <- !identical(attr(out, "row.names"), old.rn)
     if (!rows.changed && is.null(prov)) {
         return(out)
@@ -115,14 +119,18 @@
 
     if (rows.changed) {
         if (length(yrs) > 1L && !(!anyNA(yrs) && all(diff(yrs) == 1))) {
-            is.rwi <- inherits(x, "rwi")
+            kind <- if (inherits(x, "rwi")) "rwi"
+                    else if (inherits(x, "bai")) "bai" else "rwl"
             warning("row subsetting left years that are not consecutive and ",
-                    "increasing, so the result is a data.frame and not an ",
-                    if (is.rwi) "rwi" else "rwl", " object. dplR reads the ",
+                    "increasing, so the result is a data.frame and not ",
+                    if (kind == "bai") "a bai" else paste("an", kind),
+                    " object. dplR reads the ",
                     "years off the row names and assumes each row is the ",
                     "year after the one above it, so ",
-                    if (is.rwi) "time(), plot(), chron(), rwi.stats()"
-                    else "time(), plot(), detrend(), chron(), rwl.stats()",
+                    switch(kind,
+                           rwi = "time(), plot(), chron(), rwi.stats()",
+                           bai = "time(), plot(), chron(), detrend()",
+                           "time(), plot(), detrend(), chron(), rwl.stats()"),
                     " and the crossdating functions would all have read this ",
                     "as an unbroken run of years and returned wrong answers. ",
                     "Take a span of years with window(), e.g. ",
@@ -135,6 +143,7 @@
             ## not one of dplR's objects, and should not look half like one.
             attr(out, "dplR.provenance") <- NULL
             attr(out, "dplR.detrend") <- NULL
+            attr(out, "dplR.bai") <- NULL
             class(out) <- "data.frame"
             return(out)
         }

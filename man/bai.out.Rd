@@ -33,8 +33,13 @@ bai.out(rwl, diam = NULL)
   further details.
 }
 \value{
-  A \code{data.frame} containing the ring areas for each series with
-  column names, row names and dimensions of \code{\var{rwl}}.
+  An object of class \code{c("bai", "data.frame")} containing the ring
+  areas for each series with the column names, row names and dimensions
+  of \code{\var{rwl}}.  It carries the provenance record of
+  \code{\var{rwl}}, if it has one, and records how it was made in
+  \code{attr(x, "dplR.bai")}: the function (\code{fun}) and whether
+  \code{\var{diam}} was given (\code{diam}).  See \code{\link{as.bai}}
+  for which functions take it.
 }
 \references{
   Biondi, F. (1999) Comparing tree-ring chronologies and repeated timber
@@ -48,7 +53,7 @@ bai.out(rwl, diam = NULL)
 \note{ DendroLab website: \url{https://dendrolaborg.wordpress.com/} }
 \author{ Code by Andy Bunn based on work from DendroLab, University of
   Nevada Reno, \acronym{USA}.  Patched and improved by Mikko Korpela. }
-\seealso{ \code{\link{bai.in}} }
+\seealso{ \code{\link{bai.in}}, \code{\link{as.bai}} }
 \examples{
 library(graphics)
 library(utils)

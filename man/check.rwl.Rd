@@ -8,7 +8,7 @@
   values found within any series.
 }
 \usage{
-check.rwl(rwl, why = NULL)
+check.rwl(rwl, why = NULL, bai.ok = FALSE)
 }
 \arguments{
   \item{rwl}{an \code{rwl} object such as that produced by
@@ -19,6 +19,9 @@ check.rwl(rwl, why = NULL)
     given when \code{rwl} is an \code{"rwi"} object, to say what goes
     wrong if indices are used as ring widths.  \code{NULL} gives a
     general sentence. }
+  \item{bai.ok}{ logical.  If \code{TRUE}, a \code{"bai"} object of
+    basal area increment (see \code{\link{as.bai}}) is taken without a
+    warning.  \code{\link{detrend}} uses this. }
 }
 \details{
   \code{check.rwl} is for functions that want ring widths.  If
@@ -26,7 +29,10 @@ check.rwl(rwl, why = NULL)
   \code{\link{as.rwi}}), a warning names the calling function, says
   that it wants widths, adds \code{why}, and suggests
   \code{\link{as.rwl}} if the values really are widths.  The object is
-  then relabelled as class \code{"rwl"} and checked as below.
+  then relabelled as class \code{"rwl"} and checked as below.  A
+  \code{"bai"} object of basal area increment (see \code{\link{as.bai}})
+  is treated the same way, unless \code{bai.ok} is \code{TRUE}, when it
+  is relabelled without a warning.
 
   If \code{rwl} is not already of class \code{"rwl"}, coercion is
   attempted using \code{\link{as.rwl}}. If coercion succeeds, a warning

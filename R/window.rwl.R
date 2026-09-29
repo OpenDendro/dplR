@@ -102,6 +102,7 @@ drop.empty.series <- function(x, where = "") {
                     paste(empty, collapse = ", ")))
     prov <- attr(x, "dplR.provenance")
     how <- attr(x, "dplR.detrend")
+    bai.how <- attr(x, "dplR.bai")
     out <- `[.data.frame`(x, , has, drop = FALSE)
     if (!is.null(prov)) {
         attr(out, "dplR.provenance") <-
@@ -109,6 +110,9 @@ drop.empty.series <- function(x, where = "") {
     }
     if (!is.null(how)) {
         attr(out, "dplR.detrend") <- how
+    }
+    if (!is.null(bai.how)) {
+        attr(out, "dplR.bai") <- bai.how
     }
     out
 }

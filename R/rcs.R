@@ -7,6 +7,14 @@ rcs <- function(rwl, po = NULL, nyrs = NULL, f = 0.5, biweight = TRUE,
   rwl <- check.rwl(rwl, why = paste(
       "The regional curve is fitted to mean ring width by cambial age,",
       "which indices no longer carry."))
+  ## AGB Sep 2026: a series with no values is dropped, with a message
+  ## naming it, as in detrend(). It used to stop the call with "NA/NaN
+  ## argument" from the cambial-age alignment below. 'po' rows are matched
+  ## by name, so the dropped series' rows are simply left unused.
+  rwl <- drop.empty.series(rwl)
+  if (!is.null(po)) {
+    po <- po[po[[1]] %in% names(rwl), , drop = FALSE]
+  }
 
   if (is.null(po)) {
     po <- data.frame(series = names(rwl),

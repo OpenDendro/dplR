@@ -74,12 +74,20 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   methods.  Setting \code{\var{make.plot} = TRUE} will cause plots of
   each series to be produced.  These could be saved using
   \code{\link{Devices}} if desired.
+
+  A series with no values at all is dropped, with a message naming it,
+  and the rest are detrended as if it had never been there; its name
+  is dropped from \code{\var{y.name}} too.  \code{x[rows, ]} and
+  \code{\link{head}} can leave such a series (see \code{\link{[.rwl}}).
+  If no series has any values, that is an error.  A series with
+  \code{NA} inside its measured span stops the call, with a message
+  naming the series; see \code{\link{fill.internal.NA}}.
 }
 \value{
   If one detrending method is used, an object of class
   \code{c("rwi", "data.frame")} containing the
-  dimensionless detrended ring widths with column names, row names and
-  dimensions of \code{\var{rwl}}.  It records how it was made in
+  dimensionless detrended ring widths with the column names, row names
+  and dimensions of \code{\var{rwl}}, less any series with no values.  It records how it was made in
   \code{attr(x, "dplR.detrend")} and carries the provenance record of
   \code{\var{rwl}}, if it has one; see \code{\link{as.rwi}}.
   If more methods are used, a list with

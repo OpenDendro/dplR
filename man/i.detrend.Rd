@@ -34,6 +34,10 @@ i.detrend(rwl, y.name = names(rwl), nyrs = NULL, f = 0.5,
   method via keyboard at a prompt for each ring width series in
   \code{\var{rwl}}.  See \code{\link{detrend.series}} for examples and
   details on the detrending methods.
+
+  A series with no values at all is dropped, with a message naming it,
+  before any series is shown, and its name is dropped from
+  \code{\var{y.name}} too.
 }
 \value{
   An object of class \code{c("rwi", "data.frame")} (see

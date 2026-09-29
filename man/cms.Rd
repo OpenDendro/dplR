@@ -37,6 +37,11 @@ cms(rwl, po, c.hat.t = FALSE, c.hat.i = FALSE)
   This attempts to remove the low frequency variability that is due to
   biological or stand effects.
 
+  A series with no values at all is dropped, with a message naming it,
+  and the rest are standardized as if it had never been there.
+  \code{\var{po}} must still have a row for every series in
+  \code{\var{rwl}}, empty or not.
+
   See the reference below for further details.
 }
 \value{

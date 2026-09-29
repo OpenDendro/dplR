@@ -19,6 +19,20 @@
     rwl <- check.rwl(rwl, why = paste(
         "Detrending indices divides out a growth curve that has already",
         "been removed, and the result is indices of indices."))
+    ## AGB Sep 2026: a series with no values is dropped, and a message names
+    ## it. It used to stop the whole call with detrend.series()'s "all
+    ## values are 'NA'", which in the parallel loop came out as "task 23
+    ## failed" and named nothing. x[rows, ] and head() make such series (see
+    ## `[.rwl`), and there is nothing in one to detrend. 'y.name' is cut down
+    ## with the series; its default, names(rwl), is not yet evaluated here.
+    if (!missing(y.name)) {
+        if (length(y.name) != ncol(rwl)) {
+            stop("'y.name' must have one name per series in 'rwl'")
+        }
+        has <- vapply(rwl, function(z) any(!is.na(z)), logical(1))
+        y.name <- y.name[has]
+    }
+    rwl <- drop.empty.series(rwl)
     rn <- row.names(rwl)
 
     detrend.args <- c(alist(rwl.i),

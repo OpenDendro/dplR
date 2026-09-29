@@ -8,8 +8,7 @@
 }
 \usage{
 detrend.series(y, y.name = "", make.plot = TRUE,
-               method = c("Spline", "ModNegExp", "Mean", 
-               "Ar", "Friedman", "ModHugershoff","AgeDepSpline"),
+               method = "Spline",
                nyrs = NULL, f = 0.5, pos.slope = FALSE,
                constrain.nls = c("never", "when.fail", "always"),
                verbose = FALSE, return.info = FALSE,
@@ -29,7 +28,8 @@ detrend.series(y, y.name = "", make.plot = TRUE,
     methods.  See details below.  Possible values are all subsets of\cr
     \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff",
     "AgeDepSpline")}.
-    Defaults to using all the available methods.}
+    Defaults to \code{"Spline"}.  Before dplR 1.8.0 the default was all
+    the available methods.}
 
   \item{nyrs}{ a number controlling the smoothness of the
     fitted curve in methods. See Details.}
@@ -263,8 +263,11 @@ library(utils)
 data(ca533)
 series <- ca533[, "CAM011"]
 names(series) <- rownames(ca533)
-# defaults to all six methods
-series.rwi <- detrend.series(y = series, y.name = "CAM011", verbose=TRUE)
+# all seven methods
+series.rwi <- detrend.series(y = series, y.name = "CAM011", verbose=TRUE,
+                             method = c("Spline", "ModNegExp", "Mean", "Ar",
+                                        "Friedman", "ModHugershoff",
+                                        "AgeDepSpline"))
 # see plot with three methods
 series.rwi <- detrend.series(y = series, y.name = "CAM011",
                              method=c("Spline", "ModNegExp","Friedman"),

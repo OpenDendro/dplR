@@ -7,7 +7,7 @@ corr.series.seg <- function(rwl, series, series.yrs=as.numeric(names(series)),
                             floor.plus1 = FALSE, ...) {
 
     method2 <- match.arg(method)
-    rwl <- check.rwl(rwl)
+    rwl <- check.rwl.rwi(rwl)
 
     ## Handle different types of 'series'
     tmp <- pick.rwl.series(rwl, series, series.yrs)

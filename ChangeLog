@@ -1,5 +1,166 @@
 * CHANGES IN dplR VERSION 1.8.0
 
+File: detrend.R, detrend.series.R, i.detrend.series.R, man/detrend.Rd,
+      man/detrend.series.Rd, tests/testthat/test-rwi.R
+-----------------------------------------------------------------
+ - detrend() and detrend.series() now default to method = "Spline".
+   The default was every method, so detrend(rwl) with no method
+   returned a list with one data.frame per series and a column per
+   method, not a set of indices: chron() and every other function
+   that takes indices could not use it. It had been that way since at
+   least dplR 1.0, and almost nobody saw it because every example and
+   the workshop material name a method. detrend.series(y) likewise
+   returned a data.frame of every fit and now returns one vector.
+   Code that relied on the old default must now name the methods.
+   i.detrend.series() does, so it still offers every method.
+
+File: as.rwi.R (new), summary.rwi.R (new), rwi.image.R (new),
+      window.rwl.R (new), Extract.rwl.R, spag.plot.R, common.interval.R,
+      man/common.interval.Rd, tests/testthat/test-common.interval.R (new),
+      interseries.cor.R, corr.rwl.seg.R, helpers.R,
+      tests/testthat/test-empty-series.R (new, empty and short series),
+      detrend.R, rcs.R,
+      cms.R, i.detrend.R, i.detrend.series.R, NAMESPACE,
+      man/as.rwi.Rd (new), man/window.rwl.Rd (new), man/spag.plot.Rd,
+      man/detrend.Rd, man/rcs.Rd, man/cms.Rd, man/i.detrend.Rd,
+      man/i.detrend.series.Rd, vignettes/intro-dplR.Rmd,
+      tests/testthat/test-rwi.R (new)
+-----------------------------------------------------------------
+ - New class "rwi" for ring-width indices. detrend() (one method),
+   rcs() and cms() now return class c("rwi", "data.frame"). Before,
+   detrend() returned a plain data.frame, and rcs() and cms() returned
+   class "rwl", because they wrote the indices into a copy of the ring
+   widths: every check in dplR then took their indices for widths. No
+   function could tell indices from widths, so none could warn when
+   given the wrong one; rwi.stats() on raw ca533 widths gives rbar.eff
+   0.350 against 0.423 on the indices, with no warning. The class does
+   not inherit from "rwl", so that the two can be told apart.
+   i.detrend() also returned class "rwl", for the same reason, and now
+   returns class "rwi".
+ - An rwi object carries attr(x, "dplR.detrend"), saying which
+   function and method made it, the settings, and whether the indices
+   are differences (centred on 0) or ratios (centred on 1). It also
+   carries the provenance record of the widths it was made from.
+ - i.detrend() records the method chosen for each series, named by
+   series, in attr(x, "dplR.detrend")$method; before, the choice was
+   made at the keyboard and not kept anywhere. i.detrend.series()
+   attaches its choice to the result as attr(x, "method").
+ - New as.rwi(), and methods for rwi: `[` and subset() (the rwl
+   methods, which now also keep the detrending record, and name the
+   class in their warning), time(), time<-, summary() and plot().
+ - summary() on rwi describes the indices as a collection: how they
+   were made, span and common interval, rbar.eff, EPS and SNR from
+   rwi.stats(), and per series its span, mean, sd, ar1 and correlation
+   with the mean of the others from interseries.cor(). The print lists
+   only the series that do not correlate with the others at 'pcrit'
+   (default 0.05); as.data.frame() gives the full per-series table. It
+   takes 'ids' to group cores by tree, as rwi.stats() does, and says
+   which way rbar and EPS were counted: without ids, each series is its
+   own tree. On ca533, grouping 34 cores into 21 trees moves rbar.eff
+   from 0.423 to 0.475. It ends by pointing to summary(x, ids = ) (when
+   ids were not given), rwi.stats.running() and corr.rwl.seg() for
+   what the summary cannot show. On
+   co021 detrended by "Mean", with one series shuffled, that series is
+   the one listed (r = 0.02, p = 0.29).
+ - plot() on rwi gains plot.type = "image": every index as a coloured
+   cell, years across and series down, brown below 1 (or 0 for
+   differences) and green above, each side clipped at its 0.99
+   quantile. It shows at a glance a growth trend the detrending left
+   in: detrend(co021, method = "Mean") leaves the juvenile trend as a
+   green run at the start of nearly every series. The default is still
+   the spaghetti plot.
+ - The intro vignette uses summary() on the indices in place of
+   rwi.stats(), and shows the image plot for the Spline indices and
+   for "Mean", as a check on the detrending.
+ - spag.plot() draws rwi objects around 1 (or 0 for differences)
+   instead of around each series' mean, so the grey line under each
+   series is the value it should sit at. Widths are drawn as before. It
+   takes an rwi object without the "not class rwl" warning.
+ - New window() methods for rwl, rwi and crn: window(x, 1800, 1900)
+   takes those years, keeping class and records. A window that runs
+   past the data warns and says which years came back; one that misses
+   the data is an error. The `[.rwl` warning about broken years now
+   suggests window(). Series with no values in the window are dropped,
+   with a message naming them: window(ca533.rwi, 1800, 1899) would
+   otherwise hold four columns of NA (CAM132, CAM152, CAM161, CAM201
+   end before 1800), on which summary(), interseries.cor(),
+   corr.rwl.seg() and detrend() fail with messages that do not say why.
+ - subset() on rwl and rwi drops series left with no values, with the
+   same message; subset(ca533, time(ca533) > 1900) held the same four
+   empty columns. `[` still keeps them, so x[i, j] always returns the
+   columns j names and anything lined up with them stays lined up.
+ - interseries.cor() and corr.rwl.seg() drop series with no values,
+   with a message naming them. One such series stopped either function
+   with "'ts' object must have one or more observations"; the numbers
+   for the other series are the same as with it removed by hand.
+ - interseries.cor() and corr.rwl.seg() give a series too short to
+   correlate an NA correlation, with a message naming it, instead of
+   stopping. A series with fewer than 3 years in common with its master
+   (after prewhitening, which drops the first few values of each
+   series) stopped either function with cor.test()'s "not enough finite
+   observations", and a series with 1 value stopped them in ar() with
+   "'order.max' must be >= 1"; neither named the series, and every
+   other series' result was lost. It happens at the ends of year
+   windows: 4-23% of 50- and 100-year windows of the bundled
+   collections have a series with 1-3 values. Over every 50- and
+   100-year window of ca533, co021, gp.rwl, wa082, nm046 and anos1,
+   130 of 2204 calls failed before and none now. With Spearman or
+   Kendall, 2 years in common used to give a correlation of +/-1; it is
+   now NA. Other results are unchanged.
+ - ar.func(), used for prewhitening throughout, returns a series with
+   fewer than 2 values unchanged (the order-0 model) instead of
+   stopping in ar(). detrend.series(method = "Ar") on a one-value series
+   now records order 0 instead of stopping.
+ - summary() on rwi lists series with no values at all (x[rows, ] can
+   still make them) and leaves them out of the statistics, instead of
+   failing.
+ - common.interval() on rwi returned class "rwl", with the "not class
+   rwl" warning; it now returns indices as class "rwi", without the
+   warning. The result had no NA and no empty columns on every bundled
+   data set, all three types, indices, an interior gap and empty input
+   columns.
+ - common.interval() on one series, or on series that never overlap,
+   returned a 0 x 0 object with no warning, which a PCA or correlation
+   then fails on with a message about dimensions. One series (after
+   leaving out series with no values) now returns its measured years,
+   its own common interval. Two or more series with no year in which
+   any two overlap, or no series with values, is an error that says so.
+ - Values are unchanged. With several methods, detrend() still returns
+   a list of data.frames, one per series, which are not classed; nor
+   are the fitted curves from return.info = TRUE.
+ - Functions now check which kind of series they are given, by class.
+   Each warning names the function, says what goes wrong, and says how
+   to relabel the data if the class is what is wrong (indices read with
+   read.rwl() come back as class "rwl"). They are warnings, and the
+   function goes on, as before.
+   - Wanting widths, and warning on class "rwi": detrend(), rcs(),
+     cms(), i.detrend(), bai.in(), bai.out(), pointer(), strip.rwl(),
+     ssf() and rwl.report(). These used to give the generic "not class
+     rwl" warning; rwl.report() stopped.
+   - Wanting indices, and warning on class "rwl": chron(), chron.ars(),
+     chron.stabilized(), rwi.stats(), rwi.stats.running() and sss().
+     These gave no warning before; rwi.stats(ca533) gives rbar.eff 0.350
+     against 0.423 from the Spline indices. A plain data.frame or matrix
+     is still taken without a word. sss() warns once, not again from
+     the rwi.stats() inside it.
+   - Taking either class quietly: interseries.cor(), corr.rwl.seg(),
+     corr.series.seg(), ccf.series.rwl(), series.rwl.plot(), seg.plot(),
+     spag.plot(), xdate.floater(), sgc() and rwl.stats(). These gave the
+     "not class rwl" warning on rwi, and returned what they returned as
+     widths. Anything else is still coerced to rwl with that warning.
+   The checks are check.rwl(), check.rwi() and check.rwl.rwi() in
+   helpers.R. strip.rwl() detrends its indices a second time on purpose
+   and relabels them first, so it does not warn itself.
+
+File: rwl.check.R, tests/testthat/test-rwl.check.R
+-----------------------------------------------------------------
+ - New check RWL_EMPTY_SERIES (warning) for a series with no values at
+   all. Empty series used to be reported only as copies of each other
+   (RWL_DUP_SERIES, "one core may be archived twice"), because they hash
+   alike; a lone empty series was not reported at all. They are now left
+   out of the duplicate check. A file cannot hold one, but an object can:
+   ca533[time(ca533) %in% 1800:1899, ] holds four.
+
 File: vignettes/intro-dplR.Rmd (new), man/ssf.Rd, README.md, zzz.R,
       xdate.report.R, man/xdate.report.Rd,
       tests/testthat/test-xdate.report.R

@@ -36,9 +36,12 @@ i.detrend(rwl, y.name = names(rwl), nyrs = NULL, f = 0.5,
   details on the detrending methods.
 }
 \value{
-  A \code{data.frame} containing each detrended series according to the
-  method used as columns and rownames set to
-  \code{colnames(\var{y})}.  These are typically years.  Plots are also
+  An object of class \code{c("rwi", "data.frame")} (see
+  \code{\link{as.rwi}}) containing each detrended series according to
+  the method used as columns and rownames set to
+  \code{colnames(\var{y})}.  These are typically years.  The method
+  chosen for each series is recorded, named by series, in
+  \code{attr(x, "dplR.detrend")$method}.  Plots are also
   produced as the user chooses the detrending methods through keyboard
   input.
 }

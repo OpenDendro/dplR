@@ -1,6 +1,9 @@
 `chron.stabilized` <-
   function(x, winLength, biweight = TRUE, running.rbar = FALSE)
   {
+    x <- check.rwi(x, why = paste(
+      "A chronology of widths keeps each series' age trend and the",
+      "differences in growth rate between trees."))
     if(!is.int(winLength)) stop("'winLength' must be an integer.")
     if(winLength > nrow(x)) stop("'winLength' must be (considerably) shorter than the chronology length.")
     if(winLength <= 30) warning("'winLength' < 30 is not recommended.\n  Consider a longer window.")

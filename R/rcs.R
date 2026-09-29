@@ -4,7 +4,9 @@ rcs <- function(rwl, po = NULL, nyrs = NULL, f = 0.5, biweight = TRUE,
                 pos.slope = TRUE, ...) {
   
   method <- match.arg(method)
-  rwl <- check.rwl(rwl)
+  rwl <- check.rwl(rwl, why = paste(
+      "The regional curve is fitted to mean ring width by cambial age,",
+      "which indices no longer carry."))
 
   if (is.null(po)) {
     po <- data.frame(series = names(rwl),
@@ -82,6 +84,14 @@ rcs <- function(rwl, po = NULL, nyrs = NULL, f = 0.5, biweight = TRUE,
     rwi[[i]][yrs %in% first:last] <- rwica[yrs2pith:(yrs2pith + series.length - 1), i]
   }
   
+  ## AGB Sep 2026: 'rwi' started as a copy of the widths and so came back as
+  ## class "rwl", which every check in dplR then took for widths. It is now
+  ## class "rwi" (see as.rwi.R); the widths' provenance record stays with it.
+  rwi <- make.rwi(rwi, from = rwl,
+                  how = list(fun = "rcs", method = method, nyrs = nyrs2,
+                             f = f, biweight = biweight, min.n = min.n,
+                             pos.slope = pos.slope, difference = !ratios))
+
   if (make.plot) {
     par(mar = c(4, 4, 0.5, 0.5) + 0.1, mgp = c(1.25, 0.25, 0), tcl = 0.25)
     plot(rwca[, 1], ylim = range(rwca, na.rm = TRUE), type = "n", ylab = "mm",

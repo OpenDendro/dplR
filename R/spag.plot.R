@@ -1,11 +1,21 @@
 spag.plot <- function(rwl, zfac=1, useRaster = FALSE, res = 150, ...){
     stopifnot(is.logical(useRaster), length(useRaster) == 1)
-    rwl <- check.rwl(rwl)
+    ## AGB Sep 2026: indices are drawn around the value they are meant to sit
+    ## at -- 1, or 0 if they are differences -- rather than around each
+    ## series' own mean, so the grey line under each series is that value
+    ## and a series that has drifted off it shows. Widths are still centred
+    ## on their means. An rwi object is taken without the coercion warning.
+    ref <- rwi.ref(rwl)
+    rwl <- check.rwl.rwi(rwl)
     nseries <- ncol(rwl)
     if (nseries == 0) {
         stop("empty 'rwl' given, nothing to draw")
     }
-    rwl2 <- scale(rwl * zfac, center = TRUE, scale = FALSE) # result is a matrix
+    rwl2 <- if (is.null(ref)) {
+        scale(rwl * zfac, center = TRUE, scale = FALSE) # result is a matrix
+    } else {
+        (as.matrix(rwl) - ref) * zfac
+    }
     rwl2 <- as.rwl(rwl2)
     yr <- time(rwl2)
     first.year <- as.matrix(apply(rwl2, 2, yr.range, yr.vec=yr))[1, ]

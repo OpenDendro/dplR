@@ -3,7 +3,7 @@
 \alias{rwl.report}
 \title{Do some reporting on a RWL object}
 \description{
-  This function generates a small report on a \code{rwl} (or \code{rwi}) object
+  This function generates a small report on a \code{rwl} object
   that gives the user some basic information on the data including the number of
   series, the span of the data, the mean interseries correlation, the number of
   missing rings (zeros), internal \code{NA} values, and rings that are very small,
@@ -13,10 +13,10 @@
 rwl.report(rwl,small.thresh=NA,big.thresh=NA)
 }
 \arguments{
-  \item{rwl}{a \code{data.frame} of ring widths with
-    \code{rownames(\var{x})} containing years and \code{colnames(x)}
-    containing each series \acronym{ID} such as produced by
-    \code{\link{read.rwl}}}
+  \item{rwl}{an \code{rwl} object of ring widths, such as produced by
+    \code{\link{read.rwl}}.  An \code{rwi} object of indices is
+    reported on with a warning, since the report's means, zeros and
+    thresholds are about widths.  Anything else is an error.}
   \item{small.thresh}{a \code{numeric} value for the threshold value that will cause
     small rings to be listed. If values is \code{NA} this will be omitted.}
   \item{big.thresh}{a \code{numeric} value for the threshold value that will cause

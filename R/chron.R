@@ -2,6 +2,9 @@
     function(rwi, biweight=TRUE, prewhiten=FALSE, ...)
 {
     check.flags(biweight, prewhiten)
+    rwi <- check.rwi(rwi, why = paste(
+        "A chronology of widths keeps each series' age trend and the",
+        "differences in growth rate between trees."))
     samps <- rowSums(!is.na(rwi))
     if (!biweight) {
         std <- rowMeans(rwi, na.rm=TRUE)

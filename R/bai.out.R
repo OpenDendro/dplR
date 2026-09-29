@@ -1,6 +1,8 @@
 bai.out <- function(rwl, diam = NULL) {
   
-  rwl <- check.rwl(rwl)
+  rwl <- check.rwl(rwl, why = paste(
+      "Basal area is built up ring by ring from the widths, so from indices",
+      "it is not an area at all."))
   if(!is.null(diam)) {
     if(ncol(rwl) != nrow(diam))
       stop("dimension problem: ", "'ncol(rw)' != 'nrow(diam)'")

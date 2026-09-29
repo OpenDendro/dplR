@@ -1,7 +1,12 @@
 common.interval <- function(rwl, type=c("series", "years", "both"),
                             make.plot=TRUE) {
 
-    rwl <- check.rwl(rwl)
+    ## AGB Sep 2026: indices are as likely to go in here as widths (a
+    ## matrix with no NA for a PCA), and check.rwl() made them class "rwl",
+    ## with a warning, so they came back labelled as widths. They are taken
+    ## without the warning and given their class back at the end.
+    is.rwi <- inherits(rwl, "rwi")
+    rwl <- if (is.rwi) as.rwl(rwl) else check.rwl(rwl)
     yrs <- as.numeric(row.names(rwl))
     check.flags(make.plot)
     type2 <- match.arg(type, c("series", "years", "both"))
@@ -86,6 +91,28 @@ common.interval <- function(rwl, type=c("series", "years", "both"),
     } else {
         ## Workaround for R bug number 14959.  Fixed in R >= 2.15.2.
         samp.depth <- 0
+    }
+
+    ## AGB Sep 2026: the search below looks for years that at least two
+    ## series share, so one series, or series that never overlap, gave a
+    ## 0 x 0 object with no word of why. A 0 x 0 object handed to a PCA or
+    ## a correlation fails somewhere else with a message about dimensions.
+    ## One series is its own common interval: its measured years. No overlap,
+    ## or nothing measured at all, has no common interval, and says so.
+    n.has <- if (nCol.rwl > 0) sum(colAnys(rwlNotNA)) else 0
+    if (n.has == 0) {
+        stop("no series in 'rwl' has any values, so there is no common interval",
+             call. = FALSE)
+    }
+    if (n.has >= 2 && max(samp.depth) < 2) {
+        stop(gettextf("no two of the %d series overlap in any year, so there is no common interval",
+                      n.has), call. = FALSE)
+    }
+    if (n.has == 1) {
+        keep.col.output <- colAnys(rwlNotNA)
+        keep.row.output <- which(rwlNotNA[, keep.col.output])
+        nCol.output <- 1
+        nRow.output <- length(keep.row.output)
     }
 
     type.series <- type2 == "series"
@@ -232,9 +259,15 @@ common.interval <- function(rwl, type=c("series", "years", "both"),
         box()
     }
 
-    if (nRow.output < nRow.rwl || nCol.output < nCol.rwl) {
+    out <- if (nRow.output < nRow.rwl || nCol.output < nCol.rwl) {
         rwl[keep.row.output, keep.col.output, drop = FALSE]
     } else {
         rwl
     }
+    ## Only if it is still one: `[.rwl` returns a plain data.frame when the
+    ## years it keeps are not consecutive, which type = "years" can do.
+    if (is.rwi && inherits(out, "rwl")) {
+        class(out) <- c("rwi", "data.frame")
+    }
+    out
 }

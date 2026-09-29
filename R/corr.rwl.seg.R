@@ -12,7 +12,11 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
                          }),
                          ...) {
   method2 <- match.arg(method)
-  rwl <- check.rwl(rwl)
+  rwl <- check.rwl.rwi(rwl)
+  ## AGB Sep 2026: a series with no values stopped the whole call with
+  ## "'ts' object must have one or more observations". It is dropped and
+  ## named instead, as window() and subset() do.
+  rwl <- drop.empty.series(rwl)
   ## run error checks
   qa.xdate(rwl, seg.length, n, bin.floor)
   if (!is.numeric(lag.max) || length(lag.max) != 1 || is.na(lag.max) ||
@@ -178,6 +182,7 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   
   ## loop through series
   seq.series <- seq_len(nseries)
+  short <- logical(nseries)
   for (i in seq.series) {
     if (is.null(master)) {
       idx.noti <- rep(TRUE, nseries)
@@ -236,11 +241,12 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
       }
     }
     ## overall correlation
-    tmp <- cor.test(series, master2,
-                    method = method2, alternative = "greater")
+    tmp <- cor.or.na(series, master2, method2)
     overall.cor[i, 1] <- tmp$estimate
-    overall.cor[i, 2] <- tmp$p.val
+    overall.cor[i, 2] <- tmp$p.value
+    short[i] <- tmp$short
   }
+  message.too.short(cnames[short], prewhiten)
   ## avg seg correlation
   segavg.cor <- colMeans(res.cor, na.rm=TRUE)
   

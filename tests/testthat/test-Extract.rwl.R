@@ -288,3 +288,29 @@ test_that("rwl.check reads the provenance of a subset", {
     expect_equal(q$subset$series, gs)
     expect_s3_class(rwl.check(y), "rwl.check")
 })
+
+test_that("subset() drops series left with no values, and says so", {
+    x <- mk.rwl(k = 3, yrs = 1901:1980)
+    x[["ABC03A"]][41:80] <- NA
+    expect_message(y <- subset(x, time(x) > 1950),
+                   "1 series has no values in 1951-1980 and was dropped: ABC03A")
+    expect_identical(names(y), c("ABC01A", "ABC02A"))
+    expect_equal(range(time(y)), c(1951, 1980))
+    expect_s3_class(y, "rwl")
+    ## `[` keeps it.
+    expect_identical(names(x[time(x) > 1950, ]), names(x))
+    ## Nothing empty, nothing said.
+    expect_silent(subset(x, time(x) <= 1940))
+    expect_silent(subset(x, select = 1:2))
+    ## Nothing left is an error, not an empty object.
+    expect_error(subset(x, time(x) > 1950, select = ABC03A),
+                 "no series has any values")
+    ## Indices too.
+    data(ca533, package = "dplR")
+    r <- detrend(ca533, method = "Spline")
+    expect_message(z <- subset(r, time(r) >= 1800 & time(r) < 1900),
+                   "4 series have no values in 1800-1899")
+    expect_s3_class(z, "rwi")
+    expect_identical(attr(z, "dplR.detrend"), attr(r, "dplR.detrend"))
+    expect_true(all(vapply(z, function(v) any(!is.na(v)), logical(1))))
+})

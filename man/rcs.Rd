@@ -91,7 +91,8 @@ rcs(rwl, po = NULL, nyrs = NULL, f = 0.5, biweight = TRUE, ratios = TRUE,
 }
 \value{
 
-  A \code{data.frame} containing the dimensionless and detrended
+  An object of class \code{c("rwi", "data.frame")} (see
+  \code{\link{as.rwi}}) containing the dimensionless and detrended
   ring-width indices with column names, row names and dimensions of
   \code{\var{rwl}}.  If \code{\var{rc.out}} is \code{TRUE} then a
   \code{list} will be returned with a \code{data.frame} containing the

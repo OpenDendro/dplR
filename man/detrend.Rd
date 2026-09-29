@@ -8,8 +8,7 @@
 }
 \usage{
 detrend(rwl, y.name = names(rwl), make.plot = FALSE,
-        method = c("Spline", "ModNegExp", "Mean", "Ar", "Friedman",
-                   "ModHugershoff", "AgeDepSpline"),
+        method = "Spline",
         nyrs = NULL, f = 0.5, pos.slope = FALSE,
         constrain.nls = c("never", "when.fail", "always"),
         verbose = FALSE, return.info = FALSE,
@@ -31,7 +30,8 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
     methods.  See details below.  Possible values are all subsets of\cr
     \code{c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", "ModHugershoff",
     "AgeDepSpline")}.
-    Defaults to using all the available methods.}
+    Defaults to \code{"Spline"}.  Before dplR 1.8.0 the default was all
+    the available methods.}
   
   \item{nyrs}{ a number giving the rigidity of the smoothing spline,
     defaults to 0.67 of series length if \code{\var{nyrs}} is
@@ -76,9 +76,13 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   \code{\link{Devices}} if desired.
 }
 \value{
-  If one detrending method is used, a \code{data.frame} containing the
+  If one detrending method is used, an object of class
+  \code{c("rwi", "data.frame")} containing the
   dimensionless detrended ring widths with column names, row names and
-  dimensions of \code{\var{rwl}}.  If more methods are used, a list with
+  dimensions of \code{\var{rwl}}.  It records how it was made in
+  \code{attr(x, "dplR.detrend")} and carries the provenance record of
+  \code{\var{rwl}}, if it has one; see \code{\link{as.rwi}}.
+  If more methods are used, a list with
   \code{ncol(\var{rwl})} elements each containing a \code{data.frame}
   with the detrended ring widths in each column.
 
@@ -108,10 +112,10 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   \code{\var{verbose}} is \code{TRUE}, parallel computation is disabled.
 }
 \author{ Andy Bunn.  Improved by Mikko Korpela. }
-\seealso{ \code{\link{detrend.series}} }
+\seealso{ \code{\link{detrend.series}}, \code{\link{as.rwi}} }
 \examples{library(utils)
 data(ca533)
-## Detrend using modified exponential decay. Returns a data.frame
+## Detrend using modified exponential decay. Returns an rwi object
 ca533.rwi <- detrend(rwl = ca533, method = "ModNegExp")
 ## Detrend using splines and compute
 ## residuals via subtraction
@@ -127,7 +131,9 @@ co021.rwi <- detrend(rwl = co021, method = "ModHugershoff",
 \dontrun{
 library(grDevices)
 ## Detrend using all methods. Returns a list
-ca533.rwi <- detrend(rwl = ca533)
+ca533.rwi <- detrend(rwl = ca533,
+                     method = c("Spline", "ModNegExp", "Mean", "Ar",
+                                "Friedman", "ModHugershoff", "AgeDepSpline"))
 ## Save a pdf of all series
 fname <- tempfile(fileext=".pdf")
 print(fname) # tempfile used for output

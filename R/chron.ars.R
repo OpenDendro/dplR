@@ -178,6 +178,9 @@
   }
   # end helpers
   
+  rwi <- check.rwi(rwi, why = paste(
+    "A chronology of widths keeps each series' age trend and the",
+    "differences in growth rate between trees."))
   known.prewhitenMethods <- c("ar.yw","arima.CSS-ML")
   prewhitenMethod2 <- match.arg(arg = prewhitenMethod,
                                 choices = known.prewhitenMethods,

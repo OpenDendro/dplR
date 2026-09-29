@@ -1,7 +1,6 @@
 `detrend` <-
     function(rwl, y.name = names(rwl), make.plot = FALSE,
-             method=c("Spline", "ModNegExp", "Mean", "Ar", "Friedman", 
-                      "ModHugershoff", "AgeDepSpline"),
+             method = "Spline",
              nyrs = NULL, f = 0.5, pos.slope = FALSE,
              constrain.nls = c("never", "when.fail", "always"),
              verbose = FALSE, return.info = FALSE,
@@ -17,7 +16,9 @@
     method2 <- match.arg(arg = method,
                          choices = known.methods,
                          several.ok = TRUE)
-    rwl <- check.rwl(rwl)
+    rwl <- check.rwl(rwl, why = paste(
+        "Detrending indices divides out a growth curve that has already",
+        "been removed, and the result is indices of indices."))
     rn <- row.names(rwl)
 
     detrend.args <- c(alist(rwl.i),
@@ -102,6 +103,16 @@
     if(length(method2) == 1){
         out <- data.frame(out, row.names = rn)
         names(out) <- y.name
+        ## AGB Sep 2026: class "rwi" (see as.rwi.R), with a record of how
+        ## the indices were made. Only for one method: with several, 'out'
+        ## is a list with one data.frame per series and a column per
+        ## method, and none of those is a set of indices on its own.
+        out <- make.rwi(out, from = rwl,
+                        how = list(fun = "detrend", method = method2,
+                                   nyrs = nyrs, f = f, pos.slope = pos.slope,
+                                   constrain.nls = constrain2, span = span,
+                                   bass = bass, wt = !missing(wt),
+                                   difference = difference))
         if(return.info){
           modelCurves <- data.frame(modelCurves, row.names = rn)
           names(modelCurves) <- y.name

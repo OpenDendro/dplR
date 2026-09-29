@@ -1,7 +1,7 @@
 `seg.plot` <-
     function(rwl, ...)
 {
-    rwl <- check.rwl(rwl)
+    rwl <- check.rwl.rwi(rwl)
     yr <- as.numeric(row.names(rwl))
     first.year <- as.matrix(apply(rwl, 2, yr.range, yr.vec=yr))[1, ]
     last.year <- as.matrix(apply(rwl, 2, yr.range, yr.vec=yr))[2, ]

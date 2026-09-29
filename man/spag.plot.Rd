@@ -29,6 +29,11 @@ spag.plot(rwl, zfac = 1, useRaster = FALSE, res = 150, \dots)
   \code{\link{scale}}.  The plot can be grossly tuned with
   \code{\var{zfac}} which is a multiplier to \code{\var{rwl}} before
   plotting and centering.
+
+  Ring-width indices (class \code{"rwi"}, see \code{\link{as.rwi}}) are
+  centred on 1, or on 0 if they are differences, and not on their
+  means, so the grey line under each series is the value the indices
+  should sit at.
 }
 \value{
   None.  This function is invoked for its side effect, which is to

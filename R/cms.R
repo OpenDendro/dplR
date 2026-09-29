@@ -10,7 +10,9 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
         list(indices=err6, c.val=med)
     }
 ### main func
-    rwl <- check.rwl(rwl)
+    rwl <- check.rwl(rwl, why = paste(
+        "The curve is fitted to mean ring width by cambial age,",
+        "which indices no longer carry."))
     if(!is.data.frame(po))
         stop("'po' must be a data.frame")
     rwl2 <- rwl
@@ -51,6 +53,12 @@ cms <- function(rwl, po, c.hat.t=FALSE, c.hat.i=FALSE) {
             rwi[[i]][yrs %in% first:last] <- series.no.na / c.curve
         }
     }
+    ## AGB Sep 2026: 'rwi' started as a copy of the widths and so came back
+    ## as class "rwl", which every check in dplR then took for widths. It is
+    ## now class "rwi" (see as.rwi.R); the widths' provenance record stays
+    ## with it.
+    rwi <- make.rwi(rwi, from = rwl,
+                    how = list(fun = "cms", difference = FALSE))
     ## export options
     if(c.hat.t) {
         if(c.hat.i)

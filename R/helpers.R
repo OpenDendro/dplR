@@ -98,6 +98,19 @@ dec <- function(from, to) {
 ar.func <- function(x, model = FALSE, ...) {
     y <- x
     idx.goody <- !is.na(y)
+    ## AGB Sep 2026: ar() stops on fewer than two values ("'order.max' must
+    ## be >= 1", or for none "'ts' object must have one or more
+    ## observations"), and a series with one value in a year window stopped
+    ## every crossdating function with it. No AR model can be fitted to one
+    ## value; the order-0 model, residual plus mean, gives the value back,
+    ## so that is what is returned. Anything that needs more values, a
+    ## correlation, deals with it there.
+    if (sum(idx.goody) < 2L) {
+        if (isTRUE(model)) {
+            return(structure(y, model = list(order = 0L, ar = numeric(0))))
+        }
+        return(y)
+    }
     ar1 <- ar(y[idx.goody], ...)
     y[idx.goody] <- ar1$resid+ar1$x.mean
     if (isTRUE(model)) {
@@ -105,6 +118,43 @@ ar.func <- function(x, model = FALSE, ...) {
     } else {
         y
     }
+}
+
+### A one-sided correlation test of a series against its master, or NA when
+### they share fewer than three years with values in both.
+###
+### AGB Sep 2026. A series with only a few years in hand -- the end of a
+### series at the edge of a year window, which happens in 5-20% of 100-year
+### windows of the bundled collections -- stopped interseries.cor() and
+### corr.rwl.seg() outright with cor.test()'s "not enough finite
+### observations", which names no series and throws away every other
+### series' result. Prewhitening makes it likelier than the raw counts
+### suggest: the AR model drops the first few values of every series, the
+### master's included. Three pairs is the fewest Pearson's test accepts, and
+### the fewest for which any of the three methods gives a number that is not
+### trivially +/-1, so it is the floor for all of them. Not called
+### cor.test.<something>, which R CMD check takes for an S3 method of
+### cor.test().
+cor.or.na <- function(x, y, method) {
+    if (sum(is.finite(x) & is.finite(y)) < 3) {
+        return(list(estimate = NA_real_, p.value = NA_real_, short = TRUE))
+    }
+    tmp <- cor.test(x, y, method = method, alternative = "greater")
+    list(estimate = unname(tmp$estimate), p.value = tmp$p.value,
+         short = FALSE)
+}
+
+### The message for the series cor.or.na() could not test.
+message.too.short <- function(series, prewhiten) {
+    if (length(series) == 0L) {
+        return(invisible(NULL))
+    }
+    message(sprintf("%d series %s fewer than 3 years in common with the master%s, so %s correlation is NA: %s",
+                    length(series),
+                    if (length(series) == 1L) "has" else "have",
+                    if (isTRUE(prewhiten)) " after prewhitening" else "",
+                    if (length(series) == 1L) "its" else "their",
+                    paste(series, collapse = ", ")))
 }
 
 ### Prewhitening for normalize1 and normalize.xdate. 'order.max' is the
@@ -613,21 +663,107 @@ find.internal.na <- function(x) {
   internal.na
 }
 
-### Validate (and if necessary coerce) an rwl object.
-### Called at the top of every public function that takes rwl.
-check.rwl <- function(rwl) {
-  if (!inherits(rwl, "rwl")) {
-    rwl <- tryCatch(
-      as.rwl(rwl),
-      error = function(e) {
-        stop("'rwl' is not class \"rwl\" and coercion failed: ",
-             conditionMessage(e), call. = FALSE)
-      }
-    )
-    # only reached if coercion succeeded
-    warning("'rwl' is not class \"rwl\". Coerced successfully.",
+### Checking what a function was given. There are three kinds of function:
+###
+###   check.rwl()     wants ring widths: detrend(), rcs(), cms(), bai.in(),
+###                   rwl.report(), ... Indices (class "rwi") are taken, with
+###                   a warning, and relabelled as widths.
+###   check.rwl.rwi() takes widths or indices alike: the crossdating
+###                   functions, the plots, common.interval(). Either class
+###                   passes quietly and is returned as it came.
+###   check.rwi()     wants indices: chron(), rwi.stats(), sss(). Warns on
+###                   class "rwl"; anything else passes quietly, since these
+###                   have always taken a plain data.frame or matrix.
+###
+### AGB Sep 2026. Until the rwi class there was nothing to tell widths from
+### indices by, so nothing could warn: rwi.stats(ca533) gives rbar.eff 0.350
+### against 0.423 for the Spline indices, and looks entirely reasonable. The
+### mix-up is a warning and not an error because the relabelling is only a
+### guess at what the user has: an rwl read from a file of indices, say.
+### Each warning says how to relabel the data if the class is what is wrong.
+###
+### The warnings name the function the user called, found from the call one
+### frame up. 'why' says what goes wrong if the warning is ignored.
+
+## The name of the function that called the checker, for messages.
+caller.name <- function(n = 2L) {
+  cl <- sys.call(-n)
+  f <- if (is.null(cl)) NULL else cl[[1L]]
+  if (is.name(f)) paste0(as.character(f), "()") else "this function"
+}
+
+## A copy of x without the "rwl" class, for passing indices held as an rwl
+## object on to a check.rwi() function that has already been warned about.
+## The data are not touched.
+drop.rwl.class <- function(x) {
+  if (inherits(x, "rwl")) class(x) <- setdiff(class(x), "rwl")
+  x
+}
+
+## Coerce anything else to rwl, as check.rwl() always has.
+coerce.rwl <- function(rwl) {
+  rwl <- tryCatch(
+    as.rwl(rwl),
+    error = function(e) {
+      stop("'rwl' is not class \"rwl\" and coercion failed: ",
+           conditionMessage(e), call. = FALSE)
+    }
+  )
+  # only reached if coercion succeeded
+  warning("'rwl' is not class \"rwl\". Coerced successfully.",
+          call. = FALSE)
+  rwl
+}
+
+### Validate (and if necessary coerce) an rwl object of ring widths.
+### Called at the top of every public function that wants widths.
+check.rwl <- function(rwl, why = NULL) {
+  fn <- caller.name()
+  if (inherits(rwl, "rwi")) {
+    warning(fn, " wants ring widths, but was given ring-width ",
+            "indices (class \"rwi\"). ",
+            if (is.null(why)) {
+              "It treats them as widths, so its results are not what they say. "
+            } else paste0(why, " "),
+            "If the values really are widths, relabel them with as.rwl().",
+            call. = FALSE)
+    rwl <- as.rwl(rwl)
+    attr(rwl, "dplR.detrend") <- NULL
+  } else if (!inherits(rwl, "rwl")) {
+    rwl <- coerce.rwl(rwl)
+  }
+  warn.internal.na(rwl)
+  rwl
+}
+
+### Validate an object that may hold widths or indices. Either class is
+### returned as it came; anything else is coerced to rwl with a warning, as
+### check.rwl() does.
+check.rwl.rwi <- function(rwl) {
+  if (!inherits(rwl, "rwl") && !inherits(rwl, "rwi")) {
+    rwl <- coerce.rwl(rwl)
+  }
+  warn.internal.na(rwl)
+  rwl
+}
+
+### Warn when a function that wants indices is given class "rwl". Returns
+### its input unchanged.
+check.rwi <- function(rwi, why = NULL) {
+  fn <- caller.name()
+  if (inherits(rwi, "rwl")) {
+    warning(fn, " wants ring-width indices, but was given ring ",
+            "widths (class \"rwl\"). ",
+            if (is.null(why)) "" else paste0(why, " "),
+            "Detrend them first with detrend(), rcs() or cms(); if the ",
+            "values are already indices, label them with as.rwi().",
             call. = FALSE)
   }
+  rwi
+}
+
+### Warn about NA inside a series.
+warn.internal.na <- function(rwl) {
   # Check for internal NAs per series, warn strongly if found
   has.internal.na <- vapply(rwl, function(x) any(find.internal.na(x) != 0),
                             FALSE, USE.NAMES = TRUE)

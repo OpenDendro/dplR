@@ -8,15 +8,26 @@
   values found within any series.
 }
 \usage{
-check.rwl(rwl)
+check.rwl(rwl, why = NULL)
 }
 \arguments{
   \item{rwl}{an \code{rwl} object such as that produced by
     \code{\link{read.rwl}}. Also accepts a \code{data.frame} or
     \code{matrix} with series as columns and years as row names, which
     will be coerced to \code{rwl} with a warning.}
+  \item{why}{ \code{NULL} or a character string, added to the warning
+    given when \code{rwl} is an \code{"rwi"} object, to say what goes
+    wrong if indices are used as ring widths.  \code{NULL} gives a
+    general sentence. }
 }
 \details{
+  \code{check.rwl} is for functions that want ring widths.  If
+  \code{rwl} is an \code{"rwi"} object of ring-width indices (see
+  \code{\link{as.rwi}}), a warning names the calling function, says
+  that it wants widths, adds \code{why}, and suggests
+  \code{\link{as.rwl}} if the values really are widths.  The object is
+  then relabelled as class \code{"rwl"} and checked as below.
+
   If \code{rwl} is not already of class \code{"rwl"}, coercion is
   attempted using \code{\link{as.rwl}}. If coercion succeeds, a warning
   is issued. If coercion fails (e.g., because row names are not
@@ -32,8 +43,10 @@ check.rwl(rwl)
   If any are found, a warning names the affected series and suggests
   \code{\link{fill.internal.NA}}.
 
-  This function is called at the top of most dplR functions that accept
-  an \code{rwl} object, providing uniform validation across the package.
+  This function is called at the top of the dplR functions that want
+  ring widths, providing uniform validation across the package.
+  Functions that take widths or indices alike, and those that want
+  indices, use internal checks of their own (see \code{\link{as.rwi}}).
 }
 \value{
   An object of class \code{c("rwl", "data.frame")} with series in
@@ -43,7 +56,7 @@ check.rwl(rwl)
 }
 \author{ Andy Bunn }
 \seealso{
-  \code{\link{as.rwl}}, \code{\link{read.rwl}},
+  \code{\link{as.rwl}}, \code{\link{as.rwi}}, \code{\link{read.rwl}},
   \code{\link{fill.internal.NA}}
 }
 \examples{

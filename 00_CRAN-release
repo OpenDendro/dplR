@@ -2,8 +2,9 @@
 #
 # This file lives in the repo root alongside 00_README-developer.
 # It is a checklist to step through manually, not a shell script.
-# Many steps involve waiting on external systems (GH Actions, rhub, CRAN)
-# so this is intentionally piecemeal.
+# Several steps wait on external systems (GH Actions, win-builder,
+# mac-builder, CRAN), so this is intentionally piecemeal. Steps 3 and 4
+# can run at the same time.
 #
 # Repo: https://github.com/OpenDendro/dplR
 # Working directory for R CMD build: one level above the repo, i.e.,
@@ -34,6 +35,17 @@
 #   tools:::.build_news_db_from_package_NEWS_md("NEWS.md")
 # NEWS.md must stay out of .Rbuildignore.
 #
+# Run the full local check. GH Actions skips the tests (see Step 2), so
+# this and win-builder (Step 3) are where they run. From within the
+# project:
+
+devtools::check(remote = TRUE)
+
+# remote = TRUE adds CRAN's incoming checks: URLs, and the version against
+# the one on CRAN. Expect one WARNING about -Wno-unknown-warning-option;
+# it comes from ~/.R/Makevars on this machine, not from dplR, and CRAN
+# will not see it. Anything else must be fixed or explainable.
+#
 # Commit and push to master.
 
 
@@ -51,49 +63,130 @@
 # before proceeding:
 # https://github.com/OpenDendro/dplR/actions/workflows/R-CMD-check.yaml
 #
-# Note: tests are skipped in this workflow (--no-tests) due to a known
-# testthat issue on Ubuntu. That is a known acceptable limitation.
+# Note: tests are skipped in this workflow (--no-tests) on every platform,
+# because of a testthat issue on Ubuntu. So this step checks that dplR
+# builds, installs and runs its examples on GitHub's machines; the tests
+# run in Step 1 (locally) and Step 3 (win-builder).
+#
+# A job that fails while setting up R or installing packages (e.g. "there
+# is no package called 'pak'") is usually a passing outage on GitHub's
+# side, not dplR. Re-run the failed jobs before looking further.
 
 
 ##################################
 #
-## Step 3 - Run rhub checks
+## Step 3 - Check on CRAN's own builders
 #
 ##################################
 
-# rhub runs --as-cran on infrastructure that closely mirrors what CRAN
-# actually uses. Run this from within the dplR project in R:
+# GH Actions runs on GitHub's machines. These two run on CRAN's own setup,
+# which is what the submission will face. From within the dplR project in R:
 
-rhub::rhub_check(platforms = c("linux", "macos-arm64", "windows"))
+devtools::check_win_devel()    # CRAN's Windows machine, R-devel
+devtools::check_mac_release()  # CRAN's macOS machine (mac-builder), R-release
 
-# This triggers the rhub GH Actions workflow. Monitor results at:
+# Optionally also devtools::check_win_release().
+#
+# Both build the package from the working directory and upload it, so
+# commit first. Results are emailed to the maintainer address in
+# DESCRIPTION (bunna@wwu.edu), usually within an hour; win-builder's email
+# has a link to the full logs. win-builder runs the tests; mac-builder
+# compiles the Fortran (src/adsf.f95) with CRAN's GNU Fortran.
+#
+# Both must come back OK, or with NOTEs that can be explained in the
+# submission comments (Step 6). Typical explainable NOTEs: a new
+# maintainer email, a possibly misspelled word that is a proper name, or
+# "Days since last update" when resubmitting soon after a release.
+
+
+##################################
+#
+## Step 4 - Reverse dependency check
+#
+##################################
+
+# Required when a release changes defaults, return classes or argument
+# order (1.8.0 did all three). Optional for bug-fix-only releases, but
+# cheap enough to run anyway. CRAN runs these packages' checks against the
+# submission and will ask about any that break.
+#
+# revdepcheck is not on CRAN; install it once from GitHub:
+
+pak::pak("r-lib/revdepcheck")
+
+# Then, from within the project, check each reverse dependency against
+# both the CRAN version of dplR and this one:
+
+revdepcheck::revdep_check(num_workers = 4)
+revdepcheck::revdep_report()      # writes revdep/README.md and problems.md
+revdepcheck::revdep_reset()       # when done, to clear revdep/ for next time
+
+# This installs every reverse dependency and its dependencies, so the first
+# run takes an hour or more (fPortfolio and dendroTools are the heavy
+# ones). revdep/ is in .Rbuildignore.
+#
+# Any package that breaks: fix dplR if the break is dplR's fault, or
+# email the maintainer before submitting and say so in the submission
+# comments. To get the maintainers' emails without installing anything:
+
+ap <- available.packages(repos = "https://cloud.r-project.org")
+dplRdeps <- tools::package_dependencies("dplR", db = ap, which = "strong",
+                                        reverse = TRUE)$dplR
+ap[dplRdeps, "Maintainer"]
+
+
+##################################
+#
+## Step 5 - Optional: rhub, for changes to the C or Fortran code
+#
+##################################
+
+# rhub runs on GitHub's machines, like Step 2, so for an ordinary release
+# it adds little. Its value is the checks nothing else here runs: memory
+# sanitizers and valgrind. Use it when src/ has changed:
+
+rhub::rhub_platforms()   # lists what is on offer
+rhub::rhub_check(platforms = c("clang-asan", "valgrind"))
+
+# Monitor results at:
 # https://github.com/OpenDendro/dplR/actions/workflows/rhub.yaml
 #
-# All three platforms must pass before submitting to CRAN.
+# Known: rhub's macos-arm64 R-devel runner builds Fortran with LLVM flang,
+# whose install there is missing the iso_c_binding module, so adsf.f95
+# fails to compile ("Cannot parse module file for module 'iso_c_binding'").
+# CRAN's macOS machines use GNU Fortran and are not affected; Step 3's
+# mac-builder is the check that matters for macOS.
+#
 # If rhub_doctor() ever reports a problem, re-run rhub::rhub_setup()
 # and follow the prompts.
 
 
 ##################################
 #
-## Step 4 - Build the tarball and submit to CRAN
+## Step 6 - Build the tarball and submit to CRAN
 #
 ##################################
 
 # Build the tarball from one level above the repo:
 R CMD build /Users/andybunn/Documents/research/openDendro/dplR_dev/dplR
 
-# This produces dplR_1.X.X.tar.gz in the current directory.
+# This produces dplR_X.X.X.tar.gz in the current directory.
 # The .Rbuildignore file controls what gets excluded - check it periodically.
 # Do NOT add inst/doc/*.Rmd to .Rbuildignore: R CMD build puts the vignette
 # source there deliberately, and check WARNs about build/vignette.rds if it
 # is missing.
 #
-# The math-dplR vignette is an .Rmd rendering to HTML, so no LaTeX is needed
+# The vignettes are .Rmd rendering to HTML, so no LaTeX is needed
 # anywhere - not here, not on the GH Actions runners, not on CRAN's machines.
 #
 # Submit the tarball here:
 # https://cran.r-project.org/submit.html
+#
+# In the comments box, say briefly:
+#   - where it was checked (local, GH Actions, win-builder, mac-builder)
+#     and the result, explaining any NOTE;
+#   - the reverse dependency result (Step 4), and any maintainer emailed;
+#   - for a release with breaking changes, that NEWS.md lists them.
 #
 # CRAN will send a confirmation email. Click the link in it.
 # Then wait. CRAN review can take days to a few weeks.
@@ -101,7 +194,7 @@ R CMD build /Users/andybunn/Documents/research/openDendro/dplR_dev/dplR
 
 ##################################
 #
-## Step 5 - After CRAN accepts
+## Step 7 - After CRAN accepts
 #
 ##################################
 
@@ -119,23 +212,3 @@ R CMD build /Users/andybunn/Documents/research/openDendro/dplR_dev/dplR
 #
 # Finally, bump DESCRIPTION to the next dev version (e.g., 1.8.01),
 # commit, and push.
-
-
-##################################
-#
-## Optional - Reverse dependency check
-# Use this if making breaking changes that could affect downstream packages.
-#
-##################################
-
-# Find all CRAN packages that depend on dplR and get maintainer emails:
-dplRdeps <- tools::package_dependencies("dplR", which = "strong", reverse = TRUE)$dplR
-dplRdeps
-maintainers <- sapply(dplRdeps, maintainer, USE.NAMES = TRUE)
-names(maintainers) <- NULL
-maintainers
-emails <- sapply(maintainers, function(text) sub(".*<(.*)>.*", "\\1", text))
-names(emails) <- NULL
-emails
-
-# Use these emails to notify maintainers before the release goes live.

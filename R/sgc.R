@@ -2,7 +2,7 @@
   function(rwl, overlap = 50, prob = TRUE)
 {
   # checks class rwl and correct overlap
-  rwl <- check.rwl(rwl)
+  rwl <- check.rwl.rwi(rwl)
   if(any(length(overlap)!=1 | !is.numeric(overlap) |
          overlap%%1!=0 | overlap < 3)){
     stop("'overlap' should be a single integer >=3")

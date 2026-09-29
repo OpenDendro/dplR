@@ -101,6 +101,18 @@ test.rwl.check <- function() {
         expect_equal(c(f$year.from, f$year.to), c(yrs[50], yrs[59]))
     })
 
+    test_that("empty series are RWL_EMPTY_SERIES, not duplicates", {
+        z <- good; z$ABC07A <- NA_real_; z$ABC08A <- NA_real_
+        class(z) <- c("rwl", "data.frame")
+        f <- as.data.frame(rwl.check(z))
+        expect_setequal(f$series[f$check == "RWL_EMPTY_SERIES"],
+                        c("ABC07A", "ABC08A"))
+        expect_false("RWL_DUP_SERIES" %in% f$check)
+        ## a lone empty series is reported too
+        z$ABC08A <- NULL
+        expect_true("RWL_EMPTY_SERIES" %in% checks.of(z))
+    })
+
     test_that("RWL_DUP_SERIES finds a series archived twice", {
         z <- good; z$ABC07A <- z$ABC01A
         class(z) <- c("rwl", "data.frame")

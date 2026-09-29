@@ -43,9 +43,21 @@ cor.with.limit.upper <- function(limit, x, method) {
   r.vec
 }
 
+### What goes wrong when rwi.stats(), rwi.stats.running() or sss() is given
+### widths.
+rwi.stats.why <- function() {
+  paste("rbar and EPS from widths mix the common signal with each series'",
+        "age trend: on ca533 the widths give rbar.eff 0.350 and the Spline",
+        "indices 0.423.")
+}
+
 rwi.stats <- function(rwi, ids=NULL, period=c("max", "common"), 
                       method = c("spearman", "pearson", "kendall"),
                       ...) {
+  ## AGB Sep 2026: warned here, and passed on without the "rwl" class, so
+  ## that the warning names rwi.stats() and comes once.
+  check.rwi(rwi, why = rwi.stats.why())
+  rwi <- drop.rwl.class(rwi)
   args <- list(...)
   args[["rwi"]] <- rwi
   args[["ids"]] <- ids
@@ -67,6 +79,7 @@ rwi.stats.running <- function(rwi, ids=NULL, period=c("max", "common"),
                               min.corr.overlap=min(30, window.length),
                               round.decimals=3,
                               zero.is.missing=TRUE) {
+  check.rwi(rwi, why = rwi.stats.why())
   period2 <- match.arg(period)
   method2 <- match.arg(method)
   if (running.window) {

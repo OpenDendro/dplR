@@ -11,6 +11,8 @@ sss <- function(rwi, ids=NULL) {
   #rwi.stats(ca533.rwi)
   #rwi.stats(ca533.rwi,ca533.ids)
   
+  check.rwi(rwi, why = rwi.stats.why())
+  rwi <- drop.rwl.class(rwi)
   rwiVars <- rwi.stats(rwi, ids=ids)
   rbar <- rwiVars$rbar.eff
   N <- rwiVars$n.trees

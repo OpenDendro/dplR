@@ -40,7 +40,7 @@
 
   Subsetting an \code{rwl} object works as it does for a
   \code{\link{data.frame}}, with \code{i} indexing years and \code{j}
-  indexing series.  Three things are different.
+  indexing series.  Four things are different.
 
   \emph{Dropping series returns the years the remaining series cover.}  A
   collection is ragged, and the years at the ends of an \code{rwl} object
@@ -70,6 +70,34 @@
   vector, which carries no years at all, so it is returned at full length
   and stays aligned with the object it came from; use \code{drop = FALSE}
   for a one-series \code{rwl} object trimmed to its own years.
+
+  \emph{\code{subset} drops empty series; \code{[} keeps them.}  Taking
+  years can leave a series with no values at all: in
+  \code{ca533[time(ca533) \%in\% 1800:1899, ]}, the series CAM132, CAM152,
+  CAM161 and CAM201 end before 1800 and are left as columns of nothing
+  but \code{NA}.  An empty column is not a series.  \code{\link{chron}},
+  \code{\link{rwi.stats}} and the plots skip it, and
+  \code{\link{summary.rwi}}, \code{\link{interseries.cor}},
+  \code{\link{corr.rwl.seg}} and \code{\link{detrend}} either drop it or
+  fail on it.
+
+  \code{subset} and \code{\link{window.rwl}} therefore drop any series
+  left with no values, and a message names the series dropped.  If no
+  series is left with values, that is an error.  Use one of these to
+  take a span of years for analysis.
+
+  \code{[} keeps every series it is asked for, empty or not, on purpose.
+  \code{x[i, j]} always returns the columns that \code{j} names, in that
+  order, so the result stays lined up with anything indexed alongside it:
+  a vector of series names, an \code{ids} table from
+  \code{\link{read.ids}}, or a second object with the same series.  If
+  \code{[} dropped columns, those would fall out of step without a word,
+  and code that indexes with \code{[} -- dplR's own included -- could no
+  longer count on \code{names(x[, j])} being the series it asked for.
+  So row subsets made with \code{[}, and \code{\link{head}} and
+  \code{\link{tail}}, can return empty series.  Drop them with
+  \code{window} or \code{subset}, or find them with
+  \code{colSums(!is.na(x)) == 0}.
 
   \emph{Years must stay consecutive.}  An \code{rwl} object holds one row
   per year in increasing order, and dplR reads the year of a measurement
@@ -111,7 +139,9 @@
   vector when one column is selected and \code{drop} is \code{TRUE}, or a
   \code{data.frame} when row subsetting has left the years no longer
   consecutive.  When series are dropped and years are not indexed, the
-  result runs only over the years the remaining series cover.
+  result runs only over the years the remaining series cover.  \code{[}
+  returns every series asked for, including any with no values;
+  \code{subset} drops those, with a message.
 
 }
 \author{ Andy Bunn }
@@ -141,6 +171,14 @@ range(time(subset(ca533, select = 1:5)))
 ## Years are subset by name or by time().
 ca533.1800s <- ca533[time(ca533) \%in\% 1800:1899, ]
 range(time(ca533.1800s))
+
+## Four series end before 1800. `[` keeps them as empty columns, so the
+## result still has the 34 series asked for; subset() and window() drop
+## them and say which.
+ncol(ca533.1800s)
+names(ca533.1800s)[colSums(!is.na(ca533.1800s)) == 0]
+ncol(subset(ca533, time(ca533) \%in\% 1800:1899))
+ncol(window(ca533, 1800, 1899))
 
 ## A single series comes back as a vector unless drop is FALSE.
 class(ca533[, 1])

@@ -95,14 +95,34 @@ two-thirds of each series' length (the default for `"Spline"`).
 co021.rwi <- detrend(co021, method = "Spline")
 ```
 
-The result is an `rwi` object with the same shape as the `rwl`.
-`rwi.stats()` summarizes how coherent the indices are. `rbar.eff` is
-the mean interseries correlation and `eps` the expressed population
-signal; an `eps` above about 0.85 is the usual rule of thumb for a
-chronology that represents the population.
+The result is an `rwi` object with the same shape as the `rwl`, which
+records how it was made. `summary()` describes the indices as a
+collection. `rbar.eff` is the mean interseries correlation and EPS the
+expressed population signal; an EPS above about 0.85 is the usual rule
+of thumb for a chronology that represents the population. These come
+from `rwi.stats()`, and here count each core as its own tree; pass
+`ids` to group cores by tree. The summary also correlates each series
+with the mean of the others and lists any that do not fit.
 
-```{r rwi-stats}
-rwi.stats(co021.rwi)[, c("n.trees", "rbar.eff", "eps", "snr")]
+```{r rwi-summary}
+summary(co021.rwi)
+```
+
+`plot()` with `plot.type = "image"` shows every index at once, years
+across and series down, brown below 1 and green above. Vertical stripes
+are years the trees agree on, which is the signal a chronology is built
+from.
+
+```{r rwi-image, fig.height=6}
+plot(co021.rwi, plot.type = "image")
+```
+
+The same plot is a quick check on the detrending. Dividing each series
+by its mean leaves the age trend in, and it shows as a green run at the
+start of nearly every series.
+
+```{r rwi-image-mean, fig.height=6}
+plot(detrend(co021, method = "Mean"), plot.type = "image")
 ```
 
 ## Building a chronology

@@ -40,7 +40,8 @@ cms(rwl, po, c.hat.t = FALSE, c.hat.i = FALSE)
   See the reference below for further details.
 }
 \value{
-  A \code{data.frame} containing the dimensionless and detrended
+  An object of class \code{c("rwi", "data.frame")} (see
+  \code{\link{as.rwi}}) containing the dimensionless and detrended
   ring-width indices with column names, row names and dimensions of
   \code{\var{rwl}} if \code{\var{c.hat.t}} is \code{FALSE} and
   \code{\var{c.hat.i}} is \code{FALSE}.

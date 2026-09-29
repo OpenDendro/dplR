@@ -27,11 +27,22 @@ common.interval(rwl, type=c("series", "years", "both"),
   (\code{type="years"}), or a compromise between the two
   (\code{type="both"}).  A modified \code{\link{seg.plot}} can be drawn
   as well.
+
+  Series with no values are left out.  A single series is its own
+  common interval, and its measured years are returned.  If there are
+  two or more series and no year in which any two of them overlap, or
+  no series has any values, there is no common interval and that is an
+  error.
   
 }
 \value{
   A \code{data.frame} with \code{colnames(\var{x})} and
-  \code{rownames(\var{x})}.
+  \code{rownames(\var{x})}, with no missing values.  It has the class
+  of \code{\var{rwl}}: ring-width indices (class \code{"rwi"}, see
+  \code{\link{as.rwi}}) come back as indices.  If the years kept are
+  not consecutive, which \code{type = "years"} can give when a series
+  has an interior gap, the result is a plain \code{data.frame}, with a
+  warning (see \code{\link{[.rwl}}).
 }
 \author{ Filipe Campelo, Andy Bunn and Mikko Korpela }
 \seealso{ \code{\link{seg.plot}} }

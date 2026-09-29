@@ -49,9 +49,15 @@
 ###
 ### Row subsetting that keeps years consecutive -- a year window, head(),
 ### tail(), common.interval() -- is untouched and stays an rwl.
+###
+### AGB Sep 2026. Indices have the same shape and the same promise about
+### years, so this is also the method for class "rwi" (as.rwi.R). The
+### dplR.detrend record says how the indices were made, which is as true of
+### a subset as of the whole, so it is carried as it is.
 
 `[.rwl` <- function(x, i, j, drop) {
     prov <- attr(x, "dplR.provenance")
+    how <- attr(x, "dplR.detrend")
     old.rn <- attr(x, "row.names")
     ## Whether rows were indexed, worked out the way `[.data.frame` works out
     ## the same thing: x[j] and x[] name no rows, and neither does x[, j].
@@ -98,6 +104,9 @@
     ## subset cannot, and an object whose years were already irregular before
     ## the call is not this method's to complain about. Reading the years is
     ## worth skipping when neither this test nor the record needs them.
+    if (!is.null(how)) {
+        attr(out, "dplR.detrend") <- how
+    }
     rows.changed <- !identical(attr(out, "row.names"), old.rn)
     if (!rows.changed && is.null(prov)) {
         return(out)
@@ -106,20 +115,26 @@
 
     if (rows.changed) {
         if (length(yrs) > 1L && !(!anyNA(yrs) && all(diff(yrs) == 1))) {
+            is.rwi <- inherits(x, "rwi")
             warning("row subsetting left years that are not consecutive and ",
                     "increasing, so the result is a data.frame and not an ",
-                    "rwl object. dplR reads the years off the row names and ",
-                    "assumes each row is the year after the one above it, so ",
-                    "time(), plot(), detrend(), chron(), rwl.stats() and the ",
-                    "crossdating functions would all have read this as an ",
-                    "unbroken run of years and returned wrong answers. ",
-                    "Subset years as a window, e.g. ",
-                    "x[time(x) %in% 1800:1900, ]", call. = FALSE)
+                    if (is.rwi) "rwi" else "rwl", " object. dplR reads the ",
+                    "years off the row names and assumes each row is the ",
+                    "year after the one above it, so ",
+                    if (is.rwi) "time(), plot(), chron(), rwi.stats()"
+                    else "time(), plot(), detrend(), chron(), rwl.stats()",
+                    " and the crossdating functions would all have read this ",
+                    "as an unbroken run of years and returned wrong answers. ",
+                    "Take a span of years with window(), e.g. ",
+                    "window(x, 1800, 1900)", call. = FALSE)
             ## The record described an object with years in it. This one does
             ## not have them any more, so it goes rather than travelling on as
             ## a claim nothing here supports. `[.data.frame` keeps attributes
-            ## through a row subset, so it has to be taken off by hand.
+            ## through a row subset, so it has to be taken off by hand. The
+            ## detrending record goes with it: a plain data.frame is plainly
+            ## not one of dplR's objects, and should not look half like one.
             attr(out, "dplR.provenance") <- NULL
+            attr(out, "dplR.detrend") <- NULL
             class(out) <- "data.frame"
             return(out)
         }
@@ -206,6 +221,14 @@ prov.subset <- function(p, series, years) {
 ### passes a row index, so subset(x, select = 1:3) would keep the empty years
 ### that x[, 1:3] trims. That difference is not one a caller should have to
 ### know about, so the row index is passed only when there was one.
+###
+### AGB Sep 2026: subset() also drops series left with no values, as
+### window() does, and names them in a message. subset(x, time(x) > 1900)
+### on ca533 used to return four columns of nothing but NA, which summary(),
+### interseries.cor(), corr.rwl.seg() and detrend() then fail on. `[` itself
+### still keeps them: it is the operator dplR's own code indexes with, and
+### x[i, j] returning fewer columns than j named would put anything lined up
+### with those columns (an ids table, say) out without a word.
 subset.rwl <- function(x, subset, select, drop = FALSE, ...) {
     rows.given <- !missing(subset)
     r <- if (!rows.given) {
@@ -224,9 +247,20 @@ subset.rwl <- function(x, subset, select, drop = FALSE, ...) {
         names(nl) <- names(x)
         eval(substitute(select), nl, parent.frame())
     }
-    if (rows.given) {
+    out <- if (rows.given) {
         x[r, vars, drop = drop]
     } else {
         x[, vars, drop = drop]
     }
+    ## drop = TRUE on one column gives a vector: one series, nothing to drop.
+    if (!is.data.frame(out) || ncol(out) == 0L || nrow(out) == 0L) {
+        return(out)
+    }
+    yrs <- suppressWarnings(as.numeric(row.names(out)))
+    where <- if (!anyNA(yrs) && length(yrs) > 0L) {
+        sprintf("in %s-%s", min(yrs), max(yrs))
+    } else {
+        "in the rows kept"
+    }
+    drop.empty.series(out, where)
 }

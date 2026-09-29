@@ -34,8 +34,9 @@ i.detrend.series(y, y.name = NULL, nyrs = NULL, f = 0.5,
 \value{
   A vector containing the detrended series (\code{\var{y}}) according to
   the method used with names set to \code{colnames(\var{y})}.  These are
-  typically years.  A plot is also produced and the user chooses a method
-  through keyboard input.
+  typically years.  The name of the method chosen is attached as
+  \code{attr(x, "method")}.  A plot is also produced and the user
+  chooses a method through keyboard input.
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{detrend.series}} }

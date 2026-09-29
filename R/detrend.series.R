@@ -1,7 +1,6 @@
 `detrend.series` <-
   function(y, y.name = "", make.plot = TRUE,
-           method = c("Spline", "ModNegExp", "Mean", "Ar", "Friedman",
-                      "ModHugershoff", "AgeDepSpline"),
+           method = "Spline",
            nyrs = NULL, f = 0.5, pos.slope = FALSE,
            constrain.nls = c("never", "when.fail", "always"),
            verbose = FALSE, return.info = FALSE,

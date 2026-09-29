@@ -1,6 +1,8 @@
 bai.in <- function(rwl, d2pith = NULL) {
     
-    rwl <- check.rwl(rwl)
+    rwl <- check.rwl(rwl, why = paste(
+      "Basal area is built up ring by ring from the widths, so from indices",
+      "it is not an area at all."))
     if(!is.null(d2pith)) {
         if(ncol(rwl) != nrow(d2pith))
             stop("dimension problem: ", "'ncol(rw)' != 'nrow(d2pith)'")

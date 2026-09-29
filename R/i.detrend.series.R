@@ -1,8 +1,13 @@
 `i.detrend.series` <- function(y, y.name=NULL, nyrs = NULL, f = 0.5,
                                pos.slope = FALSE)
 {
-    fits <- detrend.series(y, y.name, make.plot=TRUE, nyrs = nyrs, f = f,
-                           pos.slope = pos.slope)
+    ## Every method, so there is a choice to make. This was the default
+    ## before dplR 1.8.0, when the default became "Spline" alone.
+    fits <- detrend.series(y, y.name, make.plot=TRUE,
+                           method = c("Spline", "ModNegExp", "Mean", "Ar",
+                                      "Friedman", "ModHugershoff",
+                                      "AgeDepSpline"),
+                           nyrs = nyrs, f = f, pos.slope = pos.slope)
     ## Remove the nec resids if all na
     fits <- fits[, !colAlls(is.na(fits)), drop=FALSE]
     col.names <- names(fits)
@@ -19,5 +24,9 @@
     method <- col.names[ans]
     res <- fits[, method]
     names(res) <- names(y)
+    ## AGB Sep 2026: the choice was made at the keyboard and thrown away, so
+    ## nothing downstream could say how the indices were made. i.detrend()
+    ## reads it off here and records it in the rwi object.
+    attr(res, "method") <- method
     res
 }

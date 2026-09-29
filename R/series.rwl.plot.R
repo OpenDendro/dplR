@@ -4,7 +4,7 @@ series.rwl.plot <-
              prewhiten = TRUE, ar.order.max = NULL,
              biweight=TRUE, floor.plus1 = FALSE) {
 
-    rwl <- check.rwl(rwl)
+    rwl <- check.rwl.rwi(rwl)
     ## Handle different types of 'series'
     tmp <- pick.rwl.series(rwl, series, series.yrs)
     rwl2 <- tmp[[1]]

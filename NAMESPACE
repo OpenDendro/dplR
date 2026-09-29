@@ -69,10 +69,13 @@ importFrom(data.table, data.table, as.data.table, fread, melt, dcast,
 ###############################################################
 
 S3method("[", rwl)
+S3method("[", rwi)
 S3method(subset, rwl)
+S3method(subset, rwi)
 S3method(plot, crn)
 S3method(plot, crs)
 S3method(plot, rwl)
+S3method(plot, rwi)
 S3method(print, redfit)
 S3method(print, rwl.report)
 S3method(print, rwl.check)
@@ -81,10 +84,18 @@ S3method(format, xdate.report)
 S3method(summary, rwl.check)
 S3method(as.data.frame, rwl.check)
 S3method(summary, rwl)
+S3method(summary, rwi)
+S3method(print, summary.rwi)
+S3method(as.data.frame, summary.rwi)
 S3method(time, rwl)
+S3method(time, rwi)
 S3method(time, crn)
 S3method("time<-", rwl)
+S3method("time<-", rwi)
 S3method("time<-", crn)
+S3method(window, rwl)
+S3method(window, rwi)
+S3method(window, crn)
 
 ###############################################################
 #
@@ -93,7 +104,7 @@ S3method("time<-", crn)
 ###############################################################
 
 export("ads",
-       "as.rwl",
+       "as.rwi", "as.rwl",
        "check.rwl",
        "autoread.ids",
        "bakker",

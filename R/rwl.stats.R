@@ -3,7 +3,7 @@
 `rwl.stats` <-
     function(rwl)
 {
-    rwl <- check.rwl(rwl)
+    rwl <- check.rwl.rwi(rwl)
     acf1 <- function(x){
         ar1 <- acf(x[!is.na(x)], lag.max=1, plot=FALSE)
         ar1$acf[2]

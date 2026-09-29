@@ -39,6 +39,8 @@ rwl.check.catalogue <- function() {
       "years later than the current year"),
     c("RWL_INTERNAL_NA", "series", "warning",
       "NA inside a series, between its first and last measured ring"),
+    c("RWL_EMPTY_SERIES", "series", "warning",
+      "series has no measurements at all"),
     c("RWL_DUP_SERIES", "series", "error",
       "two or more series hold identical measurements"),
     c("RWL_ZERO_VARIANCE", "series", "error",
@@ -300,9 +302,26 @@ check.series <- function(rwl, ctl) {
       series = s, year.from = min(r$from), year.to = max(r$to), n = sum(r$n))
   }
 
-  ## duplicate series, compared over each series' own measured values
-  h <- vapply(rwl, function(x) digest(x[!is.na(x)]), "")
-  for (g in split(names(rwl), h)) {
+  ## empty series. A file cannot hold one, but an object can: x[rows, ] and
+  ## head() keep a series with no values in the rows taken (see `[.rwl`).
+  ## AGB Sep 2026: these used to be reported only as duplicates of each
+  ## other -- two empty series hash alike -- which sent people looking for a
+  ## core archived twice. A lone empty series was not reported at all.
+  empty <- names(rwl)[!vapply(rwl, function(x) any(!is.na(x)), FALSE)]
+  for (s in empty) {
+    out[[paste0("empty", s)]] <- new.finding(
+      "RWL_EMPTY_SERIES",
+      paste0("no measurements in any year held; interseries.cor(), ",
+             "corr.rwl.seg() and summary() drop it, and detrend() fails on ",
+             "it. window() or subset() drop it"),
+      series = s, n = 0L)
+  }
+
+  ## duplicate series, compared over each series' own measured values.
+  ## Empty series are left out: having no values in common is not a copy.
+  full <- setdiff(names(rwl), empty)
+  h <- vapply(full, function(s) { x <- rwl[[s]]; digest(x[!is.na(x)]) }, "")
+  for (g in split(full, h)) {
     if (length(g) < 2L) next
     out[[paste0("dup", g[1])]] <- new.finding(
       "RWL_DUP_SERIES",

@@ -77,7 +77,9 @@ as.rwi(x)
   given an \code{"rwl"} object: \code{rwi.stats(ca533)} gives an
   \code{rbar.eff} of 0.350 from the widths against 0.423 from the
   Spline indices, and nothing about the number says it is wrong.  They
-  still take a plain \code{data.frame} or matrix without a word.  The
+  still take a plain \code{data.frame} or matrix without a word, and a
+  \code{"bai"} object of basal area increment (see
+  \code{\link{as.bai}}).  The
   crossdating functions, the plots, \code{\link{common.interval}},
   \code{\link{sgc}} and \code{\link{rwl.stats}} take either class
   quietly.  Each warning is only a warning, and the function goes on:

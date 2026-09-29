@@ -16,9 +16,11 @@
     method2 <- match.arg(arg = method,
                          choices = known.methods,
                          several.ok = TRUE)
+    ## Basal area increment is taken quietly: detrending it is ordinary.
     rwl <- check.rwl(rwl, why = paste(
         "Detrending indices divides out a growth curve that has already",
-        "been removed, and the result is indices of indices."))
+        "been removed, and the result is indices of indices."),
+        bai.ok = TRUE)
     ## AGB Sep 2026: a series with no values is dropped, and a message names
     ## it. It used to stop the whole call with detrend.series()'s "all
     ## values are 'NA'", which in the parallel loop came out as "task 23

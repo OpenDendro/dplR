@@ -17,6 +17,9 @@ has the full record, with the reasons for each change.
   return class `"rwi"` (ring-width indices). This used to be a plain
   data.frame, or class `"rwl"` for `rcs()`, `cms()` and `i.detrend()`.
   The values are unchanged.
+* `bai.in()` and `bai.out()` now return class `"bai"` (basal area
+  increment). They used to return class `"rwl"`. The areas are
+  unchanged.
 * Functions now warn when given the wrong kind of series. Those that
   want ring widths (`detrend()`, `rcs()`, `bai.in()`, `rwl.report()`,
   ...) warn on class `"rwi"`. Those that want indices (`chron()`,
@@ -64,7 +67,11 @@ has the full record, with the reasons for each change.
 * The `"rwi"` class has `summary()`, which gives collection statistics
   and flags series that don't fit, and `plot(x, plot.type = "image")`,
   which shows trend left in by detrending.
-* `window()` methods for `rwl`, `rwi` and `crn` objects:
+* The `"bai"` class has `as.bai()` and methods for `[`, `subset()`,
+  `time()`, `window()`, `summary()` and `plot()`. `chron()`,
+  `detrend()` and the crossdating functions take it without a warning;
+  functions that want ring widths warn.
+* `window()` methods for `rwl`, `rwi`, `bai` and `crn` objects:
   `window(x, 1800, 1900)`.
 * `[` and `subset()` methods for `rwl` and `rwi` objects keep the class
   and the records, and trim years no series covers.

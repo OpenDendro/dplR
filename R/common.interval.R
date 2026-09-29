@@ -4,9 +4,11 @@ common.interval <- function(rwl, type=c("series", "years", "both"),
     ## AGB Sep 2026: indices are as likely to go in here as widths (a
     ## matrix with no NA for a PCA), and check.rwl() made them class "rwl",
     ## with a warning, so they came back labelled as widths. They are taken
-    ## without the warning and given their class back at the end.
-    is.rwi <- inherits(rwl, "rwi")
-    rwl <- if (is.rwi) as.rwl(rwl) else check.rwl(rwl)
+    ## without the warning and given their class back at the end. So is
+    ## basal area increment (class "bai").
+    kind <- if (inherits(rwl, "rwi")) "rwi"
+            else if (inherits(rwl, "bai")) "bai" else NULL
+    rwl <- if (!is.null(kind)) as.rwl(rwl) else check.rwl(rwl)
     yrs <- as.numeric(row.names(rwl))
     check.flags(make.plot)
     type2 <- match.arg(type, c("series", "years", "both"))
@@ -266,8 +268,8 @@ common.interval <- function(rwl, type=c("series", "years", "both"),
     }
     ## Only if it is still one: `[.rwl` returns a plain data.frame when the
     ## years it keeps are not consecutive, which type = "years" can do.
-    if (is.rwi && inherits(out, "rwl")) {
-        class(out) <- c("rwi", "data.frame")
+    if (!is.null(kind) && inherits(out, "rwl")) {
+        class(out) <- c(kind, "data.frame")
     }
     out
 }

@@ -166,6 +166,35 @@ File: detrend.R, detrend.series.R, man/detrend.Rd,
    points to fill.internal.NA(). An interior gap given to detrend() now
    says which series has it, though still inside "task N failed".
 
+File: as.bai.R (new), bai.in.R, bai.out.R, helpers.R, detrend.R,
+      rwl.report.R, common.interval.R, Extract.rwl.R, window.rwl.R,
+      NAMESPACE, man/as.bai.Rd (new), man/bai.in.Rd, man/bai.out.Rd,
+      man/check.rwl.Rd, man/window.rwl.Rd, man/as.rwi.Rd,
+      tests/testthat/test-bai.R (new)
+-----------------------------------------------------------------
+ - New class "bai" for basal area increment. bai.in() and bai.out()
+   now return class c("bai", "data.frame"); they returned class "rwl",
+   because they wrote the areas into a copy of the widths. Once
+   functions began to check which kind of series they were given, that
+   label made chron(bai.in(x)) -- a BAI chronology, an ordinary thing to
+   build -- warn that chron() had been given ring widths, as the
+   bai.in() and bai.out() examples showed on R-hub. The areas are
+   unchanged.
+ - A bai object carries attr(x, "dplR.bai"), saying which function
+   made it and whether 'd2pith' or 'diam' was given or estimated from
+   the widths, and the provenance record of the widths.
+ - New as.bai(), and methods for bai: `[`, subset(), time(), time<-,
+   window(), summary() (rwl.stats()) and plot() (seg.plot() or
+   spag.plot()). common.interval() keeps the class.
+ - Which functions take it: chron(), rwi.stats() and the other
+   functions that want indices take it quietly, as they take a plain
+   data.frame; so do the crossdating functions, the plots,
+   common.interval(), and detrend(), since detrending BAI is
+   established practice. Functions that want ring widths -- bai.in(),
+   bai.out(), rcs(), cms(), rwl.report() and the rest -- warn, and treat
+   the areas as widths. check.rwl() gains 'bai.ok' (default FALSE) for
+   detrend() to use.
+
 File: rcs.R, cms.R, i.detrend.R, man/rcs.Rd, man/cms.Rd,
       man/i.detrend.Rd, tests/testthat/test-empty-series.R
 -----------------------------------------------------------------

@@ -18,9 +18,21 @@
 
 # In DESCRIPTION:
 #   - Set Version: X.X.X
-#   - Set Date: to today
 #
-# Update ChangeLog with a summary of changes since the last release.
+# DESCRIPTION has no Date: field, on purpose. CRAN does not require one,
+# R CMD build stamps the tarball with its own Packaged: date, and a Date:
+# left behind from an earlier release gets a NOTE at submission ("The Date
+# field is over a month old"). Don't add one.
+#
+# Update ChangeLog with the full record of changes since the last release.
+#
+# Update NEWS.md: a new "# dplR X.X.X" heading at the top, with a short,
+# user-facing summary -- changes that can alter results or break code
+# first, then new features -- ending with a pointer to the ChangeLog.
+# The heading must be "# dplR X.X.X" for news(package = "dplR") and the
+# CRAN page to pick it up. Check that it parses:
+#   tools:::.build_news_db_from_package_NEWS_md("NEWS.md")
+# NEWS.md must stay out of .Rbuildignore.
 #
 # Commit and push to master.
 
@@ -98,7 +110,7 @@ R CMD build /Users/andybunn/Documents/research/openDendro/dplR_dev/dplR
 #
 # - Tag: vX.X.X
 # - Title: dplR version X.X.X
-# - Release notes: copy the relevant section from ChangeLog or "see ChangeLog"
+# - Release notes: copy the version's section from NEWS.md
 #
 # Wait until CRAN actually publishes the package before tagging,
 # in case they come back with changes.

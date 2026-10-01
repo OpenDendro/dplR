@@ -16,3 +16,30 @@ o [andybunn]  Victoria H func for EW/LW.
 
 o [andybunn]  json readers and writers?
 
+
+o [andybunn] read.tucson(): split the negative-value rule. One line,
+  tailNums[tailNums < 0 & tailNums != -9999] <- NA, treats a file's
+  sentinel (-999, -8, -5, ...) and an apparent sign error (nc030e:
+  685 578 651 664 -249 870) the same way, and says nothing about
+  either. A value repeated in the file is its sentinel: report it once.
+  A lone negative is a suspected sign error: flag it. Both still return
+  NA; never flip -249 to 249. Evidence and counts are in the ITRDB clone
+  (itrdbMeasurementsClone/CLAUDE.md, "Reader work still open in dplR").
+
+o [andybunn] read.tucson(): decide what to do with a file that has
+  exactly one negative cell. The repetition rule above cannot tell a
+  sentinel used once from a sign error. 261 ITRDB files, 191 of them a
+  single -999. Either report all 261 as undecidable, or treat a file's
+  only negative as its sentinel (13 files then get a message).
+
+o [andybunn] read.tucson(): a 999 in the middle of a line in a 0.01 mm
+  file is deleted as a stop marker, silently. 21 ITRDB files, 149
+  cells. Mostly real markers, but in dza010 (BES04B 1952), bgd002 and
+  deu440 it is a plausible 9.99 mm ring. Give it the same treatment as
+  sentinels: one message per file with the count.
+
+o [andybunn] read.tucson(): should a line that cannot be read
+  unambiguously be an error by default, not only under strict = TRUE?
+  Making COLUMN_LAYOUT and PAST_COL72 fatal would newly fail 20 ITRDB
+  files. The case for it, file by file, is in
+  itrdbMeasurementsClone/notes/read-tucson-fail-on-unreadable.md.

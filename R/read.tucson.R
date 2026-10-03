@@ -21,7 +21,7 @@
 
 ## Symbols used in data.table's non-standard evaluation. Declared so R CMD
 ## check does not report them as undefined globals.
-utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
+utils::globalVariables(c("V1", "ovf", "ovfTerm", "core", "startYear", "segId", "flag",
                          "rw", "year", "yearOrder", "precision", "zap",
                          "held", "brk", "grp", "nseg", "term", "newName",
                          "rid", "from", "to", "n", "kept", "dropped", "N",
@@ -489,6 +489,28 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
            'The appended record is discarded. First one: ',
            trimws(raw$V1[secondRec][1]), ' <<overflow>> ', trimws(raw$ovf[secondRec][1]),
            event = 'SECOND_RECORD', n = sum(secondRec))
+  ## AGB Oct 2026: a third pattern is not disposable, and it was being thrown
+  ## away without a word: a stop marker that is the whole of the overflow. A
+  ## line holding ten measurements has nowhere inside columns 13-72 to put its
+  ## terminator, and some writers put it in an eleventh field at columns 73-78
+  ## rather than on a line of its own. Truncation dropped it, the precision
+  ## pass found no -9999 on the series' last line and fell back to 0.01 mm, and
+  ## a 0.001 mm series came back ten times too large with nothing said, strict
+  ## or not (GitHub issue 40). read.tucson.legacy() reads the eleventh field.
+  ##
+  ## The marker is kept here, in its own column, rather than pasted back onto
+  ## V1: everything downstream reads columns 13-72 as at most ten values, and
+  ## that stays true. The two places that ask "does this line end a record"
+  ## -- the block cut and the precision flag -- consult ovfTerm as well.
+  ##
+  ## -9999 is taken wherever it is the only thing past column 72; it is never
+  ## a count or a note. 999 is taken only when the line is full, i.e. when
+  ## there was no room for it: after a short line a lone 999 out at column 73
+  ## is far more likely to be the trailing count column described above.
+  ovfTok  <- trimws(raw$ovf)
+  fullRow <- lengths(strsplit(trimws(substr(raw$V1, 13, 72)), '[[:space:]]+')) == 10L
+  raw[, ovfTerm := data.table::fifelse(ovfTok == '-9999', '-9999',
+                   data.table::fifelse(ovfTok == '999' & fullRow, '999', ''))]
   ## AGB Sep 2026: ovf used to be dropped here, before the duplicate check,
   ## because that check compared whole rows. It is kept until after the head
   ## parse instead, because the misplaced-year recovery further down needs the
@@ -766,6 +788,8 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
       tk <- tk[nzchar(tk)]
       length(tk) > 0L && tk[length(tk)] %in% c('999', '-9999')
     }, TRUE, USE.NAMES = FALSE)
+    ## AGB Oct 2026: or carries one in an eleventh field, past column 72.
+    lineTerm <- lineTerm | nzchar(raw$ovfTerm)
 
     brk <- if (nr == 1L) TRUE else
       c(TRUE, raw$core[-1L] != raw$core[-nr] |
@@ -869,7 +893,11 @@ utils::globalVariables(c("V1", "ovf", "core", "startYear", "segId", "flag",
     ## which is what the else branch already means: no -9999 terminator, so
     ## assume 0.01 mm. On a file whose terminator is a number this changes
     ## nothing, because the comparison is TRUE or FALSE either way.
-    if (isTRUE(tailNums[length(tailNums)] == -9999)) -9999 else 999
+    ##
+    ## AGB Oct 2026: a -9999 in an eleventh field, past column 72, declares
+    ## the precision just as one inside the line does. See ovfTerm above.
+    if (ovfTerm[.N] == '-9999' ||
+        isTRUE(tailNums[length(tailNums)] == -9999)) -9999 else 999
   }, by = core]
   raw <- raw[!is.na(flag)]
   # Split tail ----

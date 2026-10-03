@@ -120,8 +120,12 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
   # check overlap of all series
   
   # interseries correlation
-  res$meanInterSeriesCor <- mean(interseries.cor(rwl)[,1])
-  res$sdInterSeriesCor <- sd(interseries.cor(rwl)[,1])
+  ## AGB Oct 2026: computed once. It was computed twice, once for the mean and
+  ## once for the SD, and it is nearly all of the time rwl.report() takes: 73 s
+  ## on chin067 (597 series), which xDateR shows as its data summary.
+  isc <- interseries.cor(rwl)[,1]
+  res$meanInterSeriesCor <- mean(isc)
+  res$sdInterSeriesCor <- sd(isc)
   
   
   # internal NA

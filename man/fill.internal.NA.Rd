@@ -9,7 +9,7 @@
   \code{\link{read.rwl}}.
 }
 \usage{
-fill.internal.NA(x, fill = c("Mean", "Spline", "Linear"))
+fill.internal.NA(x, fill = c("Mean", "Spline", "Linear"), series = names(x))
 }
 \arguments{
   \item{x}{a \code{data.frame} of ring widths with
@@ -18,6 +18,9 @@ fill.internal.NA(x, fill = c("Mean", "Spline", "Linear"))
     \code{\link{read.rwl}}}
   \item{fill}{a \code{numeric} value (e.g., \code{0}) or a \code{character} string of
     \code{"Mean"}, \code{"Spline"}, or \code{"Linear"}.  Defaults to \code{"Mean"}.}
+  \item{series}{a \code{character} vector naming the series to fill.
+    Defaults to every series in \code{\var{x}}.  Other series are
+    returned unchanged.}
 }
 \details{
   There are occasionally data gaps within a tree-ring series.  Some of
@@ -45,9 +48,11 @@ fill.internal.NA(x, fill = c("Mean", "Spline", "Linear"))
   them!
 }
 \value{
-  A \code{data.frame} with \code{colnames(\var{x})} and
-  \code{rownames(\var{x})}.  Internal \code{NA}s
-  filled as above.
+  \code{\var{x}}, with the internal \code{NA}s of the series named in
+  \code{\var{series}} filled as above.  It keeps the class and attributes
+  of \code{\var{x}}: an \code{rwl} object comes back as an \code{rwl}
+  object, with the record \code{\link{read.tucson}} attached to it.
+  Before dplR 1.8.1 the result was a plain \code{data.frame}.
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{spline}}, \code{\link{approx}}

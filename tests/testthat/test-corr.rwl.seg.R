@@ -132,3 +132,52 @@ test.corr.rwl.seg.lag <- function() {
     })
 }
 test.corr.rwl.seg.lag()
+
+test.corr.rwl.seg.masters <- function() {
+    data(gp.rwl, package = "dplR", envir = environment())
+
+    ## Since Oct 2026 each leave-one-out master is built only over its
+    ## series' span plus lag.max years. Rebuild the masters the old way,
+    ## over every year, recompute each bin's correlation and best lag, and
+    ## check corr.rwl.seg() gives the same.
+    test_that("masters over the series' span give the same results", {
+        lag.max <- 5
+        crs <- suppressWarnings(corr.rwl.seg(gp.rwl, bin.floor = 10,
+                                             lag.max = lag.max,
+                                             make.plot = FALSE))
+        norm <- dplR:::normalize1(gp.rwl, n = NULL, prewhiten = TRUE)
+        rwi <- norm$rwi.mat
+        yrs <- as.numeric(row.names(gp.rwl))
+        rho <- crs$spearman.rho
+        lag <- crs$best.lag
+        rho[] <- NA
+        lag[] <- NA
+        for (i in seq_len(ncol(rwi))) {
+            g <- norm$idx.good
+            g[i] <- FALSE
+            m <- apply(rwi[, g, drop = FALSE], 1, dplR:::tbrm, C = 9)
+            s <- rwi[, i]
+            for (j in seq_len(nrow(crs$bins))) {
+                rows <- which(yrs >= crs$bins[j, 1] & yrs <= crs$bins[j, 2])
+                if (anyNA(s[rows]) || anyNA(m[rows])) next
+                rho[i, j] <- cor.test(s[rows], m[rows], method = "spearman",
+                                      alternative = "greater")$estimate
+                best <- 0L
+                best.r <- rho[i, j]
+                for (k in c(-(lag.max:1), 1:lag.max)) {
+                    t <- rows + k
+                    if (t[1] < 1 || t[length(t)] > length(m) || anyNA(m[t])) next
+                    r.k <- cor(s[rows], m[t], method = "spearman")
+                    if (r.k > best.r) {
+                        best <- k
+                        best.r <- r.k
+                    }
+                }
+                lag[i, j] <- best
+            }
+        }
+        expect_equal(crs$spearman.rho, rho)
+        expect_identical(crs$best.lag, lag)
+    })
+}
+test.corr.rwl.seg.masters()

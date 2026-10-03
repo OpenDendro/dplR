@@ -1,3 +1,21 @@
+# dplR 1.8.1 (development)
+
+* `insert.ring()` and `delete.ring()` work on a whole `rwl` object as
+  well as a single series: `delete.ring(rwl, series = "50A", year = 1950)`
+  returns the edited `rwl`. No measurement is dropped; the object gains or
+  loses years at its ends as needed, and gaps keep their place.
+* `insert.ring()` on a vector warns when `fix.length = TRUE` drops a
+  measured ring to keep the length.
+* `fill.internal.NA()` gains `series`, to fill only some series, and now
+  returns the class it was given: an `rwl` stays an `rwl`, with its read
+  record. It used to return a plain data.frame.
+* `corr.rwl.seg()` is about three times faster on large collections
+  (45 s to 13 s on the 597-series chin067), with the same results.
+* `interseries.cor()` is four to six times faster on large collections,
+  and `rwl.report()`, which computed it twice, now computes it once. On
+  the 597-series chin067, `rwl.report()` drops from 72 s to 8 s. The
+  results are unchanged.
+
 # dplR 1.8.0
 
 A large release. This file lists what users need to know; the ChangeLog

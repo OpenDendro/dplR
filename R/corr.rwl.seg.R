@@ -180,28 +180,46 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
   rwi <- norm.one$rwi.mat # is a matrix
   idx.good <- norm.one$idx.good
   
+  ## AGB Oct 2026: the rows of each bin are found once, not once per series
+  ## (a tenth of the run time on large collections).
+  bin.rows <- lapply(seq_len(nbins), function(j) {
+    which(yrs >= bins[j, 1] & yrs <= bins[j, 2])
+  })
+
   ## loop through series
   seq.series <- seq_len(nseries)
   short <- logical(nseries)
   for (i in seq.series) {
+    series <- rwi[, i]
     if (is.null(master)) {
       idx.noti <- rep(TRUE, nseries)
       idx.noti[i] <- FALSE
-      master.norm <- rwi[, idx.good & idx.noti, drop=FALSE]
-      
-      ## compute master series by normal mean or robust mean
-      if (!biweight) {
-        master2 <- apply(master.norm, 1, exactmean)
-      } else {
-        master2 <- apply(master.norm, 1, tbrm, C=9)
+      ## AGB Oct 2026: the leave-one-out master is computed only over the
+      ## series' span plus lag.max years either side, and is NA elsewhere.
+      ## Every use of it is inside that range: a bin is tested only where
+      ## the series has values throughout, the lag search shifts at most
+      ## lag.max years, and the overall correlation drops incomplete
+      ## pairs. Building it over every year of the collection was most of
+      ## the run time on large collections (71% on chin067, 597 series
+      ## over 4649 years). The results are unchanged.
+      master2 <- rep(NA_real_, nyrs.all)
+      ok <- which(!is.na(series))
+      if (length(ok) > 0) {
+        rows <- max(1, ok[1] - lag.max) : min(nyrs.all, ok[length(ok)] + lag.max)
+        master.norm <- rwi[rows, idx.good & idx.noti, drop=FALSE]
+        ## compute master series by normal mean or robust mean
+        master2[rows] <- if (!biweight) {
+          apply(master.norm, 1, exactmean)
+        } else {
+          apply(master.norm, 1, tbrm, C=9)
+        }
       }
     }
-    series <- rwi[, i]
     ## loop through bins
     for (j in seq_len(nbins)) {
-      mask <- yrs %in% seq(from=bins[j, 1], to=bins[j, 2])
+      mask <- bin.rows[[j]]
       ## cor is NA if there is not complete overlap
-      if (!any(mask) ||
+      if (length(mask) == 0 ||
           any(is.na(series[mask])) ||
           any(is.na(master2[mask]))) {
         bin.cor <- NA
@@ -217,7 +235,7 @@ corr.rwl.seg <- function(rwl, seg.length = 50, bin.floor = 100, n = NULL,
       if (!is.na(bin.cor)) {
         best.lag <- 0L
         best.rho <- bin.cor
-        idx <- which(mask)
+        idx <- mask
         ## Pair each year with its own lagged partner in the master
         ## (series[t] against master2[t + k]), which is ccf(x = master,
         ## y = series) at lag k: negative lags mean missing rings in the

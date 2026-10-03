@@ -302,8 +302,8 @@ xskel.ccf.plot <- function(rwl,series,series.yrs = as.numeric(names(series)),
   
   popViewport(2)
   series.x.txt <- ifelse(series.x,
-                         "NB: With series.x = TRUE, postive lags indicate missing rings in series",
-                         "NB: With series.x = FALSE (default), negative lags indicate missing rings in series")
+                         "Positive lags suggest a missing ring in the series",
+                         "Negative lags suggest a missing ring in the series")
   grid.text(series.x.txt,y=unit(0.015,"npc"),x=unit(0.5,"npc"),
             just = textJust)
   

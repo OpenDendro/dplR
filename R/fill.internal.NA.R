@@ -1,4 +1,5 @@
-fill.internal.NA <- function(x, fill=c("Mean", "Spline", "Linear")){
+fill.internal.NA <- function(x, fill=c("Mean", "Spline", "Linear"),
+                             series=names(x)){
     fillInternalNA.series <- function(x, fill=0){
         x.na <- is.na(x)
         x.ok <- which(!x.na)
@@ -56,10 +57,17 @@ fill.internal.NA <- function(x, fill=c("Mean", "Spline", "Linear")){
     } else {
         fill2 <- match.arg(fill)
     }
-    y <- vapply(x, fillInternalNA.series, numeric(nrow(x)), fill=fill2)
-    dim(y) <- dim(x)
-    y <- as.data.frame(y)
-    row.names(y) <- row.names(x)
-    names(y) <- names(x)
-    y
+    if (!is.character(series) || anyNA(series) || !all(series %in% names(x))) {
+        stop(gettextf("'series' must name columns of 'x'; not found: %s",
+                      paste(setdiff(series, names(x)), collapse = ", ")))
+    }
+    ## AGB Oct 2026: only the series named are filled, and the result keeps
+    ## the class and attributes of 'x'. It was rebuilt as a plain
+    ## data.frame, so an rwl came back without its class or its read record
+    ## (provenance), and functions that check for ring widths no longer saw
+    ## ring widths.
+    for (s in series) {
+        x[[s]] <- fillInternalNA.series(x[[s]], fill=fill2)
+    }
+    x
 }

@@ -1,3 +1,79 @@
+* CHANGES IN dplR VERSION 1.8.1
+
+File: insert.ring.R, NAMESPACE, man/insert.ring.Rd,
+      tests/testthat/test-insert.ring.R
+-----------------------------------------------------------------
+ - insert.ring() and delete.ring() are now S3 generics. The default
+   methods are the old vector functions. New rwl methods edit one
+   series of an rwl object in place:
+   delete.ring(rwl, series = "50A", year = 1950) returns the rwl.
+   Editing a collection used to mean pulling the series out with its
+   years, editing it, and putting it back, which is easy to get wrong:
+   with fix.length = TRUE a measurement can fall off the end; rows
+   rebuilt with the rwl `[` method are refused when the years are not
+   consecutive; and as.data.frame() on a list renames a series such as
+   "704071" to "X704071". xDateR's editRing() had to do all of this to
+   edit safely, and printed itself into every report so the R code
+   there would run. The rwl methods edit the series on its own span
+   (interior gaps kept in place as NA) with fix.length = FALSE, then
+   put it back, adding or trimming years at the ends of the rwl. The
+   class and attributes, including the read.tucson() record, are kept.
+   'year' means what it does for vectors: the ring deleted, or the ring
+   the new one follows. 'fix.length' is refused for an rwl, since
+   nothing is dropped.
+ - insert.ring() on a vector warns when fix.length = TRUE drops a
+   measurement to keep the length. That happens when the series starts
+   (with fix.last = FALSE, ends) on the first (last) year of the
+   vector, and the ring was lost without a word. Padding NA is still
+   dropped silently.
+
+File: corr.rwl.seg.R, tests/testthat/test-corr.rwl.seg.R
+-----------------------------------------------------------------
+ - corr.rwl.seg() is about three times faster on large collections,
+   with the same results. As in interseries.cor() below, each
+   leave-one-out master was built for every year of the collection;
+   it is now built over its series' span plus lag.max years, which
+   covers every bin the series is tested in, every lag searched, and
+   the overall correlation. The rows of each bin are also found once
+   rather than once per series. chin067 (597 series) goes from 45.3 s
+   to 13.3 s with lag.max = 5. The complete result (correlations,
+   p-values, best lags, flags) is identical to before on dplR's example
+   data, nm572, ausl024, chin067, ak006, co604 and the xDateR demo
+   data, across lag.max, bin.floor, floor.plus1, n, nyrs, prewhiten,
+   biweight, method, and a master given as a vector or data.frame.
+
+File: normalize.xdate.R, tests/testthat/test-interseries.cor.R (new)
+-----------------------------------------------------------------
+ - interseries.cor() is four to six times faster on large collections,
+   with the same results. Nearly all its time went on the leave-one-out
+   masters, and each was built for every year of the collection,
+   although the correlation that uses it drops the years its series
+   has no value. Each master is now built only in its series' years.
+   chin067 (597 series over 4649 years) goes from 34.6 s to 7.8 s;
+   with the rwl.report() fix below, rwl.report() goes from 72.4 s to
+   8.3 s. Results on dplR's example data and on nm572, ausl024, chin067,
+   ak006, co604 and the xDateR demo data, under seven combinations of
+   n, nyrs, prewhiten, biweight and method, are identical to before.
+   normalize.xdate(leave.one.out = TRUE), used only by
+   interseries.cor(), now returns NA in a master's other years.
+
+File: rwl.report.R, tests/testthat/test-rwl.report.R
+-----------------------------------------------------------------
+ - rwl.report() computed interseries.cor() twice, once for the mean and
+   once for the SD, and that is nearly all its run time (73 s on the
+   597-series chin067). It is computed once; the values are unchanged.
+
+File: fill.internal.NA.R, man/fill.internal.NA.Rd,
+      tests/testthat/test-insert.ring.R
+-----------------------------------------------------------------
+ - fill.internal.NA() gains 'series', the series to fill. The default
+   is every series, as before.
+ - fill.internal.NA() now returns 'x' with its class and attributes.
+   It rebuilt its result as a plain data.frame, so an rwl came back
+   without its class or its read.tucson() record, and functions that
+   check for ring widths no longer saw ring widths. The values are
+   unchanged.
+
 * CHANGES IN dplR VERSION 1.8.0
 
 File: detrend.R, detrend.series.R, i.detrend.series.R, man/detrend.Rd,

@@ -48,20 +48,26 @@ normalize.xdate <- function(rwl, series, n, prewhiten, biweight,
             goodCol <- rep.int(TRUE, nseries)
             series.out <- master.df
         }
+        ## AGB Oct 2026: each leave-one-out master is computed only in the
+        ## years its own series has a value, and is NA elsewhere. The
+        ## correlation that uses it (interseries.cor(), the only caller)
+        ## drops incomplete pairs, so the values in other years were thrown
+        ## away; computing them was nearly all the time interseries.cor()
+        ## took: on chin067, 597 series over 4649 years, each master was
+        ## built for every year although the average series covers ~740.
+        ## The correlations are unchanged.
         master <- series.out
-        if (!biweight) {
-            for (i in seq_len(nseries)) {
-                goodCol2 <- goodCol
-                goodCol2[i] <- FALSE
-                master[, i] <-
-                    rowMeans(series.out[, goodCol2, drop = FALSE], na.rm=TRUE)
-            }
-        } else {
-            for (i in seq_len(nseries)) {
-                goodCol2 <- goodCol
-                goodCol2[i] <- FALSE
-                master[, i] <-
-                    apply(series.out[, goodCol2, drop = FALSE], 1, tbrm, C = 9)
+        master[] <- NA
+        for (i in seq_len(nseries)) {
+            goodCol2 <- goodCol
+            goodCol2[i] <- FALSE
+            rows <- which(!is.na(series.out[, i]))
+            if (length(rows) == 0) next
+            others <- series.out[rows, goodCol2, drop = FALSE]
+            master[rows, i] <- if (!biweight) {
+                rowMeans(others, na.rm=TRUE)
+            } else {
+                apply(others, 1, tbrm, C = 9)
             }
         }
     } else {

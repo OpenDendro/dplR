@@ -7,9 +7,9 @@ ccf.series.rwl <- function(rwl, series,
                            floor.plus1 = FALSE, series.x = FALSE, ...) {
 
     series.x.txt <- ifelse(series.x,
-                           "NB: With series.x = TRUE, postive lags indicate missing rings in series",
-                           "NB: With series.x = FALSE (default), negative lags indicate missing rings in series")
-    cat(series.x.txt)
+                           "Positive lags suggest a missing ring in the series",
+                           "Negative lags suggest a missing ring in the series")
+    cat(series.x.txt, "\n")
     rwl <- check.rwl.rwi(rwl)
     ## Handle different types of 'series'
     tmp <- pick.rwl.series(rwl, series, series.yrs)

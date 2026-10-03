@@ -1,5 +1,12 @@
 # dplR 1.8.1 (development)
 
+* `read.tucson()` honours a stop marker written in an eleventh field,
+  past column 72, after a line of ten measurements. In 1.8.0 the marker
+  was dropped, so a 0.001 mm series ending that way was read as 0.01 mm
+  and every value came back ten times too large, with no warning.
+  `read.tucson.legacy()` was not affected. No file in the ITRDB has this
+  layout.
+
 * `insert.ring()` and `delete.ring()` work on a whole `rwl` object as
   well as a single series: `delete.ring(rwl, series = "50A", year = 1950)`
   returns the edited `rwl`. No measurement is dropped; the object gains or

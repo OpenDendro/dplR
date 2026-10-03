@@ -159,6 +159,47 @@ test_that("content past column 72 is only reported when it splits a number", {
     expect_match(w, "<<past column 72>> 0")
 })
 
+test_that("a stop marker in an eleventh field, past column 72, is honoured", {
+    ## GitHub issue 40. A line of ten measurements has no room for its
+    ## terminator inside columns 13-72, and some writers put it at columns
+    ## 73-78. Truncating at 72 dropped it, the series was read at 0.01 mm
+    ## instead of 0.001 mm, and every value came back ten times too large with
+    ## nothing said, strict or not.
+    ten <- strrep("   123", 10)
+    f <- tuc(paste0("TEST    1900", ten, " -9999"))
+    expect_silent(r <- read.tucson(f, verbose = FALSE))
+    expect_equal(r[[1]], rep(0.123, 10))
+    expect_equal(row.names(r), as.character(1900:1909))
+    expect_equal(attr(r, "dplR.provenance")$precision$precision, 0.001)
+    expect_equal(no.prov(r)[[1]],
+                 suppressWarnings(read.tucson.legacy(f, verbose = FALSE))[[1]])
+    expect_silent(rs <- read.tucson(f, verbose = FALSE, strict = TRUE))
+    expect_equal(rs[[1]], rep(0.123, 10))
+
+    ## On the last of several lines, and with a 999 in the data that is then
+    ## a real 0.999 mm ring rather than a stop marker.
+    f2 <- tuc(c(paste0("TEST    1900", ten),
+                paste0("TEST    1910", strrep("   123", 9), "   999 -9999")))
+    r2 <- read.tucson(f2, verbose = FALSE)
+    expect_equal(r2[[1]], c(rep(0.123, 19), 0.999))
+
+    ## The 0.01 mm marker in the same place ends the record too: the same ID
+    ## starting again is a second record, renamed, not a clash of years.
+    f3 <- tuc(c(paste0("TEST    1900", ten, "   999"),
+                "TEST    1900   200   210   999"))
+    r3 <- suppressWarnings(read.tucson(f3, verbose = FALSE))
+    expect_equal(ncol(r3), 2L)
+    expect_equal(r3[[1]], rep(1.23, 10))
+
+    ## -9999 is never a count or a note, so it is honoured after a short line
+    ## as well, and only for the series that carries it.
+    f4 <- tuc(c(paste0("TEST    1900   123   134   145", strrep(" ", 42), " -9999"),
+                "OTHER   1900   123   134   999"))
+    r4 <- read.tucson(f4, verbose = FALSE)
+    expect_equal(r4[["TEST"]][1:3], c(0.123, 0.134, 0.145))
+    expect_equal(r4[["OTHER"]][1:2], c(1.23, 1.34))
+})
+
 test_that("a series that contributes no measurement is named, not dropped in silence", {
     ## Every refusal in the reader works one cell at a time. A series whose
     ## every cell was refused loses every row it had and never becomes a

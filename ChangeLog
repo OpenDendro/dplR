@@ -1,5 +1,28 @@
 * CHANGES IN dplR VERSION 1.8.1
 
+File: read.tucson.R, tests/testthat/test-read.tucson.R
+-----------------------------------------------------------------
+ - read.tucson() honours a stop marker in an eleventh field, past
+   column 72 (GitHub issue 40, reported by CaoJH0). A line of ten
+   measurements has no room for its terminator inside columns 13-72,
+   and some writers put it at columns 73-78 rather than on a line of
+   its own. The reader truncates at column 72 and dropped the marker
+   with the rest of the overflow, so the precision pass found no -9999
+   on the series' last line and fell back to 0.01 mm: a 0.001 mm
+   series came back ten times too large, with no warning and no
+   error under strict = TRUE. This is in 1.8.0 as released.
+   read.tucson.legacy() reads the eleventh field and was right.
+   The marker is now kept in its own column (ovfTerm) and consulted
+   in the two places that ask whether a line ends a record: the block
+   cut and the precision flag. V1 is not changed, so columns 13-72
+   still hold at most ten values for everything downstream. -9999 is
+   taken wherever it is the only thing past column 72. 999 is taken
+   only after a full line of ten values, since after a short line a
+   lone 999 at column 73 is more likely a trailing count column. The
+   read is silent: there is one reading and it is now the one
+   returned. None of the 10,167 rwl files in the ITRDB clone has this
+   layout, so no archive result changes.
+
 File: insert.ring.R, NAMESPACE, man/insert.ring.Rd,
       tests/testthat/test-insert.ring.R
 -----------------------------------------------------------------

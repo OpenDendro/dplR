@@ -44,7 +44,8 @@ write.tucson(rwl.df, fname, header = NULL, append = FALSE,
     them as the missing-data sentinel \code{-999} (see Details).  Anything
     else is passed to \code{\link{fill.internal.NA}} before the file is
     written, so \code{\var{fill.internal.NA} = 0} fills the gaps with zero
-    and \code{"Mean"}, \code{"Spline"} or \code{"Linear"} interpolate.
+    and \code{"Mean"}, \code{"Spline"} or \code{"Linear"} interpolate,
+    and \code{"Chron"} estimates the gap from the other series.
     This is the same argument, with the same meaning and default, as in
     \code{\link{read.tucson}}. }
   \item{extra.chars}{ a \code{character} vector of characters to allow in

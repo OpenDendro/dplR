@@ -23,6 +23,55 @@ File: read.tucson.R, tests/testthat/test-read.tucson.R
    returned. None of the 10,167 rwl files in the ITRDB clone has this
    layout, so no archive result changes.
 
+File: fill.internal.NA.R, man/fill.internal.NA.Rd, man/read.tucson.Rd,
+      man/write.tucson.Rd, tests/testthat/test-fill.internal.NA.R
+-----------------------------------------------------------------
+ - fill.internal.NA() gains fill = "Chron" and two arguments that only
+   it uses, nyrs (default 20) and min.series (default 3). "Mean",
+   "Spline" and "Linear" look only at the series being filled, so the
+   value they put in a gap says nothing about the year. "Chron" takes
+   the year's value from the other series. It follows the outline of
+   subroutine fillin in ARSTAN (Cook and Krusic, 49v1), which fills
+   every gap it finds before detrending: fit a 20-year spline to each
+   series and divide; take a robust mean of the indices; express the
+   gap years of the mean in standard deviations and give them the mean
+   and standard deviation of the gapped series' indices; multiply by
+   that series' spline; do not go below zero.
+   It is not a port and will not match ARSTAN's numbers. caps() takes
+   no weights, so the gap is bridged with a straight line before the
+   spline is fitted, where ARSTAN weights the gap years out. The mean
+   leaves out the series being filled, where ARSTAN's includes it.
+   ARSTAN's second detrending of the mean and its variance
+   stabilisation are not done. tbrm() is used with its default
+   constant of 9, where ARSTAN uses 7.5. Only NA is a gap, where
+   ARSTAN takes any negative value, and zero too under a
+   transformation.
+   Where ARSTAN is silent, this is not. A gap year with fewer than
+   min.series other series stops the call, names the series and
+   years, and fills nothing; ARSTAN fills from one series and leaves
+   the value missing if there is none. A series to be filled that has
+   no usable growth curve (fewer than three measurements, or a spline
+   that reaches zero) stops the call. An estimate below zero is set
+   to zero with a warning that names the series and years, since a
+   zero reads as a locally absent ring. Negative values in the data
+   are refused.
+   On co021, removing one ring at random 400 times, the RMSE of the
+   estimate was 0.115 mm against 0.260 for "Linear", 0.311 for
+   "Spline" and 0.322 for "Mean", and the correlation with the
+   measured value 0.95 against 0.70, 0.61 and 0.40. For ten-year gaps
+   the RMSE was 0.189 against 0.280 for "Linear". co021 crossdates
+   very well, so this is a favourable case. In 1,496 single-ring
+   trials 43 estimates were set to zero, and 27 of those rings were
+   measured as zero.
+   The help page has a section on the method with its assumptions
+   (ring widths, a common signal, correct dating, gaps short relative
+   to nyrs) and its limits (estimates not marked as such, circular
+   with respect to rbar, EPS and sample depth, full variance rather
+   than a regression estimate, off the measurement grid).
+   read.tucson(), read.sheet() and write.tucson() pass their
+   fill.internal.NA argument straight through, so "Chron" works
+   there with the default nyrs and min.series.
+
 File: insert.ring.R, NAMESPACE, man/insert.ring.Rd,
       tests/testthat/test-insert.ring.R
 -----------------------------------------------------------------

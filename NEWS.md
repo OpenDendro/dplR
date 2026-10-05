@@ -16,6 +16,16 @@
 * `fill.internal.NA()` gains `series`, to fill only some series, and now
   returns the class it was given: an `rwl` stays an `rwl`, with its read
   record. It used to return a plain data.frame.
+* `fill.internal.NA()` gains `fill = "Chron"`, which estimates a missing
+  ring from the other series in the collection rather than from the
+  series' own neighbouring rings. It is in the spirit of the gap filling
+  in ARSTAN, not a copy of it: the numbers will differ. A year is filled
+  only if `min.series` other series (default 3) were measured in it;
+  otherwise the call stops and names the years. An estimate below zero is
+  returned as zero with a warning. The filled values are estimates built
+  from the other trees, so they inflate statistics of agreement among
+  series and should not be used for crossdating. See the help page for
+  the assumptions and limits.
 * `corr.rwl.seg()` is about three times faster on large collections
   (45 s to 13 s on the 597-series chin067), with the same results.
 * `interseries.cor()` is four to six times faster on large collections,

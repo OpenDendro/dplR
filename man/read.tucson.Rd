@@ -49,7 +49,8 @@ read.tucson(fname, header = NULL, long = FALSE,
     \code{NULL}, leaves them as \code{NA}.  Any other value is passed to
     \code{\link{fill.internal.NA}}, so \code{0} reproduces the output of
     \code{\link{read.tucson.legacy}}, and \code{"Mean"}, \code{"Spline"} or
-    \code{"Linear"} interpolate.  See \sQuote{Details}. }
+    \code{"Linear"} interpolate, and \code{"Chron"} estimates the gap
+    from the other series.  See \sQuote{Details}. }
   \item{strict}{ \code{logical} flag.  When \code{FALSE}, the default, every
     recoverable problem is reported as a warning and reading continues.
     When \code{TRUE} the same problems become errors, so that a pipeline can

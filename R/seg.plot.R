@@ -14,8 +14,10 @@
     }
     segs.axis2 <- names(segs)
     segs.axis4 <- names(segs)
-    segs.axis2[seq(2,n.col,by=2)] <- NA
-    segs.axis4[seq(1,n.col,by=2)] <- NA
+    ## AGB Oct 2026: seq(2, n.col, by=2) stopped with "wrong sign in 'by'
+    ## argument" when rwl holds one series
+    segs.axis2[seq.col %% 2 == 0] <- NA
+    segs.axis4[seq.col %% 2 == 1] <- NA
     op <- par(no.readonly=TRUE) # Save par
     on.exit(par(op))            # Reset par on exit
     par(mar=c(2, 5, 2, 5) + 0.1, mgp=c(1.1, 0.1, 0), tcl=0.5,

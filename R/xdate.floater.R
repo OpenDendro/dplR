@@ -9,6 +9,26 @@ xdate.floater <- function(rwl, series, series.name = "Unknown", min.overlap = 50
 
   # Trim series in case it has NAs (e.g., submitted straight from an rwl)
   idx.good <- !is.na(series)
+  if (!any(idx.good)) {
+    stop("'series' has no measurements")
+  }
+  ## AGB Oct 2026: the trim is for the NA before and after a series that
+  ## comes out of an rwl. It also removed any NA inside the series, which
+  ## closes the gap: the rings after it move up against the rings before
+  ## it, the two parts are then a year (or more) out of step, and the
+  ## search dates one part or neither, without a word. Three of 67 series
+  ## in a test on ITRDB files were misdated this way. Stop and say where.
+  inside <- which(!idx.good)
+  inside <- inside[inside > min(which(idx.good)) & inside < max(which(idx.good))]
+  if (length(inside) > 0) {
+    where <- if (is.null(names(series))) {
+      paste0("position(s) ", paste(inside, collapse = ", "))
+    } else {
+      paste(names(series)[inside], collapse = ", ")
+    }
+    stop(gettextf("'series' has %d missing value(s) inside it (%s). Dating it would close the gap and put the rings on either side out of step. Fill the gap first (see fill.internal.NA), or date the parts on either side separately",
+                  length(inside), where, domain = "R-dplR"), call. = FALSE)
+  }
   series <- series[idx.good]
   nSeries <- length(series)
 
@@ -55,46 +75,39 @@ xdate.floater <- function(rwl, series, series.name = "Unknown", min.overlap = 50
   pOut <- numeric()
   nOut <- numeric()
 
+  ## AGB Oct 2026: the master must be able to hold the overlap asked for
+  if (min.overlap > nx) {
+    stop(gettextf("min.overlap (%d) is more than the %d years of the master after detrending",
+                  as.integer(min.overlap), nx, domain = "R-dplR"))
+  }
+
   # Crawl through backwards because start years on both the master and the
   # series can be affected by normalizing (e.g., Hanning, prewhiten).
   # End years are unaffected, so crawling backwards keeps the dating correct.
+  #
+  # i is where the last ring of the series sits, counted along the master:
+  # i > nx puts it past the end of the master. The series then covers
+  # positions (i - ny + 1) to i, and the overlap is the part of that inside
+  # 1 to nx.
+  # AGB Oct 2026: this was three cases (off the end, inside, off the start)
+  # written for a series shorter than the master. A series longer than the
+  # master fell through them with indices below 1 and stopped in cor.test()
+  # with "'x' and 'y' must have the same length". One rule covers every
+  # case and gives the same numbers as before where the old code ran.
   crawl <- (nx + (ny - min.overlap)):(min.overlap)
-  edgeCounter <- 0
 
   for (i in crawl) {
-    if (i > nx) {
-      xInd <- (i - ny + 1):nx
-      yInd <- 1:(ny - (i - nx))
-      tmp <- cor.test(x[xInd], y[yInd], method = method2,
-                      alternative = "greater")
-      rOut[i] <- tmp$estimate
-      pOut[i] <- tmp$p.val
-      # End date is the max of xInd plus the overlap off the edge
-      maxYrsOut[i] <- max(yrs[xInd]) + ny - min.overlap + edgeCounter
-      edgeCounter <- edgeCounter - 1
-      minYrsOut[i] <- maxYrsOut[i] - nSeries + 1
-      nOut[i] <- length(x[xInd])
-    }
-    if (i >= ny & i <= nx) {
-      xInd <- (i - ny + 1):i
-      tmp <- cor.test(x[xInd], y, method = method2, alternative = "greater")
-      rOut[i] <- tmp$estimate
-      pOut[i] <- tmp$p.val
-      maxYrsOut[i] <- max(yrs[xInd])
-      minYrsOut[i] <- max(yrs[xInd]) - nSeries + 1
-      nOut[i] <- length(x[xInd])
-    }
-    if (i < ny) {
-      xInd <- 1:i
-      yInd <- xInd + ny - length(xInd)
-      tmp <- cor.test(x[xInd], y[yInd], method = method2,
-                      alternative = "greater")
-      rOut[i] <- tmp$estimate
-      pOut[i] <- tmp$p.val
-      maxYrsOut[i] <- max(yrs[xInd])
-      minYrsOut[i] <- max(yrs[xInd]) - nSeries + 1
-      nOut[i] <- length(x[xInd])
-    }
+    xInd <- max(1, i - ny + 1):min(nx, i)
+    yInd <- xInd - (i - ny)
+    tmp <- cor.test(x[xInd], y[yInd], method = method2,
+                    alternative = "greater")
+    rOut[i] <- tmp$estimate
+    pOut[i] <- tmp$p.val
+    # End date: the last master year in the overlap, plus however many
+    # rings of the series lie past the end of the master
+    maxYrsOut[i] <- max(yrs[xInd]) + (i - max(xInd))
+    minYrsOut[i] <- maxYrsOut[i] - nSeries + 1
+    nOut[i] <- length(xInd)
   }
 
   floaterCorStats <- data.frame(minYrsOut, maxYrsOut, rOut, pOut, nOut)
@@ -184,8 +197,8 @@ plot.floater <- function(x, ...) {
   seg2col    <- which(names(segs) == series.name)
   segs.axis2 <- names(segs)
   segs.axis4 <- names(segs)
-  segs.axis2[seq(2, n.col, by = 2)] <- NA
-  segs.axis4[seq(1, n.col, by = 2)] <- NA
+  segs.axis2[seq.col %% 2 == 0] <- NA
+  segs.axis4[seq.col %% 2 == 1] <- NA
 
   par(mfcol = c(2, 1))
   par(mar = c(-0.1, 5, 2, 5) + 0.1, mgp = c(1.1, 0.1, 0), tcl = 0.5,

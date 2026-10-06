@@ -23,7 +23,9 @@ xdate.floater(rwl, series, series.name = "Unknown", min.overlap = 50,
   \item{rwl}{a \code{data.frame} with series as columns and years as
     rows such as that produced by \code{\link{read.rwl}}.}
   \item{series}{a numeric vector of ring widths, e.g. a single column
-    from an \code{rwl} object.}
+    from an \code{rwl} object.  \code{NA} before the first and after
+    the last measurement is dropped.  \code{NA} inside the series is an
+    error: see Details.}
   \item{series.name}{a \code{character} string giving a name for the
     undated series. Defaults to \code{"Unknown"}.}
   \item{min.overlap}{a positive integer giving the minimum number of
@@ -72,6 +74,20 @@ xdate.floater(rwl, series, series.name = "Unknown", min.overlap = 50,
   between the series and the master is computed at each position with
   sufficient overlap. The position with the highest correlation gives
   the proposed dates.
+
+  The series must be one unbroken run of rings.  \code{NA} before and
+  after the measurements is dropped, so a column can be passed straight
+  from an \code{rwl} object.  \code{NA} inside the series stops the
+  function: dropping it would close the gap and put the rings on either
+  side out of step by the length of the gap, and the search would then
+  date one part of the series or neither.  Fill the gap first (see
+  \code{\link{fill.internal.NA}}) or date the parts separately.
+
+  The proposed dates are those with the highest correlation, whatever
+  the overlap.  A high correlation over a short overlap is easier to get
+  by chance than a lower one over a long overlap, so compare \code{p}
+  and \code{n} in the returned table before accepting a position near
+  the ends of the master.
 
   Both series and master are optionally prewhitened and/or smoothed
   with a Hanning filter before correlation, consistent with the

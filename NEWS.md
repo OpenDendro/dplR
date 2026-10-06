@@ -26,6 +26,21 @@
   from the other trees, so they inflate statistics of agreement among
   series and should not be used for crossdating. See the help page for
   the assumptions and limits.
+* `xdate.floater()` dates a series that is longer than the master. It
+  used to stop with "'x' and 'y' must have the same length". Results for
+  a series shorter than the master are unchanged. It also stops with a
+  clear message when `min.overlap` is more than the years in the master.
+* `xdate.floater()` stops when `series` has `NA` inside it and says
+  where. It used to drop every `NA`, which closed the gap and put the
+  rings on either side out of step, so the series was dated wrongly, or
+  only in part, with no warning. Fill the gap first or date the parts
+  separately. `NA` before and after the measurements is still dropped.
+* `plot()` and `print()` work on the object `xdate.floater()` returns.
+  The methods were documented but not registered, so `plot(fo)` stopped
+  with an error and `print(fo)` listed the whole object.
+* `seg.plot()`, and so `plot(rwl, plot.type = "seg")`, draws an `rwl`
+  that holds one series. It used to stop with "wrong sign in 'by'
+  argument".
 * `corr.rwl.seg()` is about three times faster on large collections
   (45 s to 13 s on the 597-series chin067), with the same results.
 * `interseries.cor()` is four to six times faster on large collections,

@@ -206,15 +206,16 @@ lines(yrs, baz$x7, col="green", lwd=1)
 ## fill = "Chron" uses the other series. Remove ten rings from one
 ## series of co021 and compare the estimates with what was measured.
 data(co021)
-gap <- as.character(1801:1810)
+gap <- 1701:1710
+gap2 <- as.character(gap)
 dat <- co021
-dat[gap, "641114"] <- NA
+dat[gap2, "641114"] <- NA
 chr <- fill.internal.NA(dat, fill="Chron", series="641114")
 lin <- fill.internal.NA(dat, fill="Linear", series="641114")
-plot(1801:1810, co021[gap, "641114"], type="b", lwd=3,
-     xlab="Year", ylab="Ring width (mm)")
-lines(1801:1810, chr[gap, "641114"], col="red", lwd=2)
-lines(1801:1810, lin[gap, "641114"], col="green", lwd=1)
+plot(gap, co021[gap2, "641114"], type="b", lwd=3,
+     xlab="Year", ylab="Ring width (mm)", ylim = c(0.1,0.75))
+lines(gap, chr[gap2, "641114"], col="darkred", lwd=2)
+lines(gap, lin[gap2, "641114"], col="darkgreen", lwd=2)
 
 }
 \keyword{ manip }

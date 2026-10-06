@@ -1,5 +1,40 @@
 * CHANGES IN dplR VERSION 1.8.1
 
+File: xdate.floater.R, tests/testthat/test-xdate.floater.R
+-----------------------------------------------------------------
+ - xdate.floater() works when the series is longer than the master.
+   The search loop had three cases (series off the end of the master,
+   inside it, off the start), written for a series shorter than the
+   master. A longer series fell through them with indices below 1 and
+   stopped in cor.test() with "'x' and 'y' must have the same length".
+   One rule now covers every position. Checked against 1.8.0 on co021:
+   floaterCorStats is identical wherever the old code ran. Found by
+   running xDateR over a sample of ITRDB files.
+ - Stops when series has NA inside it, naming the years (or
+   positions). The function dropped every NA, meant for the NA before
+   and after a series taken from an rwl. An NA inside was dropped too:
+   the gap closed, the rings on either side were out of step by the
+   length of the gap, and the best fit dated one part or neither. In
+   the ITRDB test, 3 of 67 series were misdated this way (bulg001
+   653111, fran038n 621031, russ139t 053071).
+ - Stops with a message when min.overlap is more than the years in
+   the master after detrending.
+ - plot.floater() draws when the master holds one series (same fix as
+   seg.plot() below).
+ - NAMESPACE: registered plot.floater() and print.floater(). They
+   were documented but not registered, so plot() on the returned
+   object stopped ("'x' is a list, but does not have components 'x'
+   and 'y'") and print() listed the whole object. make.plot = TRUE
+   worked because that call is made inside the namespace.
+ - First tests for xdate.floater().
+
+File: seg.plot.R, tests/testthat/test-seg.plot.R
+-----------------------------------------------------------------
+ - seg.plot() draws an rwl that holds one series. The axis labels
+   were thinned with seq(2, n.col, by=2), which stops with "wrong sign
+   in 'by' argument" when n.col is 1. Found by running xDateR over a
+   sample of ITRDB files: the archive has files with a single series.
+
 File: read.tucson.R, tests/testthat/test-read.tucson.R
 -----------------------------------------------------------------
  - read.tucson() honours a stop marker in an eleventh field, past

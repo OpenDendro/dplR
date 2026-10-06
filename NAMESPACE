@@ -107,6 +107,8 @@ S3method("time<-", bai)
 S3method(window, bai)
 S3method(summary, bai)
 S3method(plot, bai)
+S3method(plot, floater)
+S3method(print, floater)
 
 ###############################################################
 #

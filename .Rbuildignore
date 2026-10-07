@@ -19,7 +19,6 @@
 ^\.github$
 
 # IDE-specific directories
-^\.positai$
 
 # Developer docs, implementation plans, and release checklist
 ^00_README-developer$

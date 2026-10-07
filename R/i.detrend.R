@@ -1,6 +1,7 @@
 `i.detrend` <- function(rwl, y.name=names(rwl), nyrs = NULL, f = 0.5,
                         pos.slope = FALSE)
 {
+    idetrend.pointer()
     rwl <- check.rwl(rwl, why = paste(
         "Detrending indices divides out a growth curve that has already",
         "been removed, and the result is indices of indices."))
@@ -34,3 +35,23 @@
              how = list(fun = "i.detrend", method = methods, nyrs = nyrs,
                         f = f, pos.slope = pos.slope, difference = FALSE))
 }
+
+## AGB Oct 2026: i.detrend() and i.detrend.series() choose a method at the
+## keyboard from one static plot per series: no way to change the rigidity
+## of a curve and see it, no going back to a series, and only the name of
+## the method is kept. The iDetrend app does the same job properly and
+## writes the R code that reproduces it, so both functions now say so,
+## once in a session. They are not deprecated: they still run.
+idetrend.pointer <- local({
+    shown <- FALSE
+    function() {
+        if (!shown) {
+            message("For interactive detrending, the iDetrend app is a better tool than\n",
+                    "this function: curves can be adjusted and compared on each series,\n",
+                    "and it writes R code that reproduces the result.\n",
+                    "See https://github.com/OpenDendro/iDetrend")
+            shown <<- TRUE
+        }
+        invisible(NULL)
+    }
+})

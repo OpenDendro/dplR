@@ -12,7 +12,9 @@
 }
 \usage{data(gp.d2pith)}
 \format{
-  A \code{data.frame} containing series \acronym{ID}s in column 1
+  A \code{data.frame} with 58 rows, one for each series of
+  \code{\link{gp.rwl}} and in the order of its columns, containing
+  series \acronym{ID}s in column 1
   (\code{\var{series}}) and the distance (in mm) from the innermost ring
   to the pith of the tree (\code{\var{d2pith}}).  This can be used
   together with the ring widths to calculate the area of each ring.
@@ -24,5 +26,8 @@
   Biondi, F. and Qeadan, F. (2008) A theory-driven approach to tree-ring
   standardization: Defining the biological trend from expected basal area
   increment.  \emph{Tree-Ring Research}, \bold{64}(2), 81\enc{–}{--}96.
+}
+\seealso{ \code{\link{gp.rwl}}, \code{\link{gp.po}},
+  \code{\link{gp.dbh}}, \code{\link{bai.in}}
 }
 \keyword{datasets}

@@ -1,6 +1,7 @@
 `i.detrend.series` <- function(y, y.name=NULL, nyrs = NULL, f = 0.5,
                                pos.slope = FALSE)
 {
+    idetrend.pointer()
     ## Every method, so there is a choice to make. This was the default
     ## before dplR 1.8.0, when the default became "Spline" alone.
     fits <- detrend.series(y, y.name, make.plot=TRUE,

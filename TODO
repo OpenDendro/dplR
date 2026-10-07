@@ -44,3 +44,6 @@ o [andybunn] read.tucson(): should a line that cannot be read
   Making COLUMN_LAYOUT and PAST_COL72 fatal would newly fail 20 ITRDB
   files. The case for it, file by file, is in
   itrdbMeasurementsClone/notes/read-tucson-fail-on-unreadable.md.
+
+o [andybunn] revamp the plots. Most of dplR's plots were built before
+  2010 and need attention.

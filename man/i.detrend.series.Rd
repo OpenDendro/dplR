@@ -38,6 +38,17 @@ i.detrend.series(y, y.name = NULL, nyrs = NULL, f = 0.5,
   \code{attr(x, "method")}.  A plot is also produced and the user
   chooses a method through keyboard input.
 }
+\note{
+  This function is kept for old scripts.  For interactive detrending use
+  the iDetrend app (\url{https://github.com/OpenDendro/iDetrend}), part
+  of openDendro.  There the curve for each series can be adjusted and
+  compared with others on screen, series that need attention are pointed
+  out, and the app writes \R code that reproduces the indices.  Here the
+  choice is made once per series from a static plot, the parameters of
+  the curves cannot be changed series by series, and only the name of
+  the method chosen is recorded.  The function says so, once in a
+  session, when it is called.
+}
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{detrend.series}} }
 \keyword{ iplot }

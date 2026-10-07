@@ -1,5 +1,12 @@
 # dplR 1.8.1 (development)
 
+* `i.detrend()` and `i.detrend.series()` now point to the iDetrend app
+  (<https://github.com/OpenDendro/iDetrend>), with a message once in a
+  session and a note on their help pages. The app does interactive
+  detrending better: curves can be adjusted and compared on each series,
+  and it writes R code that reproduces the indices. The functions are
+  not deprecated and work as before.
+
 * `read.tucson()` honours a stop marker written in an eleventh field,
   past column 72, after a line of ten measurements. In 1.8.0 the marker
   was dropped, so a 0.001 mm series ending that way was read as 0.01 mm

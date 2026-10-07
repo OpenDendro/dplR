@@ -1,5 +1,34 @@
 * CHANGES IN dplR VERSION 1.8.1
 
+File: man/gp.rwl.Rd, man/gp.po.Rd, man/gp.d2pith.Rd, man/gp.dbh.Rd
+-----------------------------------------------------------------
+ - Fuller help for the Gus Pearson data. gp.rwl: the class, the span,
+   how series are named (tree number and core letter), units and
+   precision, counts of rings and zeros, the companion data sets and
+   the functions that take them, read.ids() for its two cores per
+   tree, and examples. gp.po: what a pith offset is, with the cambial
+   age of a ring worked out, and examples for cms(). gp.dbh: the help
+   named columns "series" and "dbh"; they are ID, DBH and BARK.
+   Cross-references among the four.
+ - The site is described in one sentence and Biondi (1996, 1999) are
+   cited for its history. Nothing is said about which trees of those
+   papers the data are: see the comment in gp.rwl.Rd. The counts match
+   the large pines of Biondi (1999) exactly (29 trees, 16,408 rings,
+   194 zeros), but that is an inference and Franco should confirm it
+   before the help says so.
+
+File: i.detrend.R, i.detrend.series.R, man/i.detrend.Rd,
+      man/i.detrend.series.Rd
+-----------------------------------------------------------------
+ - Both functions point to the iDetrend app: a message, once in a
+   session, when either is called, and a note on each help page.
+   They choose a method at the keyboard from one static plot per
+   series. The rigidity of a curve cannot be changed and seen, a
+   series cannot be gone back to, and only the method's name is kept.
+   iDetrend (rewritten Oct 2026 on dplR 1.8.0) does the job with the
+   curve on screen and writes the R code that reproduces the indices.
+   Not deprecated: old scripts still run and return what they did.
+
 File: xdate.floater.R, tests/testthat/test-xdate.floater.R
 -----------------------------------------------------------------
  - xdate.floater() works when the series is longer than the master.

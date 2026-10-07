@@ -259,7 +259,9 @@ test.corr.rwl.seg <- function() {
     })
     test_that("corr.rwl.seg correlations (overall) are correct", {
         expect_equal(res1[["overall"]], expected.overall1)
-        expect_equal(res2[["overall"]], expected.overall2)
+        ## The series are almost all ties, so rounding can move the
+        ## rank correlation by a few parts per million on some platforms
+        expect_equal(res2[["overall"]], expected.overall2, tolerance = 1e-5)
     })
     test_that("corr.rwl.seg correlations (average) are correct", {
         expect_equal(res1[["avg.seg.rho"]], expected.avg1)
@@ -389,7 +391,9 @@ test.corr.series.seg <- function() {
     })
     test_that("corr.series.seg correlations (overall) are correct", {
         expect_equal(res1[["overall"]], expected.overall1)
-        expect_equal(res2[["overall"]], expected.overall2)
+        ## The series are almost all ties, so rounding can move the
+        ## rank correlation by a few parts per million on some platforms
+        expect_equal(res2[["overall"]], expected.overall2, tolerance = 1e-5)
     })
     test_that("corr.series.seg P-values are correct", {
         expect_equal(res1.flags, expected.flags1)

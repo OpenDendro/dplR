@@ -1,5 +1,16 @@
 * CHANGES IN dplR VERSION 1.8.1
 
+File: tests/testthat/test-dplR.R
+-----------------------------------------------------------------
+ - The overall correlation tests for corr.rwl.seg() and
+   corr.series.seg() allow a tolerance of 1e-5. They expected a
+   Spearman rho of exactly -1 for a reversed series and got
+   -0.99999783 on the r-universe Linux x86_64 builds, on some commits
+   and not others; every other platform and CRAN passed. The test
+   series is a 50-value ramp repeated ten times, so it is almost all
+   ties, and rounding that splits a tie moves the rank correlation by
+   a few parts per million. No change to either function.
+
 File: man/gp.rwl.Rd, man/gp.po.Rd, man/gp.d2pith.Rd, man/gp.dbh.Rd
 -----------------------------------------------------------------
  - Fuller help for the Gus Pearson data. gp.rwl: the class, the span,

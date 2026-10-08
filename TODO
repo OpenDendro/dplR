@@ -2,7 +2,35 @@ o [andybunn] deprecate i.detrend() and i.detrend.series() in favour of the
   app; rarely used. (1.8.0 gave i.detrend() the rwi class and a record of
   each series' method, the minimum while it is still here.)
 
-o [andybunn] An evolutive AR spectral analysis program using the Kalman filter? 
+o [andybunn] kalman.ar() and kalman.spec(): evolutive AR spectra by the
+  Kalman filter, asked for by Ed Cook. First version written 2026-10-07 from
+  Kitagawa and Gersch (1985), not from Ed's programs. Ed's reply: his
+  are two programs (coefficients, then spectrum); he picks the order by
+  trying several, not by AIC, and used AR(30) for sunspots. He offered
+  to show them at the LTRR in November. Still open:
+  - Compare with Ed's programs when we see them: how he sets the state
+    noise, how he starts the filter, whether he smooths or only filters.
+  - Compare with TSSS::tvar() and tvspc() (not installed here).
+  - Maximum likelihood gives lambda = 0 for sunspot.year at order 30;
+    the picture Ed describes needs lambda set by hand (about 1e-3).
+    Decide what guidance to give on choosing it. profile() on a fit
+    (added 2026-10-07) shows the likelihood over lambda.
+  - variance = "varying" added 2026-10-07 (innovation variance as a
+    random walk in log, from the prediction errors). It is a two-step
+    estimate, smooth, and understates sharp changes. It does not
+    respond to slow swings such as ca533 near 1400: those are not a
+    change in one-step predictability. A wavelet shows them; this
+    model does not, whatever the options.
+  - A test against surrogates from the fixed-coefficient model, so a
+    hand-set lambda can be judged. In trials the hand-set pictures for
+    sunspot.year and ca533 were no more variable than surrogates.
+  - One internal NA costs order + 1 years. Carrying y in the state
+    would avoid that.
+  - No significance test and no confidence band on the surface.
+  - The plot does not mark where the coefficients are poorly
+    determined (the ends); se is in the object.
+  - Filter is in R: about 1 s for 2000 years at order 30 ("rw1"),
+    3 s for "rw2". Move to C only if that becomes a problem.
 
 o [andybunn] ssf vignette? Better to leave that all in LTLdplR?
 

@@ -1,5 +1,61 @@
 * CHANGES IN dplR VERSION 1.8.1
 
+File: R/kalman.ar.R, man/kalman.ar.Rd, man/kalman.spec.Rd,
+      man/profile.kalman.ar.Rd, NAMESPACE,
+      tests/testthat/test-kalman.ar.R
+-----------------------------------------------------------------
+ - New kalman.ar(): time-varying AR(p) model. The coefficients are the state
+   of a state-space model, a random walk ("rw1") or with a random walk
+   in their slopes ("rw2"), estimated by the Kalman filter and a
+   fixed-interval smoother. Written in R, no new dependency. The
+   variance ratio lambda is searched for on a grid in log10 and then
+   by optimize(), or set by the user. The order has no default.
+ - New kalman.spec(), with print and plot methods: the AR spectrum of
+   each year from the kalman.ar() coefficients, scaled as spec.ar().
+ - The "rw2" state is the coefficients and their slopes. Carrying
+   a[t] and a[t-1] is the same model but lost the slope to rounding
+   at small lambda and the filter diverged.
+ - The log-likelihood leaves out the first d prediction errors (d the
+   length of the state). The fixed-coefficient AR model is run through
+   the same filter over the same years for comparison. Under "rw2",
+   lambda = 0 is not that model: it has coefficients linear in time.
+ - Internal NA: a year is used only if it and its p lags have values.
+   A message gives the number of years lost.
+ - Tests: lambda = 0 against lm() on the lags; the smoother against a
+   direct solution of the penalised least squares problem, both
+   priors; invariance to units; the spectrum against the formula; a
+   simulated cycle drifting from 12 to 5 years.
+ - New profile.kalman.ar(), with print and plot methods: log-likelihood and
+   the number of years with non-stationary coefficients over a grid of
+   lambda, beside the fixed-coefficient model. Maximum likelihood is
+   weakly determined for the series tried (sunspot.year, ca533), and a
+   hand-set lambda should be shown with what it costs.
+ - kalman.ar() gains variance = "varying" and nu. The innovation variance is
+   sigma2 * r[t] with log r a random walk. r comes from a local level
+   model for the log squared one-step prediction errors (Harvey, Ruiz
+   and Shephard 1994), with a small offset against errors near zero;
+   nu, the step variance, by quasi-likelihood. The filter is run with
+   r, r is estimated again, and lambda too if it is being estimated,
+   until r changes by less than 1e-3 in log (20 rounds at most, then a
+   warning). The fixed-coefficient comparison and profile() use the
+   same r. kalman.spec() scales each year by its own variance. New
+   element sigma2.t in both objects.
+ - On simulated series: a ramp in sd from 1 to 3 over 800 years is
+   followed (correlation 0.997 in one series) but pulled toward the
+   middle (1.4 to 2.6). With constant variance nu = 0 in 85 of 100
+   series. A 60-year burst of sd 3 in 800 years, 200 series: the
+   estimate inside the burst is 1.6 times that outside (median; 1.1 to
+   1.9), so about half the true change. AIC preferred moving
+   coefficients over fixed in 26% of constant-variance fits and 14% of
+   varying fits (5% when there is no burst). The option reduces the
+   misreading of a variance change as a change in coefficients; it
+   does not remove it.
+ - On ca533 the innovation sd runs only from about 0.18 to 0.25 and is
+   at its average around 1400. The multidecadal swing there is not a
+   change in one-step predictability and this option does not show it.
+ - Not compared with TSSS::tvar(), which is not installed here, nor
+   with Ed Cook's programs, which we have not seen.
+
 File: tests/testthat/test-dplR.R
 -----------------------------------------------------------------
  - The overall correlation tests for corr.rwl.seg() and

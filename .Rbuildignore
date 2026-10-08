@@ -19,6 +19,7 @@
 ^\.github$
 
 # IDE-specific directories
+^\.claude$
 
 # Developer docs, implementation plans, and release checklist
 ^00_README-developer$

@@ -109,6 +109,12 @@ S3method(summary, bai)
 S3method(plot, bai)
 S3method(plot, floater)
 S3method(print, floater)
+S3method(print, kalman.ar)
+S3method(print, kalman.spec)
+S3method(plot, kalman.spec)
+S3method(profile, kalman.ar)
+S3method(print, kalman.profile)
+S3method(plot, kalman.profile)
 
 ###############################################################
 #
@@ -149,6 +155,8 @@ export("ads",
        "i.detrend.series",
        "insert.ring",
        "interseries.cor",
+       "kalman.ar",
+       "kalman.spec",
        "latexDate",
        "latexify",
        "morlet",

@@ -1,5 +1,21 @@
 # dplR 1.8.1 (development)
 
+* New `kalman.ar()` and `kalman.spec()` for evolutive spectra.
+  `kalman.ar()` fits an autoregressive model whose coefficients change
+  through time, by the Kalman filter and a smoother (Kitagawa and Gersch
+  1985), and `kalman.spec()` gives the AR spectrum of every year, with a
+  plot method that shows it as a surface in time and period. The order has no
+  default. The freedom of the coefficients, `lambda`, is estimated by
+  maximum likelihood unless set, and the fit is reported beside the
+  ordinary AR model with fixed coefficients. `profile()` on a fit gives
+  the log-likelihood over a range of `lambda`, with a plot method, to
+  show how well the data determine it and what a hand-set value costs.
+  With `variance = "varying"` the innovation variance changes through
+  time as well, estimated from the prediction errors, so that a change
+  in year-to-year scatter is not read as a change in the coefficients.
+  Suggested by Ed Cook; written from the published method, not ported
+  from his programs.
+
 * `i.detrend()` and `i.detrend.series()` now point to the iDetrend app
   (<https://github.com/OpenDendro/iDetrend>), with a message once in a
   session and a note on their help pages. The app does interactive

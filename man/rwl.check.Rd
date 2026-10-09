@@ -20,7 +20,7 @@ rwl.check(x, file = NULL,
           control = rwl.check.control(), \dots)
 
 rwl.check.control(min.depth = 2, depth.run = 10, min.length = 30,
-                  run.min = 6,
+                  run.min = 6, zero.run = 10,
                   lag.max = 5, min.overlap = 50, spline.nyrs = 32,
                   r.dating = 0.35,
                   r.margin = 0.05, outlier.mad = 4, outlier.gap = 0.2,
@@ -49,6 +49,9 @@ rwl.check.catalogue()
     nothing.}
   \item{min.length}{series with fewer than this many rings are flagged.}
   \item{run.min}{a run of this many identical non-zero rings is flagged.}
+  \item{zero.run}{a run of this many zeros in a series is flagged as
+    \code{RWL_ZERO_RUN}, a warning. Shorter runs are reported as
+    \code{RWL_CONSECUTIVE_ZERO}, a note.}
   \item{lag.max}{largest lag searched when looking for dating errors.}
   \item{min.overlap}{rings a series must share with the master to be checked
     against it.}
@@ -108,6 +111,16 @@ rwl.check.catalogue()
   object is given. They are the only way to see line endings, stray tabs, and
   the span declared in the \acronym{ITRDB} header, all of which are gone once
   the file has been parsed into a matrix of numbers.
+
+  A zero in a \code{rwl} object means a locally absent ring, and a few in a
+  row can be real. A long run cannot: it is filler for a stretch of wood
+  that was not measured, typed into the file as zeros or put there by
+  \code{\link{read.tucson.legacy}}, which fills gaps inside a series with
+  zeros. \code{RWL_ZERO_RUN} reports those, and \code{RWL_REPEATED_VALUE}
+  reports the same thing done with a non-zero constant. Both are warnings
+  because the values are placeholders that every later calculation will
+  treat as growth. Neither can say what the investigator meant; they say
+  where to look.
 
   The crossdating checks ask whether a series fits the collection it is in
   rather than whether it clears a fixed correlation, because what counts as a

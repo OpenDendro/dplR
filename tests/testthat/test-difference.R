@@ -71,6 +71,18 @@ test.difference <- function() {
         expect_equal(res, ar1 - mean(d13))
     })
 
+    test_that("the Ar curve is the mean the residuals are rescaled by", {
+        res <- detrend.series(d13, method = "Ar", difference = TRUE,
+                              make.plot = FALSE, return.info = TRUE)
+        expect_equal(res$curves, rep(mean(d13), length(d13)))
+        y <- d13 + 30
+        res <- detrend.series(y, method = "Ar", make.plot = FALSE,
+                              return.info = TRUE)
+        expect_equal(res$curves, rep(mean(y), length(y)))
+        ar1 <- dplR:::ar.func(y)
+        expect_equal(res$series, ar1 / res$curves)
+    })
+
     test_that("zeros are kept when differencing, recoded when dividing", {
         y <- c(0, 0, d13 + 25)
         res <- detrend.series(y, method = "Mean", difference = TRUE,

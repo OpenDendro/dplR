@@ -201,6 +201,30 @@ test.rwl.check <- function() {
         expect_equal(f$value, 0.5)
     })
 
+    test_that("a long run of zeros is RWL_ZERO_RUN, a short one stays a note", {
+        ## cana220 holds zeros for centuries where the wood was not measured.
+        ## Those are filler, not absent rings, and a note calling them
+        ## "consecutive absent rings" said the opposite.
+        z <- good; z[20:40, 2] <- 0; z[60:62, 3] <- 0
+        f <- as.data.frame(rwl.check(z, checks = "zeros"))
+        long <- f[f$check == "RWL_ZERO_RUN", ]
+        expect_equal(nrow(long), 1)
+        expect_equal(long$series, names(z)[2])
+        expect_equal(long$n, 21)
+        expect_equal(c(long$year.from, long$year.to), yrs[c(20, 40)])
+        expect_equal(as.character(long$severity), "warning")
+        ## Each run is reported once, under one id.
+        short <- f[f$check == "RWL_CONSECUTIVE_ZERO", ]
+        expect_equal(nrow(short), 1)
+        expect_equal(short$series, names(z)[3])
+        expect_equal(short$n, 3)
+        ## The threshold is the caller's to set.
+        f2 <- as.data.frame(rwl.check(z, checks = "zeros",
+                                      control = rwl.check.control(zero.run = 3)))
+        expect_equal(sum(f2$check == "RWL_ZERO_RUN"), 2)
+        expect_false("RWL_CONSECUTIVE_ZERO" %in% f2$check)
+    })
+
     test_that("RWL_NEGATIVE finds a negative measurement", {
         z <- good; z[10, 1] <- -0.5
         expect_true("RWL_NEGATIVE" %in% checks.of(z))

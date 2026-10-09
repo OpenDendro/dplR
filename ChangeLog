@@ -1,5 +1,33 @@
 * CHANGES IN dplR VERSION 1.8.1
 
+File: detrend.series.R, tests/testthat/test-difference.R
+-----------------------------------------------------------------
+ - detrend.series() with method = "Ar" and return.info = TRUE returned
+   the mean of the AR residuals as the curve. Since the fix for GitHub
+   issue 22 the residuals are rescaled by the mean of the series, so
+   the curve returned was not the value used. It is now the mean of
+   the series. The index itself is unchanged.
+
+File: rwl.check.R, man/rwl.check.Rd, tests/testthat/test-rwl.check.R
+-----------------------------------------------------------------
+ - rwl.check() gains RWL_ZERO_RUN, a warning for a run of zeros in a
+   series at least zero.run long (new in rwl.check.control(), default
+   10). Such a run used to be an RWL_CONSECUTIVE_ZERO note reading
+   "N consecutive absent rings", which is the wrong diagnosis: a few
+   absent rings in a row can be real, but cana220's wpp121 is zero for
+   550 years between measurements on either side. That is filler for
+   wood that could not be measured, typed into the file to hold the
+   dates. In the 6,807 ring-width files of the ITRDB clone, read with
+   gaps as NA so that every zero is one the investigator typed, there
+   are 169 runs of ten or more zeros in 58 files (53 runs of fifty or
+   more, in 16). An object read with read.tucson.legacy() shows its
+   zero-filled gaps the same way. RWL_ZERO_RUN is the zero-valued twin
+   of RWL_REPEATED_VALUE, which already warns about a non-zero
+   constant, and a warning for the same reason: the values are
+   placeholders that later calculations treat as growth. A run is
+   reported under one id, not both. Ten is a judgement: the check
+   cannot know what the investigator meant, and a shorter filler run
+   stays a note.
 File: R/kalman.ar.R, man/kalman.ar.Rd, man/kalman.spec.Rd,
       man/profile.kalman.ar.Rd, NAMESPACE,
       tests/testthat/test-kalman.ar.R

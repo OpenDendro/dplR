@@ -69,6 +69,8 @@ rwl.check.catalogue <- function() {
       "years where every measured series is zero"),
     c("RWL_CONSECUTIVE_ZERO", "zeros", "note",
       "more than one consecutive zero in a series"),
+    c("RWL_ZERO_RUN", "zeros", "warning",
+      "a run of zeros too long to be absent rings, more likely filler"),
     c("RWL_DATING_LAG", "crossdating", "error",
       "series correlates best with the master at a non-zero lag"),
     c("RWL_SERIES_OUTLIER", "crossdating", "warning",
@@ -166,6 +168,7 @@ rwl.check.control <- function(min.depth = 2,
                               depth.run = 10,
                               min.length = 30,
                               run.min = 6,
+                              zero.run = 10,
                               lag.max = 5,
                               min.overlap = 50,
                               spline.nyrs = 32,
@@ -179,6 +182,7 @@ rwl.check.control <- function(min.depth = 2,
                               big.thresh = NA,
                               max.year = as.integer(format(Sys.Date(), "%Y"))) {
   list(min.depth = min.depth, depth.run = depth.run, min.length = min.length, run.min = run.min,
+       zero.run = zero.run,
        lag.max = lag.max, min.overlap = min.overlap, spline.nyrs = spline.nyrs,
        r.dating = r.dating,
        r.margin = r.margin, outlier.mad = outlier.mad,
@@ -492,12 +496,36 @@ check.zeros <- function(rwl, ctl) {
     hit <- which(rr$values & rr$lengths > 1)
     if (!length(hit)) next
     ends <- cumsum(rr$lengths); ys <- yrs[k]
-    for (i in hit) out[[paste0("cz", j, i)]] <- new.finding(
-      "RWL_CONSECUTIVE_ZERO",
-      paste0(rr$lengths[i], " consecutive absent rings, ",
-             span.text(ys[ends[i] - rr$lengths[i] + 1], ys[ends[i]])),
-      series = names(rwl)[j], year.from = ys[ends[i] - rr$lengths[i] + 1],
-      year.to = ys[ends[i]], n = rr$lengths[i])
+    ## AGB Oct 2026: a long run of zeros is not a long run of absent rings.
+    ## Trees do drop rings for a few years on end, and those stay a note. But
+    ## cana220's wpp121 is zero for 550 years, 1221 to 1770, between
+    ## measurements on either side: the stretch could not be measured and
+    ## zeros were typed in to hold the dates. Across the ITRDB ring-width
+    ## files there are 169 such runs of ten or more, in 58 files, and calling
+    ## them "consecutive absent rings" in a note said the opposite of what
+    ## they are. The same shape is what read.tucson.legacy() makes of an
+    ## interior gap, so this is also how an object read the old way shows it.
+    ## It is the zero-valued twin of RWL_REPEATED_VALUE, and a warning for the
+    ## same reason: the values are a placeholder, and everything computed from
+    ## them treats them as growth. A run reported here is not reported again
+    ## as RWL_CONSECUTIVE_ZERO.
+    for (i in hit) {
+      from <- ys[ends[i] - rr$lengths[i] + 1]
+      long <- rr$lengths[i] >= ctl$zero.run
+      out[[paste0("cz", j, i)]] <- new.finding(
+        if (long) "RWL_ZERO_RUN" else "RWL_CONSECUTIVE_ZERO",
+        if (long)
+          paste0(rr$lengths[i], " consecutive zeros, ",
+                 span.text(from, ys[ends[i]]),
+                 "; too many to be absent rings, so more likely filler for a ",
+                 "stretch that was not measured. Detrending and chronology ",
+                 "building will treat them as years of no growth")
+        else
+          paste0(rr$lengths[i], " consecutive absent rings, ",
+                 span.text(from, ys[ends[i]])),
+        series = names(rwl)[j], year.from = from,
+        year.to = ys[ends[i]], n = rr$lengths[i])
+    }
   }
   do.call(rbind, out)
 }

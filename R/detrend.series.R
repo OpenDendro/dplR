@@ -607,19 +607,14 @@
         
         Ar[Ar<0] <- 0
       }
-      if(difference){ 
-        # changed per issue 22
-        # https://github.com/OpenDendro/dplR/issues/22
-        #resids$Ar <- Ar - mean(Ar,na.rm=TRUE) 
-        resids$Ar <- Ar - mean(y2, na.rm = TRUE) 
-        }
-      else{ 
-        # changed per issue 22
-        # https://github.com/OpenDendro/dplR/issues/22
-        #resids$Ar <- Ar / mean(Ar,na.rm=TRUE) 
-        resids$Ar <- Ar/mean(y2, na.rm = TRUE)
-        }
-      curves$Ar <- mean(Ar,na.rm=TRUE)
+      ## Rescale by the mean of the data, not of the AR residuals, so
+      ## the index keeps the level of the series. The curve returned
+      ## is that same mean.
+      ## See https://github.com/OpenDendro/dplR/issues/22
+      theMean <- mean(y2, na.rm = TRUE)
+      if(difference){ resids$Ar <- Ar - theMean }
+      else{ resids$Ar <- Ar / theMean }
+      curves$Ar <- theMean
       modelStats$Ar <- arStats
       do.ar <- TRUE
     } else {

@@ -1,5 +1,10 @@
 # dplR 1.8.1 (development)
 
+* `rwl.check()` gains `RWL_ZERO_RUN`, a warning for a run of ten or more
+  zeros in a series (`zero.run` in `rwl.check.control()`). A run that
+  long is filler for wood that was not measured, not absent rings. It
+  used to be reported as a note, `RWL_CONSECUTIVE_ZERO`, which now covers
+  shorter runs only.
 * New `kalman.ar()` and `kalman.spec()` for evolutive spectra.
   `kalman.ar()` fits an autoregressive model whose coefficients change
   through time, by the Kalman filter and a smoother (Kitagawa and Gersch

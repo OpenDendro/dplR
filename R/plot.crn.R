@@ -8,6 +8,8 @@
 `plot.crn` <- function(x,
                        add.spline=FALSE, 
                        nyrs=NULL,
+                       xlab="",
+                       ylab=NULL,
                        ...) {
   crn <- x
   if("ssfLong" %in% comment(x)){
@@ -46,8 +48,23 @@
                    vsc = "RWI",
                    samp.depth = "n",running.rbar="r")
   ylabs <- known.units[crn.names]
-  ylabs[is.na(ylabs)] <- NULL
+  # a column that is not sample depth or rbar is a chronology
+  is.crn <- !(crn.names %in% c("samp.depth", "running.rbar"))
+  ylabs[is.na(ylabs)] <- "RWI"
   names(ylabs) <- NULL
+  # ylab from the user: one label for the chronologies or one per panel
+  if(!is.null(ylab)){
+    if(length(ylab) == 1) {
+      ylabs[is.crn] <- ylab
+    }
+    else if(length(ylab) == ncol(crn)) {
+      ylabs <- ylab
+    }
+    else {
+      stop("'ylab' must have length 1 or one element per panel (",
+           ncol(crn), ")")
+    }
+  }
   
   # calc ylims -- make same for all RWI?
   ranges <- apply(crn,MARGIN = 2,range,na.rm=TRUE)
@@ -58,17 +75,18 @@
     ranges[,which(colnames(ranges) == "running.rbar")] <- c(0,1)
   }
   # make all the RWI ranges the same
-  ranges[,ylabs=="RWI"] <- range(ranges[,ylabs=="RWI"])
+  ranges[,is.crn] <- range(ranges[,is.crn])
   
   nCrn <- ncol(crn)
   
-  # args0 <- list(...)
-  # args1 <- args0
-  # args1[c("x", "y", "type", "axes", "xlab", "col")] <-
-  #   list(yr.vec, as.name("y"), "l", FALSE, "", "grey50")
-  # print(args1)
-  args0 <- list(x=yr.vec, y=as.name("y"), type="l", axes=FALSE, 
-                xlab="", col="grey50")  
+  # defaults that the user can change through ...
+  args0 <- list(type="l", col="grey50")
+  dots <- list(...)
+  args0[names(dots)] <- dots
+  args0[c("x", "y", "axes", "xlab")] <-
+    list(yr.vec, as.name("y"), FALSE, "")
+  # ylim from the user applies to the chronologies only
+  ylim.user <- args0$ylim
   
   op <- par(no.readonly=TRUE) # Save par
   on.exit(par(op))            # Reset par on exit
@@ -91,19 +109,21 @@
     y <- crn[[i]]
     argsTmp <- args0
     argsTmp$ylab <- ylabs[i]
-    argsTmp$ylim <- ranges[,i]
+    if(is.null(ylim.user) || !is.crn[i]) argsTmp$ylim <- ranges[,i]
+    # the x axis is drawn on the bottom panel only
+    if(i==nCrn) argsTmp$xlab <- xlab
     do.call("plot", argsTmp)
     legend("topleft",legend=crn.names.long[i],bty = "n")
     # add abline for all RWI
     
     tmp <- na.omit(y)
-    if(add.spline & ylabs[i] == "RWI") {
+    if(add.spline & is.crn[i]) {
       ## Only possibly NULL in the first round of the for loop
       if(is.null(nyrs2)) nyrs2 <- length(tmp)*0.33
       y[!is.na(y)] <- caps(y=tmp, nyrs=nyrs2)
       lines(yr.vec, y, col="darkred", lwd=1.75)
     }
-    if(ylabs[i]=="RWI"){
+    if(is.crn[i]){
       abline(h = 1)
     }
     axis(2)

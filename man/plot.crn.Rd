@@ -9,7 +9,8 @@
   \code{\link{chron.ars}}, \code{\link{chron.stabilized}}, \code{\link{ssf}}.
 }
 \usage{
-\method{plot}{crn}(x, add.spline = FALSE, nyrs = NULL, ...)
+\method{plot}{crn}(x, add.spline = FALSE, nyrs = NULL, xlab = "",
+     ylab = NULL, ...)
 
 }
 \arguments{
@@ -21,7 +22,16 @@
   \item{nyrs}{ a number giving the rigidity of the smoothing spline.
     Defaults to 1/3 times the length of the first chronology if
     \code{\var{nyrs}} is \code{NULL} }
-  \item{\dots}{ Additional arguments to pass to \code{\link{plot}}. }
+  \item{xlab}{ a label for the x axis, drawn under the bottom panel.
+    Empty by default. }
+  \item{ylab}{ a label for the y axis.  A single label is used for
+    every chronology panel and leaves the sample depth and running
+    rbar panels with their own labels.  A vector with one element per
+    panel labels each panel in turn.  If \code{NULL}, the default,
+    the chronologies are labelled \dQuote{RWI}. }
+  \item{\dots}{ Additional arguments to pass to \code{\link{plot}},
+    e.g., \code{\var{col}} or \code{\var{lwd}}.  A \code{\var{ylim}}
+    given here applies to the chronology panels only. }
 }
 \details{
   This makes a crude plot of one or more tree-ring chronologies.
@@ -58,6 +68,11 @@ foo <- data.frame(wa082CRN1,sfc=wa082CRN4$sfc)
 foo <- foo[,c(1,3,2)]
 class(foo) <- c("crn","data.frame")
 plot.crn(foo,add.spline = TRUE,nyrs=20)
+
+# axis labels
+plot(wa082CRN1, xlab = "Year", ylab = "Ring-width index")
+# one label per panel
+plot(wa082CRN1, xlab = "Year", ylab = c("Ring-width index", "Series"))
 
 }
 \keyword{ hplot }

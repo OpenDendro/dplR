@@ -1,5 +1,11 @@
 # dplR 1.8.1 (development)
 
+* `plot.crn()` gains `xlab` and `ylab`, and passes `...` on to `plot()`.
+  Axis labels and graphical parameters such as `col` were silently
+  ignored before. One `ylab` labels the chronology panels and leaves
+  sample depth and running rbar alone; a vector labels each panel. A
+  chronology column with a name dplR does not know is now plotted as a
+  chronology instead of stopping with an error.
 * `rwl.check()` gains `RWL_ZERO_RUN`, a warning for a run of ten or more
   zeros in a series (`zero.run` in `rwl.check.control()`). A run that
   long is filler for wood that was not measured, not absent rings. It

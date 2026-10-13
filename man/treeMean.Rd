@@ -25,13 +25,16 @@ treeMean(rwl, ids, na.rm=FALSE)
   It is very common in dendrochronology to take more than one core per tree. In
   those cases it is occasionally desirable to have an average of the cores.
   This function merely loops through the \code{rwl} object and calculates the
-  \code{\link{rowMeans}} for each tree. If \code{na.rm=TRUE} trees with >1 
+  \code{\link{rowMeans}} for each tree. If \code{na.rm=FALSE} trees with >1 
   sample will be averaged only over the period where the samples overlap. 
-  If FALSE the output can vary in the number of samples. See examples.
+  If TRUE each year is the mean of the samples present, so the number of
+  samples behind a tree's mean can vary through time. See examples.
 }
 \value{
-  An object of class \code{c("rwl", "data.frame")} with the mean annual value 
-  for each tree.
+  An object with the mean annual value for each tree. It has class
+  \code{c("rwi", "data.frame")} if \code{\var{rwl}} has class
+  \code{"rwi"}, with the record of how the indices were made carried
+  over, and class \code{c("rwl", "data.frame")} otherwise.
 }
 
 \author{ Andy Bunn. Patched and improved by Mikko Korpela. }

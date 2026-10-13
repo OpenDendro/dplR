@@ -29,6 +29,11 @@ strip.rwl <- function(rwl, ids = NULL, verbose = FALSE, comp.plot = FALSE,
         rwl <- check.rwl.rwi(rwl)
     } else {
         rwl <- check.rwl(rwl)
+        message("strip.rwl() was given ring widths and detrended them with a ",
+                format(nyrs), "-year spline ('nyrs') before stripping. To ",
+                "judge the series on the variation the chronology will keep, ",
+                "detrend them as the chronology will be detrended and strip ",
+                "the indices.")
     }
     names.rwl <- names(rwl)
     if (is.null(names.rwl) || anyDuplicated(names.rwl) ||

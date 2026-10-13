@@ -11,11 +11,14 @@ strip.rwl(rwl, ids = NULL, verbose = FALSE, comp.plot = FALSE,
 }
 \arguments{
 
-  \item{rwl}{a \code{data.frame} of raw tree-ring widths series, such as
-    that produced by \code{\link{read.rwl}} or \code{\link{read.fh}},
-    or of ring-width indices (class \code{"rwi"}), such as that produced
-    by \code{\link{detrend}}.  Widths are detrended before stripping
-    (see \code{nyrs}); indices are stripped as they are.}
+  \item{rwl}{the series to strip.  Best given as ring-width indices
+    (class \code{"rwi"}), such as those produced by
+    \code{\link{detrend}}, which are stripped as they are: the series
+    are then judged on the variation the chronology will keep.  Raw
+    tree-ring widths (class \code{"rwl"}), such as those produced by
+    \code{\link{read.rwl}} or \code{\link{read.fh}}, are also
+    accepted, and are detrended with a spline of \code{nyrs} years
+    before stripping, with a message saying so.}
 
   \item{ids}{ an optional \code{data.frame} with column one named
     \code{"tree"} giving a \code{numeric} \acronym{ID} for each tree and
@@ -36,10 +39,11 @@ strip.rwl(rwl, ids = NULL, verbose = FALSE, comp.plot = FALSE,
     will be calculated with \code{rwi.stats} (\code{FALSE}, the default)
     or \code{rwi.stats.legacy} (\code{TRUE})}
 
-  \item{nyrs}{a number giving the rigidity of the smoothing spline used
-    to detrend raw widths before stripping, as in \code{\link{detrend}}.
-    Not used, with a warning if it is given, when \code{rwl} holds
-    indices.}
+  \item{nyrs}{for raw widths only: a number giving the rigidity of the
+    smoothing spline they are detrended with before stripping, as in
+    \code{\link{detrend}}.  Indices have been detrended already, so
+    \code{nyrs} does not apply to them, and giving it with indices
+    draws a warning.}
 
 }
 \value{
@@ -145,7 +149,7 @@ strip.rwl(rwl, ids = NULL, verbose = FALSE, comp.plot = FALSE,
   The gain is usually small.  Fowler and Boswijk (2003) stripped 15
   sites and found a mean rise in \acronym{EPS} of 0.007 with 20-year
   splines and 0.017 with 200-year splines.  For \code{\link{wa082}}
-  with trees identified, \acronym{EPS} goes from 0.907 to 0.908.
+  with trees identified, \acronym{EPS} goes from 0.907 to 0.909.
 
   The last step of their method is not automatic: they judged each
   result, and in six of their 30 analyses chose not to use it, because

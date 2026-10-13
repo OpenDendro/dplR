@@ -29,6 +29,12 @@ treeMean <- function(rwl, ids, na.rm=FALSE) {
     res[is.nan(res)] <- NA_real_
     res <- as.data.frame(res, row.names = rownames(rwl2))
     names(res) <- uTrees
-    class(res) <- c("rwl", "data.frame")
+    ## tree means of indices are still indices, made the same way
+    if (inherits(rwl, "rwi")) {
+        class(res) <- c("rwi", "data.frame")
+        attr(res, "dplR.detrend") <- attr(rwl, "dplR.detrend")
+    } else {
+        class(res) <- c("rwl", "data.frame")
+    }
     res
 }

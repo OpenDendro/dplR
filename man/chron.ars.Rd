@@ -52,10 +52,18 @@ chron.ars(rwi, biweight=TRUE, maxLag=10, firstAICmin=TRUE,
   chronology in this function, see pp. 153-154 in Cook's 1985
   dissertation.
 
-  The ARSTAN chronology builds on the residual chronology but returns a
-  re-whitened chronology where the pooled AR coefficients from the
-  multivariate autoregressive modeling are reintroduced. See references
-  for details.
+  The ARSTAN chronology is the residual chronology with the pooled AR
+  coefficients from the multivariate autoregressive modeling put back
+  in. The residual chronology is whitened a second time after the
+  whitened series are averaged, because whitening each series with its
+  own coefficients can remove more persistence than the series share and
+  leave their mean negatively autocorrelated. The pooled model is added
+  to that twice-whitened chronology, so the ARSTAN chronology has
+  missing values in the same years as the residual chronology. Through
+  \pkg{dplR} 1.8.0 the pooled model was instead added to each whitened
+  series before averaging, which skipped the second whitening and could
+  give an ARSTAN chronology with negative autocorrelation where the
+  persistence is mostly within trees. See references for details.
 
   The order of the AR model is selected from the pooled AR coefficients
   by AIC using either the first local AIC minimum

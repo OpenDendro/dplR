@@ -333,8 +333,13 @@ test_that("strip.rwl() detrends widths once, with a spline of nyrs years", {
     ## anos1's series are all under 200 years: the second, 200-year pass
     ## there used to be warned about every one of them
     data(anos1, package = "dplR")
-    expect_no_warning(capture.output(res <- strip.rwl(anos1)))
+    expect_no_warning(capture.output(res <- suppressMessages(strip.rwl(anos1))))
     expect_identical(attr(res, "dplR.strip")$nyrs, 20)
+    ## and says which spline it used, since indices are the better thing
+    ## to give it
+    expect_message(capture.output(strip.rwl(anos1)), "20-year spline")
+    expect_message(capture.output(suppressWarnings(strip.rwl(anos1, nyrs = 200))),
+                   "200-year spline")
     expect_identical(attr(res, "dplR.strip")$stats$eps[1],
                      rwi.stats(detrend(anos1, method = "Spline", nyrs = 20))$eps)
     ## a stiffer spline is the caller's to ask for, and changes the answer
@@ -352,6 +357,7 @@ test_that("strip.rwl() strips indices as they are and returns indices", {
     ids <- autoread.ids(wa082)
     rwi <- suppressWarnings(detrend(wa082, method = "Spline", nyrs = 20))
     expect_no_warning(capture.output(res <- strip.rwl(rwi, ids = ids)))
+    expect_no_message(capture.output(strip.rwl(rwi, ids = ids)))
     expect_s3_class(res, "rwi")
     cost <- attr(res, "dplR.strip")
     expect_identical(cost$nyrs, NA_real_)
@@ -429,4 +435,18 @@ test_that("strip.rwl() that removes nothing says so in the record", {
     expect_identical(cost$years$n.before, cost$years$n.after)
     attr(res, "dplR.strip") <- NULL
     expect_equal(res, anos1)
+})
+
+test_that("treeMean() of indices returns indices", {
+    data(wa082, package = "dplR")
+    ids <- autoread.ids(wa082)
+    r <- detrend(wa082, method = "Spline")
+    tm <- treeMean(r, ids, na.rm = TRUE)
+    expect_identical(class(tm), c("rwi", "data.frame"))
+    expect_identical(attr(tm, "dplR.detrend"), attr(r, "dplR.detrend"))
+    expect_identical(ncol(tm), length(unique(ids$tree)))
+    ## so the functions that want indices take tree means without complaint
+    expect_no_warning(chron(tm))
+    ## widths in, widths out, as before
+    expect_identical(class(treeMean(wa082, ids)), c("rwl", "data.frame"))
 })

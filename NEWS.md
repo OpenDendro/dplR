@@ -5,7 +5,9 @@
   variation the chronology will keep. Indices used to be treated as
   widths and detrended again, with a warning.
 * `strip.rwl()` gains `nyrs`, the stiffness of the spline that raw
-  widths are detrended with before stripping, and detrends once. It
+  widths are detrended with before stripping, and detrends once. A
+  message says which spline was used and that stripping indices is the
+  better route. It
   used to apply a 20-year and then a 200-year spline to the same series.
   That was a misreading of Fowler and Boswijk (2003), who made two
   separate sets of indices and stripped each, and it came to the 20-year
@@ -24,6 +26,32 @@
   each year. The series returned are the same as before. The help page
   gains a caution, after Buras (2017), that a higher EPS is not evidence
   of a better chronology for reconstructing climate.
+* `chron.ars()` builds the ARSTAN chronology from the residual
+  chronology, as its help page said it did and as Cook (1985) describes.
+  It used to add the pooled AR model to each individually whitened
+  series and average those, which left out the second whitening that the
+  residual chronology gets. Whitening each series with its own
+  coefficients can remove more persistence than the series share, and
+  the mean is then negatively autocorrelated. Where persistence is
+  mostly within trees the ARSTAN chronology inherited that: for `wa082`
+  detrended with a spline its lag-one autocorrelation was -0.16 against
+  0.19 for the standard chronology, and is now 0.10. Collections with
+  shared persistence change less (`co021` 0.15 to 0.22, `ca533` 0.47 to
+  0.52). The `ars` column changes for every data set, and it is now
+  missing in the same years as `res`, a few more years at the start
+  than before. `std` and `res` are unchanged.
+* The help page for `chron()` says that the residual chronology from
+  `prewhiten = TRUE` need not be white. Each series is whitened
+  separately, and where persistence is mostly within trees their mean
+  is negatively autocorrelated (about -0.2 at lag one for `wa082`). It
+  points to `chron.ars()`, which whitens the mean a second time. No
+  change to the function.
+* `treeMean()` returns class `"rwi"` when it is given indices, with the
+  record of how they were detrended. It used to return class `"rwl"`
+  whatever it was given, so `chron()`, `rwi.stats()` and the other
+  functions that want indices warned that tree means of indices were
+  ring widths. The help page had `na.rm` backwards: `na.rm = FALSE`
+  is the one that keeps only the years where a tree's samples overlap.
 
 * `plot.crn()` gains `xlab` and `ylab`, and passes `...` on to `plot()`.
   Axis labels and graphical parameters such as `col` were silently

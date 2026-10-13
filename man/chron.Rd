@@ -28,9 +28,22 @@ chron(rwi, biweight = TRUE, prewhiten = FALSE, \dots)
   a robust mean (the so-called standard chronology) or can do so from
   the residuals of an AR process (the residual chronology).
   
-  Note that the residual chronology in this function will return different
-  values than the residual chronology from \code{\link{chron.ars}} which uses
-  a slightly different method for determining AR order.
+  The residual chronology here is the mean of series that were each
+  whitened with their own AR model, the order chosen for each series by
+  \code{\link{ar}}. Each whitened series is free of autocorrelation but
+  their mean need not be. Where much of the persistence belongs to the
+  individual trees and is not shared among them, whitening each series
+  removes more than the series have in common, and the residual
+  chronology comes out negatively autocorrelated. For \code{\link{wa082}}
+  detrended with a spline its lag-one autocorrelation is about -0.2. It
+  is worth checking, for example with \code{\link{acf}}.
+
+  The residual chronology from \code{\link{chron.ars}} is built
+  differently and will not have the same values. It uses one AR order
+  for all the series, taken from a pooled model, and whitens the mean a
+  second time, which removes the autocorrelation that averaging leaves
+  behind. Use it when the residual chronology from this function is not
+  close to white.
 }
 \value{
   An object of of class \code{crn} and \code{data.frame} with the standard chronology, residual chronology (if prewhitening was performed), and the sample depth. The years are stored as row numbers.
@@ -45,7 +58,7 @@ chron(rwi, biweight = TRUE, prewhiten = FALSE, \dots)
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{read.rwl}}, \code{\link{detrend}},
-  \code{\link{ar}}, \code{\link{crn.plot}}
+  \code{\link{chron.ars}}, \code{\link{ar}}, \code{\link{crn.plot}}
 }
 \examples{library(graphics)
 library(utils)

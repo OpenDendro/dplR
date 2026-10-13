@@ -43,3 +43,37 @@ test.chron <- function() {
     })
 }
 test.chron()
+
+test_that("chron.ars builds the ARSTAN chronology from the residual one", {
+    lag1 <- function(x) {
+        x <- x[!is.na(x)]
+        cor(x[-1], x[-length(x)])
+    }
+    ## wa082 is the case that showed the fault. Its persistence is mostly
+    ## within trees, so the mean of the individually whitened series is
+    ## negatively autocorrelated. Adding the pooled model to that mean, as
+    ## the function did through 1.8.0, gave an ARSTAN chronology with a
+    ## negative lag-one autocorrelation.
+    data(wa082, package = "dplR")
+    rwi <- detrend(wa082, method = "Spline")
+    depth <- rowSums(!is.na(rwi))
+    rwi <- window(rwi, start = min(time(rwi)[depth >= 5]))
+    for (bw in c(TRUE, FALSE)) {
+        ars <- chron.ars(rwi, biweight = bw, verbose = FALSE)
+        expect_s3_class(ars, "crn")
+        ## the pooled model goes into res, so ars is defined where res is
+        expect_identical(is.na(ars$ars), is.na(ars$res))
+        ## res is close to white and ars has persistence put back
+        expect_lt(abs(lag1(ars$res)), 0.1)
+        expect_gt(lag1(ars$ars), 0)
+        expect_gt(lag1(ars$ars), lag1(ars$res))
+    }
+    ## no common persistence: nothing is taken out or put back
+    set.seed(1)
+    white <- as.data.frame(matrix(rnorm(200 * 8, 1, 0.2), 200, 8,
+                                  dimnames = list(1801:2000,
+                                                  paste0("s", 1:8))))
+    ars0 <- chron.ars(as.rwi(white), verbose = FALSE)
+    expect_equal(ars0$res, ars0$std)
+    expect_equal(ars0$ars, ars0$std)
+})

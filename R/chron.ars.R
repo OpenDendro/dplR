@@ -241,21 +241,21 @@
     
   }
   
-  ### Post-redden the prewhitened series
+  ### Make the ARSTAN chronology (ARS): put the pooled AR model back
+  ### into the residual chronology. The residual chronology is the one
+  ### that was whitened a second time above. Whitening each series
+  ### with its own coefficients can take out more persistence than the
+  ### series share, which leaves their mean negatively autocorrelated,
+  ### and the second whitening is what removes that. Reddening the
+  ### individually whitened series and averaging them, as this function
+  ### did through dplR 1.8.0, skips it, so the pooled model was added to
+  ### a series that was not white.
   # When p == 0, ARcoefs[0, ][1:0] does not return numeric(0) cleanly in R
   # (1:0 is c(1,0) and indexing a zero-row matrix with that gives NA).
   # Guard explicitly so postAR receives a proper zero-length vector.
   phi <- if(p > 0) outAR$ARcoefs[p,][1:p] else numeric(0)
-  RWIar <- apply(RWIclean,2,postAR,-phi)
-  
-  
-  ### 10. Make the ARSTAN chronology (ARS)
-  if(!biweight) {
-    arsCrn <- rowMeans(RWIar, na.rm=TRUE)
-  } else {
-    arsCrn <- apply(RWIar, 1, tbrm, C=9)
-  }
-  
+  arsCrn <- postAR(resCrn, -phi)
+
   out <- data.frame(std=stdCrn,res=resCrn,
                     ars=arsCrn,samp.depth=samps)
   row.names(out) <- row.names(rwi)

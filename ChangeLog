@@ -43,6 +43,9 @@ File: R/kalman.ar.R, man/kalman.ar.Rd, man/kalman.spec.Rd,
       man/profile.kalman.ar.Rd, NAMESPACE,
       tests/testthat/test-kalman.ar.R
 -----------------------------------------------------------------
+ - kalman.ar(), kalman.spec() and profile.kalman.ar() are experimental
+   and say so in a note on their help pages. Arguments, defaults and
+   the objects returned may change. See TODO for what is open.
  - New kalman.ar(): time-varying AR(p) model. The coefficients are the state
    of a state-space model, a random walk ("rw1") or with a random walk
    in their slopes ("rw2"), estimated by the Kalman filter and a

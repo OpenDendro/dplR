@@ -73,6 +73,10 @@
   \item{n.lik}{ years in the likelihood. }
   \item{n.yrs}{ years with coefficients. }
 }
+\note{
+  This function is experimental and may change in future releases, as
+  may \code{\link{kalman.ar}}.
+}
 \author{ Andy Bunn }
 \seealso{ \code{\link{kalman.ar}}, \code{\link{kalman.spec}} }
 \examples{

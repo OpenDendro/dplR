@@ -182,6 +182,10 @@ kalman.ar(y, yrs = NULL, order, prior = c("rw1", "rw2"), lambda = NULL,
   of Time Series}.  Lecture Notes in Statistics 116.  Springer.
 }
 \note{
+  This function is experimental and may change in future releases:
+  arguments, defaults and the object returned.  How to choose
+  \code{\var{order}} and \code{\var{lambda}} is not settled.
+
   Written from the published method at the suggestion of Ed Cook.  It
   is not a port of his programs and will not reproduce their numbers.
 }

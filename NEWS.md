@@ -64,7 +64,9 @@
   long is filler for wood that was not measured, not absent rings. It
   used to be reported as a note, `RWL_CONSECUTIVE_ZERO`, which now covers
   shorter runs only.
-* New `kalman.ar()` and `kalman.spec()` for evolutive spectra.
+* New `kalman.ar()` and `kalman.spec()` for evolutive spectra. They are
+  experimental: arguments, defaults and the objects returned may change
+  in a later release.
   `kalman.ar()` fits an autoregressive model whose coefficients change
   through time, by the Kalman filter and a smoother (Kitagawa and Gersch
   1985), and `kalman.spec()` gives the AR spectrum of every year, with a

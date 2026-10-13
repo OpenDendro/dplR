@@ -77,6 +77,10 @@ kalman.spec(x, nfreq = 200, freq = NULL)
   \emph{IEEE Transactions on Automatic Control}, \bold{30}(1),
   48\enc{–}{--}56.
 }
+\note{
+  This function is experimental and may change in future releases, as
+  may \code{\link{kalman.ar}}.
+}
 \author{ Andy Bunn }
 \seealso{ \code{\link{kalman.ar}}, \code{\link{wavelet.plot}} }
 \examples{

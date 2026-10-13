@@ -70,7 +70,13 @@ kalman.ar(y, yrs = NULL, order, prior = c("rw1", "rw2"), lambda = NULL,
   \pkg{dplR}, reports that trying several orders served him better than
   a criterion such as \acronym{AIC}, and that orders well above what
   \acronym{AIC} would pick can be needed to resolve a cycle (30 for the
-  roughly 11-year sunspot cycle).  A picture that depends on the
+  roughly 11-year sunspot cycle).  If a cycle of known period is the
+  target, the lags should span a few cycles of it, and
+  \code{\var{order}} should stay well below the number of years: for
+  the 289 years of sunspot numbers, order 30 spans nearly three cycles,
+  while order 60 leaves fewer than five years for each coefficient and
+  fills the spectrum with peaks that the series cannot support.  A
+  picture that depends on the
   setting should be reported with the setting.  \code{\link[=profile.kalman.ar]{profile}}
   on a fit shows the likelihood over a range of \code{\var{lambda}}.
 

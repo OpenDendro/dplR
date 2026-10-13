@@ -332,3 +332,20 @@ test_that("functions that take either are quiet about both", {
 test_that("strip.rwl() detrends twice without warning about it", {
     expect_no_warning(capture.output(strip.rwl(ca533[, 1:8])))
 })
+
+test_that("strip.rwl() can remove a series that leaves years empty", {
+    ## Taking a series out of an rwi with "[" trims the years it alone
+    ## covered, so the removed series no longer lined up with the rest
+    ## when strip.rwl() tried putting it back.
+    data(wa082, package = "dplR")
+    ids <- autoread.ids(wa082)
+    pdf(NULL)
+    on.exit(dev.off())
+    capture.output(
+        res <- suppressWarnings(strip.rwl(wa082, ids = ids, comp.plot = TRUE)))
+    expect_s3_class(res, "rwl")
+    expect_lt(ncol(res), ncol(wa082))
+    expect_true(all(names(res) %in% names(wa082)))
+    kept <- wa082[names(res)]
+    expect_equal(res, kept)
+})

@@ -1,5 +1,16 @@
 * CHANGES IN dplR VERSION 1.8.1
 
+File: strip.rwl.R, tests/testthat/test-rwi.R
+-----------------------------------------------------------------
+ - strip.rwl() stopped with "arguments imply differing number of
+   rows" whenever it removed a series, so it only worked on data
+   where nothing was stripped. Since detrend() returns class "rwi",
+   taking a series out with "[" trims the years left empty, and the
+   removed series no longer had the same rows as the rest when the
+   function tried putting it back. The indices are now held as a plain
+   data.frame inside the function. The same mismatch would have put
+   the per-year comparison of comp.plot = TRUE on the wrong years.
+
 File: detrend.series.R, tests/testthat/test-difference.R
 -----------------------------------------------------------------
  - detrend.series() with method = "Ar" and return.info = TRUE returned

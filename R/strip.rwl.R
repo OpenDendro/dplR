@@ -43,6 +43,11 @@ strip.rwl <- function(rwl, ids = NULL, verbose = FALSE, comp.plot = FALSE,
     ## detrended twice on purpose, so relabel the first indices as widths
     ## rather than draw detrend()'s warning about being given indices
     rwl.d2 <- detrend(as.rwl(rwl.d1), method = "Spline", nyrs = 200)
+    ## work on a plain data.frame: "[" for class "rwi" trims the years
+    ## that are left empty when a series is taken out, and the series
+    ## are put back and compared year by year below, so the rows must
+    ## stay the same throughout
+    class(rwl.d2) <- "data.frame"
     rwl.all <- rwl.d2
 
     eps.imp <- TRUE

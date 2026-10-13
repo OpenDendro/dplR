@@ -54,7 +54,7 @@ vignette("intro-dplR")
 
 If you installed from GitHub, the vignettes are only there if you asked for them: `devtools::install_github("openDendro/dplR", build_vignettes = TRUE)`.
 
-[Learning to Love dplR](https://opendendro.github.io/dplR-workshop/) covers the same ground and more in depth.
+[Learning to Love dplR](https://opendendro.github.io/learningToLoveDplR/) covers the same ground and more in depth.
 
 ## Interactive Apps
 

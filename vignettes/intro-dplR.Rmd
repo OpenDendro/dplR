@@ -25,7 +25,7 @@ chronology, and checking the crossdating. It uses only dplR and base
 R, and every example runs on data that ship with the package. For a
 longer treatment, with more on each step and on signal-free
 chronologies and time-series analysis, see
-[Learning to Love dplR](https://opendendro.github.io/dplR-workshop/).
+[Learning to Love dplR](https://opendendro.github.io/learningToLoveDplR/).
 
 ```{r load}
 library(dplR)
@@ -261,7 +261,7 @@ once confirmed, fix the series with `insert.ring()`.
 
 ## Where to go next
 
-- [Learning to Love dplR](https://opendendro.github.io/dplR-workshop/)
+- [Learning to Love dplR](https://opendendro.github.io/learningToLoveDplR/)
   covers these steps and more in depth.
 - `vignette("math-dplR")` gives the mathematics behind the smoothing
   splines, detrending and other functions.

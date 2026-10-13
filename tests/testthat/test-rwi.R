@@ -329,8 +329,43 @@ test_that("functions that take either are quiet about both", {
     expect_s3_class(dplR:::check.rwl.rwi(r), "rwi")
 })
 
-test_that("strip.rwl() detrends twice without warning about it", {
-    expect_no_warning(capture.output(strip.rwl(ca533[, 1:8])))
+test_that("strip.rwl() detrends widths once, with a spline of nyrs years", {
+    ## anos1's series are all under 200 years: the second, 200-year pass
+    ## there used to be warned about every one of them
+    data(anos1, package = "dplR")
+    expect_no_warning(capture.output(res <- strip.rwl(anos1)))
+    expect_identical(attr(res, "dplR.strip")$nyrs, 20)
+    expect_identical(attr(res, "dplR.strip")$stats$eps[1],
+                     rwi.stats(detrend(anos1, method = "Spline", nyrs = 20))$eps)
+    ## a stiffer spline is the caller's to ask for, and changes the answer
+    data(wa082, package = "dplR")
+    ids <- autoread.ids(wa082)
+    capture.output(r20 <- suppressWarnings(strip.rwl(wa082, ids = ids)))
+    capture.output(r200 <- suppressWarnings(strip.rwl(wa082, ids = ids, nyrs = 200)))
+    expect_identical(attr(r200, "dplR.strip")$nyrs, 200)
+    expect_gt(length(attr(r200, "dplR.strip")$removed),
+              length(attr(r20, "dplR.strip")$removed))
+})
+
+test_that("strip.rwl() strips indices as they are and returns indices", {
+    data(wa082, package = "dplR")
+    ids <- autoread.ids(wa082)
+    rwi <- suppressWarnings(detrend(wa082, method = "Spline", nyrs = 20))
+    expect_no_warning(capture.output(res <- strip.rwl(rwi, ids = ids)))
+    expect_s3_class(res, "rwi")
+    cost <- attr(res, "dplR.strip")
+    expect_identical(cost$nyrs, NA_real_)
+    expect_identical(cost$stats$eps[1], rwi.stats(rwi, ids)$eps)
+    ## the same series go as when the widths are detrended that way here
+    capture.output(raw <- suppressWarnings(strip.rwl(wa082, ids = ids, nyrs = 20)))
+    expect_identical(cost$removed, attr(raw, "dplR.strip")$removed)
+    expect_identical(names(res), names(raw))
+    ## and they are the indices given, not detrended again
+    attr(res, "dplR.strip") <- NULL
+    expect_equal(res, rwi[names(res)])
+    ## nyrs has nothing to act on
+    expect_warning(capture.output(strip.rwl(rwi, ids = ids, nyrs = 200)),
+                   "'nyrs' is not used")
 })
 
 test_that("strip.rwl() can remove a series that leaves years empty", {
@@ -347,5 +382,51 @@ test_that("strip.rwl() can remove a series that leaves years empty", {
     expect_lt(ncol(res), ncol(wa082))
     expect_true(all(names(res) %in% names(wa082)))
     kept <- wa082[names(res)]
+    ## but for the record of what was stripped
+    attr(res, "dplR.strip") <- NULL
     expect_equal(res, kept)
+})
+
+test_that("strip.rwl() records what the stripping cost", {
+    data(wa082, package = "dplR")
+    ids <- autoread.ids(wa082)
+    out <- capture.output(
+        res <- suppressWarnings(strip.rwl(wa082, ids = ids)))
+    cost <- attr(res, "dplR.strip")
+    expect_identical(cost$removed, setdiff(names(wa082), names(res)))
+    expect_identical(cost$stats$series, c(ncol(wa082), ncol(res)))
+    expect_gt(cost$stats$eps[2], cost$stats$eps[1])
+    yy <- cost$years
+    expect_identical(yy$year, as.numeric(time(wa082)))
+    ## trees, not series, are counted, as sss() counts them
+    expect_identical(yy$n.before,
+                     vapply(seq_len(nrow(wa082)), function(i) {
+                         length(unique(ids[names(wa082)[!is.na(wa082[i, ])], "tree"]))
+                     }, 1))
+    expect_true(all(yy$n.after <= yy$n.before))
+    ## EPS for the trees of a year is SSS times EPS, on unrounded numbers
+    rbar <- cost$stats$rbar.eff[1]
+    N <- cost$stats$trees[1]
+    full <- N * rbar / (1 + (N - 1) * rbar)
+    sss.yr <- yy$n.before * (1 + (N - 1) * rbar) / (N * (1 + (yy$n.before - 1) * rbar))
+    expect_equal(yy$eps.before, sss.yr * full)
+    ## the year a tree is lost is a year EPS for the trees present falls,
+    ## though EPS over the whole span rose, and the summary says so
+    lost <- yy$n.after < yy$n.before
+    expect_true(any(lost))
+    expect_true(all(yy$eps.after[lost] < yy$eps.before[lost]))
+    expect_true(any(grepl("EPS is lower than before in", out)))
+    ## the record describes this result, so a subset does not keep it
+    expect_null(attr(res[, 1:5], "dplR.strip"))
+})
+
+test_that("strip.rwl() that removes nothing says so in the record", {
+    data(anos1, package = "dplR")
+    capture.output(res <- suppressWarnings(strip.rwl(anos1)))
+    cost <- attr(res, "dplR.strip")
+    expect_identical(cost$removed, character(0))
+    expect_identical(cost$stats$eps[1], cost$stats$eps[2])
+    expect_identical(cost$years$n.before, cost$years$n.after)
+    attr(res, "dplR.strip") <- NULL
+    expect_equal(res, anos1)
 })

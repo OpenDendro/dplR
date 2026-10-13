@@ -7,12 +7,15 @@
 }
 \usage{
 strip.rwl(rwl, ids = NULL, verbose = FALSE, comp.plot = FALSE,
-          legacy.eps = FALSE)
+          legacy.eps = FALSE, nyrs = 20)
 }
 \arguments{
 
   \item{rwl}{a \code{data.frame} of raw tree-ring widths series, such as
-    that produced by \code{\link{read.rwl}} or \code{\link{read.fh}}}
+    that produced by \code{\link{read.rwl}} or \code{\link{read.fh}},
+    or of ring-width indices (class \code{"rwi"}), such as that produced
+    by \code{\link{detrend}}.  Widths are detrended before stripping
+    (see \code{nyrs}); indices are stripped as they are.}
 
   \item{ids}{ an optional \code{data.frame} with column one named
     \code{"tree"} giving a \code{numeric} \acronym{ID} for each tree and
@@ -33,20 +36,48 @@ strip.rwl(rwl, ids = NULL, verbose = FALSE, comp.plot = FALSE,
     will be calculated with \code{rwi.stats} (\code{FALSE}, the default)
     or \code{rwi.stats.legacy} (\code{TRUE})}
 
+  \item{nyrs}{a number giving the rigidity of the smoothing spline used
+    to detrend raw widths before stripping, as in \code{\link{detrend}}.
+    Not used, with a warning if it is given, when \code{rwl} holds
+    indices.}
+
 }
 \value{
 
-  The functions returns a \code{data.frame} of raw tree-ring widths,
-  where series that do not contribute to an overall improvement in
-  \acronym{EPS} are left out.
-  
+  The function returns the series it was given, raw tree-ring widths or
+  indices, where series that do not contribute to an overall improvement
+  in \acronym{EPS} are left out.
+
+  It carries an attribute \code{"dplR.strip"}, a \code{list} recording
+  what the stripping did and what it cost:
+
+  \item{removed}{the names of the series left out}
+
+  \item{nyrs}{the rigidity of the spline the widths were detrended
+    with, or \code{NA} if indices were given}
+
+  \item{stats}{a \code{data.frame} with rows \code{"before"} and
+    \code{"after"}: the number of series and trees, and \code{rbar.eff}
+    and \code{eps} over the whole span, of the indices that were
+    stripped}
+
+  \item{years}{a \code{data.frame} with one row per year: the trees
+    present before and after stripping (\code{n.before},
+    \code{n.after}; series, if \code{ids} is \code{NULL}), and the
+    \acronym{EPS} of that many trees given the \code{rbar.eff} of the
+    whole set (\code{eps.before}, \code{eps.after}; \code{NA} in a year
+    left with no series)}
+
+  The attribute describes this result and is dropped when the result is
+  subset.
+
 }
 \details{
 
   The \acronym{EPS}-based chronology stripping is implemented after
-  Fowler & Boswijk 2003: First, all series are standardized using a
-  double detrending procedure with splines and frequency cutoffs of 50\%
-  at 20 and 200 years.  Then, \acronym{EPS} is calculated for the
+  Fowler & Boswijk 2003: First, raw widths are standardized using a
+  spline with a frequency cutoff of 50\% at \code{nyrs} years.  Indices
+  are used as they are.  Then, \acronym{EPS} is calculated for the
   chronology including all (remaining) series.  In each iteration, the
   algorithm calculates leave-one-out \acronym{EPS} values, and the
   series whose removal increases overall \acronym{EPS} the most is
@@ -65,8 +96,69 @@ strip.rwl(rwl, ids = NULL, verbose = FALSE, comp.plot = FALSE,
   or re-inserting a single series leads to an improvement in
   \acronym{EPS}, this series is marked with an asterisk.
 
+  Which series are left out depends on the standardization.  Fowler and
+  Boswijk made two sets of indices, with 20-year and with 200-year
+  splines, and stripped each to see how far the result depended on the
+  choice.  It did: at their largest site about half of the series left
+  out were the same in both.  They chose 20 years because it gave the
+  highest correlations within a site for the species they worked on
+  (kauri, \emph{Agathis australis}), and describe 200 years as nearer
+  to what is used for work on climate trends.  The default here is
+  their 20 years, which is not a recommendation for other species or
+  purposes.  To judge series on the variation that will be kept in the
+  chronology, detrend them as the chronology will be detrended and strip
+  the indices.
+
+  Until version 1.8.1 the function applied the 20-year and the 200-year
+  spline one after the other to the same series.  That was a misreading
+  of the method, and came to the 20-year spline alone, because that
+  leaves nothing for a 200-year spline to remove.  The indices differ
+  from the old ones in the third decimal place or beyond.
+
+  When a series is left out, the function prints what that cost and
+  records it in the attribute \code{"dplR.strip"}.  The \acronym{EPS}
+  that is maximized is one number for the whole span.  It can rise while
+  the chronology gets worse in the years that few trees reach, because a
+  series that was left out may be one of the few there.  So the trees
+  present in each year are counted before and after, and for each year
+  the \acronym{EPS} of that many trees is computed from the
+  \code{rbar.eff} of the whole set,
+  \eqn{\frac{n\bar{r}}{1+(n-1)\bar{r}}}{n*rbar / (1+(n-1)*rbar)}.  This
+  is subsample signal strength (\code{\link{sss}}) multiplied by
+  \acronym{EPS}.  It is used in place of subsample signal strength
+  because that is measured against the full set of trees, which is not
+  the same set before and after stripping.
+
+}
+\section{Caution}{
+
+  A higher \acronym{EPS} after stripping is not evidence of a better
+  chronology for reconstructing climate.  \acronym{EPS} says how well
+  the mean of these series stands for the population they were sampled
+  from, and depends only on how many trees there are and how well they
+  agree.  It says nothing about what they agree on (Buras 2017).
+  Stripping raises it by leaving out the trees that agree least with the
+  others, in the variation the standardization keeps: with the default,
+  faster than about 20 years.  Those trees are part of the stand, and a chronology
+  without them looks more certain than the sample was.
+
+  The gain is usually small.  Fowler and Boswijk (2003) stripped 15
+  sites and found a mean rise in \acronym{EPS} of 0.007 with 20-year
+  splines and 0.017 with 200-year splines.  For \code{\link{wa082}}
+  with trees identified, \acronym{EPS} goes from 0.907 to 0.908.
+
+  The last step of their method is not automatic: they judged each
+  result, and in six of their 30 analyses chose not to use it, because
+  \acronym{EPS} over the whole span rose while a period with few trees
+  got worse.  This function does not make that judgement.  Look at which
+  series were left out and why they differ, and at the years in which
+  replication was lost, before using the result.
+
 }
 \references{
+
+  Buras, A. (2017) A comment on the Expressed Population Signal.
+  \emph{Dendrochronologia}, \bold{44}, 130\enc{–}{--}132.
 
   Fowler, A. and Boswijk, G. (2003) Chronology stripping as a tool for
   enhancing the statistical quality of tree-ring
@@ -74,7 +166,7 @@ strip.rwl(rwl, ids = NULL, verbose = FALSE, comp.plot = FALSE,
   
 }
 \seealso{
-  \code{\link{rwi.stats}}
+  \code{\link{rwi.stats}}, \code{\link{sss}}
 }
 \examples{
 library(utils)
@@ -82,6 +174,15 @@ data(anos1)
 anos1.ids <- read.ids(anos1, stc = c(4, 3, 1))
 srwl <- strip.rwl(anos1, ids = anos1.ids, verbose = TRUE)
 tail(srwl)
+## what was left out, and the statistics before and after
+attr(srwl, "dplR.strip")$removed
+attr(srwl, "dplR.strip")$stats
+## strip the indices the chronology will be built from
+data(wa082)
+wa082.ids <- autoread.ids(wa082)
+wa082.rwi <- detrend(wa082, method = "Spline")
+srwi <- strip.rwl(wa082.rwi, ids = wa082.ids)
+attr(srwi, "dplR.strip")$stats
 }
 \author{
   Christian Zang.  Patched and improved by Mikko Korpela.

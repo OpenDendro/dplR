@@ -1,5 +1,30 @@
 # dplR 1.8.1 (development)
 
+* `strip.rwl()` accepts ring-width indices (class `"rwi"`) and strips
+  them as they are, returning indices. A series is then judged on the
+  variation the chronology will keep. Indices used to be treated as
+  widths and detrended again, with a warning.
+* `strip.rwl()` gains `nyrs`, the stiffness of the spline that raw
+  widths are detrended with before stripping, and detrends once. It
+  used to apply a 20-year and then a 200-year spline to the same series.
+  That was a misreading of Fowler and Boswijk (2003), who made two
+  separate sets of indices and stripped each, and it came to the 20-year
+  spline alone, so the default of 20 keeps the old behaviour: the
+  indices differ in the third decimal place or beyond, and the series
+  left out are the same in the data sets tried. `nyrs = 200` gives the
+  paper's other version. The warning about spline stiffness that the
+  second pass raised for every series under 200 years is gone.
+* `strip.rwl()` reports what stripping cost. EPS over the whole span can
+  rise while the years that few trees reach get worse, because a series
+  that was left out may be one of the few there. When a series is left
+  out the function now prints the years that lost a tree and the years
+  in which EPS for the trees present is lower than before, and the
+  result carries the record as the attribute `"dplR.strip"`: the series
+  left out, rbar and EPS before and after, and the trees and EPS for
+  each year. The series returned are the same as before. The help page
+  gains a caution, after Buras (2017), that a higher EPS is not evidence
+  of a better chronology for reconstructing climate.
+
 * `plot.crn()` gains `xlab` and `ylab`, and passes `...` on to `plot()`.
   Axis labels and graphical parameters such as `col` were silently
   ignored before. One `ylab` labels the chronology panels and leaves

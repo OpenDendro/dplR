@@ -60,6 +60,8 @@ This function creates a simple signal-free chronology that loosely follows the p
   
     The input object (\code{rwl}) should be of \code{class} \code{rwl}. If it not, the function will attempt to coerce it using \code{\link{as.rwl}} and a warning will be issued.
   
+  Sites with many absent rings can defeat the method. Step three adds a constant to each series, and in years where the chronology is low, step two inflates the signal-free measurements, so the constant becomes large enough to push the narrowest and absent rings below zero. The curve in step five then reaches zero or below and the function stops with error [1], naming the series, the iteration and the year. Because the cause lies in the chronology, removing those series usually moves the failure to others, and \code{recode.zeros} does not prevent it. CRUST (Melvin and Briffa 2014) rescales and guards these steps more carefully.
+
   See the references below for further details on detrending. It's a dark art.
 }
 \value{

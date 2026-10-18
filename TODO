@@ -32,8 +32,6 @@ o [andybunn] kalman.ar() and kalman.spec(): evolutive AR spectra by the
   - Filter is in R: about 1 s for 2000 years at order 30 ("rw1"),
     3 s for "rw2". Move to C only if that becomes a problem.
 
-o [andybunn] ssf vignette? Better to leave that all in LTLdplR?
-
 o [andybunn] multiple RCS
 
 o [andybunn]  reader for *-rwl-noaa.txt

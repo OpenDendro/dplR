@@ -18,8 +18,36 @@
   }
   
   # error msgs for later
-  negCurveMsg <- gettext("[1] The signal free detrending curve has values <= 0. See help (?ssf).",
-                         domain = "R-dplR")
+  # [1] stops when a fitted curve reaches zero or below. It names the series,
+  # the iteration and the year, and, after the first fit, the low years in the
+  # chronology that drive it.
+  negCurveStop <- function(curves, iteration, crn = NULL) {
+    yrs <- as.numeric(rownames(dat))
+    bad <- which(apply(curves, 2, function(x) any(x <= 0, na.rm = TRUE)))
+    where <- vapply(bad, function(j) {
+      i <- which.min(curves[, j])
+      sprintf("%s (%.3g in %d)", colnames(dat)[j], curves[i, j], yrs[i])
+    }, character(1))
+    why <- if (difference) {
+      gettext("A growth curve below zero is not a ring width, so ssf cannot continue.",
+              domain = "R-dplR")
+    } else {
+      gettext("Indices would be infinite or negative there, so ssf cannot continue.",
+              domain = "R-dplR")
+    }
+    if (is.null(crn)) {
+      msg <- gettextf("[1] The detrending curve fitted to the measurements went to zero or below for %d series: %s. %s See help (?ssf).",
+                      length(bad), paste(where, collapse = ", "), why,
+                      domain = "R-dplR")
+    } else {
+      lo <- which.min(crn)
+      how <- if (difference) "subtracting" else "dividing by"
+      msg <- gettextf("[1] At iteration %d the curve fitted to the signal-free measurements went to zero or below for %d series: %s. %s The signal-free measurements are put back on each series' mean by adding a constant. Where the chronology is low (its lowest value is %.4g, in %d), %s it raises the signal-free measurements, the constant grows, and the narrowest and absent rings are pushed below zero. The cause is shared by the whole collection, so removing these series usually moves the failure to others, and recode.zeros, which only moves absent rings from 0 to 0.001, does not prevent it. See help (?ssf).",
+                      iteration, length(bad), paste(where, collapse = ", "),
+                      why, crn[lo], yrs[lo], how, domain = "R-dplR")
+    }
+    stop(msg, call. = FALSE)
+  }
   
   maxIterMsg <- gettext("[2] Reached maximum iterations and stopping criteria are not satisfied. See help (?ssf).",
                         domain = "R-dplR")
@@ -177,7 +205,7 @@
   rownames(datCurves) <- time(dat)
   
   if(any(datCurves <= 0,na.rm = TRUE)){
-    stop(negCurveMsg)
+    negCurveStop(datCurves, iteration = 0)
   }
   
   
@@ -231,7 +259,7 @@
                                          pos.slope=TRUE)
   
   if(any(sfRWRescaledCurves_Array[,,1] <= 0,na.rm = TRUE)){
-    stop(negCurveMsg)
+    negCurveStop(sfRWRescaledCurves_Array[,,1], iteration = 1, crn = iter0Crn)
   }
   
   # STEP 6 - divide original measurements by curve obtained from signal free measurements fitting
@@ -293,7 +321,8 @@
                                            pos.slope=TRUE)
     
     if(any(sfRWRescaledCurves_Array[,,k] <= 0,na.rm = TRUE)){
-      stop(negCurveMsg)
+      negCurveStop(sfRWRescaledCurves_Array[,,k], iteration = k,
+                   crn = sfCrn_Mat[,k-1])
     }
     
     # STEP 6 - divide original measurements by curve obtained from signal free curves

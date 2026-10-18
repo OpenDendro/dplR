@@ -1,5 +1,14 @@
 # dplR 1.8.1 (development)
 
+* When the curve fitted in `ssf()` reaches zero or below, the error
+  now names the series, the iteration and the year, gives the lowest
+  value of the chronology and its year, and explains the cause: in sites
+  with many absent rings, dividing by a low chronology inflates the
+  signal-free measurements, and putting them back on the series mean
+  pushes the narrowest rings below zero. It says that `recode.zeros`
+  does not prevent this, and that removing the series named usually
+  moves the failure to others. The error used to say only that the
+  curve had values <= 0. Reported by a dplPy user.
 * `strip.rwl()` accepts ring-width indices (class `"rwi"`) and strips
   them as they are, returning indices. A series is then judged on the
   variation the chronology will keep. Indices used to be treated as

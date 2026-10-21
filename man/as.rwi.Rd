@@ -68,7 +68,7 @@ as.rwi(x)
   \code{\link{cms}}, \code{\link{i.detrend}}, \code{\link{bai.in}},
   \code{\link{bai.out}}, \code{\link{pointer}},
   \code{\link{strip.rwl}}, \code{\link{ssf}} and
-  \code{\link{rwl.report}} -- warn when given an \code{"rwi"} object,
+  \code{\link{rwl.check}} -- warn when given an \code{"rwi"} object,
   and say what goes wrong: \code{detrend} on indices, for instance,
   divides out a growth curve that has already been removed.  Those that
   want indices -- \code{\link{chron}}, \code{\link{chron.ars}},

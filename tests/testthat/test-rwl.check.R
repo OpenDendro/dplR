@@ -255,6 +255,20 @@ test.rwl.check <- function() {
         expect_false(has(z[, 1:2], "RWL_SERIES_SCALE", checks = "values"))
     })
 
+    test_that("RWL_UNCHECKABLE says why: a gap, or a spline that fails", {
+        ## mi021's PLK18A has no NA, only 1,691 filler zeros, and was reported
+        ## as having gaps.
+        z <- good; z[20:70, 2] <- 0
+        f <- as.data.frame(rwl.check(z, checks = "crossdating"))
+        u <- f[f$check == "RWL_UNCHECKABLE", ]
+        expect_equal(u$series, names(z)[2])
+        expect_match(u$message, "spline reaches zero or below")
+        expect_false(grepl("gaps", u$message))
+        z <- good; z[50, 2] <- NA
+        f <- as.data.frame(rwl.check(z, checks = "crossdating"))
+        expect_match(f$message[f$check == "RWL_UNCHECKABLE"], "gaps inside")
+    })
+
     test_that("RWL_NEGATIVE finds a negative measurement", {
         z <- good; z[10, 1] <- -0.5
         expect_true("RWL_NEGATIVE" %in% checks.of(z))
@@ -394,7 +408,7 @@ test.rwl.check <- function() {
                      read.tucson(fname, verbose = FALSE))
     })
 
-    test_that("rwl.report prints a provenance header, and omits it when absent", {
+    test_that("rwl.check prints a provenance header, and omits it when absent", {
         fname <- tempfile(fileext = ".rwl")
         on.exit(unlink(fname), add = TRUE)
         writeLines(c(
@@ -411,8 +425,8 @@ test.rwl.check <- function() {
             "TST01C  1910   212   222   232   242   252   262   272   282   292   302",
             "TST01C  1920   312   322   999"), fname)
         x <- suppressWarnings(read.tucson(fname, verbose = FALSE))
-        out <- capture.output(print(rwl.report(x)))
-        expect_match(out[1], "^File: ")
+        out <- capture.output(print(rwl.check(x)))
+        expect_match(out[2], "^File: ")
         expect_true(any(grepl("Test Site", out)))
         expect_true(any(grepl("Header declares: 1900-1929", out)))
 
@@ -421,10 +435,16 @@ test.rwl.check <- function() {
         p <- attr(x, "dplR.provenance")
         expect_equal(dplR:::itrdb.header(p$header)$last, 1929)
 
-        ## an object with no provenance is reported exactly as before
+        ## an object with no provenance goes straight to the description
         attr(x, "dplR.provenance") <- NULL
-        expect_match(capture.output(print(rwl.report(x)))[1],
-                     "^Number of dated series")
+        expect_match(capture.output(print(rwl.check(x)))[2],
+                     "^3 series, ")
+
+        ## and the deprecated rwl.report() prints the same header
+        out <- capture.output(print(suppressWarnings(rwl.report(
+            suppressWarnings(read.tucson(fname, verbose = FALSE))))))
+        expect_match(out[1], "^File: ")
+        expect_true(any(grepl("Header declares: 1900-1929", out)))
     })
 
     test_that("the ITRDB data sets carry a provenance record", {
@@ -452,25 +472,109 @@ test.rwl.check <- function() {
         expect_equal(wa["1900", "712011"], 0)
     })
 
-    test_that("rwl.report says when a file carried no header", {
+    test_that("rwl.check says when a file carried no header", {
         e <- new.env()
         utils::data("ca533", package = "dplR", envir = e)
-        out <- capture.output(print(rwl.report(get("ca533", envir = e))))
-        expect_match(out[1], "^File: ")
+        out <- capture.output(print(rwl.check(get("ca533", envir = e),
+                                              checks = "provenance")))
+        expect_match(out[2], "^File: ")
         expect_true(any(grepl("carries no header", out)))
         ## and does not say it for a file that has one
         utils::data("wa082", package = "dplR", envir = e)
-        out2 <- capture.output(print(rwl.report(get("wa082", envir = e))))
+        out2 <- capture.output(print(rwl.check(get("wa082", envir = e),
+                                               checks = "provenance")))
         expect_false(any(grepl("carries no header", out2)))
         expect_true(any(grepl("Hurricane Ridge", out2)))
     })
 
-    test_that("rwl.report does not claim gaps were filled when there were none", {
+    test_that("rwl.check does not claim gaps were filled when there were none", {
         e <- new.env()
         utils::data("co021", package = "dplR", envir = e)
-        out <- capture.output(print(rwl.report(get("co021", envir = e))))
+        out <- capture.output(print(rwl.check(get("co021", envir = e),
+                                              checks = "provenance")))
         expect_equal(nrow(attr(get("co021", envir = e), "dplR.provenance")$gaps), 0)
         expect_false(any(grepl("Interior gaps filled", out)))
+    })
+
+    ## ------------------------------------------------------------------ ##
+    ## The description rwl.report() used to give
+    ## ------------------------------------------------------------------ ##
+    test_that("the description opens the print and matches the series table", {
+        res <- rwl.check(good, file = "good")
+        s <- res$series
+        expect_equal(s$series, names(good))
+        expect_equal(s$n, rep(n, ncol(good)))
+        expect_equal(res$meta$mean.length, n)
+        expect_equal(res$meta$mean.ar1, mean(s$ar1))
+        expect_equal(res$meta$mean.cor, mean(s$r))
+        expect_equal(res$meta$sd.cor, sd(s$r))
+        expect_equal(res$meta$n.cor, ncol(good))
+        ## good is built to crossdate
+        expect_true(all(s$r > 0.8))
+        out <- capture.output(print(res))
+        expect_true(any(startsWith(out, "Mean series length: 120")))
+        expect_true(any(startsWith(out, "Mean (SD) AR1: ")))
+        expect_true(any(startsWith(out,
+            "Mean (SD) correlation with the master: ")))
+        ## the description comes before the counts
+        expect_lt(grep("^Mean series length", out), grep("error\\(s\\)", out))
+    })
+
+    test_that("AR1 and mean length are those rwl.report() gave", {
+        data(gp.rwl, package = "dplR", envir = environment())
+        res <- rwl.check(gp.rwl, checks = "structure")
+        rpt <- suppressWarnings(rwl.report(gp.rwl))
+        ## summary.rwl() rounds each series' AR1 to three places
+        expect_equal(res$meta$mean.ar1, rpt$meanAR1, tolerance = 1e-3)
+        expect_equal(res$meta$sd.ar1, rpt$sdAR1, tolerance = 1e-3)
+        expect_equal(res$meta$mean.length, rpt$meanSegLength)
+    })
+
+    test_that("the correlation says why when it was not computed", {
+        out <- capture.output(print(rwl.check(good, checks = "structure")))
+        expect_true(any(grepl("correlation with the master: not computed; the crossdating checks did not run",
+                              out, fixed = TRUE)))
+        expect_true(all(is.na(rwl.check(good, checks = "structure")$series$r)))
+        ## two series: the check ran and could compare nothing
+        out <- capture.output(print(rwl.check(good[, 1:2])))
+        expect_true(any(grepl("no series could be compared", out)))
+        ## a series left out is counted
+        z <- good; z[50, 2] <- NA
+        out <- capture.output(print(rwl.check(z)))
+        expect_true(any(grepl(paste0("over ", ncol(z) - 1, " of ", ncol(z),
+                                     " series"), out)))
+    })
+
+    test_that("rwl.check warns on indices, as rwl.report did", {
+        r <- good; class(r) <- c("rwi", "data.frame")
+        expect_warning(rwl.check(r), "rwl.check\\(\\) wants ring widths")
+    })
+
+    test_that("rwl.report is deprecated", {
+        expect_warning(rwl.report(good), "rwl.report\\(\\) is deprecated")
+    })
+
+    test_that("a file that could not be read counts as an error", {
+        res <- rwl.check(file.path(tempdir(), "no-such-file.rwl"))
+        expect_equal(summary(res)$n.error, 1)
+        out <- capture.output(print(res))
+        expect_true(any(grepl("^1 error\\(s\\)", out)))
+        expect_true(any(grepl("could not be read", out)))
+    })
+
+    test_that("a name made from the call is not used as a file path", {
+        ## an object named after a file in the working directory used to
+        ## have that file checked as if it were the data
+        d <- tempfile(); dir.create(d)
+        on.exit(unlink(d, recursive = TRUE), add = TRUE)
+        writeLines(c("a\tb", "c"), file.path(d, "good"))
+        old <- setwd(d); on.exit(setwd(old), add = TRUE)
+        res <- rwl.check(good)
+        expect_identical(res$file, "good")
+        expect_false(any(as.data.frame(res)$group == "file"))
+        ## named explicitly, it is checked
+        f <- as.data.frame(rwl.check(good, file = "good"))
+        expect_true("RWL_TAB" %in% f$check)
     })
 
     ## ------------------------------------------------------------------ ##

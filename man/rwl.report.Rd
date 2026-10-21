@@ -1,8 +1,21 @@
 \encoding{UTF-8}
 \name{rwl.report}
 \alias{rwl.report}
-\title{Do some reporting on a RWL object}
+\title{Do some reporting on a RWL object (deprecated)}
 \description{
+  \code{rwl.report} is deprecated as of dplR 1.8.1 and will be removed in a
+  future release. Use \code{\link{rwl.check}}, which opens with the same
+  description of the collection (file and site, number of series, span,
+  mean length, \acronym{AR1} and correlation with the master) and reports
+  zero rings, internal \code{NA}s and small or big rings as findings. Its
+  \code{small.thresh} and \code{big.thresh} are set in
+  \code{\link{rwl.check.control}}. The two functions did not always agree:
+  this one counts every zero as a missing ring, where \code{rwl.check}
+  reports a long run of zeros as \code{RWL_ZERO_RUN}, more likely filler
+  than absent rings. Its interseries correlation comes from
+  \code{\link{interseries.cor}} and differs a little from
+  \code{rwl.check}'s correlation with the master; see the details there.
+
   This function generates a small report on a \code{rwl} object
   that gives the user some basic information on the data including the number of
   series, the span of the data, the mean interseries correlation, the number of

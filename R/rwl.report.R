@@ -1,4 +1,17 @@
 rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
+  ## AGB Oct 2026: deprecated in 1.8.1. rwl.check() now opens with the same
+  ## description of the collection, and its findings cover the zeros, gaps
+  ## and thresholds listed here. Two functions that both "look at my rwl"
+  ## left users unsure which to run, and they did not always agree: a run of
+  ## filler zeros was counted here as absent rings and is RWL_ZERO_RUN there.
+  ## Kept, warning, until the apps that call it have moved to rwl.check().
+  .Deprecated("rwl.check", package = "dplR",
+              msg = paste0("rwl.report() is deprecated and will be removed ",
+                           "in a future release of dplR. Use rwl.check(), ",
+                           "which opens with the same description of the ",
+                           "collection and reports zeros, gaps and small ",
+                           "or big rings as findings (small.thresh and ",
+                           "big.thresh are in rwl.check.control())."))
   # make sure input is class(rwl). AGB Sep 2026: indices are reported on,
   # with a warning, before warnings are turned off below; they used to stop
   # here with the message for any other object.
@@ -27,23 +40,9 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
   ## AGB Oct 2026: read through meta.record() (see rwl.meta()), which parses
   ## the header only when it is a Tucson one. Parsing read.sheet()'s comment
   ## lines as an ITRDB header printed "Site: # Site urricane Ridge ...".
-  m <- meta.record(rwl)
-  if (!is.null(m)) {
-    res$provenance <- list(
-      file = m$file, reader = m$reader,
-      site.id = m$site.id, site.name = m$site.name,
-      species.code = m$species.code,
-      species.name = m$species.name, state.country = m$state.country,
-      elevation = m$elevation, lat.long = m$lat.long,
-      investigators = m$investigators,
-      declared.first = m$declared.first, declared.last = m$declared.last,
-      precision = sort(unique(m$precision$precision)),
-      mixed.precision = m$mixed.precision,
-      fill.internal.NA = m$fill.internal.NA,
-      n.gaps = NROW(m$gaps),
-      n.renames = NROW(m$renames),
-      n.events = NROW(m$events))
-  }
+  ## AGB Oct 2026: built by provenance.summary() in rwl.check.R, which
+  ## print.rwl.check() uses too.
+  res$provenance <- provenance.summary(rwl)
   
   
   # start with a summary
@@ -176,58 +175,9 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
 }
 
 print.rwl.report <- function(x, ...){
-  p <- x$provenance
-  if (!is.null(p)) {
-    cat("File: ", basename(p$file), "\n", sep = "")
-    ## Say when there is no site line rather than leaving a gap where one
-    ## would be. Three of the four ITRDB collections shipped with dplR begin at
-    ## their first data line, and a report that simply omits the site reads as
-    ## though the site were unknown, or as though something had gone wrong --
-    ## when in fact the file never carried one.
-    if (!is.null(p$site.name) && nzchar(p$site.name))
-      cat("Site: ", p$site.id, " ", p$site.name,
-          if (!is.null(p$species.code)) paste0(" (", p$species.code, ")"),
-          "\n", sep = "")
-    ## A sheet has no site line to be missing; its comments are free text,
-    ## shown by rwl.meta().
-    else if (identical(p$reader, "read.tucson"))
-      cat("Site: not given; the file carries no header\n", sep = "")
-    ## The same lines as print.rwl.meta(), from the same parse.
-    if (!is.null(p$species.name))
-      cat("Species: ", p$species.name, "\n", sep = "")
-    where <- c(p$state.country, p$elevation,
-               if (!is.null(p$lat.long)) paste0(p$lat.long, " (as written)"))
-    if (length(where))
-      cat("Location: ", paste(where, collapse = ", "), "\n", sep = "")
-    if (!is.null(p$investigators))
-      cat("Investigators: ", p$investigators, "\n", sep = "")
-    cat("Precision: ",
-        if (p$mixed.precision)
-          paste0("mixed (", paste(p$precision, collapse = " and "), " mm)")
-        else paste0(p$precision, " mm"), "\n", sep = "")
-    ## The header's own claim about the span, said here rather than checked.
-    ## rwl.check() is the place that calls a disagreement a finding; this is a
-    ## report, and the two numbers side by side are usually enough.
-    if (!is.null(p$declared.first))
-      cat("Header declares: ", p$declared.first, "-", p$declared.last, "\n", sep = "")
-    ## Only when there were gaps to fill. The setting is recorded whether or
-    ## not it did anything, and saying "interior gaps filled with 0" about a
-    ## file that has no interior gaps states something untrue about the data.
-    if (!is.null(p$fill.internal.NA) && p$n.gaps > 0L)
-      cat("Interior gaps filled with: ", p$fill.internal.NA, ", in ", p$n.gaps,
-          if (p$n.gaps == 1L) " place" else " places",
-          " (these are not measurements)\n", sep = "")
-    if (p$n.renames > 0L)
-      cat("Note: ", p$n.renames, " series ",
-          if (p$n.renames == 1L) "was" else "were",
-          " renamed by the reader; ids here are not the file's. ",
-          "See rwl.check().\n", sep = "")
-    if (p$n.events > 0L)
-      cat("Note: ", p$n.events,
-          if (p$n.events == 1L) " problem was" else " problems were",
-          " found while reading this file. See rwl.check().\n", sep = "")
-    cat("-------------\n")
-  }
+  ## AGB Oct 2026: the header is printed by cat.provenance() in rwl.check.R,
+  ## shared with print.rwl.check().
+  cat.provenance(x$provenance, report = TRUE)
   cat("Number of dated series:",x$nSeries,"\n")
   cat("Number of measurements:",x$n,"\n")
   cat("Number of missing (0) rings: ", x$nZeros, 

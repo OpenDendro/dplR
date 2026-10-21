@@ -38,9 +38,10 @@ test.rwl.meta <- function() {
         expect_null(m$site.name)
         expect_identical(m$header, "# Site: Hurricane Ridge")
         expect_output(print(m), "# Site: Hurricane Ridge", fixed = TRUE)
-        ## rwl.report() used to parse these lines as an ITRDB header and
+        ## rwl.report(), whose header rwl.check() now prints, used to parse
+        ## these lines as an ITRDB header and
         ## print "Site: # Site urricane Ridge"
-        out <- capture.output(print(suppressWarnings(rwl.report(x))))
+        out <- capture.output(print(rwl.check(x, checks = "provenance")))
         expect_false(any(grepl("^Site:", out)))
     })
 
@@ -77,8 +78,8 @@ test.rwl.meta <- function() {
         expect_output(print(m), "Location: Maine, 60M, 4512-06844 (as written)",
                       fixed = TRUE)
         expect_output(print(m), "no interior gaps, renamed series or problems")
-        ## and rwl.report() opens with the same lines
-        out <- capture.output(print(suppressWarnings(rwl.report(me044))))
+        ## and rwl.check() opens with the same lines
+        out <- capture.output(print(rwl.check(me044, checks = "provenance")))
         expect_true("Species: Eastern hemlock" %in% out)
         expect_true("Location: Maine, 60M, 4512-06844 (as written)" %in% out)
         expect_true(any(startsWith(out, "Investigators: R. Stockton Maxwell")))

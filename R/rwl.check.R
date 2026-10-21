@@ -5,6 +5,10 @@
 ### "what is wrong with this file", answered as data, so that a report over
 ### one collection and a sweep over ten thousand of them are the same code.
 ###
+### AGB Oct 2026: and now the first half too. The print method opens with
+### the description rwl.report() gave, and rwl.report() is deprecated; see
+### "Describing the collection" below.
+###
 ### Three rules the engine follows, all of them learned from rwl.report():
 ###
 ###  1. It never stops. rwl.report() dies on a single-series file, on a
@@ -620,10 +624,17 @@ high.pass <- function(v, nyrs) {
 check.crossdating <- function(rwl, ctl) {
   out <- list()
   m <- as.matrix(rwl)
-  if (ncol(m) < 3L)
-    return(new.finding("RWL_SHORT_OVERLAP",
-                       paste0("only ", ncol(m),
-                              " series; too few to build a master to date against")))
+  if (ncol(m) < 3L) {
+    f <- new.finding("RWL_SHORT_OVERLAP",
+                     paste0("only ", ncol(m),
+                            " series; too few to build a master to date against"))
+    ## The check ran and compared nothing; the description says that.
+    attr(f, "series.cor") <- data.frame(series = colnames(m),
+                                        r = rep(NA_real_, ncol(m)),
+                                        n.overlap = rep(0L, ncol(m)),
+                                        stringsAsFactors = FALSE)
+    return(f)
+  }
   nm <- colnames(m)
   m <- apply(m, 2, high.pass, nyrs = ctl$spline.nyrs)
   colnames(m) <- nm
@@ -643,11 +654,22 @@ check.crossdating <- function(rwl, ctl) {
     ## reporting it as one would be a lie about why it was skipped.
     nraw <- sum(!is.na(rwl[[i]]))
     if (all(is.na(m[, i])) && nraw >= ctl$min.overlap) {
+      ## AGB Oct 2026: say which of high.pass()'s refusals it was. This
+      ## always blamed interior gaps, but high.pass() also refuses a series
+      ## whose spline reaches zero or below or cannot be fitted. mi021's
+      ## PLK18A, with no NA and long runs of filler zeros, was reported as
+      ## having gaps. The message states the cause and no more; a long run
+      ## of zeros has its own finding, RWL_ZERO_RUN.
+      v <- rwl[[i]]; k <- which(!is.na(v))
+      why <- if (anyNA(v[k[1]:k[length(k)]]))
+        paste0("the series has gaps inside its measured span and cannot be ",
+               "detrended, so there is no way to compare it")
+      else
+        paste0("its ", ctl$spline.nyrs, "-year spline reaches zero or below, ",
+               "or could not be fitted, so the series cannot be divided by it")
       out[[s]] <- new.finding(
         "RWL_UNCHECKABLE",
-        paste0("could not be checked against the collection: the series has ",
-               "gaps inside its measured span and cannot be detrended, so ",
-               "there is no way to compare it"),
+        paste0("could not be checked against the collection: ", why),
         series = s, n = nraw)
       next
     }
@@ -689,9 +711,21 @@ check.crossdating <- function(rwl, ctl) {
         series = s, n = nov[i], value = lg)
   }
 
+  ## AGB Oct 2026: each series' correlation with the master, kept on the
+  ## findings for the description print.rwl.check() opens with. rwl.report()
+  ## got its interseries correlation from interseries.cor(), a second pass over
+  ## the collection that took 73 s on chin067; this is the pass already made.
+  with.cor <- function(f) {
+    attr(f, "series.cor") <- data.frame(series = colnames(m), r = r0,
+                                        n.overlap = nov,
+                                        stringsAsFactors = FALSE)
+    f
+  }
+
   ## Second pass: the collection, and then each series against it.
   ok <- !is.na(r0)
-  if (sum(ok) < 3L) return(if (length(out) == 0L) no.findings() else do.call(rbind, out))
+  if (sum(ok) < 3L)
+    return(with.cor(if (length(out) == 0L) no.findings() else do.call(rbind, out)))
   med <- median(r0[ok])
   spread <- mad(r0[ok])
 
@@ -725,7 +759,7 @@ check.crossdating <- function(rwl, ctl) {
       }
     }
   }
-  if (length(out) == 0L) no.findings() else do.call(rbind, out)
+  with.cor(if (length(out) == 0L) no.findings() else do.call(rbind, out))
 }
 
 ### "1885" for one year, "1885-1890" for a span.
@@ -868,6 +902,140 @@ check.provenance <- function(rwl, ctl) {
 }
 
 ###############################################################
+## Describing the collection
+###############################################################
+
+### AGB Oct 2026: what rwl.report() said about a collection -- its file and
+### site, how many series over what span, their length, AR1 and correlation
+### with one another -- now said here, so one function describes a collection
+### and lists what is wrong with it. rwl.report() listed zeros, gaps and big
+### and small rings as well, which the checks above already find, and the two
+### did not always agree: the report counted a run of filler zeros as absent
+### rings while RWL_ZERO_RUN says they are probably not.
+
+### The provenance details worth printing, from meta.record(). NULL when the
+### object carries no record.
+provenance.summary <- function(rwl) {
+  m <- meta.record(rwl)
+  if (is.null(m)) return(NULL)
+  list(file = m$file, reader = m$reader,
+       site.id = m$site.id, site.name = m$site.name,
+       species.code = m$species.code,
+       species.name = m$species.name, state.country = m$state.country,
+       elevation = m$elevation, lat.long = m$lat.long,
+       investigators = m$investigators,
+       declared.first = m$declared.first, declared.last = m$declared.last,
+       precision = sort(unique(m$precision$precision)),
+       mixed.precision = m$mixed.precision,
+       fill.internal.NA = m$fill.internal.NA,
+       n.gaps = NROW(m$gaps),
+       n.renames = NROW(m$renames),
+       n.events = NROW(m$events))
+}
+
+### Print the provenance header. Used by print.rwl.check() and, while it
+### lasts, print.rwl.report().
+cat.provenance <- function(p, report = FALSE) {
+  if (is.null(p)) return(invisible(NULL))
+  cat("File: ", basename(p$file), "\n", sep = "")
+  ## Say when there is no site line rather than leaving a gap where one
+  ## would be. Three of the four ITRDB collections shipped with dplR begin at
+  ## their first data line, and a report that simply omits the site reads as
+  ## though the site were unknown, or as though something had gone wrong --
+  ## when in fact the file never carried one.
+  if (!is.null(p$site.name) && nzchar(p$site.name))
+    cat("Site: ", p$site.id, " ", p$site.name,
+        if (!is.null(p$species.code)) paste0(" (", p$species.code, ")"),
+        "\n", sep = "")
+  ## A sheet has no site line to be missing; its comments are free text,
+  ## shown by rwl.meta().
+  else if (identical(p$reader, "read.tucson"))
+    cat("Site: not given; the file carries no header\n", sep = "")
+  ## The same lines as print.rwl.meta(), from the same parse.
+  if (!is.null(p$species.name))
+    cat("Species: ", p$species.name, "\n", sep = "")
+  where <- c(p$state.country, p$elevation,
+             if (!is.null(p$lat.long)) paste0(p$lat.long, " (as written)"))
+  if (length(where))
+    cat("Location: ", paste(where, collapse = ", "), "\n", sep = "")
+  if (!is.null(p$investigators))
+    cat("Investigators: ", p$investigators, "\n", sep = "")
+  cat("Precision: ",
+      if (p$mixed.precision)
+        paste0("mixed (", paste(p$precision, collapse = " and "), " mm)")
+      else paste0(p$precision, " mm"), "\n", sep = "")
+  ## The header's own claim about the span, said here rather than checked.
+  ## RWL_HEADER_SPAN is the finding when the two disagree; beside each other
+  ## the two numbers are usually enough.
+  if (!is.null(p$declared.first))
+    cat("Header declares: ", p$declared.first, "-", p$declared.last, "\n", sep = "")
+  ## Only when there were gaps to fill. The setting is recorded whether or
+  ## not it did anything, and saying "interior gaps filled with 0" about a
+  ## file that has no interior gaps states something untrue about the data.
+  if (!is.null(p$fill.internal.NA) && p$n.gaps > 0L)
+    cat("Interior gaps filled with: ", p$fill.internal.NA, ", in ", p$n.gaps,
+        if (p$n.gaps == 1L) " place" else " places",
+        " (these are not measurements)\n", sep = "")
+  if (p$n.renames > 0L)
+    cat("Note: ", p$n.renames, " series ",
+        if (p$n.renames == 1L) "was" else "were",
+        " renamed by the reader; ids here are not the file's. ",
+        if (report) "See rwl.check()." else "See RWL_ID_RENAMED.",
+        "\n", sep = "")
+  if (p$n.events > 0L)
+    cat("Note: ", p$n.events,
+        if (p$n.events == 1L) " problem was" else " problems were",
+        " found while reading this file",
+        if (report) ". See rwl.check().\n" else "; they are among the findings.\n",
+        sep = "")
+  cat("-------------\n")
+  invisible(NULL)
+}
+
+### One row per series: span, length, AR1 and correlation with the master.
+### Written out here rather than taken from summary.rwl(), which stops on
+### objects the engine has to survive. AR1 is computed as summary.rwl()
+### computes it, on the measured rings.
+describe.series <- function(rwl, series.cor = NULL) {
+  if (ncol(rwl) == 0L) return(NULL)
+  yrs <- as.numeric(rownames(rwl))
+  one <- function(v) {
+    k <- which(!is.na(v))
+    if (length(k) == 0L) return(c(NA_real_, NA_real_, 0, NA_real_))
+    ar1 <- tryCatch(suppressWarnings(
+      acf(v[k], lag.max = 1, plot = FALSE, na.action = na.pass)$acf[2]),
+      error = function(e) NA_real_)
+    c(yrs[k[1]], yrs[k[length(k)]], length(k), ar1)
+  }
+  s <- vapply(rwl, one, numeric(4))
+  out <- data.frame(series = names(rwl), first = s[1, ], last = s[2, ],
+                    n = as.integer(s[3, ]), ar1 = s[4, ],
+                    r = NA_real_, stringsAsFactors = FALSE)
+  out$ar1[!is.finite(out$ar1)] <- NA_real_
+  if (!is.null(series.cor))
+    out$r <- series.cor$r[match(out$series, series.cor$series)]
+  rownames(out) <- NULL
+  out
+}
+
+### The collection-level figures, from the per-series table.
+describe.collection <- function(s) {
+  if (is.null(s)) return(list(mean.length = NA_real_, mean.ar1 = NA_real_,
+                              sd.ar1 = NA_real_, mean.cor = NA_real_,
+                              sd.cor = NA_real_, n.cor = 0L))
+  m.sd <- function(v) {
+    v <- v[!is.na(v)]
+    c(if (length(v)) mean(v) else NA_real_,
+      if (length(v) > 1L) sd(v) else NA_real_, length(v))
+  }
+  a <- m.sd(s$ar1); r <- m.sd(s$r)
+  len <- s$last - s$first + 1
+  list(mean.length = if (any(!is.na(len))) mean(len, na.rm = TRUE) else NA_real_,
+       mean.ar1 = a[1], sd.ar1 = a[2],
+       mean.cor = r[1], sd.cor = r[2], n.cor = as.integer(r[3]))
+}
+
+###############################################################
 ## The engine and the class
 ###############################################################
 
@@ -881,27 +1049,53 @@ check.provenance <- function(rwl, ctl) {
   ## x may be an rwl object or the path to a Tucson file. Taking a path is what
   ## makes the file group possible at all, and it is also how a sweep names its
   ## rows: a findings frame over an archive is useless without the file name.
+  label.only <- FALSE
   if (is.character(x) && length(x) == 1L) {
     if (is.null(file)) file <- x
     rwl <- tryCatch(suppressWarnings(read.tucson(x, verbose = FALSE)),
                     error = function(e) e)
     if (inherits(rwl, "error")) {
+      ## AGB Oct 2026: with its severity. Without one the finding was not
+      ## counted, and a file that could not be read printed "0 error(s)", as
+      ## though it were clean.
+      f <- new.finding("RWL_CHECK_ERROR",
+                       paste0("the file could not be read: ",
+                              conditionMessage(rwl)))
+      f$severity <- factor("error", levels = c("error", "warning", "note"))
+      f$group <- "engine"
+      f <- data.frame(file = file, f, stringsAsFactors = FALSE)
       res <- list(file = file, rwl = NULL, control = control,
-                  findings = cbind(file = file,
-                                   new.finding("RWL_CHECK_ERROR",
-                                               paste0("the file could not be read: ",
-                                                      conditionMessage(rwl)))),
+                  findings = f[, c("file", "check", "severity", "group",
+                                   "series", "year.from", "year.to", "n",
+                                   "value", "message")],
                   series = NULL, meta = list(n.series = 0L))
       class(res) <- "rwl.check"
       return(res)
     }
   } else {
     rwl <- x
+    ## AGB Oct 2026: as rwl.report() did. The checks and the description are
+    ## about widths: a mean "ring width" of 1 and an implausible-mean warning
+    ## say nothing about indices.
+    if (inherits(rwl, "rwi") || inherits(rwl, "bai"))
+      warning("rwl.check() wants ring widths, but was given ",
+              if (inherits(rwl, "bai")) "basal area increment (class \"bai\")"
+              else "ring-width indices (class \"rwi\")",
+              ". Its checks and its description are about widths, so they ",
+              "say little about these values. If the values really are ",
+              "widths, relabel them with as.rwl().", call. = FALSE)
     if (!inherits(rwl, "rwl"))
       rwl <- tryCatch(as.rwl(rwl), error = function(e)
         stop("'x' is not an \"rwl\" object, a coercible one, or a file path",
              call. = FALSE))
-    if (is.null(file)) file <- deparse(substitute(x))[1]
+    ## AGB Oct 2026: a name made up from the call labels the rows and is not
+    ## a path. It was used as one, so rwl.check(r) ran the file checks on the
+    ## R/ folder (macOS ignores case), and an object named like a file in the
+    ## working directory was checked against that file.
+    if (is.null(file)) {
+      file <- deparse(substitute(x))[1]
+      label.only <- TRUE
+    }
   }
 
   registry <- list(structure = check.structure, series = check.series,
@@ -915,21 +1109,27 @@ check.provenance <- function(rwl, ctl) {
   if (ncol(rwl) == 0L)
     registry <- registry["structure"]
 
-  found <- lapply(intersect(checks, names(registry)), function(nm) {
+  run <- intersect(checks, names(registry))
+  found <- lapply(stats::setNames(run, run), function(nm) {
     tryCatch(registry[[nm]](rwl, control),
              error = function(e)
                new.finding("RWL_CHECK_ERROR",
                            paste0("the ", nm, " checks failed to run: ",
                                   conditionMessage(e))))
   })
-  if ("file" %in% checks && !is.null(file) && file.exists(file))
+  if ("file" %in% checks && !label.only && !is.null(file) &&
+      file.exists(file) && !dir.exists(file))
     found <- c(found, list(tryCatch(check.file(file, rwl, control),
                                     error = function(e)
                                       new.finding("RWL_CHECK_ERROR",
                                                   paste0("the file checks failed to run: ",
                                                          conditionMessage(e))))))
 
-  findings <- do.call(rbind, found)
+  ## Taken before rbind(), which drops it. NULL when crossdating was skipped
+  ## or could not run, and the description then says so.
+  series.cor <- if (!is.null(found$crossdating))
+    attr(found$crossdating, "series.cor")
+  findings <- do.call(rbind, unname(found))
   if (is.null(findings)) findings <- no.findings()
 
   cat.tab <- rwl.check.catalogue()
@@ -949,17 +1149,24 @@ check.provenance <- function(rwl, ctl) {
 
   yrs <- if (ncol(rwl)) as.numeric(rownames(rwl)) else NA_real_
   v <- unlist(rwl, use.names = FALSE); v <- v[!is.na(v)]
+  ## The description must not be what stops a check that ran: rule 1.
+  series <- tryCatch(describe.series(rwl, series.cor), error = function(e) NULL)
   res <- list(
     file = file,
     control = control,
     findings = findings[, c("file", "check", "severity", "group", "series",
                             "year.from", "year.to", "n", "value", "message")],
-    meta = list(n.series = ncol(rwl),
-                n.meas = length(v),
-                first = if (length(yrs)) min(yrs) else NA_real_,
-                last = if (length(yrs)) max(yrs) else NA_real_,
-                mean.rw = if (length(v)) mean(v) else NA_real_,
-                granularity = rwl.granularity(rwl)))
+    series = series,
+    meta = c(list(n.series = ncol(rwl),
+                  n.meas = length(v),
+                  first = if (length(yrs)) min(yrs) else NA_real_,
+                  last = if (length(yrs)) max(yrs) else NA_real_,
+                  mean.rw = if (length(v)) mean(v) else NA_real_,
+                  granularity = rwl.granularity(rwl)),
+             describe.collection(series),
+             list(cor.computed = !is.null(series.cor),
+                  provenance = tryCatch(provenance.summary(rwl),
+                                        error = function(e) NULL))))
   class(res) <- "rwl.check"
   res
 }
@@ -974,13 +1181,16 @@ check.provenance <- function(rwl, ctl) {
   f <- object$findings
   counts <- as.list(table(factor(f$check, levels = cat.tab$check)))
   sev <- table(factor(f$severity, levels = c("error", "warning", "note")))
+  ## AGB Oct 2026: a file that could not be read has only n.series, and
+  ## summary() stopped on it, which in a sweep is the one row that matters.
+  mt <- function(k) if (is.null(object$meta[[k]])) NA_real_ else object$meta[[k]]
   out <- data.frame(file = object$file,
                     n.series = object$meta$n.series,
-                    n.meas = object$meta$n.meas,
-                    first = object$meta$first,
-                    last = object$meta$last,
-                    mean.rw = round(object$meta$mean.rw, 4),
-                    granularity = object$meta$granularity,
+                    n.meas = mt("n.meas"),
+                    first = mt("first"),
+                    last = mt("last"),
+                    mean.rw = round(mt("mean.rw"), 4),
+                    granularity = mt("granularity"),
                     n.error = as.integer(sev[["error"]]),
                     n.warning = as.integer(sev[["warning"]]),
                     n.note = as.integer(sev[["note"]]),
@@ -993,8 +1203,29 @@ check.provenance <- function(rwl, ctl) {
   sev <- match.arg(severity, several.ok = TRUE)
   m <- x$meta
   cat("rwl.check: ", x$file, "\n", sep = "")
-  cat(m$n.series, " series, ", m$n.meas, " measurements, ",
-      span.text(m$first, m$last), ", ", m$granularity, " mm precision\n", sep = "")
+  cat.provenance(m$provenance)
+  ## A file that could not be read has a series count and nothing else, and
+  ## printing its span stopped with an error.
+  if (!is.null(m$first))
+    cat(m$n.series, " series, ", m$n.meas, " measurements, ",
+        span.text(m$first, m$last), ", ", m$granularity, " mm precision\n", sep = "")
+  ## AGB Oct 2026: the description rwl.report() gave. Absent from a file
+  ## that could not be read, which has nothing to describe.
+  if (!is.null(m$mean.length)) {
+    msd <- function(a, b) paste0(round(a, 3), " (", round(b, 3), ")")
+    cat("Mean series length: ", round(m$mean.length, 1), "\n", sep = "")
+    cat("Mean (SD) AR1: ", msd(m$mean.ar1, m$sd.ar1), "\n", sep = "")
+    cat("Mean (SD) correlation with the master: ",
+        if (!isTRUE(m$cor.computed))
+          "not computed; the crossdating checks did not run"
+        else if (m$n.cor == 0L)
+          "not computed; no series could be compared with the rest"
+        else paste0(msd(m$mean.cor, m$sd.cor),
+                    if (m$n.cor < m$n.series)
+                      paste0(", over ", m$n.cor, " of ", m$n.series, " series")),
+        "\n", sep = "")
+  }
+  cat("-------------\n")
   f <- x$findings[x$findings$severity %in% sev, ]
   n <- table(factor(x$findings$severity, levels = c("error", "warning", "note")))
   cat(n[["error"]], " error(s), ", n[["warning"]], " warning(s), ",

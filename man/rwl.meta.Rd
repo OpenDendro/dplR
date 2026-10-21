@@ -89,7 +89,7 @@ rwl.meta(x)
     widths. }
 }
 \author{ Andy Bunn }
-\seealso{ \code{\link{rwl.report}}, \code{\link{rwl.check}},
+\seealso{ \code{\link{rwl.check}},
   \code{\link{read.tucson}}, \code{\link{read.sheet}},
   \code{\link{summary.rwl}} }
 \examples{

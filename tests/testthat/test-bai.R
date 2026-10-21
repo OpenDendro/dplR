@@ -72,7 +72,7 @@ test_that("functions that want ring widths warn when given bai", {
     b <- bai.in(gp.rwl)
     expect_warning(bai.in(b), "bai.in\\(\\) wants ring widths.*basal area")
     expect_warning(bai.out(b), "bai.out\\(\\) wants ring widths")
-    expect_warning(rwl.report(b), "rwl.report\\(\\) wants ring widths")
+    expect_warning(rwl.check(b), "rwl.check\\(\\) wants ring widths")
     po <- data.frame(series = names(b), pith.offset = 1L)
     expect_warning(rcs(b, po = po, make.plot = FALSE), "rcs\\(\\) wants")
 })

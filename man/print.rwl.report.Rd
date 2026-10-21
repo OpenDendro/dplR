@@ -1,9 +1,10 @@
 \encoding{UTF-8}
 \name{print.rwl.report}
 \alias{print.rwl.report}
-\title{Do some reporting on a RWL object}
+\title{Do some reporting on a RWL object (deprecated)}
 \description{
-  This function prints the results of \code{\link{rwl.report}}
+  This function prints the results of \code{\link{rwl.report}}, which is
+  deprecated; use \code{\link{rwl.check}}.
 }
 \usage{
 \method{print}{rwl.report}(x, ...)

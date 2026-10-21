@@ -283,7 +283,7 @@ test_that("functions that want widths warn when given indices", {
     expect_s3_class(d, "rwi")
     expect_warning(rcs(r, po = po), "rcs\\(\\) wants ring widths")
     expect_warning(bai.in(r), "bai.in\\(\\) wants ring widths")
-    expect_warning(rwl.report(r), "rwl.report\\(\\) wants ring widths")
+    expect_warning(rwl.check(r), "rwl.check\\(\\) wants ring widths")
     ## detrend() on widths is as quiet as before
     expect_silent(detrend(ca533, method = "Mean"))
 })

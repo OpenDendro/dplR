@@ -53,7 +53,7 @@ as.bai(x)
   \code{\link{common.interval}}, and \code{\link{detrend}}, since
   fitting a curve to basal area increment is established practice.
   Functions that want ring widths, such as \code{\link{bai.in}},
-  \code{\link{rcs}}, \code{\link{cms}} and \code{\link{rwl.report}},
+  \code{\link{rcs}}, \code{\link{cms}} and \code{\link{rwl.check}},
   warn and treat the areas as widths.  If the values really are widths,
   relabel them with \code{\link{as.rwl}}.
 

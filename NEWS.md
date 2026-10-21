@@ -1,5 +1,29 @@
 # dplR 1.8.1 (development)
 
+* `rwl.report()` is deprecated and will be removed in a future release.
+  `rwl.check()` now opens its printed result with the same description
+  of the collection: the file and site, the number of series and
+  measurements, the span, the mean series length, the mean (SD) AR1 and
+  the mean (SD) correlation of each series with the master. Its findings
+  already covered the zero rings, internal `NA`s and small or big rings
+  the report listed, and the two did not always agree: the report counted
+  a run of filler zeros as missing rings, which `rwl.check()` reports as
+  `RWL_ZERO_RUN`. The correlation is the one the crossdating checks
+  compute, so it costs nothing extra and differs a little from the
+  `interseries.cor()` figure the report gave (0.718 against 0.675 for
+  `gp.rwl`). The per-series values are in the new `series` element of the
+  result. `rwl.check()` now warns when given indices or basal area
+  increment, as `rwl.report()` did.
+* `rwl.check()` on a file it could not read printed "0 error(s)": the
+  `RWL_CHECK_ERROR` finding had no severity and was not counted. It is
+  now an error. Printing that result, and `summary()` of it, also
+  stopped with an error.
+* `rwl.check()` no longer runs the file checks on a name it made up from
+  the call. `rwl.check(r)` checked the `R/` folder (macOS ignores case),
+  and an object named like a file in the working directory was checked
+  against that file. The file checks run when `x` is a path or `file` is
+  given.
+
 * New function `rwl.meta()` returns the metadata an rwl, rwi or bai
   object carries: the file and the reader; from a Tucson header, the
   site, species, state or country, elevation, coordinates (as written)
@@ -86,6 +110,11 @@
   sample depth and running rbar alone; a vector labels each panel. A
   chronology column with a name dplR does not know is now plotted as a
   chronology instead of stopping with an error.
+* `rwl.check()`'s `RWL_UNCHECKABLE` says why a series could not be
+  checked. It always blamed gaps inside the series, but a series with a
+  long run of zeros is refused because its spline reaches zero, and
+  mi021's PLK18A, with no gaps and 1,691 filler zeros, was reported as
+  having gaps. The message now says which it was.
 * `rwl.check()` gains `RWL_SERIES_SCALE`, a warning for a series whose
   median ring width is five times or more, or a fifth or less, of the
   median of the other series (`scale.ratio` in `rwl.check.control()`).

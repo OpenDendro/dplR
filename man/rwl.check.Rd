@@ -8,10 +8,12 @@
 \alias{as.data.frame.rwl.check}
 \title{Check the integrity of a RWL object or a Tucson file}
 \description{
-  Run a battery of integrity checks against a \code{rwl} object or a Tucson
-  format file and return the result as data: one row per finding, each carrying
-  a stable check \acronym{ID} and a severity. Intended both for a researcher
-  looking at one collection and for sweeping a large archive.
+  Describe a \code{rwl} object or a Tucson format file and run a battery of
+  integrity checks against it. The description gives the file and site, the
+  number of series and their span, length, \acronym{AR1} and correlation with
+  the master. The checks are returned as data: one row per finding, each
+  carrying a stable check \acronym{ID} and a severity. Intended both for a
+  researcher looking at one collection and for sweeping a large archive.
 }
 \usage{
 rwl.check(x, file = NULL,
@@ -88,10 +90,30 @@ rwl.check.catalogue()
   \item{\dots}{not used.}
 }
 \details{
-  \code{rwl.check} complements \code{\link{rwl.report}}. Where
-  \code{rwl.report} describes a collection for a reader, \code{rwl.check} looks
-  for defects and returns them as rows, so that examining one file and sweeping
-  ten thousand are the same operation.
+  The printed result opens with a description of the collection. When the
+  object carries the record \code{\link{read.tucson}} attaches, that starts
+  with the file; the site, species, location and investigators from the
+  \acronym{ITRDB} header, as \code{\link{rwl.meta}} reads them; the precision
+  the file declares; and the span the header claims. Then come the number of
+  series and measurements, the span and the inferred precision, the mean
+  series length, the mean and standard deviation of the series'
+  first-order autocorrelation (as \code{\link{summary.rwl}} computes it),
+  and the mean and standard deviation of each series' correlation with the
+  master. The findings follow. This replaces \code{\link{rwl.report}}, which
+  is deprecated.
+
+  The correlation with the master is the one the crossdating checks use:
+  each series is divided by a \code{spline.nyrs}-year spline and correlated
+  (Pearson) with the mean of all the other series treated the same way. It
+  is close to, and not the same as, \code{\link{interseries.cor}}, which by
+  default prewhitens the series, uses a biweight mean and computes
+  Spearman's rank correlation;
+  \code{rwl.report} reported the latter. It is computed only when the
+  \code{"crossdating"} checks run, and series those checks could not compare
+  are left out of the mean, with the count printed.
+
+  The checks look for defects and return them as rows, so that examining one
+  file and sweeping ten thousand are the same operation.
 
   Every check runs independently and none of them stops. A check that fails
   becomes a finding with the \acronym{ID} \code{RWL_CHECK_ERROR} rather than an
@@ -154,8 +176,20 @@ rwl.check.catalogue()
 }
 \value{
   An object of class \code{"rwl.check"}: a \code{list} with the file name, the
-  control values used, a \code{findings} \code{data.frame}, and a \code{meta}
-  \code{list} of summary values.
+  control values used, a \code{findings} \code{data.frame}, a \code{series}
+  \code{data.frame}, and a \code{meta} \code{list} of summary values.
+
+  \code{series} has one row per series, with columns \code{series},
+  \code{first}, \code{last}, \code{n} (measured rings), \code{ar1}, and
+  \code{r}, the correlation with the master (\code{NA} when the crossdating
+  checks did not run or could not compare the series).
+
+  \code{meta} holds \code{n.series}, \code{n.meas}, \code{first},
+  \code{last}, \code{mean.rw}, \code{granularity}, \code{mean.length},
+  \code{mean.ar1}, \code{sd.ar1}, \code{mean.cor}, \code{sd.cor},
+  \code{n.cor} (the number of series behind \code{mean.cor}),
+  \code{cor.computed}, and \code{provenance}, the details printed from the
+  reader's record, or \code{NULL} when the object carries none.
 
   \code{as.data.frame} returns the findings, one row per finding, with columns
   \code{file}, \code{check}, \code{severity}, \code{group}, \code{series},
@@ -167,7 +201,8 @@ rwl.check.catalogue()
   be combined with \code{rbind} into a triage table.
 }
 \author{Andy Bunn}
-\seealso{ \code{\link{rwl.report}}, \code{\link{read.tucson}},
+\seealso{ \code{\link{rwl.meta}}, \code{\link{summary.rwl}},
+  \code{\link{read.tucson}},
   \code{\link{interseries.cor}}, \code{\link{corr.rwl.seg}} }
 \examples{
 library(utils)

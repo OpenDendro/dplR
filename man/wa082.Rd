@@ -48,7 +48,7 @@ prov$header
 prov$gaps
 wa082["1900", "712011"]
 
-## rwl.report() shows the same in its header
-rwl.report(wa082)
+## rwl.check() shows the same in its header
+rwl.check(wa082)
 }
 \keyword{datasets}

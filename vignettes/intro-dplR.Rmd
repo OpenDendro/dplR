@@ -56,12 +56,13 @@ co021[1:5, 1:4]
 
 ## Describing the data
 
-`rwl.report()` gives an overview: number of series, span, mean
-length, mean interseries correlation, and any missing rings or
-suspicious values.
+`rwl.check()` gives an overview: where the file came from, number
+of series, span, mean length, mean correlation with the master, and
+then anything worth a look, from missing rings to suspicious values
+and series that may be misdated.
 
 ```{r report}
-rwl.report(co021)
+rwl.check(co021)
 ```
 
 `summary()` returns per-series statistics, and `plot()` shows

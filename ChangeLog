@@ -1,5 +1,37 @@
 * CHANGES IN dplR VERSION 1.8.1
 
+File: rwl.check.R, rwl.report.R, man/rwl.check.Rd, man/rwl.report.Rd,
+      vignettes/intro-dplR.Rmd, tests
+-----------------------------------------------------------------
+ - rwl.report() deprecated (.Deprecated, pointing to rwl.check()).
+   print.rwl.check() opens with the description rwl.report() gave:
+   provenance header, series, span, mean length, mean (SD) AR1, mean (SD)
+   correlation with the master. check.crossdating() keeps r0 and the
+   overlap as attr "series.cor" on its findings; the result gains a
+   per-series table, $series, and $meta gains mean.length, mean.ar1,
+   sd.ar1, mean.cor, sd.cor, n.cor, cor.computed and provenance.
+   provenance.summary() and cat.provenance() are shared by both print
+   methods. summary.rwl.check() columns are unchanged.
+ - rwl.check() warns on "rwi" and "bai" objects.
+ - The unreadable-file branch gave RWL_CHECK_ERROR no severity, so it
+   printed "0 error(s)"; printing it failed in span.text() and
+   summary.rwl.check() failed on the missing meta fields.
+ - A file name deparsed from the call no longer runs the file checks
+   (label.only); directories are skipped too.
+ - Data examples (ca533, co021, nm046, wa082) and the vignette use
+   rwl.check().
+
+File: rwl.check.R, tests/testthat/test-rwl.check.R
+-----------------------------------------------------------------
+ - RWL_UNCHECKABLE named interior gaps as the reason whenever
+   high.pass() refused a series, but high.pass() also refuses a series
+   whose spline reaches zero or below. A long run of zeros does that:
+   mi021's PLK18A (zero from 11 to 1701 and through 1990-1999, no NA)
+   was said to have gaps. The message now says which: gaps, or a
+   spline that reaches zero or below or could not be fitted. It gives
+   no advice about the cause; a long run of zeros already has
+   RWL_ZERO_RUN.
+
 File: read.tucson.R, rwl.check.R, tests/testthat/test-read.tucson.R
 -----------------------------------------------------------------
  - read.tucson() warns, as event NO_STOP_MARKER, when a series' last

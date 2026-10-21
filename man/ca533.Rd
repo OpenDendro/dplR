@@ -38,7 +38,7 @@ prov$precision     # the precision each series was measured at
 prov$gaps          # interior gaps, if any -- this file has none
 prov$events        # problems found while reading -- none here either
 
-## rwl.report() puts the file and precision at the head of its report
-rwl.report(ca533)
+## rwl.check() puts the file and precision at the head of its report
+rwl.check(ca533)
 }
 \keyword{datasets}

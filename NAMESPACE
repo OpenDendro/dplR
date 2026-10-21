@@ -78,6 +78,7 @@ S3method(plot, rwl)
 S3method(plot, rwi)
 S3method(print, redfit)
 S3method(print, rwl.report)
+S3method(print, rwl.meta)
 S3method(print, rwl.check)
 S3method(print, xdate.report)
 S3method(format, xdate.report)
@@ -190,6 +191,7 @@ export("ads",
        "rwi.stats",
        "rwi.stats.legacy",
        "rwi.stats.running",
+       "rwl.meta",
        "rwl.report",
        "rwl.stats",
        "sea",

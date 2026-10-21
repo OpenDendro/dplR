@@ -59,6 +59,8 @@ rwl.check.catalogue <- function() {
       "smallest step dividing every measurement (inferred precision)"),
     c("RWL_IMPLAUSIBLE_MEAN", "values", "warning",
       "mean ring width outside a plausible range; suggests a units error"),
+    c("RWL_SERIES_SCALE", "values", "warning",
+      "series ring widths a factor of scale.ratio or more off the rest; suggests a lost stop marker or wrong precision"),
     c("RWL_SMALL_RING", "values", "note",
       "ring width below small.thresh"),
     c("RWL_BIG_RING", "values", "note",
@@ -105,6 +107,8 @@ rwl.check.catalogue <- function() {
       "the file repeats a line verbatim"),
     c("RWL_PAST_COL72", "provenance", "warning",
       "a measurement is split across the column-72 boundary"),
+    c("RWL_NO_STOP_MARKER", "provenance", "warning",
+      "a series ends without a stop marker; its precision was assumed to be 0.01 mm"),
     c("RWL_SECOND_RECORD", "provenance", "warning",
       "a second record is appended after column 72, i.e. a missing line break"),
     c("RWL_TAB_IN_DATA", "provenance", "warning",
@@ -178,6 +182,7 @@ rwl.check.control <- function(min.depth = 2,
                               outlier.gap = 0.2,
                               r.cohesion = 0.35,
                               plausible.mean = c(0.05, 10),
+                              scale.ratio = 5,
                               small.thresh = NA,
                               big.thresh = NA,
                               max.year = as.integer(format(Sys.Date(), "%Y"))) {
@@ -187,6 +192,7 @@ rwl.check.control <- function(min.depth = 2,
        r.dating = r.dating,
        r.margin = r.margin, outlier.mad = outlier.mad,
        outlier.gap = outlier.gap, r.cohesion = r.cohesion, plausible.mean = plausible.mean,
+       scale.ratio = scale.ratio,
        small.thresh = small.thresh, big.thresh = big.thresh,
        max.year = max.year)
 }
@@ -448,6 +454,45 @@ check.values <- function(rwl, ctl) {
                                    ctl$plausible.mean[2],
                                    " mm; the file may be in the wrong units"),
                             value = mu)
+
+  ## AGB Oct 2026: one series on the wrong scale. RWL_IMPLAUSIBLE_MEAN looks
+  ## at the whole collection, so a single series ten times too wide hides in
+  ## it, and crossdating cannot see it either: multiplying a series by ten
+  ## leaves every correlation unchanged. That is what a Tucson file produces
+  ## when a 0.001 mm series loses its -9999 stop marker -- the reader falls
+  ## back to 0.01 mm and says nothing, because nothing in the file says
+  ## otherwise -- and the error survives into a chronology. Each series'
+  ## median positive ring is compared with the median of the other series'
+  ## medians. Across 6,776 ITRDB ring-width files (Oct 2026), a factor of 5
+  ## or more flagged 282 series in 161 files and a factor of 10 or more 19
+  ## series in 11, among them cana269, where about a third of the series sit
+  ## at a tenth of the rest, and single series in mi021 and az608 at 10 to 13
+  ## times. Fast and suppressed trees account for most of the band between 5
+  ## and 10, which is why the message says what the factor suggests rather
+  ## than what it is. Needs three series with ten positive rings each.
+  med <- vapply(rwl, function(x) {
+    x <- x[!is.na(x) & x > 0]
+    if (length(x) < 10L) NA_real_ else stats::median(x)
+  }, numeric(1))
+  ok <- which(!is.na(med))
+  if (length(ok) >= 3L && !is.na(ctl$scale.ratio)) {
+    for (j in ok) {
+      others <- stats::median(med[setdiff(ok, j)])
+      r <- med[j] / others
+      if (r >= ctl$scale.ratio || r <= 1 / ctl$scale.ratio) {
+        out[[paste0("scale", j)]] <- new.finding("RWL_SERIES_SCALE",
+          paste0("median ring width ", signif(med[j], 3), " mm is ",
+                 if (r >= 1) paste0(signif(r, 3), " times")
+                 else paste0("1/", signif(1 / r, 3), " of"),
+                 " the median of the other series (", signif(others, 3),
+                 " mm). A factor near 10 is what a lost -9999 stop marker or ",
+                 "a series in the wrong precision produces; a fast or ",
+                 "suppressed tree rarely differs this much. Check the units ",
+                 "of this series before using it"),
+          series = names(rwl)[j], n = sum(!is.na(rwl[[j]])), value = r)
+      }
+    }
+  }
 
   for (thr in c("small", "big")) {
     t.val <- if (thr == "small") ctl$small.thresh else ctl$big.thresh

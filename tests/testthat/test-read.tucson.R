@@ -456,3 +456,32 @@ test_that("the misplaced-year recovery refuses everything it cannot read exactly
         expect_false(grepl("do not carry the year", w), info = nm)
     }
 })
+
+test_that("a series with no stop marker is named, and rwl.check repeats it", {
+    ## A 0.001 mm series that lost its -9999 is read at 0.01 mm, ten times too
+    ## large. The reader can't know the precision, but it can say it guessed.
+    f <- tuc(c("AAA01A  1900   180   290    60   320   100   270   210   400   210   410",
+               "AAA01A  1910   370   290   500   310 -9999",
+               "AAA02A  1900   210   320   410   290   150   280   230   390   250   400",
+               "AAA02A  1910   360   300   480   300"))
+    expect_warning(x <- read.tucson(f, verbose = FALSE),
+                   "series AAA02A ends without a stop marker.*0.01 mm.*-9999 \\(0.001 mm\\)")
+    ev <- attr(x, "dplR.provenance")$events
+    hit <- ev[ev$event %in% "NO_STOP_MARKER", ]
+    expect_equal(nrow(hit), 1)
+    expect_equal(hit$series, "AAA02A")
+    expect_equal(hit$n, 1L)
+    ## read at 0.01 mm, as the message says
+    expect_equal(x["1900", "AAA02A"], 2.1)
+    expect_true("RWL_NO_STOP_MARKER" %in% as.data.frame(rwl.check(x))$check)
+    ## strict refuses
+    expect_error(read.tucson(f, verbose = FALSE, strict = TRUE), "stop marker")
+    ## a 999, or a -9999 past column 72, is a stop marker; nothing is said
+    ok <- tuc(c("AAA01A  1900    18    29     6    32    10    27    21    40    21    41",
+                "AAA01A  1910    37    29    50    31   999"))
+    expect_warning(read.tucson(ok, verbose = FALSE), NA)
+    ## and so is a 999 followed by a negative pad (az030's 134201)
+    pad <- tuc(c("AAA01A  1900    18    29     6    32    10    27    21    40    21    41",
+                 "AAA01A  1910    37    29    50    31   999    -8"))
+    expect_warning(read.tucson(pad, verbose = FALSE), NA)
+})

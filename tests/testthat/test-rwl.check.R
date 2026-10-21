@@ -225,6 +225,36 @@ test.rwl.check <- function() {
         expect_false("RWL_CONSECUTIVE_ZERO" %in% f2$check)
     })
 
+    test_that("a series ten times off the rest is RWL_SERIES_SCALE", {
+        ## A 0.001 mm series that lost its -9999 is read at 0.01 mm, ten times
+        ## too wide. Its correlations are untouched, so only its scale shows it.
+        z <- good; z[, 2] <- z[, 2] * 10
+        f <- as.data.frame(rwl.check(z, checks = "values"))
+        hit <- f[f$check == "RWL_SERIES_SCALE", ]
+        expect_equal(nrow(hit), 1)
+        expect_equal(hit$series, names(z)[2])
+        expect_equal(as.character(hit$severity), "warning")
+        expect_equal(hit$value, 10, tolerance = 0.05)
+        expect_match(hit$message, "lost -9999 stop marker")
+        ## and ten times too narrow
+        z <- good; z[, 4] <- z[, 4] / 10
+        f <- as.data.frame(rwl.check(z, checks = "values"))
+        hit <- f[f$check == "RWL_SERIES_SCALE", ]
+        expect_equal(hit$series, names(z)[4])
+        expect_match(hit$message, "1/10")
+        ## a factor of two is a fast tree, not a units error
+        z <- good; z[, 2] <- z[, 2] * 2
+        expect_false(has(z, "RWL_SERIES_SCALE", checks = "values"))
+        ## the threshold is the caller's, and NA turns the check off
+        expect_true(has(z, "RWL_SERIES_SCALE", checks = "values",
+                        control = rwl.check.control(scale.ratio = 1.5)))
+        z <- good; z[, 2] <- z[, 2] * 10
+        expect_false(has(z, "RWL_SERIES_SCALE", checks = "values",
+                         control = rwl.check.control(scale.ratio = NA)))
+        ## two series are too few to say which one is off
+        expect_false(has(z[, 1:2], "RWL_SERIES_SCALE", checks = "values"))
+    })
+
     test_that("RWL_NEGATIVE finds a negative measurement", {
         z <- good; z[10, 1] <- -0.5
         expect_true("RWL_NEGATIVE" %in% checks.of(z))
@@ -273,7 +303,7 @@ test.rwl.check <- function() {
             site.id = "ABC", site.name = "Test Site", spp.code = "PCGL",
             state.country = "Testland", spp = "Spruce", elev = "100M",
             lat = 45, long = -120, first.yr = min(yrs), last.yr = max(yrs),
-            lead.invs = "Nobody", comp.date = "2026"))
+            lead.invs = "Nobody", comp.date = "2026"), prec = 0.001)
         r <- rwl.check(fname)
         expect_s3_class(r, "rwl.check")
         expect_equal(r$meta$n.series, 6)
@@ -389,7 +419,7 @@ test.rwl.check <- function() {
         ## the declared span survives the reader's truncation at column 72,
         ## where it used to lose its end year
         p <- attr(x, "dplR.provenance")
-        expect_equal(itrdb.header(p$header)$last, 1929)
+        expect_equal(dplR:::itrdb.header(p$header)$last, 1929)
 
         ## an object with no provenance is reported exactly as before
         attr(x, "dplR.provenance") <- NULL

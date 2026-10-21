@@ -24,20 +24,22 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
   ## use them. An object built by hand, read by read.tucson.legacy(), or
   ## subsetted by column has no such record and simply gets no header block --
   ## the report is otherwise unchanged.
-  prov <- attr(rwl, "dplR.provenance")
-  if (!is.null(prov)) {
-    hdr <- tryCatch(itrdb.header(prov$header), error = function(e) NULL)
+  ## AGB Oct 2026: read through meta.record() (see rwl.meta()), which parses
+  ## the header only when it is a Tucson one. Parsing read.sheet()'s comment
+  ## lines as an ITRDB header printed "Site: # Site urricane Ridge ...".
+  m <- meta.record(rwl)
+  if (!is.null(m)) {
     res$provenance <- list(
-      file = prov$file,
-      site.id = hdr$site.id, site.name = hdr$site.name,
-      species.code = hdr$species.code,
-      declared.first = hdr$first, declared.last = hdr$last,
-      precision = sort(unique(prov$precision$precision)),
-      mixed.precision = isTRUE(prov$mixed.precision),
-      fill.internal.NA = prov$fill.internal.NA,
-      n.gaps = nrow(prov$gaps),
-      n.renames = nrow(prov$renames),
-      n.events = nrow(prov$events))
+      file = m$file, reader = m$reader,
+      site.id = m$site.id, site.name = m$site.name,
+      species.code = m$species.code,
+      declared.first = m$declared.first, declared.last = m$declared.last,
+      precision = sort(unique(m$precision$precision)),
+      mixed.precision = m$mixed.precision,
+      fill.internal.NA = m$fill.internal.NA,
+      n.gaps = NROW(m$gaps),
+      n.renames = NROW(m$renames),
+      n.events = NROW(m$events))
   }
   
   
@@ -183,7 +185,9 @@ print.rwl.report <- function(x, ...){
       cat("Site: ", p$site.id, " ", p$site.name,
           if (!is.null(p$species.code)) paste0(" (", p$species.code, ")"),
           "\n", sep = "")
-    else
+    ## A sheet has no site line to be missing; its comments are free text,
+    ## shown by rwl.meta().
+    else if (identical(p$reader, "read.tucson"))
       cat("Site: not given; the file carries no header\n", sep = "")
     cat("Precision: ",
         if (p$mixed.precision)

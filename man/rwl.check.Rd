@@ -26,6 +26,7 @@ rwl.check.control(min.depth = 2, depth.run = 10, min.length = 30,
                   r.margin = 0.05, outlier.mad = 4, outlier.gap = 0.2,
                   r.cohesion = 0.35,
                   plausible.mean = c(0.05, 10),
+                  scale.ratio = 5,
                   small.thresh = NA, big.thresh = NA,
                   max.year = as.integer(format(Sys.Date(), "\%Y")))
 
@@ -75,6 +76,12 @@ rwl.check.catalogue()
     whole is reported as sharing little common signal.}
   \item{plausible.mean}{range, in mm, within which a collection's mean ring
     width is taken to be plausible.}
+  \item{scale.ratio}{a series whose median ring width is this many times
+    the median of the other series, or this fraction of it, is flagged as
+    \code{RWL_SERIES_SCALE}, a warning. A 0.001 mm series that has lost its
+    \code{-9999} stop marker is read at 0.01 mm and comes out ten times too
+    wide, and crossdating cannot see it. Needs three series with at least ten
+    positive rings. \code{NA} turns the check off.}
   \item{small.thresh, big.thresh}{thresholds for flagging small and large
     rings. \code{NA} omits the check.}
   \item{max.year}{years after this are flagged.}

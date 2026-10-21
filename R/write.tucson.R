@@ -263,6 +263,48 @@
     }
     format.year <- sprintf("%%%d.0f", year.width)
 
+    ## AGB Oct 2026: the file holds whole numbers of 'prec', so any width
+    ## finer than that is rounded on its way out, and it used to be rounded
+    ## without a word. A width of 0.123 written at the default prec = 0.01
+    ## came back from read.tucson() as 0.12, and nothing in the file says it
+    ## was ever anything else. A lab measuring to 0.001 mm that forgot 'prec'
+    ## lost its third decimal in every ring. One warning for the whole file,
+    ## with counts and the largest change, so the caller can tell a stray
+    ## value from a whole collection measured too finely. Negative values are
+    ## left out: they are written as the missing-data sentinel below. The
+    ## tolerance absorbs floating point, e.g. 0.29 * 100 = 28.999999999999996.
+    n.fine.series <- vapply(rwl.df, function(x) {
+        x <- x[!is.na(x) & x >= 0]
+        sum(abs(x * prec.rproc - round(x * prec.rproc)) > 1e-6)
+    }, integer(1), USE.NAMES=FALSE)
+    if (any(n.fine.series > 0L)) {
+        max.change <- max(vapply(rwl.df, function(x) {
+            x <- x[!is.na(x) & x >= 0]
+            if (length(x) == 0L) 0 else
+                max(abs(x - round(x * prec.rproc) / prec.rproc))
+        }, numeric(1), USE.NAMES=FALSE))
+        fine.names <- names(rwl.df)[n.fine.series > 0L]
+        n.show <- min(length(fine.names), 5L)
+        shown <- paste(fine.names[seq_len(n.show)], collapse = ", ")
+        if (length(fine.names) > n.show) {
+            shown <- paste0(shown, gettextf(", ... and %d more",
+                                            length(fine.names) - n.show))
+        }
+        if (prec == 0.01) {
+            warning(sprintf(ngettext(sum(n.fine.series),
+                "%d value in %d series is finer than prec = 0.01 and was rounded to it in the file, by %s mm: %s. read.tucson() will read back the rounded values. Use prec = 0.001 to keep the third decimal place.",
+                "%d values in %d series are finer than prec = 0.01 and were rounded to it in the file, by up to %s mm: %s. read.tucson() will read back the rounded values. Use prec = 0.001 to keep the third decimal place."),
+                             sum(n.fine.series), length(fine.names),
+                             format(signif(max.change, 3)), shown))
+        } else {
+            warning(sprintf(ngettext(sum(n.fine.series),
+                "%d value in %d series is finer than prec = 0.001 and was rounded to it in the file, by %s mm: %s. The Tucson format holds nothing finer than 0.001 mm; write.sheet() keeps every decimal place.",
+                "%d values in %d series are finer than prec = 0.001 and were rounded to it in the file, by up to %s mm: %s. The Tucson format holds nothing finer than 0.001 mm; write.sheet() keeps every decimal place."),
+                             sum(n.fine.series), length(fine.names),
+                             format(signif(max.change, 3)), shown))
+        }
+    }
+
     ## AGB Sep 2026: how many interior gaps are we about to commit to the file?
     ## Counted on the year-sorted frame, per series, between its first and last
     ## measurement -- leading and trailing NA are not gaps, they are simply

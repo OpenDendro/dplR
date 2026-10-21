@@ -21,7 +21,7 @@
 
 ## Symbols used in data.table's non-standard evaluation. Declared so R CMD
 ## check does not report them as undefined globals.
-utils::globalVariables(c("V1", "ovf", "ovfTerm", "core", "startYear", "segId", "flag",
+utils::globalVariables(c("V1", "ovf", "ovfTerm", "hasStop", "core", "startYear", "segId", "flag",
                          "rw", "year", "yearOrder", "precision", "zap",
                          "held", "brk", "grp", "nseg", "term", "newName",
                          "rid", "from", "to", "n", "kept", "dropped", "N",
@@ -863,7 +863,7 @@ utils::globalVariables(c("V1", "ovf", "ovfTerm", "core", "startYear", "segId", "
   raw <- raw[order(core, startYear)]
 
   # Looking for the precision flag at the last row of each core ----
-  raw[, flag := {
+  raw[, c("flag", "hasStop") := {
     V1 <- .SD[.N, V1]
     tailStrings <- strsplit(substr(V1, 13, nchar(V1)), ' ')[[1]]
     tailStrings <- tailStrings[nzchar(tailStrings)]
@@ -896,10 +896,58 @@ utils::globalVariables(c("V1", "ovf", "ovfTerm", "core", "startYear", "segId", "
     ##
     ## AGB Oct 2026: a -9999 in an eleventh field, past column 72, declares
     ## the precision just as one inside the line does. See ovfTerm above.
-    if (ovfTerm[.N] == '-9999' ||
-        isTRUE(tailNums[length(tailNums)] == -9999)) -9999 else 999
+    ##
+    ## AGB Oct 2026: and whether there was a stop marker at all. The else
+    ## branch above is also what a series gets when its marker is simply
+    ## missing, and that is not a safe default: a 0.001 mm series that lost
+    ## its -9999 is read at 0.01 mm, every value ten times too large, and
+    ## nothing downstream can tell -- crossdating is blind to scale. hasStop
+    ## records it so the series can be named below.
+    lastTok <- tailNums[length(tailNums)]
+    ## A negative pad after the marker is still a marker: az030's 134201 ends
+    ## "999    -8". So drop trailing negatives other than -9999 before asking.
+    ## (The precision itself is left to the existing rule.)
+    termNums <- tailNums
+    while (length(termNums) > 0L && isTRUE(termNums[length(termNums)] < 0) &&
+           !isTRUE(termNums[length(termNums)] == -9999))
+      termNums <- termNums[-length(termNums)]
+    list(if (ovfTerm[.N] == '-9999' || isTRUE(lastTok == -9999)) -9999 else 999,
+         nzchar(ovfTerm[.N]) ||
+           isTRUE(termNums[length(termNums)] %in% c(999, -9999)))
   }, by = core]
   raw <- raw[!is.na(flag)]
+  ## AGB Oct 2026: name the series that ended without a stop marker. dplPy's
+  ## reader has said this since 2026 and dplR's did not, so a file the two
+  ## read identically drew a warning from one and silence from the other.
+  ## One event for the file, the IDs in its series field space separated as
+  ## SERIES_DROPPED does, so a sweep can count files and series. Whether the
+  ## file holds other series at 0.001 mm is said, because it is the best
+  ## evidence the reader has about which precision the unmarked ones are in.
+  noStop <- unique(raw[hasStop == FALSE, core])
+  if (length(noStop) > 0L) {
+    has0001 <- any(raw[hasStop == TRUE, flag] == -9999)
+    shown <- utils::head(noStop, 10L)
+    report('In ', fname, ', ',
+           if (length(noStop) == 1L)
+             paste0('series ', noStop, ' ends without a stop marker (999 or ',
+                    '-9999) on its last line')
+           else
+             paste0(length(noStop), ' series end without a stop marker (999 ',
+                    'or -9999) on their last line: ',
+                    paste(shown, collapse = ', '),
+                    if (length(noStop) > 10L)
+                      paste0(', ... and ', length(noStop) - 10L, ' more')),
+           '. The stop marker is the only place the file states a series\' ',
+           'precision, so the reader assumed 0.01 mm. If ',
+           if (length(noStop) == 1L) 'it was' else 'they were',
+           ' measured to 0.001 mm, every value is ten times too large. ',
+           if (has0001) 'Other series in this file end with -9999 (0.001 mm), which makes that more likely. ',
+           'rwl.check() compares the scale of each series with the rest ',
+           '(RWL_SERIES_SCALE).',
+           event = 'NO_STOP_MARKER', series = paste(noStop, collapse = ' '),
+           n = length(noStop))
+  }
+  raw[, hasStop := NULL]
   # Split tail ----
 
   ## AGB Aug 2026: dropped a live "V1 <- raw$V1[546]" that sat here uncommented

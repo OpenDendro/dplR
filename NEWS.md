@@ -1,5 +1,16 @@
 # dplR 1.8.1 (development)
 
+* New function `rwl.meta()` returns the metadata an rwl, rwi or bai
+  object carries: the file and the reader, the site and species from a
+  Tucson header, the span the header declares beside the span of the
+  data, the precision, interior gaps, series the reader renamed,
+  problems met while reading and, for indices, how they were made. It
+  used to be reachable only through `attr(x, "dplR.provenance")` and an
+  internal header parser. With no record it returns `NULL` with a
+  message saying why there might be none.
+* `rwl.report()` no longer parses the comment lines of a file read by
+  `read.sheet()` as an ITRDB header. They gave a site line made from
+  fragments of the comment, such as "Site: # Site urricane Ridge".
 * When the curve fitted in `ssf()` reaches zero or below, the error
   now names the series, the iteration and the year, gives the lowest
   value of the chronology and its year, and explains the cause: in sites
@@ -68,6 +79,14 @@
   sample depth and running rbar alone; a vector labels each panel. A
   chronology column with a name dplR does not know is now plotted as a
   chronology instead of stopping with an error.
+* `rwl.check()` gains `RWL_SERIES_SCALE`, a warning for a series whose
+  median ring width is five times or more, or a fifth or less, of the
+  median of the other series (`scale.ratio` in `rwl.check.control()`).
+  A 0.001 mm Tucson series that has lost its `-9999` stop marker is read
+  at 0.01 mm, ten times too wide, and nothing else catches it: the reader
+  has nothing to go on, the collection mean can stay plausible, and
+  crossdating is blind to a change of scale. Across the ITRDB ring-width
+  files a factor of 5 flags series in about 2% of files.
 * `rwl.check()` gains `RWL_ZERO_RUN`, a warning for a run of ten or more
   zeros in a series (`zero.run` in `rwl.check.control()`). A run that
   long is filler for wood that was not measured, not absent rings. It
@@ -98,6 +117,15 @@
   and it writes R code that reproduces the indices. The functions are
   not deprecated and work as before.
 
+* `read.tucson()` warns when a series ends without a stop marker (999 or
+  -9999), naming the series. The marker is the only statement of a
+  series' precision, and without it the reader assumes 0.01 mm. A
+  0.001 mm series that lost its `-9999` therefore came back ten times too
+  large with nothing said. The warning says what was assumed, says when
+  other series in the file are at 0.001 mm, and is recorded as the event
+  `NO_STOP_MARKER`, which `rwl.check()` reports as `RWL_NO_STOP_MARKER`.
+  `strict = TRUE` refuses such a file. The values read are unchanged.
+  It fires on one of the 6,807 ITRDB ring-width files.
 * `read.tucson()` honours a stop marker written in an eleventh field,
   past column 72, after a line of ten measurements. In 1.8.0 the marker
   was dropped, so a 0.001 mm series ending that way was read as 0.01 mm
@@ -105,6 +133,13 @@
   `read.tucson.legacy()` was not affected. No file in the ITRDB has this
   layout.
 
+* `write.tucson()` warns when it rounds values to `prec`. A Tucson file
+  holds whole numbers of 0.01 or 0.001 mm, and widths finer than that
+  were rounded without a word: 0.123 written at the default
+  `prec = 0.01` came back from `read.tucson()` as 0.12. The warning
+  gives the number of values and series, the largest change and the
+  first series affected, and suggests `prec = 0.001`. The file written
+  is unchanged.
 * `insert.ring()` and `delete.ring()` work on a whole `rwl` object as
   well as a single series: `delete.ring(rwl, series = "50A", year = 1950)`
   returns the edited `rwl`. No measurement is dropped; the object gains or

@@ -1,5 +1,70 @@
 * CHANGES IN dplR VERSION 1.8.1
 
+File: read.tucson.R, rwl.check.R, tests/testthat/test-read.tucson.R
+-----------------------------------------------------------------
+ - read.tucson() warns, as event NO_STOP_MARKER, when a series' last
+   line ends without 999 or -9999, naming the series. The stop marker is
+   the only statement of precision in the file, and without one the
+   reader assumes 0.01 mm, so a 0.001 mm series that lost its -9999 was
+   read ten times too large with nothing said. dplPy's reader already
+   warned about this. The message says when other series in the file
+   end in -9999. Negative pads after a marker (az030's 134201 ends
+   "999    -8") do not count as a missing marker. rwl.check() reports
+   the event as RWL_NO_STOP_MARKER (provenance, warning); strict = TRUE
+   refuses. Values read are unchanged. Sweep of 6,807 ITRDB ring-width
+   files, Oct 2026: one hit, chil012, where a stray 1940 line for AGU261
+   after its stop marker is renamed AGU261X and has no marker of its
+   own. Found writing the Tucson aside of Learning to Love dplR.
+
+File: rwl.meta.R, man/rwl.meta.Rd, tests/testthat/test-rwl.meta.R, NAMESPACE
+-----------------------------------------------------------------
+ - New rwl.meta() and print.rwl.meta(): the provenance record from
+   read.tucson()/read.sheet() and the dplR.detrend record, in one list,
+   with the Tucson header parsed by itrdb.header() and the data's own
+   span and series count beside it. NULL with a message when there is
+   no record. Internal meta.record() does the work without the message.
+
+File: rwl.report.R, man/rwl.report.Rd
+-----------------------------------------------------------------
+ - rwl.report() takes its header block from meta.record(), which parses
+   the header only when the reader was read.tucson(). read.sheet()
+   comment lines used to go through itrdb.header() and print as
+   "Site: # Site urricane Ridge ...". The "Site: not given" line is now
+   printed for Tucson files only.
+
+File: rwl.check.R, man/rwl.check.Rd, tests/testthat/test-rwl.check.R
+-----------------------------------------------------------------
+ - rwl.check() gains RWL_SERIES_SCALE (values group, warning) and
+   scale.ratio in rwl.check.control() (default 5, NA to turn off). Each
+   series' median positive ring is compared with the median of the
+   other series' medians; at least three series with ten positive rings
+   are needed. The case it is for: a 0.001 mm series in a Tucson file
+   whose -9999 stop marker is lost is read at 0.01 mm with no message,
+   ten times too wide, and survives crossdating (correlation is blind to
+   scale) and RWL_IMPLAUSIBLE_MEAN (which looks at the collection).
+   Sweep of 6,776 ITRDB ring-width files, Oct 2026: factor >= 5 flags
+   282 series in 161 files, >= 10 flags 19 series in 11, including
+   cana269 (about a third of the series at a tenth of the rest), mi021
+   PLK18A and az608 SMU02A. Found writing the Tucson aside of Learning
+   to Love dplR.
+
+File: write.tucson.R, tests/testthat/test-write.tucson.R
+-----------------------------------------------------------------
+ - write.tucson() warns when values are finer than 'prec' and are
+   rounded on their way into the file. They always were rounded, and
+   silently: a width of 0.123 written at the default prec = 0.01 read
+   back as 0.12, so a lab measuring to 0.001 mm that forgot 'prec' lost
+   the third decimal place in every ring with nothing said. One
+   warning per call, with counts, the largest change and up to five
+   series names. At prec = 0.01 it suggests prec = 0.001; at 0.001 it
+   says the format holds nothing finer and points to write.sheet().
+   Negative values are not counted (they are written as the missing
+   data sentinel), and a tolerance of 1e-6 in units of 'prec' keeps
+   floating point (0.29 * 100) from tripping it. The existing tests
+   that write 0.001 mm data at prec = 0.01, or Linear fills, now
+   suppress the warning. Found writing chapter 3 of Learning to Love
+   dplR.
+
 File: strip.rwl.R, tests/testthat/test-rwi.R
 -----------------------------------------------------------------
  - strip.rwl() stopped with "arguments imply differing number of

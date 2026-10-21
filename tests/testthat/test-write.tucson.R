@@ -21,7 +21,10 @@ test_that("interior NA round-trip at both precisions", {
         x <- gappy()
         f <- tempfile(fileext = ".rwl")
         on.exit(unlink(f), add = TRUE)
-        expect_message(write.tucson(x, f, prec = p), "interior NA")
+        ## gappy() is measured to 0.001, so at prec = 0.01 it also warns
+        ## about rounding; that warning has its own tests below
+        expect_message(suppressWarnings(write.tucson(x, f, prec = p)),
+                       "interior NA")
         back <- read.tucson(f, verbose = FALSE)
         ## the gap is a gap
         expect_true(all(is.na(back[as.character(1915:1919), "SER01"])))
@@ -40,7 +43,7 @@ test_that("interior NA are written as -999, not as zero", {
     for (p in c(0.01, 0.001)) {
         f <- tempfile(fileext = ".rwl")
         on.exit(unlink(f), add = TRUE)
-        suppressMessages(write.tucson(x, f, prec = p))
+        suppressWarnings(suppressMessages(write.tucson(x, f, prec = p)))
         ## the 1910 decade line holds the gap at 1915-1919
         ln <- grep("^SER01\\s+1910", readLines(f), value = TRUE)
         expect_length(ln, 1L)
@@ -59,8 +62,9 @@ test_that("fill.internal.NA fills the gaps instead", {
 
     f2 <- tempfile(fileext = ".rwl")
     on.exit(unlink(f2), add = TRUE)
-    suppressMessages(write.tucson(x, f2, prec = 0.001,
-                                  fill.internal.NA = "Linear"))
+    ## interpolated fills run past the third decimal place and are rounded
+    suppressWarnings(suppressMessages(
+        write.tucson(x, f2, prec = 0.001, fill.internal.NA = "Linear")))
     back2 <- read.tucson(f2, verbose = FALSE)
     expect_false(any(is.na(back2[as.character(1915:1919), "SER01"])))
     expect_true(all(back2[as.character(1915:1919), "SER01"] > 0))
@@ -215,4 +219,34 @@ test_that("a period is inert everywhere in the ID field", {
     back <- read.tucson(f, verbose = FALSE)
     expect_named(back, c("ABCDEFG.", "A.B"))
     expect_equal(range(as.integer(row.names(back))), c(1901L, 1903L))
+})
+
+test_that("values finer than prec are rounded with a warning", {
+    x <- data.frame(SER01 = c(0.45, 0.123, 1.2, 0.29, 0.5),
+                    SER02 = c(0.4, 0.5, 0.6, 0.7, 0.8),
+                    row.names = 1901:1905)
+    f <- tempfile(fileext = ".rwl")
+    on.exit(unlink(f), add = TRUE)
+    ## one value finer than 0.01, in one series; 0.29 is not counted, though
+    ## 0.29 * 100 is not exactly 29 in floating point
+    expect_warning(write.tucson(x, f), "1 value in 1 series is finer .*0.003 mm: SER01")
+    back <- read.tucson(f, verbose = FALSE)
+    expect_equal(back["1902", "SER01"], 0.12)
+    ## at prec = 0.001 it survives, and nothing is said
+    expect_warning(write.tucson(x, f, prec = 0.001), NA)
+    back <- read.tucson(f, verbose = FALSE)
+    expect_equal(back["1902", "SER01"], 0.123)
+    ## finer than 0.001 cannot be kept at all, and the warning says where to go
+    x[2, "SER02"] <- 0.5004
+    expect_warning(write.tucson(x, f, prec = 0.001),
+                   "finer than prec = 0.001.*write.sheet")
+})
+
+test_that("data on the grid and absent rings do not warn", {
+    data(co021)
+    f <- tempfile(fileext = ".rwl")
+    on.exit(unlink(f), add = TRUE)
+    ## co021 is 0.01 mm data with many zeros
+    expect_warning(write.tucson(co021, f), NA)
+    expect_warning(write.tucson(co021, f, prec = 0.001), NA)
 })

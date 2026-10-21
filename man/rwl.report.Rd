@@ -65,6 +65,7 @@ rwl.report(rwl,small.thresh=NA,big.thresh=NA)
 }
 \author{ Andy Bunn.  Patched and improved by Mikko Korpela. }
 \seealso{ \code{\link{read.rwl}}, \code{\link{summary.rwl}},
+          \code{\link{rwl.meta}},
           \code{\link{interseries.cor}}
 }
 \examples{

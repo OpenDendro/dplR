@@ -71,5 +71,31 @@ o [andybunn] read.tucson(): should a line that cannot be read
   files. The case for it, file by file, is in
   itrdbMeasurementsClone/notes/read-tucson-fail-on-unreadable.md.
 
+o [andybunn] Druckenbrod disturbance detrending. modendro
+  (github.com/ctmaher/modendro, Colin Maher) has ci_detect()
+  (Druckenbrod 2013, Rydval 2016/2018) and d_detrend() (Druckenbrod 2024,
+  ported from Dan's MATLAB). First simulation 2026-10-20: 200-yr series,
+  negative-exponential age trend times AR(1) noise (phi 0.5, sd 0.25 in
+  log), one planted release (2-yr ramp, sustained or decaying with a
+  15-yr e-folding), 100 series per case, defaults. Sustained +50/100/200%
+  found 35/71/99% of the time, onset exact or a year late; 16% of
+  no-release controls got a false event, at little cost. The index beat
+  a plain AgeDepSpline at +200% (r 0.92 vs 0.67). After an event the
+  level is pinned to the single onset ring (d_detrend.R line 744), so
+  that ring's noise stays in the rest of the series. Bugs: fails on a
+  one-series rwl; a plain data.frame gives "no year column". Scripts and
+  results in workspace/modendro-sims. Still open:
+  - Redo the sims with sim.collection() from learningToLoveDplR
+    (R/sim-collection.R); the first round used ad hoc code.
+  - Check whether the 2024 paper adds back the first value too.
+  - Measure how much of each post-event offset the onset ring explains.
+  - Add a common climate signal with a decade-long wet or dry spell and
+    count how often climate is removed as a disturbance.
+  - Expand the sims: several events per series, suppressions, releases
+    near the juvenile cutoff, other noise levels and thresholds.
+  - Run Dan's MATLAB and d_detrend on the same data to confirm the port.
+  - Decide whether dplR points to modendro or brings this in with
+    Colin's agreement. Talk to Kevin first.
+
 o [andybunn] revamp the plots. Most of dplR's plots were built before
   2010 and need attention.

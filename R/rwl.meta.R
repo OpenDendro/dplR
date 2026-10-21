@@ -39,6 +39,9 @@ meta.record <- function(x) {
     hdr <- if (identical(p$reader, "read.tucson"))
         tryCatch(itrdb.header(p$header), error = function(e) NULL)
     else NULL
+    more <- if (identical(p$reader, "read.tucson"))
+        tryCatch(itrdb.header.more(p$header), error = function(e) NULL)
+    else NULL
 
     yrs <- as.numeric(row.names(x))
     has.data <- vapply(x, function(s) any(!is.na(s)), logical(1))
@@ -48,6 +51,11 @@ meta.record <- function(x) {
         site.id = hdr$site.id,
         site.name = hdr$site.name,
         species.code = hdr$species.code,
+        species.name = more$species.name,
+        state.country = more$state.country,
+        elevation = more$elevation,
+        lat.long = more$lat.long,
+        investigators = more$investigators,
         declared.first = hdr$first,
         declared.last = hdr$last,
         header = p$header,
@@ -68,6 +76,99 @@ meta.record <- function(x) {
     res
 }
 
+### The rest of the ITRDB header: lines 2 and 3, which itrdb.header() leaves
+### alone. write.tucson() gives the layout -- state or country in 13 columns,
+### species in 18, elevation, latitude-longitude, a two-character field ("__"),
+### the years; then the investigators -- but files drift from it: long site
+### ids push everything right, fields overflow into the next, and the older
+### Schweingruber files space their fields freely and end with " -". So the
+### fields are found by pattern, working in from the right-hand end.
+###
+### Tried on the 9,493 three-line headers in the ITRDB clone, Oct 2026: state
+### or country read in 99.7%, species in 94.6%, elevation in 92% (most of the
+### rest leave it blank), coordinates in 97%, investigators in all, and no
+### errors. Coordinate magnitudes matched NOAA's to 0.1 degree in 98% of the
+### files that have both. A field that cannot be read with confidence is
+### NULL; the line itself is always in $header.
+###
+### Coordinates are returned as written and not turned into decimal degrees.
+### The header cannot say which hemisphere it is in: "4512-06844" is 68
+### degrees west at Howland, but in 2,179 of those files, nearly all in
+### Europe and Asia, the same hyphen is only a separator and the site is east.
+itrdb.header.more <- function(txt) {
+    res <- list(state.country = NULL, species.name = NULL, elevation = NULL,
+                lat.long = NULL, investigators = NULL)
+    if (length(txt) < 2L) {
+        return(res)
+    }
+    ## everything after the site id and the line number: "HOW    2 ",
+    ## "RHCAM_N 2 "
+    body <- function(line) {
+        m <- regexpr("^\\S{0,8}\\s+[123]\\s", line)
+        if (m == 1L) substring(line, attr(m, "match.length") + 1L)
+        else substring(line, 10L)
+    }
+    ## The digits test is the confidence check: a state or species with digits
+    ## in it is a field that ran into its neighbour, and is not reported.
+    clean <- function(s) {
+        if (is.null(s) || is.na(s)) return(NULL)
+        s <- trimws(s)
+        if (nzchar(s) && !grepl("[0-9]", s)) s else NULL
+    }
+
+    b <- body(txt[2])
+    b <- sub("[[:space:]]+\\.[[:space:]]*$", "", b)
+    old <- grepl("[[:space:]]-[[:space:]]*$", b)
+    b <- sub("[[:space:]]+-[[:space:]]*$", "", b)
+    b <- sub("[[:space:]]*[0-9]{3,4}[[:space:]]+[0-9]{3,4}[[:space:]]*$", "", b)
+    b <- sub("[[:space:]]+[A-Za-z]?_+[A-Za-z]?[[:space:]]*$", "", b)
+    ## signed pair, pair with hemisphere letters, pair separated by spaces, or
+    ## nine digits run together
+    ll <- regmatches(b, regexpr(paste0(
+        "([+-]?[0-9]{3,4}[+-][0-9]{3,5}",
+        "|[0-9]{3,4}[NS][0-9]{3,5}[EW]",
+        "|[+-]?[0-9]{3,4}[[:space:]]+[+-]?[0-9]{3,5}",
+        "|[+-]?[0-9]{9})[[:space:]]*$"), b))
+    if (length(ll)) {
+        res$lat.long <- trimws(ll)
+        b <- substr(b, 1L, nchar(b) - nchar(ll))
+    }
+    ## "60M", ">1400M", "4007.5M", or a bare number in the older files; a
+    ## lone "M" means none was given. Only once the coordinates are found:
+    ## without them the end of the line is not known to be the elevation, and
+    ## "1700 M S2436 W6435  1810-1981" would give an elevation of 1981.
+    b <- sub("[[:space:]]+$", "", b)
+    el <- if (length(ll))
+        regmatches(b, regexpr("(>?[0-9]+(\\.[0-9]+)?)[[:space:]]?[Mm]?$|[[:space:]][Mm]$", b))
+    else character(0)
+    if (length(el)) {
+        if (grepl("[0-9]", el)) res$elevation <- trimws(el)
+        b <- substr(b, 1L, nchar(b) - nchar(el))
+    }
+    ## state or country, then species: by column in the standard layout, which
+    ## lets a 13-character state run straight into the species
+    ## ("Pennsylvania White Oak"); by runs of spaces in the older one, whose
+    ## states are often longer ("United States of America")
+    parts <- if (old) {
+        p <- trimws(strsplit(b, "[[:space:]]{2,}")[[1]])
+        p <- p[nzchar(p)]
+        c(p[1], paste(p[-1], collapse = " "))
+    } else {
+        c(substr(b, 1L, 13L), substring(b, 14L))
+    }
+    res$state.country <- clean(parts[1])
+    if (length(parts) > 1L && !is.na(parts[2])) {
+        res$species.name <- clean(parts[2])
+    }
+
+    if (length(txt) >= 3L) {
+        inv <- trimws(sub("[[:space:]]+-[[:space:]]*$", "", body(txt[3])))
+        ## names are separated by runs of spaces in the standard layout
+        if (nzchar(inv)) res$investigators <- gsub("[[:space:]]{2,}", "; ", inv)
+    }
+    res
+}
+
 print.rwl.meta <- function(x, ...) {
     cat("File: ", basename(x$file), " (read by ", x$reader, ")\n", sep = "")
     if (!is.null(x$site.name) && nzchar(x$site.name)) {
@@ -76,6 +177,17 @@ print.rwl.meta <- function(x, ...) {
             "\n", sep = "")
     } else if (identical(x$reader, "read.tucson")) {
         cat("Site: not given; the file carries no header\n")
+    }
+    if (!is.null(x$species.name)) {
+        cat("Species: ", x$species.name, "\n", sep = "")
+    }
+    where <- c(x$state.country, x$elevation,
+               if (!is.null(x$lat.long)) paste0(x$lat.long, " (as written)"))
+    if (length(where)) {
+        cat("Location: ", paste(where, collapse = ", "), "\n", sep = "")
+    }
+    if (!is.null(x$investigators)) {
+        cat("Investigators: ", x$investigators, "\n", sep = "")
     }
     ## A sheet's comment lines say whatever the lab wrote; show them, a few.
     if (!identical(x$reader, "read.tucson") && length(x$header)) {
@@ -121,6 +233,11 @@ print.rwl.meta <- function(x, ...) {
         cat(n.ev, if (n.ev == 1L) " problem was" else " problems were",
             " found while reading the file (see $events, or rwl.check())\n",
             sep = "")
+    }
+    ## Said when it is so. Leaving these out reads as "not recorded" when the
+    ## record says there was nothing to report.
+    if (n.gaps == 0L && NROW(x$renames) == 0L && n.ev == 0L) {
+        cat("Reading: no interior gaps, renamed series or problems\n")
     }
     d <- x$detrend
     if (!is.null(d)) {

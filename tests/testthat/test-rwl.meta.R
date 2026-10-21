@@ -54,6 +54,63 @@ test.rwl.meta <- function() {
         expect_output(print(d), "Indices made by: detrend, method Spline")
     })
 
+    test_that("me044 carries its ITRDB header, read with the defaults", {
+        data(me044, package = "dplR", envir = environment())
+        m <- rwl.meta(me044)
+        expect_identical(m$site.id, "HOW")
+        expect_identical(m$site.name, "Howland Forest")
+        expect_identical(m$species.code, "TSCA")
+        expect_equal(c(m$declared.first, m$declared.last), c(1780, 2012))
+        expect_equal(c(m$first, m$last), c(1780, 2012))
+        expect_equal(m$n.series, 42)
+        expect_length(m$header, 3)
+        ## read with fill.internal.NA left at NULL, and nothing to fill
+        expect_null(m$fill.internal.NA)
+        expect_equal(NROW(m$gaps), 0)
+        expect_equal(unique(m$precision$precision), 0.001)
+        expect_identical(m$species.name, "Eastern hemlock")
+        expect_identical(m$state.country, "Maine")
+        expect_identical(m$elevation, "60M")
+        expect_identical(m$lat.long, "4512-06844")
+        expect_identical(m$investigators,
+                         "R. Stockton Maxwell; Soumaya Belmecheri; Alan H. Taylor")
+        expect_output(print(m), "Location: Maine, 60M, 4512-06844 (as written)",
+                      fixed = TRUE)
+        expect_output(print(m), "no interior gaps, renamed series or problems")
+        ## and rwl.report() opens with the same lines
+        out <- capture.output(print(suppressWarnings(rwl.report(me044))))
+        expect_true("Species: Eastern hemlock" %in% out)
+        expect_true("Location: Maine, 60M, 4512-06844 (as written)" %in% out)
+        expect_true(any(startsWith(out, "Investigators: R. Stockton Maxwell")))
+    })
+
+    test_that("the second header line is read across its layouts", {
+        more <- function(line2, line3 = "ABC    3 Nobody")
+            dplR:::itrdb.header.more(c("ABC    1 Site", line2, line3))
+        ## a state that fills its 13 columns runs into the species
+        h <- more("PA1    2 Pennsylvania White Oak         243M  4024-07806    __    1893 2006")
+        expect_identical(h$state.country, "Pennsylvania")
+        expect_identical(h$species.name, "White Oak")
+        ## the older layout: free spacing, no unit, a trailing "-"
+        h <- more("712    2 United States of America   Pacific silver fir 1560  4757-12328 1698 1983 -")
+        expect_identical(h$state.country, "United States of America")
+        expect_identical(h$species.name, "Pacific silver fir")
+        expect_identical(h$elevation, "1560")
+        expect_identical(h$lat.long, "4757-12328")
+        ## a long site id, a space between the coordinates
+        h <- more("RHCAM_N 2 Nepal        Rhododendron campanulatum4007.5M  2753 8622    __    1787 2013")
+        expect_identical(h$species.name, "Rhododendron campanulatum")
+        expect_identical(h$elevation, "4007.5M")
+        expect_identical(h$lat.long, "2753 8622")
+        ## no elevation given
+        h <- more("ASTP   2 Pakistan     Himalayan pine        M  3520 07448    __    1317 2005")
+        expect_null(h$elevation)
+        expect_identical(h$species.name, "Himalayan pine")
+        ## a field that ran into its neighbour is not reported
+        h <- more("CE026M  2 ARGENTINA    CEDRO SALTENIO      1700 M S2436 W6435  1810-1981")
+        expect_null(h$species.name)
+    })
+
     test_that("no record gives NULL and says why", {
         x <- ca533
         attr(x, "dplR.provenance") <- NULL

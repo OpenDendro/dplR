@@ -33,6 +33,9 @@ rwl.report <- function(rwl, small.thresh = NA, big.thresh = NA){
       file = m$file, reader = m$reader,
       site.id = m$site.id, site.name = m$site.name,
       species.code = m$species.code,
+      species.name = m$species.name, state.country = m$state.country,
+      elevation = m$elevation, lat.long = m$lat.long,
+      investigators = m$investigators,
       declared.first = m$declared.first, declared.last = m$declared.last,
       precision = sort(unique(m$precision$precision)),
       mixed.precision = m$mixed.precision,
@@ -189,6 +192,15 @@ print.rwl.report <- function(x, ...){
     ## shown by rwl.meta().
     else if (identical(p$reader, "read.tucson"))
       cat("Site: not given; the file carries no header\n", sep = "")
+    ## The same lines as print.rwl.meta(), from the same parse.
+    if (!is.null(p$species.name))
+      cat("Species: ", p$species.name, "\n", sep = "")
+    where <- c(p$state.country, p$elevation,
+               if (!is.null(p$lat.long)) paste0(p$lat.long, " (as written)"))
+    if (length(where))
+      cat("Location: ", paste(where, collapse = ", "), "\n", sep = "")
+    if (!is.null(p$investigators))
+      cat("Investigators: ", p$investigators, "\n", sep = "")
     cat("Precision: ",
         if (p$mixed.precision)
           paste0("mixed (", paste(p$precision, collapse = " and "), " mm)")

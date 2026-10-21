@@ -32,6 +32,15 @@ File: rwl.report.R, man/rwl.report.Rd
    "Site: # Site urricane Ridge ...". The "Site: not given" line is now
    printed for Tucson files only.
 
+File: data/me044.rda, man/me044.Rd, tests/testthat/test-rwl.check.R,
+      tests/testthat/test-rwl.meta.R
+-----------------------------------------------------------------
+ - New data set me044 (ITRDB ME044, Howland Forest TSCA). Read from the
+   itrdbMeasurementsClone copy (NOAA modified 2021-01-08) with
+   read.tucson() defaults; provenance$file set to the NCEI URL. Chosen
+   from a screen of 364 east-coast ring-width files for a full header, a
+   clean read and a stand-wide growth increase in the 1910s-20s.
+
 File: rwl.check.R, man/rwl.check.Rd, tests/testthat/test-rwl.check.R
 -----------------------------------------------------------------
  - rwl.check() gains RWL_SERIES_SCALE (values group, warning) and

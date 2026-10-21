@@ -295,8 +295,22 @@ series <- co021[, 4]
 names(series) <- rownames(co021)
 series.rwi <- detrend.series(y = series, y.name = names(co021)[4],
                              method=c("ModNegExp", "ModHugershoff"),
-                             verbose = TRUE, return.info = TRUE, 
+                             verbose = TRUE, return.info = TRUE,
                              make.plot = TRUE)
+
+# When the negative exponential cannot be fit. HOW23B, an eastern
+# hemlock from Howland Forest, grows in bursts (at about ages 35, 105
+# and 150) with slow growth between. No declining curve fits that, so
+# the fit falls back to a straight line, and the bursts stay in the
+# indices as long swings away from 1. The spline follows them.
+data(me044)
+series <- me044[, "HOW23B"]
+names(series) <- rownames(me044)
+series <- series[!is.na(series)]
+series.rwi <- detrend.series(y = series, y.name = "HOW23B",
+                             method = c("ModNegExp", "Spline"), nyrs = 32,
+                             return.info = TRUE)
+series.rwi$model.info$ModNegExp$method  # "Line"
                              
 # A dirty dog.
 # In the case of method=="Spline" the function carries-on

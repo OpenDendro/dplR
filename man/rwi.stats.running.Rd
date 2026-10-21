@@ -267,5 +267,21 @@ rwi.stats(gp.rwi, gp.ids)
 rwi.stats(gp.rwi, gp.ids, period="common")
 rwi.stats.legacy(gp.rwi, gp.ids) # rwi.stats prior to dplR 1.5.3
 
+## Two cores from each of 21 hemlocks at Howland Forest. Cores from the
+## same tree agree much more closely (rbar.wt) than cores from different
+## trees (rbar.bt), so ignoring the tree ids would overstate the common
+## signal. rbar.eff accounts for that.
+data(me044)
+me044.rwi <- detrend(rwl = me044, method = "Spline", nyrs = 32)
+me044.ids <- autoread.ids(me044)
+rwi.stats(me044.rwi, me044.ids)[c("n.trees", "n.cores", "rbar.wt",
+                                  "rbar.bt", "rbar.eff", "eps")]
+## The window from 1838 to 1887 has 20 of the 21 trees in it, but the
+## trees agree poorly then (rbar.eff about 0.2) and EPS is below 0.85:
+## depth alone does not make a strong chronology.
+rwi.stats.running(me044.rwi, me044.ids, window.length = 50,
+                  window.overlap = 25)[c("start.year", "end.year",
+                                         "n.trees", "rbar.eff", "eps")]
+
 }
 \keyword{ misc }

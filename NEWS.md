@@ -1,8 +1,9 @@
 # dplR 1.8.1 (development)
 
 * New function `rwl.meta()` returns the metadata an rwl, rwi or bai
-  object carries: the file and the reader, the site and species from a
-  Tucson header, the span the header declares beside the span of the
+  object carries: the file and the reader; from a Tucson header, the
+  site, species, state or country, elevation, coordinates (as written)
+  and investigators; the span the header declares beside the span of the
   data, the precision, interior gaps, series the reader renamed,
   problems met while reading and, for indices, how they were made. It
   used to be reachable only through `attr(x, "dplR.provenance")` and an
@@ -11,6 +12,12 @@
 * `rwl.report()` no longer parses the comment lines of a file read by
   `read.sheet()` as an ITRDB header. They gave a site line made from
   fragments of the comment, such as "Site: # Site urricane Ridge".
+* New data set `me044`: eastern hemlock at Howland Forest, Maine (ITRDB
+  ME044, Maxwell, Belmecheri and Taylor), 42 series from 21 trees,
+  1780-2012, measured to 0.001 mm. It has a full ITRDB header and was
+  read with the default `read.tucson()` settings, so it shows what the
+  provenance record holds. Many of the trees grow much faster from the
+  1910s on, and the file has 29 zero rings.
 * When the curve fitted in `ssf()` reaches zero or below, the error
   now names the series, the iteration and the year, gives the lowest
   value of the chronology and its year, and explains the cause: in sites

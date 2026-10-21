@@ -29,8 +29,9 @@ rwl.report(rwl,small.thresh=NA,big.thresh=NA)
 
   When the object still carries the record \code{\link{read.tucson}} attaches
   to what it returns, the printed report opens with a short header naming the
-  file, the site and species from the \acronym{ITRDB} header, the precision the
-  file declares, and the span the header claims, which is worth seeing beside
+  file; the site, species, state or country, elevation, coordinates (as
+  written) and investigators from the \acronym{ITRDB} header, as
+  \code{\link{rwl.meta}} reads them; the precision the file declares; and the span the header claims, which is worth seeing beside
   the span the measurements actually cover. It also notes when the reader
   renamed a series, so the ids in the report are not the file's, and when
   interior gaps were filled. An object with no such record -- one built by
@@ -74,5 +75,11 @@ rwl.report(rwl = gp.rwl)
 # list very small (smallest 1pct) of rings as well
 one.pct <- quantile(gp.rwl[gp.rwl != 0], na.rm=TRUE, probs=0.01)
 rwl.report(rwl = gp.rwl, small.thresh = one.pct)
+
+## A data set read by read.tucson() from a file with a full ITRDB header
+## opens with the file, the site and species, the precision, and the
+## span the header declares
+data(me044)
+rwl.report(me044)
 }
 \keyword{ manip }

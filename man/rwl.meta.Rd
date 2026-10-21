@@ -31,7 +31,11 @@ rwl.meta(x)
   object drop it.
 
   The site id, site name, species code and declared span are parsed from
-  the header of a Tucson file only.  The header of a file read by
+  the header of a Tucson file only, and so are the species name, state
+  or country, elevation, coordinates and investigators.  Header layouts
+  vary a good deal, so these are read by pattern; a field that cannot be
+  read with confidence is \code{NULL}, and the lines themselves are
+  always in \code{header}.  The header of a file read by
   \code{read.sheet} is its comment lines, which are free text; they are
   returned unparsed in \code{header} and the first few are printed.
 
@@ -50,6 +54,17 @@ rwl.meta(x)
   \item{site.id, site.name, species.code}{ from a Tucson header, or
     \code{NULL} when the file has none or was not read by
     \code{read.tucson}. }
+  \item{species.name, state.country, elevation}{ from the second line
+    of a Tucson header, as written (elevation keeps its unit, if any),
+    or \code{NULL}. }
+  \item{lat.long}{ the latitude and longitude from the second line of a
+    Tucson header, as written, or \code{NULL}.  They are not converted
+    to decimal degrees: in the usual form, \code{"4512-06844"}, the
+    hyphen marks west longitude in some files and only separates the
+    two numbers in others, so the header alone does not say which
+    hemisphere the site is in. }
+  \item{investigators}{ the third line of a Tucson header, with runs of
+    spaces between names replaced by \code{"; "}, or \code{NULL}. }
   \item{declared.first, declared.last}{ the span the Tucson header
     declares, or \code{NULL}. }
   \item{header}{ the header lines as they are in the file. }
@@ -78,14 +93,20 @@ rwl.meta(x)
   \code{\link{read.tucson}}, \code{\link{read.sheet}},
   \code{\link{summary.rwl}} }
 \examples{
-data(ca533)
-rwl.meta(ca533)
+## A file with a full ITRDB header: site, species and the span the
+## header declares, beside the span of the data
+data(me044)
+rwl.meta(me044)
+rwl.meta(me044)$header
+
 ## the record follows a subset, cut down to what is left
-rwl.meta(ca533[, 1:5])
+rwl.meta(me044[, 1:6])
+rwl.meta(window(me044, start = 1900))
 ## and the indices made from it
-rwl.meta(detrend(ca533, method = "Spline"))
+rwl.meta(detrend(me044, method = "Spline", nyrs = 32))
 ## the declared and actual spans side by side
-m <- rwl.meta(ca533)
-c(m$first, m$last)
+m <- rwl.meta(me044)
+rbind(declared = c(m$declared.first, m$declared.last),
+      data = c(m$first, m$last))
 }
 \keyword{ manip }

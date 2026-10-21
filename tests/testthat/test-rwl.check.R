@@ -428,7 +428,7 @@ test.rwl.check <- function() {
     })
 
     test_that("the ITRDB data sets carry a provenance record", {
-        for (nm in c("ca533", "co021", "nm046", "wa082")) {
+        for (nm in c("ca533", "co021", "me044", "nm046", "wa082")) {
             e <- new.env()
             utils::data(list = nm, package = "dplR", envir = e)
             p <- attr(get(nm, envir = e), "dplR.provenance")

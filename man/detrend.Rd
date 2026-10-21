@@ -136,6 +136,26 @@ data(co021)
 co021.rwi <- detrend(rwl = co021, method = "ModHugershoff",
                      return.info=TRUE)
 
+## The method can change what the chronology says. Many of the hemlocks
+## in me044 grow much faster from the 1910s on. A negative exponential
+## curve cannot follow that: for most series the fit fails and detrend()
+## falls back to a straight line or the mean, which leaves the change in
+## the indices. A 32-year spline follows it and takes it out.
+data(me044)
+me044.nex <- detrend(rwl = me044, method = "ModNegExp", return.info = TRUE)
+## the curve each series ended up with
+table(sapply(me044.nex$model.info, function(x) x$ModNegExp$method))
+me044.spl <- detrend(rwl = me044, method = "Spline", nyrs = 32)
+crn.nex <- chron(me044.nex$series)
+crn.spl <- chron(me044.spl)
+yrs <- time(crn.nex)
+plot(yrs, crn.nex$std, type = "l", col = "grey40",
+     xlab = "Year", ylab = "Ring-width index")
+lines(yrs, crn.spl$std, col = "darkblue")
+abline(h = 1, lty = "dashed")
+legend("topleft", legend = c("ModNegExp", "Spline, 32 years"),
+       col = c("grey40", "darkblue"), lty = "solid", bty = "n")
+
 \dontrun{
 library(grDevices)
 ## Detrend using all methods. Returns a list

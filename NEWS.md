@@ -1,5 +1,20 @@
 # dplR 1.8.1 (development)
 
+* `xdate.floater()` now filters and correlates the way `xdate.report()`
+  does by default: a 32-year spline (`nyrs = 32`), an AR model of order
+  at most 3 (`ar.order.max = 3`) and Pearson's correlation. The old
+  defaults were no low-frequency filter, an AR order chosen by AIC with no
+  cap, and Spearman's rho, so a floater was dated one way and then checked
+  another. Pass `nyrs = NULL, ar.order.max = NULL, method = "spearman"`
+  to get the old behaviour. Giving `n` (the Hanning filter) without
+  `nyrs` still works: the spline default steps aside.
+
+* `xdate.floater()` placed a floater too early by half the Hanning filter
+  length whenever `n` was given: with `n = 32`, 16 years early. The filter
+  takes `n/2` rings off each end of the series, and the end year was worked
+  out as if it took none off the end. Prewhitening and the spline were not
+  affected.
+
 * `rwl.report()` is deprecated and will be removed in a future release.
   `rwl.check()` now opens its printed result with the same description
   of the collection: the file and site, the number of series and

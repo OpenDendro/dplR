@@ -1,9 +1,22 @@
 xdate.floater <- function(rwl, series, series.name = "Unknown", min.overlap = 50,
-                          n = NULL, nyrs = NULL, prewhiten = TRUE,
-                          ar.order.max = NULL, biweight = TRUE,
-                          method = c("spearman", "pearson", "kendall"),
+                          n = NULL, nyrs = 32, prewhiten = TRUE,
+                          ar.order.max = 3, biweight = TRUE,
+                          method = c("pearson", "spearman", "kendall"),
                           make.plot = TRUE, return.rwl = TRUE, verbose = TRUE) {
 
+  ## AGB Oct 2026: the filtering and correlation defaults now match
+  ## xdate.report() (a 32-year spline, AR order at most 3, Pearson), so a
+  ## floater is dated the same way the report then checks it. They used to be
+  ## no low-frequency filter, AR order by AIC with no cap, and Spearman.
+  ## Asking for the Hanning filter with 'n' and leaving 'nyrs' alone still
+  ## works: the spline default steps aside rather than clash with it.
+  if (!is.null(n) && missing(nyrs)) {
+    nyrs <- NULL
+  }
+  ## The same for prewhiten = FALSE: the AR order cap has nothing to cap.
+  if (!isTRUE(prewhiten) && missing(ar.order.max)) {
+    ar.order.max <- NULL
+  }
   method2 <- match.arg(method)
   rwl <- check.rwl.rwi(rwl)
 
@@ -43,6 +56,12 @@ xdate.floater <- function(rwl, series, series.name = "Unknown", min.overlap = 50
   master <- tmp$master
   series2 <- tmp$series
   idx.good <- !is.na(series2)
+  ## AGB Oct 2026: rings the filtering took off the end of the series.
+  ## Prewhitening and the spline take none, but the Hanning filter takes
+  ## n/2 from each end, and the dating below assumed the last filtered ring
+  ## was the last ring of the series. With n = 32 every floater was placed
+  ## 16 years too early.
+  nTrail <- length(series2) - max(which(idx.good))
   series2 <- series2[idx.good]
 
   ## Trim master so there are no NaN (e.g., from dividing when only one series)
@@ -83,7 +102,8 @@ xdate.floater <- function(rwl, series, series.name = "Unknown", min.overlap = 50
 
   # Crawl through backwards because start years on both the master and the
   # series can be affected by normalizing (e.g., Hanning, prewhiten).
-  # End years are unaffected, so crawling backwards keeps the dating correct.
+  # The Hanning filter also takes years off the end, which nTrail puts back
+  # when the end year is worked out.
   #
   # i is where the last ring of the series sits, counted along the master:
   # i > nx puts it past the end of the master. The series then covers
@@ -104,8 +124,9 @@ xdate.floater <- function(rwl, series, series.name = "Unknown", min.overlap = 50
     rOut[i] <- tmp$estimate
     pOut[i] <- tmp$p.val
     # End date: the last master year in the overlap, plus however many
-    # rings of the series lie past the end of the master
-    maxYrsOut[i] <- max(yrs[xInd]) + (i - max(xInd))
+    # rings of the series lie past the end of the master, plus the rings the
+    # filter took off the end of the series
+    maxYrsOut[i] <- max(yrs[xInd]) + (i - max(xInd)) + nTrail
     minYrsOut[i] <- maxYrsOut[i] - nSeries + 1
     nOut[i] <- length(xInd)
   }

@@ -64,3 +64,58 @@ test_that("xdate.floater refuses a series with NA inside it", {
   expect_error(xdate.floater(master, rep(NA_real_, 100), make.plot = FALSE,
                              verbose = FALSE), "no measurements")
 })
+
+test_that("xdate.floater filters and correlates as xdate.report does by default", {
+  ff <- formals(xdate.floater)
+  fr <- formals(xdate.report)
+  expect_equal(ff$nyrs, fr$nyrs)
+  expect_equal(ff$ar.order.max, fr$ar.order.max)
+  expect_equal(ff$prewhiten, fr$prewhiten)
+  expect_equal(ff$biweight, fr$biweight)
+  expect_equal(eval(ff$method)[1], eval(fr$method)[1])
+})
+
+test_that("xdate.floater takes n on its own, and the old defaults still date", {
+  data(co021)
+  yrs <- as.numeric(rownames(co021))
+  x <- co021[["643114"]]
+  span <- range(yrs[!is.na(x)])
+  master <- co021[, names(co021) != "643114"]
+  ## the Hanning filter alone: the spline default steps aside
+  fo <- xdate.floater(master, x, n = 32, make.plot = FALSE, verbose = FALSE)
+  best <- fo$floaterCorStats[which.max(fo$floaterCorStats$r), ]
+  expect_equal(c(best$first, best$last), span)
+  ## both at once is still an error
+  expect_error(xdate.floater(master, x, n = 32, nyrs = 32, make.plot = FALSE,
+                             verbose = FALSE), "cannot both be set")
+  ## the pre-1.8.1 defaults
+  fo <- xdate.floater(master, x, nyrs = NULL, ar.order.max = NULL,
+                      method = "spearman", make.plot = FALSE, verbose = FALSE)
+  best <- fo$floaterCorStats[which.max(fo$floaterCorStats$r), ]
+  expect_equal(c(best$first, best$last), span)
+})
+
+test_that("xdate.floater dates correctly with the Hanning filter", {
+  ## The filter takes n/2 rings off each end of the series, and the end year
+  ## used to be worked out as if it took none: with n = 32 the series below
+  ## was placed 16 years early.
+  data(co021)
+  yrs <- as.numeric(rownames(co021))
+  x <- co021[["643114"]]
+  span <- range(yrs[!is.na(x)])
+  master <- co021[, names(co021) != "643114"]
+  for (nn in c(20, 32)) {
+    fo <- xdate.floater(master, x, n = nn, make.plot = FALSE, verbose = FALSE)
+    best <- fo$floaterCorStats[which.max(fo$floaterCorStats$r), ]
+    expect_equal(c(best$first, best$last), span)
+    expect_equal(range(as.numeric(rownames(fo$rwlOut))), span)
+  }
+})
+
+test_that("xdate.floater runs without prewhitening under the new defaults", {
+  data(co021)
+  x <- co021[["643114"]]
+  master <- co021[, names(co021) != "643114"]
+  expect_no_error(xdate.floater(master, x, prewhiten = FALSE,
+                                make.plot = FALSE, verbose = FALSE))
+})

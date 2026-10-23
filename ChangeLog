@@ -1,5 +1,17 @@
 * CHANGES IN dplR VERSION 1.8.1
 
+File: xdate.floater.R, man/xdate.floater.Rd, tests
+-----------------------------------------------------------------
+ - Defaults now match xdate.report(): nyrs = 32 (was NULL),
+   ar.order.max = 3 (was NULL, AIC with no cap), method "pearson" first
+   (was "spearman"). If 'n' is given and 'nyrs' is missing, nyrs is set to
+   NULL so the Hanning filter still works on its own.
+ - With prewhiten = FALSE and ar.order.max missing, ar.order.max is set to
+   NULL, since check.normalize.args() refuses a cap that does nothing.
+ - Bug fix: with the Hanning filter (n) the end year ignored the n/2 rings
+   the filter takes off the end of the series, so every floater was placed
+   n/2 years early. nTrail counts them and is added to the end year.
+
 File: rwl.check.R, rwl.report.R, man/rwl.check.Rd, man/rwl.report.Rd,
       vignettes/intro-dplR.Rmd, tests
 -----------------------------------------------------------------

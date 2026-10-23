@@ -10,9 +10,9 @@
 }
 \usage{
 xdate.floater(rwl, series, series.name = "Unknown", min.overlap = 50,
-              n = NULL, nyrs = NULL, prewhiten = TRUE,
-              ar.order.max = NULL, biweight = TRUE,
-              method = c("spearman", "pearson", "kendall"),
+              n = NULL, nyrs = 32, prewhiten = TRUE,
+              ar.order.max = 3, biweight = TRUE,
+              method = c("pearson", "spearman", "kendall"),
               make.plot = TRUE, return.rwl = TRUE, verbose = TRUE)
 
 \method{print}{floater}(x, \dots)
@@ -33,9 +33,11 @@ xdate.floater(rwl, series, series.name = "Unknown", min.overlap = 50,
     chronology at each search position. Defaults to \code{50}.}
   \item{n}{\code{NULL} or a positive integer giving the filter length
     for the \code{\link{hanning}} filter used for removal of low
-    frequency variation prior to correlation. \code{NULL} skips the
-    filter.}
-  \item{nyrs}{ \code{NULL} or a number greater than zero.  If not
+    frequency variation prior to correlation. \code{NULL} (the default)
+    skips the filter.  Giving \code{\var{n}} without \code{\var{nyrs}}
+    uses the Hanning filter in place of the default spline.}
+  \item{nyrs}{ \code{NULL} or a number greater than zero, by default
+    32, as in \code{\link{xdate.report}}.  If not
     \code{NULL}, each series is divided by a smoothing spline with this
     rigidity (see \code{\link{caps}}) to remove low-frequency variation,
     as \code{\link{detrend}} does with \code{method = "Spline"}.  A value
@@ -45,7 +47,8 @@ xdate.floater(rwl, series, series.name = "Unknown", min.overlap = 50,
   \item{prewhiten}{logical flag. If \code{TRUE} (the default) each
     series is whitened using \code{\link{ar}} prior to correlation.}
   \item{ar.order.max}{ \code{NULL} or a positive integer giving the
-    maximum order of the \code{\link{ar}} model used to prewhiten.
+    maximum order of the \code{\link{ar}} model used to prewhiten, by
+    default 3, as in \code{\link{xdate.report}}.
     Prewhitening removes as many years from the start of each series as
     the order of the model.  If \code{NULL}, the order is chosen by AIC
     up to the \code{\link{ar}} default, which on long series can be 20
@@ -54,7 +57,8 @@ xdate.floater(rwl, series, series.name = "Unknown", min.overlap = 50,
     mean is used when building the master chronology via
     \code{\link{tbrm}}.}
   \item{method}{the correlation coefficient to use. One of
-    \code{"spearman"} (default), \code{"pearson"}, or \code{"kendall"}.
+    \code{"pearson"} (default, as in \code{\link{xdate.report}}),
+    \code{"spearman"}, or \code{"kendall"}.
     See \code{\link{cor.test}}.}
   \item{make.plot}{logical flag. If \code{TRUE} (the default) a
     two-panel plot is produced showing the segments and the correlation
@@ -89,9 +93,14 @@ xdate.floater(rwl, series, series.name = "Unknown", min.overlap = 50,
   and \code{n} in the returned table before accepting a position near
   the ends of the master.
 
-  Both series and master are optionally prewhitened and/or smoothed
-  with a Hanning filter before correlation, consistent with the
-  approach used in \code{\link{corr.series.seg}}.
+  By default both series and master are divided by a 32-year spline and
+  prewhitened with an autoregressive model of order at most 3, and the
+  correlation is Pearson's: the same filtering and correlation as
+  \code{\link{xdate.report}}, so a floater is dated the way the report
+  then checks it.  Before dplR 1.8.1 the defaults were no low-frequency
+  filter, an AR order chosen by AIC with no cap, and Spearman's rho; pass
+  \code{nyrs = NULL, ar.order.max = NULL, method = "spearman"} to get
+  them back.
 
   The two-panel plot (produced when \code{make.plot = TRUE}, or by
   calling \code{plot()} on the returned object) shows: (1) a segment

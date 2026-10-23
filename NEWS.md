@@ -1,5 +1,10 @@
 # dplR 1.8.1 (development)
 
+* `xdate.report(prewhiten = FALSE)` tested no segments at all unless
+  `ar.order.max = NULL` was also given, because the default cap of 3 had
+  nothing to cap. It now steps aside when prewhitening is off, as it does
+  in `xdate.floater()`.
+
 * `xdate.floater()` now filters and correlates the way `xdate.report()`
   does by default: a 32-year spline (`nyrs = 32`), an AR model of order
   at most 3 (`ar.order.max = 3`) and Pearson's correlation. The old

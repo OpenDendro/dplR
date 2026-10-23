@@ -216,3 +216,10 @@ test.xdate.report <- function() {
     })
 }
 test.xdate.report()
+
+test_that("xdate.report runs without prewhitening under the default AR cap", {
+  data(co021)
+  r <- xdate.report(co021, prewhiten = FALSE)
+  expect_true(all(r$stats$crossdated))
+  expect_gt(sum(r$stats$n.seg), 0)
+})

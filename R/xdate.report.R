@@ -27,6 +27,12 @@ xdate.report <- function(x, seg.length = 50, bin.floor = 100, nyrs = 32,
                          biweight = TRUE, check = TRUE, meta = list(),
                          title = NULL) {
     method2 <- match.arg(method)
+    ## AGB Oct 2026: prewhiten = FALSE on its own used to test no segments at
+    ## all, because the default AR order cap then has nothing to cap and
+    ## check.normalize.args() refuses it. The cap steps aside instead.
+    if (!isTRUE(prewhiten) && missing(ar.order.max)) {
+        ar.order.max <- NULL
+    }
     if (!is.list(meta)) {
         stop("'meta' must be a list")
     }

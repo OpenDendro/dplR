@@ -1,5 +1,11 @@
 * CHANGES IN dplR VERSION 1.8.1
 
+File: xdate.report.R, tests
+-----------------------------------------------------------------
+ - With prewhiten = FALSE and ar.order.max missing, ar.order.max is set to
+   NULL. Before, check.normalize.args() refused the default cap and the
+   report tested no segments (it said so in its notes).
+
 File: xdate.floater.R, man/xdate.floater.Rd, tests
 -----------------------------------------------------------------
  - Defaults now match xdate.report(): nyrs = 32 (was NULL),

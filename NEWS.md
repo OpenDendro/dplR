@@ -1,5 +1,17 @@
 # dplR 1.8.1 (development)
 
+* `summary()` of ring-width indices lists any ratio index far above the
+  rest of its own series (a robust z-score of the log index over
+  `zcrit`, default 5), with its year and whether it is at the start, end
+  or middle of the series. A growth curve that comes close to zero at an
+  end of a series inflates the ratio there (Cook and Peters 1997), and
+  nothing in the summary showed it: `detrend(wa082, method =
+  "AgeDepSpline")` ends 712082 at an index of 11.95 over a curve of
+  0.08 mm and the collection statistics hardly move. Every index the
+  check lists in the on-board data sets is in the first or last few
+  rings of a series. Differences are not tested. The per-series table
+  gains a column `extreme`.
+
 * `xdate.report(prewhiten = FALSE)` tested no segments at all unless
   `ar.order.max = NULL` was also given, because the default cap of 3 had
   nothing to cap. It now steps aside when prewhitening is off, as it does

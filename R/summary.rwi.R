@@ -13,8 +13,10 @@
 ### of tables, with a print method that shows the header and only the series
 ### worth a look. as.data.frame() gives the full per-series table.
 
-summary.rwi <- function(object, ids = NULL, pcrit = 0.05, ...) {
+summary.rwi <- function(object, ids = NULL, pcrit = 0.05, zcrit = 5, ...) {
     stopifnot(is.numeric(pcrit), length(pcrit) == 1L, pcrit > 0, pcrit < 1)
+    stopifnot(is.numeric(zcrit), length(zcrit) == 1L, !is.na(zcrit),
+              zcrit > 0)
     x <- object
     yrs <- time(x)
     n.series <- ncol(x)
@@ -77,7 +79,13 @@ summary.rwi <- function(object, ids = NULL, pcrit = 0.05, ...) {
         series$p[has] <- ic$p.val
     }
 
-    res <- list(how = attr(x, "dplR.detrend"),
+    how <- attr(x, "dplR.detrend")
+    extreme <- extreme.indices(m, yrs, difference = isTRUE(how$difference),
+                               zcrit = zcrit)
+    series$extreme <- if (is.null(extreme)) NA_integer_ else
+        as.integer(table(factor(extreme$series, levels = names(x))))
+
+    res <- list(how = how,
                 n.series = n.series,
                 first = if (length(yrs)) min(yrs) else NA_real_,
                 last = if (length(yrs)) max(yrs) else NA_real_,
@@ -86,12 +94,69 @@ summary.rwi <- function(object, ids = NULL, pcrit = 0.05, ...) {
                 ids.given = !is.null(ids),
                 empty = names(x)[!has],
                 series = series,
-                pcrit = pcrit)
+                extreme = extreme,
+                pcrit = pcrit,
+                zcrit = zcrit)
     class(res) <- "summary.rwi"
     res
 }
 
 as.data.frame.summary.rwi <- function(x, ...) x$series
+
+### AGB Oct 2026: indices far out of line with the rest of their own series.
+### A ratio blows up where the growth curve comes close to zero, which
+### happens at the ends of a series: AgeDepSpline on wa082 ends 712082 at an
+### index of 11.95 over a curve of 0.08 mm (Cook and Peters 1997). The
+### collection statistics barely move, so nothing else in the summary showed
+### it. The test is a robust z-score within each series, on the log scale
+### (ratios are skewed and cannot fall below 0) and only upward, since a
+### curve near zero inflates and never deflates. Zeros (absent rings) are
+### left out of the median and MAD and cannot be flagged. Differences are not
+### tested: a curve near zero does them no harm, and the same test on
+### differences after powt() flags hundreds of absent rings in co021, which is
+### the data and not the curve. With zcrit = 5 this flags nothing
+### in co021, wa082 or ca533 with a Spline or ModNegExp, and every index it
+### flags in the on-board data sets is in the first or last few rings of a
+### series over a curve below 0.2 mm.
+extreme.indices <- function(m, yrs, difference, zcrit) {
+    out <- data.frame(series = character(0), year = numeric(0),
+                      index = numeric(0), z = numeric(0),
+                      where = character(0), stringsAsFactors = FALSE)
+    if (difference) {
+        return(NULL)
+    }
+    for (j in seq_len(ncol(m))) {
+        v <- m[, j]
+        ok <- which(!is.na(v))
+        n.ok <- length(ok)
+        pos <- !is.na(v) & v > 0
+        u <- log(v[pos])
+        if (length(u) < 10L) {
+            next
+        }
+        s <- stats::mad(u)
+        if (!is.finite(s) || s == 0) {
+            next
+        }
+        z <- rep(NA_real_, length(v))
+        z[pos] <- (log(v[pos]) - stats::median(u)) / s
+        hit <- which(z > zcrit)
+        if (length(hit) == 0L) {
+            next
+        }
+        ## where in the series: its first or last tenth, or between
+        rank <- match(hit, ok)
+        edge <- max(1L, ceiling(n.ok / 10))
+        where <- ifelse(rank <= edge, "start",
+                        ifelse(rank > n.ok - edge, "end", "middle"))
+        out <- rbind(out,
+                     data.frame(series = colnames(m)[j], year = yrs[hit],
+                                index = v[hit], z = z[hit], where = where,
+                                stringsAsFactors = FALSE))
+    }
+    rownames(out) <- NULL
+    out
+}
 
 ### One line saying how the indices were made, from the dplR.detrend record.
 describe.how <- function(how) {
@@ -165,11 +230,38 @@ print.summary.rwi <- function(x, max.print = 10, ...) {
             cat("  ... and ", nrow(weak) - max.print, " more\n", sep = "")
         }
     }
+    ex <- x$extreme
+    if (!is.null(ex)) {
+        if (nrow(ex) == 0L) {
+            cat("No index is far above the rest of its series (robust z > ",
+                x$zcrit, ", log scale).\n", sep = "")
+        } else {
+            n.s <- length(unique(ex$series))
+            cat(nrow(ex), if (nrow(ex) == 1L) " index is" else " indices are",
+                " far above the rest of their series (robust z > ", x$zcrit,
+                ", log scale), in ", n.s, if (n.s == 1L) " series:\n" else " series:\n",
+                sep = "")
+            ex <- ex[order(-ex$z), , drop = FALSE]
+            show <- utils::head(ex, max.print)
+            show$index <- round(show$index, 2)
+            show$z <- round(show$z, 1)
+            print(show, row.names = FALSE)
+            if (nrow(ex) > max.print) {
+                cat("  ... and ", nrow(ex) - max.print, " more\n", sep = "")
+            }
+            if (any(ex$where != "middle")) {
+                cat("  At the start or end of a series this is usually a growth curve that\n",
+                    "  came close to zero, which a ratio inflates. Plot the series with its\n",
+                    "  curve (detrend.series()); another method, or differences after powt(),\n",
+                    "  avoids it.\n", sep = "")
+            }
+        }
+    }
     ## Where to go next, and what each place answers. The one-number EPS
     ## above covers the whole span; it usually falls off where sample depth
     ## does, which is what the running version shows.
     cat("More:\n",
-        "  as.data.frame(summary(x))  every series: span, mean, sd, ar1, cor, p\n",
+        "  as.data.frame(summary(x))  every series: span, mean, sd, ar1, cor, p, extreme\n",
         if (!isTRUE(x$ids.given))
         "  summary(x, ids = )         rbar and EPS with cores grouped by tree\n",
         "  rwi.stats.running(x)       rbar and EPS through time\n",

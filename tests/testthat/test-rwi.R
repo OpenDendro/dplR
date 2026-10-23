@@ -450,3 +450,26 @@ test_that("treeMean() of indices returns indices", {
     ## widths in, widths out, as before
     expect_identical(class(treeMean(wa082, ids)), c("rwl", "data.frame"))
 })
+
+test_that("summary() lists ratio indices far above the rest of their series", {
+    data(wa082, package = "dplR")
+    data(co021, package = "dplR")
+    s <- summary(detrend(wa082, method = "AgeDepSpline"))
+    expect_equal(nrow(s$extreme), 4)
+    expect_equal(unique(s$extreme$series), "712082")
+    expect_true(all(s$extreme$where == "end"))
+    expect_equal(max(s$extreme$index), 11.95, tolerance = 0.01)
+    expect_equal(as.data.frame(s)$extreme[names(wa082) == "712082"], 4L)
+    expect_output(print(s), "4 indices are far above")
+    expect_output(print(s), "came close to zero")
+    ## the strong collection and the default curve: nothing
+    q <- summary(detrend(co021))
+    expect_equal(nrow(q$extreme), 0)
+    expect_output(print(q), "No index is far above")
+    ## absent rings are left out, and differences are not tested
+    d <- summary(detrend(powt(co021), difference = TRUE))
+    expect_null(d$extreme)
+    expect_true(all(is.na(as.data.frame(d)$extreme)))
+    expect_false(any(grepl("far above", capture.output(print(d)))))
+    expect_error(summary(detrend(co021), zcrit = -1))
+})

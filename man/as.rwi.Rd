@@ -27,7 +27,7 @@ as.rwi(x)
 
 \method{time}{rwi}(x, \dots)
 
-\method{summary}{rwi}(object, ids = NULL, pcrit = 0.05, \dots)
+\method{summary}{rwi}(object, ids = NULL, pcrit = 0.05, zcrit = 5, \dots)
 
 \method{print}{summary.rwi}(x, max.print = 10, \dots)
 
@@ -46,7 +46,11 @@ as.rwi(x)
     counts each series as its own tree. }
   \item{pcrit}{ the significance level below which a series is taken to
     correlate with the others. }
-  \item{max.print}{ the most series to list as not correlating. }
+  \item{zcrit}{ how far above the rest of its series, as a robust
+    z-score of the log index, a ratio index must be to be listed as
+    extreme.  See Details. }
+  \item{max.print}{ the most series to list as not correlating, and the
+    most indices to list as extreme. }
   \item{i, j, subset, select, drop}{ as for \code{\link{[.rwl}} and
     \code{\link{subset.rwl}}. }
   \item{plot.type}{ \code{"spag"} for \code{\link{spag.plot}},
@@ -128,6 +132,23 @@ as.rwi(x)
   fewer than two series with values there is no collection, and the
   statistics and correlations are \code{NULL} and \code{NA}.
 
+  For ratio indices the summary also lists any index far above the rest
+  of its own series: one whose log is more than \code{zcrit} robust
+  standard deviations (the MAD) above the median log index of that
+  series, with zeros left out.  These are usually a growth curve that
+  came close to zero at the start or end of a series, where the ratio
+  inflates (Cook and Peters 1997).  \code{detrend(wa082, method = "AgeDepSpline")} ends
+  series 712082 at an index of 11.95 over a curve of 0.08 mm, and the
+  collection statistics hardly move.  The print says whether each
+  index is at the start, end or middle of its series (its first or
+  last tenth, or between).  A flag in the middle of a series is more
+  likely a ring that is wide for that tree.  Differences are not
+  tested, since a curve near zero does them no harm and absent rings
+  are far out of line after \code{\link{powt}} without anything being
+  wrong.  With the default \code{zcrit} nothing is listed for
+  \code{co021} or \code{ca533} detrended with \code{"Spline"} or
+  \code{"ModNegExp"}.
+
   \code{plot} draws, by default, \code{\link{spag.plot}}, which draws
   indices around 1 (or 0 for differences) and not around each series'
   mean, so the grey line under each series is the value the indices
@@ -155,8 +176,16 @@ as.rwi(x)
   \code{first}, \code{last}, \code{common} (the first and last years
   in which every series has a value, or \code{NA}), \code{stats} (from
   \code{rwi.stats}), \code{ids.given}, \code{empty} (the names of series with no values),
-  \code{series} (the per-series \code{data.frame})
-  and \code{pcrit}.
+  \code{series} (the per-series \code{data.frame}, with \code{extreme},
+  the number of extreme indices in each series),
+  \code{extreme} (a \code{data.frame} with \code{series}, \code{year},
+  \code{index}, \code{z} and \code{where}, one row per extreme index;
+  \code{NULL} for differences), \code{pcrit} and \code{zcrit}.
+}
+\references{
+  Cook, E. R. and Peters, K. (1997) Calculating unbiased tree-ring
+  indices for the study of climatic and environmental change.
+  \emph{The Holocene}, \bold{7}(3), 361--370.
 }
 \author{ Andy Bunn }
 \seealso{ \code{\link{detrend}}, \code{\link{rcs}}, \code{\link{cms}},

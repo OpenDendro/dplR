@@ -59,7 +59,6 @@ morlet <- function(y1, x1=seq_along(y1), p2=NULL, dj=0.25, siglvl=0.95,
         ## it...
         lag1 <- acf(y1, lag.max = 2, plot = FALSE)$acf[2]
     }
-    else lag1 <- lag1[1]
 
     ## Construct time series to analyze, pad if necessary
     ypad <- y1 - mean(y1)  # Remove mean

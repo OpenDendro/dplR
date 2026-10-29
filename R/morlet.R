@@ -1,4 +1,5 @@
-morlet <- function(y1, x1=seq_along(y1), p2=NULL, dj=0.25, siglvl=0.95){
+morlet <- function(y1, x1=seq_along(y1), p2=NULL, dj=0.25, siglvl=0.95,
+                   lag1=0){
 
     morlet.func <- function(k0=6, Scale, k) {
         n <- length(k)
@@ -24,7 +25,6 @@ morlet <- function(y1, x1=seq_along(y1), p2=NULL, dj=0.25, siglvl=0.95){
     Dt <- 1
     s0 <- 1
     pad <- TRUE
-    lag1 <- 0
     do_daughter <- TRUE
     fft_theor <- NULL
     ## mother="morlet"
@@ -40,6 +40,12 @@ morlet <- function(y1, x1=seq_along(y1), p2=NULL, dj=0.25, siglvl=0.95){
               is.null(p2) || (is.numeric(p2) && length(p2) == 1),
               n > 0)
     if(length(x1) != length(y1)) stop("'x1' and 'y1' lengths differ")
+    if(!is.null(lag1) &&
+       (!is.numeric(lag1) || length(lag1) != 1 || !is.finite(lag1) ||
+        lag1 <= -1 || lag1 >= 1)) {
+        stop("'lag1' must be NULL or a single number between -1 and 1 ",
+             "(the lag-one autocorrelation of the noise to test against)")
+    }
     n1 <- n
     base2 <- trunc(log2(n) + 0.4999)   # power of 2 nearest to N
     if(is.null(p2)) J <- trunc(log2(n * Dt / s0) / dj) # [Eqn(10)]

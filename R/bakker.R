@@ -107,6 +107,15 @@ bakker <- function (rwl, ancillary) {
   }
   
   
+  ## AGB Oct 2026: return data frames with the years and series of 'rwl', as
+  ## the help page says, and the areas as class "bai" (see as.bai.R) like
+  ## bai.in() and bai.out(). Both used to come back as matrices, so chron()
+  ## and the other functions that check their input couldn't tell what the
+  ## areas were.
+  DBHhist2 <- as.data.frame(DBHhist2)
+  out2 <- as.data.frame(out2)
+  dimnames(DBHhist2) <- dimnames(out2) <- list(rownames(rwl), colnames(rwl))
+  out2 <- make.bai(out2, from = rwl, how = list(fun = "bakker"))
   output<-list(DBHhist_raw=DBHhist2,baiBakker_raw=out2)
   #I termed it raw, because at some point back in time I wanted to expand the function
   #to fill the innermost rings of the sample with less rings towards the center with data from the other core(s).

@@ -31,6 +31,15 @@ bai.out(rwl, diam = NULL)
   the inside of the tree and working outward.  Both methods assume a
   circular cross section (Biondi 1999).  See the references below for
   further details.
+
+  Working inward from the bark only works if the ring widths add up to
+  no more than the radius, \code{\var{diam} / 2}.  When they add up to
+  more, as happens when a core runs past the pith or the diameter is
+  too small, the radius reaches zero before the innermost rings are
+  used up and those rings get areas that are too small or negative.
+  \code{bai.out} then warns and names the series.  Check the diameter,
+  or work from the pith with \code{\link{bai.in}}, or use
+  \code{\link{bakker}}, which scales the widths to the diameter.
 }
 \value{
   An object of class \code{c("bai", "data.frame")} containing the ring
@@ -53,7 +62,7 @@ bai.out(rwl, diam = NULL)
 \note{ DendroLab website: \url{https://dendrolaborg.wordpress.com/} }
 \author{ Code by Andy Bunn based on work from DendroLab, University of
   Nevada Reno, \acronym{USA}.  Patched and improved by Mikko Korpela. }
-\seealso{ \code{\link{bai.in}}, \code{\link{as.bai}} }
+\seealso{ \code{\link{bai.in}}, \code{\link{bakker}}, \code{\link{as.bai}} }
 \examples{
 library(graphics)
 library(utils)

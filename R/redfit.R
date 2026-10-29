@@ -328,8 +328,8 @@ redfit <- function(x, t, tType = c("time", "age"), nsim = 1000, mctest = TRUE,
         rho <- redfitGetrho(t2, x2, dn50, nseg, segskip, lmfitfun)
         ## make sure that tau is non-negative
         if (rho > 1) {
-            warning(gettext("redfitGetrho returned rho = %f, forced to zero",
-                            rho, domain = "R-dplR"),
+            warning(gettextf("redfitGetrho returned rho = %f, forced to zero",
+                             rho, domain = "R-dplR"),
                     domain = NA)
             rho <- 0
         }

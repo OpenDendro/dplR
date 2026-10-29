@@ -4,8 +4,18 @@
     function(rwl)
 {
     rwl <- check.rwl.rwi(rwl)
+    ## AGB Oct 2026: a series with no values, which x[rows, ] keeps on
+    ## purpose, used to stop the whole table with "'ts' object must have one
+    ## or more observations" from acf(), which said nothing about which
+    ## series or why. Its row is kept, so the table still lines up with the
+    ## columns, with NA for every statistic and 0 for the length, and a
+    ## warning names it.
+    n.vals <- colSums(!is.na(as.matrix(rwl)))
+    empty <- names(rwl)[n.vals == 0]
     acf1 <- function(x){
-        ar1 <- acf(x[!is.na(x)], lag.max=1, plot=FALSE)
+        x <- x[!is.na(x)]
+        if (length(x) == 0) return(NA_real_)
+        ar1 <- acf(x, lag.max=1, plot=FALSE)
         ar1$acf[2]
     }
     skew <- function(x){
@@ -28,6 +38,7 @@
     series.stats$first <- the.range[1, ]
     series.stats$last <- the.range[2, ]
     series.stats$year <- series.stats$last - series.stats$first + 1
+    series.stats$year[n.vals == 0] <- 0
     series.stats$mean <- colMeans(rwl2, na.rm=TRUE)
     series.stats$median <- colMedians(rwl2, na.rm=TRUE)
     series.stats$stdev <- colSds(rwl2, na.rm=TRUE)
@@ -39,6 +50,16 @@
     series.stats$ar1 <- apply(rwl2, 2, acf1)
     seq.temp <- -seq_len(4)
     series.stats[, seq.temp] <- round(series.stats[, seq.temp], 3)
+    ## colMeans and friends give NaN for an empty column; NA says "none"
+    for (j in seq_along(series.stats)[seq.temp]) {
+        series.stats[[j]][n.vals == 0] <- NA_real_
+    }
+    if (length(empty) > 0) {
+        warning(sprintf(ngettext(length(empty),
+            "%d series has no values; its statistics are NA: %s. A row subset made with [ keeps empty series on purpose. Use window() or subset() to cut a collection down without them",
+            "%d series have no values; their statistics are NA: %s. A row subset made with [ keeps empty series on purpose. Use window() or subset() to cut a collection down without them"),
+            length(empty), paste(empty, collapse = ", ")), call. = FALSE)
+    }
 
     series.stats
 }

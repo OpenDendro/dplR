@@ -23,8 +23,8 @@
 }
 \value{
   A list containing the following objects:
-    \item{DBHhist_raw}{\code{data.frame} with the reconstructed diameter for each series with column names, row names and dimensions of rwl.}
-  \item{baiBakker_raw}{\code{data.frame} with the basal area increments for each series with column names, row names and dimensions of rwl.}
+    \item{DBHhist_raw}{\code{data.frame} with the reconstructed diameter (cm) at the end of each year for each series, with the column names, row names and dimensions of \code{rwl}.}
+  \item{baiBakker_raw}{An object of class \code{c("bai", "data.frame")} with the basal area increments (mm squared) for each series, with the column names, row names and dimensions of \code{rwl}.  Like the output of \code{\link{bai.in}} and \code{\link{bai.out}}, it carries the provenance record of \code{rwl}, if it has one, and records how it was made in \code{attr(x, "dplR.bai")}.  Versions before 1.8.1 returned both as matrices.}
   
 }
 \references{

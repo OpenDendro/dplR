@@ -1,5 +1,58 @@
 # dplR 1.8.1 (development)
 
+* `bai.out()` warns, and names the series, when a series' ring widths
+  add up to more than the radius (`diam / 2`). Working in from the bark,
+  the radius then reaches zero before the innermost rings are used up,
+  and those rings get areas that are too small or negative. This used to
+  happen silently: on `gp.rwl` with the diameters inside the bark from
+  `gp.dbh`, 65 rings in five series came out negative, and two more
+  series had inner areas that were too small. The help page says so and
+  points to `bai.in()` and `bakker()`.
+
+* `bakker()` returns data frames with the years and series of `rwl`, as
+  its help page said it did, and the ring areas as class `bai`, with the
+  `dplR.bai` record, like `bai.in()` and `bai.out()`. Both parts used to
+  be matrices.
+
+* `morlet()` has a `lag1` argument, the lag-one autocorrelation of the
+  noise its significance levels test against. It was set to 0 inside the
+  function, so the contours `wavelet.plot()` draws have always been a
+  test against white noise, and the help page didn't say so. A
+  chronology with persistence has more power at long periods than white
+  noise, so long periods passed easily: on the `co021` standard
+  chronology, 47% of the plane inside the cone of influence at periods
+  over 32 years passes at the 95% level against white noise and 23%
+  against red noise with the chronology's own lag-one autocorrelation.
+  The default is still 0, so existing plots don't change. `lag1 = NULL`
+  estimates it from the series. The help pages for `morlet()` and
+  `wavelet.plot()` say what the test is.
+
+* `redfit()` printed its warning for an AR(1) estimate above 1 as a
+  vector, `c("redfitGetrho returned rho = %f, forced to zero",
+  "1.0055...")`, because the message was built with `gettext()` in
+  place of `gettextf()`. It now reads "redfitGetrho returned rho =
+  1.005554, forced to zero". A heavily smoothed series, such as a
+  32-year `pass.filt()` low-pass of a chronology, triggers it.
+
+* `rwl.stats()`, and so `summary()` of an rwl object, no longer stops on
+  a series with no values. Such series are what `x[rows, ]` leaves when a
+  collection is cut to years some series don't reach, which `[` keeps on
+  purpose, and the whole table used to fail with "'ts' object must have
+  one or more observations", which named neither the series nor the
+  cause. The series now keeps its row, with a length of 0 and `NA` for
+  every statistic, and a warning names it and points to `window()` and
+  `subset()`. Of 14 common functions tried on `co021` cut this way,
+  these two were the only ones that failed.
+
+* `pass.filt()` stops with a plain message when `W` can't be used.
+  A period longer than half the series used to fail with "only 0's may
+  be mixed with negative subscripts" (the series is padded at each end by
+  twice the longest period). A two-element `W` that mixed a frequency and
+  a period, such as `c(0.05, 5)`, was read as two periods and failed
+  inside `signal::butter()`. Frequencies at or above 0.5 and periods of 2
+  or less now stop too, with a message naming the limit. The help page
+  says so.
+
 * `summary()` of ring-width indices lists any ratio index far above the
   rest of its own series (a robust z-score of the log index over
   `zcrit`, default 5), with its year and whether it is at the start, end

@@ -27,9 +27,11 @@ pass.filt(y, W, type = c("low", "high", "stop", "pass"),
 \details{
   This function applies either a Butterworth or a Chebyshev type I filter of order \code{\var{n}} to a signal and is nothing more than a wrapper for  functions in the \code{signal} package. The filters are designed via \code{\link[signal]{butter}} and \code{\link[signal]{cheby1}}. The filter is applied via \code{\link[signal]{filtfilt}}. 
   
-  The input data (\code{y}) has the mean value subtracted and is then padded via reflection at the start and the end to a distance of twice the maximum period. The padded data and the filter are passed to \code{\link[signal]{filtfilt}} after which the data are unpadded and returned afer the mean is added back. 
+  The input data (\code{y}) has the mean value subtracted and is then padded via reflection at the start and the end to a distance of twice the maximum period. The padded data and the filter are passed to \code{\link[signal]{filtfilt}} after which the data are unpadded and returned after the mean is added back. 
   
-  The argumement \code{\var{W}} can be given in either frequency between 0 and 0.5 or, for convenience, period (minimum value of 2). For low-pass and high-pass filters, \code{\var{W}} must have a length of one. For low-pass and high-pass filters \code{\var{W}} must be a two-element vector (\code{c(low, high)}) specifying the lower and upper boundaries of the filter. 
+  The argument \code{\var{W}} can be given either as frequency (above 0 and below 0.5) or, for convenience, as period (longer than 2). Any value above 1 is read as a period, so both values of a two-element \code{\var{W}} must be given the same way; a mix is an error. For low-pass and high-pass filters, \code{\var{W}} must have a length of one. For band-pass and stop-pass filters \code{\var{W}} must be a two-element vector (\code{c(low, high)}) specifying the lower and upper boundaries of the filter.
+
+  Because of the padding, the longest period in \code{\var{W}} can be at most half the length of \code{\var{y}}. A longer one is an error.
   
   Because this is just a wrapper for casual use with tree-ring data the frequencies and periods assume a sampling frequency of one. Users are encouraged to build their own filters using the \code{signal} package.
 

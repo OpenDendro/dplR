@@ -33,6 +33,13 @@ rwl.stats(rwl)
 
   The \code{\link{summary}} method for class \code{"rwl"} is a wrapper
   for \code{rwl.stats}.
+
+  A series with no values at all, which a row subset made with
+  \code{[} can leave behind (see \code{\link{[.rwl}}), keeps its row in
+  the table, with a length (\code{year}) of 0 and \code{NA} for every
+  statistic, and a warning names it.  Use \code{\link{window.rwl}} or
+  \code{\link{subset.rwl}} to cut a collection down without empty
+  series.
   
 }
 

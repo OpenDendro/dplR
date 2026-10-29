@@ -30,7 +30,9 @@ wavelet.plot(wave.list,
   \item{wavelet.levels}{A \code{numeric} vector.  Values for levels of
     the filled contours for the wavelet plot.}
   \item{add.coi}{A \code{logical} flag.  Add cone of influence?}
-  \item{add.sig}{A \code{logical} flag.  Add contour lines for significance?}
+  \item{add.sig}{A \code{logical} flag.  Add contour lines for
+    significance?  The test is the one \code{\link{morlet}} ran, against
+    white noise unless its \code{\var{lag1}} argument said otherwise.}
   \item{x.lab}{X-axis label.}
   \item{period.lab}{Y-axis label for the wavelet plot.}
   \item{crn.lab}{Y-axis label for the time-series plot.}

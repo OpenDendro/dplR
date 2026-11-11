@@ -11,11 +11,12 @@
                        xlab="",
                        ylab=NULL,
                        ...) {
-  crn <- x
+  # ssf(..., return.info = TRUE) gives a list; plot its chronology
   if("ssfLong" %in% comment(x)){
     x <- x$ssfCrn
   }
-  
+  crn <- x
+
   if(!("crn" %in% class(crn))) stop("'x' must be class crn")
   
   ## Check to see if the crn has ci (from chron.ci)

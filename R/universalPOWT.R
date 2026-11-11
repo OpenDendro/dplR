@@ -8,25 +8,9 @@ universalPOWT<-function (rwl, rescale = FALSE, return.power=FALSE)
   
   if (!is.data.frame(rwl)) 
     stop("'rwl' must be a data.frame")
-  getprec <- function(rwl) {
-    rwl.num <- as.numeric(as.matrix(rwl))
-    rwl.num <- rwl.num[!is.na(rwl.num) & rwl.num != 0]
-    if (length(rwl.num) == 0) {
-      NA_real_
-    }
-    else {
-      rwl.char <- format(rwl.num, scientific = FALSE)
-      if (grepl(".", rwl.char[1], fixed = TRUE)) {
-        maxdig <- nchar(sub("^[^.]*\\.", "", rwl.char[1]))
-      }
-      else {
-        rm.trail.zeros <- sub("0*$", "", rwl.char)
-        n.trail.zeros <- nchar(rwl.char) - nchar(rm.trail.zeros)
-        maxdig <- -min(n.trail.zeros)
-      }
-      10^-maxdig
-    }
-  }
+  # The measurement precision, used below to floor zero spreads and
+  # levels before the logs, comes from powtPrec() (R/powtPrec.R), shared
+  # by all the powt functions.
   fit.lm <- function(rwl) {
     runn.M<-matrix(NA,ncol=ncol(rwl),nrow=nrow(rwl)-1)
     runn.S<-matrix(NA,ncol=ncol(rwl),nrow=nrow(rwl)-1)
@@ -38,7 +22,8 @@ universalPOWT<-function (rwl, rescale = FALSE, return.power=FALSE)
       runn.S[,i] <- abs(drop.1 - drop.n)
     }
     
-    prec <- getprec(rwl)
+    # precision from the most common number of decimals (see R/powtPrec.R)
+    prec <- powtPrec(rwl)
     # AGB -- note typo corrected that let 0 get passed to log resulting in Inf
     #runn.S[runn.M == 0] <- prec
     runn.M[runn.M == 0] <- prec

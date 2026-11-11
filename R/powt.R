@@ -1,4 +1,4 @@
-powt <- function (rwl, method = "universal", rescale = FALSE,
+powt <- function (rwl, method = "cook", rescale = FALSE,
                   return.power=FALSE) 
 {
   # add a check for negative nums
@@ -16,7 +16,7 @@ powt <- function (rwl, method = "universal", rescale = FALSE,
   if( !(is.character(method) && length(method) == 1) )
     stop("'method' must be a character vector of length 1")
   
-  known.methods <- c("universal", "cook")
+  known.methods <- c("cook", "universal")
   
   method2 <- match.arg(arg = method,
                        choices = known.methods,

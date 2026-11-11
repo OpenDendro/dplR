@@ -6,7 +6,7 @@
   Power transformation of tree-ring width.
 }
 \usage{
-powt(rwl, method = "universal", rescale = FALSE,
+powt(rwl, method = "cook", rescale = FALSE,
      return.power=FALSE)
 }
 \arguments{
@@ -14,8 +14,8 @@ powt(rwl, method = "universal", rescale = FALSE,
   as that produced by \code{\link{read.rwl}} or \code{\link{read.fh}}}
     
   \item{method}{ a \code{character} vector to determine the transform
-    method.  See details below.  Possible values are either "universal" or 
-    "cook." Pattern matching is used.}
+    method.  See details below.  Possible values are "cook" (the default)
+    and "universal." Pattern matching is used.}
 
   \item{rescale}{ \code{logical} flag.  If \code{TRUE} then each transformed 
   series is rescaled to have the orginal mean and standard deviation of the 
@@ -50,13 +50,28 @@ powt(rwl, method = "universal", rescale = FALSE,
   regression coefficient b from a linear model  
   \eqn{\log S = k + b \log M}{log S = k + b log M} is then used for the 
   power transform \eqn{\star{R}_t = R_t^{1-b}}{R*_t = R_t^(1-b)}.
+  When \eqn{1 - b \le 0}{1 - b <= 0} the spread grows at least as fast as
+  the level, which no positive power can stabilize, so the series is log
+  transformed with a warning that names it. Zero rings in a logged series
+  become \code{-Inf}. The power returned with \code{return.power=TRUE} is
+  the fitted \eqn{1 - b}{1 - b}, so a value at or below zero marks a
+  logged series. Before \pkg{dplR} 1.8.1 the power was
+  \eqn{|1 - b|}{|1 - b|}, which gave such series a weak positive power.
 
-  The procedure above is modified with \code{method="universal"} where all samples 
+  The procedure above is modified with \code{method="universal"} where all samples
   are used simultaneously in a linear mixed-effects model with time (year)
-  as a random effect: \code{lmer(log S ~ log M + (1|year)}. This "universal" or 
-  "signal free" approach accounts for the common year effect across all of the 
-  series in \code{rwl} and should address that not every year has the same 
-  change in environmental conditions to the previous year. 
+  as a random effect: \code{lmer(log S ~ log M + (1|year)}. This "universal"
+  approach allows for the common year effect across all of the
+  series in \code{rwl}, since not every year has the same
+  change in environmental conditions to the previous year. It fits a single
+  power and applies it to every series. Trees can differ in how strongly
+  their spread depends on their level, and the model has no term for each
+  series, so the fitted slope mixes the relationship within series with the
+  one between them. On data where the series differ, one power can leave
+  much of the dependence in some series and over-correct others. For that
+  reason \code{method="cook"} is the default, and \code{method="universal"}
+  is best kept for collections where one power is expected to suit every
+  tree. Before \pkg{dplR} 1.8.1 the default was \code{method="universal"}.
   
   The \code{rescale} argument will return the series with a mean and standard
   deviation that matches the input data. While this is a common convention,

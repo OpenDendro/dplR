@@ -1,5 +1,42 @@
 # dplR 1.8.1 (development)
 
+* `powt()` now defaults to `method = "cook"`, which fits a power to each
+  series as Cook and Peters (1997) did. The default was
+  `method = "universal"`, which fits one power to every series in a
+  mixed model with no term for each series. Trees differ in how strongly
+  their spread depends on their level, and one power can leave that
+  dependence in some series while over-correcting others. In simulated
+  collections where half the trees have multiplicative noise and half
+  additive, the universal power under-corrects the first group and
+  over-corrects the second, and the per-series powers do well on both.
+  The universal method's year term does help on some data: on `co021`,
+  where climate moves the level and spread of neighboring rings
+  together, it leaves less of the dependence than the per-series fit
+  does. Try both. To get the old results, pass `method = "universal"`. A single series now works with the default.
+  dplPy's `powt()` already defaulted to `"cook"`.
+
+* `powt(method = "cook")` log transforms a series whose spread grows at
+  least as fast as its level (fitted power `1 - b <= 0`), with a warning
+  that names it, as `method = "universal"` already did. It used the
+  absolute value, `abs(1 - b)`, so a slope of 1.4 became a power of 0.4,
+  a weaker transform than the series needed, with no message. The power
+  returned with `return.power = TRUE` is now the fitted `1 - b`, so a
+  value at or below zero marks a logged series. Zero rings in a logged
+  series become `-Inf`, and a second warning names those series.
+
+* `powt()` guessed the measurement precision, which it uses in place of
+  zero spreads and levels before taking logs, from the decimals of one
+  value padded by `format()`. A single value with many decimals, such as
+  a ring filled by `fill.internal.NA()`, moved the precision for the
+  whole collection. On `wa082` with series 712011's missing 1900 ring
+  filled, the precision dropped from 0.01 to 1e-7, each of the 102 pairs
+  of equal rings got a log spread near -16 where it should have been
+  -4.6, and the median `method = "cook"` power fell from 0.28 to 0.11
+  (the universal power from 0.22 to 0). The precision now comes from the
+  most common number of decimals, so one odd value doesn't change it.
+  When most values have more than eight decimals, as transformed data
+  do, `powt()` warns that it can't tell the precision.
+
 * `bai.out()` warns, and names the series, when a series' ring widths
   add up to more than the radius (`diam / 2`). Working in from the bark,
   the radius then reaches zero before the innermost rings are used up,
@@ -148,6 +185,12 @@
   read with the default `read.tucson()` settings, so it shows what the
   provenance record holds. Many of the trees grow much faster from the
   1910s on, and the file has 29 zero rings.
+* `ssf(return.info = TRUE)` returns a plain list. It had class `"crn"`
+  and `"data.frame"`, so `print()` and `head()` showed 0 rows and
+  `nrow()` and `summary()` gave nonsense about a chronology that was
+  not there. `plot.crn()` on the list now plots the final chronology,
+  `ssfCrn`; it failed with "'x' and 'y' lengths differ". Code that
+  takes elements out of the list with `$` or `[[` is unaffected.
 * When the curve fitted in `ssf()` reaches zero or below, the error
   now names the series, the iteration and the year, gives the lowest
   value of the chronology and its year, and explains the cause: in sites
@@ -171,6 +214,30 @@
   unconverged chronology is not for analysis. CRUST returns unconverged
   chronologies without a warning. The help page now lists the convergence
   vector as `MAD_Vec`, the name the function returns (it said `MAD_out`).
+* `ssf()` has a new argument, `curve.floor` (default `NULL`, off). If set,
+  every fitted curve, the first fit included, is raised to at least that
+  value, as CRUST and dplPy's `preset = "crust"` do with 0.02 mm. It lets
+  `ssf()` run where a spline bends to zero at the end of a series
+  (`nm046`, series 644081). A floored curve can give very large indices
+  (19 for 644081 in 1969), so `ssf()` warns with the series, years and
+  largest index, and returns the floored years in `attr(, "floored")` and
+  `flooredCurves`. Error [1] now mentions the option.
+* `ssf()` has two more arguments for CRUST's steps, both off by default.
+  `rescale = "ratio"` puts each signal-free series back on its mean by
+  multiplying instead of adding a constant. `crn.guard` keeps the raw
+  measurements in years where the chronology is below it (CRUST uses
+  0.01), warns with the years, and lets a year with every ring absent
+  through instead of stopping with error [3] or [4] (`ca533`). With
+  `rescale = "ratio"`, `crn.guard = 0.01`, `curve.floor = 0.02` and
+  `max.iterations = 40`, `ssf()` matches dplPy's `ssf(preset = "crust")`.
+  `rescale = "ratio.masked"` is CRUST's version of the ratio: the means
+  use only years with more than one series, and only those years are
+  scaled.
+* `ssf()` gains `biweight` (default `TRUE`); `FALSE` uses the arithmetic
+  mean for every chronology, as CRUST does by default. `max.iterations = 1`
+  is allowed with `return.unconverged = TRUE`. With these and the CRUST
+  arguments above, `ssf()` reproduces CRUST at a fixed number of
+  iterations to about 1e-5 or better (see the help page).
 * `strip.rwl()` accepts ring-width indices (class `"rwi"`) and strips
   them as they are, returning indices. A series is then judged on the
   variation the chronology will keep. Indices used to be treated as

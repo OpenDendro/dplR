@@ -10,26 +10,9 @@ capPOWT <- function (rwl, rescale = FALSE, return.power=FALSE)
     if (!is.logical(rescale))
         stop("'rescale' must be either FALSE (the default) or TRUE")
   
-    # used to set min numb to zeros.
-    getprec <- function(rwl) {
-        rwl.num <- as.numeric(as.matrix(rwl))
-        rwl.num <- rwl.num[!is.na(rwl.num) & rwl.num != 0]
-        if (length(rwl.num) == 0) {
-            NA_real_
-        }
-        else {
-            rwl.char <- format(rwl.num, scientific = FALSE)
-            if (grepl(".", rwl.char[1], fixed = TRUE)) {
-                maxdig <- nchar(sub("^[^.]*\\.", "", rwl.char[1]))
-            }
-            else {
-                rm.trail.zeros <- sub("0*$", "", rwl.char)
-                n.trail.zeros <- nchar(rwl.char) - nchar(rm.trail.zeros)
-                maxdig <- -min(n.trail.zeros)
-            }
-            10^-maxdig
-        }
-    }
+    # The measurement precision, used below to floor zero spreads and
+    # levels before the logs, comes from powtPrec() (R/powtPrec.R), shared
+    # by all the powt functions.
     fit.lm <- function(series) {
         n <- length(series)
         drop.1 <- series[-1]
@@ -42,21 +25,62 @@ capPOWT <- function (rwl, rescale = FALSE, return.power=FALSE)
         b <- mod[["coefficients"]][2]
         1 - b
     }
+    # Transform one series. fit.lm() returns p = 1 - b, where b is the
+    # slope of log(spread) on log(level).
+    #   0 < p     : spread grows more slowly than level (b < 1), or not at
+    #               all. Raising to the power p removes the dependence.
+    #   p <= 0    : spread grows at least as fast as level (b >= 1). No
+    #               positive power can remove that; the strongest standard
+    #               transform is the log (the limit of x^p as p -> 0), so
+    #               take logs, as method = "universal" does.
+    # Until dplR 1.8.1 this used p <- abs(1 - b). That turned b = 1.4 into
+    # p = 0.4, a weaker transform than the series needs, in the wrong
+    # direction, with no message.
     transf <- function(x) {
         Xt <- x
         X.nna <- which(!is.na(x))
         X <- na.omit(x)
-        p <- abs(fit.lm(X))
-        
-        X2 <- X^p
+        # unname() so the slope's coefficient name ("") doesn't follow p
+        p <- unname(fit.lm(X))
+        if (p <= 0) {
+            X2 <- log(X)
+        } else {
+            X2 <- X^p
+        }
         Xt[X.nna] <- X2
-        res <- list(Xt=Xt,p=p) 
+        res <- list(Xt=Xt,p=p)
         return(res)
     }
-    prec <- getprec(rwl)
-    
-    xt <- lapply(rwl, FUN = function(x) transf(x)[['Xt']])
-    p <- unlist(lapply(rwl, FUN = function(x) transf(x)[['p']]))
+    # one precision for the whole collection, from the most common
+    # number of decimals (see R/powtPrec.R)
+    prec <- powtPrec(rwl)
+
+    # Fit each series once. (This used to call transf() twice per series,
+    # once for the data and once for the power.)
+    fits <- lapply(rwl, transf)
+    xt <- lapply(fits, `[[`, "Xt")
+    p <- vapply(fits, `[[`, numeric(1), "p")
+
+    # Say which series were logged and what that does. The power returned
+    # with return.power = TRUE is the fitted p, so a value <= 0 there
+    # marks a logged series.
+    logged <- names(rwl)[p <= 0]
+    if (length(logged) > 0) {
+        warning("Power estimate is <= 0 for ", length(logged),
+                " series (", paste(logged, collapse = ", "),
+                "): their spread grows at least as fast as their level, ",
+                "so they were log transformed.", call. = FALSE)
+        # A zero ring (a locally absent ring) has no log. It comes back
+        # as -Inf, which will break detrending, so name those series too.
+        has.zero <- logged[vapply(rwl[logged],
+                                  function(x) any(x == 0, na.rm = TRUE),
+                                  logical(1))]
+        if (length(has.zero) > 0) {
+            warning("Log transformed series with zero rings (",
+                    paste(has.zero, collapse = ", "),
+                    ") have -Inf where the zeros were.", call. = FALSE)
+        }
+    }
     if (rescale) {
         sds <- lapply(rwl, FUN = function(x) sd(x, na.rm = TRUE))
         means <- lapply(rwl, FUN = function(x) mean(x, na.rm = TRUE))

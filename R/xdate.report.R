@@ -36,6 +36,12 @@ xdate.report <- function(x, seg.length = 50, bin.floor = 100, nyrs = 32,
     if (!is.list(meta)) {
         stop("'meta' must be a list")
     }
+    ## AGB Nov 2026: check nyrs before the per-series screen below. That
+    ## screen turns a spline error into an excluded series, so a bad nyrs
+    ## (0, say) used to exclude every series and return an empty report.
+    if (!is.null(nyrs)) {
+        check.normalize.args(NULL, nyrs, prewhiten, NULL)
+    }
     notes <- character(0)
 
     ## x is a path or an rwl object. A path is read here, and its name and

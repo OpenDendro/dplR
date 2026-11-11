@@ -39,7 +39,7 @@ write.xdate.report(x, fname, type = NULL, \dots)
     locating the first segment, as in \code{\link{corr.rwl.seg}}.
     Stepped down to 50, 10 and then 0, with a note, if no segment can
     be tested at the value given. }
-  \item{nyrs}{ \code{NULL} or a number greater than zero giving the
+  \item{nyrs}{ \code{NULL} or a nonzero number giving the
     rigidity of the smoothing spline each series is divided by before
     correlating, as in \code{\link{corr.rwl.seg}}.  The default is
     \acronym{COFECHA}\enc{’}{'}s 32 years. }

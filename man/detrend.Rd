@@ -35,7 +35,9 @@ detrend(rwl, y.name = names(rwl), make.plot = FALSE,
   
   \item{nyrs}{ a number giving the rigidity of the smoothing spline,
     defaults to 0.67 of series length if \code{\var{nyrs}} is
-    \code{NULL}. }
+    \code{NULL}. For method \code{"Spline"} it can be years, a
+    proportion of series length (0 to 1) or a negative percent of it
+    (-67 for a 67\% spline). See \code{\link{caps}}. }
   
   \item{f}{ a number between 0 and 1 giving the frequency response or
     wavelength cutoff.  Defaults to 0.5. }

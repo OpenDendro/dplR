@@ -99,3 +99,18 @@ o [andybunn] Druckenbrod disturbance detrending. modendro
 
 o [andybunn] revamp the plots. Most of dplR's plots were built before
   2010 and need attention.
+
+o [andybunn] negative nyrs as percent of series length, as ARSTAN does
+  (its spline option "<-9"). caps() done 2026-11-11 (uncommitted): -67
+  is a 67% spline, the proportion form (0, 1] stays, so nyrs = 1 is
+  100% of n, the same rule as dplPy's get_period(). caps() stops when
+  nyrs truncates below a 2-year spline (0 gave NaN, 1 a flat line).
+  detrend(method = "Spline") and the xdating functions (through
+  check.normalize.args() and nyrs.rwi() in helpers.R, done the same
+  day) pick it up; xdate.report() now stops on a bad nyrs (it
+  used to exclude every series); NEWS, help pages for caps, detrend and
+  the ten xdating functions, and tests/testthat/test-caps-nyrs.R. dplR keeps
+  truncating nyrs to whole years (decided 2026-11-11); note
+  for Kevin in workspace/note-kevin-spline-rounding.md. Still open:
+  - The dplR.detrend record and the per-series stats keep nyrs as given
+    (-67 or 0.67), not the n-year spline it gave. Record both?

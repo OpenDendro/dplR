@@ -12,7 +12,7 @@ caps(y, nyrs = 32, f = 0.5)
 }
 \arguments{
   \item{y}{ a \code{numeric} vector, typically a tree-ring series. }
-  \item{nyrs}{ a number greater than zero, affecting the rigidity of the spline.  If \code{nyrs} is between zero and one it will be treated as percentage of the length of the series. E.g., a value of 0.667 would 0.667 * length(y) or what is often called a 2/3 spline in the tree-ring literature. When \code{\var{f}} is kept constant, a larger \code{\var{nyrs}} produces a more rigid spline.}
+  \item{nyrs}{ a nonzero number giving an \code{\var{nyrs}}-year spline, which sets its rigidity. It can be given three ways. A value greater than one is in years, so 32 gives a 32-year spline. A value greater than zero and up to one is a proportion of the length of the series, so 0.67 gives 0.67 * length(y), often called a 2/3 spline in the tree-ring literature, and 1 gives the full length. A negative value is a percent of the length of the series, as in ARSTAN, so -67 also gives a 67\% spline. When \code{\var{f}} is kept constant, a larger \code{\var{nyrs}} produces a more rigid spline.}
   \item{f}{ a number between 0 and 1 giving the frequency response at a wavelength of \code{\var{nyrs}} years.  When \code{\var{nyrs}} is kept constant, a smaller \code{\var{f}} produces a more rigid spline: At one extreme, \code{\var{f} = 0} causes the function to return the least-squares straight line fit to the data.  At the other extreme, as \code{\var{f}} approaches 1 the result approaches the natural spline, i.e. the function outputs \code{\var{y}}. The default value is 0.5 and shouldn't be changed without a good reason.}
 }
 \details{
@@ -24,10 +24,13 @@ caps(y, nyrs = 32, f = 0.5)
   
   Note: \code{\var{nyrs}} is passed to the Fortran subroutine as an
   integer, so a fractional \code{\var{nyrs}} is truncated. This matters
-  when \code{\var{nyrs}} is given as a proportion of series length, which
-  is rarely a whole number. The effect on the fitted curve is small but not
-  zero; see the \dQuote{Mathematical Details} vignette for a worked
-  comparison.
+  when \code{\var{nyrs}} is given as a proportion or percent of series
+  length, which is rarely a whole number. The effect on the fitted curve
+  is small but not zero; see the \dQuote{Mathematical Details} vignette
+  for a worked comparison. \code{\var{caps}} stops if \code{\var{nyrs}}, after any
+  conversion from a proportion or percent, truncates to less than a
+  2-year spline. A 0-year spline used to return \code{NaN} and a 1-year
+  spline a nearly flat line.
 
   Note: \code{\var{caps}} stops if there are any \code{NA} values in \code{\var{y}}. A smoothing spline through a series with missing values is not defined, and the caller has to decide what to do about the gap rather than have one chosen silently. Before version 1.8.0 such a call returned a vector of \code{NA}, which looked like an answer and was not. See examples, and \code{\link{fill.internal.NA}}.
 }
@@ -67,6 +70,8 @@ series <- series[!is.na(series)]
 plot(series, type = "l", ylab = "Ring Width (mm)", col = "grey")
 lines(caps(series, nyrs = 10), col = "red", lwd = 2)
 lines(caps(series, nyrs = 100), col = "green", lwd = 2)
+# A 67\% spline, given as a proportion or (as in ARSTAN) a negative percent
+all.equal(caps(series, nyrs = 0.67), caps(series, nyrs = -67))
 # The default, a 32-year spline since version 1.7.8
 lines(caps(series), col = "blue", lwd = 2)
 legend("topright",

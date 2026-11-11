@@ -153,7 +153,10 @@ detrend.series(y, y.name = "", make.plot = TRUE,
   The \code{"Spline"} approach uses a spline where the frequency
   response is 0.50 at a wavelength of 0.67 * \dQuote{series length in
   years}, unless specified differently using \code{\var{nyrs}} and
-  \code{\var{f}} in the function \code{\link{caps}}. If some of the fitted 
+  \code{\var{f}} in the function \code{\link{caps}}. For this method
+  \code{\var{nyrs}} can be years, a proportion of the series length (0
+  to 1) or, as in ARSTAN, a negative percent of it (-67 for a 67\%
+  spline). If some of the fitted
   values are not positive then method \code{"Mean"} is used.
 
   These methods are chosen because they are commonly used in

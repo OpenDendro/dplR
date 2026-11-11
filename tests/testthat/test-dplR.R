@@ -491,7 +491,7 @@ test.caps <- function() {
     test_that("caps stops on bad parameters", {
         expect_error(caps(y, f=-1), "between 0 and 1")
         expect_error(caps(y, f=2), "between 0 and 1")
-        expect_error(caps(y, nyrs=0), "'nyrs' must be a number greater than 0")
+        expect_error(caps(y, nyrs=0), "'nyrs' must be a single nonzero number")
     })
 }
 test.caps()

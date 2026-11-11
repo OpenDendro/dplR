@@ -14,6 +14,27 @@
   `dplR.bai` record, like `bai.in()` and `bai.out()`. Both parts used to
   be matrices.
 
+* `caps()`, and so `detrend(method = "Spline")`, takes a negative `nyrs`
+  as a percent of the series length, as ARSTAN does: `nyrs = -67` is a
+  67% spline, the same as `nyrs = 0.67`. This is the rule dplPy uses.
+  The crossdating functions that take `nyrs` (`corr.rwl.seg()`,
+  `corr.series.seg()`, `ccf.series.rwl()`, `interseries.cor()`,
+  `rwi.stats.running()`, `series.rwl.plot()`, `xskel.plot()`,
+  `xskel.ccf.plot()`, `xdate.floater()` and `xdate.report()`) accept
+  it too, resolved against each series' own length. A series too short
+  for the spline is named in the error.
+  `caps()` now stops when `nyrs`, after converting a proportion or
+  percent, truncates to less than a 2-year spline. A 0-year spline used
+  to return `NaN` and a 1-year spline a nearly flat line, with no
+  message. The warning for an `nyrs` longer than the series now checks
+  the converted value.
+
+* `xdate.report()` stops on an invalid `nyrs` (0, for example). Its
+  per-series spline screen used to turn the error into an excluded
+  series, so every series was excluded and the report came back with
+  no segment correlations and only a note saying no series could be
+  crossdated.
+
 * `morlet()` has a `lag1` argument, the lag-one autocorrelation of the
   noise its significance levels test against. It was set to 0 inside the
   function, so the contours `wavelet.plot()` draws have always been a
@@ -136,6 +157,20 @@
   does not prevent this, and that removing the series named usually
   moves the failure to others. The error used to say only that the
   curve had values <= 0. Reported by a dplPy user.
+* `ssf()` stops before any fitting when a series has missing values
+  inside it, with error [7] naming each series and the years. It used to
+  stop partway through with "'NA's are not allowed in the middle of the
+  series", which named neither.
+* `ssf()` has a new argument, `return.unconverged` (default `FALSE`). By
+  default `ssf()` still stops with error [2] when the stopping criterion
+  is not met within `max.iterations`, and returns nothing. With
+  `return.unconverged = TRUE` it returns the last iteration anyway, marked
+  `attr(, "converged") = FALSE` (and `converged` in the `return.info`
+  list), so a runaway can be shown in a reproducible example. It warns
+  when the argument is set and again when the result is unconverged; an
+  unconverged chronology is not for analysis. CRUST returns unconverged
+  chronologies without a warning. The help page now lists the convergence
+  vector as `MAD_Vec`, the name the function returns (it said `MAD_out`).
 * `strip.rwl()` accepts ring-width indices (class `"rwi"`) and strips
   them as they are, returning indices. A series is then judged on the
   variation the chronology will keep. Indices used to be treated as

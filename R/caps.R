@@ -23,16 +23,32 @@
   if(!is.numeric(f) || length(f) != 1 || f < 0 || f > 1)
     stop("'f' must be a number between 0 and 1")
   
-  if(!is.numeric(nyrs) || length(nyrs) != 1 || nyrs <= 0)
-    stop("'nyrs' must be a number greater than 0")
+  if(!is.numeric(nyrs) || length(nyrs) != 1 || !is.finite(nyrs) ||
+     nyrs == 0)
+    stop("'nyrs' must be a single nonzero number")
+
+  ## AGB Nov 2026: three ways to give an n-year spline, the same rule as
+  ## dplPy's get_period(). A negative nyrs is a percent of the series
+  ## length, as in ARSTAN (nyrs = -67 is a 67% spline). A value in (0, 1]
+  ## is a proportion of the length (0.67, so nyrs = 1 is 100%). Above 1 it
+  ## is years.
+  nyrs.in <- nyrs
+  if(nyrs < 0)
+    nyrs <- abs(nyrs) / 100 * nobs
+  else if(nyrs <= 1)
+    nyrs <- nyrs * nobs
+
+  ## The Fortran takes nyrs as an integer. Below a 2-year spline the
+  ## fit is not defined: 0 returns NaN and 1 a near-flat line, both of
+  ## which look like answers. Refuse rather than hand them back.
+  if(as.integer(nyrs) < 2)
+    stop(gettextf("'nyrs' = %s gives a %s-year spline for a series of length %d; the spline needs at least 2 years",
+                  format(nyrs.in), format(signif(nyrs, 4)), nobs),
+         domain = NA)
 
   if(nyrs > nobs)
     warning("Spline stiffness (nyrs) is greater than the length of series (y)")
-  # if nyrs is between 0 and 1 treat it as % spline.
-  # e,g, nyrs = 0.667 would be a 2/3 spline
-  if(nyrs <= 1 & nyrs > 0)
-    nyrs <- nyrs * nobs
-  
+
   # some error checks
   ySpl <-.Call(dplR.c_caps_f,
                y = as.double(y),

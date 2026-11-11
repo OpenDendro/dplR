@@ -13,6 +13,7 @@ ssf(rwl,
     max.iterations = 25, 
     mad.threshold = 5e-4,
     recode.zeros = FALSE,
+    return.unconverged = FALSE,
     return.info = FALSE, 
     verbose = TRUE)
 }
@@ -37,6 +38,8 @@ ssf(rwl,
 
   \item{recode.zeros}{ a \code{logical} flag.  Replace values of zero in \code{rwl} with 0.001 if TRUE. }
 
+  \item{return.unconverged}{ a \code{logical} flag.  If \code{FALSE} (the default), the function stops with error [2] when the stopping criterion is not met within \code{max.iterations}, and returns nothing.  If \code{TRUE}, it warns and returns the last iteration anyway, marked \code{attr(, "converged") = FALSE}.  This is for showing how signal-free fails, for example a runaway in a reproducible example, and not for analysis; the function warns every time it is set.  See \sQuote{Details}. }
+
   \item{return.info}{ a \code{logical} flag.  If \code{TRUE}, details
     about models and data will be added to the return value.  See
     \sQuote{Value}. }
@@ -60,12 +63,16 @@ This function creates a simple signal-free chronology that loosely follows the p
   
     The input object (\code{rwl}) should be of \code{class} \code{rwl}. If it not, the function will attempt to coerce it using \code{\link{as.rwl}} and a warning will be issued.
   
+  If the stopping criterion is not met within \code{max.iterations}, the function stops with error [2] and returns nothing. In some collections the change between iterations stops shrinking and grows instead (a runaway), and an unconverged chronology can look reasonable while carrying a trend the method added. \code{return.unconverged = TRUE} returns the last iteration anyway, so the failure can be shown and studied; it warns when set and again when the result is unconverged, and marks the chronology with \code{attr(, "converged") = FALSE}. CRUST (Melvin and Briffa 2014) returns an unconverged chronology without a warning.
+
+  Each series must be unbroken from its first ring to its last. If any series has missing values inside it, the function stops with error [7], naming the series and the years, before any fitting. Fill the gaps with \code{\link{fill.internal.NA}} or remove those series.
+
   Sites with many absent rings can defeat the method. Step three adds a constant to each series, and in years where the chronology is low, step two inflates the signal-free measurements, so the constant becomes large enough to push the narrowest and absent rings below zero. The curve in step five then reaches zero or below and the function stops with error [1], naming the series, the iteration and the year. Because the cause lies in the chronology, removing those series usually moves the failure to others, and \code{recode.zeros} does not prevent it. CRUST (Melvin and Briffa 2014) rescales and guards these steps more carefully.
 
   See the references below for further details on detrending. It's a dark art.
 }
 \value{
-    An object of of class \code{crn} and \code{data.frame} with the signal-free chronology and the sample depth. The years are stored as row numbers.
+    An object of class \code{crn} and \code{data.frame} with the signal-free chronology and the sample depth. The years are stored as row numbers. Its attribute \code{"converged"} is \code{TRUE}, or \code{FALSE} for an unconverged chronology returned with \code{return.unconverged = TRUE}.
     
     If \code{return.info} is \code{TRUE} a \code{list} containing ouptput by iteration (k): 
     
@@ -74,6 +81,8 @@ This function creates a simple signal-free chronology that loosely follows the p
     \item{k}{a \code{numeric} containing the number of iterations. }
     
     \item{ssfCrn}{ the signal-free chronology as above. } 
+
+    \item{converged}{ \code{TRUE} if the stopping criterion was met; \code{FALSE} only when \code{return.unconverged = TRUE} returned an unconverged chronology. }
 
     \item{sfRW_Array}{ an \code{array} of years by series by iteration (0:k) that holds the signal free measurements. The values in \code{sfRW_Array[,,1]} are what is used at the start of the iterative process (iteration 0) which here are the original data.}     
 
@@ -89,7 +98,7 @@ This function creates a simple signal-free chronology that loosely follows the p
 
     \item{hfCrnResids_Mat}{ a \code{matrix} of years by k-1 that holds the differences between the kth and the kth-1 high frequency chronology residuals. }   
     
-    \item{MAD_out}{ a \code{vector} containing the median absolute difference between iteration k and k-1. }
+    \item{MAD_Vec}{ a \code{vector} containing the median absolute difference between iteration k and k-1. }
     
 
 }

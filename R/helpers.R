@@ -177,9 +177,11 @@ check.normalize.args <- function(n, nyrs, prewhiten, ar.order.max) {
         if (!is.null(n)) {
             stop("'n' and 'nyrs' cannot both be set: each removes low-frequency variation before the correlations are computed (a Hanning filter and a smoothing spline, respectively), so use one or the other")
         }
+        ## A negative nyrs is a percent of each series' length, as in
+        ## ARSTAN; caps() resolves it. See caps().
         if (!is.numeric(nyrs) || length(nyrs) != 1 || !is.finite(nyrs) ||
-            nyrs <= 0) {
-            stop("'nyrs' must be a single number greater than 0")
+            nyrs == 0) {
+            stop("'nyrs' must be a single nonzero number")
         }
     }
     if (!is.null(ar.order.max)) {
@@ -240,7 +242,14 @@ nyrs.rwi <- function(x, nyrs, name) {
     }
     y <- as.numeric(x[span])
     y[y == 0] <- 0.001
-    fit <- caps(y, nyrs = nyrs)
+    ## A proportion or percent nyrs resolves against this series' length,
+    ## so a short series can get a spline under 2 years, which caps()
+    ## refuses. Name the series in that message.
+    fit <- tryCatch(caps(y, nyrs = nyrs), error = function(e) {
+        stop(gettextf("series %s: %s. Remove the series, or use a longer 'nyrs'",
+                      name, conditionMessage(e), domain = "R-dplR"),
+             call. = FALSE)
+    })
     if (any(fit <= 0)) {
         stop(gettextf("the 'nyrs' spline for series %s is not all positive, so dividing by it would give negative or infinite indices. Remove the series, or detrend the data yourself with detrend() and pass the indices with 'nyrs = NULL'",
                       name, domain = "R-dplR"), call. = FALSE)

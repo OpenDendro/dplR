@@ -5,10 +5,23 @@
                   max.iterations = 25, 
                   mad.threshold = 5e-4,
                   recode.zeros = FALSE,
-                  return.info = FALSE, 
+                  return.unconverged = FALSE,
+                  return.info = FALSE,
                   verbose = TRUE)
 {
-  
+
+  # return.unconverged is for showing how signal-free fails (e.g., a
+  # runaway in a reproducible example), never for analysis. Say so every
+  # time it is on.
+  if(!is.logical(return.unconverged) || length(return.unconverged) != 1 ||
+     is.na(return.unconverged)){
+    stop("'return.unconverged' must be TRUE or FALSE.", call. = FALSE)
+  }
+  if(return.unconverged){
+    warning(gettext("return.unconverged = TRUE: if the stopping criterion is not met within max.iterations, ssf returns the last chronology anyway. An unconverged signal-free chronology is not a finished result and should not be used for analysis. Use this only to show how the method fails.",
+                    domain = "R-dplR"), call. = FALSE)
+  }
+
   if(max.iterations > 25){
     warning("Having to set max.iterations > 25 in order to meet a stopping criteria  is generally a sign that the data are not ideal for signal free detrending.")
   }
@@ -65,7 +78,34 @@
   
   # validate and copy rwl
   dat <- check.rwl(rwl)
-  
+
+  # [7] Missing values inside a series. Each series gets one curve from its
+  # first ring to its last, and dropping the gap would join the rings on
+  # either side as if they were consecutive years. Stop here, naming the
+  # series and years, before any fitting.
+  gapYrs <- lapply(dat, function(x) {
+    i <- find.internal.na(x)
+    as.numeric(rownames(dat))[i[i != 0]]
+  })
+  gapYrs <- gapYrs[lengths(gapYrs) > 0]
+  if (length(gapYrs) > 0) {
+    where <- vapply(names(gapYrs), function(s) {
+      y <- gapYrs[[s]]
+      shown <- paste(head(y, 5), collapse = ", ")
+      if (length(y) > 5) {
+        shown <- paste(shown, gettextf("and %d more", length(y) - 5,
+                                       domain = "R-dplR"))
+      }
+      sprintf("%s (%s)", s, shown)
+    }, character(1))
+    stop(sprintf(ngettext(length(gapYrs),
+                          "[7] %d series has missing values inside it: %s. ssf fits one curve to each series from its first ring to its last and cannot fit across a gap. Fill the gap first (see fill.internal.NA) or remove the series. See help (?ssf).",
+                          "[7] %d series have missing values inside them: %s. ssf fits one curve to each series from its first ring to its last and cannot fit across a gap. Fill the gaps first (see fill.internal.NA) or remove those series. See help (?ssf).",
+                          domain = "R-dplR"),
+                 length(gapYrs), paste(where, collapse = "; ")),
+         call. = FALSE)
+  }
+
   # recode zeros to 0.001 if asked.
   if(recode.zeros){dat[dat==0] <- 0.001}
   
@@ -147,7 +187,9 @@
                        pos.slope=TRUE){
     
     
-    ## Remove NA from the data (they will be reinserted later)
+    ## Drop the leading and trailing NA (the years before and after the
+    ## series) and put them back after fitting, so the curve lines up with
+    ## the full column. Interior NA are stopped before this (msg [7]).
     good.y <- which(!is.na(y))
     if(length(good.y) == 0) {
       stop("all values are 'NA'")
@@ -291,6 +333,7 @@
   }
   
   iterationNumber <- 2 # Start on 2 b/c we did one above
+  converged <- TRUE    # set FALSE only if returned unconverged
   
   while(medianAbsDiff > mad.threshold){
     k = iterationNumber
@@ -357,7 +400,16 @@
     }
     
     if(iterationNumber==max.iterations & medianAbsDiff > mad.threshold){
-      stop(maxIterMsg)
+      if(!return.unconverged){
+        stop(maxIterMsg)
+      }
+      # Asked to return it anyway. Flag it and say how far off it is.
+      converged <- FALSE
+      warning(gettextf("ssf did not converge: after %d iterations the median absolute difference is %.5f, %.1f times the threshold of %g (it was %.5f at the previous iteration). The chronology returned is the last iteration and is marked attr(, \"converged\") = FALSE. Do not use it for analysis.",
+                       k, medianAbsDiff, medianAbsDiff / mad.threshold,
+                       mad.threshold, if (k > 2) MAD_Vec[k-2] else NA_real_,
+                       domain = "R-dplR"), call. = FALSE)
+      break
     }
     iterationNumber <- iterationNumber + 1
   }
@@ -384,9 +436,14 @@
   finalCrn <- data.frame(sfc=sfCrn_Mat[,k],samp.depth=datSampDepth)
   row.names(finalCrn) <- row.names(dat)
   class(finalCrn) <- c("crn", "data.frame")
-  
-  if(verbose){ 
-    cat("Simple Signal Free Chronology Complete \n")
+  attr(finalCrn, "converged") <- converged
+
+  if(verbose){
+    if(converged){
+      cat("Simple Signal Free Chronology Complete \n")
+    } else {
+      cat("Simple Signal Free Chronology NOT CONVERGED (returned because return.unconverged = TRUE) \n")
+    }
   }
   
   
@@ -439,6 +496,7 @@
     
     res <- list(infoList = infoList,
                 k = k,
+                converged = converged,
                 ssfCrn = finalCrn,
                 # The SF measurements
                 sfRW_Array = sfRW_Array2,

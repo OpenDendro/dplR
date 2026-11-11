@@ -17,11 +17,13 @@
   \item{n}{ \code{NULL} or an integral value giving the filter length
     for the \code{\link{hanning}} filter used for removal of low
     frequency variation. }
-  \item{nyrs}{ \code{NULL} or a number greater than zero.  If not
+  \item{nyrs}{ \code{NULL} or a nonzero number.  If not
     \code{NULL}, each series is divided by a smoothing spline with this
     rigidity (see \code{\link{caps}}) to remove low-frequency variation,
     as \code{\link{detrend}} does with \code{method = "Spline"}.  A value
-    of 1 or less is taken as a proportion of each series' length.
+    above 0 and up to 1 is a proportion of each series' length, and a
+    negative value a percent of it, as in \acronym{ARSTAN} (-67 for a
+    67\% spline).
     Unlike the \code{\link{hanning}} filter, the spline removes no years
     from the ends of a series.  Cannot be combined with \code{\var{n}}. }
   \item{prewhiten}{ \code{logical} flag.  If \code{TRUE} each series is

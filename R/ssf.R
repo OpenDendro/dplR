@@ -274,7 +274,7 @@
   # so if there are any zeros in the chron, switch straight mean which should
   # head off any zeros in the chron unless the data themseleves are bunk
   if(any(sfCrn_Mat[,1]==0)){
-    sfCrn_Mat[,1] <- chron(sfRWI_Array[,,],biweight = FALSE)[,1]
+    sfCrn_Mat[,1] <- chron(sfRWI_Array[,,1],biweight = FALSE)[,1]
   }
   
   # And calc the high freq crn that will be used to determine MAD stopping crit

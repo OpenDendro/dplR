@@ -72,6 +72,39 @@
   no segment correlations and only a note saying no series could be
   crossdated.
 
+* `xdate.report()` adds a whole-series test on a record shorter than
+  twice `seg.length`. On such a record the segments are cut to half the
+  record, and the percentage of problem segments runs high: on an ITRDB
+  submission of 1986-2023, 18-year segments (critical r 0.54) flagged
+  73%. Each series' whole correlation with the master is now also tested
+  against the critical r for its own length, and the summary gives the
+  number and percentage of problem series (32% on that record). The
+  rows are in the new `series.test` element and a new section of the
+  report. COFECHA, given 50-year segments on that record, tested each
+  series over its whole length but at the critical r for 50 years
+  (0.328), too lenient for 25 to 38 years, and flagged 22%. A
+  `seg.length` longer than half the record still has no effect, and the
+  help page now says so.
+
+* The `nyrs` spline in the crossdating functions (`corr.rwl.seg()`,
+  `corr.series.seg()`, `ccf.series.rwl()`, `interseries.cor()`,
+  `rwi.stats.running()`, `series.rwl.plot()`, `xskel.plot()`,
+  `xskel.ccf.plot()`, `xdate.floater()` and `xdate.report()`) is fitted
+  to log widths, with a warning that names the series, where the ratio
+  to it fails: the curve goes to zero or below, or an index goes over
+  10. This happens at the end of a short series that falls steeply,
+  where the spline carries the decline on past the last rings. On one
+  25-year ITRDB series, falling from 17 mm to 1 mm, the curve was 0.011
+  a year from the end (an index of 99) and -0.32 in the last year. These
+  series used to stop the function, or, with the curve still above
+  zero, pass with the huge index in them. Divided by the log curve the
+  indices are still ratios. Zero rings go into the log fit at half the
+  smallest ring measured. A series the log curve can't fix either still
+  stops. Across the ITRDB, 1,240 of 372,740 series (in 605 of 10,166
+  files) take the log curve at `nyrs = 32`. `xdate.report()` crossdates
+  those series now, where it used to leave them out, and names them in
+  a note.
+
 * `morlet()` has a `lag1` argument, the lag-one autocorrelation of the
   noise its significance levels test against. It was set to 0 inside the
   function, so the contours `wavelet.plot()` draws have always been a
@@ -238,6 +271,13 @@
   is allowed with `return.unconverged = TRUE`. With these and the CRUST
   arguments above, `ssf()` reproduces CRUST at a fixed number of
   iterations to about 1e-5 or better (see the help page).
+* With `biweight = TRUE`, `ssf()` has always used the arithmetic mean
+  in place of the biweight, for every year, in any chronology that was
+  zero in even one year, to avoid dividing by zero, and said nothing. It now warns with
+  the years and the iterations, and the chronology has attribute
+  `"meanSwitched"`. On `co021`, the biweight is zero in 14 years (most
+  series have a zero ring in each), so this happens at every iteration, so the biweight and
+  arithmetic-mean runs give the same chronology.
 * `strip.rwl()` accepts ring-width indices (class `"rwi"`) and strips
   them as they are, returning indices. A series is then judged on the
   variation the chronology will keep. Indices used to be treated as

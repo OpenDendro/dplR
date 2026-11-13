@@ -33,8 +33,10 @@ write.xdate.report(x, fname, type = NULL, \dots)
     \code{\link{read.rwl}} can read.  For \code{format}, \code{print} and
     \code{write.xdate.report}, an object of class \code{"xdate.report"}. }
   \item{seg.length}{ an even integral value giving the length of the
-    segments in years.  Reduced, with a note in the report, when the
-    record is too short for it. }
+    segments in years.  Reduced to half the record, with a note in the
+    report, when the record is too short for it, and the report then adds
+    a whole-series test (see Details).  A longer value has no effect on
+    such a record. }
   \item{bin.floor}{ a non-negative integral value giving the base for
     locating the first segment, as in \code{\link{corr.rwl.seg}}.
     Stepped down to 50, 10 and then 0, with a note, if no segment can
@@ -120,8 +122,28 @@ write.xdate.report(x, fname, type = NULL, \dots)
   correlation with the master is computed by dplR and usually differs
   from \acronym{COFECHA}\enc{’}{'}s in the second decimal place.
 
+  On a record shorter than twice \code{\var{seg.length}}, the segments
+  are cut to half the record, and a short segment is a hard test: an
+  18-year segment needs r = 0.54 at the default \code{\var{pcrit}}.  The
+  percentage of problem segments then runs high and can't easily be
+  compared with longer records.  The report adds a whole-series test for
+  such a record.  Each series' whole correlation with the master is
+  tested against the critical r for the number of years correlated, and
+  the summary gives the number and percentage of problem series.  Use
+  that percentage for a short record.  \acronym{COFECHA} tests a series
+  shorter than its segment once over its whole length, but against the
+  critical r for the full segment length (0.3281 for 50 years), which is
+  too lenient for a shorter series, so its percentage of problem
+  segments on a short record is too low.
+
+  When the spline for a series goes to zero or below, or the ratio to it
+  goes over 10, as it can at the end of a short series that falls
+  steeply, the spline is fitted to log widths instead and the indices
+  are the ratio to that curve.  The report names those series in a
+  note.
+
   A series whose spline cannot be fitted, because it has internal
-  \code{NA} values or its spline is not all positive, is described but
+  \code{NA} values, is described but
   left out of the crossdating, and the report names it and says why.
   With fewer than three series that can be crossdated there is no
   master, and the report gives the descriptive statistics alone.
@@ -157,6 +179,13 @@ write.xdate.report(x, fname, type = NULL, \dots)
     \code{best.lag} and its gain over \code{r.dated}, \code{NA} for an
     A flag), \code{weak} (\code{TRUE} for a B flag that is under the
     critical value even at its best lag) and \code{note}. }
+  \item{series.test}{ \code{NULL}, or on a record shorter than twice
+    \code{\var{seg.length}} a \code{data.frame} with one row per
+    crossdated series: \code{seq}, \code{series}, \code{first},
+    \code{last}, \code{n} (the years correlated), \code{corr} (the
+    correlation with the master), \code{r.crit} (the critical r for
+    \code{n} years), \code{p.val} and \code{low} (\code{TRUE} when
+    \code{p.val} is not under \code{\var{pcrit}}). }
   \item{crs}{ the result of \code{\link{corr.rwl.seg}}, or \code{NULL}. }
   \item{excluded}{ a \code{data.frame} of the series left out of the
     crossdating and why. }

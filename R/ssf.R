@@ -57,6 +57,17 @@
          call. = FALSE)
   }
   guardedList <- list()
+  # iterations where a biweight chronology had a year at zero and the
+  # arithmetic mean was used instead (reported in one warning at the end)
+  meanSwitched <- integer(0)
+  meanSwitchYears <- numeric(0)
+  noteSwitch <- function(crn, iteration) {
+    if (biweight) {
+      meanSwitched <<- c(meanSwitched, iteration)
+      meanSwitchYears <<- union(meanSwitchYears,
+                                as.numeric(rownames(dat))[which(crn == 0)])
+    }
+  }
   # STEP 2: signal-free measurements, with the guard if set
   sfMeasure <- function(crn, iteration) {
     if (difference) return(as.matrix(dat) - crn)
@@ -381,6 +392,7 @@
   # head off any zeros in the chron unless the data themseleves are bunk.
   # e.g., UT024.
   if(any(iter0Crn[,1]==0)){
+    noteSwitch(iter0Crn[,1], 0L)
     iter0Crn <- chron(datRWI,biweight = FALSE)
   }
   # Additional check. If there are still zeros it should mean that the OG data were passed in with zeros.
@@ -427,6 +439,7 @@
   # so if there are any zeros in the chron, switch straight mean which should
   # head off any zeros in the chron unless the data themseleves are bunk
   if(any(sfCrn_Mat[,1]==0)){
+    noteSwitch(sfCrn_Mat[,1], 1L)
     sfCrn_Mat[,1] <- chron(sfRWI_Array[,,1],biweight = FALSE)[,1]
   }
   
@@ -494,6 +507,7 @@
     # so if there are any zeros in the chron, switch straight mean which should
     # head off any zeros in the chron unless the data themseleves are bunk
     if(any(sfCrn_Mat[,k]==0)){
+      noteSwitch(sfCrn_Mat[,k], k)
       sfCrn_Mat[,k] <- chron(sfRWI_Array[,,k],biweight = FALSE)[,1]
     }
     
@@ -607,6 +621,26 @@
             call. = FALSE)
   }
   if (!is.null(crn.guard)) attr(finalCrn, "guarded") <- guardedYears
+
+  # biweight = TRUE but the arithmetic mean was used: say so
+  if (length(meanSwitched) > 0) {
+    iters <- if (length(meanSwitched) == k + 1) {
+      gettext("every iteration", domain = "R-dplR")
+    } else {
+      gettextf("iterations %s", paste(meanSwitched, collapse = ", "),
+               domain = "R-dplR")
+    }
+    zy <- sort(meanSwitchYears)
+    shown <- paste(head(zy, 10), collapse = ", ")
+    if (length(zy) > 10) {
+      shown <- paste(shown, gettextf("and %d more", length(zy) - 10,
+                                     domain = "R-dplR"))
+    }
+    warning(gettextf("biweight = TRUE, but the biweight chronology was zero in %d years (%s), so ssf used the arithmetic mean instead, for every year, at %s (of 0 to %d). One zero year is enough to switch the whole chronology for that iteration, and those chronologies are the same as with biweight = FALSE. A biweight of zero usually means most series have a zero ring that year.",
+                     length(zy), shown, iters, k, domain = "R-dplR"),
+            call. = FALSE)
+    attr(finalCrn, "meanSwitched") <- meanSwitched
+  }
 
   if(verbose){
     if(converged){

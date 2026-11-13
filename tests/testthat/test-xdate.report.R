@@ -104,6 +104,22 @@ test.xdate.report <- function() {
         r <- xdate.report(co021[as.character(1900:1963), ], check = FALSE)
         expect_equal(r$settings$seg.used, 32)
         expect_true(any(grepl("reduced from 50 to 32", format(r))))
+        ## a series whose spline goes below zero is refitted to log
+        ## widths, crossdated, and named in one note with no warning
+        d <- co021
+        ok <- which(!is.na(d[[5]]))
+        d[ok, 5] <- 0
+        d[ok[100:101], 5] <- 3
+        ## (the run of zeros raises other warnings; only the log-spline
+        ## one should be kept inside the report)
+        logw <- FALSE
+        withCallingHandlers(r <- xdate.report(d, check = FALSE),
+                            dplR.log.spline = function(w) logw <<- TRUE,
+                            warning = function(w) invokeRestart("muffleWarning"))
+        expect_false(logw)
+        expect_true(r$stats$crossdated[5])
+        expect_identical(r$settings$log.spline, names(co021)[5])
+        expect_equal(sum(grepl("fitted to log widths", r$notes)), 1)
         ## a series the spline cannot take is left out, and named
         d <- co021
         d[as.character(1800:1805), 3] <- NA
@@ -112,6 +128,46 @@ test.xdate.report <- function() {
         expect_false(r$stats$crossdated[3])
         expect_true(all(r$stats$crossdated[-3]))
         expect_true(any(grepl("internal NA", format(r))))
+    })
+
+    test_that("a short record also gets a whole-series test", {
+        ## a record long enough for the segment: no whole-series test
+        expect_null(rpt$series.test)
+        expect_false(any(grepl("WHOLE-SERIES TEST", txt, fixed = TRUE)))
+        expect_false(any(grepl("problem series", txt, fixed = TRUE)))
+        ## 64 years cannot hold 50-year segments
+        r <- xdate.report(co021[as.character(1900:1963), ], check = FALSE)
+        wt <- r$series.test
+        expect_s3_class(wt, "data.frame")
+        expect_identical(wt$series, r$stats$series[r$stats$crossdated])
+        expect_equal(wt$corr, r$stats$corr[r$stats$crossdated])
+        ## n is the years correlated, so at most the series' length
+        expect_true(all(wt$n <= r$stats$n.years[r$stats$crossdated]))
+        ## the critical r is for each series' own length
+        tq <- qt(1 - 0.01, wt$n - 2)
+        expect_equal(wt$r.crit, tq / sqrt(wt$n - 2 + tq^2))
+        expect_identical(wt$low, wt$p.val >= 0.01)
+        ## with Pearson the flag and the printed critical value agree
+        expect_identical(wt$low, wt$corr < wt$r.crit)
+        tx <- format(r)
+        expect_true(any(grepl("WHOLE-SERIES TEST", tx, fixed = TRUE)))
+        expect_match(grep("Number problem series", tx, value = TRUE),
+                     sprintf("%d of %d", sum(wt$low), nrow(wt)), fixed = TRUE)
+        expect_match(grep("Pct problem series", tx, value = TRUE),
+                     formatC(100 * mean(wt$low), format = "f", digits = 2),
+                     fixed = TRUE)
+        expect_true(any(grepl("shorter than twice the 50-year segment", tx,
+                              fixed = TRUE)))
+        expect_true(any(grepl("## Whole-series test",
+                              format(r, type = "markdown"), fixed = TRUE)))
+        expect_true(any(grepl("<h2>Whole-series test</h2>",
+                              format(r, type = "html"), fixed = TRUE)))
+        ## a weak series is flagged low: one series replaced by noise
+        set.seed(1)
+        d <- co021[as.character(1900:1963), ]
+        d[[1]] <- runif(nrow(d), 0.5, 1.5)
+        r <- xdate.report(d, check = FALSE)
+        expect_true(r$series.test$low[1])
     })
 
     test_that("a B flag that is weak at every lag is marked as such", {

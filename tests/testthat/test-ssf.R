@@ -185,3 +185,27 @@ test_that("return.info gives a plain list that plot.crn can plot", {
     on.exit(dev.off(), add = TRUE)
     expect_no_error(plot.crn(info))
 })
+
+test_that("ssf warns when a zero biweight year forces the arithmetic mean", {
+    data(co021, package = "dplR", envir = environment())
+    w <- character(0)
+    res <- withCallingHandlers(
+        ssf(co021, rescale = "ratio.masked", crn.guard = 0.01,
+            curve.floor = 0.02, max.iterations = 3, mad.threshold = 0,
+            return.unconverged = TRUE, verbose = FALSE),
+        warning = function(cond) {
+            w <<- c(w, conditionMessage(cond))
+            invokeRestart("muffleWarning")
+        })
+    expect_true(any(grepl("used the arithmetic mean instead", w, fixed = TRUE)))
+    expect_true(length(attr(res, "meanSwitched")) > 0)
+    data(wa082, package = "dplR", envir = environment())
+    w <- character(0)
+    res <- withCallingHandlers(ssf(wa082, verbose = FALSE),
+        warning = function(cond) {
+            w <<- c(w, conditionMessage(cond))
+            invokeRestart("muffleWarning")
+        })
+    expect_false(any(grepl("arithmetic mean instead", w, fixed = TRUE)))
+    expect_null(attr(res, "meanSwitched"))
+})

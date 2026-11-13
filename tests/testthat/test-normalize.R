@@ -88,13 +88,52 @@ test.normalize <- function() {
         expect_error(normalize1(x, n = NULL, prewhiten = TRUE, nyrs = 32),
                      paste(names(rwl)[3], "has internal NA"))
         ## Two wide rings among near-zero ones: the spline overshoots
-        ## below zero on either side of them
+        ## below zero on either side of them. It is refitted to log
+        ## widths, and the warning names the series.
         z <- rwl
         ok <- which(!is.na(z[, 4]))
         z[ok, 4] <- 0
         z[ok[100:101], 4] <- 3
-        expect_error(normalize1(z, n = NULL, prewhiten = TRUE, nyrs = 32),
-                     paste(names(rwl)[4], "is not all positive"))
+        expect_warning(res <- normalize1(z, n = NULL, prewhiten = FALSE,
+                                         nyrs = 32),
+                       paste(names(rwl)[4], "comes down to"),
+                       class = "dplR.log.spline")
+        expect_true(all(is.finite(res$rwi.mat[ok, 4])))
+        expect_true(all(res$rwi.mat[ok, 4] > 0))
+    })
+
+    test_that("a spline that blows up the ratio is refitted to log widths", {
+        ## a short series falling steeply: the spline carries the decline
+        ## past the last rings (col009's Fu2b, 1999-2023)
+        y <- c(5.29, 5.19, 4.21, 10.9, 2.81, 11.59, 16.84, 13.21, 10.87,
+               8, 4.77, 1.79, 2.51, 1.03, 1.55, 2.29, 0.85, 1.18, 0.86,
+               0.33, 1.34, 0.83, 1.16, 1.13, 0.97)
+        ## caps() warns that 32 years is longer than the series
+        stiff <- function(expr) {
+            withCallingHandlers(expr, warning = function(w) {
+                if (grepl("Spline stiffness", conditionMessage(w))) {
+                    invokeRestart("muffleWarning")
+                }
+            })
+        }
+        ratio <- y / stiff(caps(y, nyrs = 32))
+        expect_true(any(ratio < 0))
+        expect_warning(idx <- stiff(dplR:::nyrs.rwi(y, 32, "Fu2b")),
+                       "Fu2b comes down to", class = "dplR.log.spline")
+        expect_equal(idx, y / exp(stiff(caps(log(y), nyrs = 32))))
+        expect_true(all(idx > 0 & idx < 10))
+        ## at nyrs = 25 the curve stays positive but comes down to 0.04,
+        ## and the last index is 24: caught on the index
+        expect_true(all(caps(y, nyrs = 25) > 0))
+        expect_gt(max(y / caps(y, nyrs = 25)), 10)
+        expect_warning(dplR:::nyrs.rwi(y, 25, "Fu2b"),
+                       "gives an index of", class = "dplR.log.spline")
+        ## a series the log curve can't fix either still stops
+        expect_error(stiff(dplR:::nyrs.rwi(c(2, 0.5, 3), 32, "short")),
+                     "short.*does no better")
+        ## an ordinary series is left alone
+        data(co021, package = "dplR", envir = environment())
+        expect_warning(dplR:::nyrs.rwi(co021[[1]], 32, "a"), NA)
     })
 
     ## Three of these functions had a local variable called nyrs (the

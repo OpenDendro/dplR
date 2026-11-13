@@ -104,10 +104,24 @@ xdate.report <- function(x, seg.length = 50, bin.floor = 100, nyrs = 32,
     excluded <- data.frame(series = character(0), reason = character(0),
                            stringsAsFactors = FALSE)
     usable <- rep(TRUE, nser)
+    ## A series whose spline the ratio cannot use is refitted to log
+    ## widths by nyrs.rwi(), with a warning each time it is called. Collect
+    ## those series here, name them once in the notes, and keep the
+    ## warning from repeating for every pass over the data below.
+    log.spline <- character(0)
+    quiet.log <- function(expr) {
+        withCallingHandlers(expr, dplR.log.spline = function(w) {
+            invokeRestart("muffleWarning")
+        })
+    }
     if (!is.null(nyrs)) {
         for (i in seq_len(nser)) {
             msg <- tryCatch({
-                nyrs.rwi(rwl[[i]], nyrs, snames[i])
+                withCallingHandlers(nyrs.rwi(rwl[[i]], nyrs, snames[i]),
+                                    dplR.log.spline = function(w) {
+                                        log.spline <<- c(log.spline, snames[i])
+                                        invokeRestart("muffleWarning")
+                                    })
                 NULL
             }, error = function(e) conditionMessage(e))
             if (!is.null(msg)) {
@@ -117,6 +131,13 @@ xdate.report <- function(x, seg.length = 50, bin.floor = 100, nyrs = 32,
                                              stringsAsFactors = FALSE))
             }
         }
+    }
+
+    log.spline <- intersect(log.spline, snames[usable])
+    if (length(log.spline)) {
+        notes <- c(notes, gettextf("The 'nyrs' spline went to zero or below, or gave indices over 10, for %s, so for %s it was fitted to log widths instead. The indices are still the ratio to the curve.",
+                                   paste(log.spline, collapse = ", "),
+                                   if (length(log.spline) == 1L) "that series" else "those series"))
     }
 
     ## Crossdating needs a master of at least two other series.
@@ -154,7 +175,7 @@ xdate.report <- function(x, seg.length = 50, bin.floor = 100, nyrs = 32,
         ## there is one, and say so.
         err <- NULL
         for (bf in unique(c(bin.floor, 50, 10, 0))) {
-            cs <- tryCatch(corr.rwl.seg(rwl[, usable, drop = FALSE],
+            cs <- tryCatch(quiet.log(corr.rwl.seg(rwl[, usable, drop = FALSE],
                                         seg.length = seg.used,
                                         bin.floor = bf, nyrs = nyrs,
                                         prewhiten = prewhiten,
@@ -162,7 +183,7 @@ xdate.report <- function(x, seg.length = 50, bin.floor = 100, nyrs = 32,
                                         pcrit = pcrit, biweight = biweight,
                                         method = method2,
                                         lag.max = lag.used,
-                                        make.plot = FALSE),
+                                        make.plot = FALSE)),
                            error = function(e) e)
             if (inherits(cs, "error")) {
                 err <- conditionMessage(cs)
@@ -229,7 +250,7 @@ xdate.report <- function(x, seg.length = 50, bin.floor = 100, nyrs = 32,
         ## The AR order is the one corr.rwl.seg() used to prewhiten: the
         ## same spline index and the same limit on the order.
         if (usable[i] && prewhiten) {
-            idx <- if (is.null(nyrs)) y / mean(yy) else nyrs.rwi(y, nyrs, snames[i])
+            idx <- if (is.null(nyrs)) y / mean(yy) else quiet.log(nyrs.rwi(y, nyrs, snames[i]))
             idx <- idx[!is.na(idx)]
             if (length(idx) > 3L) {
                 fit <- if (is.null(ar.order.max)) {
@@ -260,6 +281,34 @@ xdate.report <- function(x, seg.length = 50, bin.floor = 100, nyrs = 32,
         }
     }
 
+    ## AGB Nov 2026: whole-series test on a short record. When the record
+    ## is too short for the segment length asked for, the segments are cut
+    ## to half the record, and a short segment is a hard test: on col009
+    ## (1986-2023), 18-year segments need r = .54 and 73% of them were
+    ## flagged. COFECHA, given 50-year segments on series of 25 to 38
+    ## years, tests each series once over its whole length but keeps the
+    ## critical r for 50 years (.328), too lenient for that many years, and
+    ## flagged 22%. Here each whole series is tested against the critical
+    ## r for its own length, with the p-value corr.rwl.seg() already
+    ## computed for the correlation with the master. The segments stay in
+    ## the report for where a series is weak and whether a shift helps.
+    series.test <- NULL
+    if (do.xdate && seg.used < seg.length) {
+        has <- which(!is.na(stat$corr))
+        n.pairs <- vapply(has, function(i) {
+            sum(!is.na(cs$rwi[, cd[i]]))
+        }, 0L)
+        p <- cs$overall[cd[has], 2]
+        series.test <- data.frame(seq = stat$seq[has], series = stat$series[has],
+                                  first = stat$first[has], last = stat$last[has],
+                                  n = n.pairs, corr = stat$corr[has],
+                                  r.crit = vapply(n.pairs, r.crit, 0, pcrit = pcrit),
+                                  p.val = unname(p), low = unname(p >= pcrit),
+                                  row.names = NULL, stringsAsFactors = FALSE)
+        notes <- c(notes, gettextf("The record is shorter than twice the %d-year segment asked for, so each whole series is also tested against the critical r for its own length. Use the problem-series percentage for this record. The segment flags still show where a series is weak and whether a shift helps.",
+                                   seg.length))
+    }
+
     ## The checks rwl.check() runs, errors and warnings reported.
     chk <- NULL
     if (check) {
@@ -278,6 +327,7 @@ xdate.report <- function(x, seg.length = 50, bin.floor = 100, nyrs = 32,
                 stats = stat,
                 flags = flags,
                 flagged = NULL,
+                series.test = series.test,
                 crs = cs,
                 excluded = excluded,
                 check = chk,
@@ -288,7 +338,8 @@ xdate.report <- function(x, seg.length = 50, bin.floor = 100, nyrs = 32,
                                 ar.order.max = ar.order.max, pcrit = pcrit,
                                 r.crit = r.crit(seg.used, pcrit),
                                 lag.max = lag.max, lag.used = lag.used,
-                                method = method2, biweight = biweight),
+                                method = method2, biweight = biweight,
+                                log.spline = log.spline),
                 provenance = list(dplR.version = as.character(packageVersion("dplR")),
                                   R.version = paste(R.version$major,
                                                     R.version$minor, sep = "."),
@@ -397,6 +448,15 @@ report.fields <- function(x) {
                                               format = "f", digits = 2))
     } else {
         list()
+    }
+    st <- x$series.test
+    if (!is.null(st) && nrow(st) > 0L) {
+        flags <- c(flags,
+                   list("Number problem series" =
+                            gettextf("%d of %d  (whole series, critical r for its length)",
+                                     sum(st$low), nrow(st)),
+                        "Pct problem series" = formatC(100 * mean(st$low),
+                                                       format = "f", digits = 2)))
     }
     keep <- function(l) {
         l[vapply(l, function(v) !is.null(v) && length(v) > 0 && !is.na(v[1]) &&
@@ -595,6 +655,20 @@ report.text <- function(x, bins.per.page = 20) {
         }
     }
 
+    wt <- x$series.test
+    if (!is.null(wt)) {
+        add("", paste0(" WHOLE-SERIES TEST: ", x$title), rule,
+            " Each whole series against the master, at the critical r for its own length (n = years correlated)",
+            "",
+            " Seq Series   Interval      n    Corr  Crit r  Flag",
+            " --- -------- ---------  -----  ------  ------  ----",
+            sub(" +$", "",
+                sprintf("%4d %-8s %4d %4d  %5d  %6s  %6s  %s",
+                        wt$seq, wt$series, wt$first, wt$last, wt$n,
+                        cof.num(wt$corr, 3, 6), cof.num(wt$r.crit, 3, 6),
+                        ifelse(wt$low, "low", ""))))
+    }
+
     ## Descriptive statistics.
     add("", paste0(" DESCRIPTIVE STATISTICS: ", x$title), rule, "",
         "                                                Corr   //-------- Unfiltered --------\\\\  //-- dplR filtered --\\\\",
@@ -735,6 +809,19 @@ report.md <- function(x, bins.per.page = 20) {
                         num(fs$r.lag[k], 3), num(fs$gain[k], 3), fs$note[k])
                 }, ""), "")
         }
+    }
+
+    wt <- x$series.test
+    if (!is.null(wt)) {
+        add("## Whole-series test", "",
+            "Each whole series against the master, at the critical r for its own length (n = years correlated).", "",
+            row("Seq", "Series", "Interval", "n", "Corr", "Crit r", "Flag"),
+            align(c("--:", ":--", ":--", "--:", "--:", "--:", ":-:")),
+            vapply(seq_len(nrow(wt)), function(k) {
+                row(wt$seq[k], wt$series[k], paste0(wt$first[k], "-", wt$last[k]),
+                    wt$n[k], num(wt$corr[k], 3), num(wt$r.crit[k], 3),
+                    if (wt$low[k]) "**low**" else "")
+            }, ""), "")
     }
 
     add("## Descriptive statistics", "",
@@ -931,6 +1018,27 @@ report.html <- function(x, bins.per.page = 20) {
                 }, ""),
                 "</tbody></table></div>")
         }
+    }
+
+    wt <- x$series.test
+    if (!is.null(wt)) {
+        add("<h2>Whole-series test</h2>",
+            "<p>Each whole series against the master, at the critical r for its own length (n = years correlated).</p>",
+            "<div class=\"wrap\"><table class=\"series-test\">",
+            paste0("<thead>",
+                   tr(cell("th", c("Seq", "Series", "Interval", "n", "Corr",
+                                   "Crit r", "Flag"))),
+                   "</thead>"),
+            "<tbody>",
+            vapply(seq_len(nrow(wt)), function(k) {
+                tr(cell("td", wt$seq[k], "num"), cell("td", wt$series[k]),
+                   cell("td", paste0(wt$first[k], "-", wt$last[k])),
+                   cell("td", c(wt$n[k], num(wt$corr[k], 3),
+                                num(wt$r.crit[k], 3)), "num"),
+                   cell("td", if (wt$low[k]) "low" else "",
+                        if (wt$low[k]) "flagA" else ""))
+            }, ""),
+            "</tbody></table></div>")
     }
 
     tot <- report.totals(x)

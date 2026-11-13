@@ -25,7 +25,11 @@
     negative value a percent of it, as in \acronym{ARSTAN} (-67 for a
     67\% spline).
     Unlike the \code{\link{hanning}} filter, the spline removes no years
-    from the ends of a series.  Cannot be combined with \code{\var{n}}. }
+    from the ends of a series.  Where the spline goes to zero or below,
+    or the ratio to it goes over 10, as it can at the end of a short
+    series that falls steeply, it is fitted to log widths instead, with
+    a warning that names the series.  Cannot be combined with
+    \code{\var{n}}. }
   \item{prewhiten}{ \code{logical} flag.  If \code{TRUE} each series is
     whitened using \code{\link{ar}}. }
   \item{ar.order.max}{ \code{NULL} or a positive integer giving the

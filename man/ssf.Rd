@@ -36,7 +36,7 @@ ssf(rwl,
   if TRUE, otherwise use division. See \sQuote{Details} 
   in \code{\link{detrend.series}} }
 
-  \item{biweight}{ a \code{logical} flag.  If \code{TRUE} (the default), every chronology in the loop is the Tukey's biweight robust mean of the indices; if \code{FALSE}, the arithmetic mean, which is CRUST's default.  See \code{\link{chron}}. }
+  \item{biweight}{ a \code{logical} flag.  If \code{TRUE} (the default), every chronology in the loop is the Tukey's biweight robust mean of the indices; if \code{FALSE}, the arithmetic mean, which is CRUST's default.  If the biweight chronology is zero in any year, as happens when most series have a zero ring that year (\code{co021}), that iteration uses the arithmetic mean instead for every year, not only the zero ones, to avoid dividing by zero; \code{ssf} warns with the years and iterations, and the returned chronology has attribute \code{"meanSwitched"} giving the iterations (0 is the chronology before the loop).  See \code{\link{chron}}. }
 
   \item{max.iterations}{ a whole \code{numeric}. The maximum number of iterations to be used in the fitting process. 1 is allowed only with \code{return.unconverged = TRUE}, since a single iteration cannot be tested for convergence. See \sQuote{Details}. }
 

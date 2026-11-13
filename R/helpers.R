@@ -222,9 +222,37 @@ check.negative <- function(x, n, nyrs) {
 ### 0.001 before fitting included, so that passing 'nyrs' gives the
 ### same indices as calling detrend() first. Unlike detrend(), which
 ### falls back to the mean when a spline is not all positive, this
-### stops. Crossdating with a quietly different detrending for one
-### series would put that series' correlations on a different basis
-### from the rest, with nothing in the output to say so.
+### does not fall back quietly. Crossdating with a quietly different
+### detrending for one series would put that series' correlations on a
+### different basis from the rest, with nothing in the output to say so.
+###
+### AGB Nov 2026: a spline the ratio cannot use is refitted to log
+### widths, with a warning of class "dplR.log.spline" that names the
+### series. On a short series that falls steeply the spline carries the
+### decline on past the last rings: col009's Fu2b (25 years, 17 mm down
+### to 1 mm, nyrs = 32) has a curve of 0.34 in 2021, 0.011 in 2022 and
+### -0.32 in 2023, so the 2022 index is 99. The old test, fit <= 0,
+### caught 2023 and stopped, but a series ending in 2022 would have
+### passed with that 99 in it. A curve fitted to log widths and taken
+### back with exp() cannot reach zero, and y / exp(fit) is still a ratio,
+### so the series stays on the same basis as the rest. Tried on col009,
+### it gives Fu2b r = .377 with the master (COFECHA, which subtracts
+### the curve instead, had .356; dplR with subtraction, .25). The test
+### is on the indices: a curve at or below zero, or any index over 10.
+### A test on the curve alone (under 5% of the mean width) also caught
+### gp.rwl 10A and 10B, whose rings really are that small at the end.
+### Their ratio indices stay under 2.4, and the log curve, pulled down
+### by their zero rings, gave indices up to 6.7. Zeros make the log
+### curve worse, which is why it is the fallback and not the rule.
+###
+### Across the ITRDB clone (372,740 series, nyrs = 32) the ratio fails on
+### 1,240 series in 605 files: 1,029 with a curve at or below zero, which
+### used to stop, and 211 with an index over 10, which used to pass. In
+### a sample of 400 of them, the log curve's largest index had a median
+### of 2.4 on series with no zero rings. On series with zeros, recoded
+### to 0.001 it was 14.7, and recoded to half the smallest ring 3.6. A
+### series the log curve can't fix either (three-ring series, some with
+### many zeros) stops, as before.
 nyrs.rwi <- function(x, nyrs, name) {
     out <- rep.int(NA_real_, length(x))
     ok <- which(!is.na(x))
@@ -241,7 +269,8 @@ nyrs.rwi <- function(x, nyrs, name) {
                       name, domain = "R-dplR"), call. = FALSE)
     }
     y <- as.numeric(x[span])
-    y[y == 0] <- 0.001
+    zero <- y == 0
+    y[zero] <- 0.001
     ## A proportion or percent nyrs resolves against this series' length,
     ## so a short series can get a spline under 2 years, which caps()
     ## refuses. Name the series in that message.
@@ -250,9 +279,30 @@ nyrs.rwi <- function(x, nyrs, name) {
                       name, conditionMessage(e), domain = "R-dplR"),
              call. = FALSE)
     })
-    if (any(fit <= 0)) {
-        stop(gettextf("the 'nyrs' spline for series %s is not all positive, so dividing by it would give negative or infinite indices. Remove the series, or detrend the data yourself with detrend() and pass the indices with 'nyrs = NULL'",
-                      name, domain = "R-dplR"), call. = FALSE)
+    usable <- function(f) all(is.finite(f)) && all(f > 0) && all(y / f <= 10)
+    if (!usable(fit)) {
+        why <- if (any(fit <= 0)) {
+            gettextf("comes down to %s", format(signif(min(fit), 3)))
+        } else {
+            gettextf("gives an index of %s", format(signif(max(y / fit), 3)))
+        }
+        ## Zeros go in at half the smallest ring measured: at 0.001 they
+        ## sit far below every other ring in logs and drag the curve down.
+        yl <- y
+        if (any(zero) && !all(zero)) {
+            yl[zero] <- min(y[!zero]) / 2
+        }
+        lfit <- tryCatch(exp(caps(log(yl), nyrs = nyrs)),
+                         error = function(e) NA_real_)
+        if (!usable(lfit)) {
+            stop(gettextf("the 'nyrs' spline for series %s %s, so the ratio to it blows up or turns negative, and fitted to log widths it does no better. Remove the series, or detrend the data yourself with detrend() and pass the indices with 'nyrs = NULL'",
+                          name, why, domain = "R-dplR"), call. = FALSE)
+        }
+        warning(warningCondition(
+            gettextf("the 'nyrs' spline for series %s %s, so the ratio to it blows up or turns negative. The spline was fitted to log widths instead, and the indices are the ratio to that curve",
+                     name, why, domain = "R-dplR"),
+            class = "dplR.log.spline", call = NULL))
+        fit <- lfit
     }
     out[span] <- y / fit
     out

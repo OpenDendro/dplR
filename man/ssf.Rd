@@ -14,7 +14,6 @@ ssf(rwl,
     max.iterations = 25, 
     mad.threshold = 5e-4,
     recode.zeros = FALSE,
-    rescale = c("additive", "ratio", "ratio.masked"),
     crn.guard = NULL,
     curve.floor = NULL,
     return.unconverged = FALSE,
@@ -34,7 +33,11 @@ ssf(rwl,
   
   \item{difference}{ a \code{logical} flag.  Compute residuals by subtraction 
   if TRUE, otherwise use division. See \sQuote{Details} 
-  in \code{\link{detrend.series}} }
+  in \code{\link{detrend.series}}.  With subtraction the input may be below
+  zero, as after \code{\link{powt}}, and a fitted curve at or below zero does
+  not stop the function (error [1] is for division only).  If the input is all
+  at or above zero (ring widths) and a curve goes to zero or below, the function
+  warns, naming the series. }
 
   \item{biweight}{ a \code{logical} flag.  If \code{TRUE} (the default), every chronology in the loop is the Tukey's biweight robust mean of the indices; if \code{FALSE}, the arithmetic mean, which is CRUST's default.  If the biweight chronology is zero in any year, as happens when most series have a zero ring that year (\code{co021}), that iteration uses the arithmetic mean instead for every year, not only the zero ones, to avoid dividing by zero; \code{ssf} warns with the years and iterations, and the returned chronology has attribute \code{"meanSwitched"} giving the iterations (0 is the chronology before the loop).  See \code{\link{chron}}. }
 
@@ -44,7 +47,6 @@ ssf(rwl,
 
   \item{recode.zeros}{ a \code{logical} flag.  Replace values of zero in \code{rwl} with 0.001 if TRUE. }
 
-  \item{rescale}{ a \code{character}.  How step 3 puts each signal-free series back on its original mean: \code{"additive"} (the default) adds a constant, \code{"ratio"} multiplies by the ratio of the means over every year of the series, as dplPy's \code{preset = "crust"} does, and \code{"ratio.masked"} takes the means only over years with more than one series and scales only those years, as CRUST does.  Both ratio options need indices by division (\code{difference = FALSE}).  See \sQuote{Details}. }
 
   \item{crn.guard}{ \code{NULL} (the default) or a positive \code{numeric}.  If set, in any year where the chronology is below this value, step 2 keeps the raw measurements in place of signal-free values, as CRUST and dplPy's \code{preset = "crust"} do with 0.01.  It also lets a year with every ring absent through, instead of stopping with error [3] or [4].  Needs \code{difference = FALSE}.  The function warns, naming the years.  See \sQuote{Details}. }
 
@@ -79,15 +81,17 @@ This function creates a simple signal-free chronology that loosely follows the p
 
   Each series must be unbroken from its first ring to its last. If any series has missing values inside it, the function stops with error [7], naming the series and the years, before any fitting. Fill the gaps with \code{\link{fill.internal.NA}} or remove those series.
 
-  Sites with many absent rings can defeat the method. Step three adds a constant to each series, and in years where the chronology is low, step two inflates the signal-free measurements, so the constant becomes large enough to push the narrowest and absent rings below zero. The curve in step five then reaches zero or below and the function stops with error [1], naming the series, the iteration and the year. Because the cause lies in the chronology, removing those series usually moves the failure to others, and \code{recode.zeros} does not prevent it. CRUST (Melvin and Briffa 2014) rescales and guards these steps more carefully.
+  With indices by division, step three scales each signal-free series by the ratio of its original mean to its signal-free mean, as CRUST does (Melvin and Briffa 2014). The two means are taken only over years with more than one series, and only those years are scaled, since step four puts the original measurements back in the rest. A series with fewer than two such years is not rescaled. With indices by subtraction (\code{difference = TRUE}), step three adds a constant instead.
+
+  Before dplR 1.8.1, step three added a constant for indices by division too, and there is no option to do so now; use an earlier version of dplR to reproduce a chronology made that way. In years where the chronology is low, step two inflates the signal-free measurements, and the constant could become large enough to push the narrowest and absent rings below zero; the curve in step five then reached zero or below and the function stopped with error [1]. In simulated collections the constant also added a false rise at the recent end that the ratio did not. On 100 random ITRDB collections, \code{ssf} with \code{method = "AgeDepSpline"} returned a chronology for 74 with the ratio against 44 with the constant, and with \code{method = "Spline"} for 67 against 42.
+
+  Error [1] can still happen, when the curve fitted to a series bends to zero or below. The function stops, naming the series, the iteration and the year. Because the cause often lies in the chronology, removing those series usually moves the failure to others, and \code{recode.zeros} does not prevent it. \code{curve.floor} lets the function continue (see below).
 
   A curve can also reach zero in the first fit, before any signal-free step, when a spline bends down at the end of a series (as for series 644081 in \code{nm046}). \code{curve.floor} keeps every curve at or above a set value, as CRUST does with 0.02 mm, so the function can continue. The floor does not fix the curve. Dividing a ring by a floored curve can give a very large index (19 for 644081 in 1969), and how much of it reaches the chronology depends on the robust mean. The function warns whenever the floor is used, and the floored years are returned in the \code{"floored"} attribute and, with \code{return.info = TRUE}, in \code{flooredCurves}.
 
-  CRUST (Melvin and Briffa 2014) differs from the steps above in three places, each available here as an argument and each off by default: \code{rescale = "ratio"}, \code{crn.guard = 0.01} and \code{curve.floor = 0.02}. With those three and \code{max.iterations = 40}, \code{ssf} gives the same chronology as dplPy's \code{ssf(preset = "crust")} (to about 1e-7 on the shipped collections). It does not reproduce CRUST itself, which also differs in its stopping rule, its iteration limit, its mean, and the years used for the rescale.
+  CRUST (Melvin and Briffa 2014) differs from dplR's defaults in two more places, each available here as an argument and off by default: \code{crn.guard = 0.01} and \code{curve.floor = 0.02}. With those two and \code{max.iterations = 40}, \code{ssf} follows the same steps as dplPy's \code{ssf(preset = "crust")}. It does not reproduce CRUST itself, which also differs in its stopping rule, its iteration limit and its mean.
 
-  To compare with CRUST at a fixed number of iterations k, use \code{biweight = FALSE}, \code{rescale = "ratio.masked"}, \code{crn.guard = 0.01}, \code{curve.floor = 0.02}, \code{nyrs = 0.67} (CRUST's 67\% spline), and \code{max.iterations = k} with \code{mad.threshold = 0} and \code{return.unconverged = TRUE}, so the loop runs exactly k iterations. Run that way, \code{ssf} gave the same chronology as CRUST, with its stopping test removed, to 5e-7 on \code{anos1} and to about 1e-5 on \code{wa082} for k from 1 to 10. CRUST fits absent rings as zero where \code{ssf} uses 0.001.
-
-  With \code{rescale = "ratio"} the rescale uses every year of each series, as dplPy does. CRUST uses only years with more than one series, which is \code{rescale = "ratio.masked"}. The two differ only for series that reach into years with a single series; on the shipped collections the chronologies differ by at most 0.065 (\code{nm046}).
+  To compare with CRUST at a fixed number of iterations k, use \code{biweight = FALSE}, \code{crn.guard = 0.01}, \code{curve.floor = 0.02}, \code{nyrs = 0.67} (CRUST's 67\% spline), and \code{max.iterations = k} with \code{mad.threshold = 0} and \code{return.unconverged = TRUE}, so the loop runs exactly k iterations. Run that way, \code{ssf} gave the same chronology as CRUST, with its stopping test removed, to 5e-7 on \code{anos1} and to about 1e-5 on \code{wa082} for k from 1 to 10. CRUST fits absent rings as zero where \code{ssf} uses 0.001.
 
   See the references below for further details on detrending. It's a dark art.
 }
@@ -96,7 +100,7 @@ This function creates a simple signal-free chronology that loosely follows the p
     
     If \code{return.info} is \code{TRUE}, a plain \code{list} (not of class \code{crn}) containing output by iteration (k). \code{plot.crn} called on it plots \code{ssfCrn}: 
     
-    \item{infoList}{ a \code{list} with information on the arguments used in the function call. } 
+    \item{infoList}{ a \code{list} with information on the arguments used in the function call, and \code{rescale}, the step-three rescale used: \code{"ratio.masked"} for indices by division, \code{"additive"} for indices by subtraction. } 
     
     \item{k}{a \code{numeric} containing the number of iterations. }
     

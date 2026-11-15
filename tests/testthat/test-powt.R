@@ -114,3 +114,24 @@ test_that("one filled ring doesn't move the powt powers", {
     pShort <- suppressWarnings(powt(short, return.power = TRUE)$power)
     expect_equal(pLong, pShort, tolerance = 0.01)
 })
+
+test_that("powt warns when rescale = TRUE gives values below zero", {
+    ## Logged series are skewed to the left; put back on the original mean
+    ## and sd, the lower tail goes below zero (ca533 has 334 such values).
+    data(ca533, package = "dplR", envir = environment())
+    w <- character(0)
+    xt <- withCallingHandlers(powt(ca533, rescale = TRUE),
+        warning = function(cond) {
+            w <<- c(w, conditionMessage(cond))
+            invokeRestart("muffleWarning")
+        })
+    expect_true(any(xt < 0, na.rm = TRUE))
+    expect_true(any(grepl("below zero in", w, fixed = TRUE)))
+    w <- character(0)
+    withCallingHandlers(powt(ca533, rescale = FALSE),
+        warning = function(cond) {
+            w <<- c(w, conditionMessage(cond))
+            invokeRestart("muffleWarning")
+        })
+    expect_false(any(grepl("below zero in", w, fixed = TRUE)))
+})

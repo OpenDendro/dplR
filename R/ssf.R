@@ -6,7 +6,6 @@
                   max.iterations = 25, 
                   mad.threshold = 5e-4,
                   recode.zeros = FALSE,
-                  rescale = c("additive", "ratio", "ratio.masked"),
                   crn.guard = NULL,
                   curve.floor = NULL,
                   return.unconverged = FALSE,
@@ -36,24 +35,27 @@
     stop("'curve.floor' must be NULL or a single number above zero (CRUST uses 0.02).",
          call. = FALSE)
   }
-  # rescale and crn.guard: the other two CRUST steps that dplPy's
-  # preset = "crust" uses. "ratio" puts each signal-free series back on its
-  # mean by multiplying (sf * mean(raw) / mean(sf)) instead of adding a
-  # constant. "ratio.masked" is CRUST's version (stand.f90, "Reset mean"):
-  # the two means use only years with more than one series, only those
-  # years are scaled, and a series with fewer than two such years is not
-  # rescaled. crn.guard keeps the raw measurement in any year where the
-  # chronology is below it (CRUST and dplPy use 0.01), instead of dividing by
-  # a near-zero chronology. Both are for division only.
-  rescale <- match.arg(rescale)
+  # Step 3 puts each signal-free series back on its original mean. With
+  # indices by division it scales by a ratio, CRUST's "Reset mean"
+  # (stand.f90): the two means use only years with more than one series,
+  # only those years are scaled (step 4 puts raw values back in the rest),
+  # and a series with fewer than two such years is not rescaled. dplPy's
+  # preset = "crust" does the same. With differences it adds a constant.
+  # Before dplR 1.8.1 a constant was added for division too; it could push
+  # narrow and absent rings below zero (error [1]), and in simulations it
+  # added a false rise at the recent end. There is no argument for it.
+  # crn.guard keeps the raw measurement in any year where the chronology is
+  # below it (CRUST and dplPy use 0.01), instead of dividing by a near-zero
+  # chronology. It is for division only.
+  rescale <- if (difference) "additive" else "ratio.masked"
   if(!is.null(crn.guard) &&
      (!is.numeric(crn.guard) || length(crn.guard) != 1 ||
       is.na(crn.guard) || crn.guard <= 0)){
     stop("'crn.guard' must be NULL or a single number above zero (CRUST uses 0.01).",
          call. = FALSE)
   }
-  if(difference && (rescale != "additive" || !is.null(crn.guard))){
-    stop("rescale = \"ratio\" or \"ratio.masked\" and crn.guard apply to indices by division and cannot be used with difference = TRUE.",
+  if(difference && !is.null(crn.guard)){
+    stop("crn.guard applies to indices by division only and cannot be used with difference = TRUE.",
          call. = FALSE)
   }
   guardedList <- list()
@@ -85,8 +87,6 @@
   }
   # STEP 3: back on each series' original mean
   sfRescale <- function(sf) {
-    mSF <- colMeans(sf, na.rm = TRUE)
-    mDat <- colMeans(dat, na.rm = TRUE)
     if (rescale == "ratio.masked") {
       ok <- datSampDepth > 1
       out <- sf
@@ -97,10 +97,9 @@
         }
       }
       out
-    } else if (rescale == "ratio") {
-      f <- ifelse(is.finite(mSF) & mSF != 0, mDat / mSF, 1)
-      sweep(sf, 2, f, "*")
     } else {
+      mSF <- colMeans(sf, na.rm = TRUE)
+      mDat <- colMeans(dat, na.rm = TRUE)
       sweep(sf, 2, mSF, "-") + matrix(mDat, nrow(sf), ncol(sf), byrow = TRUE)
     }
   }
@@ -173,11 +172,32 @@
     } else {
       lo <- which.min(crn)
       how <- if (difference) "subtracting" else "dividing by"
+      if (rescale != "additive") {
+        msg <- gettextf("[1] At iteration %d the curve fitted to the signal-free measurements went to zero or below for %d series: %s. %s The signal-free measurements are put back on each series' mean by a ratio and stay at or above zero, so the fitted curve itself bent below zero. The chronology's lowest value is %.4g, in %d. recode.zeros, which only moves absent rings from 0 to 0.001, does not prevent it. curve.floor = 0.02 (as in CRUST) keeps the curve above zero, at the cost of large indices there. See help (?ssf).",
+                        iteration, length(bad), paste(where, collapse = ", "),
+                        why, crn[lo], yrs[lo], domain = "R-dplR")
+        stop(msg, call. = FALSE)
+      }
       msg <- gettextf("[1] At iteration %d the curve fitted to the signal-free measurements went to zero or below for %d series: %s. %s The signal-free measurements are put back on each series' mean by adding a constant. Where the chronology is low (its lowest value is %.4g, in %d), %s it raises the signal-free measurements, the constant grows, and the narrowest and absent rings are pushed below zero. The cause is shared by the whole collection, so removing these series usually moves the failure to others, and recode.zeros, which only moves absent rings from 0 to 0.001, does not prevent it. curve.floor = 0.02 (as in CRUST) keeps the curve above zero, at the cost of large indices there. See help (?ssf).",
                       iteration, length(bad), paste(where, collapse = ", "),
                       why, crn[lo], yrs[lo], how, domain = "R-dplR")
     }
     stop(msg, call. = FALSE)
+  }
+  # With indices by subtraction a curve at or below zero does not break the
+  # arithmetic, and input already put through powt() (logs, or rescaled
+  # powers) is often below zero by design. So the stop is for division only.
+  # With subtraction on input that is all at or above zero (ring widths),
+  # a curve below zero is recorded and reported in one warning at the end.
+  negCurveList <- list()
+  checkCurves <- function(curves, iteration, crn = NULL) {
+    if (!any(curves <= 0, na.rm = TRUE)) return(invisible())
+    if (!difference) negCurveStop(curves, iteration, crn)
+    bad <- which(apply(curves, 2, function(x) any(x <= 0, na.rm = TRUE)))
+    negCurveList[[length(negCurveList) + 1]] <<-
+      data.frame(series = colnames(dat)[bad], iteration = iteration,
+                 stringsAsFactors = FALSE)
+    invisible()
   }
   
   maxIterMsg <- gettext("[2] Reached maximum iterations and stopping criteria are not satisfied. See help (?ssf).",
@@ -239,7 +259,7 @@
   zeroRowCheck <- apply(dat,1,function(x){sum(x,na.rm=TRUE)==0})
   # With crn.guard set, a year with every ring absent gives a chronology of
   # zero there, and the guard keeps the raw measurements (as CRUST does).
-  if(any(zeroRowCheck) && is.null(crn.guard)){
+  if(any(zeroRowCheck) && is.null(crn.guard) && !difference){
     stop(input0Msg)
   }
   # Heck look for zeros in series too. Never know what kind of silliness users come up with.
@@ -326,8 +346,9 @@
     }
     y2 <- y[good.y]
     nY2 <- length(y2)
-    ## Recode any zero values to 0.001 to avoid div0
-    y2[y2 == 0] <- 0.001
+    ## Recode any zero values to 0.001 to avoid div0 (division only; with
+    ## subtraction a zero is a value like any other, e.g. log(1) after powt)
+    if(!difference) y2[y2 == 0] <- 0.001
     
     
     # Age Dep Spl  
@@ -375,9 +396,7 @@
   rownames(datCurves) <- time(dat)
   datCurves <- floorCurves(datCurves, iteration = 0)
   
-  if(any(datCurves <= 0,na.rm = TRUE)){
-    negCurveStop(datCurves, iteration = 0)
-  }
+  checkCurves(datCurves, iteration = 0)
   
   
   # get RWI
@@ -391,12 +410,12 @@
   # so if there are any zeros in the chron, switch straight mean which should
   # head off any zeros in the chron unless the data themseleves are bunk.
   # e.g., UT024.
-  if(any(iter0Crn[,1]==0)){
+  if(!difference && any(iter0Crn[,1]==0)){
     noteSwitch(iter0Crn[,1], 0L)
     iter0Crn <- chron(datRWI,biweight = FALSE)
   }
   # Additional check. If there are still zeros it should mean that the OG data were passed in with zeros.
-  if(any(iter0Crn[,1]==0) && is.null(crn.guard)){
+  if(!difference && any(iter0Crn[,1]==0) && is.null(crn.guard)){
     stop(crn0Msg)
   }
   
@@ -423,9 +442,7 @@
   sfRWRescaledCurves_Array[,,1] <- floorCurves(sfRWRescaledCurves_Array[,,1],
                                                iteration = 1)
   
-  if(any(sfRWRescaledCurves_Array[,,1] <= 0,na.rm = TRUE)){
-    negCurveStop(sfRWRescaledCurves_Array[,,1], iteration = 1, crn = iter0Crn)
-  }
+  checkCurves(sfRWRescaledCurves_Array[,,1], iteration = 1, crn = iter0Crn)
   
   # STEP 6 - divide original measurements by curve obtained from signal free measurements fitting
   if(difference){ sfRWI_Array[,,1] <- as.matrix(dat - sfRWRescaledCurves_Array[,,1]) }
@@ -438,7 +455,7 @@
   # biweight robust mean (e.g., co021). This causes problems with div0 later on
   # so if there are any zeros in the chron, switch straight mean which should
   # head off any zeros in the chron unless the data themseleves are bunk
-  if(any(sfCrn_Mat[,1]==0)){
+  if(!difference && any(sfCrn_Mat[,1]==0)){
     noteSwitch(sfCrn_Mat[,1], 1L)
     sfCrn_Mat[,1] <- chron(sfRWI_Array[,,1],biweight = FALSE)[,1]
   }
@@ -490,10 +507,8 @@
     sfRWRescaledCurves_Array[,,k] <- floorCurves(sfRWRescaledCurves_Array[,,k],
                                                  iteration = k)
     
-    if(any(sfRWRescaledCurves_Array[,,k] <= 0,na.rm = TRUE)){
-      negCurveStop(sfRWRescaledCurves_Array[,,k], iteration = k,
-                   crn = sfCrn_Mat[,k-1])
-    }
+    checkCurves(sfRWRescaledCurves_Array[,,k], iteration = k,
+                crn = sfCrn_Mat[,k-1])
     
     # STEP 6 - divide original measurements by curve obtained from signal free curves
     if(difference){ sfRWI_Array[,,k] <- as.matrix(dat - sfRWRescaledCurves_Array[,,k]) }
@@ -506,7 +521,7 @@
     # biweight robust mean (e.g., co021). This causes problems with div0 later on
     # so if there are any zeros in the chron, switch straight mean which should
     # head off any zeros in the chron unless the data themseleves are bunk
-    if(any(sfCrn_Mat[,k]==0)){
+    if(!difference && any(sfCrn_Mat[,k]==0)){
       noteSwitch(sfCrn_Mat[,k], k)
       sfCrn_Mat[,k] <- chron(sfRWI_Array[,,k],biweight = FALSE)[,1]
     }
@@ -565,6 +580,16 @@
   row.names(finalCrn) <- row.names(dat)
   class(finalCrn) <- c("crn", "data.frame")
   attr(finalCrn, "converged") <- converged
+
+  # Curves at or below zero with subtraction on ring widths (see
+  # checkCurves). Transformed input (any value below zero) is not reported.
+  if (length(negCurveList) > 0 && !any(dat < 0, na.rm = TRUE)) {
+    nc <- do.call(rbind, negCurveList)
+    warning(gettextf("With difference = TRUE, the fitted curve went to zero or below for %d series (%s), first at iteration %d. A growth curve below zero is not a ring width, so indices there are not deviations from a plausible growth level. If the input was transformed (e.g., with powt), this can be expected. See help (?ssf).",
+                     length(unique(nc$series)),
+                     paste(unique(nc$series), collapse = ", "),
+                     min(nc$iteration), domain = "R-dplR"), call. = FALSE)
+  }
 
   # Report the floor: which series and years, and the largest index it made
   # in the final iteration. Floored years are kept as rows of a data frame

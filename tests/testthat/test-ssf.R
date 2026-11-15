@@ -5,20 +5,23 @@ context("function ssf")
 
 test_that("ssf names series, iteration and year when the curve goes <= 0", {
     data(co021, package = "dplR", envir = environment())
+    ## co021 still stops; the message says the ratio kept the signal-free
+    ## measurements above zero (before 1.8.1 a constant was added and it
+    ## stopped at iteration 1)
     msg <- tryCatch(ssf(co021, recode.zeros = TRUE, verbose = FALSE),
                     error = conditionMessage)
-    expect_match(msg, "^\\[1\\] At iteration 1 ")
-    expect_match(msg, "642244 (-0.103 in 1867)", fixed = TRUE)
-    expect_match(msg, "0.003401, in 1455", fixed = TRUE)
-    expect_match(msg, "dividing by it")
+    expect_match(msg, "^\\[1\\] At iteration 13 ")
+    expect_match(msg, "644233 (-0.0061 in 1370)", fixed = TRUE)
+    expect_match(msg, "lowest value is 0.002497, in 1679", fixed = TRUE)
+    expect_match(msg, "by a ratio and stay at or above zero", fixed = TRUE)
     expect_match(msg, "does not prevent it")
+    expect_false(grepl("adding a constant", msg))
 })
 
 test_that("ssf still standardises ca533", {
     data(ca533, package = "dplR", envir = environment())
     out <- ssf(ca533, recode.zeros = TRUE, verbose = FALSE)
-    expect_equal(head(out$sfc, 3), c(0.394662, 0.302022, 0.325494),
-                 tolerance = 1e-5)
+    expect_equal(head(out$sfc, 3), c(0.395666, 0.302794, 0.326330), tolerance = 1e-5)
 })
 
 test_that("ssf stops up front on missing values inside a series", {
@@ -95,13 +98,13 @@ test_that("curve.floor lets nm046 run, and reports what it floored", {
     expect_error(ssf(wa082, curve.floor = -1, verbose = FALSE), "curve.floor")
 })
 
-test_that("rescale and crn.guard: ca533 runs, and bad combinations stop", {
+test_that("crn.guard: ca533 runs, and bad combinations stop", {
     data(ca533, package = "dplR", envir = environment())
     ## ca533 has a year with every ring absent
     expect_error(ssf(ca533, verbose = FALSE), "^\\[4\\]")
     w <- character(0)
     out <- withCallingHandlers(
-        ssf(ca533, rescale = "ratio", crn.guard = 0.01, curve.floor = 0.02,
+        ssf(ca533, crn.guard = 0.01, curve.floor = 0.02,
             max.iterations = 40, verbose = FALSE, return.info = TRUE),
         warning = function(cond) {
             w <<- c(w, conditionMessage(cond))
@@ -112,25 +115,23 @@ test_that("rescale and crn.guard: ca533 runs, and bad combinations stop", {
     expect_true(all(out$guardedYears$crn < 0.01))
     expect_identical(attr(out$ssfCrn, "guarded"), out$guardedYears)
     expect_true(all(is.finite(out$ssfCrn$sfc)))
-    ## ratio rescale keeps each series' mean (step 4 then puts raw values
-    ## back in years with one series, which moves a mean slightly)
-    sf <- out$sfRWRescaled_Array[, , 2]
-    expect_equal(unname(colMeans(sf, na.rm = TRUE)),
-                 unname(colMeans(ca533, na.rm = TRUE)), tolerance = 1e-3)
     data(wa082, package = "dplR", envir = environment())
-    expect_error(ssf(wa082, rescale = "ratio", difference = TRUE, verbose = FALSE),
-                 "difference = TRUE")
     expect_error(ssf(wa082, crn.guard = 0.01, difference = TRUE, verbose = FALSE),
                  "difference = TRUE")
     expect_error(ssf(wa082, crn.guard = 0, verbose = FALSE), "crn.guard")
-    ## additive default unchanged
-    expect_equal(ssf(wa082, verbose = FALSE)$sfc,
-                 ssf(wa082, rescale = "additive", verbose = FALSE)$sfc)
+    ## the rescale is by ratio for division and by a constant for
+    ## differences, with no argument to choose
+    expect_false("rescale" %in% names(formals(ssf)))
+    expect_identical(ssf(wa082, verbose = FALSE, return.info = TRUE)$infoList$rescale,
+                     "ratio.masked")
+    expect_silent(d <- ssf(wa082, difference = TRUE, verbose = FALSE,
+                           return.info = TRUE))
+    expect_identical(d$infoList$rescale, "additive")
 })
 
-test_that("ratio.masked uses only years with more than one series", {
+test_that("the ratio uses only years with more than one series", {
     data(wa082, package = "dplR", envir = environment())
-    out <- suppressWarnings(ssf(wa082, rescale = "ratio.masked", verbose = FALSE,
+    out <- suppressWarnings(ssf(wa082, verbose = FALSE,
                                 return.info = TRUE))
     d <- out$ssfCrn$samp.depth
     sf <- out$sfRWRescaled_Array[, , 2]
@@ -142,13 +143,6 @@ test_that("ratio.masked uses only years with more than one series", {
     expect_equal(m[1, ], m[2, ])
     ## single-series years stay raw
     expect_equal(unname(sf[!ok, 23]), wa082[!ok, 23])
-    ## with no single-series years, masked and unmasked agree
-    data(anos1, package = "dplR", envir = environment())
-    expect_true(all(rowSums(!is.na(anos1)) > 1))
-    expect_equal(ssf(anos1, rescale = "ratio", verbose = FALSE)$sfc,
-                 ssf(anos1, rescale = "ratio.masked", verbose = FALSE)$sfc)
-    expect_error(ssf(wa082, rescale = "ratio.masked", difference = TRUE,
-                     verbose = FALSE), "difference = TRUE")
 })
 
 test_that("biweight = FALSE and a single iteration", {
@@ -190,7 +184,7 @@ test_that("ssf warns when a zero biweight year forces the arithmetic mean", {
     data(co021, package = "dplR", envir = environment())
     w <- character(0)
     res <- withCallingHandlers(
-        ssf(co021, rescale = "ratio.masked", crn.guard = 0.01,
+        ssf(co021, crn.guard = 0.01,
             curve.floor = 0.02, max.iterations = 3, mad.threshold = 0,
             return.unconverged = TRUE, verbose = FALSE),
         warning = function(cond) {
@@ -208,4 +202,26 @@ test_that("ssf warns when a zero biweight year forces the arithmetic mean", {
         })
     expect_false(any(grepl("arithmetic mean instead", w, fixed = TRUE)))
     expect_null(attr(res, "meanSwitched"))
+})
+
+test_that("ssf with difference = TRUE runs on transformed input below zero", {
+    ## Logged ring widths are below zero wherever a ring is under 1 mm, so
+    ## curves fitted to them are too. With subtraction that is fine, and
+    ## ssf should neither stop with error [1] nor warn about it.
+    data(wa082, package = "dplR", envir = environment())
+    lw <- log(wa082)
+    lw[] <- lapply(lw, function(x) { x[!is.finite(x)] <- NA; x })
+    lw <- lw[, colSums(is.na(lw)) == colSums(is.na(wa082))]
+    expect_true(any(lw < 0, na.rm = TRUE))
+    w <- character(0)
+    res <- withCallingHandlers(
+        ssf(lw, difference = TRUE, verbose = FALSE),
+        warning = function(cond) {
+            w <<- c(w, conditionMessage(cond))
+            invokeRestart("muffleWarning")
+        })
+    expect_s3_class(res, "crn")
+    expect_false(any(grepl("went to zero or below", w, fixed = TRUE)))
+    ## division still stops on the same input
+    expect_error(ssf(lw, verbose = FALSE), "[1]", fixed = TRUE)
 })

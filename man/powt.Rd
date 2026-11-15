@@ -19,7 +19,9 @@ powt(rwl, method = "cook", rescale = FALSE,
 
   \item{rescale}{ \code{logical} flag.  If \code{TRUE} then each transformed 
   series is rescaled to have the orginal mean and standard deviation of the 
-  input data. See details. }
+  input data.  A transform that makes a series less skewed (the log especially)
+  can then put its narrowest rings below zero; the function warns, naming the
+  series.  Such values suit indices by subtraction, not division. See details. }
 
   \item{return.power}{ \code{logical} flag.  If \code{TRUE} then the power 
   estimate(s) is returned. }

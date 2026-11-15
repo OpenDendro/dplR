@@ -1,5 +1,39 @@
 # dplR 1.8.1 (development)
 
+* `ssf()` now puts each signal-free series back on its original mean by
+  a ratio when indices are by division, as CRUST and dplPy's
+  `preset = "crust"` do: the means are taken over years with more than
+  one series, and only those years are scaled. It used to add a
+  constant. This changes every `ssf()` chronology made by division, and
+  there is no option to get the old one; use dplR 1.8.0 or earlier to
+  reproduce a chronology made that way. Where the chronology is low, the
+  constant could push narrow and absent rings below zero, so the fitted
+  curve went below zero and `ssf()` stopped with error [1]. On 100
+  random ITRDB collections, `ssf()` returned a chronology for 74 with
+  the ratio against 44 with the constant (`method = "AgeDepSpline"`; 67
+  against 42 with `"Spline"`). In simulated collections the constant
+  also added a false rise at the recent end of the chronology, and the
+  ratio did not. Indices by subtraction (`difference = TRUE`) still add
+  a constant. Error [1] now explains the failure according to which of
+  the two was used.
+
+* `ssf(difference = TRUE)` now runs on input that is below zero, such as
+  series transformed with `powt()`. It used to stop with error [1] as soon
+  as a fitted curve reached zero, which with logged ring widths happens at
+  the first fit. With subtraction a curve at or below zero does not break
+  the arithmetic, so error [1], the zero checks [3] and [4], and the
+  switch to the arithmetic mean on a zero chronology year now apply to
+  division only. With subtraction on ring widths (input all at or above
+  zero), a curve at or below zero gives a warning naming the series. Note
+  that the stopping rule (`mad.threshold`) is in the units of the
+  indices, so a transform that shrinks the spread (a small power) makes
+  it easier to meet.
+
+* `powt(rescale = TRUE)` now warns when it returns values below zero,
+  naming the series. Put back on its original mean and sd, a logged
+  series can have its narrowest rings below zero (ca533 has 334 such
+  values).
+
 * `powt()` now defaults to `method = "cook"`, which fits a power to each
   series as Cook and Peters (1997) did. The default was
   `method = "universal"`, which fits one power to every series in a
@@ -256,16 +290,12 @@
   largest index, and returns the floored years in `attr(, "floored")` and
   `flooredCurves`. Error [1] now mentions the option.
 * `ssf()` has two more arguments for CRUST's steps, both off by default.
-  `rescale = "ratio"` puts each signal-free series back on its mean by
-  multiplying instead of adding a constant. `crn.guard` keeps the raw
+  `crn.guard` keeps the raw
   measurements in years where the chronology is below it (CRUST uses
   0.01), warns with the years, and lets a year with every ring absent
   through instead of stopping with error [3] or [4] (`ca533`). With
-  `rescale = "ratio"`, `crn.guard = 0.01`, `curve.floor = 0.02` and
-  `max.iterations = 40`, `ssf()` matches dplPy's `ssf(preset = "crust")`.
-  `rescale = "ratio.masked"` is CRUST's version of the ratio: the means
-  use only years with more than one series, and only those years are
-  scaled.
+  `crn.guard = 0.01`, `curve.floor = 0.02` and `max.iterations = 40`,
+  `ssf()` follows the same steps as dplPy's `ssf(preset = "crust")`.
 * `ssf()` gains `biweight` (default `TRUE`); `FALSE` uses the arithmetic
   mean for every chronology, as CRUST does by default. `max.iterations = 1`
   is allowed with `return.unconverged = TRUE`. With these and the CRUST

@@ -42,5 +42,26 @@ powt <- function (rwl, method = "cook", rescale = FALSE,
                          return.power = return.power)
   }
   
+  # rescale = TRUE puts each transformed series back on its original mean
+  # and sd. A transform that makes a series less right-skewed (the log
+  # especially) then stretches its lower tail below zero. Those values are
+  # not ring widths: fine for indices by subtraction, but not for division
+  # or for functions that expect ring widths.
+  if (rescale) {
+    vals <- if (return.power) res$transformed.data else res
+    if (is.data.frame(vals) || is.matrix(vals)) {
+      neg <- names(vals)[vapply(vals, function(x) any(x < 0, na.rm = TRUE),
+                                logical(1))]
+    } else {
+      neg <- if (any(vals < 0, na.rm = TRUE)) "the series" else character(0)
+    }
+    if (length(neg) > 0) {
+      warning("rescale = TRUE gave values below zero in ", length(neg),
+              " series (", paste(neg, collapse = ", "), "). They are not ",
+              "ring widths: use them with indices by subtraction ",
+              "(e.g., detrend(difference = TRUE)), not by division.",
+              call. = FALSE)
+    }
+  }
   return(res)
 }

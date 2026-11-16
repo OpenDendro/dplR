@@ -225,3 +225,25 @@ test_that("ssf with difference = TRUE runs on transformed input below zero", {
     ## division still stops on the same input
     expect_error(ssf(lw, verbose = FALSE), "[1]", fixed = TRUE)
 })
+
+test_that("ssf's first chronology matches detrend() with the same pos.slope", {
+  # wa082 (23 series, median length 207) by power transform and subtraction,
+  # the use the help recommends; by ratio it stops with error [1]
+  data(wa082, package = "dplR", envir = environment())
+  dat <- powt(wa082, method = "universal")
+  first <- list()
+  for (ps in c(FALSE, TRUE)) {
+    x <- suppressWarnings(suppressMessages(
+      ssf(dat, method = "AgeDepSpline", difference = TRUE, pos.slope = ps,
+          return.info = TRUE, verbose = FALSE)))
+    base <- chron(detrend(dat, method = "AgeDepSpline", difference = TRUE,
+                          pos.slope = ps, verbose = FALSE))
+    expect_equal(unname(x$sfCrn_Mat[, 1]), unname(base[, 1]), tolerance = 1e-8,
+                 info = paste("pos.slope =", ps))
+    expect_identical(x$infoList$pos.slope, ps)
+    first[[as.character(ps)]] <- x$sfCrn_Mat[, 1]
+  }
+  # the setting matters here, so the test above checks something
+  expect_gt(max(abs(first[["FALSE"]] - first[["TRUE"]])), 0.01)
+  expect_error(ssf(dat, method = "AgeDepSpline", pos.slope = NA), "pos.slope")
+})

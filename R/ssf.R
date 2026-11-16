@@ -1,6 +1,7 @@
 `ssf` <- function(rwl, 
                   method="Spline", 
                   nyrs = NULL,
+                  pos.slope = FALSE,
                   difference = FALSE,
                   biweight = TRUE,
                   max.iterations = 25, 
@@ -123,6 +124,13 @@
   # biweight: the mean used for every chronology in the loop. TRUE (the
   # default) is Tukey's biweight robust mean; FALSE the arithmetic mean,
   # CRUST's default (KRB = 1).
+  # pos.slope applies to method = "AgeDepSpline" only, as in detrend(). FALSE
+  # (the default, as in detrend()) keeps the curve from turning up at the end
+  # of a series. It was hard-coded TRUE before 2026-11-16, which let the curve
+  # follow a recent rise in the common signal and take it out of the chronology.
+  if(!is.logical(pos.slope) || length(pos.slope) != 1 || is.na(pos.slope)){
+    stop("'pos.slope' must be TRUE or FALSE.", call. = FALSE)
+  }
   if(!is.logical(biweight) || length(biweight) != 1 || is.na(biweight)){
     stop("'biweight' must be TRUE or FALSE.", call. = FALSE)
   }
@@ -287,7 +295,7 @@
   if(method2 == "AgeDepSpline"){
     infoList <- list(method=method2, 
                      nyrs = nyrs, 
-                     pos.slope = TRUE,
+                     pos.slope = pos.slope,
                      biweight = biweight,
                      max.iterations = max.iterations, 
                      mad.threshold = mad.threshold,
@@ -332,7 +340,7 @@
   # data) but they aren't as of right now. So here is a simplified detrend function.
   getCurve <- function(y,method=method2,
                        nyrs=NULL,
-                       pos.slope=TRUE){
+                       pos.slope=FALSE){
     
     
     ## Drop the leading and trailing NA (the years before and after the
@@ -360,7 +368,7 @@
       else
         nyrs2 <- nyrs
       
-      Curve <- ads(y=y2, nyrs0=nyrs2, pos.slope = TRUE)
+      Curve <- ads(y=y2, nyrs0=nyrs2, pos.slope = pos.slope)
       # Put NA back in
       Curve2 <- rep(NA, length(y))
       Curve2[good.y] <- Curve
@@ -392,7 +400,7 @@
   datCurves <- apply(dat,2,getCurve,
                      method=method2,
                      nyrs=nyrs,
-                     pos.slope=TRUE)
+                     pos.slope=pos.slope)
   rownames(datCurves) <- time(dat)
   datCurves <- floorCurves(datCurves, iteration = 0)
   
@@ -438,7 +446,7 @@
   sfRWRescaledCurves_Array[,,1] <- apply(sfRWRescaled_Array[,,1],2,getCurve,
                                          method=method2,
                                          nyrs=nyrs,
-                                         pos.slope=TRUE)
+                                         pos.slope=pos.slope)
   sfRWRescaledCurves_Array[,,1] <- floorCurves(sfRWRescaledCurves_Array[,,1],
                                                iteration = 1)
   
@@ -503,7 +511,7 @@
     sfRWRescaledCurves_Array[,,k] <- apply(sfRWRescaled_Array[,,k],2,getCurve,
                                            method=method2,
                                            nyrs=nyrs,
-                                           pos.slope=TRUE)
+                                           pos.slope=pos.slope)
     sfRWRescaledCurves_Array[,,k] <- floorCurves(sfRWRescaledCurves_Array[,,k],
                                                  iteration = k)
     

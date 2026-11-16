@@ -1,5 +1,17 @@
 # dplR 1.8.1 (development)
 
+* `ssf()` gains `pos.slope`, used with `method = "AgeDepSpline"`, and
+  it defaults to `FALSE` as in `detrend()`. `ssf()` used to fit the
+  age-dependent spline with `pos.slope = TRUE`, with no way to change it,
+  so its curves could turn up at the end of a series while
+  `detrend(method = "AgeDepSpline")` kept them from doing so. A curve
+  that turns up follows a rise in the common signal at the recent end and
+  takes it out of the chronology. In simulated collections with a recent
+  warming ramp, the first chronology `ssf()` built kept about a tenth of
+  the ramp, against more than half for `detrend()`'s default. This
+  changes `ssf()` chronologies made with `method = "AgeDepSpline"`; set
+  `pos.slope = TRUE` to get the old curves.
+
 * `ssf()` now puts each signal-free series back on its original mean by
   a ratio when indices are by division, as CRUST and dplPy's
   `preset = "crust"` do: the means are taken over years with more than

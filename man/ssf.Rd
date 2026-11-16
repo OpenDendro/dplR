@@ -9,6 +9,7 @@
 ssf(rwl, 
     method="Spline", 
     nyrs = NULL, 
+    pos.slope = FALSE,
     difference = FALSE,
     biweight = TRUE,
     max.iterations = 25, 
@@ -30,6 +31,8 @@ ssf(rwl,
     
   \item{nyrs}{ a number controlling the smoothness of the
     fitted curve in methods. See \sQuote{Details} in \code{\link{detrend.series}}.}
+
+  \item{pos.slope}{ a \code{logical} flag, used only with \code{method = "AgeDepSpline"}.  If \code{FALSE} (the default, as in \code{\link{detrend}}), the age-dependent spline is kept from turning up at the end of a series; if \code{TRUE}, it may.  A curve that may turn up can follow a rise in the common signal at the recent end, where every living tree ends, and take it out of the chronology.  The first chronology \code{ssf} builds (iteration 0) is the one \code{chron(detrend(rwl, method = "AgeDepSpline", pos.slope = pos.slope))} gives with the same mean.  See \code{\link{ads}}. }
   
   \item{difference}{ a \code{logical} flag.  Compute residuals by subtraction 
   if TRUE, otherwise use division. See \sQuote{Details} 
@@ -37,7 +40,13 @@ ssf(rwl,
   zero, as after \code{\link{powt}}, and a fitted curve at or below zero does
   not stop the function (error [1] is for division only).  If the input is all
   at or above zero (ring widths) and a curve goes to zero or below, the function
-  warns, naming the series. }
+  warns, naming the series.  Subtraction suits series whose spread does not
+  change with their level, which is rarely true of raw ring widths, so use it on
+  series transformed with \code{\link{powt}} (Cook and Peters 1997).  The
+  stopping rule (\code{mad.threshold}) is in the units of the indices, and
+  \code{powt} returns x^p, which with a small power p shrinks the spread by
+  about p and makes the threshold easier to meet.  The Box-Cox form,
+  (x^p - 1)/p, keeps the transformed series in about log units. }
 
   \item{biweight}{ a \code{logical} flag.  If \code{TRUE} (the default), every chronology in the loop is the Tukey's biweight robust mean of the indices; if \code{FALSE}, the arithmetic mean, which is CRUST's default.  If the biweight chronology is zero in any year, as happens when most series have a zero ring that year (\code{co021}), that iteration uses the arithmetic mean instead for every year, not only the zero ones, to avoid dividing by zero; \code{ssf} warns with the years and iterations, and the returned chronology has attribute \code{"meanSwitched"} giving the iterations (0 is the chronology before the loop).  See \code{\link{chron}}. }
 
@@ -132,6 +141,8 @@ This function creates a simple signal-free chronology that loosely follows the p
 }
 \references{
 
+Cook, E. R. and Peters, K. (1997) Calculating unbiased tree-ring indices for the study of climatic and environmental change.  \emph{The Holocene}, \bold{7}(3), 361\enc{–}{--}370.
+
 Melvin, TM, Briffa, KR (2008) A 'signal-free' approach to dendroclimatic standardisation. Dendrochronologia 26: 71–86 doi: 10.1016/j.dendro.2007.12.001
 
 Melvin T. M. and Briffa K.R. (2014a) CRUST: Software for the implementation of Regional Chronology Standardisation: Part 1. Signal-Free RCS. Dendrochronologia 32, 7-20, doi: 10.1016/j.dendro.2013.06.002
@@ -143,12 +154,37 @@ Melvin T. M. and Briffa K.R. (2014b) CRUST: Software for the implementation of R
 \seealso{ \code{\link{detrend}}. \code{\link{chron}} }
 \examples{library(stats)
 data(wa082)
-wa082_SSF <- ssf(wa082)
-plot(wa082_SSF,add.spline=TRUE,nyrs=20)
+## A signal-free chronology with the defaults (2/3 spline, indices by
+## division)
+wa082.sf <- ssf(wa082)
+plot(wa082.sf, add.spline = TRUE, nyrs = 20)
 
-wa082_SSF_Full <- ssf(wa082,method = "AgeDepSpline", 
-  difference = TRUE, return.info = TRUE)
-plot(wa082_SSF_Full$ssfCrn,add.spline=TRUE,nyrs=20)
+## Indices by subtraction after a power transform (Cook and Peters 1997),
+## with the age-dependent spline, keeping the details. The first
+## chronology (iteration 0) is the one detrend() and chron() give with
+## the same curve, so the two can be compared directly.
+wa082.p <- powt(wa082, method = "universal")
+wa082.info <- ssf(wa082.p, method = "AgeDepSpline", difference = TRUE,
+                  return.info = TRUE, verbose = FALSE)
+wa082.crn <- chron(detrend(wa082.p, method = "AgeDepSpline",
+                           difference = TRUE))
+all.equal(wa082.info$sfCrn_Mat[, 1], wa082.crn[, 1],
+          check.attributes = FALSE)
+yrs <- as.numeric(rownames(wa082.crn))
+plot(yrs, wa082.crn[, 1], type = "l", col = "grey60",
+     xlab = "Year", ylab = "Index (difference)")
+lines(yrs, wa082.info$ssfCrn[, 1], col = "darkred")
+legend("topleft", legend = c("detrend and chron", "signal-free"),
+       col = c("grey60", "darkred"), lty = 1, bty = "n")
+## iterations used and the stopping statistic at each
+wa082.info$k
+wa082.info$MAD_Vec
 
+## A curve that reaches zero stops ssf with error [1]. curve.floor lets
+## it continue and reports what it raised.
+data(nm046)
+nm046.sf <- try(ssf(nm046, verbose = FALSE))
+nm046.sf <- ssf(nm046, curve.floor = 0.02, verbose = FALSE)
+attr(nm046.sf, "floored")
 }
 \keyword{ manip }

@@ -36,9 +36,21 @@ sniff.rwl <- function(fname, n = 30L) {
 
   found <- function(fmt, ...) list(format = fmt, evidence = paste0(...))
 
-  ## DPL compact: the format's own column specification, on the first line.
-  if (grepl("[1-9][0-9]*\\([1-9][0-9]*F[1-9][0-9]*\\.0\\)~ *$", lines[1L]))
-    return(found("compact", "line 1 carries a DPL compact column specification"))
+  ## DPL compact: the format's own column specification, on the first series
+  ## header. AGB Nov 2026: this test used to look at line 1 only, but the
+  ## compact reader (src/rcompact.c) takes every line before the first one
+  ## containing "~" as a project comment, and real files use that: PRL153F.rwl
+  ## (Pearl Peak PILO, Salzer) opens with a title line. Its spec sat on line 2,
+  ## the test missed it, and the file went to read.tucson(), which returned one
+  ## junk "series" dated 9134-9143 rather than an error. So the test now looks
+  ## where the reader looks: the first line carrying a "~". Requiring the full
+  ## spec on that line keeps a stray tilde in a Tucson comment from matching.
+  tilde <- grep("~", lines, fixed = TRUE)
+  if (length(tilde) > 0L &&
+      grepl("[1-9][0-9]*\\([1-9][0-9]*F[1-9][0-9]*\\.0\\)~\\s*$",
+            lines[tilde[1L]]))
+    return(found("compact", "line ", tilde[1L],
+                 " carries a DPL compact column specification"))
 
   ## Heidelberg: a line that is exactly HEADER:.
   if (grepl("^HEADER:$", lines[1L]))

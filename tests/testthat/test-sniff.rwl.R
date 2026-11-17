@@ -21,6 +21,21 @@ test_that("a DPL compact file is detected on line 1", {
     expect_equal(fmt(c("FOO 1(10F6.0)~", "junk")), "compact")
 })
 
+test_that("a DPL compact file is detected below title lines", {
+    ## the compact reader takes lines before the first "~" as comments
+    hdr <- "     895=N    1091=I PDG011          -2(26F3.0)~"
+    expect_equal(fmt(c("Pearl Peak PILO  [23Feb06-1547]", hdr, " 33 31 26")),
+                 "compact")
+    expect_equal(fmt(c("title", "another note", hdr, " 33 31 26")),
+                 "compact")
+    expect_match(sniff(c("title", hdr))$evidence, "line 2")
+})
+
+test_that("a stray tilde in a Tucson file does not mean compact", {
+    expect_equal(fmt(c("ABC  1  ~ approx. location", "ABC  2  note")),
+                 "tucson")
+})
+
 test_that("a Heidelberg file is detected on line 1", {
     expect_equal(fmt(c("HEADER:", "DateBegin=1901")), "heidelberg")
 })

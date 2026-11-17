@@ -1,5 +1,13 @@
 # dplR 1.8.1 (development)
 
+* `read.rwl()` now detects a DPL compact file that opens with title or
+  comment lines. Detection looked for the compact column specification
+  on line 1 only, while `read.compact()` reads every line before the
+  first series header as a comment. A compact file with a title line
+  was handed to `read.tucson()`, which returned one meaningless series
+  with warnings in place of the data. Detection now looks at the first
+  line containing `~`, as the reader does.
+
 * `ssf()` gains `pos.slope`, used with `method = "AgeDepSpline"`, and
   it defaults to `FALSE` as in `detrend()`. `ssf()` used to fit the
   age-dependent spline with `pos.slope = TRUE`, with no way to change it,
